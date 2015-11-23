@@ -1,0 +1,26 @@
+{
+	"name": "COBOL",
+	"description": "COBOL syntax support",
+	"version": "0.0.4",
+	"publisher": "Stephen-Gennard",
+	"engines": {
+		"vscode": "^0.10.1"
+	},
+	"icon": "images/cobol.png",
+	"categories": [
+		"Languages"
+	],
+	"contributes": {
+		"languages": [{
+			"id": "COBOL",
+			"aliases": ["COBOL", "cobol"],
+			"extensions": [".cbl",".cpy",".cob",".dds",".ss",".wks"],
+			"configuration": "./cobol.configuration.json"
+		}],
+		"grammars": [{
+			"language": "COBOL",
+			"scopeName": "source.cobol",
+			"path": "./syntaxes/cobol.tmLanguage"
+		}]
+	}
+}
