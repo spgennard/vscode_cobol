@@ -1,8 +1,8 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "0.0.5",
-	"publisher": "Stephen-Gennard",
+	"version": "0.1.0",
+	"publisher": "bitlang",
 	"engines": {
 		"vscode": "^0.10.1"
 	},
@@ -11,16 +11,30 @@
 		"Languages"
 	],
 	"contributes": {
-		"languages": [{
+		"languages": [
+		{
 			"id": "COBOL",
 			"aliases": ["COBOL", "cobol"],
 			"extensions": [".cbl",".cpy",".cob",".dds",".ss",".wks"],
 			"configuration": "./cobol.configuration.json"
+		},
+		{
+			"id": "JCL",
+			"aliases": ["JCL", "jcl"],
+			"extensions": [".jcl"],
+			"configuration": "./jcl.configuration.json"
 		}],
-		"grammars": [{
+		"grammars": [
+			{
 			"language": "COBOL",
 			"scopeName": "source.cobol",
 			"path": "./syntaxes/cobol.tmLanguage"
-		}]
+		  },
+		  {
+			"language": "JCL",
+			"scopeName": "source.jcl",
+			"path": "./syntaxes/jcl.tmLanguage"
+		  }
+		]
 	}
 }
