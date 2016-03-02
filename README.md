@@ -1,9 +1,19 @@
-# COBOL for Visual Studio Code
-## This extension adds support for the COBOL language to Visual Studio Code.
+# COBOL Source colouriser for Visual Studio Code
 
-### Support added for jcl
+## What is this?
+Syntax highlighting for COBOL!
 
-### Colourization
+## What is this not?
+An Integrated Development Environment for COBOL.
+
+## What is it useful for?
+Quick viewing of COBOL source and edit.
+
+## What platform can it be used on?
+Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
+
+## What does it look like?
  ![pi.cbl](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/screenshot_pi.png)
 
 ** Enjoy!**
+
