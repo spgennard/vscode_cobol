@@ -41,7 +41,19 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>(?:^|\s)((?i)\$\s*(?i:if|else|then|display|end))(?:$|\s.*$)</string>
+			<string>(\*&gt;\s*(?i:NOTE|FIXME|TODO|CHANGED).*$)</string>
+			<key>name</key>
+			<string>comment.line.note.python</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(^      \*.*$|^\*.*$)</string>
+			<key>name</key>
+			<string>comment.line.rem.cobol</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?:^|\s)((?i)\$\s*(?i:if|else|then|display|end|xfd))(?:$|\s.*$)</string>
 			<key>name</key>
 			<string>meta.preprocessor</string>
 		</dict>
@@ -54,18 +66,6 @@
 		<dict>
 			<key>match</key>
 			<string>(^[0-9][0-9][0-9][0-9][0-9][0-9])</string>
-			<key>name</key>
-			<string>comment.line.rem.cobol</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>(\*&gt;\s*(?i:NOTE|FIXME|TODO|CHANGED).*$)</string>
-			<key>name</key>
-			<string>comment.line.note.python</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>(^      \*.*$|^\*.*$)</string>
 			<key>name</key>
 			<string>comment.line.rem.cobol</string>
 		</dict>
@@ -131,7 +131,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>((\b(?&lt;!-))(?i:installation|author|source-computer|object-computer|date-written|security|date-compiled)(.*\.))</string>
+			<string>((\b(?&lt;!-))(?i:installation|author|source-computer|object-computer|date-written|security|date-compiled)(.*)(\.|$))</string>
 		</dict>
 		<dict>
 			<key>captures</key>
@@ -443,7 +443,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>(\s|^)(?i)(?i:end\s*class|end\s*property|end\s*method|exit\s*method|end\s*program|create|reset|instance|delegate|end-delegate|delegate-id|declare|debug-line|debug-name|debug-contents|sort-return|exception-object|return-code|as||stop\srun|stop)(?=\s|\.|,|$)</string>
+			<string>(\s|^)(?i)(?i:end\s*class|end\s*property|end\s*method|exit\s*method|end\s*program|end\s*operator|create|reset|instance|delegate|end-delegate|delegate-id|declare|debug-line|debug-name|debug-contents|sort-return|exception-object|return-code|as||stop\srun|stop)(?=\s|\.|,|$)</string>
 			<key>name</key>
 			<string>keyword.identifiers.cobol</string>
 		</dict>
@@ -503,7 +503,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(?&lt;!-)(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|page-counter|linage-counter|linage|line-counter|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\stime|values|omitted|value|ascending|descending|key|retry|until|varying|when|with|no|advancing|up|down|uccurs|lock|length|delimited|count|delimiter|redefines|from\s*console|from\s*command-line|from\s*user\s*name|from\s*day\s*yyyyddd|from\s*day|from\s*time|from\s*day-of-week|from\s*escape|from\s*day\s*yyyyddd|from\s*date\s*yyyymmdd|from\s*date|from|raising|crt\s*status|status|class|upon\s*crt|upon|lines|auto|line|position|col|reporting|arithmetic|localize|program|class|interface|in|at|page)(?=\s|\.)</string>
+			<string>\b(?&lt;!-)(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|page-counter|linage-counter|linage|line-counter|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\stime|values|omitted|value|ascending|descending|key|retry|until|varying|when|with|no|advancing|up|down|uccurs|ignore\s*lock|lock|length|delimited|count|delimiter|redefines|from\s*console|from\s*command-line|from\s*user\s*name|from\s*day\s*yyyyddd|from\s*day|from\s*time|from\s*day-of-week|from\s*escape|from\s*day\s*yyyyddd|from\s*date\s*yyyymmdd|from\s*date|from|raising|crt\s*status|status|class|upon\s*crt|upon|lines|auto|line|position|col|reporting|arithmetic|localize|program|class|interface|in|at|page)(?=\s|\.)</string>
 			<key>name</key>
 			<string>keyword.identifers.cobol</string>
 		</dict>
@@ -548,83 +548,15 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>entity.name.cobol</string>
+					<string>meta.symbol.cobol</string>
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>program-id. ssss </string>
+			<string>operator-id ssss </string>
 			<key>match</key>
-			<string>(?i:program-id)\.\s*((?:[a-zA-Z][a-zA-Z0-9\$\-_\.]*|[a-zA-Z])\.)</string>
+			<string>(operator-id\s*[+\-\*\/])</string>
 			<key>name</key>
-			<string>keyword.program-id.cobol</string>
-		</dict>
-		<dict>
-			<key>captures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>keyword.other.verb.cobol</string>
-				</dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.cobol</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.class.cobol</string>
-				</dict>
-			</dict>
-			<key>comment</key>
-			<string>class-id ssss </string>
-			<key>match</key>
-			<string>(?i:class-id|inherits|implements)\.\s*((?:[a-zA-Z][a-zA-Z0-9\-\._]*|[a-zA-Z_\-]))</string>
-			<key>name</key>
-			<string>keyword.class-id.cobol</string>
-		</dict>
-		<dict>
-			<key>captures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>keyword.other.verb.cobol</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.method.cobol</string>
-				</dict>
-			</dict>
-			<key>comment</key>
-			<string>method-id ssss </string>
-			<key>match</key>
-			<string>(?i:end\s*method|method-id\.|method-id|enum-id\.|enum-id|valuetype-id\.|valuetype-id)\s*((?:[a-zA-Z][a-zA-Z0-9\-\._]*|[a-zA-Z]))</string>
-			<key>name</key>
-			<string>keyword.method-id.cobol</string>
-		</dict>
-		<dict>
-			<key>captures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>keyword.other.verb.cobol</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.class.cobol</string>
-				</dict>
-			</dict>
-			<key>comment</key>
-			<string>class-id ssss </string>
-			<key>match</key>
-			<string>(?i:class-id|inherits|implements)\s*((?:[a-zA-Z][a-zA-Z0-9\-\._]*|[a-zA-Z]))</string>
-			<key>name</key>
-			<string>keyword.class-id.cobol</string>
+			<string>keyword.operator-id.cobol</string>
 		</dict>
 		<dict>
 			<key>captures</key>
@@ -790,7 +722,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(?&lt;!-)(?i:enum-id|valuetype-id|method-id|class-id|program-id|implements|inherits)(?=\s|\.)</string>
+			<string>\b(?&lt;!-)(?i:enum-id|valuetype-id|operator-id|method-id|class-id|program-id|attribute-id|implements|inherits)(?=\s|\.)</string>
 			<key>name</key>
 			<string>keyword.verbs.cobol</string>
 		</dict>
@@ -817,6 +749,18 @@
 			<string>\b(?&lt;!-)(?i:alter|remarks)(?=\s|\.)</string>
 			<key>name</key>
 			<string>invalid.illegal.cobol</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?i:filler)</string>
+			<key>name</key>
+			<string>keyword.filler.cobol</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(([a-zA-Z0-9][a-zA-Z\-0-9]+))</string>
+			<key>name</key>
+			<string>meta.symbol.cobol</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
