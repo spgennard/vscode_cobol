@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "0.3.3",
+	"version": "0.3.5",
 	"publisher": "bitlang",
 	"engines": {
 		"vscode": "^0.10.1"
