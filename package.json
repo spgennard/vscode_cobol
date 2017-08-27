@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "0.3.5",
+	"version": "0.4.3",
 	"publisher": "bitlang",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -11,30 +11,58 @@
 		"Languages"
 	],
 	"contributes": {
-		"languages": [
-		{
-			"id": "COBOL",
-			"aliases": ["COBOL", "cobol"],
-			"extensions": [".cbl",".cpy",".cob",".dds",".ss",".wks"],
-			"configuration": "./cobol.configuration.json"
+		"configurationDefaults": {
+			"[COBOL]": {
+				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+			}
 		},
-		{
-			"id": "JCL",
-			"aliases": ["JCL", "jcl"],
-			"extensions": [".jcl"],
-			"configuration": "./jcl.configuration.json"
-		}],
+		"languages": [
+			{
+				"id": "COBOL",
+				"aliases": [
+					"COBOL",
+					"cobol"
+				],
+				"extensions": [
+					".cbl",
+					".cpy",
+					".cob",
+					".dds",
+					".ss",
+					".wks",
+					".pco"
+				],
+				"configuration": "./cobol.configuration.json"
+			},
+			{
+				"id": "JCL",
+				"aliases": [
+					"JCL",
+					"jcl"
+				],
+				"extensions": [
+					".jcl"
+				],
+				"configuration": "./jcl.configuration.json"
+			}
+		],
 		"grammars": [
 			{
-			"language": "COBOL",
-			"scopeName": "source.cobol",
-			"path": "./syntaxes/cobol.tmLanguage"
-		  },
-		  {
-			"language": "JCL",
-			"scopeName": "source.jcl",
-			"path": "./syntaxes/jcl.tmLanguage"
-		  }
+				"language": "COBOL",
+				"scopeName": "source.cobol",
+				"path": "./syntaxes/cobol.tmLanguage"
+			},
+			{
+				"language": "JCL",
+				"scopeName": "source.jcl",
+				"path": "./syntaxes/jcl.tmLanguage"
+			}
+		],
+		"snippets": [
+			{
+				"language": "COBOL",
+				"path": "./snippets/cobol.json"
+			}
 		]
 	}
 }

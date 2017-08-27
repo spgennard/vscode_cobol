@@ -1,0 +1,188 @@
+{
+	"add": {
+		"prefix": "add",
+		"body": "\r\nadd ${1:a} to ${2:b} giving ${3:c}\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"class-id": {
+		"prefix": "class-id",
+		"body": "\r\n       class-id ${1} public.\r\n\r\n       method-id new public.\r\n       procedure division.\r\n           $0\r\n           exit method.\r\n       end method.\r\n\r\n       end class.",
+		"description": "class with ctor",
+		"scope": "source.cobol"
+	},
+	"copy": {
+		"prefix": "copy",
+		"body": "\r\nCOPY \"${1:subprog.cpy}\"\r\n    REPLACING ==${2:()}== BY ==${3:lnk-}==.\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"divide": {
+		"prefix": "divide",
+		"body": "\r\ndivide ${1:a} by ${2:b} giving ${3:c} ${4:remainder ${5:d}}\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"entry": {
+		"prefix": "entry",
+		"body": "\r\n       entry \"${1}\".\r\n           $SELECTION$0\t\r\n           goback.\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"enum-id": {
+		"prefix": "enum-id",
+		"body": "\r\n*>> <summary>enum-id ${1}</summary>\r\nenum-id. ${1} as \"Status\".\r\n    78 ${2:Item}  value ${3:1}.\r\nend enum ${1}.\r\n",
+		"description": "enum-id",
+		"scope": "source.cobol"
+	},
+	"ev": {
+		"prefix": "ev",
+		"body": "\r\n           evaluate $1\r\n                when $2\r\n                    $SELECTION$0\r\n                when other\r\n                    continue\r\n           end-evaluate\r\n",
+		"description": "evaluate",
+		"scope": "source.cobol"
+	},
+	"exec": {
+		"prefix": "exec",
+		"body": "\r\n       EXEC SQL INCLUDE SQLCA END-EXEC.\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"exec1": {
+		"prefix": "exec",
+		"body": "\r\n       EXEC SQL BEGIN DECLARE SECTION END-EXEC.\r\n       ${0}\r\n       EXEC SQL END DECLARE SECTION END-EXEC.\r\n",
+		"description": "",
+		"scope": "source.cobol"
+	},
+	"exec2": {
+		"prefix": "exec",
+		"body": "\r\n       EXEC SQL INCLUDE SQLCA END-EXEC.\r\n",
+		"description": "",
+		"scope": "source.cobol"
+	},
+	"inspect": {
+		"prefix": "inspect",
+		"body": "\r\n           inspect ${1} converting\r\n               'abcdefghijklmnopqrstuvwxyz' to\r\n               'ABCDEFGHIJKLMNOPQRSTUVWXYZ' \r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"inspect1": {
+		"prefix": "inspect",
+		"body": "\r\n       inspect ${1} converting\r\n           'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to\r\n           'abcdefghijklmnopqrstuvwxyz'\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"junit": {
+		"prefix": "junit",
+		"body": "\r\n       $set ilusing\"org.junit\"\r\n\r\n       *> JUnit4 testcase for ${2}\r\n       *>\r\n       *> Use java org.junit.runner.JUnitCore $1\r\n       *>\r\n\r\n       class-id ${1} public.\r\n\r\n       method-id test${2:testcase} public attribute Test.\r\n       procedure division.\r\n           call \"${2}\"\r\n            on exception\r\n             invoke type Assert::fail(\"program not found - ${2}\")\r\n           end-call\r\n           invoke type Assert::assertEquals(0, return-code)\r\n           exit method.\r\n       end method.\r\n       end class.\r\n",
+		"description": "",
+		"scope": "source.cobol"
+	},
+	"method-id": {
+		"prefix": "method-id",
+		"body": "\r\n*>> <summary>method main</summary>\r\nmethod-id main public static.\r\nprocedure division using\r\n           by value args as string occurs any.\r\n    $0\r\nend method.\r\n",
+		"description": "method-id (main)",
+		"scope": "source.cobol"
+	},
+	"method-id1": {
+		"prefix": "method-id",
+		"body": "\r\n*>> <summary>method ${1}</summary>\r\nmethod-id ${1}.\r\nprocedure division.\r\n    $0\r\nend method.\r\n",
+		"description": "method-id",
+		"scope": "source.cobol"
+	},
+	"mfu": {
+		"prefix": "mfu",
+		"body": "\r\n         program-id. MFUT_${1}.\r\n         working-storage section.\r\n         copy \"mfunit.cpy\".         \r\n\r\n         01 test-fail-count     binary-long value 0.\r\n         *> Testcase ${1}\r\n         procedure division.\r\n              ${0}\r\n              if 1 not equal 1\r\n                  display \"Odd... 1 not equal 1?\"\r\n                  add 1 to test-fail-count\r\n              end-if\r\n\r\n              if test-fail-count not equal 0\r\n                  call \"MFU_ASSERT_FAIL_Z\" using\r\n                    by reference z\"${1} has failed\"\r\n                  end-call\r\n              end-if\r\n\r\n              goback returning test-fail-count.\r\n\r\n         *> Startup for testcase ${1}\r\n         entry \"MFUS_${1}\".\r\n              *> Open any files\r\n              goback.\r\n\r\n         *> Teardown for testcase ${1}\r\n         entry \"MFUE_${1}\".\r\n              *> Close any files/delete any temp files\r\n              goback.\r\n\r\n         end program.    \r\n\r\n",
+		"description": "",
+		"scope": "source.cobol"
+	},
+	"multiply": {
+		"prefix": "multiply",
+		"body": "\r\nmultiply ${1:a} by ${2:b} giving ${3:c}\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"perform": {
+		"prefix": "perform",
+		"body": "\r\nperform ${1:paragraph-name} ${2:value-1} times\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"perform_varying": {
+		"prefix": "perform",
+		"body": "\r\nperform ${1:paragraph-name} varying ${2:field-1}\r\n from ${3:value-1} by ${4:value-2}\r\n until ${5:condition}\r\n",
+		"description": "inline perform varying",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"identification_cics": {
+		"prefix": "identification",
+		"body": "\r\n        IDENTIFICATION DIVISION.                                        \r\n        PROGRAM-ID. ${1}.                                   \r\n        DATA DIVISION.                                      \r\n        WORKING-STORAGE SECTION.                            \r\n        01 OUT-MSG.                                         \r\n         02 FILLER PIC X(6) VALUE \"Hello \". \r\n         02 MSG    PIC X(20).                               \r\n        01 INP-MSG PIC X(20) VALUE \"What is your name? \".     \r\n        PROCEDURE DIVISION.                                 \r\n        PARA1.                                               \r\n            EXEC CICS\r\n                 SEND FROM(INP-MSG)\r\n                 ERASE\r\n            END-EXEC\r\n\r\n            EXEC CICS\r\n                 RECEIVE INTO (MSG)\r\n            END-EXEC\r\n\r\n       *\r\n            EXEC CICS\r\n                 SEND FROM (OUT-MSG)\r\n                 ERASE\r\n            END-EXEC\r\n\r\n            EXEC CICS\r\n                 RETURN\r\n            END-EXEC.\r\n\r\n       *\r\n        END PROGRAM ${1}.\r\n",
+		"description": "Template for program (CICS)",
+		"scope": "source.cobol"
+	},
+	"program-id-min-template": {
+		"prefix": "program-id",
+		"body": "\r\n       identification division.\r\n       program-id. ${1}.\r\n\r\n       environment division.\r\n       input-output section.\r\n        file-control.\r\n        select ${2:cust} assign to '${4:${2}}.txt'\r\n        organization is line sequential.            \r\n\r\n       data division.\r\n       file section.\r\n       fd ${2}.\r\n       01 ${3:${2}-file}.\r\n        03 ${5:customer-id}    pic 9(5).\r\n        03 ${6:customer-info}  pic x(65).\r\n\r\n       working-storage section.\r\n       01 ws-eof       pic a. \r\n\r\n       procedure division.\r\n          open input ${2}.\r\n             perform until ws-eof='Y'\r\n                read ${2}\r\n                   at end\r\n                      move 'Y' to ws-eof\r\n                   not at end\r\n                      display ${5} \" => \" ${6}\r\n                end-read\r\n             end-perform\r\n          close ${2}.\r\n          $0\r\n          goback.\r\n\r\n       end program ${1}.\r\n",
+		"description": "Minimum template File/Seq (MF)",
+		"scope": "source.cobol"
+	},
+	"identification_mainframe": {
+		"prefix": "identification",
+		"body": "\r\n       IDENTIFICATION DIVISION.\r\n       PROGRAM-ID. ${1}.\r\n       AUTHOR. ${2}.\r\n       INSTALLATION. ${3:where}.\r\n       DATE-WRITTEN. ${4:dd/mm/yyyy}.\r\n       DATE-COMPILED.${5:${3}}.\r\n       SECURITY.\r\n       ENVIRONMENT DIVISION.\r\n       CONFIGURATION SECTION.\r\n       SOURCE-COMPUTER. ${6:pc}.\r\n       OBJECT-COMPUTER. ${7:${6}}.\r\n       SPECIAL-NAMES.\r\n       INPUT-OUTPUT SECTION.\r\n       FILE-CONTROL.\r\n       DATA DIVISION.\r\n        FILE SECTION.\r\n        WORKING-STORAGE SECTION.\r\n        LINKAGE SECTION.\r\n       PROCEDURE DIVISION.\r\n        DECLARATIVES.\r\n        END DECLARATIVES.\r\n        main-processing SECTION.\r\n         mainline-paragraph.\r\n             ${0}\r\n             STOP RUN.\r\n       END PROGRAM ${1}.\r\n\r\n",
+		"description": "Template for mainframe",
+		"scope": "source.cobol"
+	},
+	"identification_microfocus": {
+		"prefix": "identification",
+		"body": "\r\n       program-id. ${1}.\r\n\r\n       environment division.\r\n       configuration section.\r\n\r\n       data division.\r\n       working-storage section.\r\n\r\n       procedure division.\r\n           $0\r\n           goback.\r\n\r\n       end program ${1}.\r\n",
+		"description": "Template for program (MF)",
+		"scope": "source.cobol"
+	},
+	"identification_minimum": {
+		"prefix": "identification",
+		"body": "\r\n       program-id. ${1}.\r\n       procedure division.\r\n           $0\r\n           goback.\r\n\r\n       end program ${1}.\r\n",
+		"description": "Minimum template (MF)",
+		"scope": "source.cobol"
+	},
+	"program-id1": {
+		"prefix": "program-id",
+		"body": "\r\n       program-id. ${1}.\r\n       procedure division.\r\n           $0\r\n           goback.\r\n\r\n       end program ${1}.\r\n",
+		"description": "Minimum template (MF)",
+		"scope": "source.cobol"
+	},
+	"identification_opencobol_fixed": {
+		"prefix": "identification_opencobol",
+		"body": "\r\n      *>>SOURCE FORMAT IS FIXED\r\n      *> ***************************************************************\r\n      *> Author:  ${2:author}.\r\n      *> Date:    ${3:dd/mm/yyyy}\r\n      *> Rights:  ${4}\r\n      *> Purpose: ${5}   \r\n      *> Tectonics: cobc -x ${TM_FILENAME}\r\n      *> ***************************************************************\r\n       identification division.\r\n       program-id. ${1}.\r\n\r\n       environment division.\r\n       configuration section.\r\n\r\n       input-output section.\r\n      *> file-control.\r\n      *>     select\r\n      *>     assign to\r\n      *>     organization is\r\n      *>     .\r\n\r\n       data division.\r\n      *> file section.\r\n      *> fd .\r\n      *>     01 .\r\n\r\n       working-storage section.\r\n\r\n       local-storage section.\r\n\r\n       linkage section.\r\n\r\n       screen section.\r\n\r\n      *> ***************************************************************\r\n       procedure division.\r\n           $0\r\n       goback.\r\n       end program ${1}.\r\n",
+		"description": "Template for fixed format (OC)",
+		"scope": "source.opencobol"
+	},
+	"identification_opencobol_sf_free": {
+		"prefix": "identification",
+		"body": "\r\n       >>SOURCE FORMAT IS FREE\r\n*> *********************************************************************\r\n*> Author:     ${2}.\r\n*> Date:       ${3:dd/mm/yyyy}\r\n*> Purpose:    ${4}\r\n*> Tectonics:  cobc -freea ${TM_FILENAME}\r\n*> *********************************************************************\r\nidentification division.\r\nprogram-id. ${1}.\r\n\r\n\r\nenvironment division.\r\nconfiguration section.\r\n\r\ninput-output section.\r\nfile-control.\r\n    select\r\n        assign to\r\n        organization is\r\n    .\r\n\r\ndata division.\r\nfile section.\r\nfd .\r\n    01 .\r\n\r\nworking-storage section.\r\n\r\nlocal-storage section.\r\n\r\nlinkage section.\r\n\r\nscreen section.\r\n\r\nprocedure division.\r\n    ${0}\r\ngoback.\r\nend program ${1}.\r\n",
+		"description": "Template for free format (OC)",
+		"scope": "source.opencobol"
+	},
+	"property": {
+		"prefix": "property",
+		"body": "\r\n01 ${2:_prop} ${3:binary-long} private.\r\nmethod-id. get property #${1:Prop}.\r\nprocedure division returning ret as ${3:binary-long}.\r\n    set ret to ${2:_prop}\r\nend method.\r\nmethod-id. set property #${1:Prop}.\r\nprocedure division using by value val as ${3:binary-long}.\r\n    set ${2:_prop} to 0\r\nend method.\r\n",
+		"description": "set/get property",
+		"scope": "source.cobol"
+	},
+	"subtract": {
+		"prefix": "subtract",
+		"body": "\r\nsubtract ${1:a} from ${2:b} giving ${3:c}\r\n",
+		"description": "",
+		"scope": "source.cobol, source.acucobol, source.opencobol"
+	},
+	"tc": {
+		"prefix": "tc",
+		"body": "try\r\n$2\r\ncatch ${1:Exception}\r\n$0\r\nend-try",
+		"description": "try catch",
+		"scope": "source.cobol"
+	},
+	"va": {
+		"prefix": "va",
+		"body": "\r\n       valuetype-id ${1} ${2:public}.\r\n           01 item string ${2:public}.\r\n\r\n           method-id new ${2:public}.\r\n           procedure division.\r\n             $0\r\n           end method.\r\n\r\n       end valuetype.",
+		"description": "valuetype",
+		"scope": "source.cobol"
+	}
+}
