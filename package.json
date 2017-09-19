@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "0.4.3",
+	"version": "0.5.4",
 	"publisher": "bitlang",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -14,7 +14,13 @@
 		"configurationDefaults": {
 			"[COBOL]": {
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
-			}
+			},
+			"[ACUCOBOL]": {
+				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+			},
+			"[OpenCOBOL]": {
+				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
+			}	
 		},
 		"languages": [
 			{
@@ -35,6 +41,26 @@
 				"configuration": "./cobol.configuration.json"
 			},
 			{
+				"id": "ACUCOBOL",
+				"aliases": [
+					"ACUCOBOL",
+					"acucobol"
+				],
+				"extensions": [
+				],
+				"configuration": "./acucobol.configuration.json"
+			},
+			{
+				"id": "OpenCOBOL",
+				"aliases": [
+					"OpenCOBOL",
+					"opencobol"
+				],
+				"extensions": [
+				],
+				"configuration": "./opencobol.configuration.json"
+			},			
+			{
 				"id": "JCL",
 				"aliases": [
 					"JCL",
@@ -50,18 +76,32 @@
 			{
 				"language": "COBOL",
 				"scopeName": "source.cobol",
-				"path": "./syntaxes/cobol.tmLanguage"
+				"path": "./syntaxes/COBOL.tmLanguage.json"
+			},
+			{
+				"language": "ACUCOBOL",
+				"scopeName": "source.acucobol",
+				"path": "./syntaxes/ACUCOBOL.tmLanguage.json"
+			},			
+			{
+				"language": "OpenCOBOL",
+				"scopeName": "source.opencobol",
+				"path": "./syntaxes/OpenCOBOL.tmLanguage.json"
 			},
 			{
 				"language": "JCL",
 				"scopeName": "source.jcl",
-				"path": "./syntaxes/jcl.tmLanguage"
+				"path": "./syntaxes/jcl.tmLanguage.json"
 			}
 		],
 		"snippets": [
 			{
 				"language": "COBOL",
 				"path": "./snippets/cobol.json"
+			},
+			{
+				"language": "ACUCOBOL",
+				"path": "./snippets/acucobol.json"
 			}
 		]
 	}

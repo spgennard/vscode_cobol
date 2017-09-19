@@ -114,7 +114,7 @@
 		"scope": "source.cobol, source.acucobol"
 	},
 	"identification_cics": {
-		"prefix": "identification_cics",
+		"prefix": "identification",
 		"body": "\r\n        IDENTIFICATION DIVISION.                                        \r\n        PROGRAM-ID. ${1}.                                   \r\n        DATA DIVISION.                                      \r\n        WORKING-STORAGE SECTION.                            \r\n        01 OUT-MSG.                                         \r\n         02 FILLER PIC X(6) VALUE \"Hello \". \r\n         02 MSG    PIC X(20).                               \r\n        01 INP-MSG PIC X(20) VALUE \"What is your name? \".     \r\n        PROCEDURE DIVISION.                                 \r\n        PARA1.                                               \r\n            EXEC CICS\r\n                 SEND FROM(INP-MSG)\r\n                 ERASE\r\n            END-EXEC\r\n\r\n            EXEC CICS\r\n                 RECEIVE INTO (MSG)\r\n            END-EXEC\r\n\r\n       *\r\n            EXEC CICS\r\n                 SEND FROM (OUT-MSG)\r\n                 ERASE\r\n            END-EXEC\r\n\r\n            EXEC CICS\r\n                 RETURN\r\n            END-EXEC.\r\n\r\n       *\r\n        END PROGRAM ${1}.\r\n",
 		"description": "Template for program (CICS)",
 		"scope": "source.cobol"
@@ -122,25 +122,25 @@
 	"program-id-min-template": {
 		"prefix": "program-id",
 		"body": "\r\n       identification division.\r\n       program-id. ${1}.\r\n\r\n       environment division.\r\n       input-output section.\r\n        file-control.\r\n        select ${2:cust} assign to '${4:${2}}.txt'\r\n        organization is line sequential.            \r\n\r\n       data division.\r\n       file section.\r\n       fd ${2}.\r\n       01 ${3:${2}-file}.\r\n        03 ${5:customer-id}    pic 9(5).\r\n        03 ${6:customer-info}  pic x(65).\r\n\r\n       working-storage section.\r\n       01 ws-eof       pic a. \r\n\r\n       procedure division.\r\n          open input ${2}.\r\n             perform until ws-eof='Y'\r\n                read ${2}\r\n                   at end\r\n                      move 'Y' to ws-eof\r\n                   not at end\r\n                      display ${5} \" => \" ${6}\r\n                end-read\r\n             end-perform\r\n          close ${2}.\r\n          $0\r\n          goback.\r\n\r\n       end program ${1}.\r\n",
-		"description": "Minimum template File/Seq",
+		"description": "Minimum template File/Seq (MF)",
 		"scope": "source.cobol"
 	},
 	"identification_mainframe": {
-		"prefix": "identification_mainframe",
+		"prefix": "identification",
 		"body": "\r\n       IDENTIFICATION DIVISION.\r\n       PROGRAM-ID. ${1}.\r\n       AUTHOR. ${2}.\r\n       INSTALLATION. ${3:where}.\r\n       DATE-WRITTEN. ${4:dd/mm/yyyy}.\r\n       DATE-COMPILED.${5:${3}}.\r\n       SECURITY.\r\n       ENVIRONMENT DIVISION.\r\n       CONFIGURATION SECTION.\r\n       SOURCE-COMPUTER. ${6:pc}.\r\n       OBJECT-COMPUTER. ${7:${6}}.\r\n       SPECIAL-NAMES.\r\n       INPUT-OUTPUT SECTION.\r\n       FILE-CONTROL.\r\n       DATA DIVISION.\r\n        FILE SECTION.\r\n        WORKING-STORAGE SECTION.\r\n        LINKAGE SECTION.\r\n       PROCEDURE DIVISION.\r\n        DECLARATIVES.\r\n        END DECLARATIVES.\r\n        main-processing SECTION.\r\n         mainline-paragraph.\r\n             ${0}\r\n             STOP RUN.\r\n       END PROGRAM ${1}.\r\n\r\n",
 		"description": "Template for mainframe",
 		"scope": "source.cobol"
 	},
-	"identification_small": {
+	"identification_microfocus": {
 		"prefix": "identification",
 		"body": "\r\n       program-id. ${1}.\r\n\r\n       environment division.\r\n       configuration section.\r\n\r\n       data division.\r\n       working-storage section.\r\n\r\n       procedure division.\r\n           $0\r\n           goback.\r\n\r\n       end program ${1}.\r\n",
-		"description": "Small template for program",
+		"description": "Template for program (MF)",
 		"scope": "source.cobol"
 	},
 	"identification_minimum": {
-		"prefix": "identification_minimum",
+		"prefix": "identification",
 		"body": "\r\n       program-id. ${1}.\r\n       procedure division.\r\n           $0\r\n           goback.\r\n\r\n       end program ${1}.\r\n",
-		"description": "Minimum template",
+		"description": "Minimum template (MF)",
 		"scope": "source.cobol"
 	},
 	"program-id1": {
