@@ -1,8 +1,12 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.6.2",
+	"version": "1.7.2",
 	"publisher": "bitlang",
+	"bugs" : {
+		"url" : "https://github.com/spgennard/vscode_cobol/issues",
+		"email": "stephen@gennard.net"
+	},
 	"engines": {
 		"vscode": "^0.10.1"
 	},
@@ -13,7 +17,9 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:cobolplugin.move2pd"
+		"onCommand:cobolplugin.move2pd",
+		"onCommand:cobolplugin.move2ws",
+		"onCommand:cobolplugin.move2dd"
 	],
 	"main" :"./js/cobolplugin.js",
 	"contributes": {
@@ -110,14 +116,83 @@
 			{
 				"command": "cobolplugin.move2pd",
 				"title" : "Move to procedure division"
+			},
+			{
+				"command": "cobolplugin.move2ws",
+				"title" : "Move to working-storage section"
+			},
+			{
+				"command": "cobolplugin.move2dd",
+				"title" : "Move to data division"
 			}
 		],
+		"menus": {
+			"editor/context" : [
+				{
+					"command" : "cobolplugin.move2dd",
+					"group" : "cobolplugin",
+					"when": "editorTextFocus && editorLangId == COBOL"
+				},
+				{
+					"command" : "cobolplugin.move2ws",
+					"group" : "cobolplugin",
+					"when": "editorTextFocus && editorLangId == COBOL"
+				},
+				{
+					"command" : "cobolplugin.move2pd",
+					"group" : "cobolplugin",
+					"when": "editorTextFocus && editorLangId == COBOL"
+				}
+			]
+		},
 		"keybindings":[
 			{
-				"key": "alt+p",
+				"key": "ctrl+alt+p",
 				"command": "cobolplugin.move2pd",
-				"when": "editorLangId == COBOL"
-			}
+				"when": "editorTextFocus && editorLangId == COBOL"
+			},
+			{
+				"key": "ctrl+alt+p",
+				"command": "cobolplugin.move2pd",
+				"when": "editorTextFocus && editorLangId == ACUCOBOL"
+			},
+			{
+				"key": "ctrl+alt+p",
+				"command": "cobolplugin.move2pd",
+				"when": "editorTextFocus && editorLangId == OpenCOBOL"
+			},
+
+			{
+				"key": "ctrl+alt+w",
+				"command": "cobolplugin.move2ws",
+				"when": "editorTextFocus && editorLangId == COBOL"
+			},
+			{
+				"key": "ctrl+alt+w",
+				"command": "cobolplugin.move2ws",
+				"when": "editorTextFocus && editorLangId == ACUCOBOL"
+			},
+			{
+				"key": "ctrl+alt+w",
+				"command": "cobolplugin.move2ws",
+				"when": "editorTextFocus && editorLangId == OpenCOBOL"
+			},
+
+			{
+				"key": "ctrl+alt+d",
+				"command": "cobolplugin.move2dd",
+				"when": "editorTextFocus && editorLangId == COBOL"
+			},
+			{
+				"key": "ctrl+alt+d",
+				"command": "cobolplugin.move2dd",
+				"when": "editorTextFocus && editorLangId == ACUCOBOL"
+			},
+			{
+				"key": "ctrl+alt+d",
+				"command": "cobolplugin.move2dd",
+				"when": "editorTextFocus && editorLangId == OpenCOBOL"
+			}							
 		],
 		"snippets": [
 			{

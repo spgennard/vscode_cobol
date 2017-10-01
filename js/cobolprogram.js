@@ -8,7 +8,7 @@ function move2pd()
 {
     var editor = Window.activeTextEditor;
     var doc = editor.document;
-    var line = findProcedureLine();
+    var line = findProcedureDivision();
 
      if (line > 0)
      {
@@ -20,8 +20,47 @@ function move2pd()
      }
 
 }
-
 exports.move2pd = move2pd;
+
+function move2dd()
+{
+    var editor = Window.activeTextEditor;
+    var doc = editor.document;
+    var line = findDataDivision();
+
+     if (line > 0)
+     {
+         goToLine(line)
+         return;
+     }
+
+     line = findWorkingStorageSection();
+
+     if (line > 0)
+     {
+        goToLine(line);
+        return;
+     }
+
+    vscode.window.setStatusBarMessage('ERROR: \'DATA DIVISION\' or \'WORKING-STORAGE SECTION\' not found.', 4000);
+}
+exports.move2dd = move2dd;
+
+function move2ws()
+{
+    var editor = Window.activeTextEditor;
+    var doc = editor.document;
+    var line = findWorkingStorageSection();
+
+     if (line > 0)
+     {
+        goToLine(line);
+        return;
+     }
+
+    vscode.window.setStatusBarMessage('ERROR: \'WORKING-STORAGE SECTION\' not found.', 4000);
+}
+exports.move2ws = move2ws
 
 function findMatch(mat)
 {
@@ -34,19 +73,30 @@ function findMatch(mat)
 
        if (txt.match(mat))
        {
-           break;
+           return line;
        }
     }
-    return line;
+
+    return 0;
  }
 
-function findProcedureLine()
+function findProcedureDivision()
 {
     return findMatch(/procedure\s*division/i);
 }
 
- function goToLine(line)
- {
+function findDataDivision()
+{
+    return findMatch(/data\s*division/i);
+}
+
+function findWorkingStorageSection()
+{
+    return findMatch(/working-storage\s*section/i);
+}
+
+function goToLine(line)
+{
     let reviewType = vscode.TextEditorRevealType.InCenter;
     if (line === vscode.window.activeTextEditor.selection.active.line)
     {

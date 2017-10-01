@@ -19,4 +19,7 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
 | Keys   | Description           |
 |--------|:---------------------:|
-| alt+p  | Goto procedure divsion|
+| ctrl+alt+p  | Goto procedure division |
+| ctrl+alt+w  | Goto working-storage section |
+| ctrl+alt+d  | Goto data division (or working-storage section if not present) |
+
