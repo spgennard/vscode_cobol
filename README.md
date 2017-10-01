@@ -15,5 +15,8 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 ## What does it look like?
  ![pi.cbl](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/screenshot_pi.png)
 
-** Enjoy!**
+## Keybinds
 
+| Keys   | Description           |
+|--------|:---------------------:|
+| alt+p  | Goto procedure divsion|

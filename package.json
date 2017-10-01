@@ -1,15 +1,21 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "0.5.4",
+	"version": "1.6.2",
 	"publisher": "bitlang",
 	"engines": {
 		"vscode": "^0.10.1"
 	},
 	"icon": "images/cobol.png",
 	"categories": [
-		"Languages"
+		"Languages",
+		"Snippets",
+		"Other"
 	],
+	"activationEvents": [
+		"onCommand:cobolplugin.move2pd"
+	],
+	"main" :"./js/cobolplugin.js",
 	"contributes": {
 		"configurationDefaults": {
 			"[COBOL]": {
@@ -31,9 +37,15 @@
 				],
 				"extensions": [
 					".cbl",
+					".lks",
+					".pdv",
 					".cpy",
+					".fd",
+					".sel",
+					".scr",
 					".cob",
 					".dds",
+					".def",
 					".ss",
 					".wks",
 					".pco"
@@ -92,6 +104,19 @@
 				"language": "JCL",
 				"scopeName": "source.jcl",
 				"path": "./syntaxes/jcl.tmLanguage.json"
+			}
+		],
+		"commands":[
+			{
+				"command": "cobolplugin.move2pd",
+				"title" : "Move to procedure division"
+			}
+		],
+		"keybindings":[
+			{
+				"key": "alt+p",
+				"command": "cobolplugin.move2pd",
+				"when": "editorLangId == COBOL"
 			}
 		],
 		"snippets": [

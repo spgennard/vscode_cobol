@@ -1,16 +1,21 @@
 {
 	"add": {
 		"prefix": "add",
-		"body": "\r\nadd ${1:a} to ${2:b} giving ${3:c}\r\n",
+		"body": "nadd ${1:a} to ${2:b} giving ${3:c}",
 		"description": "",
 		"scope": "source.cobol, source.acucobol"
 	},
+	"accept": {
+		"prefix": "accept",
+		"body": [ "accept ${1:variable}" ]
+	},	
 	"class-id": {
 		"prefix": "class-id",
 		"body": "\r\n       class-id ${1} public.\r\n\r\n       method-id new public.\r\n       procedure division.\r\n           $0\r\n           exit method.\r\n       end method.\r\n\r\n       end class.",
 		"description": "class with ctor",
 		"scope": "source.cobol"
 	},
+	
 	"copy": {
 		"prefix": "copy",
 		"body": "\r\nCOPY \"${1:subprog.cpy}\"\r\n    REPLACING ==${2:()}== BY ==${3:lnk-}==.\r\n",
@@ -35,30 +40,50 @@
 		"description": "enum-id",
 		"scope": "source.cobol"
 	},
-	"ev": {
-		"prefix": "ev",
+	"evaluate": {
+		"prefix": "evaluate",
 		"body": "\r\n           evaluate $1\r\n                when $2\r\n                    $SELECTION$0\r\n                when other\r\n                    continue\r\n           end-evaluate\r\n",
 		"description": "evaluate",
 		"scope": "source.cobol"
 	},
-	"exec": {
+	"exec-sql": {
 		"prefix": "exec",
 		"body": "\r\n       EXEC SQL INCLUDE SQLCA END-EXEC.\r\n",
 		"description": "",
 		"scope": "source.cobol, source.acucobol"
 	},
-	"exec1": {
+	"exec-sql-begin": {
 		"prefix": "exec",
 		"body": "\r\n       EXEC SQL BEGIN DECLARE SECTION END-EXEC.\r\n       ${0}\r\n       EXEC SQL END DECLARE SECTION END-EXEC.\r\n",
 		"description": "",
 		"scope": "source.cobol"
 	},
-	"exec2": {
+	"exec-sql-include": {
 		"prefix": "exec",
 		"body": "\r\n       EXEC SQL INCLUDE SQLCA END-EXEC.\r\n",
 		"description": "",
 		"scope": "source.cobol"
 	},
+	"if": {
+		"prefix": "if",
+		"body": [
+			"if ${1:condition}",
+			"   $0",
+			"end-if"
+		],
+		"scope": "source.cobol"
+	},
+	"if-else": {
+		"prefix": "if",
+		"body": [
+			"if ${1:condition}",
+			"   $0",
+			"else",
+			"   ",
+			"end-if"
+		],
+		"scope": "source.cobol"
+	},	
 	"inspect": {
 		"prefix": "inspect",
 		"body": "\r\n           inspect ${1} converting\r\n               'abcdefghijklmnopqrstuvwxyz' to\r\n               'ABCDEFGHIJKLMNOPQRSTUVWXYZ' \r\n",
@@ -70,12 +95,6 @@
 		"body": "\r\n       inspect ${1} converting\r\n           'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to\r\n           'abcdefghijklmnopqrstuvwxyz'\r\n",
 		"description": "",
 		"scope": "source.cobol, source.acucobol"
-	},
-	"junit": {
-		"prefix": "junit",
-		"body": "\r\n       $set ilusing\"org.junit\"\r\n\r\n       *> JUnit4 testcase for ${2}\r\n       *>\r\n       *> Use java org.junit.runner.JUnitCore $1\r\n       *>\r\n\r\n       class-id ${1} public.\r\n\r\n       method-id test${2:testcase} public attribute Test.\r\n       procedure division.\r\n           call \"${2}\"\r\n            on exception\r\n             invoke type Assert::fail(\"program not found - ${2}\")\r\n           end-call\r\n           invoke type Assert::assertEquals(0, return-code)\r\n           exit method.\r\n       end method.\r\n       end class.\r\n",
-		"description": "",
-		"scope": "source.cobol"
 	},
 	"method-id": {
 		"prefix": "method-id",

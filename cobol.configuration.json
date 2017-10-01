@@ -3,21 +3,28 @@
 		// symbol used for single line comment. Remove this entry if your language does not support line comments
 		"lineComment": "*>",
 		// symbols used for start and end a block comment. Remove this entry if your language does not support block comments
-		"blockComment": [  ]
+		"blockComment": []
 	},
-
-
 	// symbols used as brackets
 	"brackets": [
-		["[", "]"],
-		["(", ")"],
-		["\"", "\""],
-		["'", "'"]
+		[ "[","]" ],
+		[ "(", ")" ],
+		[ "\"", "\"" ],
+		[ "'", "'" ]
 	],
-	   "autoClosingPairs": [
-       { "open": "[", "close": "]" },
-       { "open": "(", "close": ")" },
-	   { "open": "\"", "close": "\"" },
-	   { "open": "'", "close": "'" }
-   ]
+	"autoClosingPairs": [
+		{ "open": "[", "close": "]" },
+		{ "open": "(", "close": ")" },
+		{ "open": "\"", "close": "\"" },
+		{ "open": "'", "close": "'" }
+	],
+	"surroundingPairs": [
+		[ "{", "}" ],
+		[ "[", "]" ],
+		[ "(", ")" ],
+		[ "\"", "\"" ],
+		[ "'", "'" ]
+	],
+	"increaseIndentPattern": "^\\s*(else|else\\sif|perform|if|add|call|delete|divide|evaluate|read|rewrite|start|string|subtract|unstring|write).*$",
+	"decreaseIndentPattern": "^\\s*(else|end-if|else\\sif|end-perform|end-add|end-call|end-delete|end-divide|end-evaluate|end-read|end-rewrite|end-start|end-string|end-subtract|end-unstring|end-write).*$"
 }
