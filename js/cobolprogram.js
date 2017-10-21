@@ -62,6 +62,57 @@ function move2ws()
 }
 exports.move2ws = move2ws
 
+function move2anyforward()
+{
+    var editor = Window.activeTextEditor;
+    var doc = editor.document;
+    var line = findAnyNext(1);
+
+     if (line > 0)
+     {
+        goToLine(line);
+        return;
+     }
+}
+exports.move2anyforward = move2anyforward
+
+function move2anybackwards()
+{
+    var editor = Window.activeTextEditor;
+    var doc = editor.document;
+    var line = findAnyNext(-1);
+
+     if (line > 0)
+     {
+        goToLine(line);
+        return;
+     }
+}
+exports.move2anybackwards = move2anybackwards
+
+
+function findMatchForward(mat)
+{
+    var doc = Window.activeTextEditor.document;
+    var line;
+
+    for (line =  Window.activeTextEditor.line; line <= doc.lineCount; line++)
+    {
+       var range = new Range(line, 1, line, 132);
+       var txt = doc.getText(range);
+
+       for(matpos = 0; matpos < mat.length; matpos++)
+       {
+            if (txt.match(mat[matpos]))
+            {
+                return line;
+            }
+        }
+    }
+
+    return 0;
+}
+
 function findMatch(mat)
 {
     var doc = Window.activeTextEditor.document;
@@ -78,7 +129,51 @@ function findMatch(mat)
     }
 
     return 0;
- }
+}
+
+function findAnyMatch(mats, counter)
+{
+    var doc = Window.activeTextEditor.document;
+    const editor = vscode.window.activeTextEditor;
+    var line = editor.selection.active.line;    
+
+    line += counter;
+
+    var endValue = counter == 1 ? doc.lineCount : 0;
+    for (; line != endValue; line += counter)
+    {
+       var range = new Range(line, 1, line, 132);
+       var txt = doc.getText(range);
+
+       var matsLen = mats.length;
+       var matpos;
+       for(matpos = 0; matpos < matsLen; matpos++)
+       {
+            var mat = mats[matpos];
+
+            if (txt.match(mat))
+            {
+                return line;
+            }
+        }
+    }
+
+    return 0;
+}
+
+function findAnyNext(counter)
+{
+    var mats = [/.*\s*division/i,
+                /entry\s*"/i,
+                /.*\s*section\./i,
+                /eject/i,
+                /program-id\./i,
+                /class-id[\.|\s]/i,
+                /method-id[\.|\s]/i
+                ];
+
+    return findAnyMatch(mats, counter);
+}
 
 function findProcedureDivision()
 {
@@ -105,4 +200,4 @@ function goToLine(line)
     let newSe = new vscode.Selection(line, 0, line, 0);
     vscode.window.activeTextEditor.selection = newSe;
     vscode.window.activeTextEditor.revealRange(newSe, reviewType);
-  }
+}

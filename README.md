@@ -22,4 +22,6 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 | ctrl+alt+p  | Goto procedure division |
 | ctrl+alt+w  | Goto working-storage section |
 | ctrl+alt+d  | Goto data division (or working-storage section if not present) |
+| ctrl+alt+,  | Go backwards to next section/division |
+| ctrl+alt+.  | Go forward to next next section/division |
 
