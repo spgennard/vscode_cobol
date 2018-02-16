@@ -1,8 +1,12 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.7.6",
+	"version": "1.7.7",
 	"publisher": "bitlang",
+	"repository": {
+		"type": "git",
+		"url" : "https://github.com/spgennard/vscode_cobol"
+	},
 	"bugs" : {
 		"url" : "https://github.com/spgennard/vscode_cobol/issues",
 		"email": "stephen@gennard.net"
