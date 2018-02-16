@@ -27,12 +27,15 @@
 	"contributes": {
 		"configurationDefaults": {
 			"[COBOL]": {
+				"editor.rulers": [6, 7, 72],
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 			},
 			"[ACUCOBOL]": {
+				"editor.rulers": [6, 7, 72],
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 			},
 			"[OpenCOBOL]": {
+				"editor.rulers": [6, 7, 72],
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
 			}	
 		},
