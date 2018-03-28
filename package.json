@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.7.7",
+	"version": "1.7.8",
 	"publisher": "bitlang",
 	"repository": {
 		"type": "git",
@@ -31,14 +31,17 @@
 	"contributes": {
 		"configurationDefaults": {
 			"[COBOL]": {
+				"files.autoGuessEncoding": true,
 				"editor.rulers": [6, 7, 72],
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 			},
 			"[ACUCOBOL]": {
+				"files.autoGuessEncoding": true,
 				"editor.rulers": [6, 7, 72],
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 			},
 			"[OpenCOBOL]": {
+				"files.autoGuessEncoding": true,
 				"editor.rulers": [6, 7, 72],
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
 			}	
@@ -58,6 +61,7 @@
 					".fd",
 					".sel",
 					".scr",
+					".scbl",
 					".cob",
 					".dds",
 					".def",
