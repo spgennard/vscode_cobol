@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.7.8",
+	"version": "1.8.0",
 	"publisher": "bitlang",
 	"repository": {
 		"type": "git",
@@ -25,24 +25,57 @@
 		"onCommand:cobolplugin.move2ws",
 		"onCommand:cobolplugin.move2dd",
 		"onCommand:cobolplugin.move2anyforward",
-		"onCommand:cobolplugin.move2anybackwards"
+		"onCommand:cobolplugin.move2anybackwards",
+		"onCommand:cobolplugin.tab",
+        "onCommand:cobolplugin.revtab"
 	],
 	"main" :"./js/cobolplugin.js",
 	"contributes": {
+		"configuration":
+		{
+			"type": "object",
+			"title": "COBOL configuration",
+			"properties":
+			{
+				"coboleditor.tabstops":
+				{
+					"type": "array",
+					"items": {
+						"type": "number",
+						"title": "tabstops",
+						"properties": {
+							"tabstop": {
+								"type": "number",
+								"description": "tabstop"
+							}
+						}
+					},
+					"default": [
+						7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,
+						51,  55, 59,  63,  67,  71,  75,  79        
+					],
+					"description": "COBOL tabstops"
+				}
+			}
+		},
+	
 		"configurationDefaults": {
 			"[COBOL]": {
 				"files.autoGuessEncoding": true,
 				"editor.rulers": [6, 7, 72],
+				"editor.detectIndentation": false,			
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 			},
 			"[ACUCOBOL]": {
 				"files.autoGuessEncoding": true,
 				"editor.rulers": [6, 7, 72],
+				"editor.detectIndentation": false,			
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
 			},
 			"[OpenCOBOL]": {
 				"files.autoGuessEncoding": true,
 				"editor.rulers": [6, 7, 72],
+				"editor.detectIndentation": false,			
 				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
 			}	
 		},
@@ -145,7 +178,15 @@
 			{
 				"command" : "cobolplugin.move2anybackwards",
 				"title": "Move to backwards to section/division"
-			}			
+			},
+			{
+                "command": "cobolplugin.tab",
+                "title": "Insert a tab"
+            },
+            {
+                "command": "cobolplugin.revtab",
+                "title": "Remove a tab"
+            }
 		],
 		"menus": {
 			"editor/context" : [
@@ -252,7 +293,37 @@
 				"key": "ctrl+alt+,",
 				"command": "cobolplugin.move2anybackwards",
 				"when": "editorTextFocus && editorLangId == ACUCOBOL"
-			}				
+			},
+			{
+                "key": "tab",
+                "command": "cobolplugin.tab",
+                "when": "editorLangId == COBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+tab",
+                "command": "cobolplugin.revtab",
+                "when": "editorLangId == COBOL && !inSnippetMode"
+			},
+			{
+                "key": "tab",
+                "command": "cobolplugin.tab",
+                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+tab",
+                "command": "cobolplugin.revtab",
+                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+			},
+			{
+                "key": "tab",
+                "command": "cobolplugin.tab",
+                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+tab",
+                "command": "cobolplugin.revtab",
+                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
+            }			
 		],
 		"snippets": [
 			{
