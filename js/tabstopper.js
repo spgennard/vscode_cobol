@@ -5,7 +5,7 @@ var Window = vscode.window;
 var Position = vscode.Position;
 var Workspace = vscode.workspace;
 
-var DEFAULT_RULER = [7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,   51,  55, 59,  63,  67,  71,  75,  79];
+var DEFAULT_RULER = [0, 7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,   51,  55, 59,  63,  67,  71,  75,  79];
 
 function toFirstBoundary(rulerTarget, rulerPositio) 
 {
@@ -14,16 +14,11 @@ function toFirstBoundary(rulerTarget, rulerPositio)
 
 function getTabs()
 {
-    var editorConfig =  Workspace.getConfiguration(
-      'editor',
-      Window.activeTextEditor.document.uri
-    )
-    var rulers = editorConfig.get('coboleditor.tabstops');
-    if (rulers == null)
+    var editorConfig =  Workspace.getConfiguration('coboleditor');   
+    var rulers = editorConfig.get('tabstops');
+    if (rulers == null || (rulers != null && rulers.length == 0))
     {
-        var lang = Window.activeTextEditor.document.languageId;
-        editorConfig =  Workspace.getConfiguration("["+lang+"]");
-        rulers = editorConfig["coboleditor.tabstops"] || DEFAULT_RULER
+        rulers = DEFAULT_RULER;
     }
     return rulers;
 }

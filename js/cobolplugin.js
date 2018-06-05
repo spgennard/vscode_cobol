@@ -2,6 +2,7 @@ var vscode = require('vscode');
 
 var cobolProgram = require('./cobolprogram');
 var tabstopper = require('./tabstopper');
+var opencopybook = require('./opencopybook');
 
 function activate(context)
 {
@@ -28,8 +29,15 @@ function activate(context)
     var tabCommand = vscode.commands.registerCommand('cobolplugin.tab', function () {
         tabstopper.processTabKey(true);
     });
-    var unTabCommand = vscode.commands.registerCommand('cobolplugin.revtabab', function () {
+    var unTabCommand = vscode.commands.registerCommand('cobolplugin.revtab', function () {
         tabstopper.processTabKey(false);
+    });
+
+    var openCopyBookFileCommand = vscode.commands.registerCommand('cobolplugin.openCopyBookFile', function () {
+        opencopybook.openCopyBookFile();
+    });
+    var openPreviousFileCommand = vscode.commands.registerCommand('cobolplugin.openPreviousFile', function () {
+        opencopybook.openPreviousFile();
     });
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
@@ -38,6 +46,9 @@ function activate(context)
     context.subscriptions.push(move2anybackwardsCommand);
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
+    context.subscriptions.push(openCopyBookFileCommand);
+    context.subscriptions.push(openPreviousFileCommand);
+    
 }
 exports.activate = activate;
 

@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.8.0",
+	"version": "1.8.2",
 	"publisher": "bitlang",
 	"repository": {
 		"type": "git",
@@ -16,7 +16,7 @@
 	},
 	"icon": "images/cobol.png",
 	"categories": [
-		"Languages",
+		"Programming Languages",
 		"Snippets",
 		"Other"
 	],
@@ -27,7 +27,9 @@
 		"onCommand:cobolplugin.move2anyforward",
 		"onCommand:cobolplugin.move2anybackwards",
 		"onCommand:cobolplugin.tab",
-        "onCommand:cobolplugin.revtab"
+		"onCommand:cobolplugin.revtab",
+		"onCommand:cobolplugin.openCopyBookFile",
+		"onCommand:cobolplugin.openPreviousFile"
 	],
 	"main" :"./js/cobolplugin.js",
 	"contributes": {
@@ -51,10 +53,45 @@
 						}
 					},
 					"default": [
-						7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,
-						51,  55, 59,  63,  67,  71,  75,  79        
+						0, 7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,  51,  55, 59,  63,  67,  71,  75,  79        
 					],
 					"description": "COBOL tabstops"
+				},
+				"coboleditor.copybookexts":
+				{
+					"type": "array",
+					"items": {
+						"type": "string",
+						"title": "copybookextension",
+						"properties": {
+							"tabstop": {
+								"type": "string",
+								"description": "copybookextension"
+							}
+						}
+					},
+					"default": [
+						"cpy", "scr", "CPY", "SCR","cbl", "CBL"
+					],
+					"description": "COBOL CopyBook Extensions"				
+				},
+				"coboleditor.copybookdirs":
+				{
+					"type": "array",
+					"items": {
+						"type": "string",
+						"title": "copybookdirs",
+						"properties": {
+							"tabstop": {
+								"type": "string",
+								"description": "copybookdir"
+							}
+						}
+					},
+					"default": [
+						"."
+					],
+					"description": "COBOL CopyBook Directory"				
 				}
 			}
 		},
@@ -186,7 +223,15 @@
             {
                 "command": "cobolplugin.revtab",
                 "title": "Remove a tab"
-            }
+			},
+			{
+				"command": "cobolplugin.openCopyBookFile",
+				"title": "Move to CopyBook"
+			},
+			{
+				"command": "cobolplugin.openPreviousFile",
+				"title" : "Move back to previous file"
+			}
 		],
 		"menus": {
 			"editor/context" : [
@@ -214,7 +259,17 @@
 					"command" : "cobolplugin.move2anybackwards",
 					"group" : "cobolplugin",
 					"when": "editorTextFocus && editorLangId == COBOL"
-				}							
+				},
+				{
+					"command" : "cobolplugin.openCopyBookFile",
+					"group" : "cobolplugin",
+					"when": "editorTextFocus && editorLangId == COBOL"
+				},
+				{
+					"command" : "cobolplugin.openPreviousFile",
+					"group" : "cobolplugin",
+					"when": "editorTextFocus && editorLangId == COBOL"
+				}								
 			]
 		},
 		"keybindings":[
@@ -323,7 +378,17 @@
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
-            }			
+			},
+			{
+				"key": "alt+c",
+                "command": "cobolplugin.openCopyBookFile",
+				"when" : "editorLangId == COBOL && !inSnippetMode"
+			},
+			{
+				"key": "shift+alt+c",
+                "command": "cobolplugin.openPreviousFile",
+				"when" : "editorLangId == COBOL && !inSnippetMode"
+            }		
 		],
 		"snippets": [
 			{

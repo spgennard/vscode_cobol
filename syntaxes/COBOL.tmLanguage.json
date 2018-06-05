@@ -425,7 +425,7 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "\\b(?<!-)(?i:sysout-flush|sysin|stderr|stdout|csp|stdin|sysipt|sysout|syslist|syslst|printer|syserr|console|c01|c02|c03|c04|c05|c06|c07|c08|c09|c10|c11|c12|formfeed|switch-0|switch-10|switch-11|switch-12|switch-13|switch-13|switch-14|switch-15|switch-1|switch-2|switch-3|switch-4|switch-5|switch-6|switch-7|switch-8|switch-9|sw0|sw11|sw12|sw13|sw14|sw15|sw1|sw2|sw3|sw4|sw5|sw6|sw7|sw8|sw9|sw10|lc_all|lc_collate|lc_ctype|lc_messages|lc_monetary|lc_numeric|lc_time|ucs-4|utf-8|utf-16)(?=\\s|\\.|$)",
+      "match": "\\b(?<!-)(?i:sysout-flush|sysin|stderr|stdout|csp|stdin|sysipt|sysout|sysprint|syslist|syslst|printer|syserr|console|c01|c02|c03|c04|c05|c06|c07|c08|c09|c10|c11|c12|formfeed|switch-0|switch-10|switch-11|switch-12|switch-13|switch-13|switch-14|switch-15|switch-1|switch-2|switch-3|switch-4|switch-5|switch-6|switch-7|switch-8|switch-9|sw0|sw11|sw12|sw13|sw14|sw15|sw1|sw2|sw3|sw4|sw5|sw6|sw7|sw8|sw9|sw10|lc_all|lc_collate|lc_ctype|lc_messages|lc_monetary|lc_numeric|lc_time|ucs-4|utf-8|utf-16)(?=\\s|\\.|$)",
       "name": "support.type.cobol"
     },
     {
