@@ -97,6 +97,7 @@ function openFile(editor, filename, line = 0)
 
     if (fs.existsSync(fullPath) === false)
     {
+        Window.showWarningMessage("Unable to locate : "+filename);
         return;
     }
     

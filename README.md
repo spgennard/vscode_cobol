@@ -32,3 +32,37 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 - COBOL tab stops can be changed by editing the *coboleditor.tabstops* setting.
 - Extensions used for *move to copybook*, can be changed by editting the *coboleditor.copybookexts* settings.
 - Directories used for *move to copybook*, can be changed by editting the *coboleditor.copybookdirs* settings.
+
+## Build task
+
+### MsBuild based project
+
+MsBuild based projects can be consumed as build task, allowing navigation to error/warnings when they occur.
+
+Below is an example of *build* task that uses *mycobolproject.sln*.
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [ {
+            "label": "build",
+            "type": "shell",
+            "command": "msbuild",
+            "args": [
+                "/property:GenerateFullPaths=true",
+                "/t:build",
+                "mycobolproject.sln"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+
+}
+```
