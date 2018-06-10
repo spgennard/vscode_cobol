@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.8.3",
+	"version": "1.9.0",
 	"publisher": "bitlang",
 	"repository": {
 		"type": "git",
@@ -123,6 +123,7 @@
 					"COBOL",
 					"cobol"
 				],
+				"firstLine" : "((^.*$set)|((^.*)(?i:identification)(.*))|((^.*)(?i:program\\-id)(.*))",
 				"extensions": [
 					".cbl",
 					".lks",
@@ -388,6 +389,26 @@
 				"key": "shift+alt+c",
                 "command": "cobolplugin.openPreviousFile",
 				"when" : "editorLangId == COBOL && !inSnippetMode"
+			},
+			{
+				"key": "alt+c",
+                "command": "cobolplugin.openCopyBookFile",
+				"when" : "editorLangId == ACUCOBOL && !inSnippetMode"
+			},
+			{
+				"key": "shift+alt+c",
+                "command": "cobolplugin.openPreviousFile",
+				"when" : "editorLangId == ACUCOBOL && !inSnippetMode"
+			},
+			{
+				"key": "alt+c",
+                "command": "cobolplugin.openCopyBookFile",
+				"when" : "editorLangId == OpenCOBOL && !inSnippetMode"
+			},
+			{
+				"key": "shift+alt+c",
+                "command": "cobolplugin.openPreviousFile",
+				"when" : "editorLangId == OpenCOBOL && !inSnippetMode"
             }		
 		],
 		"snippets": [
@@ -397,7 +418,11 @@
 			},
 			{
 				"language": "ACUCOBOL",
-				"path": "./snippets/acucobol.json"
+				"path": "./snippets/cobol.json"
+			},
+			{
+				"language": "OpenCOBOL",
+				"path": "./snippets/cobol.json"
 			}
 		]
 	}

@@ -33,9 +33,11 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 - Extensions used for *move to copybook*, can be changed by editting the *coboleditor.copybookexts* settings.
 - Directories used for *move to copybook*, can be changed by editting the *coboleditor.copybookdirs* settings.
 
-## Build task
+## Tasks
 
-### MsBuild based project
+Visual Studio code can be setup to build your COBOL source code.
+
+### Task to use MsBuild
 
 MsBuild based projects can be consumed as build task, allowing navigation to error/warnings when they occur.
 
@@ -64,5 +66,38 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
         }
     ]
 
+}
+```
+
+## Complementary extensions
+
+### [ToDo tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree) by Gruntfuggly
+
+Although this extension does not understand comments in COBOL source files, it can be made to my adding the following user setting:
+
+```json
+{
+    "todo-tree.flat": false,
+    "todo-tree.expanded": true,
+
+    "todo-tree.regex": "((//|#|<!--|;|/\\*|\\*>|^      \\*)\\s*($TAGS)|^\\s*- \\[ \\])",
+    "todo-tree.tags": [
+        "TODO",
+        "FIXME",
+        "!FIXME",
+        "CHANGED",
+        "BUG",
+        "NOTE"
+    ],
+    "todo-tree.filterCaseSensitive": true,
+    
+    "todo-tree.iconColours": {
+        "FIXME" : "#A188FF",
+        "!FIXME" : "red",
+        "NOTE" : "blue",
+        "TODO" : "cyan",
+        "CHANGED" : "yellow",
+        "BUG" : "red"
+    }
 }
 ```
