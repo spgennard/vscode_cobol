@@ -29,7 +29,11 @@
     },
     {
       "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/]\\s*(?i:NOTE).*$)",
-      "name": "comment.line.note.python"
+      "name": "storage.type.class.note"
+    },
+    {
+      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/](.*$))",
+      "name": "comment.line.note"
     },
     {
       "match": "(?:^|\\s+)(?i:\\$set\\s+ilusing)(?:$|.*$)",
