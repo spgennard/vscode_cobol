@@ -12,30 +12,10 @@
   "name": "COBOL",
   "patterns": [
     {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/]\\s*(?i:FIXME).*$)",
-      "name": "storage.type.class.fixme"
+      "match": "(^([0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s])([\\*/C].*$))",
+      "name": "comment.line.cobol.fixed"
     },
-    {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/]\\s*(?i:TODO).*$)",
-      "name": "storage.type.class.todo"
-    },
-    {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/]\\s*(?i:CHANGED).*$)",
-      "name": "storage.type.class.changed"
-    },
-    {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/]\\s*(?i:HACK).*$)",
-      "name": "storage.type.class.hack"
-    },
-    {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/]\\s*(?i:NOTE).*$)",
-      "name": "storage.type.class.note"
-    },
-    {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/](.*$))",
-      "name": "comment.line.note"
-    },
-    {
+     {
       "match": "(?:^|\\s+)(?i:\\$set\\s+ilusing)(?:$|.*$)",
       "name": "keyword.control.import"
     },
@@ -54,22 +34,6 @@
       }
     },
     {
-      "match": "(\\*>\\s+(?i:FIXME).*$)",
-      "name": "storage.type.class.fixme"
-    },
-    {
-      "match": "(\\*>\\s+(?i:TODO).*$)",
-      "name": "storage.type.class.todo"
-    },
-    {
-      "match": "(\\*>\\s+(?i:NOTE).*$)",
-      "name": "storage.type.class.note"
-    },
-    {
-      "match": "(\\*>\\s+(?i:CHANGED).*$)",
-      "name": "storage.type.class.changed"
-    },
-    {
       "match": "((?:^|\\s+|^[0-9][0-9][0-9][0-9][0-9][0-9 ])\\$(?i:if|else|then|display|xfd|end)(.*$))",
       "name": "meta.preprocessor"
     },
@@ -78,12 +42,8 @@
       "name": "invalid.illegal.cobol"
     },
     {
-      "match": "(^[0-9][0-9][0-9][0-9][0-9][0-9]\\*\\s+.*$)",
-      "name": "comment.line.rem.cobol"
-    },
-    {
       "match": "(\\*>.*$)",
-      "name": "comment.line.rem.cobol"
+      "name": "comment.line.modern"
     },
     {
       "match": "([nN][xX]|[hHxX])'\\h*'",
@@ -119,7 +79,7 @@
           "name": "keyword.verb.cobol"
         },
         "3": {
-          "name": "comment.line.cobol"
+          "name": "comment.line.cobol.ignored"
         }
       },
       "end": "(\\.)"
@@ -517,8 +477,8 @@
       "name": "storage.modifier.cobol"
     },
     {
-      "match": "\\s+(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s|\\.)",
-      "name": "keyword.operator.comparison.cobol"
+      "match": "\\s*(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s|\\.|$)",
+      "name": "keyword.operator,keyword"
     },
     {
       "match": "(?!-)(?i:installation|author|source-computer|object-computer|date-written|date-compiled)(?=\\s|\\.)",
@@ -544,9 +504,10 @@
       "match": "(?i:filler)",
       "name": "keyword.filler.cobol"
     },
+
     {
-      "match": "(^[0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][0-9 a-zA-Z\\*\\-][\\*/C].*$)",
-      "name": "comment.line.set.cobol"
+      "match": "(^[0-9][0-9][0-9][0-9][0-9][0-9])",
+      "name": "constant.numeric.integer"
     },
     {
       "match": "([0-9a-zA-Z][a-zA-Z\\-0-9]+)",
