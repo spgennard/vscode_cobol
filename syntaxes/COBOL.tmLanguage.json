@@ -461,7 +461,7 @@
       }
     },
     {
-      "match": "(?<!-)(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|if|evaluate|exhibit|named|exit|free|generate|go\\s+to|gobackdi|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|perform|purge|raise|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.)",
+      "match": "(?<!-)(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|if|evaluate|exhibit|named|exit|free|generate|go\\s+to|goback|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|perform|purge|raise|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.)",
       "name": "keyword.verbs.cobol"
     },
     {
