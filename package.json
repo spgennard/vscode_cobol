@@ -126,6 +126,7 @@
 				"firstLine" : "((^.*$set)|((^.*)(?i:identification)(.*))|((^.*)(?i:program\\-id)(.*))",
 				"extensions": [
 					".cbl",
+					".cblsrce",
 					".lks",
 					".pdv",
 					".cpy",

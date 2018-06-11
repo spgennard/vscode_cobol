@@ -19,6 +19,7 @@
       "match": "(?:^|\\s+)(?i:\\$set\\s+ilusing)(?:$|.*$)",
       "name": "keyword.control.import"
     },
+
     {
       "match": "(?:^|\\s+)(?i:\\$set\\s)(.*)$",
       "captures": {
@@ -117,7 +118,7 @@
       "name": "string.quoted.cobol.sql",
       "patterns": [
         {
-          "match": "(\\:([a-zA-Z]\\-[0-9])*)",
+          "match": "(\\:([0-9a-zA-Z\\-_])*)",
           "name": "variable.cobol"
         },
         {
@@ -312,7 +313,7 @@
       "name": "keyword.otherverbs.cobol"
     },
     {
-      "match": "(?<!-)(?i:assign|external|organization|indexed|column|plus|line\\*s*sequential|sequential|access|dynamic|relative|label|block|contains|standard|records|record\\s+key|record|is|alternate|duplicates|reel|tape|terminal|disk\\sfilename|disk|disc|mode|random)(?=\\s|\\.)",
+      "match": "(?<!-)(?i:assign|external|organization|indexed|column|plus|line\\*s*sequential|sequential|access|dynamic|relative|label|block|contains|standard|records|record\\s+key|record|is|alternate|duplicates|reel|tape|terminal|disk\\sfilename|disk|disc|recording\\smode|mode|random)(?=\\s|\\.)",
       "name": "keyword.identifers.cobol"
     },
     {
@@ -477,7 +478,7 @@
       "name": "storage.modifier.cobol"
     },
     {
-      "match": "\\s*(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s|\\.|$)",
+      "match": "\\s+(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s+|\\.|$)",
       "name": "keyword.operator,keyword"
     },
     {
