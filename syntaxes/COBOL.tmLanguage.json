@@ -21,7 +21,7 @@
     },
 
     {
-      "match": "(?:^|\\s+)(?i:\\$set\\s)(.*)$",
+      "match": "(?:^|\\s+)(?i:\\$set\\s|cbl\\s)(.*)$",
       "captures": {
         "0": {
           "name": "comment.line.set.cobol"
@@ -293,7 +293,7 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(\\s|^)(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|exit\\s+method|end\\s+program|end\\s+operator|create|reset|instance|delegate|end-delegate|delegate-id|declare|debug-line|debug-name|debug-contents|sort-return|exception-object|return-code|json-code|as||stop\\srun|stop)(?=\\s|\\.|,|$)",
+      "match": "(\\s|^)(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|exit\\s+method|end\\s+program|end\\s+operator|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as||stop\\srun|stop)(?=\\s|\\.|,|$)",
       "name": "keyword.identifiers.cobol"
     },
     {
@@ -333,7 +333,7 @@
       "name": "keyword.other.cobol"
     },
     {
-      "match": "(?<!-)(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|page-counter|linage-counter|linage|line-counter|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|when|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|auto|line|position|col|reporting|arithmetic|localize|program|class|interface|in|at|page)(?=\\s|\\.)",
+      "match": "(?<!-)(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|when|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at|page)(?=\\s|\\.)",
       "name": "keyword.identifers.cobol"
     },
     {
@@ -505,7 +505,10 @@
       "match": "(?i:filler)",
       "name": "keyword.filler.cobol"
     },
-
+    {
+      "match": "(?i:date|day-of-week|day|debug-content|debug-item|debug-line|debug-item|debug-sub-1|debug-sub-2|debug-sub-3|shift-in|shift-out|sort-control|sort-core-size|sort-file-size|sort-message|sort-return|sort-mode-size|sort-return|tally|time|when-compiled|line-counter|page-counter|return-code|linage-counter|debug-line|debug-name|debug-contents)",
+      "name" : "variable.language"
+    },
     {
       "match": "(^[0-9][0-9][0-9][0-9][0-9][0-9])",
       "name": "constant.numeric.integer"
