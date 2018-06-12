@@ -12,21 +12,34 @@
   "name": "COBOL",
   "patterns": [
     {
-      "match": "(^([0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s])([\\*/C].*$))",
+      "match": "(^([0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s])(\\*.*$))",
       "name": "comment.line.cobol.fixed"
     },
-     {
-      "match": "(?:^|\\s+)(?i:\\$set\\s+ilusing)(?:$|.*$)",
-      "name": "keyword.control.import"
+    {
+      "match": "^\\*.*$",
+      "name": "comment.line.cobol.fixed"
     },
-
+    {
+      "match": "(?:^|\\s+)(?i:\\$set\\s+)(ilusing.*)$",
+      "captures": {
+        "0": {
+          "name": "comment.line.set.cobol"
+        },
+        "1": {
+          "name": "keyword.control.import"
+        },
+        "2": {
+          "name": "comment.line.set.cobol"
+        }
+      }
+    },
     {
       "match": "(?:^|\\s+)(?i:\\$set\\s|cbl\\s)(.*)$",
       "captures": {
         "0": {
           "name": "comment.line.set.cobol"
         },
-         "1": {
+        "1": {
           "name": "variable.cobol"
         },
         "2": {
@@ -35,7 +48,7 @@
       }
     },
     {
-      "match": "((?:^|\\s+|^[0-9][0-9][0-9][0-9][0-9][0-9 ])\\$(?i:if|else|then|display|xfd|end)(.*$))",
+      "match": "\\$(?i:if|else|then|display|xfd|end)(.*$)",
       "name": "meta.preprocessor"
     },
     {
@@ -285,27 +298,27 @@
       "name": "string.quoted.single.cobol"
     },
     {
-      "match": "(\\s|^)(?<!-)(?i:id\\s+division|identification\\s+division|identification|property-id|getter|setter|entry|function-id|end\\s+attribute|attribute|interface-id|factory|ctl|class-control|options|environment\\s+division|environment-name|environment-value|environment|configuration\\s+section|configuration|decimal-point|call-convention|special-names|cursor\\s+is|update|picture\\s+symbol|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|communication|report|screen\\s+section|fd|rd|cd|sd|printing|procedure\\s+division|procedure|references|debugging|end\\s+declaratives|declaratives|security|based-storage|size|font|national-edited|national)(?=\\s|\\.)",
+      "match": "\\s+(?<!-)(?i:id\\s+division|identification\\s+division|identification|property-id|getter|setter|entry|function-id|end\\s+attribute|attribute|interface-id|factory|ctl|class-control|options|environment\\s+division|environment-name|environment-value|environment|configuration\\s+section|configuration|decimal-point|call-convention|special-names|cursor\\s+is|update|picture\\s+symbol|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|communication|report|screen\\s+section|fd|rd|cd|sd|printing|procedure\\s+division|procedure|references|debugging|end\\s+declaratives|declaratives|based-storage|size|font|national-edited|national)(?=\\s|\\.)",
       "name": "keyword.identifiers.cobol"
     },
     {
-      "match": "(\\s|^)(?<!-)(?i:enum-id|valuetype-id|operator-id|method-id|class-id|program-id|attribute-id|implements|inherits)(?=\\s|\\.)",
+      "match": "\\s+(?<!-)(?i:enum-id|valuetype-id|operator-id|method-id|class-id|program-id|attribute-id|implements|inherits)(?=\\s|\\.)",
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(\\s|^)(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|exit\\s+method|end\\s+program|end\\s+operator|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as||stop\\srun|stop)(?=\\s|\\.|,|$)",
+      "match": "\\s+(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|exit\\s+method|end\\s+program|end\\s+operator|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as||stop\\srun|stop)(?=\\s|\\.|,|$)",
       "name": "keyword.identifiers.cobol"
     },
     {
-      "match": "(\\s|^)(?i:attach\\s+method|attach\\s+del|attach|detach\\s+del|detach\\s+method|detach|method|del)(?=\\s|\\.|$)",
+      "match": "\\s+(?i:attach\\s+method|attach\\s+del|attach|detach\\s+del|detach\\s+method|detach|method|del)(?=\\s|\\.|$)",
       "name": "keyword.identifiers.cobol"
     },
     {
-      "match": "(\\s|^)(?i:sync\\s+(?i:on))(?=\\s|\\.)",
+      "match": "\\s+(?i:sync\\s+(?i:on))(?=\\s|\\.)",
       "name": "keyword.other.sync.cobol"
     },
     {
-      "match": "(\\s|^)(?i:try|finally|catch|end-try|throw)(?=\\s|\\.|$)",
+      "match": "\\s+(?i:try|finally|catch|end-try|throw)(?=\\s|\\.|$)",
       "name": "keyword.control.catch-exception.cobol"
     },
     {
@@ -498,7 +511,12 @@
       "name": "keyword.json.cobol"
     },
     {
-      "match": "(?<!-)(?i:alter|remarks)(?=\\s|\\.)",
+      "begin": "(?i:remarks)",
+      "name": "line.comment.remark",
+      "end": "(?i:end\\-remark)"
+    },
+    {
+      "match": "(?<!-)(?i:alter)(?=\\s|\\.)",
       "name": "invalid.illegal.cobol"
     },
     {
@@ -507,7 +525,7 @@
     },
     {
       "match": "(?i:date|day-of-week|day|debug-content|debug-item|debug-line|debug-item|debug-sub-1|debug-sub-2|debug-sub-3|shift-in|shift-out|sort-control|sort-core-size|sort-file-size|sort-message|sort-return|sort-mode-size|sort-return|tally|time|when-compiled|line-counter|page-counter|return-code|linage-counter|debug-line|debug-name|debug-contents)",
-      "name" : "variable.language"
+      "name": "variable.language"
     },
     {
       "match": "(^[0-9][0-9][0-9][0-9][0-9][0-9])",
