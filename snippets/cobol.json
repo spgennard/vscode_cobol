@@ -187,7 +187,7 @@
 	"mfu": {
 		"prefix": "mfu",
 		"body": [
-			"       program-id. MFUT_$1.",
+			"       program-id. MFUT_${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"       working-storage section.",
 			"       copy \"mfunit.cpy\".",
 			"",
@@ -545,6 +545,70 @@
 		"prefix": "$set",
 		"body": [
 			"\\$set sourceformat\"${2|free,variable,fixed|}\"",
+			"$0"
+		]
+	},
+	"identification division" :
+	{
+		"prefix" : "identification division",
+		"body" : [
+			"identification division.",
+			"$0"
+		]
+	},
+	"environment division" :
+	{
+		"prefix" : "environment division",
+		"body" : [
+			"environment division.",
+			"$0"
+		]
+	},
+	"data division" :
+	{
+		"prefix" : "data division",
+		"body" : [
+			"data division.",
+			"$0"
+		]
+	},
+	"working-storage section." :
+	{
+		"prefix" : "working-storage section",
+		"body" : [
+			"working-storage section.",
+			"$0"
+		]
+	},
+	"local-storage section." :
+	{
+		"prefix" : "local-storage section",
+		"body" : [
+			"local-storage section.",
+			"$0"
+		]
+	},	
+	"linkage section." :
+	{
+		"prefix" : "linkage section",
+		"body" : [
+			"linkage section.",
+			"$0"
+		]
+	},
+	"procedure division" :
+	{
+		"prefix" : "procedure division",
+		"body" : [
+			"procedure division.",
+			"$0"
+		]
+	},
+	"program id" :
+	{
+		"prefix" : "program id. ",
+		"body" : [
+			"program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"$0"
 		]
 	}
