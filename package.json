@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
 	"description": "COBOL syntax support",
-	"version": "1.9.9",
+	"version": "2.0.0",
 	"publisher": "bitlang",
 	"repository": {
 		"type": "git",

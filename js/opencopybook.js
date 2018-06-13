@@ -48,7 +48,31 @@ function extractText( str )
     {
       return str.match( /'(.*?)'/ )[1];
     } 
-    
+ 
+    if ( /copy/.test( str.toLowerCase() ) )
+    {
+      var strl = str.toLowerCase();
+
+      try
+      {
+        var res = strl.match( /copy\s(.*)\./ )[1];
+        return res;
+      }
+      catch(e)
+      {
+          /* continue */
+      }
+
+      try
+      {
+        var res = strl.match( /copy\s(.*)/ )[1];
+        return res;
+      }
+      catch(e)
+      {
+          return str;
+      }      
+    } 
      return str;
 }
 
