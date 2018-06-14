@@ -105,9 +105,9 @@
 	"exec-sql-begin": {
 		"prefix": "exec",
 		"body": [
-			"EXEC SQL BEGIN DECLARE SECTION END-EXEC.",
+			"exec sql begin declare section end-exec.",
 			"$0",
-			"EXEC SQL END DECLARE SECTION END-EXEC."
+			"exec sql end declare section end-exec."
 		],
 		"description": "exec sql declare",
 		"scope": "cobol"
