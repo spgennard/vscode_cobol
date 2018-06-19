@@ -1,7 +1,7 @@
 {
 	"name": "cobol",
-	"description": "COBOL syntax support",
-	"version": "2.1.1",
+	"description": "COBOL/JCL syntax support",
+	"version": "2.1.2",
 	"publisher": "bitlang",
 	"repository": {
 		"type": "git",
@@ -157,7 +157,9 @@
 				"id": "OpenCOBOL",
 				"aliases": [
 					"OpenCOBOL",
-					"opencobol"
+					"opencobol",
+					"GnuCOBOL",
+					"COBOL-IT"
 				],
 				"extensions": [
 				],

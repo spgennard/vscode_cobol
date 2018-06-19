@@ -1,7 +1,12 @@
 # COBOL Source colouriser for Visual Studio Code
 
+[![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
+
+--------------
+
 ## What is this?
-Syntax highlighting for COBOL!
+Syntax highlighting for COBOL and JCL!
 
 ## What is this not?
 An Integrated Development Environment for COBOL.

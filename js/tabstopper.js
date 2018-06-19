@@ -7,11 +7,6 @@ var Workspace = vscode.workspace;
 
 var DEFAULT_RULER = [0, 7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,   51,  55, 59,  63,  67,  71,  75,  79];
 
-function toFirstBoundary(rulerTarget, rulerPositio) 
-{
-    return rulerTarget === 0 ? rulerPosition : rulerTarget
-}
-
 function getTabs()
 {
     var editorConfig =  Workspace.getConfiguration('coboleditor');   
