@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.1
+- Merge "Continue doc-comment when RETURN is pressed" (Thanks Ted)
+
 ## Version - 3.2.0
 - Merge goto definition changes (Thanks Ted)
 - Move away from using workspace to workspace folders
