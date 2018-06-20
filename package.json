@@ -118,11 +118,9 @@
         "configurationDefaults": {
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.rulers": [
-                    6,
-                    7,
-                    72
-                ],
+                "editor.formatOnType": true,
+                "editor.rulers": [6, 7, 72],
+
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
