@@ -1,359 +1,354 @@
 {
-	"name": "cobol",
-	"description": "COBOL/JCL syntax support",
-	"version": "2.2.0",
-	"publisher": "bitlang",
-	"repository": {
-		"type": "git",
-		"url" : "https://github.com/spgennard/vscode_cobol"
-	},
-	"bugs" : {
-		"url" : "https://github.com/spgennard/vscode_cobol/issues",
-		"email": "stephen@gennard.net"
-	},
-	"engines": {
-		"vscode": "^0.10.1"
-	},
-	"icon": "images/cobol.png",
-	"categories": [
-		"Programming Languages",
-		"Snippets",
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:cobolplugin.move2pd",
-		"onCommand:cobolplugin.move2ws",
-		"onCommand:cobolplugin.move2dd",
-		"onCommand:cobolplugin.move2anyforward",
-		"onCommand:cobolplugin.move2anybackwards",
-		"onCommand:cobolplugin.tab",
-		"onCommand:cobolplugin.revtab",
-		"onCommand:cobolplugin.openCopyBookFile",
-		"onCommand:cobolplugin.openPreviousFile"
-	],
-	"main" :"./js/cobolplugin.js",
-	"contributes": {
-		"configuration":
-		{
-			"type": "object",
-			"title": "COBOL configuration",
-			"properties":
-			{
-				"coboleditor.tabstops":
-				{
-					"type": "array",
-					"items": {
-						"type": "number",
-						"title": "tabstops",
-						"properties": {
-							"tabstop": {
-								"type": "number",
-								"description": "tabstop"
-							}
-						}
-					},
-					"default": [
-						0, 7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47,  51,  55, 59,  63,  67,  71,  75,  79        
-					],
-					"description": "COBOL tabstops"
-				},
-				"coboleditor.copybookexts":
-				{
-					"type": "array",
-					"items": {
-						"type": "string",
-						"title": "copybookextension",
-						"properties": {
-							"tabstop": {
-								"type": "string",
-								"description": "copybookextension"
-							}
-						}
-					},
-					"default": [
-						"cpy", "scr", "CPY", "SCR","cbl", "CBL"
-					],
-					"description": "COBOL CopyBook Extensions"				
-				},
-				"coboleditor.copybookdirs":
-				{
-					"type": "array",
-					"items": {
-						"type": "string",
-						"title": "copybookdirs",
-						"properties": {
-							"tabstop": {
-								"type": "string",
-								"description": "copybookdir"
-							}
-						}
-					},
-					"default": [
-						"."
-					],
-					"description": "COBOL CopyBook Directory"				
-				}
-			}
-		},
-	
-		"configurationDefaults": {
-			"[COBOL]": {
-				"files.autoGuessEncoding": true,
-				"editor.rulers": [6, 7, 72],
-				"editor.detectIndentation": false,			
-				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
-			},
-			"[ACUCOBOL]": {
-				"files.autoGuessEncoding": true,
-				"editor.rulers": [6, 7, 72],
-				"editor.detectIndentation": false,			
-				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
-			},
-			"[OpenCOBOL]": {
-				"files.autoGuessEncoding": true,
-				"editor.rulers": [6, 7, 72],
-				"editor.detectIndentation": false,			
-				"editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
-			}	
-		},
-		"languages": [
-			{
-				"id": "COBOL",
-				"aliases": [
-					"COBOL",
-					"cobol"
-				],
-				"firstLine" : "((^.*$set)|((^.*)(?i:identification)(.*))|((^.*)(?i:program\\-id)(.*))",
-				"extensions": [
-					".cbl",
-					".cblsrce",
-					".lks",
-					".pdv",
-					".cpy",
-					".fd",
-					".sel",
-					".scr",
-					".scbl",
-					".cob",
-					".dds",
-					".def",
-					".ss",
-					".wks",
-					".pco"
-				],
-				"configuration": "./cobol.configuration.json"
-			},
-			{
-				"id": "ACUCOBOL",
-				"aliases": [
-					"ACUCOBOL",
-					"acucobol"
-				],
-				"extensions": [
-				],
-				"configuration": "./acucobol.configuration.json"
-			},
-			{
-				"id": "OpenCOBOL",
-				"aliases": [
-					"OpenCOBOL",
-					"opencobol",
-					"GnuCOBOL",
-					"COBOL-IT"
-				],
-				"extensions": [
-				],
-				"configuration": "./opencobol.configuration.json"
-			},			
-			{
-				"id": "JCL",
-				"aliases": [
-					"JCL",
-					"jcl"
-				],
-				"extensions": [
-					".jcl"
-				],
-				"configuration": "./jcl.configuration.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "COBOL",
-				"scopeName": "source.cobol",
-				"path": "./syntaxes/COBOL.tmLanguage.json"
-			},
-			{
-				"language": "ACUCOBOL",
-				"scopeName": "source.acucobol",
-				"path": "./syntaxes/ACUCOBOL.tmLanguage.json"
-			},			
-			{
-				"language": "OpenCOBOL",
-				"scopeName": "source.opencobol",
-				"path": "./syntaxes/OpenCOBOL.tmLanguage.json"
-			},
-			{
-				"language": "JCL",
-				"scopeName": "source.jcl",
-				"path": "./syntaxes/jcl.tmLanguage.json"
-			}
-		],
-		"commands":[
-			{
-				"command": "cobolplugin.move2pd",
-				"title" : "Move to procedure division"
-			},
-			{
-				"command": "cobolplugin.move2ws",
-				"title" : "Move to working-storage section"
-			},
-			{
-				"command": "cobolplugin.move2dd",
-				"title" : "Move to data division"
-			},
-			{
-				"command" : "cobolplugin.move2anyforward",
-				"title": "Move to next section/division"
-			},
-			{
-				"command" : "cobolplugin.move2anybackwards",
-				"title": "Move to backwards to section/division"
-			},
-			{
+    "name": "cobol",
+    "displayName": "COBOL",
+    "description": "COBOL/JCL syntax support",
+    "version": "3.0.0",
+    "publisher": "bitlang",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/spgennard/vscode_cobol"
+    },
+    "bugs": {
+        "url": "https://github.com/spgennard/vscode_cobol/issues",
+        "email": "stephen@gennard.net"
+    },
+    "engines": {
+        "vscode": "^1.24.0"
+    },
+    "icon": "images/cobol.png",
+    "categories": [
+        "Programming Languages",
+        "Snippets",
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:cobolplugin.move2pd",
+        "onCommand:cobolplugin.move2ws",
+        "onCommand:cobolplugin.move2dd",
+        "onCommand:cobolplugin.move2anyforward",
+        "onCommand:cobolplugin.move2anybackwards",
+        "onCommand:cobolplugin.tab",
+        "onCommand:cobolplugin.revtab",
+        "onCommand:cobolplugin.openCopyBookFile",
+        "onCommand:cobolplugin.openPreviousFile"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "COBOL configuration",
+            "properties": {
+                "coboleditor.tabstops": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "title": "tabstops",
+                        "properties": {
+                            "tabstop": {
+                                "type": "number",
+                                "description": "tabstop"
+                            }
+                        }
+                    },
+                    "default": [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79],
+                    "description": "COBOL tabstops"
+                },
+                "coboleditor.copybookexts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "copybookextension",
+                        "properties": {
+                            "tabstop": {
+                                "type": "string",
+                                "description": "copybookextension"
+                            }
+                        }
+                    },
+                    "default": [
+                        "cpy",
+                        "scr",
+                        "CPY",
+                        "SCR",
+                        "cbl",
+                        "CBL"
+                    ],
+                    "description": "COBOL CopyBook Extensions"
+                },
+                "coboleditor.copybookdirs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "copybookdirs",
+                        "properties": {
+                            "tabstop": {
+                                "type": "string",
+                                "description": "copybookdir"
+                            }
+                        }
+                    },
+                    "default": [
+                        "."
+                    ],
+                    "description": "COBOL CopyBook Directory"
+                }
+            }
+        },
+        "configurationDefaults": {
+            "[COBOL]": {
+                "files.autoGuessEncoding": true,
+                "editor.rulers": [6, 7, 72],
+                "editor.detectIndentation": false,
+                "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+            },
+            "[ACUCOBOL]": {
+                "files.autoGuessEncoding": true,
+                "editor.rulers": [6, 7, 72],
+                "editor.detectIndentation": false,
+                "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+            },
+            "[OpenCOBOL]": {
+                "files.autoGuessEncoding": true,
+                "editor.rulers": [6, 7, 72],
+                "editor.detectIndentation": false,
+                "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
+            }
+        },
+        "languages": [
+            {
+                "id": "COBOL",
+                "aliases": [
+                    "COBOL",
+                    "cobol"
+                ],
+                "firstLine": "((^.*$set)|((^.*)(?i:identification)(.*))|((^.*)(?i:program\\-id)(.*))",
+                "extensions": [
+                    ".cbl",
+                    ".cblsrce",
+                    ".lks",
+                    ".pdv",
+                    ".cpy",
+                    ".fd",
+                    ".sel",
+                    ".scr",
+                    ".scbl",
+                    ".cob",
+                    ".dds",
+                    ".def",
+                    ".ss",
+                    ".wks",
+                    ".pco"
+                ],
+                "configuration": "./cobol.configuration.json"
+            },
+            {
+                "id": "ACUCOBOL",
+                "aliases": [
+                    "ACUCOBOL",
+                    "acucobol"
+                ],
+                "extensions": [],
+                "configuration": "./acucobol.configuration.json"
+            },
+            {
+                "id": "OpenCOBOL",
+                "aliases": [
+                    "OpenCOBOL",
+                    "opencobol",
+                    "GnuCOBOL",
+                    "COBOL-IT"
+                ],
+                "extensions": [],
+                "configuration": "./opencobol.configuration.json"
+            },
+            {
+                "id": "JCL",
+                "aliases": [
+                    "JCL",
+                    "jcl"
+                ],
+                "extensions": [
+                    ".jcl"
+                ],
+                "configuration": "./jcl.configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "COBOL",
+                "scopeName": "source.cobol",
+                "path": "./syntaxes/COBOL.tmLanguage.json"
+            },
+            {
+                "language": "ACUCOBOL",
+                "scopeName": "source.acucobol",
+                "path": "./syntaxes/ACUCOBOL.tmLanguage.json"
+            },
+            {
+                "language": "OpenCOBOL",
+                "scopeName": "source.opencobol",
+                "path": "./syntaxes/OpenCOBOL.tmLanguage.json"
+            },
+            {
+                "language": "JCL",
+                "scopeName": "source.jcl",
+                "path": "./syntaxes/jcl.tmLanguage.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "cobolplugin.move2pd",
+                "title": "Move to procedure division"
+            },
+            {
+                "command": "cobolplugin.move2ws",
+                "title": "Move to working-storage section"
+            },
+            {
+                "command": "cobolplugin.move2dd",
+                "title": "Move to data division"
+            },
+            {
+                "command": "cobolplugin.move2anyforward",
+                "title": "Move to next section/division"
+            },
+            {
+                "command": "cobolplugin.move2anybackwards",
+                "title": "Move to backwards to section/division"
+            },
+            {
                 "command": "cobolplugin.tab",
                 "title": "Insert a tab"
             },
             {
                 "command": "cobolplugin.revtab",
                 "title": "Remove a tab"
-			},
-			{
-				"command": "cobolplugin.openCopyBookFile",
-				"title": "Move to CopyBook"
-			},
-			{
-				"command": "cobolplugin.openPreviousFile",
-				"title" : "Move back to previous file"
-			}
-		],
-		"menus": {
-			"editor/context" : [
-				{
-					"command" : "cobolplugin.move2dd",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				},
-				{
-					"command" : "cobolplugin.move2ws",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				},
-				{
-					"command" : "cobolplugin.move2pd",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				},
-				{
-					"command" : "cobolplugin.move2anyforward",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				},
-				{
-					"command" : "cobolplugin.move2anybackwards",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				},
-				{
-					"command" : "cobolplugin.openCopyBookFile",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				},
-				{
-					"command" : "cobolplugin.openPreviousFile",
-					"group" : "cobolplugin",
-					"when": "editorTextFocus && editorLangId == COBOL"
-				}								
-			]
-		},
-		"keybindings":[
-			{
-				"key": "ctrl+alt+p",
-				"command": "cobolplugin.move2pd",
-				"when": "editorTextFocus && editorLangId == COBOL"
-			},
-			{
-				"key": "ctrl+alt+p",
-				"command": "cobolplugin.move2pd",
-				"when": "editorTextFocus && editorLangId == ACUCOBOL"
-			},
-			{
-				"key": "ctrl+alt+p",
-				"command": "cobolplugin.move2pd",
-				"when": "editorTextFocus && editorLangId == OpenCOBOL"
-			},
-			{
-				"key": "ctrl+alt+w",
-				"command": "cobolplugin.move2ws",
-				"when": "editorTextFocus && editorLangId == COBOL"
-			},
-			{
-				"key": "ctrl+alt+w",
-				"command": "cobolplugin.move2ws",
-				"when": "editorTextFocus && editorLangId == ACUCOBOL"
-			},
-			{
-				"key": "ctrl+alt+w",
-				"command": "cobolplugin.move2ws",
-				"when": "editorTextFocus && editorLangId == OpenCOBOL"
-			},
-
-			{
-				"key": "ctrl+alt+d",
-				"command": "cobolplugin.move2dd",
-				"when": "editorTextFocus && editorLangId == COBOL"
-			},
-			{
-				"key": "ctrl+alt+d",
-				"command": "cobolplugin.move2dd",
-				"when": "editorTextFocus && editorLangId == ACUCOBOL"
-			},
-			{
-				"key": "ctrl+alt+d",
-				"command": "cobolplugin.move2dd",
-				"when": "editorTextFocus && editorLangId == OpenCOBOL"
-			},
-			{
-				"key": "ctrl+alt+.",
-				"command": "cobolplugin.move2anyforward",
-				"when": "editorTextFocus && editorLangId == COBOL"
-			},
-			{
-				"key": "ctrl+alt+,",
-				"command": "cobolplugin.move2anybackwards",
-				"when": "editorTextFocus && editorLangId == COBOL"
-			},
-			{
-				"key": "ctrl+alt+.",
-				"command": "cobolplugin.move2anyforward",
-				"when": "editorTextFocus && editorLangId == OpenCOBOL"
-			},
-			{
-				"key": "ctrl+alt+,",
-				"command": "cobolplugin.move2anybackwards",
-				"when": "editorTextFocus && editorLangId == OpenCOBOL"
-			},					
-			{
-				"key": "ctrl+alt+.",
-				"command": "cobolplugin.move2anyforward",
-				"when": "editorTextFocus && editorLangId == ACUCOBOL"
-			},
-			{
-				"key": "ctrl+alt+,",
-				"command": "cobolplugin.move2anybackwards",
-				"when": "editorTextFocus && editorLangId == ACUCOBOL"
-			},
-			{
+            },
+            {
+                "command": "cobolplugin.openCopyBookFile",
+                "title": "Move to CopyBook"
+            },
+            {
+                "command": "cobolplugin.openPreviousFile",
+                "title": "Move back to previous file"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "cobolplugin.move2dd",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
+                    "command": "cobolplugin.move2ws",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
+                    "command": "cobolplugin.move2pd",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
+                    "command": "cobolplugin.move2anyforward",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
+                    "command": "cobolplugin.move2anybackwards",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
+                    "command": "cobolplugin.openCopyBookFile",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
+                    "command": "cobolplugin.openPreviousFile",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                }
+            ]
+        },
+        "keybindings": [
+            {
+                "key": "ctrl+alt+p",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "ctrl+alt+p",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+alt+p",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+w",
+                "command": "cobolplugin.move2ws",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "ctrl+alt+w",
+                "command": "cobolplugin.move2ws",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+alt+w",
+                "command": "cobolplugin.move2ws",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+d",
+                "command": "cobolplugin.move2dd",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "ctrl+alt+d",
+                "command": "cobolplugin.move2dd",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+alt+d",
+                "command": "cobolplugin.move2dd",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+.",
+                "command": "cobolplugin.move2anyforward",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "ctrl+alt+,",
+                "command": "cobolplugin.move2anybackwards",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "ctrl+alt+.",
+                "command": "cobolplugin.move2anyforward",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+,",
+                "command": "cobolplugin.move2anybackwards",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+.",
+                "command": "cobolplugin.move2anyforward",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+alt+,",
+                "command": "cobolplugin.move2anybackwards",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
                 "key": "tab",
                 "command": "cobolplugin.tab",
                 "when": "editorLangId == COBOL && !inSnippetMode"
@@ -362,8 +357,8 @@
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
                 "when": "editorLangId == COBOL && !inSnippetMode"
-			},
-			{
+            },
+            {
                 "key": "tab",
                 "command": "cobolplugin.tab",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
@@ -372,8 +367,8 @@
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-			},
-			{
+            },
+            {
                 "key": "tab",
                 "command": "cobolplugin.tab",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
@@ -382,51 +377,65 @@
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
-			},
-			{
-				"key": "alt+c",
+            },
+            {
+                "key": "alt+c",
                 "command": "cobolplugin.openCopyBookFile",
-				"when" : "editorLangId == COBOL && !inSnippetMode"
-			},
-			{
-				"key": "shift+alt+c",
+                "when": "editorLangId == COBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+alt+c",
                 "command": "cobolplugin.openPreviousFile",
-				"when" : "editorLangId == COBOL && !inSnippetMode"
-			},
-			{
-				"key": "alt+c",
+                "when": "editorLangId == COBOL && !inSnippetMode"
+            },
+            {
+                "key": "alt+c",
                 "command": "cobolplugin.openCopyBookFile",
-				"when" : "editorLangId == ACUCOBOL && !inSnippetMode"
-			},
-			{
-				"key": "shift+alt+c",
+                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+alt+c",
                 "command": "cobolplugin.openPreviousFile",
-				"when" : "editorLangId == ACUCOBOL && !inSnippetMode"
-			},
-			{
-				"key": "alt+c",
+                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "alt+c",
                 "command": "cobolplugin.openCopyBookFile",
-				"when" : "editorLangId == OpenCOBOL && !inSnippetMode"
-			},
-			{
-				"key": "shift+alt+c",
+                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+alt+c",
                 "command": "cobolplugin.openPreviousFile",
-				"when" : "editorLangId == OpenCOBOL && !inSnippetMode"
-            }		
-		],
-		"snippets": [
-			{
-				"language": "COBOL",
-				"path": "./snippets/cobol.json"
-			},
-			{
-				"language": "ACUCOBOL",
-				"path": "./snippets/cobol.json"
-			},
-			{
-				"language": "OpenCOBOL",
-				"path": "./snippets/cobol.json"
-			}
-		]
-	}
+                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "COBOL",
+                "path": "./snippets/cobol.json"
+            },
+            {
+                "language": "ACUCOBOL",
+                "path": "./snippets/cobol.json"
+            },
+            {
+                "language": "OpenCOBOL",
+                "path": "./snippets/cobol.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "tslint": "^5.8.0",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    }
 }
