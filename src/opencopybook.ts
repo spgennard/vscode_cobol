@@ -1,16 +1,14 @@
 'use strict';
 
-import { Range, TextEditor, TextDocument, TextEditorRevealType, Selection, window, workspace } from 'vscode';
+import { Range, TextDocument, window, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 const DEFAULT_COPYBOOK_DIR = ["."];
 
-var previousFile: string;
-var previousLineNumber: number;
-
 function getExtensions(): string[] {
-    var editorConfig =  workspace.getConfiguration('coboleditor');
+    var editorConfig = workspace.getConfiguration('coboleditor');
     editorConfig = editorConfig;
     var extensions = editorConfig.get<string[]>('copybookexts');
     if (!extensions || (extensions != null && extensions.length == 0)) {
@@ -20,14 +18,13 @@ function getExtensions(): string[] {
 }
 
 function getcopybookdirs(): string[] {
-    var editorConfig =  workspace.getConfiguration('coboleditor');
+    var editorConfig = workspace.getConfiguration('coboleditor');
     var dirs = editorConfig.get<string[]>('copybookdirs');
     if (!dirs || (dirs != null && dirs.length == 0)) {
         dirs = DEFAULT_COPYBOOK_DIR;
     }
     return dirs;
 }
-
 
 function extractText(str: string) {
     let getFirstMatchOrDefault =
@@ -48,30 +45,35 @@ function extractText(str: string) {
     if (/copy/.test(strl)) {
         try {
             return getFirstMatchOrDefault(strl, /copy\s(.*)\./);
-        } catch(e) {
+        } catch (e) {
             /* continue */
         }
         try {
             return getFirstMatchOrDefault(strl, /copy\s(.*)/);
-        } catch(e) {
+        } catch (e) {
             /* continue */
         }
     }
     return str;
 }
 
-async function openFile(editor: TextEditor, filename: string, line = 0) {
-    if (filename == "")
+
+function findFileInDirectory(filename: string, filenameDir: string): string | undefined {
+    if (!filename) {
         return;
+    }
 
     var fileExtension = filename.split('.').pop();
-    var fullPath = workspace.rootPath + '/' + filename ;
-
+    var fullPath = filenameDir + path.sep + filename;
+    if (fs.existsSync(fullPath)) {
+        return fullPath;
+    }
     var extsdir = getcopybookdirs();
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
 
-        const basefullPath = workspace.rootPath + "/" + extdir + '/' + filename ;
+
+        const basefullPath = filenameDir + path.sep + extdir + path.sep + filename;
 
         //No extension?
         if (filename == fileExtension) {
@@ -87,82 +89,54 @@ async function openFile(editor: TextEditor, filename: string, line = 0) {
                 }
             }
         } else {
-            if (!fs.existsSync(basefullPath) === false) {
+            if (fs.existsSync(basefullPath)) {
                 fullPath = basefullPath;
+                break;
             }
         }
     }
 
     if (fs.existsSync(fullPath) === false) {
-        window.showWarningMessage("Unable to locate : "+filename);
         return;
     }
 
-    previousFile = editor.document.fileName;
-    previousLineNumber = editor.selection.active.line;
-
-    try {
-        const doc = await workspace.openTextDocument(fullPath);
-        await window.showTextDocument(doc)
-        goToLine(line);
-    } catch {
-        window.showWarningMessage("Cannot open : " + fullPath);
-    }
+    return fullPath;
 }
 
-async function openSavedFile(editor: TextEditor, filename: string, line = 0)
-{
-    if (previousFile !== null) {
-        try {
-            const doc = await workspace.openTextDocument(previousFile);
-            await window.showTextDocument(doc);
-            goToLine(line);
-        } catch {
-            window.showWarningMessage("Cannot open previous file : " + previousFile);
+function findFile(filename: string, filenameDir: string): string | undefined {
+    if (!filename) {
+        return;
+    }
+
+    var foundFile = findFileInDirectory(filename, filenameDir);
+    if (foundFile) {
+        return foundFile;
+    }
+
+    if (workspace.workspaceFolders) {
+        for (var folder of workspace.workspaceFolders) {
+            let foundFile = findFileInDirectory(filename, folder.uri.fsPath);
+            if (foundFile !== null) {
+                return foundFile;
+            }
         }
     }
+    return;
 }
 
-export function openPreviousFile()
-{
-    var editor = window.activeTextEditor;
-    if (editor) {
-        openSavedFile(editor, previousFile, previousLineNumber);
-    }
-}
-
-function goToLine(line: number) {
-    const editor = window.activeTextEditor;
-    if (editor) {
-        let reviewType = TextEditorRevealType.InCenter;
-        if (line === editor.selection.active.line) {
-            reviewType = TextEditorRevealType.InCenterIfOutsideViewport;
-        }
-        const newSelection = new Selection(line, 0, line, 0);
-        editor.selection = newSelection;
-        editor.revealRange(newSelection, reviewType);
-    }
-}
-
-function parseLine(doc: TextDocument, sel: Selection[]) {
-    const range = new Range(sel[0].start.line, 0, sel[0].end.line, 999);
-    const txt = doc.getText(range);
-    const match = extractText(txt);
-    return match != txt ? match : "";
-}
-
-export function openCopyBookFile()
-{
-    const editor = window.activeTextEditor;
-    if (editor) {
-        const doc = editor.document;
-        const sel = editor.selections;
-        if (sel.length > 1 || sel[0].start.line != sel[0].end.line)
-            return;
-
-        const filename = parseLine(doc, sel);
-        if (filename) {
-            openFile(editor, filename);
+export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+    const dirOfFilename = path.dirname(doc.fileName);
+    const line = doc.lineAt(pos);
+    const filename = extractText(line.text);
+    if (filename) {
+        const fullPath = findFile(filename, dirOfFilename);
+        if (fullPath) {
+            return {
+                uri: Uri.file(fullPath),
+                range: new Range(new Position(0, 0), new Position(0, 0))
+            }
+        } else {
+            window.showWarningMessage(`Unable to locate : ${filename}`);
         }
     }
 }

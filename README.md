@@ -29,8 +29,9 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 | ctrl+alt+d  | Goto data division (or working-storage section if not present) |
 | ctrl+alt+,  | Go backwards to next section/division |
 | ctrl+alt+.  | Go forward to next next section/division |
-| alt+c       | Move to copybook/file |
-| shift+alt+c | Move back to previous file (after move to copybook) |
+| f12 or ctrl+click | Move to copybook/file |
+| ctrl+hover over copybook | Peek head of copybook |
+| right mouse/peek | Peek copybook without opening the file) |
 
 ## Settings
 
