@@ -1,13 +1,10 @@
 'use strict';
 
-import { Range, TextEditor, TextDocument, TextEditorRevealType, Selection, window, workspace } from 'vscode';
+import { Range, TextDocument, window, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as fs from 'fs';
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 const DEFAULT_COPYBOOK_DIR = ["."];
-
-var previousFile: string;
-var previousLineNumber: number;
 
 function getExtensions(): string[] {
     var editorConfig =  workspace.getConfiguration('coboleditor');
@@ -27,7 +24,6 @@ function getcopybookdirs(): string[] {
     }
     return dirs;
 }
-
 
 function extractText(str: string) {
     let getFirstMatchOrDefault =
@@ -60,8 +56,8 @@ function extractText(str: string) {
     return str;
 }
 
-async function openFile(editor: TextEditor, filename: string, line = 0) {
-    if (filename == "")
+function findFile(filename: string): string | undefined {
+    if (!filename)
         return;
 
     var fileExtension = filename.split('.').pop();
@@ -94,75 +90,24 @@ async function openFile(editor: TextEditor, filename: string, line = 0) {
     }
 
     if (fs.existsSync(fullPath) === false) {
-        window.showWarningMessage("Unable to locate : "+filename);
         return;
     }
 
-    previousFile = editor.document.fileName;
-    previousLineNumber = editor.selection.active.line;
-
-    try {
-        const doc = await workspace.openTextDocument(fullPath);
-        await window.showTextDocument(doc)
-        goToLine(line);
-    } catch {
-        window.showWarningMessage("Cannot open : " + fullPath);
-    }
+    return fullPath;
 }
 
-async function openSavedFile(editor: TextEditor, filename: string, line = 0)
-{
-    if (previousFile !== null) {
-        try {
-            const doc = await workspace.openTextDocument(previousFile);
-            await window.showTextDocument(doc);
-            goToLine(line);
-        } catch {
-            window.showWarningMessage("Cannot open previous file : " + previousFile);
-        }
-    }
-}
-
-export function openPreviousFile()
-{
-    var editor = window.activeTextEditor;
-    if (editor) {
-        openSavedFile(editor, previousFile, previousLineNumber);
-    }
-}
-
-function goToLine(line: number) {
-    const editor = window.activeTextEditor;
-    if (editor) {
-        let reviewType = TextEditorRevealType.InCenter;
-        if (line === editor.selection.active.line) {
-            reviewType = TextEditorRevealType.InCenterIfOutsideViewport;
-        }
-        const newSelection = new Selection(line, 0, line, 0);
-        editor.selection = newSelection;
-        editor.revealRange(newSelection, reviewType);
-    }
-}
-
-function parseLine(doc: TextDocument, sel: Selection[]) {
-    const range = new Range(sel[0].start.line, 0, sel[0].end.line, 999);
-    const txt = doc.getText(range);
-    const match = extractText(txt);
-    return match != txt ? match : "";
-}
-
-export function openCopyBookFile()
-{
-    const editor = window.activeTextEditor;
-    if (editor) {
-        const doc = editor.document;
-        const sel = editor.selections;
-        if (sel.length > 1 || sel[0].start.line != sel[0].end.line)
-            return;
-
-        const filename = parseLine(doc, sel);
-        if (filename) {
-            openFile(editor, filename);
+export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+    const line = doc.lineAt(pos);
+    const filename = extractText(line.text);
+    if (filename) {
+        const fullPath = findFile(filename);
+        if (fullPath) {
+            return {
+                uri: Uri.file(fullPath),
+                range: new Range(new Position(0, 0), new Position(0, 0))
+            }
+        } else {
+            window.showWarningMessage(`Unable to locate : ${filename}`);
         }
     }
 }

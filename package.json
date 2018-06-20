@@ -22,15 +22,14 @@
         "Other"
     ],
     "activationEvents": [
+        "onLanguage:COBOL",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
         "onCommand:cobolplugin.move2anyforward",
         "onCommand:cobolplugin.move2anybackwards",
         "onCommand:cobolplugin.tab",
-        "onCommand:cobolplugin.revtab",
-        "onCommand:cobolplugin.openCopyBookFile",
-        "onCommand:cobolplugin.openPreviousFile"
+        "onCommand:cobolplugin.revtab"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -223,14 +222,6 @@
             {
                 "command": "cobolplugin.revtab",
                 "title": "Remove a tab"
-            },
-            {
-                "command": "cobolplugin.openCopyBookFile",
-                "title": "Move to CopyBook"
-            },
-            {
-                "command": "cobolplugin.openPreviousFile",
-                "title": "Move back to previous file"
             }
         ],
         "menus": {
@@ -257,16 +248,6 @@
                 },
                 {
                     "command": "cobolplugin.move2anybackwards",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
-                },
-                {
-                    "command": "cobolplugin.openCopyBookFile",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
-                },
-                {
-                    "command": "cobolplugin.openPreviousFile",
                     "group": "cobolplugin",
                     "when": "editorTextFocus && editorLangId == COBOL"
                 }
@@ -376,36 +357,6 @@
             {
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
-                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "alt+c",
-                "command": "cobolplugin.openCopyBookFile",
-                "when": "editorLangId == COBOL && !inSnippetMode"
-            },
-            {
-                "key": "shift+alt+c",
-                "command": "cobolplugin.openPreviousFile",
-                "when": "editorLangId == COBOL && !inSnippetMode"
-            },
-            {
-                "key": "alt+c",
-                "command": "cobolplugin.openCopyBookFile",
-                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "shift+alt+c",
-                "command": "cobolplugin.openPreviousFile",
-                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "alt+c",
-                "command": "cobolplugin.openCopyBookFile",
-                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "shift+alt+c",
-                "command": "cobolplugin.openPreviousFile",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
             }
         ],
