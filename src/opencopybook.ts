@@ -60,7 +60,7 @@ function extractText(str: string) {
     return str;
 }
 
-function openFile(editor: TextEditor, filename: string, line = 0) {
+async function openFile(editor: TextEditor, filename: string, line = 0) {
     if (filename == "")
         return;
 
@@ -101,21 +101,26 @@ function openFile(editor: TextEditor, filename: string, line = 0) {
     previousFile = editor.document.fileName;
     previousLineNumber = editor.selection.active.line;
 
-    workspace.openTextDocument(fullPath).then(
-        txtDocument => window.showTextDocument(txtDocument).then(
-            () => goToLine(line)),
-            () => window.showWarningMessage("Cannot open : " + fullPath));
+    try {
+        const doc = await workspace.openTextDocument(fullPath);
+        await window.showTextDocument(doc)
+        goToLine(line);
+    } catch {
+        window.showWarningMessage("Cannot open : " + fullPath);
+    }
 }
 
-function openSavedFile(editor: TextEditor, filename: string, line = 0)
+async function openSavedFile(editor: TextEditor, filename: string, line = 0)
 {
-    if (previousFile === null) {
-        return;
+    if (previousFile !== null) {
+        try {
+            const doc = await workspace.openTextDocument(previousFile);
+            await window.showTextDocument(doc);
+            goToLine(line);
+        } catch {
+            window.showWarningMessage("Cannot open previous file : " + previousFile);
+        }
     }
-
-    workspace.openTextDocument(previousFile).then(
-        txtDocument => window.showTextDocument(txtDocument).then(() => goToLine(line)),
-        () => window.showWarningMessage("Cannot open previous file : " + previousFile));
 }
 
 export function openPreviousFile()
