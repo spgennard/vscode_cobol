@@ -41,7 +41,11 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
 
-    const allCobolSelectors = ["COBOL", "ACUCOBOL", "OpenCOBOL"];
+    const allCobolSelectors = [
+        { scheme: 'file', language: 'COBOL' },
+        { scheme: 'file', language: 'ACUCOBOL' },
+        { scheme: 'file', language: 'OpenCOBOL' }
+    ];
     languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return opencopybook.provideDefinition(doc, pos, ct);

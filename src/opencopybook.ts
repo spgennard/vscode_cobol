@@ -2,12 +2,13 @@
 
 import { Range, TextDocument, window, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 const DEFAULT_COPYBOOK_DIR = ["."];
 
 function getExtensions(): string[] {
-    var editorConfig =  workspace.getConfiguration('coboleditor');
+    var editorConfig = workspace.getConfiguration('coboleditor');
     editorConfig = editorConfig;
     var extensions = editorConfig.get<string[]>('copybookexts');
     if (!extensions || (extensions != null && extensions.length == 0)) {
@@ -17,7 +18,7 @@ function getExtensions(): string[] {
 }
 
 function getcopybookdirs(): string[] {
-    var editorConfig =  workspace.getConfiguration('coboleditor');
+    var editorConfig = workspace.getConfiguration('coboleditor');
     var dirs = editorConfig.get<string[]>('copybookdirs');
     if (!dirs || (dirs != null && dirs.length == 0)) {
         dirs = DEFAULT_COPYBOOK_DIR;
@@ -44,30 +45,35 @@ function extractText(str: string) {
     if (/copy/.test(strl)) {
         try {
             return getFirstMatchOrDefault(strl, /copy\s(.*)\./);
-        } catch(e) {
+        } catch (e) {
             /* continue */
         }
         try {
             return getFirstMatchOrDefault(strl, /copy\s(.*)/);
-        } catch(e) {
+        } catch (e) {
             /* continue */
         }
     }
     return str;
 }
 
-function findFile(filename: string): string | undefined {
-    if (!filename)
+
+function findFileInDirectory(filename: string, filenameDir: string): string | undefined {
+    if (!filename) {
         return;
+    }
 
     var fileExtension = filename.split('.').pop();
-    var fullPath = workspace.rootPath + '/' + filename ;
-
+    var fullPath = filenameDir + path.sep + filename;
+    if (fs.existsSync(fullPath)) {
+        return fullPath;
+    }
     var extsdir = getcopybookdirs();
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
 
-        const basefullPath = workspace.rootPath + "/" + extdir + '/' + filename ;
+
+        const basefullPath = filenameDir + path.sep + extdir + path.sep + filename;
 
         //No extension?
         if (filename == fileExtension) {
@@ -83,8 +89,9 @@ function findFile(filename: string): string | undefined {
                 }
             }
         } else {
-            if (!fs.existsSync(basefullPath) === false) {
+            if (fs.existsSync(basefullPath)) {
                 fullPath = basefullPath;
+                break;
             }
         }
     }
@@ -96,11 +103,33 @@ function findFile(filename: string): string | undefined {
     return fullPath;
 }
 
+function findFile(filename: string, filenameDir: string): string | undefined {
+    if (!filename) {
+        return;
+    }
+
+    var foundFile = findFileInDirectory(filename, filenameDir);
+    if (foundFile) {
+        return foundFile;
+    }
+
+    if (workspace.workspaceFolders) {
+        for (var folder of workspace.workspaceFolders) {
+            let foundFile = findFileInDirectory(filename, folder.uri.fsPath);
+            if (foundFile !== null) {
+                return foundFile;
+            }
+        }
+    }
+    return;
+}
+
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+    const dirOfFilename = path.dirname(doc.fileName);
     const line = doc.lineAt(pos);
     const filename = extractText(line.text);
     if (filename) {
-        const fullPath = findFile(filename);
+        const fullPath = findFile(filename, dirOfFilename);
         if (fullPath) {
             return {
                 uri: Uri.file(fullPath),
