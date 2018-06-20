@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, ExtensionContext } from 'vscode';
+import { commands, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -33,12 +33,6 @@ export function activate(context: ExtensionContext) {
         tabstopper.processTabKey(false);
     });
 
-    var openCopyBookFileCommand = commands.registerCommand('cobolplugin.openCopyBookFile', function () {
-        opencopybook.openCopyBookFile();
-    });
-    var openPreviousFileCommand = commands.registerCommand('cobolplugin.openPreviousFile', function () {
-        opencopybook.openPreviousFile();
-    });
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -46,8 +40,13 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(move2anybackwardsCommand);
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
-    context.subscriptions.push(openCopyBookFileCommand);
-    context.subscriptions.push(openPreviousFileCommand);
+
+    const allCobolSelectors = ["COBOL", "ACUCOBOL", "OpenCOBOL"];
+    languages.registerDefinitionProvider(allCobolSelectors, {
+        provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+            return opencopybook.provideDefinition(doc, pos, ct);
+        }
+    });
 }
 
 export function deactivate() {
