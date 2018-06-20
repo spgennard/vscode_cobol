@@ -1,113 +1,80 @@
 'use strict';
 
-import { Range, TextDocument, window, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
-import * as fs from 'fs';
+import { Range, TextDocument, workspace, Definition, Position, CancellationToken, ProviderResult, Uri, Location } from 'vscode';
 
-const DEFAULT_COPYBOOK_EXTS = ["cpy"];
-const DEFAULT_COPYBOOK_DIR = ["."];
 
-function getExtensions(): string[] {
-    var editorConfig =  workspace.getConfiguration('coboleditor');
-    editorConfig = editorConfig;
-    var extensions = editorConfig.get<string[]>('copybookexts');
-    if (!extensions || (extensions != null && extensions.length == 0)) {
-        extensions = DEFAULT_COPYBOOK_EXTS;
-    }
-    return extensions;
-}
-
-function getcopybookdirs(): string[] {
-    var editorConfig =  workspace.getConfiguration('coboleditor');
-    var dirs = editorConfig.get<string[]>('copybookdirs');
-    if (!dirs || (dirs != null && dirs.length == 0)) {
-        dirs = DEFAULT_COPYBOOK_DIR;
-    }
-    return dirs;
-}
-
-function extractText(str: string) {
-    let getFirstMatchOrDefault =
-        (s: string, pattern: RegExp) => {
-            const match = s.match(pattern)
-            return match ? match[1] : null;
-        }
-
-    if (/"/.test(str)) {
-        return getFirstMatchOrDefault(str, /"(.*?)"/);
-    }
-
-    if (/'/.test(str)) {
-        return getFirstMatchOrDefault(str, /'(.*?)'/);
-    }
-
-    const strl = str.toLowerCase();
-    if (/copy/.test(strl)) {
-        try {
-            return getFirstMatchOrDefault(strl, /copy\s(.*)\./);
-        } catch(e) {
-            /* continue */
-        }
-        try {
-            return getFirstMatchOrDefault(strl, /copy\s(.*)/);
-        } catch(e) {
-            /* continue */
-        }
-    }
-    return str;
-}
-
-function findFile(filename: string): string | undefined {
-    if (!filename)
-        return;
-
-    var fileExtension = filename.split('.').pop();
-    var fullPath = workspace.rootPath + '/' + filename ;
-
-    var extsdir = getcopybookdirs();
-    for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-        var extdir = extsdir[extsdirpos];
-
-        const basefullPath = workspace.rootPath + "/" + extdir + '/' + filename ;
-
-        //No extension?
-        if (filename == fileExtension) {
-            // search through the possible extensions
-            const exts = getExtensions();
-            for (let extpos = 0; extpos < exts.length; extpos++) {
-                var ext = exts[extpos];
-                var possibleFile = basefullPath + "." + ext;
-
-                if (!fs.existsSync(possibleFile) === false) {
-                    fullPath = possibleFile;
-                    break;
+const regexes = {
+    copy: {
+        regx: / COPY {1,}(\'([^ ]+)\')?([^ ]+)? ?\./i,
+        stmtType: 'COPY',
+        capIndex: { 
+            hardCodeCopySource: 2,
+            variableCopySouurce: 3,
+        },
+        provideDefinition: (lineText: string) => {
+            return new Promise((resolve, reject) => {
+                regexes.copy.regx.test(lineText);
+    
+                var  m;
+                if((m = regexes.copy.regx.exec(lineText)) === null) {
+                    return reject({});
                 }
-            }
-        } else {
-            if (!fs.existsSync(basefullPath) === false) {
-                fullPath = basefullPath;
-            }
+                if(!m[regexes.copy.capIndex.hardCodeCopySource]) {
+                    return reject({});
+                }
+                
+                const filename = m[regexes.copy.capIndex.hardCodeCopySource];
+                    
+                workspace
+                .findFiles(`**/${filename}.{[Cc][Bb][Ll],[Cc][Oo][Bb],[Cc][Pp][Yy]}`)
+                .then((files: any[]) => {
+                    resolve(new Location(
+                        Uri.file(files[0].path),
+                        new Range(new Position(0, 0), new Position(0, 0))
+                    ));
+                });
+            });
+
+        }
+    },
+    fieldDefinition: {
+        regx: / {0,}([0-9]+) +([a-zA-Z-0-9-#]+)/i,
+        stmtType: 'FIELD_DEFINITION',
+        capIndex: { 
+            level: 1,
+            name: 2,
+        },
+        provideDefinition: (lineText: string) => {
+            return new Promise((resolve, reject) => {
+                regexes.fieldDefinition.regx.test(lineText);
+                return reject({});
+            });
         }
     }
+};
 
-    if (fs.existsSync(fullPath) === false) {
-        return;
+function matchStatement(statement: string){
+    const regs = [regexes.copy, regexes.fieldDefinition];
+    for (let m = 0; m < regs.length; m++) {
+        const regex = regs[m].regx;
+        if( regex.test(statement) ) {
+            return regs[m];
+        }
     }
-
-    return fullPath;
 }
 
-export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-    const line = doc.lineAt(pos);
-    const filename = extractText(line.text);
-    if (filename) {
-        const fullPath = findFile(filename);
-        if (fullPath) {
-            return {
-                uri: Uri.file(fullPath),
-                range: new Range(new Position(0, 0), new Position(0, 0))
-            }
-        } else {
-            window.showWarningMessage(`Unable to locate : ${filename}`);
-        }
+
+
+
+export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
+    const line = document.lineAt(position);
+    const stmtType = matchStatement(line.text);
+    if (!stmtType) { 
+        return new Promise((resolve, reject)=> {
+            return resolve(null);
+        });
     }
+    
+    return <ProviderResult<Definition>>stmtType.provideDefinition(line.text);
+
 }

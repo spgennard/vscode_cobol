@@ -41,10 +41,10 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
 
-    const allCobolSelectors = ["COBOL", "ACUCOBOL", "OpenCOBOL"];
+    const allCobolSelectors = ["COBOL", "ACUCOBOL", "OpenCOBOL"];    
     languages.registerDefinitionProvider(allCobolSelectors, {
-        provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            return opencopybook.provideDefinition(doc, pos, ct);
+        provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
+            return opencopybook.provideDefinition(document, position, token);
         }
     });
 }
