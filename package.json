@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL syntax support",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -50,7 +50,28 @@
                             }
                         }
                     },
-                    "default": [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79],
+                    "default": [
+                        0,
+                        7,
+                        11,
+                        15,
+                        19,
+                        23,
+                        27,
+                        31,
+                        35,
+                        39,
+                        43,
+                        47,
+                        51,
+                        55,
+                        59,
+                        63,
+                        67,
+                        71,
+                        75,
+                        79
+                    ],
                     "description": "COBOL tabstops"
                 },
                 "coboleditor.copybookexts": {
@@ -97,19 +118,31 @@
         "configurationDefaults": {
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.rulers": [6, 7, 72],
+                "editor.rulers": [
+                    6,
+                    7,
+                    72
+                ],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
             "[ACUCOBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.rulers": [6, 7, 72],
+                "editor.rulers": [
+                    6,
+                    7,
+                    72
+                ],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
             "[OpenCOBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.rulers": [6, 7, 72],
+                "editor.rulers": [
+                    6,
+                    7,
+                    72
+                ],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
             }
@@ -121,7 +154,8 @@
                     "COBOL",
                     "cobol"
                 ],
-                "firstLine": "((^.*$set)|((^.*)(?i:identification)(.*))|((^.*)(?i:program\\-id)(.*))",
+
+                "firstLine" : ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]).*",
                 "extensions": [
                     ".cbl",
                     ".cblsrce",
