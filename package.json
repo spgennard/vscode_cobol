@@ -22,6 +22,7 @@
         "Other"
     ],
     "activationEvents": [
+        "onLanguage:COBOL",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
@@ -97,6 +98,7 @@
         "configurationDefaults": {
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
+                "editor.formatOnType": true,
                 "editor.rulers": [6, 7, 72],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"

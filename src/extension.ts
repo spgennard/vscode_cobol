@@ -4,6 +4,7 @@ import { commands, ExtensionContext } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
+import { DocComment } from './formatting/DocComment';
 
 export function activate(context: ExtensionContext) {
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
@@ -48,6 +49,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(unTabCommand);
     context.subscriptions.push(openCopyBookFileCommand);
     context.subscriptions.push(openPreviousFileCommand);
+
+    context.subscriptions.push(DocComment.register());
 }
 
 export function deactivate() {
