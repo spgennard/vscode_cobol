@@ -7,7 +7,7 @@
 		"match"  : "(^......[ a-zA-Z0-9\\-]...................................................................*$)",
 		"name"   : "invalid.illegal.cobol"
       },
-
+      
       { "include": "source.cobol" }
    ],
 	"scopeName" : "source.acucobol"

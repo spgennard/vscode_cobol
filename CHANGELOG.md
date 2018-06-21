@@ -1,5 +1,10 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.3
+- Add more support for AcuCOBOL syntax
+- Add several AcuCOBOL specific syntax
+- Tweak REMARKS/END-REMARKS
+
 ## Version - 3.2.2
 - Fix issue #13 - bad tailing colourisation
 - Fix warning for DocComment registration (no schema given)

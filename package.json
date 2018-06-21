@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL syntax support",
-    "version": "3.2.2",
+    "version": "3.2.3",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -119,8 +119,11 @@
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
                 "editor.formatOnType": true,
-                "editor.rulers": [6, 7, 72],
-
+                "editor.rulers": [
+                    6,
+                    7,
+                    72
+                ],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
@@ -147,13 +150,30 @@
         },
         "languages": [
             {
+                "id": "ACUCOBOL",
+                "aliases": [
+                    "ACUCOBOL",
+                    "acucobol"
+                ],
+                "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.bench.).*$",
+                "extensions": [
+                    ".evt",
+                    ".prd",
+                    ".wrk",
+                    ".mnu",
+                    ".def",
+                    ".sl"
+                ],
+                "configuration": "./acucobol.configuration.json"
+            },
+            {
                 "id": "COBOL",
                 "aliases": [
                     "COBOL",
+                    "Cobol",
                     "cobol"
                 ],
-
-                "firstLine" : ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]).*",
+                "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]).*",
                 "extensions": [
                     ".cbl",
                     ".cblsrce",
@@ -162,25 +182,16 @@
                     ".cpy",
                     ".fd",
                     ".sel",
-                    ".scr",
                     ".scbl",
                     ".cob",
                     ".dds",
                     ".def",
+                    ".src",
                     ".ss",
                     ".wks",
                     ".pco"
                 ],
                 "configuration": "./cobol.configuration.json"
-            },
-            {
-                "id": "ACUCOBOL",
-                "aliases": [
-                    "ACUCOBOL",
-                    "acucobol"
-                ],
-                "extensions": [],
-                "configuration": "./acucobol.configuration.json"
             },
             {
                 "id": "OpenCOBOL",
