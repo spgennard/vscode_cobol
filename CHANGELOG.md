@@ -1,5 +1,11 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.2
+- Fix issue #13 - bad tailing colourisation
+- Fix warning for DocComment registration (no schema given)
+- FIx warning about multi-line comments (remove empty config ops)
+- Reduce number of warning message when we cannot find a copybook
+
 ## Version - 3.2.1
 - Merge "Continue doc-comment when RETURN is pressed" (Thanks Ted)
 

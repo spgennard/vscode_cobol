@@ -13,19 +13,19 @@ export function activate(context: ExtensionContext) {
 
     var move2ddCommand = commands.registerCommand('cobolplugin.move2dd', function () {
         cobolProgram.move2dd();
-    })
+    });
 
     var move2wsCommand = commands.registerCommand('cobolplugin.move2ws', function () {
         cobolProgram.move2ws();
-    })
+    });
 
     var move2anyforwardCommand = commands.registerCommand('cobolplugin.move2anyforward', function () {
         cobolProgram.move2anyforward();
-    })
+    });
 
     var move2anybackwardsCommand = commands.registerCommand('cobolplugin.move2anybackwards', function () {
         cobolProgram.move2anybackwards();
-    })
+    });
 
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
         tabstopper.processTabKey(true);
