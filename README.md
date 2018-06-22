@@ -106,3 +106,15 @@ Although this extension does not understand comments in COBOL source files, it c
     }
 }
 ```
+
+
+# Organize workspace
+## Grouping files by prefix
+
+![alt](images/[readme]-group-by-prefix.gif)
+
+
+## Fixing files extenssions
+
+![alt](images/[readme]-fix-files-extenssions.gif)
+

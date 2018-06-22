@@ -4,27 +4,37 @@ import { commands, ExtensionContext, languages, TextDocument, Position, Cancella
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
+import { CobolWorkspace } from './cobol.workspace';
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext) {    
+    const cobolWorkspace = new CobolWorkspace();
+    
+    var organizeExtenssions = commands.registerCommand('cobolplugin.organizeExtenssions', function () {
+        cobolWorkspace.fixWorkspaceFilesExtenssions();
+    });
+    var groupFilesByPrefix = commands.registerCommand('cobolplugin.groupfilesbyprefix', function () {
+        cobolWorkspace.groupFilesByPrefix();
+    });
+
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
     });
 
     var move2ddCommand = commands.registerCommand('cobolplugin.move2dd', function () {
         cobolProgram.move2dd();
-    })
+    });
 
     var move2wsCommand = commands.registerCommand('cobolplugin.move2ws', function () {
         cobolProgram.move2ws();
-    })
+    });
 
     var move2anyforwardCommand = commands.registerCommand('cobolplugin.move2anyforward', function () {
         cobolProgram.move2anyforward();
-    })
+    });
 
     var move2anybackwardsCommand = commands.registerCommand('cobolplugin.move2anybackwards', function () {
         cobolProgram.move2anybackwards();
-    })
+    });
 
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
         tabstopper.processTabKey(true);
@@ -40,6 +50,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(move2anybackwardsCommand);
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
+    context.subscriptions.push(organizeExtenssions);
+    context.subscriptions.push(groupFilesByPrefix);
 
     const allCobolSelectors = ["COBOL", "ACUCOBOL", "OpenCOBOL"];    
     languages.registerDefinitionProvider(allCobolSelectors, {

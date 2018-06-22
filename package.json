@@ -23,6 +23,8 @@
     ],
     "activationEvents": [
         "onLanguage:COBOL",
+        "onCommand:cobolplugin.organizeExtenssions",
+        "onCommand:cobolplugin.groupfilesbyprefix",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
@@ -230,6 +232,14 @@
         ],
         "commands": [
             {
+                "command": "cobolplugin.organizeExtenssions",
+                "title": "Fix workspace files extenssions"
+            },
+            {
+                "command": "cobolplugin.groupfilesbyprefix",
+                "title": "Group workspace files by prefix"
+            },
+            {   
                 "command": "cobolplugin.move2pd",
                 "title": "Move to procedure division"
             },
