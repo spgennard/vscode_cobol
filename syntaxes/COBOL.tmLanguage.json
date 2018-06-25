@@ -12,9 +12,10 @@
   "name": "COBOL",
   "patterns": [
     {
-      "match": "(^([0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s])(\\*.*$))",
+      "match": "(^([0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s])(\\*.*$))",
       "name": "comment.line.cobol.fixed"
     },
+    
     {
       "match": "^\\*.*$",
       "name": "comment.line.cobol.fixed"

@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.4
+- Fix problem with indicator column area and comments
+
 ## Version - 3.3.3
 - Add more support for AcuCOBOL syntax
 - Add several AcuCOBOL specific syntax
