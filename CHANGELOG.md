@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.6
+- Mark non-print characters as constant.numeric just so it looks like other sequence number items
+
 ## Version - 3.2.5
 - Ensure characters in the indicator column are consistently colour even when the line is a comment
 - Ensure the continuation character is not identified as minus
