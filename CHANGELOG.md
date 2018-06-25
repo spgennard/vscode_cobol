@@ -1,5 +1,10 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.5
+- Ensure characters in the indicator column are consistently colour even when the line is a comment
+- Ensure the continuation character is not identified as minus
+- Remove .1/.2/.3 debug identifer from the grammar
+
 ## Version - 3.2.4
 - Fix problem with indicator column area and comments
 

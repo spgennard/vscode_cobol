@@ -12,10 +12,21 @@
   "name": "COBOL",
   "patterns": [
     {
-      "match": "(^([0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s])(\\*.*$))",
-      "name": "comment.line.cobol.fixed"
+      "match": "(^[0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s])(\\*.*$)",
+      
+      "captures": {
+        "1": {
+          "name": "constant.numeric.cobol"
+        },
+        "2": {
+          "name": "comment.line.cobol.fixed"
+        }
+      }
     },
-    
+    {
+      "match": "(^([0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s])(\\-))",
+      "name": "comment.line.cobol.contline"
+    },
     {
       "match": "^\\*.*$",
       "name": "comment.line.cobol.fixed"
@@ -105,7 +116,7 @@
     },
     {
       "match": "(?<=(\\(|\\[))((\\-\\+)*[0-9 ,\\.\\+\\-\\*\\/]+)(?=(\\)|\\]))",
-      "name": "constant.numeric.cobol.1",
+      "name": "constant.numeric.cobol",
       "captures": {
         "1": {
           "name": "keyword.start.bracket.cobol"
@@ -121,7 +132,7 @@
     },
     {
       "match": "(\\-|\\+)?((([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)([LlFfUuDd]|UL|ul)?(?=\\s|\\.|,|\\))",
-      "name": "constant.numeric.cobol.2"
+      "name": "constant.numeric.cobol"
     },
     {
       "match": "(?<![-_])(?i:true|false|null|nulls)(?=\\s|\\.|\\)|$)",
@@ -522,8 +533,8 @@
           "name": "keyword.cobol"
         }
       },
-      "name": "comment.line.cobol.remark",
-      "end": "(?i:end\\-remark|environment\\s+division)",
+      "name": "comment.block.cobol.remark",
+      "end": "(?i:end\\-remark|\\*{Bench}end|environment\\s+division)",
       "endCaptures": {
         "0": {
           "name": "keyword.cobol"
