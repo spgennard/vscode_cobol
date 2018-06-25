@@ -326,7 +326,7 @@
       "name": "string.quoted.single.cobol"
     },
     {
-      "match": "(?i:id\\s+division|identification\\s+division|identification|property-id|getter|setter|entry|function-id|end\\s+attribute|attribute|interface-id|factory|ctl|class-control|options|environment\\s+division|environment-name|environment-value|environment|configuration\\s+section|configuration|decimal-point|call-convention|special-names|cursor\\s+is|update|picture\\s+symbol|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|communication|report|screen\\s+section|fd|rd|cd|sd|printing|procedure\\s+division|procedure|references|debugging|end\\s+declaratives|declaratives|based-storage|size|font|national-edited|national)(?=\\s|\\.)",
+      "match": "(?i:id\\s+division|identification\\s+division|identification|property-id|getter|setter|entry|function-id|end\\s+attribute|attribute|interface-id|factory|ctl|class-control|options|environment\\s+division|environment-name|environment-value|environment|configuration\\s+section|configuration|decimal-point\\s+is|console\\s+is|call-convention|special-names|cursor\\s+is|update|picture\\s+symbol|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|communication|report|screen\\s+section|fd|rd|cd|sd|printing|procedure\\s+division|procedure|references|debugging|end\\s+declaratives|declaratives|based-storage|size|font|national-edited|national)(?=\\s|\\.)",
       "name": "keyword.identifiers.cobol"
     },
     {
@@ -389,7 +389,7 @@
       "comment": "type ssss "
     },
     {
-      "match": "(?<![-_])(?i:type|bit|binary-char|binary-char-unsigned|binary-short|binary-short-unsigned|binary.long|binary-c-long|binary-long-unsigned|binary-long|binary-double|binary-double-unsigned|float-short|float-extended|float-long|bit|condition-value|characters|character\\s+type|character|comma|decimal|object\\sreference|object-reference|object|list|dictionary|unsigned|string)(?=\\s|\\.|,|\\]|\\[)",
+      "match": "(?<![-_])(?i:type|bit|binary-char|binary-char-unsigned|binary-short|binary-short-unsigned|binary.long|binary-c-long|binary-long-unsigned|binary-long|binary-double|binary-double-unsigned|float-short|float-extended|float-long|bit|condition-value|characters|character\\s+type|character|comma|crt|decimal|object\\sreference|object-reference|object|list|dictionary|unsigned|string)(?=\\s|\\.|,|\\]|\\[)",
       "name": "storage.type.cobol"
     },
     {
