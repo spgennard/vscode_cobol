@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.7
+- Fix issue #18 (is crt is not colourised #18)
+
 ## Version - 3.2.6
 - Mark non-print characters as constant.numeric just so it looks like other sequence number items
 
