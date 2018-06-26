@@ -1,6 +1,6 @@
 'use strict';
 
-import { Range, TextDocument, window, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
+import { Range, TextDocument, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -140,9 +140,8 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
                 uri: Uri.file(fullPath),
                 range: new Range(new Position(0, 0), new Position(0, 0))
             };
-        } 
-        // else {
-        //     window.showWarningMessage(`Unable to locate : ${filename}`);
-        // }
+        }
     }
+
+    return;
 }
