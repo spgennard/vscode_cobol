@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.8
+ - Tweak fix for #13, differentiate 0.$
+ 
 ## Version - 3.2.7
 - Fix issue #18 (is crt is not colourised #18)
 
