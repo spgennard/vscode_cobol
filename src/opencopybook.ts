@@ -140,8 +140,9 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
                 uri: Uri.file(fullPath),
                 range: new Range(new Position(0, 0), new Position(0, 0))
             };
-        } else {
-            window.showWarningMessage(`Unable to locate : ${filename}`);
-        }
+        } 
+        // else {
+        //     window.showWarningMessage(`Unable to locate : ${filename}`);
+        // }
     }
 }
