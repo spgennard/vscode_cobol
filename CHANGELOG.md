@@ -1,5 +1,9 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.11
+ - Start to add problemMatches/regex for compilation (related to issue #1)
+ - Mark directives that are invalid in the $set as "invalid" so some theme colour them
+ 
 ## Version - 3.2.10
  - Disable messagebox in opencopybook
  

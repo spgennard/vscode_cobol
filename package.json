@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL syntax support",
-    "version": "3.2.10",
+    "version": "3.2.11",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -416,6 +416,43 @@
             {
                 "language": "OpenCOBOL",
                 "path": "./snippets/cobol.json"
+            }
+        ],
+        "problemPatterns": [
+            {
+                "name": "msbuildmfcobol",
+                "regexp": "^(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "severity": 4,
+                "message": 5
+            },
+            {
+                "name": "gnu-cobol",
+                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "file": 1,
+                "line": 2,
+                "severity": 3,
+                "message": 4
+            }
+        ],
+        "problemMatchers": [
+            {
+                "name": "msbuild-mfcobol",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$msbuildmfcobol"
+            },
+            {
+                "name": "gnu-cobol",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$gnu-cobol"
             }
         ]
     },

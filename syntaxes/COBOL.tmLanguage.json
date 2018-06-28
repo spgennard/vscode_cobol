@@ -54,6 +54,20 @@
       }
     },
     {
+      "match": "(?:^|\\s+)(?i:\\$set\\s)((?i:01SHUFFLE|64KPARA|64KSECT|AUXOPT|CHIP|DATALIT|EANIM|EXPANDDATA|FIXING|FLAG-CHIP|MASM|MODEL|OPTSIZE|OPTSPEED|PARAS|PROTMODE|REGPARM|SEGCROSS|SEGSIZE|SIGNCOMPARE|SMALLDD|TABLESEGCROSS|TRICKLECHECK|\\s)+).*$",
+      "captures": {
+        "0": {
+          "name": "comment.line.set.cobol.1"
+        },
+        "1": {
+          "name": "invalid.illegal.directive"
+        },
+        "2": {
+          "name": "comment.line.set.cobol.2"
+        }
+      }
+    },
+    {
       "match": "(?:^|\\s+)(?i:\\$set\\s|cbl\\s)(.*)$",
       "captures": {
         "0": {
