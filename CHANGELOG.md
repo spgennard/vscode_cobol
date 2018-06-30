@@ -1,5 +1,12 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.2.15
+ - Add simple .dir file colouriser for Micro Focus directive files
+ - Add UPPERCASE version of various snippets, so if you are typing in 
+    these will be matched first, not ideal having to duplicate but 
+    unless I moving from using a snippet file to handing the snippets in
+    code I can't see any other way.
+
 ## Version - 3.2.11
  - Start to add problemMatches/regex for compilation (related to issue #1)
  - Mark directives that are invalid in the $set as "invalid" so some theme colour them

@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL syntax support",
-    "version": "3.2.11",
+    "version": "3.2.15",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -214,6 +214,17 @@
                     ".jcl"
                 ],
                 "configuration": "./jcl.configuration.json"
+            },
+            {
+                "id": "dir",
+                "extensions": [
+                    ".dir"
+                ],
+                "aliases": [
+                    "dirfile",
+                    "dir"
+                ],
+                "configuration": "./dir.configuration.json"
             }
         ],
         "grammars": [
@@ -236,6 +247,11 @@
                 "language": "JCL",
                 "scopeName": "source.jcl",
                 "path": "./syntaxes/jcl.tmLanguage.json"
+            },
+            {
+                "language": "dir",
+                "scopeName": "source.dir",
+                "path": "./syntaxes/dir.tmLanguage.json"
             }
         ],
         "commands": [
@@ -420,7 +436,7 @@
         ],
         "problemPatterns": [
             {
-                "name": "msbuildmfcobol",
+                "name": "mfcobol-msbuild",
                 "regexp": "^(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
                 "file": 1,
                 "line": 2,
@@ -429,7 +445,16 @@
                 "message": 5
             },
             {
-                "name": "gnu-cobol",
+                "name": "mfcobol-errformat3",
+                "regexp": "^(\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "severity": 4,
+                "message": 5
+            },
+            {
+                "name": "gnucobol-cobc",
                 "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
                 "file": 1,
                 "line": 2,
@@ -439,20 +464,28 @@
         ],
         "problemMatchers": [
             {
-                "name": "msbuild-mfcobol",
+                "name": "mfcobol-msbuild",
                 "owner": "cobol",
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$msbuildmfcobol"
+                "pattern": "$mfcobol-msbuild"
             },
             {
-                "name": "gnu-cobol",
+                "name": "mfcobol-errformat3",
                 "owner": "cobol",
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$gnu-cobol"
+                "pattern": "$mfcobol-errformat3"
+            },
+            {
+                "name": "gnucobol-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$gnucobol-cobc"
             }
         ]
     },

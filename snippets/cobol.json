@@ -4,7 +4,15 @@
 		"body": [
 			"add ${1:a} to ${2:b} giving ${3:c}"
 		],
-		"description": "",
+		"description": "Add a to b giving c",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"ADD": {
+		"prefix": "ADD",
+		"body": [
+			"ADD ${1:a} TO ${2:b} GIVING ${3:c}"
+		],
+		"description": "Add a to b giving c",
 		"scope": "cobol,acucobol,opencobol"
 	},
 	"accept": {
@@ -15,13 +23,30 @@
 		],
 		"scope": "cobol,acucobol,opencobol"
 	},
-	"accept_from": {
+	"ACCEPT": {
+		"prefix": "ACCEPT",
+		"body": [
+			"ACCEPT ${1:variable}",
+			"$0"
+		],
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"accept from": {
 		"prefix": "accept",
 		"body": [
 			"accept ${1:variable} ${2|from date,from day,from day-of-week,time|}",
 			"$0"
 		],
 		"description": "accept from date/day/week/time",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"ACCEPT FROM": {
+		"prefix": "ACCEPT",
+		"body": [
+			"ACCEPT ${1:variable} ${2|FROM DATE,FROM DAY,FROM DAY-OF-WEEK,TIME|}",
+			"$0"
+		],
+		"description": "ACCEPT FROM DATE/DAY/WEEK/TIME",
 		"scope": "cobol,acucobol,opencobol"
 	},
 	"class-id": {
@@ -46,7 +71,16 @@
 			"copy \"${1:subprog.cpy}\"",
 			"    replacing ==${2:()}== by ==${3:lnk-}==."
 		],
-		"description": "",
+		"description": "Copy replacing",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"COPY": {
+		"prefix": "COPY",
+		"body": [
+			"COPY \"${1:SUBPROG.CPY}\"",
+			"    REPLACING ==${2:()}== BY ==${3:lnk-}==."
+		],
+		"description": "COPY REPLACING",
 		"scope": "cobol,acucobol,opencobol"
 	},
 	"divide": {
@@ -54,7 +88,15 @@
 		"body": [
 			"divide ${1:a} by ${2:b} giving ${3:c} ${4:remainder ${5:d}}"
 		],
-		"description": "",
+		"description": "divide a by b giving [remainder}",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"DIVIDE": {
+		"prefix": "DIVIDE",
+		"body": [
+			"DIVIDE ${1:a} BY ${2:b} GIVING ${3:c} ${4:REMAINDER ${5:d}}"
+		],
+		"description": "DIVIDE a BY b GIVING [REMAINDER}",
 		"scope": "cobol,acucobol,opencobol"
 	},
 	"entry": {
@@ -66,6 +108,17 @@
 			""
 		],
 		"description": "entry statement",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"ENTRY": {
+		"prefix": "ENTRY",
+		"body": [
+			"ENTRY \"$1\".",
+			"    $0\t",
+			"    GOBACK.",
+			""
+		],
+		"description": "ENTRY statement",
 		"scope": "cobol,acucobol,opencobol"
 	},
 	"enum-id": {
@@ -94,10 +147,24 @@
 		"description": "evaluate",
 		"scope": "cobol,acucobol,opencobol"
 	},
+	"EVALUATE": {
+		"prefix": "EVALUATE",
+		"body": [
+			"EVALUATE $1",
+			"    WHEN $2",
+			"       $0",
+			"    WHEN OTHER",
+			"       CONTINUE",
+			"END-EVALUATE",
+			""
+		],
+		"description": "EVALUATE",
+		"scope": "cobol,acucobol,opencobol"
+	},
 	"exec-sql": {
 		"prefix": "exec",
 		"body": [
-			"EXEC SQL INCLUDE SQLCA END-EXEC."
+			"exec sql include sqlca end-exec."
 		],
 		"description": "exec sql include",
 		"scope": "cobol,acucobol"
@@ -121,7 +188,16 @@
 		],
 		"scope": "cobol"
 	},
-	"if-else": {
+	"IF": {
+		"prefix": "IF",
+		"body": [
+			"IF ${1:CONDITION}",
+			"   $0",
+			"END-IF"
+		],
+		"scope": "cobol"
+	},
+	"if else": {
 		"prefix": "if",
 		"body": [
 			"if ${1:condition}",
@@ -132,7 +208,18 @@
 		],
 		"scope": "cobol"
 	},
-	"inspect_converting": {
+	"IF ELSE": {
+		"prefix": "IF",
+		"body": [
+			"IF ${1:CONDITION}",
+			"   $0",
+			"ELSE",
+			"   ",
+			"END-IF"
+		],
+		"scope": "cobol"
+	},
+	"inspect converting": {
 		"prefix": "inspect",
 		"body": [
 			"inspect $1 converting '${2:ABCDEFGHIJKLMNOPQRSTUVWXYZ}' to '${3:abcdefghijklmnopqrstuvwxyz}'"
@@ -140,7 +227,15 @@
 		"description": "inspect converting",
 		"scope": "cobol,acucobol,opencobol"
 	},
-	"inspect_replacing": {
+	"INSPECT CONVERTING": {
+		"prefix": "INSPECT",
+		"body": [
+			"INSPECT $1 CONVERTING '${2:ABCDEFGHIJKLMNOPQRSTUVWXYZ}' to '${3:abcdefghijklmnopqrstuvwxyz}'"
+		],
+		"description": "INSPECT CONVERTING",
+		"scope": "cobol,acucobol,opencobol"
+	},	
+	"inspect replacing": {
 		"prefix": "inspect",
 		"body": [
 			"inspect $1 replacing all ${2|spaces,zero|} by '${3}'"
@@ -148,17 +243,34 @@
 		"description": "inspect replacing",
 		"scope": "cobol,acucobol,opencobol"
 	},
-	"inspect_tallying": {
+	"INSPECT REPLACING": {
+		"prefix": "INSPECT",
+		"body": [
+			"INSPECT $1 REPLACING ALL ${2|SPACES,ZERO|} BY '${3}'"
+		],
+		"description": "INSPECT REPLACING",
+		"scope": "cobol,acucobol,opencobol"
+	},	
+	"inspect tallying": {
 		"prefix": "inspect",
 		"body": [
 			"move 0 to ${2:counter}",
 			"inspect ${1:source} tallying ${2:counter} for ${3|all spaces,all $4,characters|}"
 		],
-		"description": "",
+		"description": "Inspect a tallying counter for ...",
 		"scope": "cobol,acucobol,opencobol"
 	},
-	"main-method-id": {
-		"prefix": "method-id",
+	"INSPECT TALLYING": {
+		"prefix": "INSPECT",
+		"body": [
+			"MOVE 0 to ${2:COUNTER}",
+			"INSPECT ${1:SOURCE} TALLYING ${2:COUNTER} FOR ${3|ALL SPACES,ALL $4,CHARACTERS|}"
+		],
+		"description": "Inspect a tallying counter for ...",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"main method-id": {
+		"prefix": "main",
 		"body": [
 			"*>> <summary>method main</summary>",
 			"method-id main public static.",
@@ -184,8 +296,8 @@
 		"description": "method-id",
 		"scope": "cobol"
 	},
-	"mfu": {
-		"prefix": "mfu",
+	"MFUnit Test": {
+		"prefix": "mfu,program-id",
 		"body": [
 			"       program-id. MFUT_${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"       working-storage section.",
@@ -231,9 +343,17 @@
 		"body": [
 			"multiply ${1:a} by ${2:b} giving ${3:c}"
 		],
-		"description": "",
+		"description": "Multiply a by y giving z",
 		"scope": "cobol,acucobol,opencobol"
 	},
+	"MULTIPLY": {
+		"prefix": "MULTIPLY",
+		"body": [
+			"MULTIPLY ${1:a} BY ${2:b} GIVING ${3:c}"
+		],
+		"description": "MULTIPLY a BY y GIVING z",
+		"scope": "cobol,acucobol,opencobol"
+	},	
 	"perform": {
 		"prefix": "perform",
 		"body": [
@@ -242,30 +362,49 @@
 		"description": "perform paragraph x times",
 		"scope": "cobol,acucobol,opencobol"
 	},
-	"perform_varying": {
+	"PERFORM": {
+		"prefix": "PERFORM",
+		"body": [
+			"PERFORM ${1:paragraph-name} ${2:value-1} TIMES"
+		],
+		"description": "PERFORM paragraph x TIMES",
+		"scope": "cobol,acucobol,opencobol"
+	},	
+	"perform varying": {
 		"prefix": "perform",
 		"body": [
 			"perform ${1:paragraph-name} varying ${2:field-1}",
 			" from ${3:value-1} by ${4:value-2}",
-			" until ${5:condition}"
+			" until ${5:condition}",
+			"$0"
 		],
 		"description": "inline perform varying",
 		"scope": "cobol,acucobol,opencobol"
 	},
-	"identification_cics": {
-		"prefix": "identification_cics",
+	"PERFORM VARYING": {
+		"prefix": "PERFORM",
 		"body": [
-			"",
-			"        IDENTIFICATION DIVISION.                                        ",
-			"        PROGRAM-ID. $1.                                   ",
-			"        DATA DIVISION.                                      ",
-			"        WORKING-STORAGE SECTION.                            ",
-			"        01 OUT-MSG.                                         ",
+			"PERFORM ${1:paragraph-name} VARYING ${2:field-1}",
+			" FROM ${3:value-1} BY ${4:value-2}",
+			" UNTIL ${5:condition}",
+			"$0"
+		],
+		"description": "INLINE PERFORM VARYING",
+		"scope": "cobol,acucobol,opencobol"
+	},	
+	"IDENTIFICATION (CICS)": {
+		"prefix": "IDENTIFICATION",
+		"body": [
+			"        IDENTIFICATION DIVISION. ",
+			"        PROGRAM-ID. $1.",
+			"        DATA DIVISION.",
+			"        WORKING-STORAGE SECTION. ",
+			"        01 OUT-MSG.",
 			"         02 FILLER PIC X(6) VALUE \"Hello \". ",
-			"         02 MSG    PIC X(20).                               ",
+			"         02 MSG    PIC X(20).",
 			"        01 INP-MSG PIC X(20) VALUE \"What is your name? \".     ",
-			"        PROCEDURE DIVISION.                                 ",
-			"        PARA1.                                               ",
+			"        PROCEDURE DIVISION.",
+			"        PARA1.",
 			"            EXEC CICS",
 			"                 SEND FROM(INP-MSG)",
 			"                 ERASE",
@@ -292,8 +431,8 @@
 		"description": "Template for program (CICS)",
 		"scope": "cobol"
 	},
-	"program-id-min-template": {
-		"prefix": "program-id",
+	"Minimum Line Sequential": {
+		"prefix": "identification",
 		"body": [
 			"       identification division.",
 			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
@@ -334,8 +473,8 @@
 		"description": "Minimum template File/Seq",
 		"scope": "cobol"
 	},
-	"identification_mainframe": {
-		"prefix": "identification_mainframe",
+	"Minimum mainframe program [uppercase]": {
+		"prefix": "IDENTIFICATION",
 		"body": [
 			"       IDENTIFICATION DIVISION.",
 			"       PROGRAM-ID. ${1:${1:${TM_FILENAME/(.*)\\..+$/$1/}}}.",
@@ -367,8 +506,8 @@
 		"description": "Template for mainframe",
 		"scope": "cobol"
 	},
-	"identification_small": {
-		"prefix": "identification",
+	"Skelton program": {
+		"prefix": "program-id",
 		"body": [
 			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"",
@@ -388,21 +527,7 @@
 		"description": "Small template for program",
 		"scope": "cobol"
 	},
-	"identification_minimum": {
-		"prefix": "identification_minimum",
-		"body": [
-			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
-			"       procedure division.",
-			"           $0",
-			"           goback.",
-			"",
-			"       end program $1.",
-			""
-		],
-		"description": "Minimum template",
-		"scope": "cobol"
-	},
-	"program-id1": {
+	"Minimum program": {
 		"prefix": "program-id",
 		"body": [
 			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
@@ -413,7 +538,7 @@
 			"       end program $1.",
 			""
 		],
-		"description": "Minimum template (MF)",
+		"description": "Minimum template",
 		"scope": "cobol"
 	},
 	"property": {
@@ -441,6 +566,14 @@
 		"description": "subtract a from b giving c",
 		"scope": "cobol,acucobol,opencobol"
 	},
+	"SUBTRACT": {
+		"prefix": "SUBTRACT",
+		"body": [
+			"SUBTRACT ${1:a} FROM ${2:b} GIVING ${3:c}"
+		],
+		"description": "SUBTRACT a FROM b GIVING c",
+		"scope": "cobol,acucobol,opencobol"
+	},	
 	"try": {
 		"prefix": "try",
 		"body": [
@@ -453,7 +586,7 @@
 		"description": "try catch",
 		"scope": "cobol"
 	},
-	"va": {
+	"valuetype": {
 		"prefix": "valuetype-id",
 		"body": [
 			"valuetype-id $1 ${2:public}.",
@@ -477,6 +610,14 @@
 		"description": "display literal",
 		"scope": "cobol"
 	},
+	"DISPLAY": {
+		"prefix": "DISPLAY",
+		"body": [
+			"DISPLAY \"$0\""
+		],
+		"description": "DISPLAY literal",
+		"scope": "cobol"
+	},	
 	"select-to-section": {
 		"prefix": "perform",
 		"body": [
@@ -500,12 +641,32 @@
 		"description": "string delimited by size",
 		"scope": "cobol,acucobol,opencobol"
 	},
+	"STRING": {
+		"prefix": "STRING",
+		"body": [
+			"STRING ${1:item1} DELIMITED BY SIZE",
+			"       ${2:item2} DELIMITED BY SIZE",
+			"       INTO ${3:result}",
+			"END-STRING",
+			"$0"
+		],
+		"description": "string delimited by size",
+		"scope": "cobol,acucobol,opencobol"
+	},
 	"function": {
 		"prefix": "function",
 		"body": [
 			"function ${1|upper-case,lower-case,length,reverse,numval,numval-c|}($0)"
 		],
 		"description": "functions",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"FUNCTION": {
+		"prefix": "FUNCTION",
+		"body": [
+			"FUNCTION ${1|UPPER-CASE,LOWER-CASE,LENGTH,REVERSE,NUMVAL,NUMVAL-C|}($0)"
+		],
+		"description": "FUNCTIONS",
 		"scope": "cobol,acucobol,opencobol"
 	},
 	"call": {
@@ -519,6 +680,17 @@
 		],
 		"description": "CALL literal"
 	},
+	"CALL": {
+		"prefix": "CALL",
+		"body": [
+			"CALL \"$1\" USING",
+			"    BY ${2|VALUE,REFERENCE,CONTENT|} ${3:IDENTIFER}",
+			"    RETURNING ${4:RETURN-CODE}",
+			"eND-CALL",
+			"$0"
+		],
+		"description": "CALL literal"
+	},
 	"cancel": {
 		"prefix": "cancel",
 		"body": [
@@ -527,10 +699,25 @@
 		],
 		"description": "CANCEL literal"
 	},
-	"exit_program": {
+	"CANCEL": {
+		"prefix": "CANCEL",
+		"body": [
+			"CANCEL \"$1\"",
+			"$0"
+		],
+		"description": "CANCEL literal"
+	},
+	"exit program": {
 		"prefix": "exit",
 		"body": [
 			"exit program returning ${1:item}"
+		],
+		"description": "EXIT PROGRAM"
+	},
+	"EXIT PROGRAM": {
+		"prefix": "EXIT",
+		"body": [
+			"EXIT PROGRAM RETURNING ${1:item}"
 		],
 		"description": "EXIT PROGRAM"
 	},
@@ -545,6 +732,14 @@
 		"prefix": "$set",
 		"body": [
 			"\\$set sourceformat\"${2|free,variable,fixed|}\"",
+			"$0"
+		]
+	},
+	"IDENTIFICATION DIVISION" :
+	{
+		"prefix" : "IDENTIFICATION DIVISION",
+		"body" : [
+			"IDENTIFICATION DIVISION.",
 			"$0"
 		]
 	},
@@ -564,6 +759,22 @@
 			"$0"
 		]
 	},
+	"ENVIRONMENT DIVISION" :
+	{
+		"prefix" : "ENVIRONMENT DIVISION",
+		"body" : [
+			"ENVIRONMENT DIVISION.",
+			"$0"
+		]
+	},
+	"DATA DIVISION" :
+	{
+		"prefix" : "DATA DIVISION",
+		"body" : [
+			"DATA DIVISION.",
+			"$0"
+		]
+	},
 	"data division" :
 	{
 		"prefix" : "data division",
@@ -572,27 +783,53 @@
 			"$0"
 		]
 	},
-	"working-storage section." :
+	"WORKING-STORAGE SECTION" :
 	{
-		"prefix" : "working-storage section",
+		"prefix" : "WORKING-STORAGE",
+		"body" : [
+			"WORKING-STORAGE SECTION.",
+			"$0"
+		]
+	},
+
+	"working-storage section" :
+	{
+		"prefix" : "working-storage",
 		"body" : [
 			"working-storage section.",
 			"$0"
 		]
 	},
-	"local-storage section." :
+	
+	"local-storage section" :
 	{
-		"prefix" : "local-storage section",
+		"prefix" : "local-storage",
 		"body" : [
 			"local-storage section.",
 			"$0"
 		]
 	},	
+	"LINKAGE SECTION " :
+	{
+		"prefix" : "LINKAGE SECTION",
+		"body" : [
+			"LINKAGE SECTION.",
+			"$0"
+		]
+	},
 	"linkage section." :
 	{
 		"prefix" : "linkage section",
 		"body" : [
 			"linkage section.",
+			"$0"
+		]
+	},
+	"PROCEDURE DIVISION" :
+	{
+		"prefix" : "PROCEDURE DIVISION",
+		"body" : [
+			"PROCEDURE DIVISION.",
 			"$0"
 		]
 	},
@@ -604,7 +841,15 @@
 			"$0"
 		]
 	},
-	"program id" :
+	"PROGRAM-ID" :
+	{
+		"prefix" : "PROGRAM ID.",
+		"body" : [
+			"PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/${1:/upcase}/}}.",
+			"$0"
+		]
+	},
+	"program-id" :
 	{
 		"prefix" : "program id. ",
 		"body" : [
