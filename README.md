@@ -71,7 +71,6 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
             "problemMatcher": "$mfcobol-msbuild"
         }
     ]
-
 }
 ```
 
@@ -107,7 +106,6 @@ The example below shows you how you can create a single task to compile one prog
         "panel": "dedicated"
     },
     "problemMatcher": "$mfcobol-errformat3"
-    }
 }
 ```
 

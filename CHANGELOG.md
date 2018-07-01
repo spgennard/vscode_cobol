@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.1
+ - Remove superfluous brace
+
 ## Version - 3.3.0
  - Add some documentation for using tasks/problem matchers
  - Add some snippets for directive files (sourceformat,dialect,jvmgen,ilgen,copypath)
