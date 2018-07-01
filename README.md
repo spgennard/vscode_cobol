@@ -6,7 +6,7 @@
 --------------
 
 ## What is this?
-Syntax highlighting for COBOL and JCL!
+Syntax highlighting for COBOL, JCL and MF directive files.
 
 ## What is this not?
 An Integrated Development Environment for COBOL.
@@ -43,7 +43,7 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
 Visual Studio code can be setup to build your COBOL source code.
 
-### Task to use MsBuild
+### Task: Using MsBuild
 
 MsBuild based projects can be consumed as build task, allowing navigation to error/warnings when they occur.
 
@@ -68,10 +68,68 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
             "presentation": {
                 "reveal": "always"
             },
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$mfcobol-msbuild"
         }
     ]
 
+}
+```
+
+### Task: Single file compile using Micro Focus COBOL
+
+The example below shows you how you can create a single task to compile one program using the `cobol` command.
+
+```json
+{
+    "label": "cobol (single file)",
+    "command": "cobol",
+    "args": [
+        "${file}",
+        "noint",
+        "nognt",
+        "noobj",
+        "noquery",
+        "errformat(3)",
+        "COPYPATH($COBCPY;${workspaceFolder}\\CopyBooks;${workspaceFolder}\\CopyBooks\\Public)",
+        ";"
+    ],
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    },
+    "options": {
+        "cwd": "${workspaceRoot}"
+    },
+    "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": true,
+        "panel": "dedicated"
+    },
+    "problemMatcher": "$mfcobol-errformat3"
+    }
+}
+```
+
+### Task: Single file compile using GNU COBOL/OpenCOBOL/COBOL-IT
+
+The example below shows you how you can create a single task to compile one program using the `cobc` command.
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "gnu cobol - cobc (single file)",
+            "type": "shell",
+            "command": "cobc",
+            "args": [
+                "-fsyntax-only", 
+                "${file}"
+            ],
+            "problemMatcher" : "$gnucobol-cobc"
+        }
+    ]
 }
 ```
 

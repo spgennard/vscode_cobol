@@ -1,5 +1,9 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.0
+ - Add some documentation for using tasks/problem matchers
+ - Add some snippets for directive files (sourceformat,dialect,jvmgen,ilgen,copypath)
+ 
 ## Version - 3.2.15
  - Add simple .dir file colouriser for Micro Focus directive files
  - Add UPPERCASE version of various snippets, so if you are typing in 

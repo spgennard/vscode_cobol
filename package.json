@@ -1,8 +1,8 @@
 {
     "name": "cobol",
     "displayName": "COBOL",
-    "description": "COBOL/JCL syntax support",
-    "version": "3.2.15",
+    "description": "COBOL/JCL/DIR syntax support",
+    "version": "3.3.0",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -146,6 +146,13 @@
                 ],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
+            },
+            "[dir]": {
+                "files.autoGuessEncoding": false,
+                "editor.formatOnType": false,
+                "editor.rulers": [ ],
+                "editor.detectIndentation": false,
+                "editor.wordSeparators": "`~!@#$%^&*()=[{]}\\|;:'\",<>/?"
             }
         },
         "languages": [
@@ -432,6 +439,10 @@
             {
                 "language": "OpenCOBOL",
                 "path": "./snippets/cobol.json"
+            },
+            {
+                "language": "dir",
+                "path" : "./snippets/dir.json"
             }
         ],
         "problemPatterns": [
