@@ -39,6 +39,7 @@
       "match": "^\\*.*$",
       "name": "comment.line.cobol.fixed"
     },
+    
     {
       "match": "(?:^|\\s+)(?i:\\$set\\s+)(ilusing.*)$",
       "captures": {
@@ -92,6 +93,10 @@
     {
       "match": "(\\*>.*$)",
       "name": "comment.line.modern"
+    },
+    {
+      "match" : "(>>.*)$",
+      "name": "strong comment.line.set.acucobol"
     },
     {
       "match": "([nN][xX]|[hHxX])'\\h*'",
@@ -348,7 +353,7 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|exit\\s+method|exit\\s+program|exit\\s+function|end\\s+function|end\\s+operator|end\\s+program|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as|stop\\srun|stop)(?=\\s|\\.|,)",
+      "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|end\\s+function|end\\s+operator|end\\s+program|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as|stop)(?=\\s|\\.|,)",
       "name": "keyword.identifiers.cobol"
     },
     {
@@ -364,7 +369,7 @@
       "name": "keyword.control.catch-exception.cobol"
     },
     {
-      "match": "(?<![-_])(?i:else|when|select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|\\+\\+include|copy|replace)(?=\\s)",
+      "match": "(?<![-_])(?i:select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|\\+\\+include|copy|replace)(?=\\s)",
       "name": "keyword.otherverbs.cobol"
     },
     {
@@ -376,7 +381,7 @@
       "name": "support.function.cobol"
     },
     {
-      "match": "(?<![-_])(?i:end-accept|end-add|end-sync|end-call|end-compute|end-delete|end-display|end-divide|end-if|end-set|end-evaluate|end-multiply|end-of-page|end-perform|end-read|end-receive|end-return|end-rewrite|end-search|end-start|end-string|end-subtract|end-unstring|end-write|program|class|interface|enum|interface)(?=\\s|\\.)",
+      "match": "(?<![-_])(?i:end-accept|end-add|end-sync|end-compute|end-delete|end-display|end-divide|end-set|end-multiply|end-of-page|end-read|end-receive|end-return|end-rewrite|end-search|end-start|end-string|end-subtract|end-unstring|end-write|program|class|interface|enum|interface)(?=\\s|\\.)",
       "name": "keyword.verbs.cobol"
     },
     {
@@ -384,7 +389,7 @@
       "name": "keyword.other.cobol"
     },
     {
-      "match": "(?<![-_])(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|when|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at\\s+end|at|page|name)(?=\\s|\\.|,)",
+      "match": "(?<![-_])(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at\\s+end|at|page|name)(?=\\s|\\.|,)",
       "name": "keyword.identifers.cobol"
     },
     {
@@ -400,7 +405,11 @@
       "comment": "type ssss "
     },
     {
-      "match": "(?<![-_])(?i:bit|binary-char|binary-char-unsigned|binary-short|binary-short-unsigned|binary.long|binary-c-long|binary-long-unsigned|binary-long|binary-double|binary-double-unsigned|float-short|float-extended|float-long|bit|condition-value|characters|character\\s+type|character|comma|crt|decimal|object\\sreference|object-reference|object|list|dictionary|unsigned|string)(?=\\s|\\.|,|\\]|\\[)",
+      "match": "(?<![-_])(?i:string)(?=\\s+value|\\.)",
+      "name": "storage.type.cobol"
+    },
+    {
+      "match": "(?<![-_])(?i:bit|binary-char|binary-char-unsigned|binary-short|binary-short-unsigned|binary.long|binary-c-long|binary-long-unsigned|binary-long|binary-double|binary-double-unsigned|float-short|float-extended|float-long|bit|condition-value|characters|character\\s+type|character|comma|crt|decimal|object\\+sreference|object-reference|object|list|dictionary|unsigned)(?=\\s|\\.|,|\\]|\\[)",
       "name": "storage.type.cobol"
     },
     {
@@ -452,7 +461,11 @@
       }
     },
     {
-      "match": "(?<![-_])(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|if|evaluate|exhibit|named|exit|free|generate|go\\s+to|goback|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|perform|purge|raise|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.)",
+      "match" : "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?=\\s|\\.|$)",
+      "name" : "keyword.control.cobol"
+    },
+    {
+      "match": "(?<![-_])(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|evaluate|exhibit|named|exit|free|generate|go\\s+to|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|purge|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.|$)",
       "name": "keyword.verbs.cobol"
     },
     {
@@ -496,7 +509,7 @@
       "name": "storage.type.picture.cobol"
     },
     {
-      "match": "(?<![-_])(?i:computational-1|comp-1|computational-2|comp-2|computational-3|comp-3|computational-4|comp-4|computational-x|comp-x|computational-5|comp-5|computational-6|comp-6|computational-n|comp-n|packed-decimal|index|float|double|signed-short|unsigned-short|signed-int|unsigned-int|signed-long|unsigned-long|comp|computational|usage\\sis\\sdisplay|usage\\sis\\sfont|usage display|binary|mutex-pointer|data-pointer|thread-pointer|sempahore-pointer|event-pointer|program-pointer|procedure-pointer|pointer|handle|window|subwindow|control-type|thread|menu|variant|layout-manager|occurs|typedef|any|times|blank\\s+screen|blank|usage\\sis|is\\spartial|usage|justified|just|right|signed|trailing\\s+separate|sign|seperate)(?=\\s|\\.)",
+      "match": "(?<![-_])(?i:computational-1|comp-1|computational-2|comp-2|computational-3|comp-3|computational-4|comp-4|computational-x|comp-x|computational-5|comp-5|computational-6|comp-6|computational-n|comp-n|packed-decimal|index|float|double|signed-short|unsigned-short|signed-int|unsigned-int|signed-long|unsigned-long|comp|computational|usage\\sis\\sdisplay|usage\\sis\\sfont|usage display|binary|mutex-pointer|data-pointer|thread-pointer|sempahore-pointer|event-pointer|program-pointer|procedure-pointer|pointer|window|subwindow|control-type|thread|menu|variant|layout-manager|occurs|typedef|any|times|blank\\s+screen|blank|usage\\sis|is\\spartial|usage|justified|just|right|signed|trailing\\s+separate|sign|seperate)(?=\\s|\\.)",
       "name": "storage.type.picture.cobol"
     },
     {
@@ -528,8 +541,8 @@
       "name": "keyword.json.cobol"
     },
     {
-      "match": "(?<![-_])(?i:modify|inquire|title|event|center|label-offset|cell|help-id|cells|push-button|list-box|label|default-font|id|no-tab|unsorted|color|height|width|bind|thread|erase|modeless|scroll|system|menu|title-bar|wrap|destroy|resizeable|user-gray|large-font|newline|3-d|data-columns|display-columns|alignment|separation|cursor-frame-width|divider-color|drag-color|heading-color|heading-divider-color|num-rows|record-data|tiled-headings|vpadding|centered-headings|column-headings|self-act|cancel-button|vscroll|report-composer|clsid|primary-interface|active-x-control|default-interface|default-source|auto-minimize|auto-resize|resource|engraved|initial-state|frame|acuactivexcontrol|activex-res|grid|box|message)(?=\\s|\\.|,|$)",
-      "name": "keyword.cobol.acu"
+      "match": "(?<![-_])(?i:modify|inquire|title|event|center|label-offset|cell|help-id|cells|push-button|list-box|label|default-font|id|no-tab|unsorted|color|height|width|bind|thread|erase|modeless|scroll|system|menu|title-bar|wrap|destroy|resizeable|user-gray|large-font|newline|3-d|data-columns|display-columns|alignment|separation|cursor-frame-width|divider-color|drag-color|heading-color|heading-divider-color|num-rows|record-data|tiled-headings|vpadding|centered-headings|column-headings|self-act|cancel-button|vscroll|report-composer|clsid|primary-interface|active-x-control|default-interface|default-source|auto-minimize|auto-resize|resource|engraved|initial-state|frame|acuactivexcontrol|activex-res|grid|box|message|namespace|class-name|module|constructor|version|strong|culture|method|handle)(?=\\s|\\.|,|$)",
+      "name": "keyword.cobol.acu strong"
     },
     {
       "begin": "(?i:remarks)",

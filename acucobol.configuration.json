@@ -38,5 +38,5 @@
 			"close": "'"
 		}
 	],
-	"wordPattern": "[\\-a-zA-Z0-9_]+"
+	"wordPattern": "[\\-a-zA-Z0-9_@]+"
 }
