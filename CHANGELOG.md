@@ -1,5 +1,14 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.4
+ - Continue work on the jcl grammar
+ 
+## Version - 3.3.3
+ - Attempt to fix the untab with column zero issue #23
+ - Add more support for ACU verbs (DOTNET/COM related)
+ - Add various keywords to the keyword.control scope
+ - make ACU verbs "strong" in cobol syntax, as they may or may not be available
+
 ## Version - 3.3.1
  - Remove superfluous brace
 
