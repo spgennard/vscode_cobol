@@ -12,6 +12,10 @@
   "name": "COBOL",
   "patterns": [
     {
+      "match" : "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])(\\*.*$)",
+      "name": "comment.line.cobol.fixed"
+    },
+    {
       "match": "(^[0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s])(\\*.*$)",
       
       "captures": {
@@ -353,7 +357,7 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|end\\s+function|end\\s+operator|end\\s+program|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as|stop)(?=\\s|\\.|,)",
+      "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|end\\s+function|end\\s+operator|end\\s+program|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as|stop\\s+run|stop)(?=\\s|\\.|,)",
       "name": "keyword.identifiers.cobol"
     },
     {

@@ -1,5 +1,9 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.5
+ - More support for ACU COBOL Syntax
+  - Fix bug shown up with an odd example with "REMARKS"/COMMENT
+  
 ## Version - 3.3.4
  - Continue work on the jcl grammar
  
