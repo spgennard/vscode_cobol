@@ -353,7 +353,7 @@
       "name": "keyword.identifiers.cobol"
     },
     {
-      "match": "(?i:enum-id|valuetype-id|operator-id|method-id|class-id|program-id|attribute-id|iterator-id|implements|inherits)(?=\\s|\\.)",
+      "match": "(?i:enum-id|valuetype-id|operator-id|method-id|class-id|program-id|attribute-id|iterator-id|implements|inherits|constraints|constrain)(?=\\s|\\.)",
       "name": "keyword.verbs.cobol"
     },
     {

@@ -53,6 +53,20 @@
     },
 
     { 
+      "match" : "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER)",
+        "name" : "variable.language.job.jcl",
+        "captures": {
+            "1": { "name": "constant.language.job.jcl" }
+         }
+    },
+    { 
+      "match" : "(?i:HOLD|JCLHOLD|SCAN)",
+        "name" : "variable.language.typrun.jcl",
+        "captures": {
+            "1": { "name": "constant.language.typrun.jcl" }
+         }
+    },
+    { 
       "match" : "(?i:BFALN|BFTEK|BLKSIZE|BUFIN|BUFL|BUFMAX|BUFNO|BUFOFF|BUFOUT|BUFSIZE|CPRI|CYLOFL|DEN|DIAGNS|DSORG|EROPT|FUNC|GNCP|INTVL|IPL|TXID|KEYLEN|LIMCT|LRECL|MODE|NCP|NTM|OPTCD|PCI|PRTSP|RECFM|RESERVE|RKP|STACK|THRESH|TRTCH)",
         "name" : "variable.language.dcb.jcl",
         "captures": {

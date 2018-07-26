@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL/DIR syntax support",
-    "version": "3.3.6",
+    "version": "3.3.7",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -508,11 +508,11 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^7.0.67",
+        "tslint": "^5.11.0",
         "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
-        "tslint": "^5.8.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
+        "vscode": "^1.1.6"
     },
     "dependencies": {
         "vsce": "^1.44.0"
