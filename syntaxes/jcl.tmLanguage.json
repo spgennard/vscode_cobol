@@ -9,7 +9,22 @@
       "match": "^//\\*.*$"
     },
     {
-      "match": "(//[A-Za-z0-9\\$\\#@]*)\\s*(COMMAND|CNTL|DD|ENCNTL|EXEC|IF|THEN|ELSE|ENDIF|INCLUDE|JCLIB|JOB|OUTPUT|PEND|PROC|SET|XMIT)",
+      "begin": "(?i:DD\\s+\\*$|DD\\s+\\*.*[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$)",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.jcl"
+        }
+      },
+      "name": "meta.symbol.jcl",
+      "end": "(?i:(//[A-Za-z0-9\\$\\#@\\.]*)|/\\*)",
+      "endCaptures": {
+        "0": {
+          "name": "variable.other.jcl"
+        }
+      }
+    },
+    {
+      "match": "(//[A-Za-z0-9\\$\\#@\\.]*)\\s+(COMMAND|CNTL|ENCNTL|EXEC|IF|THEN|ELSE|ENDIF|INCLUDE|JCLIB|JOB|OUTPUT|PEND|UTPROC|PROC|SET|XMIT)",
       "captures": {
         "1": {
           "name": "variable.other.jcl"
@@ -38,7 +53,7 @@
          }
     },
 
-    { "match" : "(?i:PGM|PROC|PARM|ADDRSPC|ACCT|TIME|REGION|COND|DSNME|DATAC)=",
+    { "match" : "(?i:PGM|UTPROC|PROC|PARM|ADDRSPC|ACCT|TIME|REGION|COND|DSNME|DATAC)=",
         "name" : "variable.language.jcl",
         "captures": {
             "1": { "name": "variable.exec.language.jcl" }
@@ -53,7 +68,7 @@
     },
 
     { 
-      "match" : "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER)",
+      "match" : "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER|CLASS|UID)(=|$)",
         "name" : "variable.language.job.jcl",
         "captures": {
             "1": { "name": "constant.language.job.jcl" }
@@ -87,6 +102,15 @@
     {
       "match" : "(?<![a-zA-Z])(?i:LT|GT|GE|EQ|LE|NE|EVEN|ONLY)(?=\\)|,)",
       "name" : "keyword.operator.comparison.jcl"
+    },
+    {
+      "match" : "^(//[A-Za-z0-9\\$\\#@\\.]*)",
+      "name": "variable.other.jcl"
+    },
+
+    {
+      "match" : "(?i:DD\\s+)",
+      "name" : "keyword.other.jcl"
     }
 
     
