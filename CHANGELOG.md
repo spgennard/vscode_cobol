@@ -1,5 +1,9 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.10
+ - Fix issue #26,#27
+ - Yet more jcl changes
+ 
 ## Version - 3.3.9
  - More jcl grammar tweaks
  
