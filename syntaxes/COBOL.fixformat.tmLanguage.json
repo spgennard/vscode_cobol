@@ -1,0 +1,18 @@
+{
+  "fileTypes": [],
+  "name": "COBOL_FIXED",
+  "patterns": [
+    {
+      "include": "source.cobol"
+    },
+    {
+      "match": "(^......[ a-zA-Z0-9\\-].................................................................)(.*)$",
+      "captures": {
+        "2": {
+          "name": "comment.line.cobol.right.fixed"
+        }
+      }
+    }
+  ],
+  "scopeName": "source.cobol_fixed"
+}

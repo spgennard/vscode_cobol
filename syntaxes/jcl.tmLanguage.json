@@ -38,82 +38,100 @@
       }
     },
     {
-      "match" : "^//\\s+",
-      "name" : "keyword.continuation.jcl"
+      "match": "^//\\s+",
+      "name": "keyword.continuation.jcl"
     },
     {
-       "match"  : "'.*'",
-       "name": "string.quoted.single.jcl"
-    },
-
-    { "match" : "(?i:DSN|DISP|DCB|UNIT|VOL|SYSOUT|SPACE|RECFM|LRECL)=",
-        "name" : "variable.language.jcl",
-        "captures": {
-            "1": { "name": "variable.dd.language.jcl" }
-         }
-    },
-
-    { "match" : "(?i:PGM|UTPROC|PROC|PARM|ADDRSPC|ACCT|TIME|REGION|COND|DSNME|DATAC)=",
-        "name" : "variable.language.jcl",
-        "captures": {
-            "1": { "name": "variable.exec.language.jcl" }
-         }
-    },
-
-    { "match" : "(?i:NEW|DELETE|OLD|KEEP|KEEP|SHR|PASS|CATLG|MOD|CATLG|UNCATLG)",
-        "name" : "variable.language.jcl",
-        "captures": {
-            "1": { "name": "constant.language.disp.jcl" }
-         }
-    },
-
-    { 
-      "match" : "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER|CLASS|UID)(=|$)",
-        "name" : "variable.language.job.jcl",
-        "captures": {
-            "1": { "name": "constant.language.job.jcl" }
-         }
-    },
-    { 
-      "match" : "(?i:HOLD|JCLHOLD|SCAN)",
-        "name" : "variable.language.typrun.jcl",
-        "captures": {
-            "1": { "name": "constant.language.typrun.jcl" }
-         }
-    },
-    { 
-      "match" : "(?i:BFALN|BFTEK|BLKSIZE|BUFIN|BUFL|BUFMAX|BUFNO|BUFOFF|BUFOUT|BUFSIZE|CPRI|CYLOFL|DEN|DIAGNS|DSORG|EROPT|FUNC|GNCP|INTVL|IPL|TXID|KEYLEN|LIMCT|LRECL|MODE|NCP|NTM|OPTCD|PCI|PRTSP|RECFM|RESERVE|RKP|STACK|THRESH|TRTCH)",
-        "name" : "variable.language.dcb.jcl",
-        "captures": {
-            "1": { "name": "constant.language.dbc.jcl" }
-         }
-    },
-    { 
-      "match" : "(?i:BLKSIZE|DCB|DDname|DEST|DISP|DSNAME|DSNTYPE|EXPDT|KEYLEN|LABEL|LIKE|LRECL|OUTLIM|OUTPUT|RECFM|RECORG|RETPD|SPACE|SYSOUT|UNIT|VOLUME)",
-        "name" : "variable.language.dcb.jcl",
-        "captures": {
-            "1": { "name": "constant.language.dbc_generic.jcl" }
-         }
+      "match": "'.*'",
+      "name": "string.quoted.single.jcl"
     },
     {
-      "match" : "(?i:COND\\..*=|COND=)",
-      "name" : "keyword.control.conditional.jcl"
+      "match": "(?i:DSN|DISP|DCB|UNIT|VOL|SYSOUT|SPACE|RECFM|LRECL)(=)",
+      "captures": {
+        "0": {
+          "name": "variable.language.jcl"
+        },
+        "1": {
+          "name": "keyword.operator.jcl"
+        }
+      }
     },
     {
-      "match" : "(?<![a-zA-Z])(?i:LT|GT|GE|EQ|LE|NE|EVEN|ONLY)(?=\\)|,)",
-      "name" : "keyword.operator.comparison.jcl"
+      "match": "(?i:PGM|UTPROC|PROC|PARM|ADDRSPC|ACCT|TIME|REGION|COND|DSNME|DATAC)(=)",
+      "name": "variable.language.jcl",
+      "captures": {
+        "1": {
+          "name": "variable.exec.language.jcl"
+        },
+        "2": {
+          "name": "keyword.operator.jcl"
+        }
+      }
     },
     {
-      "match" : "^(//[A-Za-z0-9\\$\\#@\\.]*)",
+      "match": "(?i:NEW|DELETE|OLD|KEEP|KEEP|SHR|PASS|CATLG|MOD|CATLG|UNCATLG)",
+      "name": "variable.language.jcl",
+      "captures": {
+        "1": {
+          "name": "constant.language.disp.jcl"
+        }
+      }
+    },
+    {
+      "match": "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER|CLASS|UID)(=|$)",
+      "name": "variable.language.job.jcl",
+      "captures": {
+        "1": {
+          "name": "constant.language.job.jcl"
+        },
+        "2": {
+          "name": "keyword.operator.jcl"
+        }
+      }
+    },
+    {
+      "match": "(?i:HOLD|JCLHOLD|SCAN)",
+      "name": "variable.language.typrun.jcl",
+      "captures": {
+        "1": {
+          "name": "constant.language.typrun.jcl"
+        }
+      }
+    },
+    {
+      "match": "(?i:BFALN|BFTEK|BLKSIZE|BUFIN|BUFL|BUFMAX|BUFNO|BUFOFF|BUFOUT|BUFSIZE|CPRI|CYLOFL|DEN|DIAGNS|DSORG|EROPT|FUNC|GNCP|INTVL|IPL|TXID|KEYLEN|LIMCT|LRECL|MODE|NCP|NTM|OPTCD|PCI|PRTSP|RECFM|RESERVE|RKP|STACK|THRESH|TRTCH)",
+      "name": "variable.language.dcb.jcl",
+      "captures": {
+        "1": {
+          "name": "constant.language.dbc.jcl"
+        }
+      }
+    },
+    {
+      "match": "(?<![-_\\.])(?i:BLKSIZE|DCB|DDname|DEST|DISP|DSNAME|DSNTYPE|EXPDT|KEYLEN|LABEL|LIKE|LRECL|OUTLIM|OUTPUT|RECFM|RECORG|RETPD|SPACE|SYSOUT|UNIT|VOLUME)",
+      "name": "variable.language.dcb.jcl",
+      "captures": {
+        "1": {
+          "name": "constant.language.dbc_generic.jcl"
+        }
+      }
+    },
+    {
+      "match": "(?i:COND\\..*=|COND=)",
+      "name": "keyword.control.conditional.jcl"
+    },
+    {
+      "match": "(?<![a-zA-Z])(?i:LT|GT|GE|EQ|LE|NE|EVEN|ONLY)(?=\\)|,)",
+      "name": "keyword.operator.comparison.jcl"
+    },
+    {
+      "match": "^(//[A-Za-z0-9\\$\\#@\\.]*)",
       "name": "variable.other.jcl"
     },
-
     {
-      "match" : "(?i:DD\\s+)",
-      "name" : "keyword.other.jcl"
+      "match": "(?i:DD\\s+)",
+      "name": "keyword.other.jcl"
     }
-
-    
   ],
   "scopeName": "source.jcl"
 }

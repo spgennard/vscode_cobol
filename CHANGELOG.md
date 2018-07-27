@@ -1,5 +1,8 @@
 # COBOL Source colouriser for Visual Studio Code
 
+## Version - 3.3.9
+ - More jcl grammar tweaks
+ 
 ## Version - 3.3.8
  - Enhance jcl grammar, try to handle "DD *" overy multiple lines
  - add some extra jcl parameters
