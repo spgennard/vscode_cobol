@@ -80,7 +80,7 @@ The example below shows you how you can create a single task to compile one prog
 
 ```json
 {
-    "label": "cobol (single file)",
+    "label": "mf cobol (single file)",
     "command": "cobol",
     "args": [
         "${file}",
@@ -109,7 +109,7 @@ The example below shows you how you can create a single task to compile one prog
 }
 ```
 
-### Task: Single file compile using GNU COBOL/OpenCOBOL/COBOL-IT
+### Task: Single file compile using GnuCOBOL/OpenCOBOL/COBOL-IT
 
 The example below shows you how you can create a single task to compile one program using the `cobc` command.
 
@@ -118,11 +118,13 @@ The example below shows you how you can create a single task to compile one prog
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "gnu cobol - cobc (single file)",
+            "label": "gnucobol - cobc (single file)",
             "type": "shell",
             "command": "cobc",
             "args": [
-                "-fsyntax-only", 
+                "-fsyntax-only",
+                "-I${workspaceFolder}\\CopyBooks",
+                "-I${workspaceFolder}\\CopyBooks\\Public",
                 "${file}"
             ],
             "problemMatcher" : "$gnucobol-cobc"
@@ -144,6 +146,8 @@ The example below shows you how you can create a single task to compile one prog
             "type": "shell",
             "command": "%ACUCOBOL%\\bin\\ccbl32",
             "args": [
+                "-Sp", "${workspaceFolder}\\CopyBooks",
+                "-Sp", "${workspaceFolder}\\CopyBooks\\Public",
                 "${file}"
             ],
             "windows": {
@@ -162,14 +166,14 @@ The example below shows you how you can create a single task to compile one prog
 
 ### [ToDo tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree) by Gruntfuggly
 
-Although this extension does not understand comments in COBOL source files, it can be made to my adding the following user setting:
+Although this extension does not understand comments in COBOL source files, it can be made to by adding the following user setting:
 
 ```json
 {
     "todo-tree.flat": false,
     "todo-tree.expanded": true,
 
-    "todo-tree.regex": "((//|#|<!--|;|/\\*|\\*>|^      \\*)\\s*($TAGS)|^\\s*- \\[ \\])",
+    "todo-tree.regex": "((//|#|<!--|;|/\\*|\\*>|^......\\*)\\s*($TAGS)|^\\s*- \\[ \\])",
     "todo-tree.tags": [
         "TODO",
         "FIXME",
