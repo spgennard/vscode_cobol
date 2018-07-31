@@ -471,6 +471,13 @@
                 "line": 2,
                 "severity": 3,
                 "message": 4
+            },
+            {
+                "name" : "acucobol-ccbl",
+                "regexp": "^(.*),\\sline\\s(\\d+):\\s(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 3
             }
         ],
         "problemMatchers": [
@@ -497,6 +504,14 @@
                     "absolute"
                 ],
                 "pattern": "$gnucobol-cobc"
+            },
+            {
+                "name": "acucobol-ccbl",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$acucobol-ccbl"
             }
         ]
     },

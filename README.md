@@ -131,6 +131,32 @@ The example below shows you how you can create a single task to compile one prog
 }
 ```
 
+
+### Task: Single file compile using AcuCOBOL-GT
+
+The example below shows you how you can create a single task to compile one program using the `ccbl32` command.
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "acu cobol - ccbl32 (single file)",
+            "type": "shell",
+            "command": "%ACUCOBOL%\\bin\\ccbl32",
+            "args": [
+                "${file}"
+            ],
+            "windows": {
+                "options": {
+                    "env": {
+                        "ACUCOBOL" : "C:\\extend10.1.1\\AcuGT"
+                    }
+                }
+            },
+            "problemMatcher" : "$acucobol-ccbl"           
+        }
+    ]
+```
 ## Complementary extensions
 
 ### [ToDo tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree) by Gruntfuggly
