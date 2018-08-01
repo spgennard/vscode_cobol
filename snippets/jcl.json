@@ -1,0 +1,34 @@
+{
+	"Job/ADDRSPC": {
+		"scope" : "JCL",
+		"prefix": "ADDRSPC",
+		"body": [
+			"ADDRSPC=${2|VIRT,REAL|}${3|\\,|}"
+		],
+		"description" : "Job Statement/ADDRSPC"
+	},
+	"JOB/BYTES": {
+		"scope" : "JCL",
+		"prefix": "BYTES",
+		"body": [
+			"BYTES=${2:500},${3|CANCEL,DUMP,WARNING|}${4|\\,|}"
+		],
+		"description" : "Job Statement/BYTES"
+	},
+	"Job/CARDS": {
+		"scope" : "JCL",
+		"prefix": "CARDS",
+		"body": [
+			"CARDS=${2:500},${3|CANCEL,DUMP,WARNING|}${4|\\,|}"
+		],
+		"description" : "Job Statement/CARDS"
+	},
+	"Job/COND" : {
+		"scope" : "JCL",
+		"prefix" : "COND",
+		"body" : [
+			"COND=(${2:0},${3|GT,GE,EQ,LT,LE,NE|},${4:STEPNAME})${5|\\,|}"
+		],
+		"description" : "Job Statement/COND"
+	}
+}

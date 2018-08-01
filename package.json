@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL/DIR syntax support",
-    "version": "3.3.11",
+    "version": "3.3.12",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -153,7 +153,13 @@
                 "editor.rulers": [],
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=[{]}\\|;:'\",<>/?"
+            },
+            "[JCL]" :
+            {
+                "editor.rulers": [
+                ]
             }
+            
         },
         "languages": [
             {
@@ -443,6 +449,10 @@
             {
                 "language": "dir",
                 "path": "./snippets/dir.json"
+            },
+            {
+                "language": "JCL",
+                "path": "./snippets/jcl.json"
             }
         ],
         "problemPatterns": [

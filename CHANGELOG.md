@@ -1,4 +1,8 @@
-# COBOL Source colouriser for Visual Studio Code
+# COBOL/DIR/JCL Source colouriser for Visual Studio Code
+
+## Version - 3.3.12
+ - Readme changes (Thanks Simon Sobisch)
+ - Add the start of some jcl snippets
 
 ## Version - 3.3.11
  - Finish off #2
