@@ -525,7 +525,7 @@
       "name": "storage.modifier.cobol"
     },
     {
-      "match": "\\s+(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s+|\\.|$)",
+      "match": "\\s+(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-exor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s+|\\.|$)",
       "name": "keyword.operator.cobol"
     },
     {
