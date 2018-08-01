@@ -686,7 +686,7 @@
 			"CALL \"$1\" USING",
 			"    BY ${2|VALUE,REFERENCE,CONTENT|} ${3:IDENTIFER}",
 			"    RETURNING ${4:RETURN-CODE}",
-			"eND-CALL",
+			"END-CALL",
 			"$0"
 		],
 		"description": "CALL literal"
