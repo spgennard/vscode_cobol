@@ -393,7 +393,7 @@
       "name": "keyword.other.cobol"
     },
     {
-      "match": "(?<![-_])(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at\\s+end|at|page|name)(?=\\s|\\.|,)",
+      "match": "(?<![-_])(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at\\s+end|not\\s+at|at|page|name)(?=\\s|\\.|,)",
       "name": "keyword.identifers.cobol"
     },
     {
@@ -525,7 +525,15 @@
       "name": "storage.modifier.cobol"
     },
     {
-      "match": "\\s+(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-exor|b-not|b-left|b-right|and|or|not|equals|equal|greater\\s+than|less\\s+than)(?=\\s+|\\.|$)",
+      "match": "\\s+(?i:=|<|>|<=|>=|<>|\\+|\\-|\\*|\\/|b-and|b-or|b-xor|b-exor|b-not|b-left|b-right|and|or|equals|equal|greater\\s+than|less\\s+than)(?=\\s+|\\.|$)",
+      "name": "keyword.operator.cobol"
+    },
+    {
+      "match": "(?i:not\\s+at)",
+      "name": "keyword.verb.cobol"
+    },
+    {
+      "match": "\\s+(?i:not?=\\s+|\\.|$)",
       "name": "keyword.operator.cobol"
     },
     {
@@ -591,6 +599,7 @@
       "match": "(^[0-9][0-9][0-9][0-9][0-9][0-9])",
       "name": "constant.numeric.integer"
     },
+  
     {
       "match": "([0-9a-zA-Z][a-zA-Z\\-0-9]+)",
       "name": "meta.symbol.cobol"

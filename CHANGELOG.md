@@ -1,4 +1,7 @@
-# COBOL/DIR/JCL Source colouriser for Visual Studio Code
+# COBOL/DIR/jCL Change Log
+
+## Version - 3.4.0
+ - Bodge for "not" as operator and verb #30
 
 ## Version - 3.3.12
  - Readme changes (Thanks Simon Sobisch)
