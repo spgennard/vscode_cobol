@@ -5,7 +5,7 @@ import { Range, Selection, TextEditorRevealType, window } from 'vscode';
 export function move2pd() {
     var line = findProcedureDivision();
     if (line > 0) {
-        goToLine(line)
+        goToLine(line);
     } else {
         window.setStatusBarMessage('ERROR: \'PROCEDURE DIVISION\' not found.', 4000);
     }
@@ -14,7 +14,7 @@ export function move2pd() {
 export function move2dd() {
     let line = findDataDivision();
     if (line > 0) {
-        goToLine(line)
+        goToLine(line);
         return;
     }
 
@@ -51,24 +51,6 @@ export function move2anybackwards() {
     }
 }
 
-/*
-function findMatchForward(mat: RegExp[]) {
-    if (window.activeTextEditor) {
-        const doc = window.activeTextEditor.document;
-        for (let line =  window.activeTextEditor.line; line <= doc.lineCount; line++) {
-            const range = new Range(line, 1, line, 132);
-            const txt = doc.getText(range);
-            for (let matpos = 0; matpos < mat.length; matpos++) {
-                if (txt.match(mat[matpos])) {
-                    return line;
-                }
-            }
-        }
-    }
-    return 0;
-}
-*/
-
 function findMatch(mat: RegExp) {
     if (window.activeTextEditor) {
         const doc = window.activeTextEditor.document;
@@ -87,9 +69,9 @@ function findAnyMatch(mats: RegExp[], counter: number) {
     if (window.activeTextEditor) {
         const doc = window.activeTextEditor.document;
         const editor = window.activeTextEditor;
-        const endValue = counter == 1 ? doc.lineCount : 0;
+        const endValue = counter === 1 ? doc.lineCount : 0;
         let line = editor.selection.active.line + counter;
-        for (; line != endValue; line += counter) {
+        for (; line !== endValue; line += counter) {
             const range = new Range(line, 1, line, 132);
             const txt = doc.getText(range);
             const matsLen = mats.length;
