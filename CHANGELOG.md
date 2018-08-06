@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.4,2
+ - Various tweaks
+ 
 ## Version - 3.4.1
  - iterator/id changes for #31
  
