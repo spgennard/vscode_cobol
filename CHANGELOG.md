@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.4.1
+ - iterator/id changes for #31
+ 
 ## Version - 3.4.0
  - Bodge for "not" as operator and verb #30
 
