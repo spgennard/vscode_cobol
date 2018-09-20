@@ -1,6 +1,9 @@
 # COBOL/DIR/jCL Change Log
 
-## Version - 3.4,2
+## Version - 3.4.4
+ - Tweak for issue #33
+ 
+## Version - 3.4.2
  - Various tweaks
  
 ## Version - 3.4.1

@@ -468,10 +468,7 @@
       "match" : "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?=\\s|\\.|$)",
       "name" : "keyword.control.cobol"
     },
-    {
-      "match": "(?<![-_])(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|evaluate|exhibit|named|exit|free|generate|go\\s+to|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|purge|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.|$)",
-      "name": "keyword.verbs.cobol"
-    },
+
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV][-+sS\\*$09aAbBxXpPnNzZ/,\\.]*\\([0-9]*\\)[-|+]",
       "name": "storage.type.picture.cobol"
@@ -513,8 +510,12 @@
       "name": "storage.type.picture.cobol"
     },
     {
-      "match": "(?<![-_])(?i:computational-1|comp-1|computational-2|comp-2|computational-3|comp-3|computational-4|comp-4|computational-x|comp-x|computational-5|comp-5|computational-6|comp-6|computational-n|comp-n|packed-decimal|index|float|double|signed-short|unsigned-short|signed-int|unsigned-int|signed-long|unsigned-long|comp|computational|usage\\sis\\sdisplay|usage\\sis\\sfont|usage display|binary|mutex-pointer|data-pointer|thread-pointer|sempahore-pointer|event-pointer|program-pointer|procedure-pointer|pointer|window|subwindow|control-type|thread|menu|variant|layout-manager|occurs|typedef|any|times|blank\\s+screen|blank|usage\\sis|is\\spartial|usage|justified|just|right|signed|trailing\\s+separate|sign|seperate)(?=\\s|\\.)",
+      "match": "(?<![-_])(?i:computational-1|comp-1|computational-2|comp-2|computational-3|comp-3|computational-4|comp-4|computational-x|comp-x|computational-5|comp-5|computational-6|comp-6|computational-n|comp-n|packed-decimal|index|float|double|signed-short|unsigned-short|signed-int|unsigned-int|signed-long|unsigned-long|comp|computational|usage\\sis\\sdisplay|usage\\sis\\sfont|usage display|binary|mutex-pointer|data-pointer|thread-pointer|sempahore-pointer|event-pointer|program-pointer|procedure-pointer|pointer|window|subwindow|control-type|thread|menu|variant|layout-manager|occurs|typedef|any|times|display\\s+blank\\s+when|blank\\s+when|blank\\s+screen|blank|usage\\sis|is\\spartial|usage|justified|just|right|signed|trailing\\s+separate|sign|seperate)(?=\\s|\\.)",
       "name": "storage.type.picture.cobol"
+    },
+    {
+      "match": "(?<![-_])(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|evaluate|exhibit|named|exit|free|generate|go\\s+to|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|purge|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.|$)",
+      "name": "keyword.verbs.cobol"
     },
     {
       "match": "(\\s+|^)(?:foreground-color|background-color|prompt|underline|reverse-video|no-echo|highlight|blink)",
