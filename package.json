@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL/DIR syntax support",
-    "version": "3.4.4",
+    "version": "3.5.0",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -154,12 +154,9 @@
                 "editor.detectIndentation": false,
                 "editor.wordSeparators": "`~!@#$%^&*()=[{]}\\|;:'\",<>/?"
             },
-            "[JCL]" :
-            {
-                "editor.rulers": [
-                ]
+            "[JCL]": {
+                "editor.rulers": []
             }
-            
         },
         "languages": [
             {
@@ -483,7 +480,7 @@
                 "message": 4
             },
             {
-                "name" : "acucobol-ccbl",
+                "name": "acucobol-ccbl",
                 "regexp": "^(.*),\\sline\\s(\\d+):\\s(.*)$",
                 "file": 1,
                 "line": 2,
@@ -540,6 +537,7 @@
         "vscode": "^1.1.6"
     },
     "dependencies": {
-        "vsce": "^1.44.0"
+        "vsce": "^1.44.0",
+        "trie-search": "^1.2.0"
     }
 }

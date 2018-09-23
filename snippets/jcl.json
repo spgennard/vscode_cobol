@@ -55,5 +55,19 @@
 			"$0"
 		],
 		"description" : "IEFBR14 Data set utility"
+	},
+	"Job/IEBGENER ": {
+		"scope": "JCL",
+		"prefix": "IEBGENER ",
+		"body": [
+			"//${2:STEPID01} EXEC PGM=IEBGENER ",
+			"//SYSUT1   DD *",
+			"${3}",
+			"/*",
+			"//SYSUT2   DD      DISP=NEW,DSN=${4:A.B.C)",
+			"//SYSPRINT DD      SYSOUT=*",
+			"$0"
+		],
+		"description" : "IEBGENER create/load a dataset"
 	}
 }

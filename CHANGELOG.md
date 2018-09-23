@@ -1,11 +1,16 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.5.0
+ - Add simple keyword provider
+ - Tweak keywords list using IBM's table
+ - Add JCL snipper for IEBGENER
+
 ## Version - 3.4.4
  - Tweak for issue #33
  
 ## Version - 3.4.2
  - Various tweaks
- 
+ -
 ## Version - 3.4.1
  - iterator/id changes for #31
  
