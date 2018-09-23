@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.5.1
+ - Add JCL keyword provider with a simple list of statements
+
 ## Version - 3.5.0
  - Add simple keyword provider
  - Tweak keywords list using IBM's table

@@ -8,6 +8,7 @@ import { DocComment } from './formatting/DocComment';
 import * as vscode from 'vscode';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { cobolKeywords } from './keywords/cobolKeywords';
+import { jclStatements } from "./keywords/jclstatements";
 
 export function activate(context: ExtensionContext) {
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
@@ -60,10 +61,17 @@ export function activate(context: ExtensionContext) {
 	const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
     /* TODO: find out the ACU & OpenCOBOL/GNU keyword list */
     const completionItemProviderDisposable = vscode.languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
-
     context.subscriptions.push(completionItemProviderDisposable);
 
-    /* TODO: add JCL & .DIR keywords too */ 
+
+    const jclSelectors = [
+        { scheme: 'file', language: 'JCL' }
+    ];
+    const completionJCLItemProvider = new TextAutocompleteCompletionItemProvider(jclStatements);
+    const completionJCLItemProviderDisposable = vscode.languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
+    context.subscriptions.push(completionJCLItemProviderDisposable);
+
+    /* TODO: add .DIR keywords too */ 
 }
 
 export function deactivate() {
