@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.5.2
+ - Minor changes to keywords list for textprovider
+
 ## Version - 3.5.1
  - Add JCL keyword provider with a simple list of statements
 
