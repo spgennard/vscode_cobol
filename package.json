@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL/DIR syntax support",
-    "version": "3.5.1",
+    "version": "3.6.0",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -13,7 +13,7 @@
         "email": "stephen@gennard.net"
     },
     "engines": {
-        "vscode": "^1.24.0"
+        "vscode": "^1.27.0"
     },
     "icon": "images/cobol.png",
     "categories": [

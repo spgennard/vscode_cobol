@@ -9,6 +9,7 @@ import * as vscode from 'vscode';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { cobolKeywords } from './keywords/cobolKeywords';
 import { jclStatements } from "./keywords/jclstatements";
+import CobolDocumentSymbolProvider from './symbolprovider';
 
 export function activate(context: ExtensionContext) {
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
@@ -72,6 +73,10 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
     /* TODO: add .DIR keywords too */ 
+
+    const symbol = new CobolDocumentSymbolProvider();
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors,symbol));
+    context.subscriptions.push(DocComment.register());
 }
 
 export function deactivate() {

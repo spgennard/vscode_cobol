@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.6
+ - Add ultra simple symbol provider to mark program-id, division's and sections
+ 
 ## Version - 3.5.1
  - Add JCL keyword provider with a simple list of statements
 
