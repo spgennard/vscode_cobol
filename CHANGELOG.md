@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.6.1
+ - Tweak the symbol provider, heath robinson style, #34
+ 
 ## Version - 3.6
  - Add ultra simple symbol provider to mark program-id, division's and sections
  

@@ -2,6 +2,20 @@ import * as vscode from 'vscode';
 
 export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
+    private isValid(id: string): boolean {
+
+        if (id === null || id.length == 0) {
+            return false;
+        }
+        let regex=/^[a-zA-Z][a-zA-Z0-9-]*/g;
+
+        if (id.match(regex)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.DocumentSymbol[]> {
         let symbols: vscode.DocumentSymbol[] = [];
         let di: number;
@@ -14,13 +28,19 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 continue;
             }
 
-            var lineTokens = line.split(/[\s \,\.]/g);
+            var lineTokens = line.split(/[\s \,]/g);
 
             var tokens = [];
 
             // build up a list of token for this line
             for (var ti = 0; ti < lineTokens.length; ti++) {
-                var token = lineTokens[ti];
+                let token: string = lineTokens[ti];
+                let endsWithPeriod: boolean = false;
+                
+                if (token.endsWith(".")) {
+                    token = token.substring(0,token.length-1);
+                    endsWithPeriod=true;
+                }
                 if (token.length === 0) {
                     continue;
                 }
@@ -32,13 +52,20 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
 
             var prev = "";
 
+            var inQuote = false;
             for (var i = 0; i < tokens.length; i++) {
                 var current = tokens[i].toLowerCase();
+
+                // log quotes
+                if (current === '"') {
+                    inQuote = !inQuote;
+                    continue;
+                }
 
                 // add program-id or class-id
                 if ((prev === "program-id" ||
                     prev === 'class-id')
-                    && current.length > 0) {
+                    && this.isValid(current)) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
                     symbols.push(
                         new vscode.DocumentSymbol(
@@ -53,7 +80,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 }
 
                 // add division
-                if (prev.length !== 0 && current === "division") {
+                if (this.isValid(prev) && current === "division" && !inQuote) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
                     symbols.push(
                         new vscode.DocumentSymbol(
@@ -68,7 +95,11 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 }
 
                 // add sections
-                if (prev.length !== 0 && current === "section") {
+                if (this.isValid(prev) && current === "section" && !inQuote) {
+                    // avoid matching "exit section" or "declare"
+                    if (prev ==='exit' || prev === 'declare') {
+                        continue;
+                    }
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
                     symbols.push(
                         new vscode.DocumentSymbol(
@@ -86,7 +117,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 if ((prev === "entry" ||
                     prev === 'method-id' ||
                     prev === 'function-id')
-                    && current.length !== 0) {
+                    && this.isValid(current) && !inQuote) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
                     let sym = prev === 'function-id' ? vscode.SymbolKind.Function : vscode.SymbolKind.Method;
                     current = current.replace(/\"/g,"");
