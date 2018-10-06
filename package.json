@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL/JCL/DIR syntax support",
-    "version": "3.6.2",
+    "version": "3.6.3",
     "publisher": "bitlang",
     "repository": {
         "type": "git",

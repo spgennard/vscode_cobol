@@ -1,5 +1,9 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.6.3
+ - Tweak quotes in symbol provider (still not 100% happy but should be better)
+ - Add enum-id, interface-id, valuetype-id to symbol provider
+ 
 ## Version - 3.6.2
  - Fix broken symbol provider due to removing a warning without looking closer at it, silly me.. sorry
  

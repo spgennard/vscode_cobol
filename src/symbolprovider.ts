@@ -57,8 +57,13 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 var current = tokens[i].toLowerCase();
 
                 // log quotes
-                if (current === '"') {
-                    inQuote = !inQuote;
+                if (current.includes('"')) {
+                    for (let ci = 0; ci < current.length; ci++) {
+                        if (current[ci] === '"') {
+                            inQuote = !inQuote;
+                        }
+                    }
+
                     continue;
                 }
                 endsWithPeriod = false;
@@ -84,9 +89,55 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                     continue;
                 }
 
+                // add enum-id 
+                if (prev === "enum-id" && this.isValid(current)) {
+                    let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
+                    symbols.push(
+                        new vscode.DocumentSymbol(
+                            tokens[i - 1] + " " + tokens[i],
+                            "",
+                            vscode.SymbolKind.Enum,
+                            range1,
+                            range1
+                        ));
+                    prev = current;
+                    continue;
+                }
+
+                // add interface-id 
+                if (prev === "interface-id" && this.isValid(current)) {
+                    let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
+                    symbols.push(
+                        new vscode.DocumentSymbol(
+                            tokens[i - 1] + " " + tokens[i],
+                            "",
+                            vscode.SymbolKind.Interface,
+                            range1,
+                            range1
+                        ));
+                    prev = current;
+                    continue;
+                }
+                
+                // add valuetype-id 
+                if (prev === "valuetype-id" && this.isValid(current)) {
+                    let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
+                    symbols.push(
+                        new vscode.DocumentSymbol(
+                            tokens[i - 1] + " " + tokens[i],
+                            "",
+                            vscode.SymbolKind.Struct,
+                            range1,
+                            range1
+                        ));
+                    prev = current;
+                    continue;
+                }
+
                 // add division
                 if (this.isValid(prev) && current === "division" && !inQuote) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
+
                     symbols.push(
                         new vscode.DocumentSymbol(
                             tokens[i - 1] + " " + tokens[i],
