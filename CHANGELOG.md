@@ -1,5 +1,8 @@
 # COBOL/DIR/jCL Change Log
 
+## Version - 3.6.2
+ - Fix broken symbol provider due to removing a warning without looking closer at it, silly me.. sorry
+ 
 ## Version - 3.6.1
  - Tweak the symbol provider, heath robinson style, #34
  

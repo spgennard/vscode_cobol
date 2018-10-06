@@ -4,10 +4,12 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
 
     private isValid(id: string): boolean {
 
-        if (id === null || id.length == 0) {
+        if (id === null || id.length === 0) {
             return false;
         }
-        let regex=/^[a-zA-Z][a-zA-Z0-9-]*/g;
+        id = id.replace(/\"/g, "");
+
+        let regex = /^[a-zA-Z][a-zA-Z0-9-]*/g;
 
         if (id.match(regex)) {
             return true;
@@ -28,19 +30,16 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 continue;
             }
 
-            var lineTokens = line.split(/[\s \,]/g);
+            var lineTokens = line.split(/[\s \,\.]/g);
 
             var tokens = [];
+            let endsWithPeriod: boolean = false;
+
 
             // build up a list of token for this line
             for (var ti = 0; ti < lineTokens.length; ti++) {
                 let token: string = lineTokens[ti];
-                let endsWithPeriod: boolean = false;
-                
-                if (token.endsWith(".")) {
-                    token = token.substring(0,token.length-1);
-                    endsWithPeriod=true;
-                }
+
                 if (token.length === 0) {
                     continue;
                 }
@@ -53,6 +52,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
             var prev = "";
 
             var inQuote = false;
+
             for (var i = 0; i < tokens.length; i++) {
                 var current = tokens[i].toLowerCase();
 
@@ -60,6 +60,11 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 if (current === '"') {
                     inQuote = !inQuote;
                     continue;
+                }
+                endsWithPeriod = false;
+                if (current.endsWith(".")) {
+                    current = current.substring(0, current.length - 1);
+                    endsWithPeriod = true;
                 }
 
                 // add program-id or class-id
@@ -97,7 +102,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 // add sections
                 if (this.isValid(prev) && current === "section" && !inQuote) {
                     // avoid matching "exit section" or "declare"
-                    if (prev ==='exit' || prev === 'declare') {
+                    if (prev === 'exit' || prev === 'declare') {
                         continue;
                     }
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
@@ -109,6 +114,8 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                             range1,
                             range1
                         ));
+
+
                     prev = current;
                     continue;
                 }
@@ -120,7 +127,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                     && this.isValid(current) && !inQuote) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
                     let sym = prev === 'function-id' ? vscode.SymbolKind.Function : vscode.SymbolKind.Method;
-                    current = current.replace(/\"/g,"");
+                    current = current.replace(/\"/g, "");
 
                     if (current === "new") {
                         sym = vscode.SymbolKind.Constructor;
@@ -137,6 +144,9 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                     continue;
                 }
 
+                if (endsWithPeriod) {
+                    console.log(current);
+                }
                 prev = current;
             }
         }
