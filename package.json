@@ -1,8 +1,8 @@
 {
     "name": "cobol",
     "displayName": "COBOL",
-    "description": "COBOL/JCL/DIR syntax support",
-    "version": "3.6.3",
+    "description": "COBOL, JCL, PL/I & DIR syntax support",
+    "version": "3.7.0",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -235,6 +235,17 @@
                     "dir"
                 ],
                 "configuration": "./dir.configuration.json"
+            },
+            {
+                "id":"pli",
+                "extensions": [
+                    ".pl1",
+                    ".pl",
+                    ".pc",
+                    ".pci",
+                    ".pcx"
+                ],
+                "configuration": "./pli.configuration.json"
             }
         ],
         "grammars": [
@@ -262,6 +273,11 @@
                 "language": "dir",
                 "scopeName": "source.dir",
                 "path": "./syntaxes/dir.tmLanguage.json"
+            },
+            {
+                "language": "pli",
+                "scopeName": "source.pli",
+                "path": "./syntaxes/PLI.tmLanguage.json"
             }
         ],
         "commands": [

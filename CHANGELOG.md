@@ -1,4 +1,7 @@
-# COBOL/DIR/jCL Change Log
+# COBOL,.DIR, PL/I & jCL Change Log
+
+## Version - 3.7.0
+ - Add very simple PL/I tmLanguage, just because I was fed up seeing "plain" text
 
 ## Version - 3.6.3
  - Tweak quotes in symbol provider (still not 100% happy but should be better)

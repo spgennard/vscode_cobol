@@ -6,7 +6,7 @@
 --------------
 
 ## What is this?
-Syntax highlighting for COBOL, JCL and MF directive files.
+Syntax highlighting for COBOL, JCL, PL/I and MF directive files.
 
 ## What is this not?
 An Integrated Development Environment for COBOL.
