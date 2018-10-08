@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.7.2
+ - PL/I tweaks (keywords)
+ - Bring provider inline with 'C' style providers (functions for program-id, function-id etc.).
+ 
 ## Version - 3.7.1
  - some entry statements not being included in symbol providier
  

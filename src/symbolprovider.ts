@@ -116,7 +116,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                     prev = current;
                     continue;
                 }
-                
+
                 // add valuetype-id 
                 if (prev === "valuetype-id" && this.isValid(current)) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
@@ -131,7 +131,21 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                     prev = current;
                     continue;
                 }
-
+                // add copybook
+                if (prev === "copy" && this.isValid(current)) {
+                    let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
+                    current = current.replace(/\"/g, "");
+                    symbols.push(
+                        new vscode.DocumentSymbol(
+                            tokens[i - 1] + " " + current,
+                            "",
+                            vscode.SymbolKind.File,
+                            range1,
+                            range1
+                        ));
+                    prev = current;
+                    continue;
+                }
                 // add division
                 if (this.isValid(prev) && current === "division" && !inQuote) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
@@ -159,7 +173,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                         new vscode.DocumentSymbol(
                             tokens[i - 1] + " " + tokens[i],
                             "",
-                            vscode.SymbolKind.Method,
+                            vscode.SymbolKind.Module,
                             range1,
                             range1
                         ));
@@ -169,18 +183,34 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                     continue;
                 }
 
-                // add entry-points or method-id
-                if ((prev === "entry" ||
-                    prev === 'method-id' ||
+                // add entry-points, function-id or program-id
+                if ((prev === "program-id" ||
+                    prev === 'entry-point' ||
                     prev === 'function-id')
                     && this.isValid(current) && !inQuote) {
                     let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
-                    let sym = prev === 'function-id' ? vscode.SymbolKind.Function : vscode.SymbolKind.Method;
+                    let sym = vscode.SymbolKind.Function;
                     current = current.replace(/\"/g, "");
 
-                    if (current === "new") {
-                        sym = vscode.SymbolKind.Constructor;
-                    }
+                    symbols.push(
+                        new vscode.DocumentSymbol(
+                            tokens[i - 1] + " " + tokens[i],
+                            "",
+                            sym,
+                            range1,
+                            range1
+                        ));
+                    prev = current;
+                    continue;
+                }
+
+                // add method-id
+                if (prev === 'method-id'
+                    && this.isValid(current) && !inQuote) {
+                    let range1 = new vscode.Range(new vscode.Position(di, 0), new vscode.Position(di, line.length));
+                    let sym = current === "new" ? vscode.SymbolKind.Constructor : vscode.SymbolKind.Method;
+                    current = current.replace(/\"/g, "");
+
                     symbols.push(
                         new vscode.DocumentSymbol(
                             tokens[i - 1] + " " + tokens[i],
@@ -194,7 +224,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 }
 
                 if (endsWithPeriod) {
-                    console.log(current);
+                    // console.log(current);
                 }
                 prev = current;
             }
