@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.7.1
+ - some entry statements not being included in symbol providier
+ 
 ## Version - 3.7.0
  - Add very simple PL/I tmLanguage, just because I was fed up seeing "plain" text
 

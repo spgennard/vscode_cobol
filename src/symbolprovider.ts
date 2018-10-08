@@ -63,8 +63,6 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                             inQuote = !inQuote;
                         }
                     }
-
-                    continue;
                 }
                 endsWithPeriod = false;
                 if (current.endsWith(".")) {
