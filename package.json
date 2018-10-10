@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "3.7.3",
+    "version": "3.7.4",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -540,15 +540,21 @@
         ],
         "themes": [
             {
-                "label": "Throwback Light Theme",
+                "label": "Throwback (Eclipse Inspired)",
                 "uiTheme": "vs",
                 "path": "./themes/throwback-light-theme.json"
             },
             {
-                "label": "Throwback Green Screen Theme",
+                "label": "Throwback (NX Inspired)",
+                "uiTheme": "vs",
+                "path": "./themes/throwback-light-nx-theme.json"
+            },
+                          {
+                "label": "Throwback (ISPF Inspired)",
                 "uiTheme": "vs-dark",
                 "path": "./themes/throwback-green-screen-theme.json"
             }
+                 
         ]
     },
     "scripts": {

@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.7.4
+ - Add a new theme
+ 
 ## Version - 3.7.3
  - Start to add some themes (all have the prefix throwback)
  
