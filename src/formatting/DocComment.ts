@@ -4,7 +4,7 @@ import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit
 
 export class DocComment {
     static register() {
-        const langPlusSchema =  { scheme: 'file', language: 'COBOL' };
+        const langPlusSchema = { scheme: 'file', language: 'COBOL' };
 
         // Insert *>> when RETURN is pressed
         return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {
@@ -13,9 +13,9 @@ export class DocComment {
                 if (line && line.text.trim().startsWith("*>>")) {
                     return [
                         TextEdit.insert(position, "*>> ")
-                    ]
+                    ];
                 } else {
-                    return []
+                    return [];
                 }
             }
         }, '\n');

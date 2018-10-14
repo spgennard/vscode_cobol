@@ -3,6 +3,7 @@
 import { Range, TextDocument, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as process from 'process';
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 const DEFAULT_COPYBOOK_DIR = ["."];
@@ -18,12 +19,35 @@ function getExtensions(): string[] {
 }
 
 function getcopybookdirs(): string[] {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var dirs = editorConfig.get<string[]>('copybookdirs');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let dirs = editorConfig.get<string[]>('copybookdirs');
     if (!dirs || (dirs !== null && dirs.length === 0)) {
         dirs = DEFAULT_COPYBOOK_DIR;
     }
-    return dirs;
+
+    let extraDirs: string[] = [];
+
+    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
+        let dir = dirs[dirpos];
+
+        if (dir.startsWith("$")) {
+            var e = process.env[dir.substr(1)];
+            if (e !== undefined && e !== null) {
+                e.split(path.delimiter).forEach(function (item) {
+                    extraDirs.push(item);
+                });
+            }
+        }
+    }
+    
+    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
+        let dir = dirs[dirpos];
+        if (!dir.startsWith("$")) {
+            extraDirs.push(dir);
+        }
+    }
+
+    return extraDirs;
 }
 
 function extractText(str: string) {
@@ -71,7 +95,6 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
     var extsdir = getcopybookdirs();
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
-
 
         const basefullPath = filenameDir + path.sep + extdir + path.sep + filename;
 

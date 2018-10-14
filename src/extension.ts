@@ -5,11 +5,11 @@ import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import { DocComment } from './formatting/DocComment';
-import * as vscode from 'vscode';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { cobolKeywords } from './keywords/cobolKeywords';
 import { jclStatements } from "./keywords/jclstatements";
 import CobolDocumentSymbolProvider from './symbolprovider';
+import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
 export function activate(context: ExtensionContext) {
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
@@ -57,11 +57,17 @@ export function activate(context: ExtensionContext) {
             return opencopybook.provideDefinition(doc, pos, ct);
         }
     });
+    languages.registerDefinitionProvider(allCobolSelectors, {
+        provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+            return sourcedefinitionprovider.provideDefinition(doc, pos, ct);
+        }
+    });
+    
     context.subscriptions.push(DocComment.register());
 
 	const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
     /* TODO: find out the ACU & OpenCOBOL/GNU keyword list */
-    const completionItemProviderDisposable = vscode.languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
+    const completionItemProviderDisposable = languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
     context.subscriptions.push(completionItemProviderDisposable);
 
 
@@ -69,7 +75,7 @@ export function activate(context: ExtensionContext) {
         { scheme: 'file', language: 'JCL' }
     ];
     const completionJCLItemProvider = new TextAutocompleteCompletionItemProvider(jclStatements);
-    const completionJCLItemProviderDisposable = vscode.languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
+    const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
     /* TODO: add .DIR keywords too */ 

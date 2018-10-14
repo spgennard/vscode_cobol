@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.7.5
+ - Add $ expansion in copydir support and source definition provider
+
 ## Version - 3.7.4
  - Add a new theme
  

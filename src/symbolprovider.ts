@@ -9,7 +9,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
         }
         id = id.replace(/\"/g, "");
 
-        let regex = /^[a-zA-Z][a-zA-Z0-9-]*/g;
+        let regex = /^[a-zA-Z][a-zA-Z0-9-_]*/g;
 
         if (id.match(regex)) {
             return true;
