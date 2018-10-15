@@ -34,7 +34,9 @@ function getcopybookdirs(): string[] {
             var e = process.env[dir.substr(1)];
             if (e !== undefined && e !== null) {
                 e.split(path.delimiter).forEach(function (item) {
-                    extraDirs.push(item);
+                    if (item !== undefined && item !== null && item.length > 0) {
+                        extraDirs.push(item);
+                    }
                 });
             }
         }
@@ -81,7 +83,32 @@ function extractText(str: string) {
     return str;
 }
 
+function isDirectPath(dir: string) {
+    var isWin = process.platform === "win32";
 
+    if (dir === undefined && dir === null)
+    {
+        return false;
+    }
+    
+    if (isWin) {
+        if (dir.length > 2 && dir[1] === ':') {
+            return true;
+        }
+
+        if (dir.length > 1 && dir[0] === '\\') {
+            return true;
+        }
+
+        return false;
+    }
+
+    if (dir.length > 1 && dir[0] === '/') {
+        return true;
+    }
+
+    return false;
+}
 function findFileInDirectory(filename: string, filenameDir: string): string | undefined {
     if (!filename) {
         return;
@@ -96,7 +123,10 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
 
-        const basefullPath = filenameDir + path.sep + extdir + path.sep + filename;
+        
+        const basefullPath = isDirectPath(extdir) ?
+                extdir + path.sep + filename :
+                filenameDir + path.sep + extdir + path.sep + filename;
 
         //No extension?
         if (filename === fileExtension) {

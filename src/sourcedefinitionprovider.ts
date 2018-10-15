@@ -2,7 +2,7 @@ import { TextDocument, Definition, Position, CancellationToken, ProviderResult }
 import * as vscode from 'vscode';
 
 function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[a-zA-Z][a-zA-Z0-9-_]*'));
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[a-zA-Z][a-zA-Z0-9\-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
@@ -23,7 +23,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
         // Does the line include the word?
         let wordIndex = lineTextLower.indexOf(wordLower);
         if (wordIndex !== -1) {
-            
+
             //does it have the section after it?  
             //it's a bit fuzzy.. so it could break but it should be good enough
             let sectionIndex = lineTextLower.substr(wordIndex).indexOf("section");
@@ -57,6 +57,81 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
     return undefined;
 }
 
+function getCallTarget(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp('["\'][a-zA-Z0-9-_]*["\']'));
+    let word = wordRange ? document.getText(wordRange) : '';
+    if (word === "") {
+        return undefined;
+    }
+
+    let wordLower = word.substr(1, word.length - 2).toLocaleLowerCase();
+
+    for (let i = 1; i < document.lineCount; i++) {
+        let lineTextLower = document.lineAt(i).text.toLocaleLowerCase();
+
+        // TODO - need to handle inline comments too
+        if (lineTextLower.length > 7 && lineTextLower[6] === '*') {
+            continue;
+        }
+
+        // Does the line include the word?
+        let wordIndex = lineTextLower.indexOf(wordLower);
+        if (wordIndex !== -1) {
+
+            //does it have the enttry before it?  
+            //it's a bit fuzzy.. so it could break but it should be good enough
+            let index = lineTextLower.substr(0, wordIndex).indexOf("entry");
+            if (index === -1) {
+                index = lineTextLower.substr(0, wordIndex).indexOf("program-id");
+            }
+            if (index !== -1) {
+                return new vscode.Location(
+                    document.uri,
+                    new vscode.Position(i, wordIndex)
+                );
+            }
+
+        }
+    }
+    return undefined;
+}
+
+function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_\-]+"));
+    let word = wordRange ? document.getText(wordRange) : '';
+    if (word === "") {
+        return undefined;
+    }
+    let workLower = word.toLocaleLowerCase();
+
+    for (let i = 1; i < document.lineCount; i++) {
+        let lineText = document.lineAt(i).text;
+
+        // TODO - need to handle inline comments too
+        if (lineText.length > 7 && lineText[6] === '*') {
+            continue;
+        }
+
+        // time to leave
+        if (lineText.match(/.*(procedure\s+division).*$/i)) {
+            return undefined;
+        }
+
+        let wordIndex = lineText.toLowerCase().indexOf(workLower);
+        if (wordIndex !== -1) {
+            let leftOfWord = lineText.substr(0,wordIndex);
+
+            if (leftOfWord.match(/^[0-9 ]+$/i)) {
+                return new vscode.Location(
+                    document.uri,
+                    new vscode.Position(i, wordIndex)
+                );
+            }
+        }
+    }
+    return undefined;
+}
+
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
     let location: vscode.Location[] = [];
     let loc;
@@ -67,7 +142,22 @@ export function provideDefinition(document: TextDocument, position: Position, to
         loc = getSectionOrParaLocation(document, position);
         if (loc) {
             location.push(loc);
+            return location;
         }
+    }
+
+    if (theline.match(/.*(call|cancel).*$/i)) {
+        loc = getCallTarget(document, position);
+        if (loc) {
+            location.push(loc);
+            return location;
+        }
+    }
+
+    loc = getFuzzyVariable(document, position);
+    if (loc) {
+        location.push(loc);
+        return location;
     }
 
     return location;

@@ -1,5 +1,11 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.7.8
+ - Add fuzzy variable match for source definition provider
+
+## Version - 3.7.7
+ - Tweak expansion of copydir when env expansion occurs
+
 ## Version - 3.7.6
  - Add a simple para finder to the source definition provider
  
