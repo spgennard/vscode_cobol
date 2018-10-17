@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.7.9
+ - Add quoted arguments to PL/I syntax
+ - Add .inc to the list of PL/I extensions
+ 
 ## Version - 3.7.8
  - Add fuzzy variable match for source definition provider
 
