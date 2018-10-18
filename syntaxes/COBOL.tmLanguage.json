@@ -12,12 +12,11 @@
   "name": "COBOL",
   "patterns": [
     {
-      "match" : "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])(\\*.*$)",
+      "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])(\\*.*$)",
       "name": "comment.line.cobol.fixed"
     },
     {
       "match": "(^[0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s][0-9\\s])(\\*.*$)",
-      
       "captures": {
         "1": {
           "name": "constant.numeric.cobol"
@@ -29,7 +28,6 @@
     },
     {
       "match": "(^[0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s])(\\*.*$)",
-      
       "captures": {
         "1": {
           "name": "constant.numeric.cobol,meta.symbol.cobol"
@@ -43,7 +41,6 @@
       "match": "^\\*.*$",
       "name": "comment.line.cobol.fixed"
     },
-    
     {
       "match": "(?:^|\\s+)(?i:\\$\\s*set\\s+)(ilusing.*)$",
       "captures": {
@@ -99,7 +96,7 @@
       "name": "comment.line.modern"
     },
     {
-      "match" : "(>>.*)$",
+      "match": "(>>.*)$",
       "name": "strong comment.line.set.acucobol"
     },
     {
@@ -259,6 +256,34 @@
       "endCaptures": "string.quoted.cobol.html"
     },
     {
+      "match": "(\")(CBL_.*)(\")",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.string.begin.cobol"
+        },
+        "2": {
+          "name": "support.function.cobol"
+        },
+        "3": {
+          "name": "punctuation.definition.string.end.cobol"
+        }
+      }
+    },
+    {
+      "match": "(\")(PC_.*)(\")",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.string.begin.cobol"
+        },
+        "2": {
+          "name": "support.function.cobol"
+        },
+        "3": {
+          "name": "punctuation.definition.string.end.cobol"
+        }
+      }
+    },
+    {
       "begin": "\"",
       "beginCaptures": {
         "0": {
@@ -272,6 +297,34 @@
         }
       },
       "name": "string.quoted.double.cobol"
+    },
+    {
+      "match": "(\\')(CBL_.*)(\\')",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.string.begin.cobol"
+        },
+        "2": {
+          "name": "support.function.cobol"
+        },
+        "3": {
+          "name": "punctuation.definition.string.end.cobol"
+        }
+      }
+    },
+    {
+      "match": "(\\')(PC_.*)(\\')",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.string.begin.cobol"
+        },
+        "2": {
+          "name": "support.function.cobol"
+        },
+        "3": {
+          "name": "punctuation.definition.string.end.cobol"
+        }
+      }
     },
     {
       "begin": "'",
@@ -381,7 +434,7 @@
       "name": "keyword.identifers.cobol"
     },
     {
-      "match": "(?<![-_])(?i:function)\\s(?i:max|min|integer-of-date|integer-of-day|integer-part|integer|date-to-yyyymmdd|year-to-yyyy|day-to-yyyyddd|exp|exception-file|exception-location|exception-statement|exception-status|e|variance|integer-of-date|rem|pi|factorial|sqrt|log10|fraction-part|mean|exp|log|char|day-of-integer|date-of-integer|exp10|atan|integer-part|tan|sin|cos|midrange|addr|acos|asin|annuity|present-value|integer-of-day|ord-max|ord-min|ord|random|integer-of-date|sum|sign|standard-deviation|median|reverse|abs|upper-case|lower-case|char-national|numval|mod|range|length|locale-date|locale-time-from-seconds|locale-time|seconds-past-midnight|stored-char-length|substitute-case|substitute|seconds-from-formatted-time|seconds=past-midnight|trim|length-an|numval-c|current-date|national-of|display-of|when-compiled|integer-of-boolean|combined-datetime|concatenate)(?=\\s|\\.|\\(|\\)|$)",
+      "match": "(?<![-_])(?i:max|min|integer-of-date|integer-of-day|integer-part|integer|date-to-yyyymmdd|year-to-yyyy|day-to-yyyyddd|exp|exception-file|exception-location|exception-statement|exception-status|e|variance|integer-of-date|rem|pi|factorial|sqrt|log10|fraction-part|mean|exp|log|char|day-of-integer|date-of-integer|exp10|atan|integer-part|tan|sin|cos|midrange|addr|acos|asin|annuity|present-value|integer-of-day|ord-max|ord-min|ord|random|integer-of-date|sum|sign|standard-deviation|median|reverse|abs|upper-case|lower-case|char-national|numval|mod|range|length|locale-date|locale-time-from-seconds|locale-time|seconds-past-midnight|stored-char-length|substitute-case|substitute|seconds-from-formatted-time|seconds=past-midnight|trim|length-an|numval-c|current-date|national-of|display-of|when-compiled|integer-of-boolean|combined-datetime|concatenate)(?=\\s|\\.|\\(|\\))",
       "name": "support.function.cobol"
     },
     {
@@ -469,10 +522,9 @@
       }
     },
     {
-      "match" : "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?=\\s|\\.|$)",
-      "name" : "keyword.control.cobol"
+      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?=\\s|\\.|$)",
+      "name": "keyword.control.cobol"
     },
-
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV][-+sS\\*$09aAbBxXpPnNzZ/,\\.]*\\([0-9]*\\)[-|+]",
       "name": "storage.type.picture.cobol"
@@ -608,7 +660,6 @@
       "match": "(^[0-9][0-9][0-9][0-9][0-9][0-9])",
       "name": "constant.numeric.integer"
     },
-  
     {
       "match": "([0-9a-zA-Z][a-zA-Z\\-0-9]+)",
       "name": "meta.symbol.cobol"

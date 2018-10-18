@@ -1,5 +1,11 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.8
+ - CBL_, PC_ literals are now marked as support.function
+ 
+## Version - 3.7.10
+ - empty release
+ 
 ## Version - 3.7.9
  - Add quoted arguments to PL/I syntax
  - Add .inc to the list of PL/I extensions
