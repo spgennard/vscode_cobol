@@ -36,7 +36,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
             let prefixLine = lineTextLower.substr(0, wordIndex);
             let postLine = lineTextLower.substr(wordIndex + word.length);
 
-            //if it is not a section, it might be a paragrapg.. does it have a "." after it and
+            //if it is not a section, it might be a paragraph.. does it have a "." after it and
             //does it have whitespace or numbers (column a)?
             if (postLine[0] === '.') {
                 let isOkay: boolean = false;

@@ -1,3 +1,5 @@
+import * as Collections from 'typescript-collections';
+
 export const cobolKeywords: string[] = [
 	"accept",
 	"access",
@@ -415,3 +417,12 @@ export const cobolKeywords: string[] = [
 	"zeroes",
 	"zeros"
 ];
+
+/* inline decl */
+let tmpDict = new Collections.Dictionary<string, string>();
+cobolKeywords.forEach(function (value) {
+		tmpDict.setValue(value,value);
+	});
+
+export const cobolKeywordDictionary: Collections.Dictionary<string, string> = tmpDict;
+
