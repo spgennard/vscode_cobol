@@ -109,6 +109,7 @@ function isDirectPath(dir: string) {
 
     return false;
 }
+
 function findFileInDirectory(filename: string, filenameDir: string): string | undefined {
     if (!filename) {
         return;

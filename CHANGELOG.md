@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9
+ - Fix issue #35 - brace/any colourisation issue
+ - Include a reworked tokenizer
+ 
 ## Version - 3.8
  - CBL_, PC_ literals are now marked as support.function
  
