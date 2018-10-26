@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.1
+ - Fix outline view (exit sectiomn & first line problem)
+
 ## Version - 3.9
  - Fix issue #35 - brace/any colourisation issue
  - Include a reworked tokenizer

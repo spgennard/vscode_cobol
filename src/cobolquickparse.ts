@@ -96,7 +96,7 @@ export default class QuickCOBOLParse {
         this.inProcedureDivision = false;
         this.currentDivision = COBOLToken.Null;
 
-        for (let l = 1; l < sourceHandler.getLineCount(); l++) {
+        for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             this.parseLineByLine(sourceHandler, l);
         }
         this.updateEndings(sourceHandler);
@@ -175,7 +175,7 @@ export default class QuickCOBOLParse {
             // let currentPlusNext = line.substr(currentCol, (nextColumn + next.length) - currentCol);
 
             // handle sections
-            if (prev.length !== 0 && current === "section") {
+            if (prev.length !== 0 && current === "section" && (prev !== 'exit')) {
                 let token = new COBOLToken(COBOLTokenStyle.Section, lineNumber, prevColumn, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
                 this.currentDivision.childTokens.push(token);
                 this.tokensInOrder.push(token);
