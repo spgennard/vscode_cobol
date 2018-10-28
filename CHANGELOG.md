@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.4
+ - Initial version of paragraph parser for the outline view
+ 
 ## Version - 3.9.3
  - Fix issue #38 - "Add highlighting for JES2 control statements"
 

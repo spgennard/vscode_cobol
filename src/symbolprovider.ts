@@ -5,10 +5,13 @@ import ISourceHandler from './isourcehandler';
 class VSCodeSourceHandler implements ISourceHandler {
 
     document: vscode.TextDocument;
+    dumpNumbersInAreaA: boolean;
 
-    public constructor(document: vscode.TextDocument) {
+    public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean) {
         this.document = document;
+        this.dumpNumbersInAreaA = dumpNumbersInAreaA;
     }
+
     getLineCount(): number {
         return this.document.lineCount;
     }
@@ -18,6 +21,13 @@ class VSCodeSourceHandler implements ISourceHandler {
         // drop fixed format line
         if (line.length > 7 && line[6] === '*') {
             return "";
+        }
+
+        if (this.dumpNumbersInAreaA) {
+            let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
+            if (line.match(paraPrefixRegex1)) {
+                line = "       " + line.substr(6);
+            }
         }
 
         let inlineCommentStart = line.indexOf("*>");
@@ -34,7 +44,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
 
-        let sf = new QuickCOBOLParse(new VSCodeSourceHandler(document));
+        let sf = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
         let ownerUri = this.getUri();
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {
@@ -43,47 +53,50 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
             let srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                 new vscode.Position(token.endLine, token.endColumn));
 
-            let container=token.parentToken !== undefined ? token.parentToken.description : "";
+            let container = token.parentToken !== undefined ? token.parentToken.description : "";
 
             switch (token.tokenType) {
                 case "Class-Id":
                 case "Program-Id":
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Class, srange,ownerUri, container));
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Class, srange, ownerUri, container));
                     break;
-                case "Copybook": 
+                case "Copybook":
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, srange, ownerUri, container));
                     break;
                 case "Division":
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, srange, ownerUri, container));
                     break;
+                case "Paragraph":
                 case "Section":
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, srange, ownerUri, container));
                     break;
                 case "Entry":
                 case "Function-Id":
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Function, srange,ownerUri, container));
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Function, srange, ownerUri, container));
                     break;
                 case "Enum-id":
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Enum, srange,ownerUri, container));
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Enum, srange, ownerUri, container));
                     break;
                 case "Interface-Id":
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Interface, srange,ownerUri, container));
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Interface, srange, ownerUri, container));
                     break;
                 case "Valuetype-Id":
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, srange,ownerUri, container));
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, srange, ownerUri, container));
                     break;
+
+
             }
         }
         return symbols;
     }
 
     private getUri(): vscode.Uri | undefined {
-		const editor = vscode.window.activeTextEditor;
-		if (editor) {
-			const document = editor.document;
-			return document.uri;
-		}
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const document = editor.document;
+            return document.uri;
+        }
 
-		return undefined;
-}
+        return undefined;
+    }
 }

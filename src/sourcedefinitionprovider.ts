@@ -39,13 +39,8 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
             //if it is not a section, it might be a paragraph.. does it have a "." after it and
             //does it have whitespace or numbers (column a)?
             if (postLine[0] === '.') {
-                let isOkay: boolean = false;
 
                 if (prefixLine.match(paraPrefixRegex1) || prefixLine.match(paraPrefixRegex2)) {
-                    isOkay = true;
-                }
-
-                if (isOkay) {
                     return new vscode.Location(
                         document.uri,
                         new vscode.Position(i, wordIndex)

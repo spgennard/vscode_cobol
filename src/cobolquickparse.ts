@@ -1,4 +1,5 @@
 import ISourceHandler from "./isourcehandler";
+import { cobolKeywordDictionary } from "./keywords/cobolKeywords";
 
 enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -10,6 +11,7 @@ enum COBOLTokenStyle {
     ValueTypeId = "Valuetype-Id",
     EnumId = "Enum-id",
     Section = "Section",
+    Paragraph = "Paragraph",
     Division = "Division",
     EntryPoint = "Entry",
 
@@ -91,10 +93,13 @@ export default class QuickCOBOLParse {
 
     inProcedureDivision: boolean;
     currentDivision: COBOLToken;
+    procedureDivsion: COBOLToken;
+
 
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
         this.currentDivision = COBOLToken.Null;
+        this.procedureDivsion = COBOLToken.Null;
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             this.parseLineByLine(sourceHandler, l);
@@ -102,14 +107,14 @@ export default class QuickCOBOLParse {
         this.updateEndings(sourceHandler);
     }
 
-    private isInterestingToken(token: string) : boolean {
-        switch(token) {
-            case "entry" :
-            case "copy" :
-            case "program-id" :
-            case "class-id" :
-            case "valuetype-id" :
-            case "method-id" :
+    private isInterestingToken(token: string): boolean {
+        switch (token) {
+            case "entry":
+            case "copy":
+            case "program-id":
+            case "class-id":
+            case "valuetype-id":
+            case "method-id":
             case "entry-point":
             case "enum-id":
                 return true;
@@ -118,9 +123,15 @@ export default class QuickCOBOLParse {
         return false;
     }
 
+    private isValidKeyword(keyword: string): boolean {
+        return cobolKeywordDictionary.containsKey(keyword);
+    }
+
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number) {
         let line: string = sourceHandler.getLine(lineNumber);
         let lineTokens = line.split(/[\s \,]/g);
+        let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
+        let paraPrefixRegex2 = /^[ \\t]*$/g;
 
         if (lineNumber > this.highestLine) {
             this.highestLine = lineNumber;
@@ -130,9 +141,10 @@ export default class QuickCOBOLParse {
         let rollingColumn = 0;
         let skip2Characer = null;
         let skipStartIndex = -1;
-        
+
         for (let i = 0; i < lineTokens.length; i++) {
             let current: string = lineTokens[i].toLocaleLowerCase();
+            let endWithDot = false;
 
             // continue now
             if (current.length === 0) {
@@ -160,16 +172,17 @@ export default class QuickCOBOLParse {
                 } else {
                     skip2Characer = null;
                     /* drop the left hand side */
-                    current = current.substr(1+quoteIndex);
+                    current = current.substr(1 + quoteIndex);
                 }
             }
-            
+
             let currentCol = line.indexOf(lineTokens[i], rollingColumn);
 
             if (current.endsWith(".")) {
                 current = current.substr(0, current.length - 1);
-                // endWithDot = true;
+                endWithDot = true;
             }
+
             rollingColumn = currentCol + lineTokens[i].length;
             let prevPlusCurrent = line.substr(prevColumn, (currentCol + current.length) - prevColumn);
             // let currentPlusNext = line.substr(currentCol, (nextColumn + next.length) - currentCol);
@@ -194,6 +207,9 @@ export default class QuickCOBOLParse {
                 this.divisions.push(token);
                 this.tokensInOrder.push(token);
                 this.currentDivision = token;
+                if (prev === 'procedure') {
+                    this.procedureDivsion = token;
+                }
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -270,6 +286,20 @@ export default class QuickCOBOLParse {
                 prev = current;
                 prevColumn = currentCol;
                 continue;
+            }
+
+            // we are in the procedure division
+            if (this.currentDivision === this.procedureDivsion && endWithDot) {
+                if (!this.isValidKeyword(prev) && !this.isValidKeyword(current)) {
+                    let beforeCurrent = line.substr(0, currentCol - 1).trim();
+                    if (beforeCurrent.length === 0) {
+                        let c = lineTokens[i].substr(0, lineTokens[i].length-1);
+                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, currentCol, c, this.currentDivision, COBOLTokenEnding.OneLIne));
+                        prev = current;
+                        prevColumn = currentCol;
+                        continue;
+                    }
+                }
             }
 
             prevColumn = currentCol;
