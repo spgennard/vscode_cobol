@@ -221,7 +221,8 @@
                     "jcl"
                 ],
                 "extensions": [
-                    ".jcl"
+                    ".jcl",
+                    ".proc"
                 ],
                 "configuration": "./jcl.configuration.json"
             },

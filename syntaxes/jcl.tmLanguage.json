@@ -1,7 +1,8 @@
 {
   "name": "jcl",
   "fileTypes": [
-    "jcl"
+    "jcl",
+    "proc"
   ],
   "patterns": [
     {
