@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.3
+ - Fix issue #38 - "Add highlighting for JES2 control statements"
+
 ## Version - 3.9.2
  - Fix issue #37 - "Also take ".proc" as file extension for JCL"
  - Fix issue #36 - "PL/I claims Perl extension"
