@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.2
+ - Fix issue #37 - "Also take ".proc" as file extension for JCL"
+ - Fix issue #36 - "PL/I claims Perl extension"
+ 
 ## Version - 3.9.1
  - Fix outline view (exit sectiomn & first line problem)
 
