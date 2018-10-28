@@ -39,6 +39,87 @@
       }
     },
     {
+      "match": "(^/\\*JOBPARM)",
+      "name": "variable.other.jcl"
+    },
+    {
+      "match" : "(?<![a-zA-Z])(BURST|B|BYTES|M|CARDS|C|FORMS|F|LINECT|K|LINES|L|NOLOG|J|PAGES|G|PROCLIB|P|RESTART|E|ROOM|R|SYSAFF|S|TIME|T)(=)",
+      "captures" : {
+        "1" :{
+          "name": "keyword.other.jcl"
+        },
+        "2" :{
+          "name": "keyword.operator.jcl"
+          
+        }
+      }
+    },
+    {
+      "match": "(^/\\*OUTPUT)",
+      "name": "variable.other.jcl"
+    },
+    {
+      "match" : "(?<![a-zA-Z])(BURST|CHARS|CKPTLNS|CKPTPGS|COMPACT|COPIES|COPYG|DEST|FCB|FLASHC|FLASH|FORMS|B|X|E|P|Z|N|G|D|C|Q|O|F)(=)",
+      "captures": {
+        "1" :{
+          "name": "variable.other.jcl"
+        },
+        "2": {
+          "name": "keyword.operator.jcl"
+        }
+      }
+    },
+    {
+      "match": "(^/\\*MESSAGE)\\s+(.*$)",
+      "captures": {
+        "1": {
+          "name": "variable.other.jcl"
+        },
+        "2": {
+          "name": "token.info-token.jcl"
+        }
+      }
+    },
+    {
+      "match": "(^/\\*(?i:NETACCT|NOTIFY|SETUP|SIGNOFF|SIGNON|XEQ|XMIT))\\s+(.*$)",
+      "captures": {
+        "1": {
+          "name": "variable.other.jcl"
+        },
+        "2": {
+          "name": "variable.parameter.jcl"
+        }
+      }
+    },
+    {
+      "match": "(^/\\*PRIORITY)\\s+([a-zA-Z0-9])(.*$)",
+      "captures": {
+        "1": {
+          "name": "variable.other.jcl"
+        },
+        "2": {
+          "name": "token.info-token.jcl"
+        },
+        "3": {
+          "name": "token.error-token.jcl"
+        }
+      }
+    },
+    {
+      "match": "(^/\\*ROUTE)\\s+(PRINT|PUNCH|XEQ)\\s+(.*$)",
+      "captures": {
+        "1": {
+          "name": "variable.other.jcl"
+        },
+        "2": {
+          "name": "variable.other.jcl"
+        },
+        "3": {
+          "name": "meta.symbol.jcl"
+        }
+      }
+    },
+    {
       "match": "^//\\s+",
       "name": "keyword.continuation.jcl"
     },
@@ -70,15 +151,6 @@
       }
     },
     {
-      "match": "(?i:NEW|DELETE|OLD|KEEP|KEEP|SHR|PASS|CATLG|MOD|CATLG|UNCATLG)",
-      "name": "variable.language.jcl",
-      "captures": {
-        "1": {
-          "name": "constant.language.disp.jcl"
-        }
-      }
-    },
-    {
       "match": "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER|CLASS|UID)(=|$)",
       "name": "variable.language.job.jcl",
       "captures": {
@@ -87,6 +159,15 @@
         },
         "2": {
           "name": "keyword.operator.jcl"
+        }
+      }
+    },
+    {
+      "match": "(?<![a-zA-Z])(?i:NEW|DELETE|OLD|KEEP|KEEP|SHR|PASS|CATLG|MOD|CATLG|UNCATLG)(=|$)",
+      "name": "variable.language.jcl",
+      "captures": {
+        "1": {
+          "name": "constant.language.disp.jcl"
         }
       }
     },
