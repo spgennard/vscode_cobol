@@ -293,11 +293,13 @@ export default class QuickCOBOLParse {
                 if (!this.isValidKeyword(prev) && !this.isValidKeyword(current)) {
                     let beforeCurrent = line.substr(0, currentCol - 1).trim();
                     if (beforeCurrent.length === 0) {
-                        let c = lineTokens[i].substr(0, lineTokens[i].length-1);
-                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, currentCol, c, this.currentDivision, COBOLTokenEnding.OneLIne));
-                        prev = current;
-                        prevColumn = currentCol;
-                        continue;
+                        let c = lineTokens[i].substr(0, lineTokens[i].length - 1);
+                        if (c.length !== 0) {
+                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, currentCol, c, this.currentDivision, COBOLTokenEnding.OneLIne));
+                            prev = current;
+                            prevColumn = currentCol;
+                            continue;
+                        }
                     }
                 }
             }
