@@ -2,7 +2,7 @@ import { TextDocument, Definition, Position, CancellationToken, ProviderResult }
 import * as vscode from 'vscode';
 
 function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[a-zA-Z][a-zA-Z0-9\-_]*'));
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
@@ -10,7 +10,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
 
     let wordLower = word.toLocaleLowerCase();
     let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
-    let paraPrefixRegex2 = /^[ \\t]*$/g;
+    let paraPrefixRegex2 = /^[ \t]*$/g;
 
     for (let i = 1; i < document.lineCount; i++) {
         let lineTextLower = document.lineAt(i).text.toLocaleLowerCase();
@@ -92,7 +92,7 @@ function getCallTarget(document: vscode.TextDocument, position: vscode.Position)
 }
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_\-]+"));
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
@@ -116,7 +116,16 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
         if (wordIndex !== -1) {
             let leftOfWord = lineText.substr(0,wordIndex);
 
+            // fuzzy match for variable
             if (leftOfWord.match(/^[0-9 ]+$/i)) {
+                return new vscode.Location(
+                    document.uri,
+                    new vscode.Position(i, wordIndex)
+                );
+            }
+
+            // fuzzy match for a FD declaration
+            if (leftOfWord.match(/^[ ]+(FD)[ ]+$/i)) {
                 return new vscode.Location(
                     document.uri,
                     new vscode.Position(i, wordIndex)
@@ -133,7 +142,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
 
     let theline = document.lineAt(position.line).text;
 
-    if (theline.match(/.*(perform|thru|go\\s+to).*$/i)) {
+    if (theline.match(/.*(perform|thru|go\s*to).*$/i)) {
         loc = getSectionOrParaLocation(document, position);
         if (loc) {
             location.push(loc);
