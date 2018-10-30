@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.7
+ - add support for goto "fd" in sourcedefprovider
+
 ## Version - 3.9.6
  - tweaks to jcl syntax for issue #38
 
