@@ -40,7 +40,7 @@
     },
     {
       "match": "(^/\\*JOBPARM)",
-      "name": "variable.other.jcl"
+      "name": "keyword.other.jcl"
     },
     {
       "match" : "(?<![a-zA-Z])(BURST|B|BYTES|M|CARDS|C|FORMS|F|LINECT|K|LINES|L|NOLOG|J|PAGES|G|PROCLIB|P|RESTART|E|ROOM|R|SYSAFF|S|TIME|T)(=)",
@@ -56,7 +56,7 @@
     },
     {
       "match": "(^/\\*OUTPUT)",
-      "name": "variable.other.jcl"
+      "name": "keyword.other.jcl"
     },
     {
       "match" : "(?<![a-zA-Z])(BURST|CHARS|CKPTLNS|CKPTPGS|COMPACT|COPIES|COPYG|DEST|FCB|FLASHC|FLASH|FORMS|B|X|E|P|Z|N|G|D|C|Q|O|F)(=)",
@@ -73,7 +73,7 @@
       "match": "(^/\\*MESSAGE)\\s+(.*$)",
       "captures": {
         "1": {
-          "name": "variable.other.jcl"
+          "name": "keyword.other.jcl"
         },
         "2": {
           "name": "token.info-token.jcl"
@@ -84,7 +84,7 @@
       "match": "(^/\\*(?i:NETACCT|NOTIFY|SETUP|SIGNOFF|SIGNON|XEQ|XMIT))\\s+(.*$)",
       "captures": {
         "1": {
-          "name": "variable.other.jcl"
+          "name": "keyword.other.jcl"
         },
         "2": {
           "name": "variable.parameter.jcl"
@@ -95,7 +95,7 @@
       "match": "(^/\\*PRIORITY)\\s+([a-zA-Z0-9])(.*$)",
       "captures": {
         "1": {
-          "name": "variable.other.jcl"
+          "name": "keyword.other.jcl"
         },
         "2": {
           "name": "token.info-token.jcl"
@@ -109,7 +109,7 @@
       "match": "(^/\\*ROUTE)\\s+(PRINT|PUNCH|XEQ)\\s+(.*$)",
       "captures": {
         "1": {
-          "name": "variable.other.jcl"
+          "name": "keyword.other.jcl"
         },
         "2": {
           "name": "variable.other.jcl"
