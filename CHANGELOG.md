@@ -1,7 +1,7 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
 ## Version - 3.9.6
- - tweaks to 
+ - tweaks to jcl syntax for issue #38
 
 ## Version - 3.9.5
  - Fix cobol parse, so it does not include 0 length paragraphs
