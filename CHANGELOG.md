@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.8
+ - Move themes to the "COBOL plus pack"
+ 
 ## Version - 3.9.7
  - add support for goto "fd" in sourcedefprovider
 

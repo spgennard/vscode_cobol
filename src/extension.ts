@@ -80,8 +80,8 @@ export function activate(context: ExtensionContext) {
 
     /* TODO: add .DIR keywords too */ 
 
-    const symbol = new CobolDocumentSymbolProvider();
-    context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors,symbol));
+    const documentSymbolProvider = new CobolDocumentSymbolProvider();
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors,documentSymbolProvider));
     context.subscriptions.push(DocComment.register());
 }
 
