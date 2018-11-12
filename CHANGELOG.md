@@ -4,7 +4,7 @@
  - Fix issue #39
  
 ## Version - 3.9.8
- - remove themes
+ - Move themes to the "COBOL plus pack"
  
 ## Version - 3.9.7
  - add support for goto "fd" in sourcedefprovider
