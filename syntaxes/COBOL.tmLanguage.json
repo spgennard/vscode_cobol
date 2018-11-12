@@ -89,7 +89,7 @@
     },
     {
       "match": "(?:^|\\s+)>>(?i:if|else|elif|end-if)(?:$|\\s.*$)",
-      "name": "invalid.illegal.cobol"
+      "name": "meta.preprocessor.iso2002"
     },
     {
       "match": "(\\*>.*$)",

@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 3.9.9
+ - Fix issue #39
+ 
 ## Version - 3.9.8
  - remove themes
  
