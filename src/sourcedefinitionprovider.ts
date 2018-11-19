@@ -142,7 +142,8 @@ export function provideDefinition(document: TextDocument, position: Position, to
 
     let theline = document.lineAt(position.line).text;
 
-    if (theline.match(/.*(perform|thru|go\s*to).*$/i)) {
+    
+    if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
         loc = getSectionOrParaLocation(document, position);
         if (loc) {
             location.push(loc);
