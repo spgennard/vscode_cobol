@@ -177,6 +177,7 @@
     {
       "begin": "(?i:exec\\s+sql)",
       "name": "string.quoted.cobol.sql",
+      "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
           "match": "(\\:([0-9a-zA-Z\\-_])*)",
@@ -214,6 +215,7 @@
     {
       "begin": "(?i:exec\\s+sqlims)",
       "name": "string.quoted.cobol.sqlims",
+      "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
           "match": "(\\:([a-zA-Z\\-])*)",
@@ -229,6 +231,7 @@
     {
       "begin": "(?i:exec\\s+ado)",
       "name": "string.quoted.cobol.ado",
+      "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
           "match": "(\\:([a-zA-Z\\-])*)",
@@ -244,10 +247,8 @@
     {
       "begin": "(?i:exec\\s+html)",
       "name": "string.quoted.cobol.html",
+      "contentName": "meta.embedded.block.html",
       "patterns": [
-        {
-          "include": "text.html.basic"
-        },
         {
           "include": "text.html.basic"
         }

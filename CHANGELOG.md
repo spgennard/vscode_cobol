@@ -1,5 +1,10 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.0.0
+ - Ensure EXEC SQL/EXEC HTML are marked as an embedded language
+   - now CTRL/ works in "exec sql" & "exec html"
+   - also snippets for sql will appear in any are installed
+   
 ## Version - 3.9.9
  - Fix issue #39
  
