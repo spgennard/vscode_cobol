@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.0.1
+ - Add PL/I extension plinc
+ - JCL rulers @ 71,72,80
+
 ## Version - 4.0.0
  - Ensure EXEC SQL/EXEC HTML are marked as an embedded language
    - now CTRL/ works in "exec sql" & "exec html"
