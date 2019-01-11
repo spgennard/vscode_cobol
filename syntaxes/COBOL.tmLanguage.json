@@ -84,7 +84,7 @@
       }
     },
     {
-      "match": "\\$(?i:if|else|then|display|xfd|end)(.*$)",
+      "match": "\\$(?i:if|else|then|display|xfd|end-region|end|region)(.*$)",
       "name": "meta.preprocessor"
     },
     {
@@ -443,15 +443,15 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?<![-_])(?i:end-accept|end-add|end-sync|end-compute|end-delete|end-display|end-divide|end-set|end-multiply|end-of-page|end-read|end-receive|end-return|end-rewrite|end-search|end-start|end-string|end-subtract|end-unstring|end-write|program|class|interface|enum|interface)(?=\\s|\\.)",
+      "match": "(?<![-_])(?i:end-accept|end-add|end-sync|end-compute|end-delete|end-display|end-divide|end-set|end-multiply|end-of-page|end-read|end-receive|end-return|end-rewrite|end-search|end-start|end-string|end-subtract|end-unstring|end-write|program|class|interface|enum|interface)(?![0-9A-Za-z_-])",
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?<![-_])(?:by value|by reference|by content|property-value)(?=\\s|\\.)",
+      "match": "(?<![-_])(?:by value|by reference|by content|property-value)(?![0-9A-Za-z_-])",
       "name": "keyword.other.cobol"
     },
     {
-      "match": "(?<![-_])(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|common|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at\\s+end|page|name)(?=\\s|\\.|,)",
+      "match": "(?<![-_])(?i:attr-string|automatic|auto-skip|footing|next|group|indicate|source|control|full|required|of|input|output|i-o|extend|file|error|exception|overflow|goto|off|on|proceed|procedures|procedure|through|invalid|data|normal|eop|returning|to|for|giving|into|by|remainder|also|numeric|free|depending|converting|replacing|after|before|all|leading|first|recursive|initialized|global|common|initial|resident|reference|content|are|renames|like|format\\stime|values|omitted|value|ascending|descending|key|retry|until|varying|with|no|advancing|up|down|uccurs|ignore\\s+lock|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+command-line|from\\s+user\\s+name|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+escape|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|raising|crt\\s+status|status|class|upon\\s+crt|upon|lines|linage|auto|line|position|col|reports|code-set|reporting|arithmetic|localize|program|class|interface|in|at\\s+end|page|name)(?![0-9A-Za-z_-])",
       "name": "keyword.identifers.cobol"
     },
     {
@@ -523,7 +523,7 @@
       }
     },
     {
-      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?=\\s|\\.|$)",
+      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?![0-9A-Za-z_-])",
       "name": "keyword.control.cobol"
     },
     {
@@ -571,7 +571,7 @@
       "name": "storage.type.picture.cobol"
     },
     {
-      "match": "(?<![-_])(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|evaluate|exhibit|named|exit|free|generate|go\\s+to|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|purge|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?=\\s|\\.|$)",
+      "match": "(?<![-_])(?i:accept|add|address|allocate|call|cancel|chain|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|evaluate|exhibit|named|exit|free|generate|go\\s+to|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|purge|ready|read|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?![0-9A-Za-z_-])",
       "name": "keyword.verbs.cobol"
     },
     {
@@ -595,19 +595,19 @@
       "name": "keyword.operator.cobol"
     },
     {
-      "match": "(?!-)(?i:installation|author|source-computer|object-computer|date-written|date-compiled)(?=\\s|\\.)",
+      "match": "(?!-)(?i:installation|author|source-computer|object-computer|date-written|date-compiled)(?![0-9A-Za-z_-])",
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?<![-_])(?i:sysout-flush|sysin|stderr|stdout|csp|stdin|sysipt|sysout|sysprint|syslist|syslst|printer|syserr|console|c01|c02|c03|c04|c05|c06|c07|c08|c09|c10|c11|c12|formfeed|switch-0|switch-10|switch-11|switch-12|switch-13|switch-13|switch-14|switch-15|switch-1|switch-2|switch-3|switch-4|switch-5|switch-6|switch-7|switch-8|switch-9|sw0|sw11|sw12|sw13|sw14|sw15|sw1|sw2|sw3|sw4|sw5|sw6|sw7|sw8|sw9|sw10|lc_all|lc_collate|lc_ctype|lc_messages|lc_monetary|lc_numeric|lc_time|ucs-4|utf-8|utf-16)(?=\\s|\\.|$)",
+      "match": "(?<![-_])(?i:sysout-flush|sysin|stderr|stdout|csp|stdin|sysipt|sysout|sysprint|syslist|syslst|printer|syserr|console|c01|c02|c03|c04|c05|c06|c07|c08|c09|c10|c11|c12|formfeed|switch-0|switch-10|switch-11|switch-12|switch-13|switch-13|switch-14|switch-15|switch-1|switch-2|switch-3|switch-4|switch-5|switch-6|switch-7|switch-8|switch-9|sw0|sw11|sw12|sw13|sw14|sw15|sw1|sw2|sw3|sw4|sw5|sw6|sw7|sw8|sw9|sw10|lc_all|lc_collate|lc_ctype|lc_messages|lc_monetary|lc_numeric|lc_time|ucs-4|utf-8|utf-16)(?![0-9A-Za-z_-])",
       "name": "support.type.cobol"
     },
     {
-      "match": "(?<![-_])(?i:end-xml|processing.*procedure|xml\\sparse|xml|xml-information|xml-text|xml-schema|xml-ntext|xml-namespace|xml-namespace-prefix|xml-event|xml-declaration|xml-code|xml-nnamespace-prefix|xml-nnamespace)(?=\\s|\\.|$)",
+      "match": "(?<![-_])(?i:end-xml|processing.*procedure|xml\\sparse|xml|xml-information|xml-text|xml-schema|xml-ntext|xml-namespace|xml-namespace-prefix|xml-event|xml-declaration|xml-code|xml-nnamespace-prefix|xml-nnamespace)(?![0-9A-Za-z_-])",
       "name": "keyword.xml.cobol"
     },
     {
-      "match": "(?<![-_])(?i:json\\s+generate|json|end-json|name\\sof)(?=\\s|\\.|$)",
+      "match": "(?<![-_])(?i:json\\s+generate|json|end-json|name\\sof)(?![0-9A-Za-z_-])",
       "name": "keyword.json.cobol"
     },
     {
@@ -615,7 +615,7 @@
       "name": "keyword.cobol.acu strong"
     },
     {
-      "match": "(?<![-_])(?i:System-Info|Terminal-Info)(?=\\s|\\.|$)",
+      "match": "(?<![-_])(?i:System-Info|Terminal-Info)(?![0-9A-Za-z_-])",
       "name": "support.type.cobol.acu strong"
     },
     {
@@ -638,7 +638,7 @@
       "name": "invalid.illegal.cobol"
     },
     {
-      "match": "(?<![-_])(?i:apply|areas|area|clock-units|code|com-reg|controls|dbcs|destination|detail|display-1|ending|every|insert|kanjikey|last|left|less|limits|limit|memory|metaclass|modules|more-labels|multiple|native_binary|native|negative|number|numeric-edited|other|padding|password|pf|ph|postive|processing|queue|recording|reload|removal|rerun|reserve|reserved|rewind|security|segment-limit|segment|separate|sequence|skip1|skip2|skip3|standard-1|standard-2|sub-queue-1|sub-queue-2|sub-queue-3|sum|symbolic|synchronized|sync|table|test|text|than|top|trace|trailing|unit|words|write-only|at|basis|beginning|bottom|cbl|cf|ch|de|positive|egcs|egi|emi|end|reversed|rf|rh|run|same|order|heading|esi)(?=\\s|\\.)",
+      "match": "(?<![-_])(?i:apply|areas|area|clock-units|code|com-reg|controls|dbcs|destination|detail|display-1|ending|every|insert|kanjikey|last|left|less|limits|limit|memory|metaclass|modules|more-labels|multiple|native_binary|native|negative|number|numeric-edited|other|padding|password|pf|ph|postive|processing|queue|recording|reload|removal|rerun|reserve|reserved|rewind|security|segment-limit|segment|separate|sequence|skip1|skip2|skip3|standard-1|standard-2|sub-queue-1|sub-queue-2|sub-queue-3|sum|symbolic|synchronized|sync|table|test|text|than|top|trace|trailing|unit|words|write-only|at|basis|beginning|bottom|cbl|cf|ch|de|positive|egcs|egi|emi|end|reversed|rf|rh|run|same|order|heading|esi)(?![0-9A-Za-z_-])",
       "name": "keyword.ibmreserved.cobol strong"
     },
     {
@@ -646,7 +646,7 @@
       "name": "keyword.filler.cobol"
     },
     {
-      "match": "(?<![-_])(?i:date|day-of-week|day|debug-content|debug-item|debug-line|debug-item|debug-sub-1|debug-sub-2|debug-sub-3|shift-in|shift-out|sort-control|sort-core-size|sort-file-size|sort-message|sort-return|sort-mode-size|sort-return|tally|time|when-compiled|line-counter|page-counter|return-code|linage-counter|debug-line|debug-name|debug-contents)(?=\\s+|\\.|$)",
+      "match": "(?<![-_])(?i:date|day-of-week|day|debug-content|debug-item|debug-line|debug-item|debug-sub-1|debug-sub-2|debug-sub-3|shift-in|shift-out|sort-control|sort-core-size|sort-file-size|sort-message|sort-return|sort-mode-size|sort-return|tally|time|when-compiled|line-counter|page-counter|return-code|linage-counter|debug-line|debug-name|debug-contents)(?![0-9A-Za-z_-])",
       "name": "variable.language"
     },
     {

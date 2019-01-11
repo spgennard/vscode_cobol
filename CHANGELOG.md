@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.0.2
+ - Fix for "Keywords and literals are not colored when followed by comma or semicolon in AcuCOBOL" #42
+ 
 ## Version - 4.0.1
  - Add PL/I extension plinc
  - JCL rulers @ 71,72,80
