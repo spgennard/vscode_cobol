@@ -14,6 +14,7 @@ enum COBOLTokenStyle {
     Paragraph = "Paragraph",
     Division = "Division",
     EntryPoint = "Entry",
+    Variable = "Variable",
 
     Null = "Null"
 }
@@ -92,12 +93,13 @@ export default class QuickCOBOLParse {
     }
 
     inProcedureDivision: boolean;
+    inWorkingStorage: boolean;
     currentDivision: COBOLToken;
     procedureDivsion: COBOLToken;
 
-
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
+        this.inWorkingStorage = false;
         this.currentDivision = COBOLToken.Null;
         this.procedureDivsion = COBOLToken.Null;
 
@@ -127,11 +129,19 @@ export default class QuickCOBOLParse {
         return cobolKeywordDictionary.containsKey(keyword);
     }
 
+    private isNumber(value: string | number): boolean
+    {
+        if (value.toString().length === 0) {
+            return false;
+        }
+       return !isNaN(Number(value.toString()));
+    }
+    
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number) {
         let line: string = sourceHandler.getLine(lineNumber);
         let lineTokens = line.split(/[\s \,]/g);
-        let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
-        let paraPrefixRegex2 = /^[ \\t]*$/g;
+        // let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
+        // let paraPrefixRegex2 = /^[ \\t]*$/g;
 
         if (lineNumber > this.highestLine) {
             this.highestLine = lineNumber;
@@ -174,6 +184,7 @@ export default class QuickCOBOLParse {
                     /* drop the left hand side */
                     current = current.substr(1 + quoteIndex);
                 }
+                continue;
             }
 
             let currentCol = line.indexOf(lineTokens[i], rollingColumn);
@@ -189,9 +200,19 @@ export default class QuickCOBOLParse {
 
             // handle sections
             if (prev.length !== 0 && current === "section" && (prev !== 'exit')) {
+                if (prev === "declare") {
+                    continue;
+                }
                 let token = new COBOLToken(COBOLTokenStyle.Section, lineNumber, prevColumn, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
                 this.currentDivision.childTokens.push(token);
                 this.tokensInOrder.push(token);
+
+                if (prev === "working-storage") {
+                    this.inWorkingStorage = true;
+                    this.inProcedureDivision = false;
+                    sourceHandler.setDumpAreaA(false);
+                    sourceHandler.setDumpAreaBOnwards(true);
+                }
 
                 prev = current;
                 prevColumn = currentCol;
@@ -200,16 +221,19 @@ export default class QuickCOBOLParse {
 
             // handle divisions
             if (prev.length !== 0 && current === "division") {
-                if (prev === 'procedure') {
-                    this.inProcedureDivision = true;
-                }
                 let token = new COBOLToken(COBOLTokenStyle.Division, lineNumber, prevColumn, prevPlusCurrent, COBOLToken.Null, COBOLTokenEnding.NextSection);
                 this.divisions.push(token);
                 this.tokensInOrder.push(token);
                 this.currentDivision = token;
-                if (prev === 'procedure') {
+
+                if (prev === "procedure") {
+                    this.inProcedureDivision = true;
+                    this.inWorkingStorage = false;
                     this.procedureDivsion = token;
+                    sourceHandler.setDumpAreaA(true);
+                    sourceHandler.setDumpAreaBOnwards(false);
                 }
+
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -304,6 +328,21 @@ export default class QuickCOBOLParse {
                 }
             }
 
+            // are we in the working-storage section?
+            if (this.inWorkingStorage) {
+                /* only interesteding in things that are after a number */
+                if (this.isNumber(prev) && !this.isNumber(current)) {
+                    if (!this.isValidKeyword(prev) && !this.isValidKeyword(current)) {
+                        let c = lineTokens[i].substr(0, lineTokens[i].length);
+                        if (c.length !== 0) {
+                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, currentCol, c, this.currentDivision, COBOLTokenEnding.OneLIne));
+                            prev = current;
+                            prevColumn = currentCol;
+                            continue;
+                        }
+                    }
+                }
+            }
             prevColumn = currentCol;
             prev = current;
 
@@ -335,7 +374,7 @@ export default class QuickCOBOLParse {
                     let theLastToken = sourceHandler.getLine(token.endLine);
                     token.endColumn = theLastToken.length;
                 } else {
-                    token.endLine = division.endLine - 1;
+                    token.endLine = division.endLine; // -1
                     token.endColumn = sourceHandler.getLine(division.endLine - 1).length;
                 }
             }

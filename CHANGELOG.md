@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Vesion - 4.0.3
+ - Tweaks for parsing working-storage
+
 ## Version - 4.0.2
  - Fix for "Keywords and literals are not colored when followed by comma or semicolon in AcuCOBOL" #42
  

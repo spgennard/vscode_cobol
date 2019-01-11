@@ -6,10 +6,12 @@ class VSCodeSourceHandler implements ISourceHandler {
 
     document: vscode.TextDocument;
     dumpNumbersInAreaA: boolean;
+    dumpAreaBOnwards: boolean;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
+        this.dumpAreaBOnwards = false;
     }
 
     getLineCount(): number {
@@ -30,11 +32,26 @@ class VSCodeSourceHandler implements ISourceHandler {
             }
         }
 
+        if (this.dumpAreaBOnwards && line.length >= 73) {
+            line = line.substr(0, 72);
+        }
+
         let inlineCommentStart = line.indexOf("*>");
         if (inlineCommentStart === -1) {
             return line;
         }
+
         return line.substr(0, inlineCommentStart);
+    }
+
+    setDumpAreaA(flag: boolean): void
+    {
+        this.dumpNumbersInAreaA = flag;
+    }
+
+    setDumpAreaBOnwards(flag: boolean): void
+    {
+        this.dumpAreaBOnwards=flag;
     }
 }
 
@@ -83,7 +100,9 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 case "Valuetype-Id":
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, srange, ownerUri, container));
                     break;
-
+                case "Variable":
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, srange, ownerUri, container));
+                    break;
 
             }
         }
