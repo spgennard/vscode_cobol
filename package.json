@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.0.3",
+    "version": "4.0.4",
     "publisher": "bitlang",
     "repository": {
         "type": "git",
@@ -112,6 +112,11 @@
                         "CopyBooks"
                     ],
                     "description": "COBOL CopyBook Directory"
+                },
+                "coboleditor.ignorecolumn_b_onwards" : {
+                    "type" : "boolean",
+                    "title": "include column 72 onwards in parsing",
+                    "default" : true
                 }
             }
         },

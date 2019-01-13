@@ -34,7 +34,11 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 		if (range) {
 			wordToComplete = document.getText(new Range(range.start, position));
 		}
+		const items: CompletionItem[] = [];
 
+		// if (wordToComplete.length < 3) {
+		// 	return items;
+		// }
 		const results = this.words.get(wordToComplete);
 		const isUpper = wordToComplete.toUpperCase() === wordToComplete;
 
@@ -44,7 +48,6 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 		});
 
 		const numberOfWordsInResults = results.length;
-		const items: CompletionItem[] = [];
 		for (let [i, tag] of results.entries()) {
 
 			//if the text is uppercase, the present the items as uppercase

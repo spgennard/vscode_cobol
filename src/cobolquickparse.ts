@@ -1,6 +1,8 @@
 import ISourceHandler from "./isourcehandler";
 import { cobolKeywordDictionary } from "./keywords/cobolKeywords";
 
+import {workspace } from 'vscode';
+
 enum COBOLTokenStyle {
     CopyBook = "Copybook",
     ProgramId = "Program-Id",
@@ -137,7 +139,19 @@ export default class QuickCOBOLParse {
        return !isNaN(Number(value.toString()));
     }
     
+    private getColumBParsing(): boolean 
+    {
+        var editorConfig = workspace.getConfiguration('coboleditor.ignorecolumn_b_onwards');
+        var parsingB = editorConfig.get<boolean>('coboleditor.ignorecolumn_b_onwards');
+        if (parsingB === undefined || parsingB === null)
+        {
+            parsingB = false;
+        }
+        return parsingB;
+    }
+    
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number) {
+        let parseColumnBOnwards = this.getColumBParsing();
         let line: string = sourceHandler.getLine(lineNumber);
         let lineTokens = line.split(/[\s \,]/g);
         // let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
@@ -211,7 +225,7 @@ export default class QuickCOBOLParse {
                     this.inWorkingStorage = true;
                     this.inProcedureDivision = false;
                     sourceHandler.setDumpAreaA(false);
-                    sourceHandler.setDumpAreaBOnwards(true);
+                    sourceHandler.setDumpAreaBOnwards(!parseColumnBOnwards);
                 }
 
                 prev = current;
