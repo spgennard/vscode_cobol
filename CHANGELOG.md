@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.0.5
+ - Tweak configuration handling to be more efficent
+
 ## Version - 4.0.4
  - Add tunable to turn on/off parsing in area b onwards
 

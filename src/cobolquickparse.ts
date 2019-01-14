@@ -1,7 +1,7 @@
 import ISourceHandler from "./isourcehandler";
 import { cobolKeywordDictionary } from "./keywords/cobolKeywords";
 
-import {workspace } from 'vscode';
+import { workspace } from 'vscode';
 
 enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -98,6 +98,7 @@ export default class QuickCOBOLParse {
     inWorkingStorage: boolean;
     currentDivision: COBOLToken;
     procedureDivsion: COBOLToken;
+    parseColumnBOnwards: boolean = this.getColumBParsing();
 
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
@@ -131,35 +132,31 @@ export default class QuickCOBOLParse {
         return cobolKeywordDictionary.containsKey(keyword);
     }
 
-    private isNumber(value: string | number): boolean
-    {
+    private isNumber(value: string | number): boolean {
         if (value.toString().length === 0) {
             return false;
         }
-       return !isNaN(Number(value.toString()));
+        return !isNaN(Number(value.toString()));
     }
-    
-    private getColumBParsing(): boolean 
-    {
-        var editorConfig = workspace.getConfiguration('coboleditor.ignorecolumn_b_onwards');
-        var parsingB = editorConfig.get<boolean>('coboleditor.ignorecolumn_b_onwards');
-        if (parsingB === undefined || parsingB === null)
-        {
+
+    private getColumBParsing(): boolean {
+        var editorConfig = workspace.getConfiguration('coboleditor');
+        var parsingB = editorConfig.get<boolean>('ignorecolumn_b_onwards');
+        if (parsingB === undefined || parsingB === null) {
             parsingB = false;
         }
         return parsingB;
     }
-    
+
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number) {
-        let parseColumnBOnwards = this.getColumBParsing();
+
         let line: string = sourceHandler.getLine(lineNumber);
         let lineTokens = line.split(/[\s \,]/g);
-        // let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
-        // let paraPrefixRegex2 = /^[ \\t]*$/g;
 
         if (lineNumber > this.highestLine) {
             this.highestLine = lineNumber;
         }
+
         let prev = "";
         let prevColumn: number = 0;
         let rollingColumn = 0;
@@ -225,7 +222,7 @@ export default class QuickCOBOLParse {
                     this.inWorkingStorage = true;
                     this.inProcedureDivision = false;
                     sourceHandler.setDumpAreaA(false);
-                    sourceHandler.setDumpAreaBOnwards(!parseColumnBOnwards);
+                    sourceHandler.setDumpAreaBOnwards(!this.parseColumnBOnwards);
                 }
 
                 prev = current;
