@@ -17,8 +17,17 @@ Quick viewing of COBOL source and edit.
 ## What platform can it be used on?
 Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
-## What does it look like?
+## Code colourisation for COBOL, PL/I and JCL:
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/screenshot_three.png)
+
+## IntelliSense example:
+![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/perform_add.gif)
+ 
+## Breadcrumb support:
+![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/breadcrumb.png)
+
+## Outline support:
+![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/outline.png)
 
 ## Keybinds
 

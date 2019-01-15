@@ -2,6 +2,7 @@
 
 ## Version - 4.0.5
  - Tweak configuration handling to be more efficent
+ - README changes
 
 ## Version - 4.0.4
  - Add tunable to turn on/off parsing in area b onwards

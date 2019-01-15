@@ -65,10 +65,10 @@ export function activate(context: ExtensionContext) {
     
     context.subscriptions.push(DocComment.register());
 
-	const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
-    /* TODO: find out the ACU & OpenCOBOL/GNU keyword list */
-    const completionItemProviderDisposable = languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
-    context.subscriptions.push(completionItemProviderDisposable);
+
+    // const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
+    // const completionItemProviderDisposable = languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
+    // context.subscriptions.push(completionItemProviderDisposable);
 
 
     const jclSelectors = [
@@ -79,7 +79,6 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
     /* TODO: add .DIR keywords too */ 
-
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
     context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors,documentSymbolProvider));
     context.subscriptions.push(DocComment.register());

@@ -28,17 +28,7 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 		}));
 	}
 
-	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
-		let wordToComplete = '';
-		const range = document.getWordRangeAtPosition(position);
-		if (range) {
-			wordToComplete = document.getText(new Range(range.start, position));
-		}
-		const items: CompletionItem[] = [];
-
-		// if (wordToComplete.length < 3) {
-		// 	return items;
-		// }
+	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number) : CompletionItem[]  {
 		const results = this.words.get(wordToComplete);
 		const isUpper = wordToComplete.toUpperCase() === wordToComplete;
 
@@ -48,6 +38,7 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 		});
 
 		const numberOfWordsInResults = results.length;
+		const items: CompletionItem[] = [];
 		for (let [i, tag] of results.entries()) {
 
 			//if the text is uppercase, the present the items as uppercase
@@ -61,9 +52,22 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 			// Set sortText to order the value when displaying them in the autocompletion menu
 			completionItem.sortText = this.stringPad(i.toString(), numberOfWordsInResults.toString().length, '0');
 			items.push(completionItem);
+			if (items.length >= limit) {
+				return items;
+			}
 		}
 
 		return items;
+	}
+	
+	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
+		let wordToComplete = '';
+		const range = document.getWordRangeAtPosition(position);
+		if (range) {
+			wordToComplete = document.getText(new Range(range.start, position));
+		}
+
+		return this.getKeywordsGivenPartialWord(wordToComplete, 10);
 	}
 
 	private stringPad(input: string, padLength: number, padString: string): string {
