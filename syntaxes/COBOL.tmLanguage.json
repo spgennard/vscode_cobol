@@ -591,7 +591,7 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?i:not)(?=\\s+|\\.|$)",
+      "match": "(?<![-_])(?i:not)(?=\\s+|\\.|$)",
       "name": "keyword.operator.cobol"
     },
     {
@@ -662,7 +662,7 @@
       "name": "constant.numeric.integer"
     },
     {
-      "match": "([0-9a-zA-Z][a-zA-Z\\-0-9]+)",
+      "match": "([0-9a-zA-Z][a-zA-Z\\-0-9_]+)",
       "name": "meta.symbol.cobol"
     }
   ],

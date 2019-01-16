@@ -1,7 +1,10 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.0.8
+ - Fix issue #43 (NOT & meta-symbol)
+
 ## Version - 4.0.7
- - Fix issue #43 
+ - Fix issue #43 (OPTIONAL)
 
 ## Version - 4.0.6
  - README changes
