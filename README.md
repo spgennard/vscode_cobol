@@ -29,6 +29,12 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 ## Outline support:
 ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/outline.png)
 
+## Goto definition:
+![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/gotodef.gif)
+
+## Peek definition:
+![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/peekdef.gif)
+
 ## Keybinds
 
 | Keys   | Description           |
