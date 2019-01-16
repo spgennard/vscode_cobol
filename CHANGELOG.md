@@ -1,5 +1,11 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.0.7
+ - Fix issue #43 
+
+## Version - 4.0.6
+ - README changes
+ 
 ## Version - 4.0.5
  - Tweak configuration handling to be more efficent
  - README changes
