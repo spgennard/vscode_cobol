@@ -10,7 +10,7 @@ import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { jclStatements } from "./keywords/jclstatements";
 import CobolDocumentSymbolProvider from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
-import updateDecorations from './margindecorations';
+import updateDecorations, { sourceformat_fixed, sourceformat_variable, sourceformat_free } from './margindecorations';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -113,14 +113,22 @@ export function activate(context: ExtensionContext) {
     updateDecorations(window.activeTextEditor);
 }
 
-export function enableMarginStatusBar(enable: boolean) {
-    if (enable) {
-        formatStatusBarItem.text = "Source:fixed";
-        formatStatusBarItem.show();
-    } else {
-        formatStatusBarItem.text = "Source:free";
-        formatStatusBarItem.show();
+export function enableMarginStatusBar(formatStyle: number) {
+    switch(formatStyle) {
+        case sourceformat_fixed:
+            formatStatusBarItem.text = "Source:fixed";
+            break;
+        case sourceformat_variable:
+            formatStatusBarItem.text = "Source:variable";
+            break;
+        case sourceformat_free:
+            formatStatusBarItem.text = "Source:free";
+            break;
+        default:
+            formatStatusBarItem.text = "Source:unknown";
     }
+        
+    formatStatusBarItem.show();
 }
 
 export function hideMarginStatusBar() {

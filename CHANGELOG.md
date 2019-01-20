@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.1.1
+ - Add jcl into the right margin story
+ 
 ## Version - 4.1.0
  - Start work on sourceformat fixed right margin via a editor declaration
 
