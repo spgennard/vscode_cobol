@@ -1,0 +1,13 @@
+{
+    "iconDefinitions": {
+        "_cbl_file": {
+            "iconPath": "./images/cobol.svg"
+        }
+    },
+    "fileExtensions": {
+        "cbl": "_cbl_file"
+    },
+    "fileNames": {
+        ".cbl": "_cbl_file"
+    }
+}

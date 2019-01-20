@@ -1,15 +1,18 @@
 'use strict';
 
-import { commands, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import { DocComment } from './formatting/DocComment';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
-import { cobolKeywords } from './keywords/cobolKeywords';
+// import { cobolKeywords } from './keywords/cobolKeywords';
 import { jclStatements } from "./keywords/jclstatements";
 import CobolDocumentSymbolProvider from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
+import updateDecorations from './margindecorations';
+
+let formatStatusBarItem: StatusBarItem;
 
 export function activate(context: ExtensionContext) {
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
@@ -62,7 +65,7 @@ export function activate(context: ExtensionContext) {
             return sourcedefinitionprovider.provideDefinition(doc, pos, ct);
         }
     });
-    
+
     context.subscriptions.push(DocComment.register());
 
 
@@ -78,11 +81,52 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    /* TODO: add .DIR keywords too */ 
+    /* TODO: add .DIR keywords too */
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
-    context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors,documentSymbolProvider));
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
     context.subscriptions.push(DocComment.register());
+
+    window.onDidChangeActiveTextEditor(editor => {
+        if (!editor) {
+            return;
+        }
+        updateDecorations(editor);
+    }, null, context.subscriptions);
+
+    window.onDidChangeTextEditorSelection(event => {
+        if (!event.textEditor) {
+            return;
+        }
+        updateDecorations(event.textEditor);
+    }, null, context.subscriptions);
+
+    workspace.onDidChangeTextDocument(event => {
+        if (!window.activeTextEditor) {
+            return;
+        }
+        updateDecorations(window.activeTextEditor);
+    }, null, context.subscriptions);
+
+    formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
+    formatStatusBarItem.show();
+
+    updateDecorations(window.activeTextEditor);
+}
+
+export function enableMarginStatusBar(enable: boolean) {
+    if (enable) {
+        formatStatusBarItem.text = "Source:fixed";
+        formatStatusBarItem.show();
+    } else {
+        formatStatusBarItem.text = "Source:free";
+        formatStatusBarItem.show();
+    }
+}
+
+export function hideMarginStatusBar() {
+    formatStatusBarItem.hide();
 }
 
 export function deactivate() {
+    formatStatusBarItem.dispose();
 }

@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.1.0
+ - Start work on sourceformat fixed right margin via a editor declaration
+
 ## Version - 4.0.8
  - Fix issue #43 (NOT & meta-symbol)
 

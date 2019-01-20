@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" version="1.1">
+    <polygon fill="inherit" points="1,1 1,320 320,320 320,50 250,-1" mask="url(#mask)"/>
+    <text font-family="Consolas, 'Arial Black'" fill="rgb(0, 88, 32)" font-weight="bold" font-style="normal" font-size="105.9" stroke="rgb(11, 11, 11)" transform="matrix(1,-0.1,0.1,1,47.3)" textLength="307.9" x="3.3" y="109.7">
+COBOL
+    </text>
+    <polyline fill="rgb(76, 151, 92)" points="62,239 28,13"/>
+    <rect fill="rgb(9, 56, 20)" height="117" width="207" x="49" y="187"/>
+    <text font-weight="bold" font-size="12" fill="rgb(174, 190, 177)" x="70" y="210">
+IDENTIFICATION DIVISION.
+    </text>
+    <text font-weight="bold" font-size="12" fill="rgb(174, 190, 177)" x="70" y="230">
+PROGRAM-ID. Hello.
+    </text>
+    <text font-weight="bold" font-size="13" fill="rgb(174, 190, 177)" x="70" y="250">
+PROCEDURE DIVISION.
+    </text>
+    <text font-weight="bold" font-size="12" fill="rgb(174, 190, 177)" x="90" y="270">
+DISPLAY "Hello World!".
+    </text>
+    <text font-weight="bold" font-size="12" fill="rgb(174, 190, 177)" x="90" y="290">
+STOP RUN.
+    </text>
+</svg>
