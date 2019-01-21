@@ -128,25 +128,29 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
     }
 
     const doc: TextDocument = activeTextEditor.document;
+    const decorationOptions: DecorationOptions[] = [];
 
     if (!isSupportedLanguage(doc)) {
         hideMarginStatusBar();
+        activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
         return;
     }
 
     /* is it enabled? */
     if (!isEnabledViaWorkspace()) {
         hideMarginStatusBar();
+        activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
         return;
     }
+
     /* does it include sourceformat"free"? */
     let sourceformatStyle = isActivateForThisDocument(doc);
     enableMarginStatusBar(sourceformatStyle);
     if (sourceformatStyle !== sourceformat_fixed) {
+        activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
         return;
     }
 
-    const decorationOptions: DecorationOptions[] = [];
     for (let i = 0; i < doc.lineCount; i++) {
         let lineText = doc.lineAt(i);
         let line = lineText.text;

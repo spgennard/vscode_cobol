@@ -85,7 +85,7 @@ export function activate(context: ExtensionContext) {
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
     context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
     context.subscriptions.push(DocComment.register());
-
+    
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
             return;

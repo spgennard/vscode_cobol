@@ -1,7 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.1.3
+ - 
 ## Version - 4.1.2
- - Only show source format button when it's useful todo so
+ - Only show source format button when it's useful todo it
 
 ## Version - 4.1.1
  - Add jcl into the right margin story
