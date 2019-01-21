@@ -26,7 +26,7 @@ let trailingSpacesDecorationType = window.createTextEditorDecorationType({
 });
 
 function isEnabledViaWorkspace(): boolean {
-    let editorConfig =  workspace.getConfiguration('coboleditor');
+    let editorConfig = workspace.getConfiguration('coboleditor');
     let marginOn = editorConfig.get<boolean>('margin');
     if (marginOn !== undefined) {
         return marginOn;
@@ -34,8 +34,15 @@ function isEnabledViaWorkspace(): boolean {
     return true;
 }
 
+function isNumber(value: string | number): boolean {
+    if (value.toString().length === 0) {
+        return false;
+    }
+    return !isNaN(Number(value.toString()));
+}
+
 function getEnabledFiles(): string[] {
-    let editorConfig =  workspace.getConfiguration('coboleditor');
+    let editorConfig = workspace.getConfiguration('coboleditor');
     let files = editorConfig.get<string[]>('fixedformatfiles');
     if (!files || (files !== null)) {
         files = [];
@@ -43,21 +50,41 @@ function getEnabledFiles(): string[] {
     return files;
 }
 
+const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
+
 function isActivateForThisDocument(doc: TextDocument): number {
 
     if (doc.languageId.toLowerCase() === "jcl") {
         return sourceformat_fixed;
     }
 
-    for (let i = 0; i < doc.lineCount; i++) {
-        let lineText = doc.lineAt(i);
-        let line = lineText.text;
+    let linesWithJustNumbers = 0;
+    let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
 
-        let pos4sourceformat = line.indexOf("sourceformat");
-        if (pos4sourceformat === -1) {
+    for (let i = 0; i < maxLines; i++) {
+        let lineText = doc.lineAt(i);
+        let line = lineText.text.toLocaleLowerCase();
+
+        let pos4sourceformat_after = 0;
+        for (let isf = 0; isf < inline_sourceformat.length; isf++) {
+            let pos4sourceformat = line.indexOf(inline_sourceformat[isf]);
+            if (pos4sourceformat !== -1) {
+                pos4sourceformat_after = pos4sourceformat + inline_sourceformat[isf].length + 1;
+                break;
+            }
+        }
+
+        if (pos4sourceformat_after === 0) {
+            if (line.length > 72) {
+                let rightMargin = line.substr(72).trim();
+                if (isNumber(rightMargin)) {
+                    linesWithJustNumbers++;
+                }
+            }
             continue;
         }
-        let line2right = line.substr(pos4sourceformat + 12);
+        let line2right = line.substr(pos4sourceformat_after);
+
         if (line2right.indexOf("fixed") !== -1) {
             return sourceformat_fixed;
         }
@@ -67,15 +94,16 @@ function isActivateForThisDocument(doc: TextDocument): number {
         if (line2right.indexOf("free") !== -1) {
             return sourceformat_free;
         }
-        if (i > 10) {
-            return sourceformat_unknown;
-        }
     }
 
+    //it might well be...
+    if (linesWithJustNumbers > 7) {
+        return sourceformat_fixed;
+    }
     return sourceformat_unknown;
 }
 
-function isActive(document: TextDocument): boolean {
+function isSupportedLanguage(document: TextDocument): boolean {
 
     let activate: boolean = false;
     switch (document.languageId.toLowerCase()) {
@@ -87,7 +115,6 @@ function isActive(document: TextDocument): boolean {
 
     /* not a supported language? */
     if (!activate) {
-        console.log("Margin not active for "+document.languageId);
         return false;
     }
 
@@ -102,14 +129,14 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
 
     const doc: TextDocument = activeTextEditor.document;
 
-    if (!isActive(doc)) {
-        enableMarginStatusBar(sourceformat_unknown);
+    if (!isSupportedLanguage(doc)) {
+        hideMarginStatusBar();
         return;
     }
 
     /* is it enabled? */
     if (!isEnabledViaWorkspace()) {
-        enableMarginStatusBar(sourceformat_unknown);
+        hideMarginStatusBar();
         return;
     }
     /* does it include sourceformat"free"? */
@@ -127,7 +154,8 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
         if (line.length > 72) {
             let startPos = new Position(i, 72);
             let endPos = new Position(i, line.length);
-            const decoration = { range: new Range(startPos, endPos), hoverMessage: "Number **" + i + "**" };
+            // const decoration = { range: new Range(startPos, endPos), hoverMessage: "Number **" + i + "**" };
+            const decoration = { range: new Range(startPos, endPos) };
             decorationOptions.push(decoration);
         }
     }

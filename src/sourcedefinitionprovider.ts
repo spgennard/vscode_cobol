@@ -1,6 +1,8 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult } from 'vscode';
 import * as vscode from 'vscode';
 
+
+
 function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
