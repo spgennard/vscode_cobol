@@ -4,7 +4,14 @@
     "description": "COBOL, JCL, PL/I & DIR syntax support",
     "version": "4.1.4",
     "publisher": "bitlang",
-    "keywords": [ "cobol", "jcl", "pl/i", "pli", "mvs", "mfcobol"],
+    "keywords": [
+        "cobol",
+        "jcl",
+        "pl/i",
+        "pli",
+        "mvs",
+        "mfcobol"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/spgennard/vscode_cobol"
@@ -113,15 +120,24 @@
                     ],
                     "description": "COBOL CopyBook Directory"
                 },
-                "coboleditor.ignorecolumn_b_onwards" : {
-                    "type" : "boolean",
+                "coboleditor.ignorecolumn_b_onwards": {
+                    "type": "boolean",
                     "title": "include column 72 onwards in parsing",
-                    "default" : true
+                    "default": true
                 },
-                "coboleditor.margin" : {
-                    "type" : "boolean",
+                "coboleditor.margin": {
+                    "type": "boolean",
                     "title": "apply margin shading",
-                    "default" : false
+                    "default": false
+                },
+                "coboleditor.include.fixed.filenames": {
+                    "description": "List of files to include as fixed format files",
+                    "additionalItems": true,
+                    "type": "array",
+                    "properties": {
+                        "type": "string"
+                    },
+                    "default": []
                 }
             }
         },

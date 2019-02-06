@@ -3,6 +3,8 @@
 import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEdit } from 'vscode';
 import { enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
+var minimatch = require("minimatch");
+
 export const sourceformat_unknown: number = 0;
 export const sourceformat_fixed: number = 1;
 export const sourceformat_variable: number = 2;
@@ -41,10 +43,10 @@ function isNumber(value: string | number): boolean {
     return !isNaN(Number(value.toString()));
 }
 
-function getEnabledFiles(): string[] {
+function getFixedFilenameConfiguration(): string[] {
     let editorConfig = workspace.getConfiguration('coboleditor');
-    let files = editorConfig.get<string[]>('fixedformatfiles');
-    if (!files || (files !== null)) {
+    let files = editorConfig.get<string[]>('include.fixed.filenames');
+    if (files === undefined || files === null) {
         files = [];
     }
     return files;
@@ -54,6 +56,18 @@ const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
 function isActivateForThisDocument(doc: TextDocument): number {
 
+    let filesFilter = getFixedFilenameConfiguration();
+    if (filesFilter.length >= 1) {
+        let docFilename: string = doc.fileName;
+        for (let i = 0; i < filesFilter.length; i++) {
+            let filter: string = filesFilter[i];
+
+            if (minimatch(docFilename, filter, { nocase : true} )) 
+            {
+                return sourceformat_fixed;
+            }
+        }
+    }
     if (doc.languageId.toLowerCase() === "jcl") {
         return sourceformat_fixed;
     }
