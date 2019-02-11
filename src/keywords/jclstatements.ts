@@ -16,4 +16,4 @@ export const jclStatements: string[] = [
     "SET",
     "THEN",
     "XMIT"
-]
+];

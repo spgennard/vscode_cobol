@@ -1,31 +1,90 @@
 'use strict';
 
-import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEdit } from 'vscode';
+import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, QuickPickItem, TextEditorRevealType  } from 'vscode';
 import { enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
-var minimatch = require("minimatch");
+const minimatch = require("minimatch");
+const path = require('path');
 
 export const sourceformat_unknown: number = 0;
 export const sourceformat_fixed: number = 1;
 export const sourceformat_variable: number = 2;
 export const sourceformat_free: number = 3;
 
-
-let trailingSpacesDecorationType = window.createTextEditorDecorationType({
+var trailingSpacesDecoration : TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)",
         color: new ThemeColor("editorLineNumber.foreground"),
         backgroundColor: new ThemeColor("editor.background"),
+        textDecoration: 'solid'
     },
     dark: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)"
         color: new ThemeColor("editorLineNumber.foreground"),
         backgroundColor: new ThemeColor("editor.background"),
+        textDecoration: 'solid'
     }
 
 });
+
+export function changeSourceFormat() {
+    const quickPick = window.createQuickPick();
+    let tx  = window.activeTextEditor;
+    if (tx === undefined || tx.document.fileName === null) 
+    {
+        return;
+    }
+    let ws = workspace.getWorkspaceFolder;
+    if (ws === undefined || ws === null)
+    {
+        return;
+    }
+    
+    let sfilename = path.basename(tx.document.fileName);
+
+	const items: QuickPickItem[] = [
+		{
+			label: "sourceformat fixed",
+			description: "Set sourceformat to be fixed for "+sfilename
+		},
+		{
+			label: "sourceformat free",
+			description: "Set sourceformat to be free for "+sfilename
+        },
+        {
+			label: "sourceformat variable",
+			description: "Set sourceformat to be variable for "+sfilename
+		}
+	];
+    quickPick.items = items;
+	quickPick.title = "Select option";
+	quickPick.onDidChangeSelection(selection => {
+		if (selection[0]) {
+            var selLabel = selection[0].label;
+
+            switch(selLabel)
+            {
+                case items[0].label:
+                    quickPick.dispose();
+                    break;
+                case items[1].label:
+                    quickPick.dispose();
+                    break;
+                case items[2].label:
+                    quickPick.dispose();
+                    break;
+                default:
+                    window.showInformationMessage(
+                        `Invalid command ${selection[0]}`
+                    );
+            }
+		}
+	});
+	quickPick.onDidHide(() => quickPick.dispose());
+quickPick.show();
+}
 
 function isEnabledViaWorkspace(): boolean {
     let editorConfig = workspace.getConfiguration('coboleditor');
@@ -43,13 +102,26 @@ function isNumber(value: string | number): boolean {
     return !isNaN(Number(value.toString()));
 }
 
-function getFixedFilenameConfiguration(): string[] {
+function getConfiguration(sf : number) {
+    let area = "";
+    switch(sf) 
+    {
+        case sourceformat_fixed : area = "include.fixed.filenames"; break;
+        case sourceformat_variable : area = "include.free.filenames"; break;
+        case sourceformat_free : area = "include.free.filenames"; break;
+    }
+
     let editorConfig = workspace.getConfiguration('coboleditor');
-    let files = editorConfig.get<string[]>('include.fixed.filenames');
+    let files = editorConfig.get<string[]>(area);
     if (files === undefined || files === null) {
         files = [];
     }
     return files;
+}
+
+function getFixedFilenameConfiguration(): string[] 
+{
+    return getConfiguration(sourceformat_fixed);
 }
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
@@ -146,14 +218,14 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
 
     if (!isSupportedLanguage(doc)) {
         hideMarginStatusBar();
-        activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
+        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
     /* is it enabled? */
     if (!isEnabledViaWorkspace()) {
         hideMarginStatusBar();
-        activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
+        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
@@ -161,7 +233,7 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
     let sourceformatStyle = isActivateForThisDocument(doc);
     enableMarginStatusBar(sourceformatStyle);
     if (sourceformatStyle !== sourceformat_fixed) {
-        activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
+        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
@@ -177,6 +249,6 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
             decorationOptions.push(decoration);
         }
     }
-    activeTextEditor.setDecorations(trailingSpacesDecorationType, decorationOptions);
+    activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
 }
 

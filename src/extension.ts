@@ -6,6 +6,8 @@ import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import { DocComment } from './formatting/DocComment';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
+import * as margindecorations from './margindecorations';
+
 // import { cobolKeywords } from './keywords/cobolKeywords';
 import { jclStatements } from "./keywords/jclstatements";
 import CobolDocumentSymbolProvider from './symbolprovider';
@@ -42,6 +44,10 @@ export function activate(context: ExtensionContext) {
         tabstopper.processTabKey(false);
     });
 
+    var changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function() {
+        margindecorations.changeSourceFormat();
+    });
+
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -49,6 +55,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(move2anybackwardsCommand);
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
+    context.subscriptions.push(changeSourceFormat);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
@@ -108,6 +115,7 @@ export function activate(context: ExtensionContext) {
     }, null, context.subscriptions);
 
     formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
+    formatStatusBarItem.command = "cobolplugin.change_source_format";
     formatStatusBarItem.show();
 
     updateDecorations(window.activeTextEditor);
