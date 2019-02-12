@@ -133,7 +133,7 @@
                 },
                 "coboleditor.fileformat": {
                     "type": "array",
-                    "markdownDescription": "Default configuration for file format. [Read more...](https://github.com/spgennard/vscode_cobol#coboleditor.fileformat)",
+                    "markdownDescription": "Default configuration for file format. [Read more...](https://github.com/spgennard/vscode_cobol#coboleditorfileformat)",
                     "items": {
                         "type": "object",
                         "title": "List of properties to match file format",
