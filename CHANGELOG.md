@@ -1,7 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
-## Version - 4.1.3
- - 
+## Version - 4.2.0
+ - Add experimental margin support
+
 ## Version - 4.1.2
  - Only show source format button when it's useful todo it
 
