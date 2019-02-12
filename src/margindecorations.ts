@@ -1,17 +1,12 @@
 'use strict';
 
-import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, QuickPickItem, TextEditorRevealType  } from 'vscode';
+import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, QuickPickItem, TextEditorRevealType } from 'vscode';
 import { enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
-const minimatch = require("minimatch");
-const path = require('path');
+import minimatch = require('minimatch');
+import path = require('path');
 
-export const sourceformat_unknown: number = 0;
-export const sourceformat_fixed: number = 1;
-export const sourceformat_variable: number = 2;
-export const sourceformat_free: number = 3;
-
-var trailingSpacesDecoration : TextEditorDecorationType = window.createTextEditorDecorationType({
+var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)",
@@ -29,63 +24,6 @@ var trailingSpacesDecoration : TextEditorDecorationType = window.createTextEdito
 
 });
 
-export function changeSourceFormat() {
-    const quickPick = window.createQuickPick();
-    let tx  = window.activeTextEditor;
-    if (tx === undefined || tx.document.fileName === null) 
-    {
-        return;
-    }
-    let ws = workspace.getWorkspaceFolder;
-    if (ws === undefined || ws === null)
-    {
-        return;
-    }
-    
-    let sfilename = path.basename(tx.document.fileName);
-
-	const items: QuickPickItem[] = [
-		{
-			label: "sourceformat fixed",
-			description: "Set sourceformat to be fixed for "+sfilename
-		},
-		{
-			label: "sourceformat free",
-			description: "Set sourceformat to be free for "+sfilename
-        },
-        {
-			label: "sourceformat variable",
-			description: "Set sourceformat to be variable for "+sfilename
-		}
-	];
-    quickPick.items = items;
-	quickPick.title = "Select option";
-	quickPick.onDidChangeSelection(selection => {
-		if (selection[0]) {
-            var selLabel = selection[0].label;
-
-            switch(selLabel)
-            {
-                case items[0].label:
-                    quickPick.dispose();
-                    break;
-                case items[1].label:
-                    quickPick.dispose();
-                    break;
-                case items[2].label:
-                    quickPick.dispose();
-                    break;
-                default:
-                    window.showInformationMessage(
-                        `Invalid command ${selection[0]}`
-                    );
-            }
-		}
-	});
-	quickPick.onDidHide(() => quickPick.dispose());
-quickPick.show();
-}
-
 function isEnabledViaWorkspace(): boolean {
     let editorConfig = workspace.getConfiguration('coboleditor');
     let marginOn = editorConfig.get<boolean>('margin');
@@ -95,6 +33,22 @@ function isEnabledViaWorkspace(): boolean {
     return true;
 }
 
+
+export enum ESourceFormat {
+    unknown = 'unknown',
+    fixed = 'fixed',
+    free = 'free',
+    variable = 'variable',
+    jcl = 'jcl'
+}
+
+export const sourceformatMessages: string[] = ['unknown', 'fixed', 'free', 'variable'];
+
+interface IEditorMarginFiles {
+    pattern: string;
+    sourceformat: ESourceFormat;
+}
+
 function isNumber(value: string | number): boolean {
     if (value.toString().length === 0) {
         return false;
@@ -102,47 +56,36 @@ function isNumber(value: string | number): boolean {
     return !isNaN(Number(value.toString()));
 }
 
-function getConfiguration(sf : number) {
-    let area = "";
-    switch(sf) 
-    {
-        case sourceformat_fixed : area = "include.fixed.filenames"; break;
-        case sourceformat_variable : area = "include.free.filenames"; break;
-        case sourceformat_free : area = "include.free.filenames"; break;
-    }
-
+function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
     let editorConfig = workspace.getConfiguration('coboleditor');
-    let files = editorConfig.get<string[]>(area);
+    let files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
     if (files === undefined || files === null) {
-        files = [];
+        return [];
     }
-    return files;
-}
 
-function getFixedFilenameConfiguration(): string[] 
-{
-    return getConfiguration(sourceformat_fixed);
+    return files;
 }
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
-function isActivateForThisDocument(doc: TextDocument): number {
+function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
+
+    if (doc.languageId.toLowerCase() === "jcl") {
+        return ESourceFormat.jcl;
+    }
 
     let filesFilter = getFixedFilenameConfiguration();
     if (filesFilter.length >= 1) {
         let docFilename: string = doc.fileName;
         for (let i = 0; i < filesFilter.length; i++) {
-            let filter: string = filesFilter[i];
+            let filter: IEditorMarginFiles = filesFilter[i];
 
-            if (minimatch(docFilename, filter, { nocase : true} )) 
-            {
-                return sourceformat_fixed;
+            if (minimatch(docFilename, filter.pattern, { nocase: true })) {
+                return ESourceFormat[filter.sourceformat];
             }
         }
     }
-    if (doc.languageId.toLowerCase() === "jcl") {
-        return sourceformat_fixed;
-    }
+
 
     let linesWithJustNumbers = 0;
     let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
@@ -172,21 +115,21 @@ function isActivateForThisDocument(doc: TextDocument): number {
         let line2right = line.substr(pos4sourceformat_after);
 
         if (line2right.indexOf("fixed") !== -1) {
-            return sourceformat_fixed;
+            return ESourceFormat.fixed;
         }
         if (line2right.indexOf("variable") !== -1) {
-            return sourceformat_variable;
+            return ESourceFormat.variable;
         }
         if (line2right.indexOf("free") !== -1) {
-            return sourceformat_free;
+            return ESourceFormat.free;
         }
     }
 
     //it might well be...
     if (linesWithJustNumbers > 7) {
-        return sourceformat_fixed;
+        return ESourceFormat.free;
     }
-    return sourceformat_unknown;
+    return ESourceFormat.unknown;
 }
 
 function isSupportedLanguage(document: TextDocument): boolean {
@@ -230,21 +173,32 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
     }
 
     /* does it include sourceformat"free"? */
-    let sourceformatStyle = isActivateForThisDocument(doc);
+    let sourceformatStyle: ESourceFormat = isActivateForThisDocument(doc);
     enableMarginStatusBar(sourceformatStyle);
-    if (sourceformatStyle !== sourceformat_fixed) {
-        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
-        return;
+    switch (sourceformatStyle) {
+        case ESourceFormat.free:
+        case ESourceFormat.variable:
+        case ESourceFormat.unknown:
+            activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+            return;
     }
 
     for (let i = 0; i < doc.lineCount; i++) {
         let lineText = doc.lineAt(i);
         let line = lineText.text;
 
+        if (sourceformatStyle === ESourceFormat.fixed) {
+            if (line.length > 6) {
+                let startPos = new Position(i, 0);
+                let endPos = new Position(i, 6);
+                const decoration = { range: new Range(startPos, endPos) };
+                decorationOptions.push(decoration);
+            }
+        }
+
         if (line.length > 72) {
             let startPos = new Position(i, 72);
             let endPos = new Position(i, line.length);
-            // const decoration = { range: new Range(startPos, endPos), hoverMessage: "Number **" + i + "**" };
             const decoration = { range: new Range(startPos, endPos) };
             decorationOptions.push(decoration);
         }

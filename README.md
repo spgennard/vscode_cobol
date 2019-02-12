@@ -207,3 +207,25 @@ Although this extension does not understand comments in COBOL source files, it c
     }
 }
 ```
+
+
+## coboleditor.fileformat
+
+When ```coboleditor.margin``` is enabled extension will look for "sourceformat" settings in the header of the source file itself.
+
+However, if you need to tell the extension which file are which particular format, this can be achieved with ```coboleditor.fileformat``` property.
+
+For example, if you want all the files that match ```*.cbl``` to be fixed, you can use:
+
+```json
+    "coboleditor.fileformat": [
+        {
+            "pattern": "**/A*.cbl",
+            "sourceformat": "fixed"
+        },
+        {
+            "pattern": "**/*.cbl",
+            "sourceformat": "free"
+        }
+    ],
+```

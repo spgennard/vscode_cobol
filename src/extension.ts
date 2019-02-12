@@ -6,13 +6,12 @@ import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import { DocComment } from './formatting/DocComment';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
-import * as margindecorations from './margindecorations';
+import { ESourceFormat } from './margindecorations';
 
-// import { cobolKeywords } from './keywords/cobolKeywords';
 import { jclStatements } from "./keywords/jclstatements";
 import CobolDocumentSymbolProvider from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
-import updateDecorations, { sourceformat_fixed, sourceformat_variable, sourceformat_free } from './margindecorations';
+import updateDecorations from './margindecorations';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -44,8 +43,20 @@ export function activate(context: ExtensionContext) {
         tabstopper.processTabKey(false);
     });
 
-    var changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function() {
-        margindecorations.changeSourceFormat();
+    var changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function () {
+        // margindecorations.changeSourceFormat();
+        const action = 'Open Settings';
+        window.showWarningMessage("Change coboleditor setting?", action).then((selection) => {
+            if (action === selection) {
+                let ws = workspace.getWorkspaceFolder;
+                if (ws === undefined || ws === null) {
+                    commands.executeCommand("workbench.action.openWorkspaceSettings", "coboleditor");
+                }
+                else {
+                    commands.executeCommand("workbench.action.openGlobalSettings", "coboleditor");
+                }
+            }
+        });
     });
 
     context.subscriptions.push(move2pdCommand);
@@ -92,7 +103,7 @@ export function activate(context: ExtensionContext) {
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
     context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
     context.subscriptions.push(DocComment.register());
-    
+
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
             return;
@@ -121,21 +132,9 @@ export function activate(context: ExtensionContext) {
     updateDecorations(window.activeTextEditor);
 }
 
-export function enableMarginStatusBar(formatStyle: number) {
-    switch(formatStyle) {
-        case sourceformat_fixed:
-            formatStatusBarItem.text = "Source:fixed";
-            break;
-        case sourceformat_variable:
-            formatStatusBarItem.text = "Source:variable";
-            break;
-        case sourceformat_free:
-            formatStatusBarItem.text = "Source:free";
-            break;
-        default:
-            formatStatusBarItem.text = "Source:unknown";
-    }
-        
+export function enableMarginStatusBar(formatStyle: ESourceFormat) {
+    formatStatusBarItem.text = "Source:"+formatStyle;
+    formatStyle.toString();
     formatStatusBarItem.show();
 }
 
