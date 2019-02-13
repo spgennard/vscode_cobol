@@ -215,7 +215,7 @@ When ```coboleditor.margin``` is enabled extension will look for "sourceformat" 
 
 However, if you need to tell the extension which file are which particular format, this can be achieved with ```coboleditor.fileformat``` property.
 
-For example, if you want all the files that match ```*.cbl``` to be fixed, you can use:
+For example, if you want all the files that match ```A*.cbl``` to be fixed and every other *.cbl is free format, you can then use:
 
 ```json
     "coboleditor.fileformat": [
