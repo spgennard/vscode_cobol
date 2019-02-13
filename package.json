@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.2.1",
+    "version": "4.2.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -131,6 +131,11 @@
                     "title": "apply margin shading",
                     "default": false
                 },
+                "jcleditor.margin": {
+                    "type": "boolean",
+                    "title": "apply margin shading",
+                    "default": true
+                },                
                 "coboleditor.fileformat": {
                     "type": "array",
                     "markdownDescription": "Default configuration for file format. [Read more...](https://github.com/spgennard/vscode_cobol#coboleditorfileformat)",
@@ -153,7 +158,16 @@
                             }
                         }
                     },
-                    "default": [],
+                    "default": [
+                        {
+                            "pattern" : "**/*.cbl",
+                            "sourceformat" : "fixed"
+                        },
+                        {
+                            "pattern" : "**/*.cob",
+                            "sourceformat" : "fixed"
+                        }
+                    ],
                     "description": "An array of filenames/patterns and its associated source formmat"
                 }
             }

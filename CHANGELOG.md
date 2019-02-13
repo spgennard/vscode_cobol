@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.2.2
+ - JCL changes for syntax and margin
+ 
 ## Version - 4.2.0
  - Add experimental margin support
 

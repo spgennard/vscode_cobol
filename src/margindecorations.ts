@@ -24,8 +24,17 @@ var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditor
 
 });
 
-function isEnabledViaWorkspace(): boolean {
+function isEnabledViaWorkspace4cobol(): boolean {
     let editorConfig = workspace.getConfiguration('coboleditor');
+    let marginOn = editorConfig.get<boolean>('margin');
+    if (marginOn !== undefined) {
+        return marginOn;
+    }
+    return true;
+}
+
+function isEnabledViaWorkspace4jcl(): boolean {
+    let editorConfig = workspace.getConfiguration('jcleditor');
     let marginOn = editorConfig.get<boolean>('margin');
     if (marginOn !== undefined) {
         return marginOn;
@@ -70,8 +79,15 @@ const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
 function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
 
-    if (doc.languageId.toLowerCase() === "jcl") {
-        return ESourceFormat.jcl;
+    /* just use the extension for jcl */
+    switch(doc.languageId.toLowerCase())
+    {
+        case "jcl" :
+        case "job" :
+        case "cntl" :
+        case "prc" :
+        case "proc" :
+            return ESourceFormat.jcl;
     }
 
     let filesFilter = getFixedFilenameConfiguration();
@@ -85,7 +101,6 @@ function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
             }
         }
     }
-
 
     let linesWithJustNumbers = 0;
     let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
@@ -132,22 +147,25 @@ function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
     return ESourceFormat.unknown;
 }
 
-function isSupportedLanguage(document: TextDocument): boolean {
+enum TextLanguage {
+    Unknown = 0,
+    COBOL = 1,
+    JCL = 2
+}
 
-    let activate: boolean = false;
+function isSupportedLanguage(document: TextDocument): TextLanguage {
+
     switch (document.languageId.toLowerCase()) {
-        case "cobol": activate = true; break;
-        case "opencobol": activate = true; break;
-        case "acucobol": activate = true; break;
-        case "jcl": activate = true; break;
+        case "cobol":
+        case "opencobol":
+        case "acucobol":
+            return TextLanguage.COBOL;
+        case "jcl":
+            return TextLanguage.JCL;
     }
 
     /* not a supported language? */
-    if (!activate) {
-        return false;
-    }
-
-    return true;
+    return TextLanguage.Unknown;
 }
 
 export default function updateDecorations(activeTextEditor: TextEditor | undefined) {
@@ -159,48 +177,74 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
     const doc: TextDocument = activeTextEditor.document;
     const decorationOptions: DecorationOptions[] = [];
 
-    if (!isSupportedLanguage(doc)) {
+    const textLanguage: TextLanguage = isSupportedLanguage(doc);
+
+    if (textLanguage === TextLanguage.Unknown) {
         hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
-    /* is it enabled? */
-    if (!isEnabledViaWorkspace()) {
+    /* is it enabled? (COBOL) */
+    if (textLanguage === TextLanguage.COBOL && !isEnabledViaWorkspace4cobol()) {
         hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
-    /* does it include sourceformat"free"? */
-    let sourceformatStyle: ESourceFormat = isActivateForThisDocument(doc);
-    enableMarginStatusBar(sourceformatStyle);
-    switch (sourceformatStyle) {
-        case ESourceFormat.free:
-        case ESourceFormat.variable:
-        case ESourceFormat.unknown:
-            activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
-            return;
+    /* is it enabled? (COBOL) */
+    if (textLanguage === TextLanguage.JCL && !isEnabledViaWorkspace4jcl()) {
+        hideMarginStatusBar();
+        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+        return;
     }
 
-    for (let i = 0; i < doc.lineCount; i++) {
-        let lineText = doc.lineAt(i);
-        let line = lineText.text;
+    if (textLanguage === TextLanguage.COBOL) {
 
-        if (sourceformatStyle === ESourceFormat.fixed) {
-            if (line.length > 6) {
-                let startPos = new Position(i, 0);
-                let endPos = new Position(i, 6);
+        /* does it include sourceformat"free"? */
+        let sourceformatStyle: ESourceFormat = isActivateForThisDocument(doc);
+        enableMarginStatusBar(sourceformatStyle);
+        switch (sourceformatStyle) {
+            case ESourceFormat.free:
+            case ESourceFormat.variable:
+            case ESourceFormat.unknown:
+                activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+                return;
+        }
+
+        for (let i = 0; i < doc.lineCount; i++) {
+            let lineText = doc.lineAt(i);
+            let line = lineText.text;
+
+            if (sourceformatStyle === ESourceFormat.fixed) {
+                if (line.length > 6) {
+                    let startPos = new Position(i, 0);
+                    let endPos = new Position(i, 6);
+                    const decoration = { range: new Range(startPos, endPos) };
+                    decorationOptions.push(decoration);
+                }
+            }
+
+            if (line.length > 72) {
+                let startPos = new Position(i, 72);
+                let endPos = new Position(i, line.length);
                 const decoration = { range: new Range(startPos, endPos) };
                 decorationOptions.push(decoration);
             }
         }
+    }
 
-        if (line.length > 72) {
-            let startPos = new Position(i, 72);
-            let endPos = new Position(i, line.length);
-            const decoration = { range: new Range(startPos, endPos) };
-            decorationOptions.push(decoration);
+    if (textLanguage === TextLanguage.JCL) {
+        for (let i = 0; i < doc.lineCount; i++) {
+            let lineText = doc.lineAt(i);
+            let line = lineText.text;
+
+            if (line.length > 72) {
+                let startPos = new Position(i, 72);
+                let endPos = new Position(i, line.length);
+                const decoration = { range: new Range(startPos, endPos) };
+                decorationOptions.push(decoration);
+            }
         }
     }
     activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);

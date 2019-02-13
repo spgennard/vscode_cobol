@@ -128,7 +128,7 @@
       "name": "string.quoted.single.jcl"
     },
     {
-      "match": "(?i:DSN|DISP|DCB|UNIT|VOL|SYSOUT|SPACE|RECFM|LRECL)(=)",
+      "match": "(?<![a-zA-Z])(?i:DSN|DISP|DCB|UNIT|VOL|SYSOUT|SPACE|RECFM|LRECL)(=)",
       "captures": {
         "0": {
           "name": "variable.language.jcl"
@@ -139,7 +139,7 @@
       }
     },
     {
-      "match": "(?i:PGM|UTPROC|PROC|PARM|ADDRSPC|ACCT|TIME|REGION|COND|DSNME|DATAC)(=)",
+      "match": "(?<![a-zA-Z])(?i:PGM|UTPROC|PROC|PARM|ADDRSPC|ACCT|TIME|REGION|COND|DSNME|DATAC)(=)",
       "name": "variable.language.jcl",
       "captures": {
         "1": {
@@ -151,7 +151,7 @@
       }
     },
     {
-      "match": "(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER|CLASS|UID)(=|$)",
+      "match": "(?<![a-zA-Z])(?i:ADDSPC|BYTES|CARDS|DSENQSHR|GROUP|JESLOG|JOBRC|LINES|MEMLIMIT|MSGCLASS|MSGLEVEL|NOTIFY|PAGES|PASSWORD|PERFORM|PRTY|RD|REGION|RESTART|SECLABEL|SCHENV|SYAFF|SYSTEM|TIME|TYPRUN|UJOBCORR|USER|CLASS|UID)(=|$)",
       "name": "variable.language.job.jcl",
       "captures": {
         "1": {
@@ -190,7 +190,7 @@
       }
     },
     {
-      "match": "(?<![-_\\.])(?i:BLKSIZE|DCB|DDname|DEST|DISP|DSNAME|DSNTYPE|EXPDT|KEYLEN|LABEL|LIKE|LRECL|OUTLIM|OUTPUT|RECFM|RECORG|RETPD|SPACE|SYSOUT|UNIT|VOLUME)",
+      "match": "(?<![-_\\.a-zA-Z])(?i:BLKSIZE|DCB|DDname|DEST|DISP|DSNAME|DSNTYPE|EXPDT|KEYLEN|LABEL|LIKE|LRECL|OUTLIM|OUTPUT|RECFM|RECORG|RETPD|SPACE|SYSOUT|UNIT|VOLUME)",
       "name": "variable.language.dcb.jcl",
       "captures": {
         "1": {
