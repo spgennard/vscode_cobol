@@ -38,10 +38,11 @@
 			]
 		},
 		{
-			"open": "/**",
-			"close": " */",
+			"open": "\"",
+			"close": "\"",
 			"notIn": [
-				"string"
+				"string",
+				"comment"
 			]
 		}
 	],
@@ -69,8 +70,8 @@
 	],
 	"folding": {
 		"markers": {
-			"start": "^\\s*\\$region",
-			"end": "^\\s*\\$end-region"
+			"start": "^\\s*\\$region\\b",
+			"end": "^\\s*\\$end-region\\b"
 		}
 	},
 	"wordPattern": "[a-zA-Z0-9_-]+"

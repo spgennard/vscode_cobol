@@ -31,11 +31,19 @@
 		},
 		{
 			"open": "\"",
-			"close": "\""
+			"close": "\"",
+			"notIn": [
+				"string",
+				"comment"
+			]
 		},
 		{
 			"open": "'",
-			"close": "'"
+			"close": "'",
+			"notIn": [
+				"string",
+				"comment"
+			]
 		}
 	],
 	"wordPattern": "[\\-a-zA-Z0-9_@]+"

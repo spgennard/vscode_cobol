@@ -535,7 +535,7 @@
       "name": "storage.type.picture.cobol"
     },
     {
-      "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV\\.][-+s\\*$09aAbBsSnNxXzZ/,]*[0-9]*",
+      "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV\\.][-+s\\*$09aAbBsSnNxXzZ/,]*[0-9\\.()]*",
       "name": "storage.type.picture.cobol"
     },
     {
