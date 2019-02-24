@@ -50,13 +50,40 @@ export function activate(context: ExtensionContext) {
             if (action === selection) {
                 let ws = workspace.getWorkspaceFolder;
                 if (ws === undefined || ws === null) {
-                    commands.executeCommand("workbench.action.openWorkspaceSettings", "coboleditor");
+                    commands.executeCommand("workbench.action.openGlobalSettings");
                 }
                 else {
-                    commands.executeCommand("workbench.action.openGlobalSettings", "coboleditor");
+                    commands.executeCommand("workbench.action.openWorkspaceSettings");
                 }
             }
         });
+    });
+
+    var changeLanguageToAcu = commands.registerCommand('cobolplug.change_lang_to_acu', function () {
+        let act = window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        languages.setTextDocumentLanguage(act.document,"ACUCOBOL");
+    });
+
+    var changeLanguageToCOBOL = commands.registerCommand('cobolplug.change_lang_to_cobol', function () {
+        let act = window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        languages.setTextDocumentLanguage(act.document,"COBOL");
+    });
+
+    var changeLanguageToOpenCOBOL = commands.registerCommand('cobolplug.change_lang_to_opencobol', function () {
+        let act = window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        languages.setTextDocumentLanguage(act.document,"OpenCOBOL");
     });
 
     context.subscriptions.push(move2pdCommand);
@@ -67,6 +94,10 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
     context.subscriptions.push(changeSourceFormat);
+    
+    context.subscriptions.push(changeLanguageToAcu);
+    context.subscriptions.push(changeLanguageToCOBOL);
+    context.subscriptions.push(changeLanguageToOpenCOBOL);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },

@@ -229,3 +229,9 @@ For example, if you want all the files that match ```A*.cbl``` to be fixed and e
         }
     ],
 ```
+
+## Shortcuts
+
+    [ ALT SHIFT A ]: Change to ACUCOBOL Syntax
+    [ ALT SHIFT C ]: Change to COBOL Syntax
+    [ ALT SHIFT O ]: Change to OpenCOBOL Syntax

@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.3
+ - Add shortcuts inline with my old sublime plugin
+ 
 ## Version - 4.2.3
  - Tweaks to pic handling and config
 
