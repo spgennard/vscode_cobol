@@ -1,7 +1,7 @@
 'use strict';
 
-import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, QuickPickItem, TextEditorRevealType } from 'vscode';
-import { enableMarginStatusBar, hideMarginStatusBar } from './extension';
+import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, ExtensionContext } from 'vscode';
+import { getCurrentContext, enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
 import minimatch = require('minimatch');
 import path = require('path');
@@ -24,22 +24,39 @@ var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditor
 
 });
 
-function isEnabledViaWorkspace4cobol(): boolean {
-    let editorConfig = workspace.getConfiguration('coboleditor');
+function isMarginEnabled(configString: string) : boolean
+{
+    let currentContext : ExtensionContext = getCurrentContext();
+    let enabledViaContext : boolean|undefined = currentContext.workspaceState.get<boolean>(configString);
+
+    // if this is enabled via the context, then return it early
+    if (enabledViaContext !== undefined && enabledViaContext !== null && enabledViaContext === true) 
+    {
+        return true;
+    }
+    
+    let editorConfig = workspace.getConfiguration(configString);
     let marginOn = editorConfig.get<boolean>('margin');
     if (marginOn !== undefined) {
         return marginOn;
     }
-    return true;
+    return true;  
+}
+
+export function enableMarginCobolMargin(enabled: boolean)
+{
+    let configString: string = "coboleditor";
+    let currentContext : ExtensionContext = getCurrentContext();
+
+    currentContext.workspaceState.update(configString, enabled);
+}
+
+export function isEnabledViaWorkspace4cobol(): boolean {
+    return isMarginEnabled('coboleditor');
 }
 
 function isEnabledViaWorkspace4jcl(): boolean {
-    let editorConfig = workspace.getConfiguration('jcleditor');
-    let marginOn = editorConfig.get<boolean>('margin');
-    if (marginOn !== undefined) {
-        return marginOn;
-    }
-    return true;
+    return isMarginEnabled('jcleditor');
 }
 
 

@@ -6,16 +6,24 @@ import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import { DocComment } from './formatting/DocComment';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
-import { ESourceFormat } from './margindecorations';
+import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
 import CobolDocumentSymbolProvider from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
+
 import updateDecorations from './margindecorations';
 
 let formatStatusBarItem: StatusBarItem;
 
+var currentContext: ExtensionContext;
+
+export function getCurrentContext() : ExtensionContext {
+    return currentContext;
+}
 export function activate(context: ExtensionContext) {
+    currentContext = context;
+
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
     });
@@ -59,7 +67,7 @@ export function activate(context: ExtensionContext) {
         });
     });
 
-    var changeLanguageToAcu = commands.registerCommand('cobolplug.change_lang_to_acu', function () {
+    var changeLanguageToAcu = commands.registerCommand('cobolplugin.change_lang_to_acu', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -68,7 +76,7 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document,"ACUCOBOL");
     });
 
-    var changeLanguageToCOBOL = commands.registerCommand('cobolplug.change_lang_to_cobol', function () {
+    var changeLanguageToCOBOL = commands.registerCommand('cobolplugin.change_lang_to_cobol', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -77,7 +85,7 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document,"COBOL");
     });
 
-    var changeLanguageToOpenCOBOL = commands.registerCommand('cobolplug.change_lang_to_opencobol', function () {
+    var changeLanguageToOpenCOBOL = commands.registerCommand('cobolplugin.change_lang_to_opencobol', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -86,6 +94,15 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document,"OpenCOBOL");
     });
 
+    var toggleCOBOLMargin = commands.registerCommand('cobolplugin.toggle_margin', function () {
+        let act = window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        enableMarginCobolMargin(!isEnabledViaWorkspace4cobol());
+        updateDecorations(act);
+    });
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -98,6 +115,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(changeLanguageToAcu);
     context.subscriptions.push(changeLanguageToCOBOL);
     context.subscriptions.push(changeLanguageToOpenCOBOL);
+
+    context.subscriptions.push(toggleCOBOLMargin);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },

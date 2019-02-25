@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.3.1
+ - Add alt+shift+m for margin shortcut toggle
+
 ## Version - 4.3
  - Add shortcuts inline with my old sublime plugin
  

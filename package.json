@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.3.0",
+    "version": "4.3.1",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -387,8 +387,12 @@
                 "title": "Remove a tab"
             },
             {
-                "command": "cobolplug.change_lang_to_acu",
-                "title" : "Select AcuCOBOL language"
+                "command": "cobolplugin.change_lang_to_acu",
+                "title" : "COBOL: Select AcuCOBOL language"
+            },
+            {
+                "command": "cobolplugin.toggle_margin",
+                "title" : "COBOL: Toggle margin"
             }
         ],
         "menus": {
@@ -528,33 +532,38 @@
             },
             {
                 "key" : "alt+shift+a",
-                "command": "cobolplug.change_lang_to_acu",
+                "command": "cobolplugin.change_lang_to_acu",
                 "when": "editorLangId == COBOL && !inSnippetMode"
             },
             {
                 "key" : "alt+shift+a",
-                "command": "cobolplug.change_lang_to_acu",
+                "command": "cobolplugin.change_lang_to_acu",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
             },
             {
                 "key" : "alt+shift+c",
-                "command": "cobolplug.change_lang_to_cobol",
+                "command": "cobolplugin.change_lang_to_cobol",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             },
             {
                 "key" : "alt+shift+c",
-                "command": "cobolplug.change_lang_to_cobol",
+                "command": "cobolplugin.change_lang_to_cobol",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
             },
             {
                 "key" : "alt+shift+o",
-                "command": "cobolplug.change_lang_to_opencobol",
+                "command": "cobolplugin.change_lang_to_opencobol",
                 "when": "editorLangId == COBOL && !inSnippetMode"
             },
             {
                 "key" : "alt+shift+o",
-                "command": "cobolplug.change_lang_to_opencobol",
+                "command": "cobolplugin.change_lang_to_opencobol",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+            },
+            {
+                "key" : "alt+shift+m",
+                "command": "cobolplugin.toggle_margin",
+                "when": "editorTextFocus && editorLangId == COBOL"
             }
         ],
         "snippets": [
