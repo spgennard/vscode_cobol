@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.3.2
+ - Fix issue #47 - activator not present for AcuCOBOL
+
 ## Version - 4.3.1
  - Add alt+shift+m for margin shortcut toggle
 

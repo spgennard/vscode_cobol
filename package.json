@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.3.1",
+    "version": "4.3.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -31,6 +31,8 @@
     ],
     "activationEvents": [
         "onLanguage:COBOL",
+        "onLanguage:ACUCOBOL",
+        "onLanguage:OpenCOBOL",
         "onLanguage:JCL",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
@@ -38,7 +40,12 @@
         "onCommand:cobolplugin.move2anyforward",
         "onCommand:cobolplugin.move2anybackwards",
         "onCommand:cobolplugin.tab",
-        "onCommand:cobolplugin.revtab"
+        "onCommand:cobolplugin.revtab",
+        "onCommand:cobolplugin.change_lang_to_acu",
+        "onCommand:cobolplugin.change_lang_to_cobol",
+        "onCommand:cobolplugin.change_lang_to_opemcobol",
+        "onCommand:cobolplugin.toggle_margin",
+        "onCommand:cobolplugin.change_source_format"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -388,11 +395,11 @@
             },
             {
                 "command": "cobolplugin.change_lang_to_acu",
-                "title" : "COBOL: Select AcuCOBOL language"
+                "title": "COBOL: Select AcuCOBOL language"
             },
             {
                 "command": "cobolplugin.toggle_margin",
-                "title" : "COBOL: Toggle margin"
+                "title": "COBOL: Toggle margin"
             }
         ],
         "menus": {
@@ -531,37 +538,37 @@
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+a",
+                "key": "alt+shift+a",
                 "command": "cobolplugin.change_lang_to_acu",
                 "when": "editorLangId == COBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+a",
+                "key": "alt+shift+a",
                 "command": "cobolplugin.change_lang_to_acu",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+c",
+                "key": "alt+shift+c",
                 "command": "cobolplugin.change_lang_to_cobol",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+c",
+                "key": "alt+shift+c",
                 "command": "cobolplugin.change_lang_to_cobol",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+o",
+                "key": "alt+shift+o",
                 "command": "cobolplugin.change_lang_to_opencobol",
                 "when": "editorLangId == COBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+o",
+                "key": "alt+shift+o",
                 "command": "cobolplugin.change_lang_to_opencobol",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             },
             {
-                "key" : "alt+shift+m",
+                "key": "alt+shift+m",
                 "command": "cobolplugin.toggle_margin",
                 "when": "editorTextFocus && editorLangId == COBOL"
             }
