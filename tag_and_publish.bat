@@ -4,7 +4,7 @@ git clean -fdx
 call npm install
 @if errorlevel 1 goto theend
 
-npm version patch
+call npm version patch
 @if errorlevel 1 goto theend
 
 git push
