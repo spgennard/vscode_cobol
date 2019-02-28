@@ -102,6 +102,7 @@
 	"entry": {
 		"prefix": "entry",
 		"body": [
+			"$1-ep section.",
 			"entry \"$1\".",
 			"    $0\t",
 			"    goback.",
@@ -113,6 +114,7 @@
 	"ENTRY": {
 		"prefix": "ENTRY",
 		"body": [
+			"$1-EP SECTON.",
 			"ENTRY \"$1\".",
 			"    $0\t",
 			"    GOBACK.",
