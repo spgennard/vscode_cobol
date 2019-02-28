@@ -24,29 +24,26 @@ var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditor
 
 });
 
-function isMarginEnabled(configString: string) : boolean
-{
-    let currentContext : ExtensionContext = getCurrentContext();
-    let enabledViaContext : boolean|undefined = currentContext.workspaceState.get<boolean>(configString);
+function isMarginEnabled(configString: string): boolean {
+    let currentContext: ExtensionContext = getCurrentContext();
+    let enabledViaContext: boolean | undefined = currentContext.workspaceState.get<boolean>(configString);
 
     // if this is enabled via the context, then return it early
-    if (enabledViaContext !== undefined && enabledViaContext !== null && enabledViaContext === true) 
-    {
+    if (enabledViaContext !== undefined && enabledViaContext !== null && enabledViaContext === true) {
         return true;
     }
-    
+
     let editorConfig = workspace.getConfiguration(configString);
     let marginOn = editorConfig.get<boolean>('margin');
     if (marginOn !== undefined) {
         return marginOn;
     }
-    return true;  
+    return true;
 }
 
-export function enableMarginCobolMargin(enabled: boolean)
-{
+export function enableMarginCobolMargin(enabled: boolean) {
     let configString: string = "coboleditor";
-    let currentContext : ExtensionContext = getCurrentContext();
+    let currentContext: ExtensionContext = getCurrentContext();
 
     currentContext.workspaceState.update(configString, enabled);
 }
@@ -97,13 +94,12 @@ const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
 
     /* just use the extension for jcl */
-    switch(doc.languageId.toLowerCase())
-    {
-        case "jcl" :
-        case "job" :
-        case "cntl" :
-        case "prc" :
-        case "proc" :
+    switch (doc.languageId.toLowerCase()) {
+        case "jcl":
+        case "job":
+        case "cntl":
+        case "prc":
+        case "proc":
             return ESourceFormat.jcl;
     }
 
@@ -202,31 +198,39 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
         return;
     }
 
+    let enabledViaWorkspace4cobol: boolean = isEnabledViaWorkspace4cobol();
+
     /* is it enabled? (COBOL) */
-    if (textLanguage === TextLanguage.COBOL && !isEnabledViaWorkspace4cobol()) {
+    if (textLanguage === TextLanguage.COBOL && !enabledViaWorkspace4cobol) {
         hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
+    let enabledViaWorkspace4jcl: boolean = isEnabledViaWorkspace4jcl();
+
     /* is it enabled? (COBOL) */
-    if (textLanguage === TextLanguage.JCL && !isEnabledViaWorkspace4jcl()) {
+    if (textLanguage === TextLanguage.JCL && !enabledViaWorkspace4jcl) {
         hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
     if (textLanguage === TextLanguage.COBOL) {
-
         /* does it include sourceformat"free"? */
         let sourceformatStyle: ESourceFormat = isActivateForThisDocument(doc);
         enableMarginStatusBar(sourceformatStyle);
-        switch (sourceformatStyle) {
-            case ESourceFormat.free:
-            case ESourceFormat.variable:
-            case ESourceFormat.unknown:
-                activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
-                return;
+
+        if (enabledViaWorkspace4cobol) {
+            sourceformatStyle = ESourceFormat.fixed;
+        } else {
+            switch (sourceformatStyle) {
+                case ESourceFormat.free:
+                case ESourceFormat.variable:
+                case ESourceFormat.unknown:
+                    activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+                    return;
+            }
         }
 
         for (let i = 0; i < doc.lineCount; i++) {
