@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.3.3
+ - Clean build
+
 ## Version - 4.3.2
  - Fix issue #47 - activator not present for AcuCOBOL
 

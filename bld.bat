@@ -1,3 +1,3 @@
 git clean -fdx
-npm install
+call npm install
 vsce publish
