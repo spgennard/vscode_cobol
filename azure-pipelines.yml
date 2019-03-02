@@ -18,5 +18,25 @@ steps:
 - script: |
     npm install
     npm install -g vsce
-    vsce package
-  displayName: 'npm install and vsce publish'
+  displayName: 'npm install and vsce'
+ 
+- task: CmdLine@1
+  displayName: 'Run vsce package'
+  inputs:
+    filename: 'vsce '
+    arguments: package
+    workingFolder: '$(build.ArtifactStagingDirectory)'
+
+# Choose files to publish
+- task: CopyFiles@2
+  displayName: Stage VSIX for publishing
+  inputs:
+    contents: |-
+      *.vsix
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+# Publish files as an artifact
+- task: PublishBuildArtifacts@1
+  displayName: Publish VSIX
+  inputs:
+    artifactName: spgennard-vscode_cobol
