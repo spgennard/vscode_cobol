@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.4.1
+ - Tweak icon
+
 ## Version - 4.4.0
  - More fixes to the way margin are activated
 

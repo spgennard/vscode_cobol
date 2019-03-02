@@ -301,12 +301,14 @@
 	"MFUnit Test": {
 		"prefix": "mfu,program-id",
 		"body": [
-			"       program-id. MFUT_${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
+			"       program-id. MFUT_${1:${TM_FILENAME_BASE/MFUT[_](.*)/$1/}}.",
 			"       working-storage section.",
 			"       copy \"mfunit.cpy\".",
 			"",
 			"       01 test-fail-count     binary-long value 0.",
-			"       *> Testcase $1",
+			"",
+			"       *> Testcase     : $1",
+			"       *>  Description : $2",
 			"       procedure division.",
 			"           $0",
 			"           if 1 not equal 1",
@@ -334,6 +336,7 @@
 			"",
 			"       *> Metadata for testcase $1",
 			"       entry \"MFUM_$1\".",
+			"           move \"$2\" to MFU-MD-TESTCASE-DESCRIPTION",
 			"           goback.",
 			"       end program."
 		],
@@ -372,6 +375,28 @@
 		"description": "PERFORM paragraph x TIMES",
 		"scope": "cobol,acucobol,opencobol"
 	},	
+	"perform-end-perform": {
+		"prefix": "perform",
+		"body": [
+			"perform ${1}",
+			"\t${2}",
+			"end-perform",
+			"${0}"
+		],
+		"description": "perform .. end-perform",
+		"scope": "cobol,acucobol,opencobol"
+	},
+	"PERFORM-END-PERFORM": {
+		"prefix": "PERFORM",
+		"body": [
+			"PERFORM ${1}",
+			"\t${2}",
+			"END-PERFORM",
+			"${0}"
+		],
+		"description": "PERFORM .. END-PERFORM",
+		"scope": "cobol,acucobol,opencobol"
+	},
 	"perform varying": {
 		"prefix": "perform",
 		"body": [

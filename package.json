@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.4.0",
+    "version": "4.4.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -180,9 +180,22 @@
             }
         },
         "configurationDefaults": {
+
+            "search.exclude": {
+                "**/*.int": true,
+                "**/*.gnt": true,
+                "**/*.dll": true,
+                "**/*.so": true,
+                "**/*.acu": true,
+                "**/*.idy": true,
+                "**/*.pdb": true
+            },
+
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.formatOnType": true,
+                "editor.autoIndent": false,
+                "editor.insertSpaces": true,
+                "editor.formatOnType": false,
                 "editor.rulers": [
                     6,
                     7,
@@ -192,7 +205,10 @@
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
             "[ACUCOBOL]": {
-                "files.autoGuessEncoding": true,
+                "editor.insertSpaces": true,
+                "files.autoGuessEncoding": false,
+                "editor.autoIndent": false,
+                "editor.formatOnType": false,
                 "editor.rulers": [
                     6,
                     7,
@@ -202,7 +218,10 @@
                 "editor.wordSeparators": "`~!#$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
             "[OpenCOBOL]": {
+                "editor.insertSpaces": true,
                 "files.autoGuessEncoding": true,
+                "editor.formatOnType": false,
+                "editor.autoIndent": false,
                 "editor.rulers": [
                     6,
                     7,
@@ -212,7 +231,9 @@
                 "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?-"
             },
             "[dir]": {
+                "editor.insertSpaces": true,
                 "files.autoGuessEncoding": false,
+                "editor.autoIndent": false,
                 "editor.formatOnType": false,
                 "editor.rulers": [],
                 "editor.detectIndentation": false,
@@ -221,6 +242,8 @@
             "[JCL]": {
                 "files.autoGuessEncoding": false,
                 "editor.detectIndentation": false,
+                "editor.formatOnType": false,
+                "editor.autoIndent": false,
                 "editor.rulers": [
                     71,
                     72,
