@@ -18,5 +18,5 @@ steps:
 - script: |
     npm install
     npm install -g vsce
-    vsce publish
+    vsce package
   displayName: 'npm install and vsce publish'
