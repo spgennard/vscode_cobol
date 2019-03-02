@@ -25,18 +25,16 @@ steps:
   inputs:
     filename: 'vsce '
     arguments: package
-    workingFolder: '$(build.ArtifactStagingDirectory)'
+    workingFolder: '$(Build.SourcesDirectory)'
 
-# Choose files to publish
 - task: CopyFiles@2
-  displayName: Stage VSIX for publishing
   inputs:
-    contents: |-
-      *.vsix
+    contents: '**\*.vsix'
     targetFolder: $(Build.ArtifactStagingDirectory)
 
-# Publish files as an artifact
 - task: PublishBuildArtifacts@1
-  displayName: Publish VSIX
   inputs:
-    artifactName: spgennard-vscode_cobol
+   PathtoPublish: '$(Build.ArtifactStagingDirectory)\*.vsix'
+   publishLocation:
+   TargetPath: 
+   artifactName: 'VSIX'
