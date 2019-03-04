@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.4.3
+ - Fix issue #49, add extra keywords and mark same keywords as bad in AcuCOBOL/OpenCOBOL
+ 
 ## Version - 4.4.1
  - Tweak icon
 

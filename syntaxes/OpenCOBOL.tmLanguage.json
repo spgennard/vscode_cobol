@@ -36,7 +36,7 @@
       "end": "(?i:END-EXEC|end\\s*exec)"
     },
     {
-      "match": "(\\s|^)(?i)(?i:invoke|end-invoke|class-id|end class|property|try|catch|end property|exit method|method|create|ready|trace|reset|instance|delegate|exception-object)(?=\\s|\\.|$)",
+      "match": "(?i:invoke|end-invoke|class-id|end\\s+class|property|try|catch|end\\s+property|exit\\+smethod|method-id|end\\s+method|create|ready|trace|reset|instance|delegate|exception-object|async-void|async-value|async|yielding|await)",
       "name": "invalid.illegal.cobol"
     },
     {

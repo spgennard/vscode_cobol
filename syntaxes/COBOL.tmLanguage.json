@@ -427,7 +427,7 @@
       "name": "keyword.control.catch-exception.cobol"
     },
     {
-      "match": "(?<![-_])(?i:select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|\\+\\+include|copy|replace)(?=\\s)",
+      "match": "(?<![-_])(?i:select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|yielding|\\+\\+include|copy|replace)(?=\\s)",
       "name": "keyword.otherverbs.cobol"
     },
     {
@@ -523,7 +523,7 @@
       }
     },
     {
-      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function)(?![0-9A-Za-z_-])",
+      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function|await)(?![0-9A-Za-z_-])",
       "name": "keyword.control.cobol"
     },
     {
@@ -579,7 +579,7 @@
       "name": "keyword.screens.cobol"
     },
     {
-      "match": "(?<![-_])(?i:internal|public|protected|final|private|static|new|abstract|override|readonly|property)(?=\\s|\\.)",
+      "match": "(?<![-_])(?i:internal|public|protected|final|private|static|new|abstract|override|readonly|property|async-void|async-value|async)(?=\\s|\\.)",
       "name": "storage.modifier.cobol"
     },
     {

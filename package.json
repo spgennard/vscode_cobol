@@ -180,7 +180,6 @@
             }
         },
         "configurationDefaults": {
-
             "search.exclude": {
                 "**/*.int": true,
                 "**/*.gnt": true,
@@ -190,7 +189,6 @@
                 "**/*.idy": true,
                 "**/*.pdb": true
             },
-
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
                 "editor.autoIndent": false,
