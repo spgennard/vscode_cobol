@@ -15,7 +15,7 @@
       "name": "comment.line.set.acucobol"
     },
       {
-      "match": "(?i:invoke|end-invoke|class-id|end\\s+class|property|try|catch|end\\s+property|exit\\+smethod|method-id|end\\s+method|create|ready|trace|reset|instance|delegate|exception-object|async-void|async-value|async|yielding|await)",
+      "match": "(?i:invoke|end-invoke|class-id|end\\s+class|property|try|catch|end\\s+property|exit\\+smethod|method-id|end\\s+method|create|ready|trace|reset|instance|delegate|exception-object|async-void|async-value|async|yielding|await|params)",
       "name": "invalid.illegal.cobol"
     },
     {
