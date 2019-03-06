@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.4.5",
+    "version": "4.5.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -636,6 +636,15 @@
                 "message": 5
             },
             {
+                "name": "mfcobol-errformat2",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+),.*\\)$",
+                "severity": 1,
+                "message": 2,
+                "file": 3,
+                "line": 4,
+                "column": 5
+            },
+            {
                 "name": "gnucobol-cobc",
                 "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
                 "file": 1,
@@ -667,6 +676,15 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat3"
+            },
+            {
+                "name": "mfcobol-errformat2",
+                "owner": "cobol",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": "$mfcobol-errformat2"
             },
             {
                 "name": "gnucobol-cobc",

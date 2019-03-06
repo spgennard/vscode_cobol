@@ -87,7 +87,7 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 }
 ```
 
-### Task: Single file compile using Micro Focus COBOL
+### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(3)
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
@@ -119,6 +119,41 @@ The example below shows you how you can create a single task to compile one prog
         "panel": "dedicated"
     },
     "problemMatcher": "$mfcobol-errformat3"
+}
+```
+
+### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(2)
+
+The example below shows you how you can create a single task to compile one program using the `cobol` command.
+
+```json
+{
+    "label": "mf cobol (single file)",
+    "command": "cobol",
+    "args": [
+        "${file}",
+        "noint",
+        "nognt",
+        "noobj",
+        "noquery",
+        "errformat(2)",
+        "COPYPATH($COBCPY;${workspaceFolder}\\CopyBooks;${workspaceFolder}\\CopyBooks\\Public)",
+        ";"
+    ],
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    },
+    "options": {
+        "cwd": "${workspaceRoot}"
+    },
+    "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": true,
+        "panel": "dedicated"
+    },
+    "problemMatcher": "$mfcobol-errformat2"
 }
 ```
 
