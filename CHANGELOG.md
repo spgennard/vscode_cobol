@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.4.5
+ - Fix #50
+ 
 ## Version - 4.4.4
  - Fix issue #50, add params keyword and mark it as a bad keyword in AcuCOBOL/OpenCOBOL
 
