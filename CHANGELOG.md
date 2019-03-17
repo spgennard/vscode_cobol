@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.1
+ - Fix issue #51
+
 ## Version - 4.5
  - Add $mfcobol-errformat2 problem matcher
 

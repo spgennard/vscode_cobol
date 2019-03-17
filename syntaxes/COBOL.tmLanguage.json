@@ -406,8 +406,21 @@
       "match": "(?<![-_])(?i:id\\s+division|identification\\s+division|identification|property-id|getter|setter|entry|function-id|end\\s+attribute|attribute|interface-id|indexer-id|factory|ctl|class-control|options|environment\\s+division|environment-name|environment-value|environment|configuration\\s+section|configuration|decimal-point\\s+is|decimal-point|console\\s+is|call-convention|special-names|cursor\\s+is|update|picture\\s+symbol|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|communication|report|screen\\s+section|object-storage|object\\s+section|class-object|fd|rd|cd|sd|printing|procedure\\s+division|procedure|references|debugging|end\\s+declaratives|declaratives|end\\s+static|end\\s+factory|end\\s+class-object|based-storage|size|font|national-edited|national)(?=\\s|\\.)",
       "name": "keyword.identifiers.cobol"
     },
+
     {
-      "match": "(?<![-_])(?i:enum-id|valuetype-id|operator-id|method-id|class-id|program-id|attribute-id|iterator-id|implements|inherits|constraints|constrain)(?=\\s|\\.)",
+      "match": "(?<![-_])((?i:valuetype-id|operator-id|method-id|property-id|attribute-id|iterator-id|class-id|program-id|operator-id|end\\s+program))[\\.\\s+|\\s+]([a-zA-Z0-9_]*)",
+      "captures": {
+        "1": {
+          "name": "keyword.verb.cobol"
+        },
+        "2": {
+          "name": "entity.name.function.cobol"
+        }
+      },
+      "end": "(\\.| |$)"
+    },
+    {
+      "match": "(?<![-_])(?i:implements|inherits|constraints|constrain)(?=\\s|\\.)",
       "name": "keyword.verbs.cobol"
     },
     {
@@ -567,7 +580,7 @@
       "name": "storage.type.picture.cobol"
     },
     {
-      "match": "(?<![-_])(?i:computational-1|comp-1|computational-2|comp-2|computational-3|comp-3|computational-4|comp-4|computational-x|comp-x|computational-5|comp-5|computational-6|comp-6|computational-n|comp-n|packed-decimal|index|float|double|signed-short|unsigned-short|signed-int|unsigned-int|signed-long|unsigned-long|comp|computational|usage\\sis\\sdisplay|usage\\sis\\sfont|usage display|binary|mutex-pointer|data-pointer|thread-pointer|sempahore-pointer|event-pointer|program-pointer|procedure-pointer|pointer|window|subwindow|control-type|thread|menu|variant|layout-manager|occurs|typedef|any|times|display\\s+blank\\s+when|blank\\s+when|blank\\s+screen|blank|usage\\sis|is\\spartial|usage|justified|just|right|signed|trailing\\s+separate|sign|seperate)(?=\\s|\\.|\\))",
+      "match": "(?<![-_])(?i:computational-1|comp-1|computational-2|comp-2|computational-3|comp-3|computational-4|comp-4|computational-x|comp-x|computational-5|comp-5|computational-6|comp-6|computational-n|comp-n|packed-decimal|index|float|double|signed-short|unsigned-short|signed-int|unsigned-int|signed-long|unsigned-long|comp|computational|usage\\sis\\sdisplay|usage\\sis\\sfont|usage\\s+display|binary|mutex-pointer|data-pointer|thread-pointer|sempahore-pointer|event-pointer|program-pointer|procedure-pointer|pointer|window|subwindow|control-type|thread|menu|variant|layout-manager|occurs|typedef|any|times|display\\s+blank\\s+when|blank\\s+when|blank\\s+screen|blank|usage\\sis|is\\spartial|usage|justified|just|right|signed|trailing\\s+separate|sign|seperate)(?=\\s|\\.|\\))",
       "name": "storage.type.picture.cobol"
     },
     {
@@ -612,7 +625,7 @@
     },
     {
       "match": "(?<![-_])(?i:modify|inquire|title|event|center|label-offset|cell|help-id|cells|push-button|list-box|label|default-font|id|no-tab|unsorted|color|height|width|bind|thread|erase|modeless|scroll|system|menu|title-bar|wrap|destroy|resizeable|user-gray|large-font|newline|3-d|data-columns|display-columns|alignment|separation|cursor-frame-width|divider-color|drag-color|heading-color|heading-divider-color|num-rows|record-data|tiled-headings|vpadding|centered-headings|column-headings|self-act|cancel-button|vscroll|report-composer|clsid|primary-interface|active-x-control|default-interface|default-source|auto-minimize|auto-resize|resource|engraved|initial-state|frame|acuactivexcontrol|activex-res|grid|box|message|namespace|class-name|module|constructor|version|strong|culture|method|handle|exception-value|read-only|dividers|graphical|indexed|termination-value|permanent|boxed|visible|centered)(?=\\s|\\.|,|;|$)",
-      "name": "keyword.cobol.acu strong"
+      "name": "invalid.illegal.acu.cobol"
     },
     {
       "match": "(?<![-_])(?i:System-Info|Terminal-Info)(?![0-9A-Za-z_-])",
@@ -639,7 +652,7 @@
     },
     {
       "match": "(?<![-_])(?i:apply|areas|area|clock-units|code|com-reg|controls|dbcs|destination|detail|display-1|ending|every|insert|kanjikey|last|left|less|limits|limit|memory|metaclass|modules|more-labels|multiple|native_binary|native|negative|number|numeric-edited|other|padding|password|pf|ph|postive|processing|queue|recording|reload|removal|rerun|reserve|reserved|rewind|security|segment-limit|segment|separate|sequence|skip1|skip2|skip3|standard-1|standard-2|sub-queue-1|sub-queue-2|sub-queue-3|sum|symbolic|synchronized|sync|table|test|text|than|top|trace|trailing|unit|words|write-only|at|basis|beginning|bottom|cbl|cf|ch|de|positive|egcs|egi|emi|end|reversed|rf|rh|run|same|order|heading|esi)(?![0-9A-Za-z_-])",
-      "name": "keyword.ibmreserved.cobol strong"
+      "name": "keyword.ibmreserved.cobol"
     },
     {
       "match": "(?i:filler)",
