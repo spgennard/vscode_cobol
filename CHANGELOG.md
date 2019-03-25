@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.2
+ - Fix reference modification colourisation
+ 
 ## Version - 4.5.1
  - Fix issue #51
 

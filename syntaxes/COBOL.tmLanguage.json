@@ -675,6 +675,26 @@
       "name": "constant.numeric.integer"
     },
     {
+      "match": "(\\()([0-9]*)(:)([0-9]*)(\\))",
+      "captures": {
+        "1" :{
+          "name" : "meta.symbol.cobol"
+        },
+        "2": {
+          "name": "constant.numeric.integer"
+        },
+        "3": {
+          "name": "meta.symbol.cobol"
+        },
+        "4": {
+          "name": "constant.numeric.integer"
+        },
+        "5" :{
+          "name" : "meta.symbol.cobol"
+        }
+      }
+    },
+    {
       "match": "([0-9a-zA-Z][a-zA-Z\\-0-9_]+)",
       "name": "meta.symbol.cobol"
     }
