@@ -424,7 +424,7 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|end\\s+function|end\\s+operator|end\\s+program|end\\s+indexer|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as|stop\\s+run|stop)(?=\\s|\\.|,|\\))",
+      "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|end\\s+function|end\\s+operator|end\\s+program|end\\s+indexer|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|json-code|as|stop\\s+iterator|stop\\s+run|stop)(?=\\s|\\.|,|\\))",
       "name": "keyword.identifiers.cobol"
     },
     {
@@ -536,7 +536,7 @@
       }
     },
     {
-      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function|await)(?![0-9A-Za-z_-])",
+      "match": "(?<![-_])(?i:if|else|end-if|exit\\s+iterator|exit\\s+program|exit\\s+method|evaluate|end-evaluate|perform|end-perform|when\\s+other|when|continue|call|end-call|invoke|go\\s+to|go|sort|merge|use|xml|parse|stop\\s+run|goback|raise|exit\\s+function|await)(?![0-9A-Za-z_-])",
       "name": "keyword.control.cobol"
     },
     {
@@ -588,8 +588,12 @@
       "name": "keyword.verbs.cobol"
     },
     {
-      "match": "(\\s+|^)(?:foreground-color|background-color|prompt|underline|reverse-video|no-echo|highlight|blink)",
+      "match": "(\\s+|^)(?i:foreground-color|background-color|prompt|underline|reverse-video|no-echo|highlight|blink)(?![0-9A-Za-z_-])",
       "name": "keyword.screens.cobol"
+    },
+    {
+      "match": "(\\s+|^)(?i:bold|high|lowlight|low||standard|background-high|background-low|background-standard)(?![0-9A-Za-z_-])",
+      "name": "invalid.illegal.screens.acu.cobol"
     },
     {
       "match": "(?<![-_])(?i:internal|public|protected|final|private|static|new|abstract|override|readonly|property|async-void|async-value|async)(?=\\s|\\.)",

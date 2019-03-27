@@ -1,5 +1,10 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.3
+ - Add bold, high, lowlight, low, standard, background-high, background-low, background-standard to acu syntax
+ - Above as invalid acu syntax in non-acu syntaxes
+ - add exit/stop iterator
+
 ## Version - 4.5.2
  - Fix reference modification colourisation
  

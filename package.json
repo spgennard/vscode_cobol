@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "4.5.2",
+    "version": "4.5.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
