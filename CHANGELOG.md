@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.4
+ - Fix #53
+
 ## Version - 4.5.3
  - Add bold, high, lowlight, low, standard, background-high, background-low, background-standard to acu syntax
  - Above as invalid acu syntax in non-acu syntaxes
