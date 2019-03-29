@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.7
+ - Fix #58 - Source not colourized if start from column 2.
+ - Fix #56 - Show definition DCLGEN
+
 ## Version - 4.5.6
  - Fix #56 - Show definition DCLGEN
  

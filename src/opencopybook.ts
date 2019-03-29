@@ -83,7 +83,7 @@ function extractText(str: string) {
 
     if (/exec sql include/.test(strl)) {
         try {
-            return getFirstMatchOrDefault(strl, /exec sql include\s(.*)\send-sql/);
+            return getFirstMatchOrDefault(strl, /exec sql include\s(.*)\send-exec/);
         } catch (e) {
             /* continue */
         }
