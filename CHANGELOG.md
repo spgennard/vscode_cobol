@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.5
+ - Fix #54 - Paragraph detection
+ - Fix #55 - doc comment continuation no longer works 
+
 ## Version - 4.5.4
  - Fix #53
 

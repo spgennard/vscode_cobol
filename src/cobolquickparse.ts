@@ -69,6 +69,7 @@ export default class QuickCOBOLParse {
 
     public tokensInOrder: COBOLToken[] = [];
     private highestLine: number = 0;
+    
     public isValidLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {

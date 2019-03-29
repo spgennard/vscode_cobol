@@ -17,6 +17,7 @@ class VSCodeSourceHandler implements ISourceHandler {
     getLineCount(): number {
         return this.document.lineCount;
     }
+
     getLine(lineNumber: number): string {
         let line = this.document.lineAt(lineNumber).text;
 
@@ -25,10 +26,16 @@ class VSCodeSourceHandler implements ISourceHandler {
             return "";
         }
 
+        // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
-            let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
-            if (line.match(paraPrefixRegex1)) {
+            if (line.length > 7 && line[6] === ' ') {
                 line = "       " + line.substr(6);
+            }
+            else {
+                let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
+                if (line.match(paraPrefixRegex1)) {
+                    line = "       " + line.substr(6);
+                }
             }
         }
 
@@ -44,14 +51,12 @@ class VSCodeSourceHandler implements ISourceHandler {
         return line.substr(0, inlineCommentStart);
     }
 
-    setDumpAreaA(flag: boolean): void
-    {
+    setDumpAreaA(flag: boolean): void {
         this.dumpNumbersInAreaA = flag;
     }
 
-    setDumpAreaBOnwards(flag: boolean): void
-    {
-        this.dumpAreaBOnwards=flag;
+    setDumpAreaBOnwards(flag: boolean): void {
+        this.dumpAreaBOnwards = flag;
     }
 }
 

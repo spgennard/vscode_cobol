@@ -193,7 +193,7 @@
                 "files.autoGuessEncoding": true,
                 "editor.autoIndent": false,
                 "editor.insertSpaces": true,
-                "editor.formatOnType": false,
+                "editor.formatOnType": true,
                 "editor.rulers": [
                     6,
                     7,
