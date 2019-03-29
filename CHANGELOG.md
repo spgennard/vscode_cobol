@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.6
+ - Fix #56 - Show definition DCLGEN
+ 
 ## Version - 4.5.5
  - Fix #54 - Paragraph detection
  - Fix #55 - doc comment continuation no longer works 

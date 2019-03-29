@@ -41,7 +41,7 @@ function getcopybookdirs(): string[] {
             }
         }
     }
-    
+
     for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
         let dir = dirs[dirpos];
         if (!dir.startsWith("$")) {
@@ -80,17 +80,24 @@ function extractText(str: string) {
             /* continue */
         }
     }
+
+    if (/exec sql include/.test(strl)) {
+        try {
+            return getFirstMatchOrDefault(strl, /exec sql include\s(.*)\send-sql/);
+        } catch (e) {
+            /* continue */
+        }
+    }
     return str;
 }
 
 function isDirectPath(dir: string) {
     var isWin = process.platform === "win32";
 
-    if (dir === undefined && dir === null)
-    {
+    if (dir === undefined && dir === null) {
         return false;
     }
-    
+
     if (isWin) {
         if (dir.length > 2 && dir[1] === ':') {
             return true;
@@ -124,10 +131,10 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
 
-        
+
         const basefullPath = isDirectPath(extdir) ?
-                extdir + path.sep + filename :
-                filenameDir + path.sep + extdir + path.sep + filename;
+            extdir + path.sep + filename :
+            filenameDir + path.sep + extdir + path.sep + filename;
 
         //No extension?
         if (filename === fileExtension) {
@@ -182,7 +189,7 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
     const dirOfFilename = path.dirname(doc.fileName);
     const line = doc.lineAt(pos);
     const filename = extractText(line.text);
-    
+
     // No way this could be a filename...
     if (filename && filename.includes(" ")) {
         return;
