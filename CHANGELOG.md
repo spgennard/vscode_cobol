@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.9
+ - Fix #57 - Show definition COPY REPLACING
+   -> match copy xxx, previously this was too strict
+   
 ## Version - 4.5.8
  - Add COBOL comments into exec sql
  - Add missing EXEC-SQL to keyword scanner list (ensures it not shownup in outline view)

@@ -68,14 +68,19 @@ function extractText(str: string) {
     }
 
     const strl = str.toLowerCase();
+    let result: string | null;
     if (/copy/.test(strl)) {
         try {
-            return getFirstMatchOrDefault(strl, /copy\s(.*)\./);
+            result = getFirstMatchOrDefault(strl, /copy\s(.*)\./);
+            if (result !== null && result.length > 1)
+            {
+                return result;    
+            }
         } catch (e) {
             /* continue */
         }
         try {
-            return getFirstMatchOrDefault(strl, /copy\s(.*)/);
+            return getFirstMatchOrDefault(strl, /copy\s(.*)$/);
         } catch (e) {
             /* continue */
         }
