@@ -22,6 +22,11 @@ class VSCodeSourceHandler implements ISourceHandler {
         let line = this.document.lineAt(lineNumber).text;
 
         // drop fixed format line
+        if (line.length > 1 && line[0] === '*') {
+            return "";
+        }
+
+        // drop fixed format line
         if (line.length > 7 && line[6] === '*') {
             return "";
         }

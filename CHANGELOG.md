@@ -1,5 +1,10 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.8
+ - Add COBOL comments into exec sql
+ - Add missing EXEC-SQL to keyword scanner list (ensures it not shownup in outline view)
+ - Add column 1, sourceformat free comment line to scanner
+ 
 ## Version - 4.5.7
  - Fix #58 - Source not colourized if start from column 2.
  - Fix #56 - Show definition DCLGEN

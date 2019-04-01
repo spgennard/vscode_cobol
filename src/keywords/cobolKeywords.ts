@@ -126,6 +126,7 @@ export const cobolKeywords: string[] = [
 	"end-delete",
 	"end-divide",
 	"end-evaluate",
+	"end-exec",
 	"end-if",
 	"end-invoke",
 	"end-multiply",

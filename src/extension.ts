@@ -118,6 +118,8 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(toggleCOBOLMargin);
 
+    context.subscriptions.push(DocComment.register());
+
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
@@ -133,8 +135,6 @@ export function activate(context: ExtensionContext) {
             return sourcedefinitionprovider.provideDefinition(doc, pos, ct);
         }
     });
-
-    context.subscriptions.push(DocComment.register());
 
 
     // const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
@@ -152,8 +152,7 @@ export function activate(context: ExtensionContext) {
     /* TODO: add .DIR keywords too */
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
     context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
-    context.subscriptions.push(DocComment.register());
-
+ 
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
             return;
