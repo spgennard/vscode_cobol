@@ -1,7 +1,10 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult } from 'vscode';
 import * as vscode from 'vscode';
+import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
-
+function isValidKeyword(keyword: string): boolean {
+    return cobolKeywordDictionary.containsKey(keyword);
+}
 
 function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
@@ -35,14 +38,23 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
                     new vscode.Position(i, wordIndex)
                 );
             }
-            let prefixLine = lineTextLower.substr(0, wordIndex);
+            let prefixLine = lineTextLower.substr(0, wordIndex).trimLeft();
             let postLine = lineTextLower.substr(wordIndex + word.length);
 
             //if it is not a section, it might be a paragraph.. does it have a "." after it and
             //does it have whitespace or numbers (column a)?
             if (postLine[0] === '.') {
 
-                if (prefixLine.match(paraPrefixRegex1) || prefixLine.match(paraPrefixRegex2)) {
+                // is the code observing fixed format rules, if so then the before field should be a keyword
+                // and we have a space seperator
+                if (lineTextLower.length > 7 && isValidKeyword(prefixLine) === false && lineTextLower[6] === ' ') {
+                    return new vscode.Location(
+                        document.uri,
+                        new vscode.Position(i, wordIndex)
+                    );
+                }
+                // nothing before it and it ends in a ., then it could be a paragraph
+                if (prefixLine.length === 0) {
                     return new vscode.Location(
                         document.uri,
                         new vscode.Position(i, wordIndex)
@@ -116,7 +128,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
 
         let wordIndex = lineText.toLowerCase().indexOf(workLower);
         if (wordIndex !== -1) {
-            let leftOfWord = lineText.substr(0,wordIndex);
+            let leftOfWord = lineText.substr(0, wordIndex);
 
             // fuzzy match for variable
             if (leftOfWord.match(/^[0-9 ]+$/i)) {
@@ -144,7 +156,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
 
     let theline = document.lineAt(position.line).text;
 
-    
+
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
         loc = getSectionOrParaLocation(document, position);
         if (loc) {

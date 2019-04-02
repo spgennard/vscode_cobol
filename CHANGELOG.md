@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.6.0
+ - Fix #58 - enhance goto section/paragraph to better understand fixed format
+ 
 ## Version - 4.5.9
  - Fix #57 - Show definition COPY REPLACING
    -> match copy xxx, previously this was too strict
