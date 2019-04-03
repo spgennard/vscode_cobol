@@ -347,6 +347,9 @@ export default class QuickCOBOLParse {
                     if (!this.isValidKeyword(prev) && !this.isValidKeyword(current)) {
                         let c = lineTokens[i].substr(0, lineTokens[i].length);
                         if (c.length !== 0) {
+                            if (c[c.length - 1] === '.') {
+                                c= lineTokens[i].substr(0, lineTokens[i].length-1);
+                            }
                             this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, currentCol, c, this.currentDivision, COBOLTokenEnding.OneLIne));
                             prev = current;
                             prevColumn = currentCol;
