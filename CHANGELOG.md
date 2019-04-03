@@ -1,6 +1,6 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
-## Version - 4.5.1
+## Version - 4.6.1
  - Fix #59 - goto paragraph
 
 ## Version - 4.6.0
