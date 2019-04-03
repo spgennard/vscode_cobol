@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.5.1
+ - Fix #59 - goto paragraph
+
 ## Version - 4.6.0
  - Fix #58 - enhance goto section/paragraph to better understand fixed format
  

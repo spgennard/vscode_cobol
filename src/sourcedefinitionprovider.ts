@@ -47,7 +47,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
 
                 // is the code observing fixed format rules, if so then the before field should be a keyword
                 // and we have a space seperator
-                if (lineTextLower.length > 7 && isValidKeyword(prefixLine) === false && lineTextLower[6] === ' ') {
+                if (lineTextLower.length > 7 && !isValidKeyword(prefixLine) === false && lineTextLower[6] === ' ') {
                     return new vscode.Location(
                         document.uri,
                         new vscode.Position(i, wordIndex)
