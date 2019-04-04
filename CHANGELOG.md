@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.6.4
+ - Fix #60 - Multiline source-computer highlight captures too much 
+ 
 ## Version - 4.6.3
  - Fix typo in Fix #59
  
