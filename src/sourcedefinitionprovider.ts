@@ -38,7 +38,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
                     new vscode.Position(i, wordIndex)
                 );
             }
-            let prefixLine = lineTextLower.substr(0, wordIndex).trimLeft();
+            let prefixLine = lineTextLower.substr(0, wordIndex).trim();
             let postLine = lineTextLower.substr(wordIndex + word.length);
 
             //if it is not a section, it might be a paragraph.. does it have a "." after it and
@@ -47,7 +47,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
 
                 // is the code observing fixed format rules, if so then the before field should be a keyword
                 // and we have a space seperator
-                if (lineTextLower.length > 7 && !isValidKeyword(prefixLine) === false && lineTextLower[6] === ' ') {
+                if (lineTextLower.length > 7 && isValidKeyword(prefixLine) === false && lineTextLower[6] === ' ') {
                     return new vscode.Location(
                         document.uri,
                         new vscode.Position(i, wordIndex)

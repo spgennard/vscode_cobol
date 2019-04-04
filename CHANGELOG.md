@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.6.3
+ - Fix typo in Fix #59
+ 
 ## Version - 4.6.2
  - Finally found a solution to multi-line installation, author,source-computer,
    object-computer,date-written,security,date-compiled statements.
