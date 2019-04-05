@@ -3,7 +3,7 @@ import { cobolKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { workspace } from 'vscode';
 
-enum COBOLTokenStyle {
+export enum COBOLTokenStyle {
     CopyBook = "Copybook",
     ProgramId = "Program-Id",
     FunctionId = "Function-Id",

@@ -1,109 +1,9 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult } from 'vscode';
 import * as vscode from 'vscode';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
+import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
+import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
-function isValidKeyword(keyword: string): boolean {
-    return cobolKeywordDictionary.containsKey(keyword);
-}
-
-function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
-    let word = wordRange ? document.getText(wordRange) : '';
-    if (word === "") {
-        return undefined;
-    }
-
-    let wordLower = word.toLocaleLowerCase();
-    let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ].*$/g;
-    let paraPrefixRegex2 = /^[ \t]*$/g;
-
-    for (let i = 1; i < document.lineCount; i++) {
-        let lineTextLower = document.lineAt(i).text.toLocaleLowerCase();
-
-        // TODO - need to handle inline comments too
-        if (lineTextLower.length > 7 && lineTextLower[6] === '*') {
-            continue;
-        }
-
-        // Does the line include the word?
-        let wordIndex = lineTextLower.indexOf(wordLower);
-        if (wordIndex !== -1) {
-
-            //does it have the section after it?  
-            //it's a bit fuzzy.. so it could break but it should be good enough
-            let sectionIndex = lineTextLower.substr(wordIndex).indexOf("section");
-            if (sectionIndex !== -1) {
-                return new vscode.Location(
-                    document.uri,
-                    new vscode.Position(i, wordIndex)
-                );
-            }
-            let prefixLine = lineTextLower.substr(0, wordIndex).trim();
-            let postLine = lineTextLower.substr(wordIndex + word.length);
-
-            //if it is not a section, it might be a paragraph.. does it have a "." after it and
-            //does it have whitespace or numbers (column a)?
-            if (postLine[0] === '.') {
-
-                // is the code observing fixed format rules, if so then the before field should be a keyword
-                // and we have a space seperator
-                if (lineTextLower.length > 7 && isValidKeyword(prefixLine) === false && lineTextLower[6] === ' ') {
-                    return new vscode.Location(
-                        document.uri,
-                        new vscode.Position(i, wordIndex)
-                    );
-                }
-                // nothing before it and it ends in a ., then it could be a paragraph
-                if (prefixLine.length === 0) {
-                    return new vscode.Location(
-                        document.uri,
-                        new vscode.Position(i, wordIndex)
-                    );
-                }
-            }
-        }
-    }
-    return undefined;
-}
-
-function getCallTarget(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('["\'][a-zA-Z0-9-_]*["\']'));
-    let word = wordRange ? document.getText(wordRange) : '';
-    if (word === "") {
-        return undefined;
-    }
-
-    let wordLower = word.substr(1, word.length - 2).toLocaleLowerCase();
-
-    for (let i = 1; i < document.lineCount; i++) {
-        let lineTextLower = document.lineAt(i).text.toLocaleLowerCase();
-
-        // TODO - need to handle inline comments too
-        if (lineTextLower.length > 7 && lineTextLower[6] === '*') {
-            continue;
-        }
-
-        // Does the line include the word?
-        let wordIndex = lineTextLower.indexOf(wordLower);
-        if (wordIndex !== -1) {
-
-            //does it have the enttry before it?  
-            //it's a bit fuzzy.. so it could break but it should be good enough
-            let index = lineTextLower.substr(0, wordIndex).indexOf("entry");
-            if (index === -1) {
-                index = lineTextLower.substr(0, wordIndex).indexOf("program-id");
-            }
-            if (index !== -1) {
-                return new vscode.Location(
-                    document.uri,
-                    new vscode.Position(i, wordIndex)
-                );
-            }
-
-        }
-    }
-    return undefined;
-}
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -149,6 +49,57 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     }
     return undefined;
 }
+
+function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
+    let word = wordRange ? document.getText(wordRange) : '';
+    if (word === "") {
+        return undefined;
+    }
+
+    let sf = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
+
+    for (var i = 0; i < sf.tokensInOrder.length; i++) {
+        let token = sf.tokensInOrder[i];
+
+        if (word === token.description) {
+            switch (token.tokenType) {
+                case COBOLTokenStyle.Paragraph:
+                case COBOLTokenStyle.Section:
+                    let srange = new vscode.Position(token.startLine, token.startColumn);
+                    return new vscode.Location(document.uri, srange);
+                    break;
+            }
+        }
+    }
+    return undefined;
+}
+
+function getCallTarget(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
+    let word = wordRange ? document.getText(wordRange) : '';
+    if (word === "") {
+        return undefined;
+    }
+
+    let sf = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
+
+    for (var i = 0; i < sf.tokensInOrder.length; i++) {
+        let token = sf.tokensInOrder[i];
+
+        if (word === token.description) {
+            switch (token.tokenType) {
+                case COBOLTokenStyle.EntryPoint:
+                case COBOLTokenStyle.ProgramId:
+                    let srange = new vscode.Position(token.startLine, token.startColumn);
+                    return new vscode.Location(document.uri, srange);
+                    break;
+            }
+        }
+    }
+    return undefined;
+}
+
 
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
     let location: vscode.Location[] = [];
