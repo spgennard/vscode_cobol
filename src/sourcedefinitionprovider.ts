@@ -116,7 +116,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
         }
     }
 
-    if (theline.match(/.*(call|cancel).*$/i)) {
+    if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, position);
         if (loc) {
             location.push(loc);

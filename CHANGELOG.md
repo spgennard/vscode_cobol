@@ -1,5 +1,11 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.6.5
+ - Fix #62 - Go To/Peek definition of PERFORM/THRU paragraph wrong
+   Remove the original inline tokenizer and use the same parser used 
+   for the outliner, as it is now more mature and works better.
+   (techincal debt that actually fixes this problem)
+
 ## Version - 4.6.4
  - Fix #60 - Multiline source-computer highlight captures too much 
  
