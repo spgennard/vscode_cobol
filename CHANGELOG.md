@@ -4,8 +4,10 @@
  - Fix #62 - Go To/Peek definition of PERFORM/THRU paragraph wrong
    Remove the original inline tokenizer and use the same parser used 
    for the outliner, as it is now more mature and works better.
-   (techincal debt that actually fixes this problem)
-
+   (techincal debt that actually fixes this problem) 
+ - Fix #61 - Colourisation: end-chain not coloured
+ - Fix end-invoke colour
+ 
 ## Version - 4.6.4
  - Fix #60 - Multiline source-computer highlight captures too much 
  
