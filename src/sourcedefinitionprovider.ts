@@ -87,7 +87,7 @@ function getCallTarget(document: vscode.TextDocument, position: vscode.Position)
     for (var i = 0; i < sf.tokensInOrder.length; i++) {
         let token = sf.tokensInOrder[i];
 
-        if (word === token.description) {
+        if (word === token.token) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.EntryPoint:
                 case COBOLTokenStyle.ProgramId:
