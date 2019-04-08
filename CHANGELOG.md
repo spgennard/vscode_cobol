@@ -1,5 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.6.6
+  - Fix #63 - Colourisation: end valuetype not coloured
+  + Fix class-id/namespace issue
+
 ## Version - 4.6.5
  - Fix #62 - Go To/Peek definition of PERFORM/THRU paragraph wrong
    Remove the original inline tokenizer and use the same parser used 

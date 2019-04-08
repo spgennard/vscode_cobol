@@ -137,22 +137,6 @@
       "name": "comment.block.cobol.remark",
       "end": "(?=(?i:author|date-written|source-computer|object-computer|installation|date-compiled|special-names|security|environment\\s+division|data\\s+division|working-storage\\s+section|input-output\\s+section|linkage\\s+section|procedure\\s+division|local-storage\\s+section))"
     },
-
-    {
-      "match": "((?<![-_])((?i:)\\.)(.*))",
-      "captures": {
-        "1": {
-          "name": "keyword.verb.cobol"
-        },
-        "2": {
-          "name": "keyword.verb.cobol"
-        },
-        "3": {
-          "name": "comment.line.cobol.ignored"
-        }
-      },
-      "end": "(\\.)"
-    },
     {
       "match": "(?<=(\\(|\\[))((\\-\\+)*[0-9 ,\\.\\+\\-\\*\\/]+)(?=(\\)|\\]))",
       "name": "constant.numeric.cobol",
@@ -423,7 +407,7 @@
     },
 
     {
-      "match": "(?<![-_])((?i:valuetype-id|operator-id|method-id|property-id|attribute-id|iterator-id|class-id|program-id|operator-id|end\\s+program))[\\.\\s+|\\s+]([a-zA-Z0-9_]*)",
+      "match": "(?<![-_])((?i:valuetype-id|operator-id|method-id|property-id|attribute-id|iterator-id|class-id|program-id|operator-id|end\\s+program|end\\s+valuetype))[\\.\\s+|\\s+]([a-zA-Z0-9_]*)",
       "captures": {
         "1": {
           "name": "keyword.verb.cobol"
