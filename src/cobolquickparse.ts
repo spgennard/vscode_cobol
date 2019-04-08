@@ -40,18 +40,34 @@ class COBOLToken {
 
     public childTokens: COBOLToken[] = [];
 
-    static Null: COBOLToken = new COBOLToken(COBOLTokenStyle.Null, -1, -1, "", "", undefined, COBOLTokenEnding.OneLIne);
+    static Null: COBOLToken = new COBOLToken(COBOLTokenStyle.Null, -1, "", "", "", undefined, COBOLTokenEnding.OneLIne);
 
-    public constructor(tokenType: COBOLTokenStyle, startLine: number, startColumn: number, token:string, description: string, parentToken: COBOLToken | undefined, tokenEnding: COBOLTokenEnding) {
+    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token:string, description: string, parentToken: COBOLToken | undefined, tokenEnding: COBOLTokenEnding) {
         this.tokenType = tokenType;
         this.startLine = startLine;
-        this.startColumn = startColumn;
+        this.startColumn = line.indexOf(token.trim());
         this.description = description;
         this.endLine = this.endColumn = 0;
         this.level = (parentToken === undefined) ? 1 : 1 + parentToken.level;
         this.parentToken = parentToken;
         this.tokenEnding = tokenEnding;
-        this.token = token;
+        this.token = token.trim();
+        switch(this.tokenType)
+        {
+            case COBOLTokenStyle.Division: this.startColumn--; break;
+            case COBOLTokenStyle.Section: this.startColumn--; break;
+            case COBOLTokenStyle.Paragraph: this.startColumn--; break;
+            case COBOLTokenStyle.EntryPoint: this.startColumn--; break;
+            case COBOLTokenStyle.ClassId: this.startColumn--; break;
+            case COBOLTokenStyle.MethodId: this.startColumn--; break;
+        }
+
+        if (this.token.length !== 0) {
+            /* ensure we don't have any odd start columns */
+            if (this.startColumn < 0) {
+                this.startColumn = 1;
+            }
+        }
     }
 
     public dump() {
@@ -231,7 +247,7 @@ export default class QuickCOBOLParse {
                 if (prev === "declare") {
                     continue;
                 }
-                let token = new COBOLToken(COBOLTokenStyle.Section, lineNumber, prevColumn, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
+                let token = new COBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
                 this.currentDivision.childTokens.push(token);
                 this.tokensInOrder.push(token);
 
@@ -249,7 +265,7 @@ export default class QuickCOBOLParse {
 
             // handle divisions
             if (prev.length !== 0 && current === "division") {
-                let token = new COBOLToken(COBOLTokenStyle.Division, lineNumber, prevColumn, prevPlusCurrent, prevPlusCurrent, COBOLToken.Null, COBOLTokenEnding.NextSection);
+                let token = new COBOLToken(COBOLTokenStyle.Division, lineNumber, line, prevPlusCurrent, prevPlusCurrent, COBOLToken.Null, COBOLTokenEnding.NextSection);
                 this.divisions.push(token);
                 this.tokensInOrder.push(token);
                 this.currentDivision = token;
@@ -269,7 +285,7 @@ export default class QuickCOBOLParse {
 
             // handle entries
             if (prev === "entry" && current.length !== 0) {
-                let token =  new COBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, currentCol, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
+                let token =  new COBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
                 this.divisions.push(token);
                 this.tokensInOrder.push(token);
                 prev = current;
@@ -279,7 +295,7 @@ export default class QuickCOBOLParse {
 
             // handle program-id
             if (prev === "program-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ProgramId, lineNumber, currentCol, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -287,7 +303,7 @@ export default class QuickCOBOLParse {
 
             // handle class-id
             if (prev === "class-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ClassId, lineNumber, currentCol, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -295,7 +311,7 @@ export default class QuickCOBOLParse {
 
             // handle enum-id
             if (prev === "enum-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.EnumId, lineNumber, currentCol, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.EnumId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -303,7 +319,7 @@ export default class QuickCOBOLParse {
 
             // handle interface-id
             if (prev === "interface-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, currentCol, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -311,7 +327,7 @@ export default class QuickCOBOLParse {
 
             // handle valuetype-id
             if (prev === "valuetype-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ValueTypeId, lineNumber, currentCol, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ValueTypeId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -319,7 +335,7 @@ export default class QuickCOBOLParse {
 
             // handle function-id
             if (prev === "function-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.FunctionId, lineNumber, currentCol, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.FunctionId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -327,14 +343,14 @@ export default class QuickCOBOLParse {
 
             // handle method-id
             if (prev === "method-id" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.MethodId, lineNumber, currentCol, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.MethodId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
             }
             // copybook handling
             if (prev === "copy" && current.length !== 0) {
-                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, currentCol, this.trimLiteral(current), prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
+                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne));
                 prev = current;
                 prevColumn = currentCol;
                 continue;
@@ -347,7 +363,7 @@ export default class QuickCOBOLParse {
                     if (beforeCurrent.length === 0) {
                         let c = lineTokens[i].substr(0, lineTokens[i].length - 1);
                         if (c.length !== 0) {
-                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, currentCol-1, c, c, this.currentDivision, COBOLTokenEnding.OneLIne));
+                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, this.trimLiteral(c), c, this.currentDivision, COBOLTokenEnding.OneLIne));
                             prev = current;
                             prevColumn = currentCol;
                             continue;
@@ -366,7 +382,8 @@ export default class QuickCOBOLParse {
                             if (c[c.length - 1] === '.') {
                                 c= lineTokens[i].substr(0, lineTokens[i].length-1);
                             }
-                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, currentCol, c, c, this.currentDivision, COBOLTokenEnding.OneLIne));
+                            let trimToken = this.trimLiteral(c);
+                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision, COBOLTokenEnding.OneLIne));
                             prev = current;
                             prevColumn = currentCol;
                             continue;
@@ -415,7 +432,7 @@ export default class QuickCOBOLParse {
             let token = this.tokensInOrder[i];
             if (token.endLine === 0 && token.tokenEnding === COBOLTokenEnding.OneLIne) {
                 token.endLine = token.startLine;
-                token.endColumn = token.startColumn + token.description.length;
+                token.endColumn = 1 + token.startColumn + token.token.length;
             }
         }
     }

@@ -9,7 +9,7 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
         let symbols: vscode.SymbolInformation[] = [];
 
         let sf = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
-        let ownerUri = document.uri; //this.getUri();
+        let ownerUri = document.uri;
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {
             let token = sf.tokensInOrder[i];
@@ -52,7 +52,9 @@ export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbo
                 case COBOLTokenStyle.Variable:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
                     break;
-
+                case COBOLTokenStyle.MethodId:
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                    break;
             }
         }
         return symbols;
