@@ -1,6 +1,5 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult } from 'vscode';
 import * as vscode from 'vscode';
-import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
@@ -28,7 +27,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
 
         let wordIndex = lineText.toLowerCase().indexOf(workLower);
         if (wordIndex !== -1) {
-            let leftOfWord = lineText.substr(0, wordIndex);
+            let leftOfWord = lineText.substr(0, wordIndex).trim();
 
             // fuzzy match for variable
             if (leftOfWord.match(/^[0-9 ]+$/i)) {
@@ -39,7 +38,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
             }
 
             // fuzzy match for a FD declaration
-            if (leftOfWord.match(/^[ ]+(FD)[ ]+$/i)) {
+            if (leftOfWord.toLocaleLowerCase() === "fd") {
                 return new vscode.Location(
                     document.uri,
                     new vscode.Position(i, wordIndex)
@@ -124,6 +123,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
         }
     }
 
+    /* let's see if is a variable */
     loc = getFuzzyVariable(document, position);
     if (loc) {
         location.push(loc);

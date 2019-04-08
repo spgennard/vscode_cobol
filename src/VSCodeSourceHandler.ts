@@ -1,5 +1,6 @@
 import ISourceHandler from './isourcehandler';
 import * as vscode from 'vscode';
+import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
 export class VSCodeSourceHandler implements ISourceHandler {
     document: vscode.TextDocument;
@@ -25,13 +26,15 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
         // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
-            if (line.length > 7 && line[6] === ' ') {
+            let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
+            if (line.match(paraPrefixRegex1)) {
                 line = "       " + line.substr(6);
-            }
-            else {
-                let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
-                if (line.match(paraPrefixRegex1)) {
-                    line = "       " + line.substr(6);
+            } else {
+                if (line.length > 7 && line[6] === ' ') {
+                    let possibleKeyword = line.substr(0, 6).trim();
+                    if (this.isValidKeyword(possibleKeyword) === false) {
+                        line = "       " + line.substr(6);
+                    }
                 }
             }
         }
@@ -49,5 +52,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
     }
     setDumpAreaBOnwards(flag: boolean): void {
         this.dumpAreaBOnwards = flag;
+    }
+
+     isValidKeyword(keyword: string): boolean {
+        return cobolKeywordDictionary.containsKey(keyword);
     }
 }
