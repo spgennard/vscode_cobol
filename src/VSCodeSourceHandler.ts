@@ -11,11 +11,29 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.dumpAreaBOnwards = false;
     }
+    
     getLineCount(): number {
         return this.document.lineCount;
     }
+
+    getRawLine(lineNumber: number): string {
+        try {
+            let line = this.document.lineAt(lineNumber);
+            return line.text;
+        }
+        catch
+        {
+            return "";
+        }
+    }
+
     getLine(lineNumber: number): string {
         let line = this.document.lineAt(lineNumber).text;
+
+        let startComment = line.indexOf("*>");
+        if (startComment !== -1) {
+            line = line.substring(0, startComment);
+        }
         // drop fixed format line
         if (line.length > 1 && line[0] === '*') {
             return "";
@@ -41,15 +59,14 @@ export class VSCodeSourceHandler implements ISourceHandler {
         if (this.dumpAreaBOnwards && line.length >= 73) {
             line = line.substr(0, 72);
         }
-        let inlineCommentStart = line.indexOf("*>");
-        if (inlineCommentStart === -1) {
-            return line;
-        }
-        return line.substr(0, inlineCommentStart);
+        
+        return line;
     }
+
     setDumpAreaA(flag: boolean): void {
         this.dumpNumbersInAreaA = flag;
     }
+
     setDumpAreaBOnwards(flag: boolean): void {
         this.dumpAreaBOnwards = flag;
     }

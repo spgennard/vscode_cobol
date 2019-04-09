@@ -61,7 +61,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
     for (var i = 0; i < sf.tokensInOrder.length; i++) {
         let token = sf.tokensInOrder[i];
 
-        if (word === token.token || word == token.description) {
+        if (word === token.token || word === token.description) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.Paragraph:
                 case COBOLTokenStyle.Section:
