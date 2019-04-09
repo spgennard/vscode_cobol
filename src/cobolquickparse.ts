@@ -247,7 +247,7 @@ export default class QuickCOBOLParse {
                 if (prev === "declare") {
                     continue;
                 }
-                let token = new COBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
+                let token = new COBOLToken(COBOLTokenStyle.Section, lineNumber, line, prev, prevPlusCurrent, this.currentDivision, COBOLTokenEnding.OneLIne);
                 this.currentDivision.childTokens.push(token);
                 this.tokensInOrder.push(token);
 
