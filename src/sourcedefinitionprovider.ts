@@ -74,6 +74,29 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
     return undefined;
 }
 
+function getVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
+    let word = wordRange ? document.getText(wordRange) : '';
+    if (word === "") {
+        return undefined;
+    }
+
+    let sf = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
+
+    for (var i = 0; i < sf.tokensInOrder.length; i++) {
+        let token = sf.tokensInOrder[i];
+
+        if (word === token.token || word === token.description) {
+            switch (token.tokenType) {
+                case COBOLTokenStyle.Variable:
+                    let srange = new vscode.Position(token.startLine, token.startColumn);
+                    return new vscode.Location(document.uri, srange);
+                    break;
+            }
+        }
+    }
+    return undefined;
+}
 function getCallTarget(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
@@ -122,7 +145,14 @@ export function provideDefinition(document: TextDocument, position: Position, to
         }
     }
 
-    /* let's see if is a variable */
+    /* is it a known variable? */
+    loc = getVariable(document, position);
+    if (loc) {
+        location.push(loc);
+        return location;
+    }
+
+    /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
     loc = getFuzzyVariable(document, position);
     if (loc) {
         location.push(loc);

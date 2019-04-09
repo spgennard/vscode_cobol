@@ -4,7 +4,6 @@ import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
 export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
-
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
 

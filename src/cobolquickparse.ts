@@ -367,6 +367,7 @@ export default class QuickCOBOLParse {
                         let c = lineTokens[i].substr(0, lineTokens[i].length - 1);
                         if (c.length !== 0) {
                             this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, this.trimLiteral(c), c, this.currentDivision));
+
                             prev = current;
                             prevLower = currentLower;
                             prevColumn = currentCol;
@@ -388,6 +389,23 @@ export default class QuickCOBOLParse {
                             }
                             let trimToken = this.trimLiteral(c);
                             this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision));
+
+                            /* forward scan for "indexed by item" */
+                            for (let fi = i; fi < lineTokens.length; fi++) {
+                                let current: string = lineTokens[fi];
+                                let currentLower: string = current.toLocaleLowerCase();
+
+                                if (3 + fi < lineTokens.length && currentLower === "indexed") {
+                                    let nextToken = lineTokens[1 + fi].toLocaleLowerCase();
+                                    if (nextToken === "by") {
+                                        let nextToken = lineTokens[2 + fi].toLocaleLowerCase();
+                                        if (this.isValidKeyword(nextToken) === false) {
+                                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, this.trimLiteral(nextToken), nextToken, this.currentDivision));
+                                        }
+                                    }
+                                }
+                            }
+
                             prev = current;
                             prevLower = currentLower;
                             prevColumn = currentCol;

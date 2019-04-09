@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.7.1
+ - Fix #65 - Indexes not being picked up by parser 
+
 ## Version - 4.6.6
   - Fix #63 - Colourisation: end valuetype not coloured
   + Fix class-id/namespace issue
