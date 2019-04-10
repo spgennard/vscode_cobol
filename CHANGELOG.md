@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.8.0
+ - Start to rework the quick parser
+ 
 ## Version - 4.7.1, 4.7.3
  - Fix #65 - Indexes not being picked up by parser 
 

@@ -76,6 +76,7 @@ export const cobolKeywords: string[] = [
 	"control",
 	"controls",
 	"converting",
+	"constraints",
 	"copy",
 	"corr",
 	"corresponding",
