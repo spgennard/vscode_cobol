@@ -36,7 +36,7 @@ class COBOLToken {
 
     static Null: COBOLToken = new COBOLToken(COBOLTokenStyle.Null, -1, "", "", "", undefined);
 
-    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token:string, description: string, parentToken: COBOLToken | undefined) {
+    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
         this.tokenType = tokenType;
         this.startLine = startLine;
         this.startColumn = line.indexOf(token.trim());
@@ -45,8 +45,7 @@ class COBOLToken {
         this.level = (parentToken === undefined) ? 1 : 1 + parentToken.level;
         this.parentToken = parentToken;
         this.token = token.trim();
-        switch(this.tokenType)
-        {
+        switch (this.tokenType) {
             case COBOLTokenStyle.Division: this.startColumn--; break;
             case COBOLTokenStyle.Section: this.startColumn--; break;
             case COBOLTokenStyle.Paragraph: this.startColumn--; break;
@@ -79,7 +78,7 @@ export default class QuickCOBOLParse {
     public divisions: COBOLToken[] = [];
 
     public tokensInOrder: COBOLToken[] = [];
-    
+
     public isValidLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {
@@ -189,6 +188,7 @@ export default class QuickCOBOLParse {
             let current: string = lineTokens[i];
             let currentLower: string = current.toLocaleLowerCase();
             let endWithDot = false;
+            let nextToken = "";
 
             // continue now
             if (current.length === 0) {
@@ -204,6 +204,11 @@ export default class QuickCOBOLParse {
                 prev = "";
                 i++;
                 continue;
+            }
+
+            /* setup next token, so we can forward peek */
+            if (1 + i < lineTokens.length) {
+                nextToken = lineTokens[1 + i];
             }
 
             // do we have a quote?
@@ -280,7 +285,7 @@ export default class QuickCOBOLParse {
 
             // handle entries
             if (prevLower === "entry" && current.length !== 0) {
-                let token =  new COBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                let token = new COBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
                 this.tokensInOrder.push(token);
                 prev = current;
                 prevLower = currentLower;
@@ -385,35 +390,26 @@ export default class QuickCOBOLParse {
                         let c = lineTokens[i].substr(0, lineTokens[i].length);
                         if (c.length !== 0) {
                             if (c[c.length - 1] === '.') {
-                                c= lineTokens[i].substr(0, lineTokens[i].length-1);
+                                c = lineTokens[i].substr(0, lineTokens[i].length - 1);
                             }
                             let trimToken = this.trimLiteral(c);
                             this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision));
-
-                            /* forward scan for "indexed by item" */
-                            for (let fi = i; fi < lineTokens.length; fi++) {
-                                let current: string = lineTokens[fi];
-                                let currentLower: string = current.toLocaleLowerCase();
-
-                                if (3 + fi < lineTokens.length && currentLower === "indexed") {
-                                    let nextToken = lineTokens[1 + fi].toLocaleLowerCase();
-                                    if (nextToken === "by") {
-                                        let nextToken = lineTokens[2 + fi].toLocaleLowerCase();
-                                        if (this.isValidKeyword(nextToken) === false) {
-                                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, this.trimLiteral(nextToken), nextToken, this.currentDivision));
-                                        }
-                                    }
-                                }
-                            }
-
-                            prev = current;
-                            prevLower = currentLower;
-                            prevColumn = currentCol;
-                            continue;
                         }
                     }
                 }
+
+                if (prevLower === "indexed" && currentLower === "by") {
+                    if (this.isValidKeyword(nextToken) === false) {
+                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, this.trimLiteral(nextToken), nextToken, this.currentDivision));
+                    }
+                }
+
+                prev = current;
+                prevLower = currentLower;
+                prevColumn = currentCol;
+                continue;
             }
+
             prevColumn = currentCol;
             prevLower = currentLower;
             prev = current;

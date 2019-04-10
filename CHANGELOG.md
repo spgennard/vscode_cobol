@@ -1,6 +1,6 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
-## Version - 4.7.1
+## Version - 4.7.1, 4.7.3
  - Fix #65 - Indexes not being picked up by parser 
 
 ## Version - 4.6.6
