@@ -1,5 +1,11 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.8.1
+
+- Fix #66 - Colourisation: extension not coloured 
+- Fix #67 - Colourisation: "keep" in read lockt-fd-2 with kept lock has no colour 
+- Fix #68 - Colourisation: thread-local if fd not colourised 
+
 ## Version - 4.8.0
  - Start to rework the quick parser
  
