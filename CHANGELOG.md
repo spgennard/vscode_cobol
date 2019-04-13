@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 4.9
+ - Continue to evolve the quick parse
+
 ## Version - 4.8.1
 
 - Fix #66 - Colourisation: extension not coloured 

@@ -93,16 +93,27 @@ class Token {
     public prevCol: number = 0;
     public rollingColumn: number = 0;
 
-    public constructor(line: string) {
+    public constructor(line: string, previousToken?: Token) {
         this.lineNumber = 1;
 
         this.line = line;
         this.setupLine();
+
+        if (previousToken !== undefined) {
+            if (previousToken.lineTokens.length > 0) {
+                let lastToken = previousToken.lineTokens[previousToken.lineTokens.length - 1];
+                this.prevCol = previousToken.line.indexOf(lastToken);
+                this.prevToken = lastToken;
+                this.prevTokenLower = lastToken.toLowerCase();
+            }
+        }
     }
 
+    public static Blank = new Token("", undefined);
+
     private setupLine() {
-        let possibleTokens = this.splitArgument(this.line,);
-            //this.line.split(/[\s \,]/g); //.filter(v=>v!=='');
+        let possibleTokens = this.splitArgument(this.line);
+        //this.line.split(/[\s \,]/g); //.filter(v=>v!=='');
         this.lineTokens = [];
         for (let l = 0; l < possibleTokens.length; l++) {
             if (possibleTokens[l] !== undefined) {
@@ -154,7 +165,7 @@ class Token {
         return false;
     }
 
-    private splitArgument(input:string, sep:RegExp = /\s/g, keepQuotes:boolean = true): string[] {
+    private splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
         let separator = sep || /\s/g;
         var singleQuoteOpen = false;
         var doubleQuoteOpen = false;
@@ -209,6 +220,12 @@ export default class QuickCOBOLParse {
         if (id === null || id.length === 0) {
             return false;
         }
+
+        /* does it include a . ? */
+        if (id.indexOf(".") !== -1) {
+            return false;
+        }
+
         let regex = /^[a-zA-Z][a-zA-Z0-9-_]*/g;
 
         if (id.match(regex)) {
@@ -230,20 +247,23 @@ export default class QuickCOBOLParse {
     }
 
     inProcedureDivision: boolean;
-    inWorkingStorage: boolean;
+    pickFields: boolean;
+
     currentDivision: COBOLToken;
     procedureDivsion: COBOLToken;
     parseColumnBOnwards: boolean = this.getColumBParsing();
 
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
-        this.inWorkingStorage = false;
+        this.pickFields = false;
         this.currentDivision = COBOLToken.Null;
         this.procedureDivsion = COBOLToken.Null;
 
+        let prevToken: Token = Token.Blank;
+
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
-                this.parseLineByLine(sourceHandler, l);
+                prevToken = this.parseLineByLine(sourceHandler, l, prevToken);
             }
             catch (e) {
                 console.log("CobolQuickParse - Parse error : " + e);
@@ -300,7 +320,7 @@ export default class QuickCOBOLParse {
 
         return literalTrimmed;
     }
-    
+
     private getColumBParsing(): boolean {
         var editorConfig = workspace.getConfiguration('coboleditor');
         var parsingB = editorConfig.get<boolean>('ignorecolumn_b_onwards');
@@ -310,13 +330,11 @@ export default class QuickCOBOLParse {
         return parsingB;
     }
 
-    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number) {
+    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token): Token {
 
         let line: string = sourceHandler.getLine(lineNumber);
 
-        let skip2Characer = null;
-
-        let token = new Token(line);
+        let token = new Token(line, prevToken);
 
         do {
             try {
@@ -331,7 +349,7 @@ export default class QuickCOBOLParse {
                 }
 
                 // HACK for "set x to entry"
-                if (token.prevToken === "to" && tcurrentLower === "entry") {
+                if (token.prevTokenLower === "to" && tcurrentLower === "entry") {
                     continue;
                 }
 
@@ -347,7 +365,8 @@ export default class QuickCOBOLParse {
                 const prevToken = this.trimLiteral(token.prevToken);
                 const prevTokenLower = this.trimLiteral(token.prevTokenLower);
 
-                let prevPlusCurrent = line.substr(token.prevCol, (token.currentCol + current.length) - token.prevCol);
+                let prevPlusCurrent = token.prevToken + " " + current;
+                //line.substr(token.prevCol, (token.currentCol + current.length) - token.prevCol);
                 // let currentPlusNext = line.substr(currentCol, (nextColumn + next.length) - currentCol);
 
                 // handle sections
@@ -359,11 +378,16 @@ export default class QuickCOBOLParse {
                     this.currentDivision.childTokens.push(ctoken);
                     this.tokensInOrder.push(ctoken);
 
-                    if (prevTokenLower === "working-storage") {
-                        this.inWorkingStorage = true;
+                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || prevTokenLower === "file") {
+                        this.pickFields = true;
                         this.inProcedureDivision = false;
                         sourceHandler.setDumpAreaA(false);
                         sourceHandler.setDumpAreaBOnwards(!this.parseColumnBOnwards);
+
+                        if (this.divisions.length === 0) {
+                            this.divisions.push(ctoken);    /* fake division */
+                            this.currentDivision = ctoken;
+                        }
                     }
                     continue;
                 }
@@ -377,7 +401,7 @@ export default class QuickCOBOLParse {
 
                     if (prevTokenLower === "procedure") {
                         this.inProcedureDivision = true;
-                        this.inWorkingStorage = false;
+                        this.pickFields = false;
                         this.procedureDivsion = ctoken;
                         sourceHandler.setDumpAreaA(true);
                         sourceHandler.setDumpAreaBOnwards(false);
@@ -395,7 +419,13 @@ export default class QuickCOBOLParse {
 
                 // handle program-id
                 if (prevTokenLower === "program-id" && current.length !== 0) {
-                    this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision));
+                    let ctoken = new COBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                    if (this.divisions.length === 0) {
+                        this.divisions.push(ctoken);    /* fake division */
+                        this.currentDivision = ctoken;
+                    }
+
+                    this.tokensInOrder.push(ctoken);
                     continue;
                 }
 
@@ -447,29 +477,40 @@ export default class QuickCOBOLParse {
                         if (beforeCurrent.length === 0) {
                             let c = token.currentToken.substr(0, token.currentToken.length - 1);
                             if (c.length !== 0) {
-                                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, this.trimLiteral(c), c, this.currentDivision));
+                                if (this.isValidLiteral(c)) {
+                                    this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision));
+                                }
                             }
                         }
                     }
                 }
 
                 // are we in the working-storage section?
-                if (this.inWorkingStorage) {
+                if (this.pickFields) {
                     /* only interesteding in things that are after a number */
                     if (this.isNumber(prevToken) && !this.isNumber(current)) {
-                        if (!this. isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
+                        if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
                                 this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision));
                             }
                         }
+                        continue;
                     }
-                }
 
-                if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0)  {
-                    if (this.isValidKeyword(nextToken) === false) {
-                        let trimmedNextToken = this.trimLiteral(nextToken);
-                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision));
+                    if ((prevTokenLower === "fd" || prevTokenLower === "sd") && !this.isValidKeyword(currentLower)) {
+                        let trimToken = this.trimLiteral(current);
+                        if (this.isValidLiteral(currentLower)) {
+                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision));
+                        }
+                        continue;
+                    }
+
+                    if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0) {
+                        if (this.isValidKeyword(nextToken) === false) {
+                            let trimmedNextToken = this.trimLiteral(nextToken);
+                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision));
+                        }
                     }
                 }
             }
@@ -479,6 +520,8 @@ export default class QuickCOBOLParse {
             }
         }
         while (token.moveToNextToken() === false);
+
+        return token;
     }
 
     private updateEndings(sourceHandler: ISourceHandler) {
