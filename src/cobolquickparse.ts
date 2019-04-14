@@ -263,7 +263,12 @@ export default class QuickCOBOLParse {
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
-                prevToken = this.parseLineByLine(sourceHandler, l, prevToken);
+                let line = sourceHandler.getLine(l).trimRight();
+                
+                // don't parse a empty line
+                if (line.length > 0) {
+                    prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
+                }
             }
             catch (e) {
                 console.log("CobolQuickParse - Parse error : " + e);
@@ -271,22 +276,6 @@ export default class QuickCOBOLParse {
             }
         }
         this.updateEndings(sourceHandler);
-    }
-
-    private isInterestingToken(token: string): boolean {
-        switch (token) {
-            case "entry":
-            case "copy":
-            case "program-id":
-            case "class-id":
-            case "valuetype-id":
-            case "method-id":
-            case "entry-point":
-            case "enum-id":
-                return true;
-        }
-
-        return false;
     }
 
     private isValidKeyword(keyword: string): boolean {
@@ -330,9 +319,7 @@ export default class QuickCOBOLParse {
         return parsingB;
     }
 
-    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token): Token {
-
-        let line: string = sourceHandler.getLine(lineNumber);
+    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
 
         let token = new Token(line, prevToken);
 
