@@ -1,8 +1,69 @@
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, splitArgument } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
-export default class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+    public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
+        let symbols: vscode.SymbolInformation[] = [];
+
+        let ownerUri = document.uri;
+
+        let lastLine = document.lineCount;
+        let lastLineColumn = document.lineAt(lastLine - 1).text.length;
+        let container = "";
+
+        for (let i = 0; i < document.lineCount; i++) {
+            const line = document.lineAt(i);
+            let textText = line.text;
+            
+            if (textText.startsWith("//*")) {
+                continue;
+            }
+                
+            if (textText.startsWith("//")) {
+                let textLineClean = textText.substr(2);
+                let lineTokens = [];
+                let possibleTokens = splitArgument(textLineClean);
+                for (let l = 0; l < possibleTokens.length; l++) {
+                    if (possibleTokens[l] !== undefined) {
+                        let possibleToken = possibleTokens[l].trim();
+                        if (possibleToken.length > 0) {
+                            lineTokens.push(possibleToken);
+                        }
+                    }
+                }
+
+                if (lineTokens.length > 0) {
+                    if (lineTokens.length > 1) {
+
+                        if (lineTokens[1].toLowerCase().indexOf("job") !== -1) {
+                            let srange = new vscode.Range(new vscode.Position(i, 0),
+                                new vscode.Position(lastLine, lastLineColumn));
+                            let lrange = new vscode.Location(ownerUri, srange);
+
+                            symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Field, container, lrange));
+                            container = lineTokens[0];
+                        }
+                    
+                        if (lineTokens[1].toLowerCase().indexOf("exec") !== -1) {
+                            let srange = new vscode.Range(new vscode.Position(i, 0),
+                                new vscode.Position(i, lineTokens.length));
+                            let lrange = new vscode.Location(ownerUri, srange);
+
+                            symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Function, container, lrange));
+                        }
+
+                    }
+                }
+            }
+            
+        }
+
+        return symbols;
+    }
+}
+
+export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];

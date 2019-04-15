@@ -20,6 +20,49 @@ export enum COBOLTokenStyle {
 
     Null = "Null"
 }
+export function splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
+    let separator = sep || /\s/g;
+    var singleQuoteOpen = false;
+    var doubleQuoteOpen = false;
+    var tokenBuffer = [];
+    var ret = [];
+
+    var arr = input.split('');
+    for (var i = 0; i < arr.length; ++i) {
+        var element = arr[i];
+        var matches = element.match(separator);
+        if (element === "'" && !doubleQuoteOpen) {
+            if (keepQuotes === true) {
+                tokenBuffer.push(element);
+            }
+            singleQuoteOpen = !singleQuoteOpen;
+            continue;
+        } else if (element === '"' && !singleQuoteOpen) {
+            if (keepQuotes === true) {
+                tokenBuffer.push(element);
+            }
+            doubleQuoteOpen = !doubleQuoteOpen;
+            continue;
+        }
+
+        if (!singleQuoteOpen && !doubleQuoteOpen && matches) {
+            if (tokenBuffer.length > 0) {
+                ret.push(tokenBuffer.join(''));
+                tokenBuffer = [];
+            } else if (!!sep) {
+                ret.push(element);
+            }
+        } else {
+            tokenBuffer.push(element);
+        }
+    }
+    if (tokenBuffer.length > 0) {
+        ret.push(tokenBuffer.join(''));
+    } else if (!!sep) {
+        ret.push('');
+    }
+    return ret;
+}
 
 class COBOLToken {
     public tokenType: COBOLTokenStyle;
@@ -112,7 +155,7 @@ class Token {
     public static Blank = new Token("", undefined);
 
     private setupLine() {
-        let possibleTokens = this.splitArgument(this.line);
+        let possibleTokens = splitArgument(this.line);
         //this.line.split(/[\s \,]/g); //.filter(v=>v!=='');
         this.lineTokens = [];
         for (let l = 0; l < possibleTokens.length; l++) {
@@ -165,49 +208,7 @@ class Token {
         return false;
     }
 
-    private splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
-        let separator = sep || /\s/g;
-        var singleQuoteOpen = false;
-        var doubleQuoteOpen = false;
-        var tokenBuffer = [];
-        var ret = [];
-
-        var arr = input.split('');
-        for (var i = 0; i < arr.length; ++i) {
-            var element = arr[i];
-            var matches = element.match(separator);
-            if (element === "'" && !doubleQuoteOpen) {
-                if (keepQuotes === true) {
-                    tokenBuffer.push(element);
-                }
-                singleQuoteOpen = !singleQuoteOpen;
-                continue;
-            } else if (element === '"' && !singleQuoteOpen) {
-                if (keepQuotes === true) {
-                    tokenBuffer.push(element);
-                }
-                doubleQuoteOpen = !doubleQuoteOpen;
-                continue;
-            }
-
-            if (!singleQuoteOpen && !doubleQuoteOpen && matches) {
-                if (tokenBuffer.length > 0) {
-                    ret.push(tokenBuffer.join(''));
-                    tokenBuffer = [];
-                } else if (!!sep) {
-                    ret.push(element);
-                }
-            } else {
-                tokenBuffer.push(element);
-            }
-        }
-        if (tokenBuffer.length > 0) {
-            ret.push(tokenBuffer.join(''));
-        } else if (!!sep) {
-            ret.push('');
-        }
-        return ret;
-    }
+    
 }
 
 export default class QuickCOBOLParse {

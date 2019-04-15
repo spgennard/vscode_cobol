@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 5.0
+ - Add simple outline view for JCL, Jobs & Steps
+
 ## Version - 4.9
  - Continue to evolve the quick parse
 

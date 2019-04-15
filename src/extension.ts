@@ -9,7 +9,7 @@ import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
-import CobolDocumentSymbolProvider from './symbolprovider';
+import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
 import updateDecorations from './margindecorations';
@@ -148,6 +148,10 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProvider = new TextAutocompleteCompletionItemProvider(jclStatements);
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
+
+    const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
+ 
 
     /* TODO: add .DIR keywords too */
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
