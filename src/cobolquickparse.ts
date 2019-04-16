@@ -136,6 +136,8 @@ class Token {
     public prevCol: number = 0;
     public rollingColumn: number = 0;
 
+    public endsWithDot: boolean = false;
+
     public constructor(line: string, previousToken?: Token) {
         this.lineNumber = 1;
 
@@ -236,6 +238,27 @@ export default class QuickCOBOLParse {
         return false;
     }
 
+    
+    public isParagraph(id: string): boolean {
+
+        if (id === null || id.length === 0) {
+            return false;
+        }
+
+        /* does it include a . ? */
+        if (id.indexOf(".") !== -1) {
+            return false;
+        }
+
+        let regex = /^[a-zA-Z0-9][a-zA-Z0-9-_]*/g;
+
+        if (id.match(regex)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public isValidQuotedLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {
@@ -268,7 +291,12 @@ export default class QuickCOBOLParse {
                 
                 // don't parse a empty line
                 if (line.length > 0) {
-                    prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
+                    if (prevToken.endsWithDot === false) {
+                        prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
+                    }
+                    else {
+                        prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, line);
+                    }
                 }
             }
             catch (e) {
@@ -345,6 +373,9 @@ export default class QuickCOBOLParse {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
                     endWithDot = true;
+                    token.endsWithDot = endWithDot;
+                } else {
+                    token.endsWithDot = false;
                 }
 
                 const current: string = tcurrent;
@@ -465,7 +496,7 @@ export default class QuickCOBOLParse {
                         if (beforeCurrent.length === 0) {
                             let c = token.currentToken.substr(0, token.currentToken.length - 1);
                             if (c.length !== 0) {
-                                if (this.isValidLiteral(c)) {
+                                if (this.isParagraph(c)) {
                                     this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision));
                                 }
                             }
