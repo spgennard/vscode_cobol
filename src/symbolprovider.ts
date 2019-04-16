@@ -100,7 +100,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                 case COBOLTokenStyle.FunctionId:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Function, container, lrange));
                     break;
-                case COBOLTokenStyle.EnumId:    
+                case COBOLTokenStyle.EnumId:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Enum, container, lrange));
                     break;
                 case COBOLTokenStyle.InterfaceId:
@@ -112,9 +112,18 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                 case COBOLTokenStyle.Variable:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
                     break;
+                case COBOLTokenStyle.Constant:
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constant, container, lrange));
+                    break;
                 case COBOLTokenStyle.MethodId:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                     break;
+                case COBOLTokenStyle.Property:
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Property, container, lrange));
+                    break;
+                case COBOLTokenStyle.Constructor:
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
+                    break;                
             }
         }
         return symbols;

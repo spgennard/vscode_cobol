@@ -10,7 +10,8 @@
         "pl/i",
         "pli",
         "mvs",
-        "mfcobol"
+        "mfcobol",
+        "cobol-it"
     ],
     "repository": {
         "type": "git",
@@ -48,6 +49,13 @@
         "onCommand:cobolplugin.change_source_format"
     ],
     "main": "./out/extension",
+    "license": "see LICENSE",
+    "homepage": "https://github.com/spgennard/vscode_cobol",
+    "author": {
+        "name": "Stephen Gennard",
+        "email": "stephen@gennard.net"
+    },
+    "badges": [],
     "contributes": {
         "configuration": {
             "type": "object",
@@ -274,6 +282,7 @@
                     "Cobol",
                     "cobol"
                 ],
+                "filenames": ["SQLCA"],
                 "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]).*",
                 "extensions": [
                     ".cbl",
@@ -283,6 +292,7 @@
                     ".cpy",
                     ".fd",
                     ".sel",
+                    ".scb",
                     ".scbl",
                     ".cob",
                     ".dds",

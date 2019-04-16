@@ -7,7 +7,9 @@ export enum COBOLTokenStyle {
     CopyBook = "Copybook",
     ProgramId = "Program-Id",
     FunctionId = "Function-Id",
+    Constructor = "Constructor",
     MethodId = "Method-Id",
+    Property = "Property",
     ClassId = "Class-Id",
     InterfaceId = "Interface-Id",
     ValueTypeId = "Valuetype-Id",
@@ -17,6 +19,7 @@ export enum COBOLTokenStyle {
     Division = "Division",
     EntryPoint = "Entry",
     Variable = "Variable",
+    Constant = "Constant",
 
     Null = "Null"
 }
@@ -95,6 +98,8 @@ class COBOLToken {
             case COBOLTokenStyle.EntryPoint: this.startColumn--; break;
             case COBOLTokenStyle.ClassId: this.startColumn--; break;
             case COBOLTokenStyle.MethodId: this.startColumn--; break;
+            case COBOLTokenStyle.Property: this.startColumn--; break;
+            case COBOLTokenStyle.Constructor: this.startColumn--; break;
         }
 
         if (this.token.length !== 0) {
@@ -127,10 +132,12 @@ class Token {
     public currentToken: string = "";
     public prevToken: string = "";
     public nextToken: string = "";
-
+    public nextPlusOneToken: string = "";  // only used for method-id. get property xxx
+    
     public currentTokenLower: string = "";
     public prevTokenLower: string = "";
     public nextTokenLower: string = "";
+
 
     public currentCol: number = 0;
     public prevCol: number = 0;
@@ -188,6 +195,13 @@ class Token {
         this.currentCol = this.line.indexOf(this.currentToken, this.rollingColumn);
         this.rollingColumn = this.currentCol + this.currentToken.length;
 
+        /* setup next token + 1 */
+        if (2 + this.tokenIndex < this.lineTokens.length) {
+            this.nextPlusOneToken = this.lineTokens[2 + this.tokenIndex];
+        } else {
+            this.nextPlusOneToken = "";
+        }
+
         if (1 + this.tokenIndex < this.lineTokens.length) {
             this.nextToken = this.lineTokens[1 + this.tokenIndex];
             if (this.nextToken === undefined) {
@@ -198,6 +212,8 @@ class Token {
         } else {
             this.nextToken = this.nextTokenLower = "";
         }
+
+        
     }
 
     public moveToNextToken(): boolean {
@@ -381,8 +397,10 @@ export default class QuickCOBOLParse {
                 const current: string = tcurrent;
                 const currentLower: string = tcurrentLower;
                 const nextToken = token.nextToken;
+                const nextTokenLower = token.nextTokenLower;
                 const prevToken = this.trimLiteral(token.prevToken);
                 const prevTokenLower = this.trimLiteral(token.prevTokenLower);
+                const nextPlusOneToken = token.nextPlusOneToken;
 
                 let prevPlusCurrent = token.prevToken + " " + current;
                 //line.substr(token.prevCol, (token.currentCol + current.length) - token.prevCol);
@@ -480,7 +498,14 @@ export default class QuickCOBOLParse {
 
                 // handle method-id
                 if (prevTokenLower === "method-id" && current.length !== 0) {
-                    this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.MethodId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision));
+                    let currentLowerTrim = this.trimLiteral(currentLower);
+                    let style = currentLowerTrim === "new" ? COBOLTokenStyle.Constructor : COBOLTokenStyle.MethodId;
+                    if (nextTokenLower === "property") {
+                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Property, lineNumber, line, this.trimLiteral(nextPlusOneToken), nextToken+" "+nextPlusOneToken, this.currentDivision));
+                        
+                    } else {
+                        this.tokensInOrder.push(new COBOLToken(style, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision));
+                    }
                     continue;
                 }
                 // copybook handling
@@ -511,7 +536,8 @@ export default class QuickCOBOLParse {
                         if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
-                                this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision));
+                                const style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
+                                this.tokensInOrder.push(new COBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision));
                             }
                         }
                         continue;
@@ -526,7 +552,7 @@ export default class QuickCOBOLParse {
                     }
 
                     if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0) {
-                        if (this.isValidKeyword(nextToken) === false) {
+                        if (this.isValidKeyword(nextTokenLower) === false) {
                             let trimmedNextToken = this.trimLiteral(nextToken);
                             this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision));
                         }

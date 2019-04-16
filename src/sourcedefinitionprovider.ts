@@ -88,10 +88,16 @@ function getVariable(document: vscode.TextDocument, position: vscode.Position): 
 
         if (word === token.token || word === token.description) {
             switch (token.tokenType) {
+                case COBOLTokenStyle.Constant:
+                    {
+                        let srange = new vscode.Position(token.startLine, token.startColumn);
+                        return new vscode.Location(document.uri, srange);
+                    }
                 case COBOLTokenStyle.Variable:
-                    let srange = new vscode.Position(token.startLine, token.startColumn);
-                    return new vscode.Location(document.uri, srange);
-                    break;
+                    {
+                        let srange = new vscode.Position(token.startLine, token.startColumn);
+                        return new vscode.Location(document.uri, srange);
+                    }
             }
         }
     }
