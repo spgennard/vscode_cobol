@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.0.2",
+    "version": "5.0.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -55,7 +55,6 @@
         "name": "Stephen Gennard",
         "email": "stephen@gennard.net"
     },
-    "badges": [],
     "contributes": {
         "configuration": {
             "type": "object",
@@ -282,7 +281,9 @@
                     "Cobol",
                     "cobol"
                 ],
-                "filenames": ["SQLCA"],
+                "filenames": [
+                    "SQLCA"
+                ],
                 "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]).*",
                 "extensions": [
                     ".cbl",
