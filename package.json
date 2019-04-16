@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.0.3",
+    "version": "5.0.4",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -49,7 +49,7 @@
         "onCommand:cobolplugin.change_source_format"
     ],
     "main": "./out/extension",
-    "license": "see LICENSE",
+    "license": "LICENSE IN LICENSE",
     "homepage": "https://github.com/spgennard/vscode_cobol",
     "author": {
         "name": "Stephen Gennard",
