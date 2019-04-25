@@ -128,14 +128,14 @@
       "name": "meta.symbol.cobol.forced"
     },
     {
-      "begin": "((?i:installation|author|source-computer|object-computer|date-written|security|date-compiled)(\\.|\\s+|$))",
+      "begin": "((?<![-_a-zA-Z0-9()-])(?i:installation|author|source-computer|object-computer|date-written|security|date-compiled)(\\.|$))",
       "beginCaptures": {
         "0": {
           "name": "keyword.cobol"
         }
       },
       "name": "comment.block.cobol.remark",
-      "end": "(?=(?i:author|date-written|source-computer|object-computer|installation|date-compiled|special-names|security|environment\\s+division|data\\s+division|working-storage\\s+section|input-output\\s+section|linkage\\s+section|procedure\\s+division|local-storage\\s+section))"
+      "end": "(?=((?<![-_])(?i:author|date-written|source-computer|object-computer|installation|date-compiled|special-names|security|environment\\s+division|data\\s+division|working-storage\\s+section|input-output\\s+section|linkage\\s+section|procedure\\s+division|local-storage\\s+section)))"
     },
     {
       "match": "(?<=(\\(|\\[))((\\-\\+)*[0-9 ,\\.\\+\\-\\*\\/]+)(?=(\\)|\\]))",
@@ -634,7 +634,7 @@
       "name": "support.type.cobol.acu strong"
     },
     {
-      "begin": "(?i:remarks)",
+      "begin": "(?<![-_\\*])(?i:remarks)",
       "beginCaptures": {
         "0": {
           "name": "keyword.cobol"

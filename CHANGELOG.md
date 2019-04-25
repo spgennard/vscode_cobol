@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 5.0.1 - 5.0.5
+ - Minor tweaks
+
 ## Version - 5.0
  - Add simple outline view for JCL, Jobs & Steps
 
@@ -15,7 +18,7 @@
 ## Version - 4.8.0
  - Start to rework the quick parser
  
-## Version - 4.7.1, 4.7.3
+## Version - 4.7.1 - 4.7.3
  - Fix #65 - Indexes not being picked up by parser 
 
 ## Version - 4.6.6
