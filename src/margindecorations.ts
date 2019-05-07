@@ -4,7 +4,6 @@ import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, Tex
 import { getCurrentContext, enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
 import minimatch = require('minimatch');
-import path = require('path');
 
 var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {

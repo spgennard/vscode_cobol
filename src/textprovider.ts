@@ -1,4 +1,4 @@
-import * as TrieSearch from 'trie-search';
+import TrieSearch from 'trie-search';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 
 interface TrieObject {
@@ -10,11 +10,6 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 	private words: TrieSearch = new TrieSearch('key');
 
 	public constructor(keywords: string[]) {
-		this.setupDictionary(keywords);
-	}
-
-	protected setupDictionary(keywords: string[]): void {
-		this.words = new TrieSearch('key');
 		let i = 0;
 
 		/* in the future, this could be extended to add a pri rather than just use the position

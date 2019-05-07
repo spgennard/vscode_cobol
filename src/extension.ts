@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -13,6 +13,7 @@ import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbol
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
 import updateDecorations from './margindecorations';
+import { getCallTarget } from './keywords/cobolCallTargets';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -103,6 +104,8 @@ export function activate(context: ExtensionContext) {
         enableMarginCobolMargin(!isEnabledViaWorkspace4cobol());
         updateDecorations(act);
     });
+
+
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -157,6 +160,21 @@ export function activate(context: ExtensionContext) {
     const documentSymbolProvider = new CobolDocumentSymbolProvider();
     context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
  
+    /* hover provider */
+    let disposable = languages.registerHoverProvider(allCobolSelectors, {
+        provideHover(document, position, token) {
+         
+            // window.showInformationMessage(position.toString());
+            let xx = document.getText(document.getWordRangeAtPosition(position));
+            console.log("Hover: " + xx);
+            let x = getCallTarget(xx);
+            if (x !== null) {
+                return new Hover("### " + x.api + "\n"+x.description + "\n\n#### [More information?](" + x.url + ")");
+            }
+        }
+    });
+    context.subscriptions.push(disposable);
+
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
             return;
