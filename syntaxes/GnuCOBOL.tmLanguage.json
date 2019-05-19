@@ -60,6 +60,14 @@
       "name": "invalid.illegal.acucobol"
     },
     {
+      "match" : "(?<![-_])(?i:active-class|aligned|anycase|b-and|b-not|b-or|b-xor|bit|boolean|chain|class-id|end-chain|eo|exception-object|expands|factory|float-binary-128|float-binary-32|float-binary-64|float-extended|float-infinity|float-not-a-number|format|function-pointer|get|group-usage|implements|inherits|interface-id|interface|invoke|lc_all|lc_collate|lc_ctype|lc_messages|lc_monetary|lc-numeric|lc_time|left-justify|method-id|method|none|object-reference|override|prefixed|prototype|raise|raising|relation|right-justify|self|sources|space-fill|statement|strong|super|symbol|trailing-sign|typedef|universal|utf-16|utf-8|val-status|valid|validate-status|zero-fil)",
+      "name": "invalid.illegal.not_implemented.gnucobol"
+    },
+    {
+      "match" : "(?<![-_])(?i:boolean-of-integer|char-national|display-of|exception-file-n|exception-location-n|integer-of-boolean|national-of|standard-compare)",
+      "name": "invalid.illegal.not_implemented.gnucobol"
+    },
+    {
       "include": "source.cobol"
     }
   ],

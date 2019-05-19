@@ -5,7 +5,7 @@
 			"add ${1:a} to ${2:b} giving ${3:c}"
 		],
 		"description": "Add a to b giving c",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"ADD": {
 		"prefix": "ADD",
@@ -13,7 +13,7 @@
 			"ADD ${1:a} TO ${2:b} GIVING ${3:c}"
 		],
 		"description": "Add a to b giving c",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"accept": {
 		"prefix": "accept",
@@ -21,7 +21,7 @@
 			"accept ${1:variable}",
 			"$0"
 		],
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"ACCEPT": {
 		"prefix": "ACCEPT",
@@ -29,7 +29,7 @@
 			"ACCEPT ${1:variable}",
 			"$0"
 		],
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"accept from": {
 		"prefix": "accept",
@@ -38,7 +38,7 @@
 			"$0"
 		],
 		"description": "accept from date/day/week/time",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"ACCEPT FROM": {
 		"prefix": "ACCEPT",
@@ -47,7 +47,7 @@
 			"$0"
 		],
 		"description": "ACCEPT FROM DATE/DAY/WEEK/TIME",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"class-id": {
 		"prefix": "class-id",
@@ -72,7 +72,7 @@
 			"    replacing ==${2:()}== by ==${3:lnk-}==."
 		],
 		"description": "Copy replacing",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"COPY": {
 		"prefix": "COPY",
@@ -81,7 +81,7 @@
 			"    REPLACING ==${2:()}== BY ==${3:lnk-}==."
 		],
 		"description": "COPY REPLACING",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"divide": {
 		"prefix": "divide",
@@ -89,7 +89,7 @@
 			"divide ${1:a} by ${2:b} giving ${3:c} ${4:remainder ${5:d}}"
 		],
 		"description": "divide a by b giving [remainder}",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"DIVIDE": {
 		"prefix": "DIVIDE",
@@ -97,7 +97,7 @@
 			"DIVIDE ${1:a} BY ${2:b} GIVING ${3:c} ${4:REMAINDER ${5:d}}"
 		],
 		"description": "DIVIDE a BY b GIVING [REMAINDER}",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"entry": {
 		"prefix": "entry",
@@ -109,7 +109,7 @@
 			""
 		],
 		"description": "entry statement",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"ENTRY": {
 		"prefix": "ENTRY",
@@ -121,7 +121,7 @@
 			""
 		],
 		"description": "ENTRY statement",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"enum-id": {
 		"prefix": "enum-id",
@@ -147,7 +147,7 @@
 			""
 		],
 		"description": "evaluate",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"EVALUATE": {
 		"prefix": "EVALUATE",
@@ -161,7 +161,7 @@
 			""
 		],
 		"description": "EVALUATE",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"exec-sql": {
 		"prefix": "exec",
@@ -227,7 +227,7 @@
 			"inspect $1 converting '${2:ABCDEFGHIJKLMNOPQRSTUVWXYZ}' to '${3:abcdefghijklmnopqrstuvwxyz}'"
 		],
 		"description": "inspect converting",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"INSPECT CONVERTING": {
 		"prefix": "INSPECT",
@@ -235,7 +235,7 @@
 			"INSPECT $1 CONVERTING '${2:ABCDEFGHIJKLMNOPQRSTUVWXYZ}' to '${3:abcdefghijklmnopqrstuvwxyz}'"
 		],
 		"description": "INSPECT CONVERTING",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},	
 	"inspect replacing": {
 		"prefix": "inspect",
@@ -243,7 +243,7 @@
 			"inspect $1 replacing all ${2|spaces,zero|} by '${3}'"
 		],
 		"description": "inspect replacing",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"INSPECT REPLACING": {
 		"prefix": "INSPECT",
@@ -251,7 +251,7 @@
 			"INSPECT $1 REPLACING ALL ${2|SPACES,ZERO|} BY '${3}'"
 		],
 		"description": "INSPECT REPLACING",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},	
 	"inspect tallying": {
 		"prefix": "inspect",
@@ -260,7 +260,7 @@
 			"inspect ${1:source} tallying ${2:counter} for ${3|all spaces,all $4,characters|}"
 		],
 		"description": "Inspect a tallying counter for ...",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"INSPECT TALLYING": {
 		"prefix": "INSPECT",
@@ -269,7 +269,7 @@
 			"INSPECT ${1:SOURCE} TALLYING ${2:COUNTER} FOR ${3|ALL SPACES,ALL $4,CHARACTERS|}"
 		],
 		"description": "Inspect a tallying counter for ...",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"main method-id": {
 		"prefix": "main",
@@ -349,7 +349,7 @@
 			"multiply ${1:a} by ${2:b} giving ${3:c}"
 		],
 		"description": "Multiply a by y giving z",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"MULTIPLY": {
 		"prefix": "MULTIPLY",
@@ -357,7 +357,7 @@
 			"MULTIPLY ${1:a} BY ${2:b} GIVING ${3:c}"
 		],
 		"description": "MULTIPLY a BY y GIVING z",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},	
 	"perform": {
 		"prefix": "perform",
@@ -365,7 +365,7 @@
 			"perform ${1:paragraph-name} ${2:value-1} times"
 		],
 		"description": "perform paragraph x times",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"PERFORM": {
 		"prefix": "PERFORM",
@@ -373,7 +373,7 @@
 			"PERFORM ${1:paragraph-name} ${2:value-1} TIMES"
 		],
 		"description": "PERFORM paragraph x TIMES",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},	
 	"perform-end-perform": {
 		"prefix": "perform",
@@ -384,7 +384,7 @@
 			"${0}"
 		],
 		"description": "perform .. end-perform",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"PERFORM-END-PERFORM": {
 		"prefix": "PERFORM",
@@ -395,7 +395,7 @@
 			"${0}"
 		],
 		"description": "PERFORM .. END-PERFORM",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"perform varying": {
 		"prefix": "perform",
@@ -406,7 +406,7 @@
 			"$0"
 		],
 		"description": "inline perform varying",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"PERFORM VARYING": {
 		"prefix": "PERFORM",
@@ -417,7 +417,7 @@
 			"$0"
 		],
 		"description": "INLINE PERFORM VARYING",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},	
 	"IDENTIFICATION (CICS)": {
 		"prefix": "IDENTIFICATION",
@@ -591,7 +591,7 @@
 			"subtract ${1:a} from ${2:b} giving ${3:c}"
 		],
 		"description": "subtract a from b giving c",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"SUBTRACT": {
 		"prefix": "SUBTRACT",
@@ -599,7 +599,7 @@
 			"SUBTRACT ${1:a} FROM ${2:b} GIVING ${3:c}"
 		],
 		"description": "SUBTRACT a FROM b GIVING c",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},	
 	"try": {
 		"prefix": "try",
@@ -666,7 +666,7 @@
 			"$0"
 		],
 		"description": "string delimited by size",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"STRING": {
 		"prefix": "STRING",
@@ -678,7 +678,7 @@
 			"$0"
 		],
 		"description": "string delimited by size",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"function": {
 		"prefix": "function",
@@ -686,7 +686,7 @@
 			"function ${1|upper-case,lower-case,length,reverse,numval,numval-c|}($0)"
 		],
 		"description": "functions",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"FUNCTION": {
 		"prefix": "FUNCTION",
@@ -694,7 +694,7 @@
 			"FUNCTION ${1|UPPER-CASE,LOWER-CASE,LENGTH,REVERSE,NUMVAL,NUMVAL-C|}($0)"
 		],
 		"description": "FUNCTIONS",
-		"scope": "cobol,acucobol,opencobol"
+		"scope": "cobol,acucobol,opencobol,gnucobol"
 	},
 	"call": {
 		"prefix": "call",

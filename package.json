@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.0.6",
+    "version": "5.1.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -11,6 +11,9 @@
         "pli",
         "mvs",
         "mfcobol",
+        "visualcobol",
+        "gnucobol",
+        "opencobol",
         "cobol-it"
     ],
     "repository": {
@@ -34,6 +37,7 @@
         "onLanguage:COBOL",
         "onLanguage:ACUCOBOL",
         "onLanguage:OpenCOBOL",
+        "onLanguage:GnuCOBOL",
         "onLanguage:JCL",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
@@ -323,6 +327,7 @@
                 "id": "GnuCOBOL",
                 "aliases": [
                     "GnuCOBOL",
+                    "gnucobol",
                     "COBOL-IT"
                 ],
                 "extensions": [],
@@ -497,6 +502,11 @@
                 "when": "editorTextFocus && editorLangId == OpenCOBOL"
             },
             {
+                "key": "ctrl+alt+p",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
+            },
+            {
                 "key": "ctrl+alt+w",
                 "command": "cobolplugin.move2ws",
                 "when": "editorTextFocus && editorLangId == COBOL"
@@ -512,6 +522,11 @@
                 "when": "editorTextFocus && editorLangId == OpenCOBOL"
             },
             {
+                "key": "ctrl+alt+w",
+                "command": "cobolplugin.move2ws",
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
+            },
+            {
                 "key": "ctrl+alt+d",
                 "command": "cobolplugin.move2dd",
                 "when": "editorTextFocus && editorLangId == COBOL"
@@ -525,6 +540,11 @@
                 "key": "ctrl+alt+d",
                 "command": "cobolplugin.move2dd",
                 "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+d",
+                "command": "cobolplugin.move2dd",
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
             },
             {
                 "key": "ctrl+alt+.",
@@ -540,6 +560,16 @@
                 "key": "ctrl+alt+.",
                 "command": "cobolplugin.move2anyforward",
                 "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "ctrl+alt+.",
+                "command": "cobolplugin.move2anyforward",
+                "when": "editorTextFocus && editorLangId == GnuOBOL"
+            },
+            {
+                "key": "ctrl+alt+,",
+                "command": "cobolplugin.move2anybackwards",
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
             },
             {
                 "key": "ctrl+alt+,",
@@ -572,9 +602,19 @@
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             },
             {
+                "key": "tab",
+                "command": "cobolplugin.tab",
+                "when": "editorLangId == GnuOBOL && !inSnippetMode"
+            },
+            {
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "shift+tab",
+                "command": "cobolplugin.revtab",
+                "when": "editorLangId == GnuCOBOL && !inSnippetMode"
             },
             {
                 "key": "tab",
@@ -620,6 +660,21 @@
                 "key": "alt+shift+m",
                 "command": "cobolplugin.toggle_margin",
                 "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "alt+shift+g",
+                "command": "cobolplugin.change_lang_to_gnucobol",
+                "when": "editorLangId == OpenCOBOL && !inSnippetMode"
+            },
+            {
+                "key": "alt+shift+g",
+                "command": "cobolplugin.change_lang_to_gnucobol",
+                "when": "editorLangId == COBOL && !inSnippetMode"
+            },
+            {
+                "key": "alt+shift+g",
+                "command": "cobolplugin.change_lang_to_gnucobol",
+                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             }
         ],
         "snippets": [
@@ -673,7 +728,23 @@
                 "column": 5
             },
             {
+                "name": "opencobol-cobc",
+                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "file": 1,
+                "line": 2,
+                "severity": 3,
+                "message": 4
+            },
+            {
                 "name": "gnucobol-cobc",
+                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "file": 1,
+                "line": 2,
+                "severity": 3,
+                "message": 4
+            },
+            {
+                "name": "cobolit-cobc",
                 "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
                 "file": 1,
                 "line": 2,
@@ -721,6 +792,22 @@
                     "absolute"
                 ],
                 "pattern": "$gnucobol-cobc"
+            },
+            {
+                "name": "opencobol-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$opencobol-cobc"
+            },
+            {
+                "name": "cobolit-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-cobc"
             },
             {
                 "name": "acucobol-ccbl",

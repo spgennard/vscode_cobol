@@ -95,6 +95,15 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document,"OpenCOBOL");
     });
 
+    var changeLanguageToGnuCOBOL = commands.registerCommand('cobolplugin.change_lang_to_gnucobol', function () {
+        let act = window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        languages.setTextDocumentLanguage(act.document,"GnuCOBOL");
+    });
+
     var toggleCOBOLMargin = commands.registerCommand('cobolplugin.toggle_margin', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
@@ -118,6 +127,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(changeLanguageToAcu);
     context.subscriptions.push(changeLanguageToCOBOL);
     context.subscriptions.push(changeLanguageToOpenCOBOL);
+    context.subscriptions.push(changeLanguageToGnuCOBOL);
 
     context.subscriptions.push(toggleCOBOLMargin);
 
