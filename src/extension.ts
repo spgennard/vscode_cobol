@@ -161,19 +161,20 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
  
     /* hover provider */
-    let disposable = languages.registerHoverProvider(allCobolSelectors, {
-        provideHover(document, position, token) {
+    if (getExperimentialFeatures()) {
+        let disposable = languages.registerHoverProvider(allCobolSelectors, {
+            provideHover(document, position, token) {
          
-            // window.showInformationMessage(position.toString());
-            let xx = document.getText(document.getWordRangeAtPosition(position));
-            console.log("Hover: " + xx);
-            let x = getCallTarget(xx);
-            if (x !== null) {
-                return new Hover("### " + x.api + "\n"+x.description + "\n\n#### [More information?](" + x.url + ")");
+                // window.showInformationMessage(position.toString());
+                let txt = document.getText(document.getWordRangeAtPosition(position));
+                let txtTarger = getCallTarget(txt);
+                if (txtTarger !== null) {
+                    return new Hover("### " + txtTarger.api + "\n" + txtTarger.description + "\n\n#### [More information?](" + txtTarger.url + ")");
+                }
             }
-        }
-    });
-    context.subscriptions.push(disposable);
+        });
+        context.subscriptions.push(disposable);
+    }
 
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
@@ -203,6 +204,14 @@ export function activate(context: ExtensionContext) {
     updateDecorations(window.activeTextEditor);
 }
 
+export function getExperimentialFeatures(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var expEnabled = editorConfig.get<boolean>('experimential.features');
+    if (expEnabled === undefined || expEnabled === null) {
+        expEnabled = false;
+    }
+    return expEnabled;
+}
 export function enableMarginStatusBar(formatStyle: ESourceFormat) {
     formatStatusBarItem.text = "Source:"+formatStyle;
     formatStyle.toString();

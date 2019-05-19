@@ -170,6 +170,7 @@ function isSupportedLanguage(document: TextDocument): TextLanguage {
     switch (document.languageId.toLowerCase()) {
         case "cobol":
         case "opencobol":
+        case "gnucobol" :
         case "acucobol":
             return TextLanguage.COBOL;
         case "jcl":

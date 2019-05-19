@@ -182,7 +182,7 @@ The example below shows you how you can create a single task to compile one prog
 ```
 
 
-### Task: Single file compile using AcuCOBOL-GT
+### Task: Single file compile using ACUCOBOL-GT
 
 The example below shows you how you can create a single task to compile one program using the `ccbl32` command.
 ```json

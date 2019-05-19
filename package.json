@@ -183,6 +183,11 @@
                         }
                     ],
                     "description": "An array of filenames/patterns and its associated source formmat"
+                },
+                "coboleditor.experimential.features": {
+                    "type": "boolean",
+                    "title": "Experimential features",
+                    "default": false
                 }
             }
         },
@@ -309,12 +314,19 @@
                 "id": "OpenCOBOL",
                 "aliases": [
                     "OpenCOBOL",
-                    "opencobol",
+                    "opencobol"
+                ],
+                "extensions": [],
+                "configuration": "./opencobol.configuration.json"
+            },
+            {
+                "id": "GnuCOBOL",
+                "aliases": [
                     "GnuCOBOL",
                     "COBOL-IT"
                 ],
                 "extensions": [],
-                "configuration": "./opencobol.configuration.json"
+                "configuration": "./gnucobol.configuration.json"
             },
             {
                 "id": "JCL",
@@ -381,6 +393,11 @@
                 "path": "./syntaxes/OpenCOBOL.tmLanguage.json"
             },
             {
+                "language": "GnuCOBOL",
+                "scopeName": "source.gnucobol",
+                "path": "./syntaxes/GnuCOBOL.tmLanguage.json"
+            },
+            {
                 "language": "JCL",
                 "scopeName": "source.jcl",
                 "path": "./syntaxes/jcl.tmLanguage.json"
@@ -427,7 +444,7 @@
             },
             {
                 "command": "cobolplugin.change_lang_to_acu",
-                "title": "COBOL: Select AcuCOBOL language"
+                "title": "COBOL: Select ACUCOBOL-GT language"
             },
             {
                 "command": "cobolplugin.toggle_margin",

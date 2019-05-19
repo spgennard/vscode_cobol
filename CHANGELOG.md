@@ -90,10 +90,10 @@
  - Fix #50
  
 ## Version - 4.4.4
- - Fix issue #50, add params keyword and mark it as a bad keyword in AcuCOBOL/OpenCOBOL
+ - Fix issue #50, add params keyword and mark it as a bad keyword in ACUCOBOL/OpenCOBOL
 
 ## Version - 4.4.3
- - Fix issue #49, add extra keywords and mark same keywords as bad in AcuCOBOL/OpenCOBOL
+ - Fix issue #49, add extra keywords and mark same keywords as bad in ACUCOBOL/OpenCOBOL
  
 ## Version - 4.4.1
  - Tweak icon
@@ -105,7 +105,7 @@
  - Clean build
 
 ## Version - 4.3.2
- - Fix issue #47 - activator not present for AcuCOBOL
+ - Fix issue #47 - activator not present for ACUCOBOL
 
 ## Version - 4.3.1
  - Add alt+shift+m for margin shortcut toggle
@@ -151,7 +151,7 @@
  - Tweaks for parsing working-storage
 
 ## Version - 4.0.2
- - Fix for "Keywords and literals are not colored when followed by comma or semicolon in AcuCOBOL" #42
+ - Fix for "Keywords and literals are not colored when followed by comma or semicolon in ACUCOBOL" #42
  
 ## Version - 4.0.1
  - Add PL/I extension plinc
@@ -344,8 +344,8 @@
 - Fix problem with indicator column area and comments
 
 ## Version - 3.3.3
-- Add more support for AcuCOBOL syntax
-- Add several AcuCOBOL specific syntax
+- Add more support for ACUCOBOL syntax
+- Add several ACUCOBOL specific syntax
 - Tweak REMARKS/END-REMARKS
 
 ## Version - 3.2.2
