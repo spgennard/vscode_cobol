@@ -271,3 +271,4 @@ For example, if you want all the files that match ```A*.cbl``` to be fixed and e
     [ ALT SHIFT C ]: Change to COBOL Syntax
     [ ALT SHIFT O ]: Change to OpenCOBOL Syntax
     [ ALT SHIFT M ]: Toggle margins (overrides user/workspace settings)
+
