@@ -55,7 +55,7 @@ function findMatch(mat: RegExp) {
     if (window.activeTextEditor) {
         const doc = window.activeTextEditor.document;
         for (let line = 0; line <= doc.lineCount; line++) {
-            const range = new Range(line, 1, line, 132);
+            const range = new Range(line, 0, line, 132);
             const txt = doc.getText(range);
             if (txt.match(mat)) {
                 return line;
@@ -72,7 +72,7 @@ function findAnyMatch(mats: RegExp[], counter: number) {
         const endValue = counter === 1 ? doc.lineCount : 0;
         let line = editor.selection.active.line + counter;
         for (; line !== endValue; line += counter) {
-            const range = new Range(line, 1, line, 132);
+            const range = new Range(line, 0, line, 132);
             const txt = doc.getText(range);
             const matsLen = mats.length;
             for (let matpos = 0; matpos < matsLen; matpos++) {
