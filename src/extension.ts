@@ -44,9 +44,7 @@ export function activate(context: ExtensionContext) {
     var move2anybackwardsCommand = commands.registerCommand('cobolplugin.move2anybackwards', function () {
         cobolProgram.move2anybackwards();
     });
-    var back2lastPosition = commands.registerCommand('cobolplugin.back2lastPosition', function () {
-        sourcedefinitionprovider.back2lastPosition();
-    });
+
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
         tabstopper.processTabKey(true);
     });
@@ -125,7 +123,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
     context.subscriptions.push(changeSourceFormat);
-    context.subscriptions.push(back2lastPosition);
+    
     context.subscriptions.push(changeLanguageToAcu);
     context.subscriptions.push(changeLanguageToCOBOL);
     context.subscriptions.push(changeLanguageToOpenCOBOL);
