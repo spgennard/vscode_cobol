@@ -46,6 +46,7 @@
         "onCommand:cobolplugin.move2anybackwards",
         "onCommand:cobolplugin.tab",
         "onCommand:cobolplugin.revtab",
+        "onCommand:cobolplugin.back2lastPosition",
         "onCommand:cobolplugin.change_lang_to_acu",
         "onCommand:cobolplugin.change_lang_to_cobol",
         "onCommand:cobolplugin.change_lang_to_opemcobol",
@@ -420,6 +421,10 @@
         ],
         "commands": [
             {
+                "command": "cobolplugin.back2lastPosition",
+                "title": "Back to last position"
+            },
+            {
                 "command": "cobolplugin.move2pd",
                 "title": "Move to procedure division"
             },
@@ -459,6 +464,11 @@
         "menus": {
             "editor/context": [
                 {
+                    "command": "cobolplugin.back2lastPosition",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL"
+                },
+                {
                     "command": "cobolplugin.move2dd",
                     "group": "cobolplugin",
                     "when": "editorTextFocus && editorLangId == COBOL"
@@ -486,6 +496,26 @@
             ]
         },
         "keybindings": [
+            {
+                "key": "alt+f12",
+                "command": "cobolplugin.back2lastPosition",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "alt+f12",
+                "command": "cobolplugin.back2lastPosition",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "alt+f12",
+                "command": "cobolplugin.back2lastPosition",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
+            {
+                "key": "alt+f12",
+                "command": "cobolplugin.back2lastPosition",
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
+            },
             {
                 "key": "ctrl+alt+p",
                 "command": "cobolplugin.move2pd",

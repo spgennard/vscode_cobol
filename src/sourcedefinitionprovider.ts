@@ -1,8 +1,9 @@
-import { TextDocument, Definition, Position, CancellationToken, ProviderResult } from 'vscode';
+import { TextDocument, Definition, Position, CancellationToken, ProviderResult, Selection, TextEditorRevealType, window } from 'vscode';
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
+let allPositions: number[] = new Array();
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -50,6 +51,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
 }
 
 function getSectionOrParaLocation(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    allPositions.push(position.line);
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -128,6 +130,25 @@ function getCallTarget(document: vscode.TextDocument, position: vscode.Position)
     return undefined;
 }
 
+export function back2lastPosition() {
+    if (allPositions.length > 0) {
+        let lastPosition = allPositions[allPositions.length - 1];
+        goToLine(lastPosition);
+        allPositions.pop();
+    }
+}
+
+function goToLine(line: number) {
+    if (window.activeTextEditor) {
+        let reviewType = TextEditorRevealType.InCenter;
+        if (line === window.activeTextEditor.selection.active.line) {
+            reviewType = TextEditorRevealType.InCenterIfOutsideViewport;
+        }
+        let newSe = new Selection(line, 0, line, 0);
+        window.activeTextEditor.selection = newSe;
+        window.activeTextEditor.revealRange(newSe, reviewType);
+    }
+}
 
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
     let location: vscode.Location[] = [];
