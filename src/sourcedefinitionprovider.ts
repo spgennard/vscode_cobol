@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
+import { setPositionDocument } from './positionprovider';
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -66,6 +67,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, position: vscod
                 case COBOLTokenStyle.Paragraph:
                 case COBOLTokenStyle.Section:
                     let srange = new vscode.Position(token.startLine, token.startColumn);
+                    setPositionDocument(document, position);
                     return new vscode.Location(document.uri, srange);
                     break;
             }

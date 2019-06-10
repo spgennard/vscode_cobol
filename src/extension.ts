@@ -12,6 +12,8 @@ import { jclStatements } from "./keywords/jclstatements";
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
+import * as positionprovider from './positionprovider';
+
 import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
 
@@ -43,6 +45,14 @@ export function activate(context: ExtensionContext) {
 
     var move2anybackwardsCommand = commands.registerCommand('cobolplugin.move2anybackwards', function () {
         cobolProgram.move2anybackwards();
+    });
+
+    var back2lastPosition = commands.registerCommand('cobolplugin.back2lastPosition', function () {
+        let act = window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+        positionprovider.backPositionDocument(act.document);
     });
 
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
@@ -122,6 +132,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(move2anybackwardsCommand);
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
+    context.subscriptions.push(back2lastPosition);
     context.subscriptions.push(changeSourceFormat);
     
     context.subscriptions.push(changeLanguageToAcu);
@@ -205,6 +216,10 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(window.activeTextEditor);
+    }, null, context.subscriptions);
+
+    workspace.onDidCloseTextDocument(event => {
+        positionprovider.clearPositionDocument(event.fileName);
     }, null, context.subscriptions);
 
     formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
