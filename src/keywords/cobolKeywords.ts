@@ -308,6 +308,7 @@ export const cobolKeywords: string[] = [
 	"release",
 	"reload",
 	"remainder",
+	"remarks",
 	"removal",
 	"renames",
 	"replace",
