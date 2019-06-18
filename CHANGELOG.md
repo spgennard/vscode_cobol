@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 5.0.6 - 5.1.x
+ - Fix #75 -  Paragraphs in breadcrumbs/outline do not extend thru all lines of paragraph
+
 ## Version - 5.0.1 - 5.0.5
  - Minor tweaks
 
