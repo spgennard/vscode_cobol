@@ -1,6 +1,6 @@
 # exit on error
 set -e
 git clean -fdx
-call npm install
+npm install
 git push
 vsce publish
