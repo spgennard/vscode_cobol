@@ -136,7 +136,8 @@ export function activate(context: ExtensionContext) {
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
-        { scheme: 'file', language: 'OpenCOBOL' }
+        { scheme: 'file', language: 'OpenCOBOL' },
+        { scheme: 'file', language: 'GnuCOBOL' }
     ];
     languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
