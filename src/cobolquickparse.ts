@@ -214,7 +214,7 @@ class Token {
     }
 
     public moveToNextToken(): boolean {
-        if (1 + this.tokenIndex > this.line.length) {
+        if (1 + this.tokenIndex > this.lineTokens.length) {
             return true;
         }
 
@@ -381,6 +381,7 @@ export default class QuickCOBOLParse {
 
                 // HACK for "set x to entry"
                 if (token.prevTokenLower === "to" && tcurrentLower === "entry") {
+                    token.moveToNextToken();
                     continue;
                 }
 
