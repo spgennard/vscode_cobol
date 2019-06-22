@@ -267,11 +267,12 @@ For example, if you want all the files that match ```A*.cbl``` to be fixed and e
 
 ## Shortcuts
 
- - [ ALT + SHIFT C ]: Change to COBOL Syntax (default) 
- - [ ALT + SHIFT A ]: Change to ACUCOBOL Syntax
- - [ ALT + SHIFT O ]: Change to OpenCOBOL Syntax
- - [ ALT + SHIFT G ]: Change to GnuCOBOL Syntax
- - [ ALT + SHIFT M ]: Toggle margins (overrides user/workspace settings)
+
+ - [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
+ - [ALT] + [SHIFT] + [A]: Change to ACUCOBOL-GT Syntax
+ - [ALT] + [SHIFT] + [O]: Change to OpenCOBOL Syntax
+ - [ALT] + [SHIFT] + [G]: Change to GnuCOBOL Syntax
+ - [ALT] + [SHIFT] + [M]: Toggle margins (overrides user/workspace settings)
 
 ## Contributors
 
