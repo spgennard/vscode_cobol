@@ -410,6 +410,7 @@ export default class QuickCOBOLParse {
                     continue;
                 }
 
+                /* finish processing end-exec */
                 if (currentLower === "end-exec") {
                     let ctoken = new COBOLToken(COBOLTokenStyle.EndExec, lineNumber, line, prevToken, "", this.currentDivision);
                     this.currentToken = COBOLToken.Null;
@@ -471,6 +472,13 @@ export default class QuickCOBOLParse {
                     let ctoken = new COBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
 
                     this.tokensInOrder.push(ctoken);
+
+                    // So we don't have any division?
+                    if (this.currentDivision === COBOLToken.Null) {
+                        let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, lineNumber, "Identification", "Division", "Identification Division (Optional)", this.currentDivision);
+                        this.currentDivision = fakeDivision;
+                        this.tokensInOrder.push(fakeDivision);
+                    }
                     continue;
                 }
 
