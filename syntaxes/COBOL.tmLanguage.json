@@ -163,7 +163,7 @@
       "name": "constant.numeric.cobol"
     },
     {
-      "match": "(?<![-_])(?i:true|false|null|nulls)(?=\\s|\\.|\\)|$)",
+      "match": "(?<![-_])(?i:true|false|null|nulls)(?![0-9A-Za-z_-])",
       "name": "constant.language.cobol"
     },
     {
