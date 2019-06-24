@@ -429,6 +429,21 @@ export default class QuickCOBOLParse {
                     if (prevTokenLower === "declare") {
                         continue;
                     }
+
+                    // So we need to insert a fake data division?
+                    if (this.currentDivision === COBOLToken.Null || this.currentDivision.token.toLowerCase().startsWith("data") === false) {
+                        if (prevTokenLower === 'file' ||
+                            prevTokenLower === 'working-storage' ||
+                            prevTokenLower === 'local' ||
+                            prevTokenLower === 'screen' ||
+                            prevTokenLower === 'linkage') {
+
+                            let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, lineNumber, "Data", "Division", "Data Division (Optional)", this.currentDivision);
+                            this.currentDivision = fakeDivision;
+                            this.tokensInOrder.push(fakeDivision);
+                        }
+                    }
+
                     let ctoken = new COBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.currentSection = ctoken;
                     this.tokensInOrder.push(ctoken);
