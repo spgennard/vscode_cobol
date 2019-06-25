@@ -283,6 +283,7 @@ export default class QuickCOBOLParse {
 
     inProcedureDivision: boolean;
     pickFields: boolean;
+    guessFields: boolean;
 
     currentToken: COBOLToken;
     currentDivision: COBOLToken;
@@ -293,6 +294,7 @@ export default class QuickCOBOLParse {
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
         this.pickFields = false;
+        this.guessFields = false;       // does pickup the initial group item in a copybook, so it's not quite ready
         this.currentDivision = COBOLToken.Null;
         this.procedureDivsion = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;
@@ -568,6 +570,23 @@ export default class QuickCOBOLParse {
                     }
                 }
 
+                // guess fields
+                if (this.guessFields && this.currentDivision === COBOLToken.Null) {
+                    if (this.isNumber(prevToken) && !this.isNumber(current) && nextTokenLower.startsWith("pic")) {
+                        this.pickFields = true;
+                        
+                        let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, lineNumber, "Data", "Division", "Data Division (Optional)", this.currentDivision);
+                        this.currentDivision = fakeDivision;
+                        this.tokensInOrder.push(fakeDivision);
+
+                        let fakeWorkingStorage = new COBOLToken(COBOLTokenStyle.Section, lineNumber, "Working", "Storage", "Working Storage (Optional)", this.currentDivision);
+                        fakeDivision.childTokens.push(fakeWorkingStorage);
+                        this.currentSection = fakeWorkingStorage;
+                        this.tokensInOrder.push(fakeWorkingStorage);
+
+                    }
+                }
+
                 // are we in the working-storage section?
                 if (this.pickFields) {
                     /* only interesteding in things that are after a number */
@@ -646,8 +665,6 @@ export default class QuickCOBOLParse {
             if (token.tokenType === COBOLTokenStyle.Division) {
                 divisions.push(token);
 
-                let currentSection: COBOLToken = COBOLToken.Null;
-
                 /* pick up the section and place them in the division */
                 for (let s = 1 + i; s < this.tokensInOrder.length; s++) {
                     let insideToken = this.tokensInOrder[s];
@@ -656,28 +673,34 @@ export default class QuickCOBOLParse {
                         break;
                     }
                     if (insideToken.tokenType === COBOLTokenStyle.Section) {
-                        currentSection = insideToken;
                         token.childTokens.push(insideToken);
                     }
-                    // else {
-                    //     if (currentSection !== COBOLToken.Null) {
-                    //         currentSection.childTokens.push(insideToken);
-                    //     }
-                    // }
-
                 }
+            }
 
+            if (token.tokenType === COBOLTokenStyle.Section) {
+                /* pick up the section and place them in the division */
+                for (let s = 1 + i; s < this.tokensInOrder.length; s++) {
+                    let insideToken = this.tokensInOrder[s];
+                    if (insideToken.tokenType === COBOLTokenStyle.Section) {
+                        token.childTokens.push(insideToken.getEmptyToken());
+                        break;
+                    }
+                    if (insideToken.tokenType === COBOLTokenStyle.Paragraph) {
+                        token.childTokens.push(insideToken);
+                    }
+                }
             }
         }
 
         this.processDivsionToken(sourceHandler, divisions, COBOLTokenStyle.Division);
         this.processDivsionToken(sourceHandler, divisions, COBOLTokenStyle.Section);
+        this.processDivsionToken(sourceHandler, divisions, COBOLTokenStyle.Paragraph);
 
+        
         for (let i = 0; i < this.tokensInOrder.length; i++) {
             let token = this.tokensInOrder[i];
-            // if (token.tokenType === COBOLTokenStyle.Section) {
-            //     this.processDivsionToken(sourceHandler, token.childTokens, COBOLTokenStyle.Null); 
-            // }
+
             if (token.endLine === 0) {
                 token.endLine = token.startLine;
                 token.endColumn = token.startColumn + token.token.length;
