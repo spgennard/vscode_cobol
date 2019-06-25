@@ -434,7 +434,7 @@ export default class QuickCOBOLParse {
                     if (this.currentDivision === COBOLToken.Null || this.currentDivision.token.toLowerCase().startsWith("data") === false) {
                         if (prevTokenLower === 'file' ||
                             prevTokenLower === 'working-storage' ||
-                            prevTokenLower === 'local' ||
+                            prevTokenLower === 'local-storage' ||
                             prevTokenLower === 'screen' ||
                             prevTokenLower === 'linkage') {
 
