@@ -8,7 +8,8 @@
     "dds",
     "ss",
     "wks",
-    "pco"
+    "pco",
+    "bib"
   ],
   "name": "COBOL",
   "patterns": [

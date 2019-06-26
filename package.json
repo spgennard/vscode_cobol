@@ -117,7 +117,9 @@
                         "CPY",
                         "SCR",
                         "cbl",
-                        "CBL"
+                        "CBL",
+                        "bib",
+                        "BIB"
                     ],
                     "description": "COBOL CopyBook Extensions"
                 },
@@ -311,7 +313,8 @@
                     ".src",
                     ".ss",
                     ".wks",
-                    ".pco"
+                    ".pco",
+                    ".bib"
                 ],
                 "configuration": "./cobol.configuration.json"
             },
