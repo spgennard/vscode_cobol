@@ -8,7 +8,7 @@ import * as process from 'process';
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 const DEFAULT_COPYBOOK_DIR = ["."];
 
-function getExtensions(): string[] {
+export function getExtensions(): string[] {
     var editorConfig = workspace.getConfiguration('coboleditor');
     editorConfig = editorConfig;
     var extensions = editorConfig.get<string[]>('copybookexts');

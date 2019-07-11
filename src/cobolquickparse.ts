@@ -294,7 +294,7 @@ export default class QuickCOBOLParse {
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
         this.pickFields = false;
-        this.guessFields = false;       // does pickup the initial group item in a copybook, so it's not quite ready
+        this.guessFields = false;       // does not pickup the initial group item in a copybook, so it's not quite ready
         this.currentDivision = COBOLToken.Null;
         this.procedureDivsion = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;

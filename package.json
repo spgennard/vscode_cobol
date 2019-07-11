@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.1.10",
+    "version": "5.1.11",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -746,7 +746,7 @@
             },
             {
                 "name": "cobolit-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
