@@ -1,5 +1,8 @@
 # exit on error
 set -e
+PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
+git tag $PACKAGE_VERSION
+git push --tags
 git clean -fdx
 npm install
 git push
@@ -11,7 +14,7 @@ PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 github-release upload \
   --owner=spgennard \
   --repo=vscode_cobol \
-  --tag="latest" \
+  --tag="$PACKAGE_VERSION" \
   --name=$PACKAGE_VERSION \
   --body="${COMMIT_LOG}" \
   cobol*.vsix
