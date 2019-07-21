@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.2.0",
+    "version": "5.2.1",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -294,8 +294,7 @@
                 "filenames": [
                     "SQLCA"
                 ],
-                "firstLine": 
-                ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
+                "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
                 "extensions": [
                     ".cbl",
                     ".cblsrce",
@@ -840,6 +839,6 @@
         "@types/minimatch": "^3.0.3",
         "trie-search": "^1.2.0",
         "typescript-collections": "^1.3.2",
-        "vsce": "^1.63.0"
+        "vsce": "^1.65.0"
     }
 }
