@@ -291,6 +291,10 @@ export default class QuickCOBOLParse {
     procedureDivsion: COBOLToken;
     parseColumnBOnwards: boolean = this.getColumBParsing();
 
+    captureDivisions : boolean;
+    currentClass: COBOLToken;
+    currentMethod: COBOLToken;
+
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
         this.pickFields = false;
@@ -299,7 +303,9 @@ export default class QuickCOBOLParse {
         this.procedureDivsion = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;
         this.currentToken = COBOLToken.Null;
-
+        this.currentClass = COBOLToken.Null;
+        this.currentMethod = COBOLToken.Null;
+        this.captureDivisions = true;
         let prevToken: Token = Token.Blank;
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
@@ -427,7 +433,7 @@ export default class QuickCOBOLParse {
                 }
 
                 // handle sections)
-                if (prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
+                if (this.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
                     if (prevTokenLower === "declare") {
                         continue;
                     }
@@ -461,7 +467,7 @@ export default class QuickCOBOLParse {
                 }
 
                 // handle divisions
-                if (prevTokenLower.length !== 0 && currentLower === "division") {
+                if (this.captureDivisions && prevTokenLower.length !== 0 && currentLower === "division") {
                     let ctoken = new COBOLToken(COBOLTokenStyle.Division, lineNumber, line, prevPlusCurrent, prevPlusCurrent, COBOLToken.Null);
                     this.tokensInOrder.push(ctoken);
                     this.currentDivision = ctoken;
@@ -501,7 +507,20 @@ export default class QuickCOBOLParse {
 
                 // handle class-id
                 if (prevTokenLower === "class-id" && current.length !== 0) {
-                    this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision));
+                    this.currentClass = new COBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                    this.tokensInOrder.push(this.currentClass);
+                    this.captureDivisions = false;
+                    continue;
+                }
+
+                // handle "end class"
+                if (this.currentClass !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "class")
+                {
+                    this.currentClass.endLine = lineNumber;
+                    this.currentClass.endColumn = line.toLocaleLowerCase().indexOf("class") + 6;
+                    
+                    this.currentClass = COBOLToken.Null;
+                    this.captureDivisions = true;
                     continue;
                 }
 
@@ -533,14 +552,31 @@ export default class QuickCOBOLParse {
                 if (prevTokenLower === "method-id" && current.length !== 0) {
                     let currentLowerTrim = this.trimLiteral(currentLower);
                     let style = currentLowerTrim === "new" ? COBOLTokenStyle.Constructor : COBOLTokenStyle.MethodId;
-                    if (nextTokenLower === "property") {
-                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Property, lineNumber, line, this.trimLiteral(nextPlusOneToken), nextToken + " " + nextPlusOneToken, this.currentDivision));
 
+                    
+                    if (nextTokenLower === "property") {
+                        let ptoken = new COBOLToken(COBOLTokenStyle.Property, lineNumber, line, this.trimLiteral(nextPlusOneToken), nextToken + " " + nextPlusOneToken, this.currentDivision);
+                        this.tokensInOrder.push(ptoken);
+                        this.currentMethod = ptoken;
                     } else {
-                        this.tokensInOrder.push(new COBOLToken(style, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision));
+                        let mtoken = new COBOLToken(style, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                        this.tokensInOrder.push(mtoken);
+                        this.currentMethod = mtoken;
                     }
+
                     continue;
                 }
+
+                // handle "end method"
+                if (this.currentMethod !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "method")
+                {
+                    this.currentMethod.endLine = lineNumber;
+                    this.currentMethod.endColumn = line.toLocaleLowerCase().indexOf("method") + 6;
+                    
+                    this.currentMethod = COBOLToken.Null;
+                    continue;
+                }
+
                 // copybook handling
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision));
@@ -548,7 +584,7 @@ export default class QuickCOBOLParse {
                 }
 
                 // we are in the procedure division
-                if (this.currentDivision === this.procedureDivsion && endWithDot) {
+                if (this.captureDivisions && this.currentDivision === this.procedureDivsion && endWithDot) {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         let beforeCurrent = line.substr(0, token.currentCol - 1).trim();
                         if (beforeCurrent.length === 0) {

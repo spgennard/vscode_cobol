@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 5.2
+ - Don't include division/section in outline when inside a class, as it does not work!
+ 
 ## Version - 5.0.6 - 5.1.x
  - Fix #75 -  Paragraphs in breadcrumbs/outline do not extend thru all lines of paragraph
 
