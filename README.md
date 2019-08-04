@@ -265,6 +265,21 @@ For example, if you want all the files that match ```A*.cbl``` to be fixed and e
     ],
 ```
 
+## Handling code pages
+
+The defaults embedded in the extension can be overwritten by either changing sessions at the user level in the settings json or more efficiently, you change it just for the "COBOL" files.
+
+For example, to ensure you use utf8 for all you files use:
+
+```json
+{
+    "[COBOL]": {
+        "files.encoding": "utf8",
+        "files.autoGuessEncoding": false
+    }
+}
+```
+
 ## Shortcuts
 
 
