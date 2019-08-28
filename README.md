@@ -280,6 +280,17 @@ For example, to ensure you use utf8 for all you files use:
 }
 ```
 
+## coboleditor.experimential.features
+
+Currently I have only one is active experimential feature and this is "hover" support for known APIs.
+
+This currently includes most of the *Micro Focus COBOL Library API* (CBL_) and a subset of ILE date apis.
+
+This can be activated by setting the flag coboleditor.experimential.features in the settings panel.
+
+and looks like:
+
+ ![hover](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/hover.png)
 ## Shortcuts
 
 

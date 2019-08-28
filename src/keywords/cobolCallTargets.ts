@@ -2,10 +2,9 @@ import * as Collections from 'typescript-collections';
 import { Hover } from 'vscode';
 
 import ile_datatime from './ile_datetime.json';
-import { Dictionary } from 'typescript-collections';
+import cbl_apis from './mf_cbl_apis.json';
 
-class CallTarget
-{
+class CallTarget {
 	api: string;
 	url: string;
 	description: string;
@@ -22,7 +21,7 @@ interface IDictionary {
 }
 
 interface IAPIDictionary {
-    [index:string]: string;
+	[index: string]: string;
 }
 interface CallTargetInterfaces {
 	url: string;
@@ -32,8 +31,7 @@ interface CallTargetInterfaces {
 
 let callTargets: IDictionary = {};
 
-function addApis(a: CallTargetInterfaces)
-{
+function addApis(a: CallTargetInterfaces) {
 	let values = Object.keys(a.apis);
 	for (let c = 0; c < values.length; c++) {
 		let value = values[c];
@@ -42,9 +40,7 @@ function addApis(a: CallTargetInterfaces)
 }
 
 addApis(ile_datatime);
-
-
-
+addApis(cbl_apis);
 
 
 /* inline decl */

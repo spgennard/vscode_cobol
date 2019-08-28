@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 5.3
+ - Document experimental cobol editor feature
+
 ## Version - 5.2 - 5.2.1
  - Don't include division/section in outline when inside a class, as it does not work!
  
