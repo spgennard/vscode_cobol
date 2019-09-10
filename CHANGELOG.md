@@ -2,7 +2,8 @@
 
 ## Version - 5.3
  - Document experimental cobol editor feature
-
+ - Feature Request: Outline support for divisionless copybook #86 (data division)
+  
 ## Version - 5.2 - 5.2.1
  - Don't include division/section in outline when inside a class, as it does not work!
  
