@@ -85,7 +85,18 @@
       }
     },
     {
-      "match": "\\$(?i:if|else|then|display|xfd|end-region|end|region)(.*$)",
+      "match": "(\\$region)(.*$)",
+      "captures": {
+        "1": {
+          "name": "meta.preprocessor.cobol"
+        },
+        "2": {
+          "name": "string.unquoted.preprocessor.message.cobol"
+        }
+      }
+    },
+    {
+      "match": "\\$(?i:if|else|then|display|xfd|end-region|end)(.*$)",
       "name": "meta.preprocessor"
     },
     {
@@ -477,7 +488,7 @@
       "name": "storage.type.cobol"
     },
     {
-      "match": "(?<![-_])(?i:bit|binary-char|binary-char-unsigned|binary-short|binary-short-unsigned|binary.long|binary-c-long|binary-long-unsigned|binary-long|binary-double|binary-double-unsigned|float-short|float-extended|float-long|bit|condition-value|characters|character\\s+type|character|comma|crt|decimal|object\\+sreference|object-reference|object|list|dictionary|unsigned)(?=\\s|\\.|,|\\]|\\[)",
+      "match": "(?<![-_])(?i:bit|byte|binary-char|binary-char-unsigned|binary-short|binary-short-unsigned|binary.long|binary-c-long|binary-long-unsigned|binary-long|binary-double|binary-double-unsigned|float-short|float-extended|float-long|bit|condition-value|characters|character\\s+type|character|comma|crt|decimal|object\\+sreference|object-reference|object|list|dictionary|unsigned)(?=\\s|\\.|,|\\]|\\[)",
       "name": "storage.type.cobol"
     },
     {
