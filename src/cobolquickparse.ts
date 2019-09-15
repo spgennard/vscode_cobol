@@ -484,8 +484,6 @@ export default class QuickCOBOLParse {
                             break;
                     }
                 }
-                console.log(tcurrentLower);
-
                 // continue now
                 if (tcurrent.length === 0) {
                     continue;

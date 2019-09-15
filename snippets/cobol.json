@@ -760,7 +760,8 @@
 		"body": [
 			"\\$set sourceformat\"${2|free,variable,fixed|}\"",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"IDENTIFICATION DIVISION" :
 	{
@@ -768,7 +769,8 @@
 		"body" : [
 			"IDENTIFICATION DIVISION.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"identification division" :
 	{
@@ -776,7 +778,8 @@
 		"body" : [
 			"identification division.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"environment division" :
 	{
@@ -808,7 +811,8 @@
 		"body" : [
 			"data division.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"WORKING-STORAGE SECTION" :
 	{
@@ -825,7 +829,8 @@
 		"body" : [
 			"working-storage section.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	
 	"local-storage section" :
@@ -842,7 +847,8 @@
 		"body" : [
 			"LINKAGE SECTION.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"linkage section." :
 	{
@@ -866,7 +872,8 @@
 		"body" : [
 			"procedure division.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"PROGRAM-ID" :
 	{
@@ -874,7 +881,8 @@
 		"body" : [
 			"PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/${1:/upcase}/}}.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
 	},
 	"program-id" :
 	{
@@ -882,6 +890,54 @@
 		"body" : [
 			"program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"$0"
-		]
+		],
+		"scope": "cobol"
+	},
+	"*>> <summary" :
+	{
+		"prefix" : "*>> <summary",
+		"body" : [
+			"*>> <summary>${1:XX is a method in the YY class.}",
+			"*>> <para>${2}</para>",
+			"*>> $0",
+			"*>> </summary>"
+		],
+		"scope": "cobol"
+	},
+	"<returns>":
+	{
+		"prefix" : "<returns>",
+		"body" : [
+			"<returns>${1:description}</returns>",
+			"*>> $0"
+		],
+		"scope": "cobol"
+	},
+	"<param" :
+	{
+		"prefix" : "<param>",
+		"body" : [
+			"<param name=\"${1:Int}\">${2}</param>",
+			"*>> $0"
+		],
+		"scope": "cobol"
+	},
+	"<exception" : 
+	{
+		"prefix" : "<exception",
+		"body" :[
+			"<exception cref=\"${1:member}\">${2:description}</exception>",
+			"*>> $0"
+		],
+		"scope": "cobol"
+	},
+	"<value" :
+	{
+		"prefix" : "<value>",
+		"body" : [
+			"value>${1:property-description}</value>",
+			"*>> $0"
+		],
+		"scope": "cobol"
 	}
 }
