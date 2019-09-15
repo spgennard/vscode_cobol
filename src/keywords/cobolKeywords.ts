@@ -430,11 +430,173 @@ export const cobolKeywords: string[] = [
 	"zeros"
 ];
 
+export const cobolStorageKeywords: string[] = [
+	"comp",
+	"comp-1",
+	"comp-2",
+	"comp-3",
+	"comp-4",
+	"comp-5",
+	"computational",
+	"computational-1",
+	"computational-2",
+	"computational-3",
+	"computational-4",
+	"computational-5",
+	"low-value",
+	"low-values",
+	"pic",
+	"picture",
+	"redefines",
+	"sign",
+	"value",
+	"values",
+	"when",
+	"zero",
+	"zeroes",
+	"zeros"
+];
+
+ export const cobolProcedureKeywords: string[] = [
+	"accept",
+	"add",
+	"address",
+	"advancing",
+	"after",
+	"all",
+	"also",
+	"alter",
+	"alternate",
+	"and",
+	"apply",
+	"at",
+	"call",
+	"chain",
+	"cancel",
+	"close",
+	"compute",
+	"controls",
+	"count",
+	"declare",
+	"delete",
+	"delimited",
+	"delimiter",
+	"depending",
+	"detail",
+	"display",
+	"divide",
+	"eject",
+	"else",
+	"end",
+	"exec",
+	"end-add",
+	"end-call",
+	"end-chain",
+	"end-compute",
+	"end-delete",
+	"end-divide",
+	"end-evaluate",
+	"end-exec",
+	"end-if",
+	"end-invoke",
+	"end-multiply",
+	"end-of-page",
+	"end-perform",
+	"end-read",
+	"end-receive",
+	"end-return",
+	"end-rewrite",
+	"end-search",
+	"end-start",
+	"end-string",
+	"end-subtract",
+	"end-unstring",
+	"end-write",
+	"entry",
+	"equal",
+	"error",
+	"evaluate",
+	"every",
+	"exit",
+	"external",
+	"false",
+	"function",
+	"giving",
+	"go",
+	"goback",
+	"greater",
+	"high-value",
+	"high-values",
+	"if",
+	"initialize",
+	"initiate",
+	"insert",
+	"inspect",
+	"into",
+	"invoke",
+	"method",
+	"method-id",
+	"move",
+	"multiple",
+	"multiply",
+	"object",
+	"object-computer",
+	"occurs",
+	"release",
+	"replace",
+	"replacing",
+	"return-code",
+	"returning",
+	"rewind",
+	"rewrite",
+	"search",
+	"self",
+	"sentence",
+	"set",
+	"space",
+	"spaces",
+	"stop",
+	"string",
+	"subtract",
+	"sum",
+	"super",
+	"tally",
+	"tallying",
+	"than",
+	"then",
+	"through",
+	"thru",
+	"time",
+	"times",
+	"unit",
+	"unstring",
+	"until",
+	"value",
+	"values",
+	"varying",
+	"write"
+];
+
 /* inline decl */
 let tmpDict = new Collections.Dictionary<string, string>();
 cobolKeywords.forEach(function (value) {
 		tmpDict.setValue(value,value);
 	});
 
+
+let tmpDict2 = new Collections.Dictionary<string, string>();
+cobolProcedureKeywords.forEach(function (value) {
+		tmpDict2.setValue(value,value);
+	});
+
+let tmpDict3 = new Collections.Dictionary<string, string>();
+cobolStorageKeywords.forEach(function (value) {
+		tmpDict3.setValue(value,value);
+	});
+
+	
+
 export const cobolKeywordDictionary: Collections.Dictionary<string, string> = tmpDict;
+export const cobolProcedureKeywordDictionary: Collections.Dictionary<string, string> = tmpDict2;
+export const cobolStorageKeywordDictionary: Collections.Dictionary<string, string> = tmpDict3;
 

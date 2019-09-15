@@ -1,5 +1,5 @@
 import ISourceHandler from "./isourcehandler";
-import { cobolKeywordDictionary } from "./keywords/cobolKeywords";
+import { cobolKeywordDictionary, cobolKeywords, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { workspace } from 'vscode';
 
@@ -288,7 +288,7 @@ export default class QuickCOBOLParse {
     currentToken: COBOLToken;
     currentDivision: COBOLToken;
     currentSection: COBOLToken;
-    procedureDivsion: COBOLToken;
+    procedureDivision: COBOLToken;
     parseColumnBOnwards: boolean = this.getColumBParsing();
 
     captureDivisions: boolean;
@@ -297,6 +297,7 @@ export default class QuickCOBOLParse {
 
     numberTokensInHeader: number;
     workingStorageRelatedTokens: number;
+    procedureDivisionRelatedTokens: number;
     sectionsInToken: number;
 
     public constructor(sourceHandler: ISourceHandler) {
@@ -304,7 +305,7 @@ export default class QuickCOBOLParse {
         this.pickFields = false;
         this.guessFields = false;       // does not pickup the initial group item in a copybook, so it's not quite ready
         this.currentDivision = COBOLToken.Null;
-        this.procedureDivsion = COBOLToken.Null;
+        this.procedureDivision = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;
         this.currentToken = COBOLToken.Null;
         this.currentClass = COBOLToken.Null;
@@ -312,6 +313,7 @@ export default class QuickCOBOLParse {
         this.captureDivisions = true;
         this.numberTokensInHeader = 0;
         this.workingStorageRelatedTokens = 0;
+        this.procedureDivisionRelatedTokens = 0;
         this.sectionsInToken = 0;
         let prevToken: Token = Token.Blank;
         
@@ -348,8 +350,14 @@ export default class QuickCOBOLParse {
                 this.tokensInOrder.push(fakeDivision);
                 this.pickFields = true;
                 this.inProcedureDivision = false;
-                sourceHandler.setDumpAreaA(false);
-                sourceHandler.setDumpAreaBOnwards(!this.parseColumnBOnwards);
+            } 
+            else if (this.procedureDivisionRelatedTokens !== 0) {
+                let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Procedure", "Division", "Procedure Division (CopyBook)", this.currentDivision);
+                this.currentDivision = fakeDivision;
+                this.tokensInOrder.push(fakeDivision);
+                this.procedureDivision = fakeDivision;
+                this.pickFields = false;
+                this.inProcedureDivision = true;
             }
         }
 
@@ -380,6 +388,13 @@ export default class QuickCOBOLParse {
         return cobolKeywordDictionary.containsKey(keyword);
     }
 
+    private isValidProcedureKeyword(keyword: string): boolean {
+        return cobolProcedureKeywordDictionary.containsKey(keyword);
+    }
+
+    private isValidStorageKeyword(keyword: string): boolean {
+        return cobolStorageKeywordDictionary.containsKey(keyword);
+    }
     private isNumber(value: string | number): boolean {
         if (value.toString().length === 0) {
             return false;
@@ -430,15 +445,20 @@ export default class QuickCOBOLParse {
                 let tcurrent: string = token.currentToken;
                 let tcurrentLower: string = token.currentTokenLower;
 
+                if (tcurrent.endsWith(".")) {
+                    tcurrent = tcurrent.substr(0, tcurrent.length - 1);
+                    tcurrentLower = tcurrent.toLowerCase();
+                    endWithDot = true;
+                    token.endsWithDot = endWithDot;
+                } else {
+                    token.endsWithDot = false;
+                }
+
                 let tokenAsNumber = Number.parseInt(tcurrent);
                 if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
                     this.numberTokensInHeader++;
                 } else {
                     switch(tcurrentLower) {
-                        case 'value' :this.workingStorageRelatedTokens++; break;
-                        case 'picture' :this.workingStorageRelatedTokens++; break;
-                        case 'pic' :this.workingStorageRelatedTokens++; break;
-                        case 'comp' :this.workingStorageRelatedTokens++; break;
                         case 'section' :
                             switch(prevLocalToken.currentTokenLower) {
                                 case "working-storage" : this.sectionsInToken++; break;
@@ -449,7 +469,20 @@ export default class QuickCOBOLParse {
                             switch(prevLocalToken.currentTokenLower) {
                                 case "procedure" :
                             }
-                        }
+                            break;
+                        default:
+                            if (this.isValidProcedureKeyword(tcurrentLower))
+                            {
+                                this.procedureDivisionRelatedTokens++;
+                            }
+
+                            if (this.isValidStorageKeyword(tcurrentLower))
+                            {
+                                this.workingStorageRelatedTokens++;
+                            }
+                            
+                            break;
+                    }
                 }
                 console.log(tcurrentLower);
 
@@ -574,7 +607,7 @@ export default class QuickCOBOLParse {
                     if (prevTokenLower === "procedure") {
                         this.inProcedureDivision = true;
                         this.pickFields = false;
-                        this.procedureDivsion = ctoken;
+                        this.procedureDivision = ctoken;
                         sourceHandler.setDumpAreaA(true);
                         sourceHandler.setDumpAreaBOnwards(false);
                     }
@@ -704,7 +737,7 @@ export default class QuickCOBOLParse {
 
                 // we are in the procedure division
                 if (this.captureDivisions && this.currentDivision !== COBOLToken.Null &&
-                    this.currentDivision === this.procedureDivsion && endWithDot) {
+                    this.currentDivision === this.procedureDivision && endWithDot) {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         let beforeCurrent = line.substr(0, token.currentCol - 1).trim();
                         if (beforeCurrent.length === 0) {
