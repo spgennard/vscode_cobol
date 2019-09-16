@@ -46,10 +46,22 @@ export function activate(context: ExtensionContext) {
     });
 
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
-        tabstopper.processTabKey(true);
+        if (isTabstopEnabled())
+        {
+            tabstopper.processTabKey(true);
+        } else {
+            commands.executeCommand("tab");
+        }
+        
     });
+    
     var unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
-        tabstopper.processTabKey(false);
+        if (isTabstopEnabled())
+        {
+            tabstopper.processTabKey(false);
+        } else {
+            commands.executeCommand("outdent");
+        }
     });
 
     var changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function () {
@@ -223,6 +235,16 @@ export function getExperimentialFeatures(): boolean {
     }
     return expEnabled;
 }
+
+export function isTabstopEnabled(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var expEnabled = editorConfig.get<boolean>('enable_tabstop');
+    if (expEnabled === undefined || expEnabled === null) {
+        expEnabled = false;
+    }
+    return expEnabled;
+}
+
 export function enableMarginStatusBar(formatStyle: ESourceFormat) {
     formatStatusBarItem.text = "Source:"+formatStyle;
     formatStyle.toString();
