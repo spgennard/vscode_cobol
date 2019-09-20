@@ -300,6 +300,8 @@ export default class QuickCOBOLParse {
     procedureDivisionRelatedTokens: number;
     sectionsInToken: number;
 
+    copybookNestedInSection: boolean;
+
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
         this.pickFields = false;
@@ -315,8 +317,9 @@ export default class QuickCOBOLParse {
         this.workingStorageRelatedTokens = 0;
         this.procedureDivisionRelatedTokens = 0;
         this.sectionsInToken = 0;
+        this.copybookNestedInSection = this.getCopybookNestedInSection();
         let prevToken: Token = Token.Blank;
-        
+
         let maxLines = sourceHandler.getLineCount();
         if (maxLines > 5) maxLines = 5;
 
@@ -341,8 +344,7 @@ export default class QuickCOBOLParse {
         }
 
         // Do we have some sections?
-        if (this.sectionsInToken === 0) 
-        {
+        if (this.sectionsInToken === 0) {
             /* if we have items that could be in a data division */
             if (this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0) {
                 let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Data", "Division", "Data Division (CopyBook)", this.currentDivision);
@@ -350,7 +352,7 @@ export default class QuickCOBOLParse {
                 this.tokensInOrder.push(fakeDivision);
                 this.pickFields = true;
                 this.inProcedureDivision = false;
-            } 
+            }
             else if (this.procedureDivisionRelatedTokens !== 0) {
                 let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Procedure", "Division", "Procedure Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
@@ -432,6 +434,14 @@ export default class QuickCOBOLParse {
         return parsingB;
     }
 
+    private getCopybookNestedInSection(): boolean {
+        var editorConfig = workspace.getConfiguration('coboleditor');
+        var nestedFlag = editorConfig.get<boolean>('copybooks_nested');
+        if (nestedFlag === undefined || nestedFlag === null) {
+            nestedFlag = false;
+        }
+        return nestedFlag;
+    }
     private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
 
         let token = new Token(line, prevToken);
@@ -458,29 +468,27 @@ export default class QuickCOBOLParse {
                 if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
                     this.numberTokensInHeader++;
                 } else {
-                    switch(tcurrentLower) {
-                        case 'section' :
-                            switch(prevLocalToken.currentTokenLower) {
-                                case "working-storage" : this.sectionsInToken++; break;
-                                case "local-storage" : this.sectionsInToken++;  break;
-                                case "linkage" : this.sectionsInToken++;  break;
+                    switch (tcurrentLower) {
+                        case 'section':
+                            switch (prevLocalToken.currentTokenLower) {
+                                case "working-storage": this.sectionsInToken++; break;
+                                case "local-storage": this.sectionsInToken++; break;
+                                case "linkage": this.sectionsInToken++; break;
                             }
-                        case "division" :
-                            switch(prevLocalToken.currentTokenLower) {
-                                case "procedure" :
+                        case "division":
+                            switch (prevLocalToken.currentTokenLower) {
+                                case "procedure":
                             }
                             break;
                         default:
-                            if (this.isValidProcedureKeyword(tcurrentLower))
-                            {
+                            if (this.isValidProcedureKeyword(tcurrentLower)) {
                                 this.procedureDivisionRelatedTokens++;
                             }
 
-                            if (this.isValidStorageKeyword(tcurrentLower))
-                            {
+                            if (this.isValidStorageKeyword(tcurrentLower)) {
                                 this.workingStorageRelatedTokens++;
                             }
-                            
+
                             break;
                     }
                 }
@@ -729,7 +737,17 @@ export default class QuickCOBOLParse {
 
                 // copybook handling
                 if (prevTokenLower === "copy" && current.length !== 0) {
-                    this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision));
+                    if (this.copybookNestedInSection) {
+                        if (this.currentSection !== COBOLToken.Null) {
+                            let newToken = new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentSection);
+                            this.tokensInOrder.push(newToken);
+                        } else {
+                            let newToken = new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                            this.tokensInOrder.push(newToken);
+                        }
+                    } else {
+                        this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision));
+                    }
                     continue;
                 }
 
@@ -776,7 +794,7 @@ export default class QuickCOBOLParse {
 
                 // are we in the working-storage section?
                 if (this.pickFields) {
-                    /* only interesteding in things that are after a number */
+                    /* only interesting in things that are after a number */
                     if (this.isNumber(prevToken) && !this.isNumber(current)) {
                         if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                             let trimToken = this.trimLiteral(current);
@@ -876,6 +894,12 @@ export default class QuickCOBOLParse {
                     if (insideToken.tokenType === COBOLTokenStyle.Paragraph) {
                         token.childTokens.push(insideToken);
                     }
+
+                    if (this.copybookNestedInSection) {
+                        if (insideToken.tokenType === COBOLTokenStyle.CopyBook) {
+                            token.childTokens.push(insideToken);
+                        }
+                    }
                 }
             }
         }
@@ -883,7 +907,6 @@ export default class QuickCOBOLParse {
         this.processDivsionToken(sourceHandler, divisions, COBOLTokenStyle.Division);
         this.processDivsionToken(sourceHandler, divisions, COBOLTokenStyle.Section);
         this.processDivsionToken(sourceHandler, divisions, COBOLTokenStyle.Paragraph);
-
 
         for (let i = 0; i < this.tokensInOrder.length; i++) {
             let token = this.tokensInOrder[i];

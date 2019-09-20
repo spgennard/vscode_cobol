@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.3.5",
+    "version": "5.3.6",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -144,6 +144,11 @@
                     "type": "boolean",
                     "title": "include column 72 onwards in parsing",
                     "default": true
+                },
+                "coboleditor.copybooks_nested": {
+                    "type": "boolean",
+                    "title": "nest copybooks in outline view (restart require)",
+                    "default": false
                 },
                 "coboleditor.margin": {
                     "type": "boolean",
