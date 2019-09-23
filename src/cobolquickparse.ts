@@ -94,12 +94,12 @@ class COBOLToken {
         this.tokenType = tokenType;
         this.startLine = startLine;
         this.line = line;
-        this.startColumn = line.indexOf(token.trim());
+        this.token = token.trim();
+        this.startColumn = line.indexOf(this.token);
         this.description = description;
         this.endLine = this.endColumn = 0;
         this.level = (parentToken === undefined) ? 1 : 1 + parentToken.level;
         this.parentToken = parentToken;
-        this.token = token.trim();
 
         if (this.token.length !== 0) {
             /* ensure we don't have any odd start columns */
@@ -302,6 +302,8 @@ export default class QuickCOBOLParse {
 
     copybookNestedInSection: boolean;
 
+    copyBooksUsed: Map<string,string>;
+
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
         this.pickFields = false;
@@ -318,6 +320,8 @@ export default class QuickCOBOLParse {
         this.procedureDivisionRelatedTokens = 0;
         this.sectionsInToken = 0;
         this.copybookNestedInSection = this.getCopybookNestedInSection();
+        this.copyBooksUsed = new Map();
+
         let prevToken: Token = Token.Blank;
 
         let maxLines = sourceHandler.getLineCount();
@@ -737,6 +741,13 @@ export default class QuickCOBOLParse {
 
                 // copybook handling
                 if (prevTokenLower === "copy" && current.length !== 0) {
+                    let trimmedCopyBook = this.trimLiteral(current);
+                    if (this.copyBooksUsed.has(trimmedCopyBook) == false) {
+                        console.log("SPG: Remember : "+trimmedCopyBook);
+                        //  https://howtodoinjava.com/typescript/maps/
+                        this.copyBooksUsed.set(trimmedCopyBook,current);
+                    }
+
                     if (this.copybookNestedInSection) {
                         if (this.currentSection !== COBOLToken.Null) {
                             let newToken = new COBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentSection);
