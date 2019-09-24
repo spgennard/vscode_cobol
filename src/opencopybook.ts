@@ -190,6 +190,19 @@ function findFile(filename: string, filenameDir: string): string | undefined {
     return;
 }
 
+export function getCopyBookFileOrNull(filename: string) : string {
+    const dirOfFilename = path.dirname(filename);
+
+    if (filename) {
+        const fullPath = findFile(filename, dirOfFilename);
+        if (fullPath) {
+            return fullPath;
+        }
+    }
+
+    return "";
+}
+
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
     const dirOfFilename = path.dirname(doc.fileName);
     const line = doc.lineAt(pos);
