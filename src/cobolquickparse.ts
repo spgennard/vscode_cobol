@@ -326,7 +326,9 @@ export default class QuickCOBOLParse {
         let prevToken: Token = Token.Blank;
 
         let maxLines = sourceHandler.getLineCount();
-        if (maxLines > 5) maxLines = 5;
+        if (maxLines > 5) {
+            maxLines = 5;
+        }
 
         for (let l = 0; l < maxLines; l++) {
             try {
@@ -743,7 +745,7 @@ export default class QuickCOBOLParse {
                 // copybook handling
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     let trimmedCopyBook = this.trimLiteral(current);
-                    if (this.copyBooksUsed.has(trimmedCopyBook) == false) {
+                    if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                         // console.log("SPG: Remember : "+trimmedCopyBook);
                         //  https://howtodoinjava.com/typescript/maps/
                         this.copyBooksUsed.set(trimmedCopyBook,current);
@@ -849,17 +851,21 @@ export default class QuickCOBOLParse {
         try {
             for (let i = 0; i < tokens.length; i++) {
                 let token = tokens[i];
-                if (token.tokenType === style || style == COBOLTokenStyle.Null) {
+                if (token.tokenType === style || style === COBOLTokenStyle.Null) {
                     //console.log("TOKEN: "+token.token+" ("+token.tokenType+")");
                     if (1 + i < tokens.length) {
                         let nextToken = tokens[i + 1];
                         token.endLine = nextToken.startLine - 1;          /* use the end of the previous line */
-                        if (token.endLine < 0) token.endLine = 0;
+                        if (token.endLine < 0) {
+                            token.endLine = 0;
+                        }
                         token.endColumn = sourceHandler.getRawLine(token.endLine).length;
                     } else {
                         if (token.tokenType !== COBOLTokenStyle.EndDelimiter) {
                             token.endLine = sourceHandler.getLineCount();
-                            if (token.endLine < 0) token.endLine = 0;
+                            if (token.endLine < 0) {
+                                token.endLine = 0;
+                            }
                             token.endColumn = sourceHandler.getRawLine(token.endLine).length;
                         }
                     }
