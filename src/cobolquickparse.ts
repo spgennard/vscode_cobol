@@ -23,7 +23,6 @@ export enum COBOLTokenStyle {
     EndDelimiter = "EndDelimiter",
     Exec = "Exec",
     EndExec = "EndExec",
-
     Null = "Null"
 }
 export function splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
@@ -286,6 +285,7 @@ export default class QuickCOBOLParse {
     guessFields: boolean;
 
     currentToken: COBOLToken;
+    currentRegion: COBOLToken;
     currentDivision: COBOLToken;
     currentSection: COBOLToken;
     procedureDivision: COBOLToken;
@@ -314,6 +314,7 @@ export default class QuickCOBOLParse {
         this.currentToken = COBOLToken.Null;
         this.currentClass = COBOLToken.Null;
         this.currentMethod = COBOLToken.Null;
+        this.currentRegion = COBOLToken.Null;
         this.captureDivisions = true;
         this.numberTokensInHeader = 0;
         this.workingStorageRelatedTokens = 0;
@@ -743,7 +744,7 @@ export default class QuickCOBOLParse {
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     let trimmedCopyBook = this.trimLiteral(current);
                     if (this.copyBooksUsed.has(trimmedCopyBook) == false) {
-                        console.log("SPG: Remember : "+trimmedCopyBook);
+                        // console.log("SPG: Remember : "+trimmedCopyBook);
                         //  https://howtodoinjava.com/typescript/maps/
                         this.copyBooksUsed.set(trimmedCopyBook,current);
                     }
@@ -898,6 +899,7 @@ export default class QuickCOBOLParse {
                 /* pick up the section and place them in the division */
                 for (let s = 1 + i; s < this.tokensInOrder.length; s++) {
                     let insideToken = this.tokensInOrder[s];
+
                     if (insideToken.tokenType === COBOLTokenStyle.Section) {
                         token.childTokens.push(insideToken.getEmptyToken());
                         break;

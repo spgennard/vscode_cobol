@@ -123,8 +123,8 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                     break;
                 case COBOLTokenStyle.Constructor:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
-                    break;                
-            }
+                    break;                              
+                }
         }
         return symbols;
     }

@@ -70,20 +70,24 @@ function extractText(str: string) {
     const strl = str.toLowerCase();
     let result: string | null;
     if (/copy/.test(strl)) {
-        try {
-            result = getFirstMatchOrDefault(strl, /copy\s(.*)\./);
-            if (result !== null && result.length > 1)
-            {
-                return result;    
+
+        let copyRegs: RegExp[] = [
+            /.*\scopy\s*(\w*)$/,
+            /.*\scopy\s*(\w*).*$/,
+            /copy\s(.*)$/
+        ];
+
+        for (let regPos = 0; regPos < copyRegs.length; regPos++) {
+            try {
+                result = getFirstMatchOrDefault(strl, copyRegs[regPos]);
+                if (result !== null && result.length > 1) {
+                    return result;
+                }
+            } catch (e) {
+                /* continue */
             }
-        } catch (e) {
-            /* continue */
         }
-        try {
-            return getFirstMatchOrDefault(strl, /copy\s(.*)$/);
-        } catch (e) {
-            /* continue */
-        }
+
     }
 
     if (/exec sql include/.test(strl)) {
@@ -190,7 +194,7 @@ function findFile(filename: string, filenameDir: string): string | undefined {
     return;
 }
 
-export function getCopyBookFileOrNull(filename: string) : string {
+export function getCopyBookFileOrNull(filename: string): string {
     const dirOfFilename = path.dirname(filename);
 
     if (filename) {
