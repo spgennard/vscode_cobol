@@ -72,14 +72,14 @@ function extractText(str: string) {
     if (/copy/.test(strl)) {
 
         let copyRegs: RegExp[] = [
-            /.*\scopy\s*(\w*)$/,
-            /.*\scopy\s*(\w*).*$/,
-            /copy\s(.*)$/
+            /.*\s[cC][oO][pP][yY]\s*([\-a-zA-Z0-9_@]*)$/,
+            /.*\s[cC][oO][pP][yY]\s*([\-a-zA-Z0-9_@]*)[\s\.].*$/,
+            /[cC][oO][pP][yY]\s*(.*)$/
         ];
 
         for (let regPos = 0; regPos < copyRegs.length; regPos++) {
             try {
-                result = getFirstMatchOrDefault(strl, copyRegs[regPos]);
+                result = getFirstMatchOrDefault(str, copyRegs[regPos]);
                 if (result !== null && result.length > 1) {
                     return result;
                 }
