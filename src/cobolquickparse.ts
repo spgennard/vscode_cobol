@@ -846,6 +846,10 @@ export default class QuickCOBOLParse {
         return token;
     }
 
+    public getcopyBooksUsed(): Map<string,string> {
+        return this.copyBooksUsed;
+    }
+
     private processDivsionToken(sourceHandler: ISourceHandler, tokens: COBOLToken[], style: COBOLTokenStyle) {
 
         try {
