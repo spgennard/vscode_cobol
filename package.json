@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.4.2",
+    "version": "5.4.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -120,6 +120,7 @@
                         "cbl",
                         "CBL"
                     ],
+                    "markdownDescription": "COBOL CopyBook file name extensions",
                     "description": "COBOL CopyBook Extensions"
                 },
                 "coboleditor.copybookdirs": {
@@ -138,7 +139,7 @@
                         ".",
                         "CopyBooks"
                     ],
-                    "description": "COBOL CopyBook Directory"
+                    "description": "COBOL CopyBook directories to search into"
                 },
                 "coboleditor.ignorecolumn_b_onwards": {
                     "type": "boolean",
@@ -147,7 +148,20 @@
                 },
                 "coboleditor.copybooks_nested": {
                     "type": "boolean",
+                    "markdownDescription": "nest copybooks in outline view (restart required)",
                     "title": "nest copybooks in outline view (restart require)",
+                    "default": false
+                },
+                "coboleditor.fuzzy_variable_search": {
+                    "type": "boolean",
+                    "markdownDescription": "fuzzy variable search (legacy compatibility)",
+                    "title": "fuzzy variable search",
+                    "default": false
+                },
+                "coboleditor.copybook_search": {
+                    "type": "boolean",
+                    "markdownDescription": "Search inside copybooks using references in current program",
+                    "title": "search inside copybook references",
                     "default": false
                 },
                 "coboleditor.margin": {

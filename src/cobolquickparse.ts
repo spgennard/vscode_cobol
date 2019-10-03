@@ -299,6 +299,7 @@ export default class QuickCOBOLParse {
     workingStorageRelatedTokens: number;
     procedureDivisionRelatedTokens: number;
     sectionsInToken: number;
+    divisionsInToken: number;
 
     copybookNestedInSection: boolean;
 
@@ -320,14 +321,15 @@ export default class QuickCOBOLParse {
         this.workingStorageRelatedTokens = 0;
         this.procedureDivisionRelatedTokens = 0;
         this.sectionsInToken = 0;
+        this.divisionsInToken = 0;
         this.copybookNestedInSection = this.getCopybookNestedInSection();
         this.copyBooksUsed = new Map();
 
         let prevToken: Token = Token.Blank;
 
         let maxLines = sourceHandler.getLineCount();
-        if (maxLines > 5) {
-            maxLines = 5;
+        if (maxLines > 25) {
+            maxLines = 25;
         }
 
         for (let l = 0; l < maxLines; l++) {
@@ -351,7 +353,7 @@ export default class QuickCOBOLParse {
         }
 
         // Do we have some sections?
-        if (this.sectionsInToken === 0) {
+        if (this.sectionsInToken === 0 && this.divisionsInToken === 0) {
             /* if we have items that could be in a data division */
             if (this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0) {
                 let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Data", "Division", "Data Division (CopyBook)", this.currentDivision);
@@ -449,11 +451,10 @@ export default class QuickCOBOLParse {
         }
         return nestedFlag;
     }
+
     private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
 
         let token = new Token(line, prevToken);
-
-        let prevLocalToken: Token = prevToken;
 
         do {
             try {
@@ -477,14 +478,15 @@ export default class QuickCOBOLParse {
                 } else {
                     switch (tcurrentLower) {
                         case 'section':
-                            switch (prevLocalToken.currentTokenLower) {
+                            switch (token.prevTokenLower) {
                                 case "working-storage": this.sectionsInToken++; break;
                                 case "local-storage": this.sectionsInToken++; break;
                                 case "linkage": this.sectionsInToken++; break;
                             }
                         case "division":
-                            switch (prevLocalToken.currentTokenLower) {
-                                case "procedure":
+                            switch (token.prevTokenLower) {
+                                case "identification": this.divisionsInToken++; break;
+                                case "procedure": this.divisionsInToken++; break;
                             }
                             break;
                         default:
@@ -508,8 +510,6 @@ export default class QuickCOBOLParse {
                 console.log("Cobolquickparse relaxedParseLineByLine line error: " + e);
                 console.log(e.stack);
             }
-
-            prevLocalToken = token;
         }
         while (token.moveToNextToken() === false);
 

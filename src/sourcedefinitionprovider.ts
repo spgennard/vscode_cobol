@@ -1,10 +1,27 @@
-import { TextDocument, Definition, Position, CancellationToken, ProviderResult } from 'vscode';
+import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { getCopyBookFileOrNull } from './opencopybook';
 import { FileSourceHandler } from './FileSourceHandler';
 
+function getFuzzyVariableSearch(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var fuzzyVarOn = editorConfig.get<boolean>('fuzzy_variable_search');
+    if (fuzzyVarOn === undefined || fuzzyVarOn === null) {
+        fuzzyVarOn = false;
+    }
+    return fuzzyVarOn;
+}
+
+function getCopyBookSearch(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var copybookSearch = editorConfig.get<boolean>('copybook_search');
+    if (copybookSearch === undefined || copybookSearch === null) {
+        copybookSearch = false;
+    }
+    return copybookSearch;
+}
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -51,7 +68,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     return undefined;
 }
 
-function getSectionOrParaLocation(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -66,7 +83,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, sf: QuickCOBOLP
                 case COBOLTokenStyle.Paragraph:
                 case COBOLTokenStyle.Section:
                     let srange = new vscode.Position(token.startLine, token.startColumn - 1);
-                    return new vscode.Location(document.uri, srange);
+                    return new vscode.Location(uri, srange);
                     break;
             }
         }
@@ -74,7 +91,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, sf: QuickCOBOLP
     return undefined;
 }
 
-function getVariable(document: vscode.TextDocument, uri:vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -134,13 +151,34 @@ export function provideDefinition(document: TextDocument, position: Position, to
     let qcp = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
 
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-        loc = getSectionOrParaLocation(document, qcp, position);
+        loc = getSectionOrParaLocation(document, document.uri, qcp, position);
         if (loc) {
             location.push(loc);
             return location;
         }
-    }
 
+        /* search for targets in a copybook */
+        if (getCopyBookSearch()) {
+            /* iterater through all the known copybook references */
+            for (let [key, value] of qcp.getcopyBooksUsed()) {
+                try {
+                    let fileName = getCopyBookFileOrNull(key);
+                    let file = new FileSourceHandler(fileName, false);
+                    let qcpf = new QuickCOBOLParse(file);
+                    let uri = vscode.Uri.file(fileName);
+                    loc = getSectionOrParaLocation(document, uri, qcpf, position);
+                    if (loc) {
+                        location.push(loc);
+                        return location;
+                    }
+                }
+                catch
+                {
+                    // should not happen but if it does, continue on to the next copybook reference
+                }
+            }
+        }
+    }
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, qcp, position);
         if (loc) {
@@ -156,19 +194,37 @@ export function provideDefinition(document: TextDocument, position: Position, to
         return location;
     }
 
-    /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
-    loc = getFuzzyVariable(document, position);
-    if (loc) {
-        location.push(loc);
-        return location;
+    /* search inside on disk copybooks referenced by the current program 
+     * for variables
+     */
+    if (getCopyBookSearch()) {
+
+        /* iterater through all the known copybook references */
+        for (let [key, value] of qcp.getcopyBooksUsed()) {
+            try {
+                let fileName = getCopyBookFileOrNull(key);
+                let file = new FileSourceHandler(fileName, false);
+                let qcpf = new QuickCOBOLParse(file);
+                let uri = vscode.Uri.file(fileName);
+                loc = getVariable(document, uri, qcpf, position);
+                if (loc) {
+                    location.push(loc);
+                    return location;
+                }
+            }
+            catch
+            {
+                // should not happen but if it does, continue on to the next copybook reference
+            }
+        }
     }
-    
-    for (let [key, value] of qcp.getcopyBooksUsed()) {
-        let fileName = getCopyBookFileOrNull(key);
-        let file = new FileSourceHandler(fileName, false);
-        let qcpf = new QuickCOBOLParse(file);
-        let uri = vscode.Uri.file(fileName);
-        loc = getVariable(document, uri, qcpf, position);
+
+    /* fuzzy search is not using the parser and it give false positive's, so lets
+     * disable it by default but allow it to be re-enabled via config setting
+     */
+    if (getFuzzyVariableSearch()) {
+        /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
+        loc = getFuzzyVariable(document, position);
         if (loc) {
             location.push(loc);
             return location;
