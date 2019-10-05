@@ -80,19 +80,17 @@ class COBOLToken {
     public endLine: number;
     public endColumn: number;
 
-    public line: string;
     public childTokens: COBOLToken[] = [];
 
     static Null: COBOLToken = new COBOLToken(COBOLTokenStyle.Null, -1, "", "", "", undefined);
 
-    public getEmptyToken(): COBOLToken {
-        return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, this.line, this.token, this.description, this.parentToken);
+    public getEndDelimiterToken(): COBOLToken {
+        return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, "", this.token, this.description, this.parentToken);
     }
 
     public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
         this.tokenType = tokenType;
         this.startLine = startLine;
-        this.line = line;
         this.token = token.trim();
         this.startColumn = line.indexOf(this.token);
         this.description = description;
@@ -225,10 +223,24 @@ class Token {
 
 }
 
-export default class QuickCOBOLParse {
+export interface IQuickCOBOLParse {
+    tokensInOrder: COBOLToken[];
+
+    constantsOrVariables: COBOLToken[];
+    callTargets: COBOLToken[];
+    sectionOrParagraphs: any;
+}
+
+export default class QuickCOBOLParse implements IQuickCOBOLParse {
     public tokensInOrder: COBOLToken[] = [];
 
-    public isValidLiteral(id: string): boolean {
+    public sectionOrParagraphs: COBOLToken[] = [];
+
+    public constantsOrVariables: COBOLToken[] = [];
+        
+    public callTargets: COBOLToken[] = [];
+    
+    private isValidLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {
             return false;
@@ -249,7 +261,7 @@ export default class QuickCOBOLParse {
     }
 
 
-    public isParagraph(id: string): boolean {
+    private isParagraph(id: string): boolean {
 
         if (id === null || id.length === 0) {
             return false;
@@ -269,7 +281,7 @@ export default class QuickCOBOLParse {
         return false;
     }
 
-    public isValidQuotedLiteral(id: string): boolean {
+    private isValidQuotedLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {
             return false;
@@ -406,6 +418,7 @@ export default class QuickCOBOLParse {
     private isValidStorageKeyword(keyword: string): boolean {
         return cobolStorageKeywordDictionary.containsKey(keyword);
     }
+
     private isNumber(value: string | number): boolean {
         if (value.toString().length === 0) {
             return false;
@@ -632,6 +645,7 @@ export default class QuickCOBOLParse {
                 if (prevTokenLower === "entry" && current.length !== 0) {
                     let ctoken = new COBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
                     this.tokensInOrder.push(ctoken);
+                    this.callTargets.push(ctoken);
                     continue;
                 }
 
@@ -640,6 +654,7 @@ export default class QuickCOBOLParse {
                     let ctoken = new COBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
 
                     this.tokensInOrder.push(ctoken);
+                    this.callTargets.push(ctoken);
 
                     // So we don't have any division?
                     if (this.currentDivision === COBOLToken.Null) {
@@ -778,10 +793,12 @@ export default class QuickCOBOLParse {
                                         let newToken = new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentSection);
                                         this.tokensInOrder.push(newToken);
                                         this.currentSection.childTokens.push(newToken);
+                                        this.sectionOrParagraphs.push(newToken);
                                     } else {
                                         let newToken = new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision);
                                         this.tokensInOrder.push(newToken);
                                         this.currentDivision.childTokens.push(newToken);
+                                        this.sectionOrParagraphs.push(newToken);
                                     }
                                 }
                             }
@@ -814,7 +831,9 @@ export default class QuickCOBOLParse {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
                                 const style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
-                                this.tokensInOrder.push(new COBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision));
+                                let constantToken = new COBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision);
+                                this.tokensInOrder.push(constantToken);
+                                this.constantsOrVariables.push(constantToken);
                             }
                         }
                         continue;
@@ -823,7 +842,9 @@ export default class QuickCOBOLParse {
                     if ((prevTokenLower === "fd" || prevTokenLower === "sd") && !this.isValidKeyword(currentLower)) {
                         let trimToken = this.trimLiteral(current);
                         if (this.isValidLiteral(currentLower)) {
-                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision));
+                            let variableToken = new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision);
+                            this.tokensInOrder.push(variableToken);
+                            this.constantsOrVariables.push(variableToken);
                         }
                         continue;
                     }
@@ -831,7 +852,9 @@ export default class QuickCOBOLParse {
                     if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0) {
                         if (this.isValidKeyword(nextTokenLower) === false) {
                             let trimmedNextToken = this.trimLiteral(nextToken);
-                            this.tokensInOrder.push(new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision));
+                            let variableToken = new COBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision);
+                            this.tokensInOrder.push(variableToken);
+                            this.constantsOrVariables.push(variableToken);
                         }
                     }
                 }
@@ -896,7 +919,7 @@ export default class QuickCOBOLParse {
                 for (let s = 1 + i; s < this.tokensInOrder.length; s++) {
                     let insideToken = this.tokensInOrder[s];
                     if (insideToken.tokenType === COBOLTokenStyle.Division) {
-                        token.childTokens.push(insideToken.getEmptyToken());
+                        token.childTokens.push(insideToken.getEndDelimiterToken());
                         break;
                     }
                     if (insideToken.tokenType === COBOLTokenStyle.Section) {
@@ -911,7 +934,7 @@ export default class QuickCOBOLParse {
                     let insideToken = this.tokensInOrder[s];
 
                     if (insideToken.tokenType === COBOLTokenStyle.Section) {
-                        token.childTokens.push(insideToken.getEmptyToken());
+                        token.childTokens.push(insideToken.getEndDelimiterToken());
                         break;
                     }
                     if (insideToken.tokenType === COBOLTokenStyle.Paragraph) {

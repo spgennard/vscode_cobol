@@ -1,6 +1,6 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, IQuickCOBOLParse } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { getCopyBookFileOrNull } from './opencopybook';
 import { FileSourceHandler } from './FileSourceHandler';
@@ -68,15 +68,15 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     return undefined;
 }
 
-function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
-    for (var i = 0; i < sf.tokensInOrder.length; i++) {
-        let token = sf.tokensInOrder[i];
+    for (var i = 0; i < sf.sectionOrParagraphs.length; i++) {
+        let token = sf.sectionOrParagraphs[i];
 
         if (word === token.token || word === token.description) {
             switch (token.tokenType) {
@@ -91,15 +91,15 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
     return undefined;
 }
 
-function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
-    for (var i = 0; i < sf.tokensInOrder.length; i++) {
-        let token = sf.tokensInOrder[i];
+    for (var i = 0; i < sf.constantsOrVariables.length; i++) {
+        let token = sf.constantsOrVariables[i];
 
         if (word === token.token || word === token.description) {
             switch (token.tokenType) {
@@ -119,15 +119,15 @@ function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCO
     return undefined;
 }
 
-function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getCallTarget(document: vscode.TextDocument, sf: IQuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
-    for (var i = 0; i < sf.tokensInOrder.length; i++) {
-        let token = sf.tokensInOrder[i];
+    for (var i = 0; i < sf.callTargets.length; i++) {
+        let token = sf.callTargets[i];
 
         if (word === token.token) {
             switch (token.tokenType) {
