@@ -162,14 +162,17 @@ export function provideDefinition(document: TextDocument, position: Position, to
             /* iterater through all the known copybook references */
             for (let [key, value] of qcp.getcopyBooksUsed()) {
                 try {
+
                     let fileName = getCopyBookFileOrNull(key);
-                    let file = new FileSourceHandler(fileName, false);
-                    let qcpf = new QuickCOBOLParse(file);
-                    let uri = vscode.Uri.file(fileName);
-                    loc = getSectionOrParaLocation(document, uri, qcpf, position);
-                    if (loc) {
-                        location.push(loc);
-                        return location;
+                    let qcpf = QuickCOBOLParse.getCachedObject(fileName, key);
+
+                    if (qcpf !== undefined) {
+                        let uri = vscode.Uri.file(fileName);
+                        loc = getSectionOrParaLocation(document, uri, qcpf, position);
+                        if (loc) {
+                            location.push(loc);
+                            return location;
+                        }
                     }
                 }
                 catch
@@ -204,13 +207,14 @@ export function provideDefinition(document: TextDocument, position: Position, to
         for (let [key, value] of qcp.getcopyBooksUsed()) {
             try {
                 let fileName = getCopyBookFileOrNull(key);
-                let file = new FileSourceHandler(fileName, false);
-                let qcpf = new QuickCOBOLParse(file);
-                let uri = vscode.Uri.file(fileName);
-                loc = getVariable(document, uri, qcpf, position);
-                if (loc) {
-                    location.push(loc);
-                    return location;
+                let qcpf = QuickCOBOLParse.getCachedObject(fileName, key);
+                if (qcpf !== undefined) {
+                    let uri = vscode.Uri.file(fileName);
+                    loc = getVariable(document, uri, qcpf, position);
+                    if (loc) {
+                        location.push(loc);
+                        return location;
+                    }
                 }
             }
             catch

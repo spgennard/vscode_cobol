@@ -1,7 +1,11 @@
 import ISourceHandler from "./isourcehandler";
 import { cobolKeywordDictionary, cobolKeywords, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
-import { workspace } from 'vscode';
+import { workspace, ExtensionContext } from 'vscode';
+import { FileSourceHandler } from "./FileSourceHandler";
+
+import * as fs from 'fs';
+import { getCurrentContext } from "./extension";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -226,11 +230,20 @@ class Token {
 export interface IQuickCOBOLParsePartial {
     constantsOrVariables: COBOLToken[];
     callTargets: COBOLToken[];
-    sectionOrParagraphs: any;
+    sectionOrParagraphs: COBOLToken[];
+    isCached: boolean;
 }
 
-export interface IQuickCOBOLParseComplete extends IQuickCOBOLParsePartial{
+export interface IQuickCOBOLParseComplete extends IQuickCOBOLParsePartial {
     tokensInOrder: COBOLToken[];
+}
+
+export interface IQuickCOBOLParseData {
+    constantsOrVariables: COBOLToken[];
+    callTargets: COBOLToken[];
+    sectionOrParagraphs: COBOLToken[];
+    lastModifiedTime: number;
+    isCached: boolean;
 }
 
 export class QuickCOBOLParseData implements IQuickCOBOLParsePartial {
@@ -239,11 +252,20 @@ export class QuickCOBOLParseData implements IQuickCOBOLParsePartial {
     public constantsOrVariables: COBOLToken[] = [];
 
     public callTargets: COBOLToken[] = [];
-    
-    public constructor(source: QuickCOBOLParse) {
+
+    public lastModifiedTime: number;
+
+    public isCached: boolean;
+
+    public fileName: string;
+
+    public constructor(source: QuickCOBOLParse, fileName:string, lastModifiedTime: number) {
         this.sectionOrParagraphs = source.sectionOrParagraphs;
         this.constantsOrVariables = source.constantsOrVariables;
         this.callTargets = source.callTargets;
+        this.lastModifiedTime = lastModifiedTime;
+        this.fileName = fileName;
+        this.isCached = true;
     }
 }
 
@@ -256,6 +278,8 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
     public constantsOrVariables: COBOLToken[] = [];
 
     public callTargets: COBOLToken[] = [];
+
+    public isCached: boolean;
 
     private isValidLiteral(id: string): boolean {
 
@@ -353,6 +377,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         this.divisionsInToken = 0;
         this.copybookNestedInSection = this.getCopybookNestedInSection();
         this.copyBooksUsed = new Map();
+        this.isCached = false;
 
         let prevToken: Token = Token.Blank;
 
@@ -422,6 +447,55 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
             }
         }
         this.updateEndings(sourceHandler);
+    }
+
+    private static canReadFIle(fileName: string): boolean {
+        try {
+            fs.accessSync(fileName, fs.constants.R_OK);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    public static getCachedObject(fileName: string, copybook: string): IQuickCOBOLParsePartial | undefined {
+        if (this.canReadFIle(fileName) === false) {
+            return undefined;
+        }
+
+        let ws = workspace.getWorkspaceFolder;
+        if (ws === undefined || ws === null) {
+            /* no cache */
+            let file = new FileSourceHandler(fileName, false);
+            return new QuickCOBOLParse(file);
+        }
+
+        let context: ExtensionContext = getCurrentContext();
+        let workspaceState = context.workspaceState;
+        let cachedObject: IQuickCOBOLParseData | undefined = workspaceState.get<IQuickCOBOLParseData>(copybook);
+        
+        /* does the cache object need to be updated? */
+        if (cachedObject !== null && cachedObject !== undefined) {
+            let stat: fs.Stats = fs.statSync(fileName);
+            if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
+                workspaceState.update(copybook, null);
+                cachedObject = undefined;
+            }
+        }
+
+        if (cachedObject === null || cachedObject === undefined) {
+            let stat: fs.Stats = fs.statSync(fileName);
+
+            let file = new FileSourceHandler(fileName, false);
+            let qcpf = new QuickCOBOLParse(file);
+
+            let qcpd = new QuickCOBOLParseData(qcpf, fileName, stat.mtimeMs);
+
+            workspaceState.update(copybook, qcpd);
+            return qcpd;
+        }
+
+        return cachedObject;
     }
 
     private isValidKeyword(keyword: string): boolean {
