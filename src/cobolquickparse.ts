@@ -223,23 +223,40 @@ class Token {
 
 }
 
-export interface IQuickCOBOLParse {
-    tokensInOrder: COBOLToken[];
-
+export interface IQuickCOBOLParsePartial {
     constantsOrVariables: COBOLToken[];
     callTargets: COBOLToken[];
     sectionOrParagraphs: any;
 }
 
-export default class QuickCOBOLParse implements IQuickCOBOLParse {
+export interface IQuickCOBOLParseComplete extends IQuickCOBOLParsePartial{
+    tokensInOrder: COBOLToken[];
+}
+
+export class QuickCOBOLParseData implements IQuickCOBOLParsePartial {
+    public sectionOrParagraphs: COBOLToken[] = [];
+
+    public constantsOrVariables: COBOLToken[] = [];
+
+    public callTargets: COBOLToken[] = [];
+    
+    public constructor(source: QuickCOBOLParse) {
+        this.sectionOrParagraphs = source.sectionOrParagraphs;
+        this.constantsOrVariables = source.constantsOrVariables;
+        this.callTargets = source.callTargets;
+    }
+}
+
+
+export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
     public tokensInOrder: COBOLToken[] = [];
 
     public sectionOrParagraphs: COBOLToken[] = [];
 
     public constantsOrVariables: COBOLToken[] = [];
-        
+
     public callTargets: COBOLToken[] = [];
-    
+
     private isValidLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {
@@ -315,7 +332,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParse {
 
     copybookNestedInSection: boolean;
 
-    copyBooksUsed: Map<string,string>;
+    copyBooksUsed: Map<string, string>;
 
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
@@ -761,9 +778,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParse {
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     let trimmedCopyBook = this.trimLiteral(current);
                     if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
-                        // console.log("SPG: Remember : "+trimmedCopyBook);
-                        //  https://howtodoinjava.com/typescript/maps/
-                        this.copyBooksUsed.set(trimmedCopyBook,current);
+                        this.copyBooksUsed.set(trimmedCopyBook, current);
                     }
 
                     if (this.copybookNestedInSection) {
@@ -819,7 +834,6 @@ export default class QuickCOBOLParse implements IQuickCOBOLParse {
                         fakeDivision.childTokens.push(fakeWorkingStorage);
                         this.currentSection = fakeWorkingStorage;
                         this.tokensInOrder.push(fakeWorkingStorage);
-
                     }
                 }
 
@@ -869,7 +883,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParse {
         return token;
     }
 
-    public getcopyBooksUsed(): Map<string,string> {
+    public getcopyBooksUsed(): Map<string, string> {
         return this.copyBooksUsed;
     }
 
@@ -879,7 +893,6 @@ export default class QuickCOBOLParse implements IQuickCOBOLParse {
             for (let i = 0; i < tokens.length; i++) {
                 let token = tokens[i];
                 if (token.tokenType === style || style === COBOLTokenStyle.Null) {
-                    //console.log("TOKEN: "+token.token+" ("+token.tokenType+")");
                     if (1 + i < tokens.length) {
                         let nextToken = tokens[i + 1];
                         token.endLine = nextToken.startLine - 1;          /* use the end of the previous line */

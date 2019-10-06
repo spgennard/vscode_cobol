@@ -1,6 +1,6 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, IQuickCOBOLParse } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, IQuickCOBOLParsePartial } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { getCopyBookFileOrNull } from './opencopybook';
 import { FileSourceHandler } from './FileSourceHandler';
@@ -68,7 +68,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     return undefined;
 }
 
-function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickCOBOLParsePartial, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -91,7 +91,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
     return undefined;
 }
 
-function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickCOBOLParsePartial, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -119,7 +119,7 @@ function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: IQuickC
     return undefined;
 }
 
-function getCallTarget(document: vscode.TextDocument, sf: IQuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getCallTarget(document: vscode.TextDocument, sf: IQuickCOBOLParsePartial, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -179,6 +179,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
             }
         }
     }
+
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, qcp, position);
         if (loc) {
