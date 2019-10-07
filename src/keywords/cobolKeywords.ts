@@ -571,8 +571,6 @@ export const cobolStorageKeywords: string[] = [
 	"unit",
 	"unstring",
 	"until",
-	"value",
-	"values",
 	"varying",
 	"write"
 ];
