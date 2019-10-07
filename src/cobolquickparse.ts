@@ -259,7 +259,7 @@ export class QuickCOBOLParseData implements IQuickCOBOLParsePartial {
 
     public fileName: string;
 
-    public constructor(source: QuickCOBOLParse, fileName:string, lastModifiedTime: number) {
+    public constructor(source: QuickCOBOLParse, fileName: string, lastModifiedTime: number) {
         this.sectionOrParagraphs = source.sectionOrParagraphs;
         this.constantsOrVariables = source.constantsOrVariables;
         this.callTargets = source.callTargets;
@@ -409,20 +409,21 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         // Do we have some sections?
         if (this.sectionsInToken === 0 && this.divisionsInToken === 0) {
             /* if we have items that could be in a data division */
-            if (this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0) {
-                let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Data", "Division", "Data Division (CopyBook)", this.currentDivision);
-                this.currentDivision = fakeDivision;
-                this.tokensInOrder.push(fakeDivision);
-                this.pickFields = true;
-                this.inProcedureDivision = false;
-            }
-            else if (this.procedureDivisionRelatedTokens !== 0) {
+
+            if (this.procedureDivisionRelatedTokens !== 0) {
                 let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Procedure", "Division", "Procedure Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.tokensInOrder.push(fakeDivision);
                 this.procedureDivision = fakeDivision;
                 this.pickFields = false;
                 this.inProcedureDivision = true;
+            }
+            else if ((this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0)) {
+                let fakeDivision = new COBOLToken(COBOLTokenStyle.Division, 0, "Data", "Division", "Data Division (CopyBook)", this.currentDivision);
+                this.currentDivision = fakeDivision;
+                this.tokensInOrder.push(fakeDivision);
+                this.pickFields = true;
+                this.inProcedureDivision = false;
             }
         }
 
@@ -473,7 +474,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         let context: ExtensionContext = getCurrentContext();
         let workspaceState = context.workspaceState;
         let cachedObject: IQuickCOBOLParseData | undefined = workspaceState.get<IQuickCOBOLParseData>(copybook);
-        
+
         /* does the cache object need to be updated? */
         if (cachedObject !== null && cachedObject !== undefined) {
             let stat: fs.Stats = fs.statSync(fileName);
@@ -559,13 +560,14 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
     private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
 
         let token = new Token(line, prevToken);
-
+        let tokenCountPerLine = 0;
         do {
             try {
                 let endWithDot = false;
 
                 let tcurrent: string = token.currentToken;
                 let tcurrentLower: string = token.currentTokenLower;
+                tokenCountPerLine++;
 
                 if (tcurrent.endsWith(".")) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
@@ -576,34 +578,37 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
                     token.endsWithDot = false;
                 }
 
-                let tokenAsNumber = Number.parseInt(tcurrent);
-                if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
-                    this.numberTokensInHeader++;
-                } else {
-                    switch (tcurrentLower) {
-                        case 'section':
-                            switch (token.prevTokenLower) {
-                                case "working-storage": this.sectionsInToken++; break;
-                                case "local-storage": this.sectionsInToken++; break;
-                                case "linkage": this.sectionsInToken++; break;
-                            }
-                        case "division":
-                            switch (token.prevTokenLower) {
-                                case "identification": this.divisionsInToken++; break;
-                                case "procedure": this.divisionsInToken++; break;
-                            }
-                            break;
-                        default:
-                            if (this.isValidProcedureKeyword(tcurrentLower)) {
-                                this.procedureDivisionRelatedTokens++;
-                            }
 
-                            if (this.isValidStorageKeyword(tcurrentLower)) {
-                                this.workingStorageRelatedTokens++;
-                            }
-
-                            break;
+                if (tokenCountPerLine === 1) {
+                    let tokenAsNumber = Number.parseInt(tcurrent);
+                    if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
+                        this.numberTokensInHeader++;
+                        continue;
                     }
+                }
+                switch (tcurrentLower) {
+                    case 'section':
+                        switch (token.prevTokenLower) {
+                            case "working-storage": this.sectionsInToken++; break;
+                            case "local-storage": this.sectionsInToken++; break;
+                            case "linkage": this.sectionsInToken++; break;
+                        }
+                    case "division":
+                        switch (token.prevTokenLower) {
+                            case "identification": this.divisionsInToken++; break;
+                            case "procedure": this.divisionsInToken++; break;
+                        }
+                        break;
+                    default:
+                        if (this.isValidProcedureKeyword(tcurrentLower)) {
+                            this.procedureDivisionRelatedTokens++;
+                        }
+
+                        if (this.isValidStorageKeyword(tcurrentLower)) {
+                            this.workingStorageRelatedTokens++;
+                        }
+
+                        break;
                 }
                 // continue now
                 if (tcurrent.length === 0) {
