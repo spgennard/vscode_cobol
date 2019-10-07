@@ -454,7 +454,8 @@ export const cobolStorageKeywords: string[] = [
 	"when",
 	"zero",
 	"zeroes",
-	"zeros"
+	"zeros",
+	"occurs"
 ];
 
  export const cobolProcedureKeywords: string[] = [
@@ -541,7 +542,6 @@ export const cobolStorageKeywords: string[] = [
 	"multiply",
 	"object",
 	"object-computer",
-	"occurs",
 	"release",
 	"replace",
 	"replacing",
