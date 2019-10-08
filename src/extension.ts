@@ -14,6 +14,7 @@ import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
 import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
+import QuickCOBOLParse from './cobolquickparse';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -127,6 +128,11 @@ export function activate(context: ExtensionContext) {
     });
 
 
+    var processAllCopybookFiles = commands.registerCommand('cobolplugin.processAllCopybookFiles', function () {
+        QuickCOBOLParse.processAllFilesInWorkspace();
+    });
+    
+
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -143,6 +149,8 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(toggleCOBOLMargin);
 
+    context.subscriptions.push(processAllCopybookFiles);
+    
     context.subscriptions.push(DocComment.register());
 
     const allCobolSelectors = [

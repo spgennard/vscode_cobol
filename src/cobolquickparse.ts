@@ -5,7 +5,10 @@ import { workspace, ExtensionContext } from 'vscode';
 import { FileSourceHandler } from "./FileSourceHandler";
 
 import * as fs from 'fs';
+import * as path from 'path';
 import { getCurrentContext } from "./extension";
+import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
+import { pathExists } from "fs-extra";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -29,6 +32,7 @@ export enum COBOLTokenStyle {
     EndExec = "EndExec",
     Null = "Null"
 }
+
 export function splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
     let separator = sep || /\s/g;
     var singleQuoteOpen = false;
@@ -457,6 +461,54 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         } catch (err) {
             return false;
         }
+    }
+
+    public static processAllFilesInWorkspace() {
+        if (workspace.workspaceFolders) {
+            var start = new Date();
+
+            var exts: string[] = getExtensions();
+
+            for (var folder of workspace.workspaceFolders) {
+                for (var file of fs.readdirSync(folder.uri.fsPath)) {
+                    for (let extpos = 0; extpos < exts.length; extpos++) {
+                        if (file.endsWith(exts[extpos])) {
+                            var filename = folder.uri.fsPath + path.sep + file;
+                            // console.log("SPG: " + filename);
+
+                            let filefs = new FileSourceHandler(filename, false);
+                            let qcp = new QuickCOBOLParse(filefs);
+
+                            /* iterater through all the known copybook references */
+                            for (let [key, value] of qcp.getcopyBooksUsed()) {
+                                try {
+                                    let copyBookfilename = getCopyBookFileOrNull(key);
+                                    if (copyBookfilename !== null && copyBookfilename.length !== 0) {
+
+                                        let context: ExtensionContext = getCurrentContext();
+                                        let workspaceState = context.workspaceState;
+                                        let cachedObject: IQuickCOBOLParseData | undefined = workspaceState.get<IQuickCOBOLParseData>(key);
+
+                                        if (cachedObject === null) {
+                                            let qcpf = QuickCOBOLParse.getCachedObject(copyBookfilename, key);
+                                            console.log("Cached : " + copyBookfilename);
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+                                    // should not happen but if it does, continue on to the next copybook reference
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            var end = new Date().getMilliseconds() - start.getMilliseconds();
+            console.info('Execution time: %dms', end);
+        }
+
     }
 
     public static getCachedObject(fileName: string, copybook: string): IQuickCOBOLParsePartial | undefined {

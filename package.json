@@ -479,7 +479,11 @@
             {
                 "command": "cobolplugin.toggle_margin",
                 "title": "COBOL: Toggle margin"
-            }
+            },
+            {
+                "command": "cobolplugin.processAllCopybookFiles",
+                "title": "COBOL: Process All Copybook Files"
+            }            
         ],
         "menus": {
             "editor/context": [
