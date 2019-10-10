@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, splitArgument, IQuickCOBOLParseComplete } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, splitArgument } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
@@ -68,7 +68,12 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
 
-        let sf : IQuickCOBOLParseComplete  = new QuickCOBOLParse(new VSCodeSourceHandler(document, true));
+        let sf = QuickCOBOLParse.getCachedObject(document, document.fileName);
+
+        if (sf === undefined) {
+            return symbols;
+        }
+    
         let ownerUri = document.uri;
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {

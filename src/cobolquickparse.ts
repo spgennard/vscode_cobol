@@ -1,7 +1,7 @@
 import ISourceHandler from "./isourcehandler";
 import { cobolKeywordDictionary, cobolKeywords, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
-import { workspace, ExtensionContext } from 'vscode';
+import { workspace, ExtensionContext, TextDocument } from 'vscode';
 import { FileSourceHandler } from "./FileSourceHandler";
 
 import * as fs from 'fs';
@@ -9,6 +9,7 @@ import * as path from 'path';
 import { getCurrentContext } from "./extension";
 import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
 import { pathExists } from "fs-extra";
+import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -231,27 +232,14 @@ class Token {
 
 }
 
-export interface IQuickCOBOLParsePartial {
-    constantsOrVariables: COBOLToken[];
-    callTargets: COBOLToken[];
-    sectionOrParagraphs: COBOLToken[];
-    isCached: boolean;
-}
 
-export interface IQuickCOBOLParseComplete extends IQuickCOBOLParsePartial {
-    tokensInOrder: COBOLToken[];
-}
+export class QuickCOBOLParseData {
+    public tokensInOrder: COBOLToken[] = [];
 
-export interface IQuickCOBOLParseData {
-    constantsOrVariables: COBOLToken[];
-    callTargets: COBOLToken[];
-    sectionOrParagraphs: COBOLToken[];
-    lastModifiedTime: number;
-    isCached: boolean;
-}
+    public copyBooksUsed: Map<string, string>;
 
-export class QuickCOBOLParseData implements IQuickCOBOLParsePartial {
-    public sectionOrParagraphs: COBOLToken[] = [];
+    public sections: Map<string, COBOLToken>;
+    public paragraphs: Map<string, COBOLToken>;
 
     public constantsOrVariables: COBOLToken[] = [];
 
@@ -259,25 +247,31 @@ export class QuickCOBOLParseData implements IQuickCOBOLParsePartial {
 
     public lastModifiedTime: number;
 
-    public isCached: boolean;
+    public generation: number;
 
     public fileName: string;
 
+    public static EXPECTED_GENERATION: number = 2;
+
     public constructor(source: QuickCOBOLParse, fileName: string, lastModifiedTime: number) {
-        this.sectionOrParagraphs = source.sectionOrParagraphs;
+        this.sections = source.sections;
+        this.paragraphs = source.paragraphs;
         this.constantsOrVariables = source.constantsOrVariables;
         this.callTargets = source.callTargets;
         this.lastModifiedTime = lastModifiedTime;
         this.fileName = fileName;
-        this.isCached = true;
+        this.copyBooksUsed = source.copyBooksUsed;
+        this.tokensInOrder = source.tokensInOrder;
+        this.generation = QuickCOBOLParseData.EXPECTED_GENERATION;
     }
 }
 
 
-export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
+export default class QuickCOBOLParse {
     public tokensInOrder: COBOLToken[] = [];
 
-    public sectionOrParagraphs: COBOLToken[] = [];
+    public sections: Map<string, COBOLToken>;
+    public paragraphs: Map<string, COBOLToken>;
 
     public constantsOrVariables: COBOLToken[] = [];
 
@@ -382,6 +376,8 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         this.copybookNestedInSection = this.getCopybookNestedInSection();
         this.copyBooksUsed = new Map();
         this.isCached = false;
+        this.sections = new Map<string, COBOLToken>();
+        this.paragraphs = new Map<string, COBOLToken>();
 
         let prevToken: Token = Token.Blank;
 
@@ -463,6 +459,58 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         }
     }
 
+    public static wipeOutCopyBookCache() {
+        if (workspace.workspaceFolders) {
+            var start = new Date();
+
+            var exts: string[] = getExtensions();
+            let context: ExtensionContext = getCurrentContext();
+            let workspaceState = context.workspaceState;
+
+            for (var folder of workspace.workspaceFolders) {
+                for (var file of fs.readdirSync(folder.uri.fsPath)) {
+                    for (let extpos = 0; extpos < exts.length; extpos++) {
+                        if (file.endsWith(exts[extpos])) {
+                            var filename = folder.uri.fsPath + path.sep + file;
+
+                            let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(filename);
+                            if (cachedObject !== null) {
+                                console.warn("Removed Cache for " + filename);
+                                workspaceState.update(filename,null);
+                            }
+
+                            let filefs = new FileSourceHandler(filename, false);
+                            let qcp = new QuickCOBOLParse(filefs);
+
+                            /* iterater through all the known copybook references */
+                            for (let [key, value] of qcp.getcopyBooksUsed()) {
+                                try {
+                                    let copyBookfilename = getCopyBookFileOrNull(key);
+                                    if (copyBookfilename !== null && copyBookfilename.length !== 0) {
+
+                                        let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(key);
+
+                                        if (cachedObject !== null) {
+                                            console.log("Removed Cache for " + copyBookfilename);
+                                            workspaceState.update(key,null);
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+                                    // should not happen but if it does, continue on to the next copybook reference
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            var end = new Date().getMilliseconds() - start.getMilliseconds();
+            console.info('Execution time: %dms', end);
+        }
+    }
+
     public static processAllFilesInWorkspace() {
         if (workspace.workspaceFolders) {
             var start = new Date();
@@ -487,10 +535,10 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
 
                                         let context: ExtensionContext = getCurrentContext();
                                         let workspaceState = context.workspaceState;
-                                        let cachedObject: IQuickCOBOLParseData | undefined = workspaceState.get<IQuickCOBOLParseData>(key);
+                                        let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(key);
 
                                         if (cachedObject === null) {
-                                            let qcpf = QuickCOBOLParse.getCachedObject(copyBookfilename, key);
+                                            let qcpf = QuickCOBOLParse.getCachedObject(undefined, copyBookfilename);
                                             console.log("Cached : " + copyBookfilename);
                                         }
                                     }
@@ -511,7 +559,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
 
     }
 
-    public static getCachedObject(fileName: string, copybook: string): IQuickCOBOLParsePartial | undefined {
+    public static getCachedObject(document: TextDocument | undefined, fileName: string): QuickCOBOLParseData | undefined {
         if (this.canReadFIle(fileName) === false) {
             return undefined;
         }
@@ -519,20 +567,40 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
         let ws = workspace.getWorkspaceFolder;
         if (ws === undefined || ws === null) {
             /* no cache */
+            let stat: fs.Stats = fs.statSync(fileName);
+
             let file = new FileSourceHandler(fileName, false);
-            return new QuickCOBOLParse(file);
+            let qcpf = new QuickCOBOLParse(file);
+
+            return new QuickCOBOLParseData(qcpf, fileName, stat.mtimeMs);
         }
 
         let context: ExtensionContext = getCurrentContext();
         let workspaceState = context.workspaceState;
-        let cachedObject: IQuickCOBOLParseData | undefined = workspaceState.get<IQuickCOBOLParseData>(copybook);
+        let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(fileName);
+
+        /* if the document is edited, drop the workspace cached object */
+        if (document !== undefined && document.isDirty) {
+            workspaceState.update(document.fileName, null);
+            let file = new VSCodeSourceHandler(document, false);
+            let qcpf = new QuickCOBOLParse(file);
+
+            return new QuickCOBOLParseData(qcpf, fileName, 0);
+        }
 
         /* does the cache object need to be updated? */
         if (cachedObject !== null && cachedObject !== undefined) {
-            let stat: fs.Stats = fs.statSync(fileName);
-            if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
-                workspaceState.update(copybook, null);
+
+            /* validate */
+            if (cachedObject.generation !== QuickCOBOLParseData.EXPECTED_GENERATION) {
+                workspaceState.update(fileName, null);
                 cachedObject = undefined;
+            } else {
+                let stat: fs.Stats = fs.statSync(fileName);
+                if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
+                    workspaceState.update(fileName, null);
+                    cachedObject = undefined;
+                }
             }
         }
 
@@ -544,11 +612,12 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
 
             let qcpd = new QuickCOBOLParseData(qcpf, fileName, stat.mtimeMs);
 
-            workspaceState.update(copybook, qcpd);
+            workspaceState.update(fileName, qcpd);
             return qcpd;
         }
 
         return cachedObject;
+
     }
 
     private isValidKeyword(keyword: string): boolean {
@@ -761,6 +830,7 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
                     let ctoken = new COBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.currentSection = ctoken;
                     this.tokensInOrder.push(ctoken);
+                    this.sections.set(prevToken, ctoken);
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || prevTokenLower === "file") {
                         this.pickFields = true;
@@ -939,12 +1009,12 @@ export default class QuickCOBOLParse implements IQuickCOBOLParseComplete {
                                         let newToken = new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentSection);
                                         this.tokensInOrder.push(newToken);
                                         this.currentSection.childTokens.push(newToken);
-                                        this.sectionOrParagraphs.push(newToken);
+                                        this.paragraphs.set(c, newToken);
                                     } else {
                                         let newToken = new COBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision);
                                         this.tokensInOrder.push(newToken);
                                         this.currentDivision.childTokens.push(newToken);
-                                        this.sectionOrParagraphs.push(newToken);
+                                        this.paragraphs.set(c, newToken);
                                     }
                                 }
                             }

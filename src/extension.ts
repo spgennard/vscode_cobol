@@ -129,9 +129,13 @@ export function activate(context: ExtensionContext) {
 
 
     var processAllCopybookFiles = commands.registerCommand('cobolplugin.processAllCopybookFiles', function () {
+        QuickCOBOLParse.wipeOutCopyBookCache();
         QuickCOBOLParse.processAllFilesInWorkspace();
     });
-    
+ 
+    var wipeOutCopyBookCache = commands.registerCommand('cobolplugin.wipeOutCopyBookCache', function () {
+        QuickCOBOLParse.wipeOutCopyBookCache();
+    });
 
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
@@ -150,7 +154,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(toggleCOBOLMargin);
 
     context.subscriptions.push(processAllCopybookFiles);
-    
+    context.subscriptions.push(wipeOutCopyBookCache);
+
     context.subscriptions.push(DocComment.register());
 
     const allCobolSelectors = [

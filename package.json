@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.4.8",
+    "version": "5.4.9",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -483,7 +483,11 @@
             {
                 "command": "cobolplugin.processAllCopybookFiles",
                 "title": "COBOL: Process All Copybook Files"
-            }            
+            }, 
+            {
+                "command": "cobolplugin.wipeOutCopyBookCache",
+                "title": "COBOL: Wipeout copybookcache"
+            }           
         ],
         "menus": {
             "editor/context": [
