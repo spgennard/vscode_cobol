@@ -6,10 +6,13 @@ import { FileSourceHandler } from "./FileSourceHandler";
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { getCurrentContext } from "./extension";
+import { getCurrentContext, logCOBOLChannelLine } from "./extension";
 import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
 import { pathExists } from "fs-extra";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
+import { performance } from "perf_hooks";
+const util = require('util');
+
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -461,7 +464,7 @@ export default class QuickCOBOLParse {
 
     public static wipeOutCopyBookCache() {
         if (workspace.workspaceFolders) {
-            var start = new Date();
+            var start = performance.now();
 
             var exts: string[] = getExtensions();
             let context: ExtensionContext = getCurrentContext();
@@ -475,7 +478,7 @@ export default class QuickCOBOLParse {
 
                             let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(filename);
                             if (cachedObject !== null) {
-                                console.warn("Removed Cache for " + filename);
+                                logCOBOLChannelLine("Removed Cache for " + filename);
                                 workspaceState.update(filename,null);
                             }
 
@@ -491,7 +494,7 @@ export default class QuickCOBOLParse {
                                         let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(key);
 
                                         if (cachedObject !== null) {
-                                            console.log("Removed Cache for " + copyBookfilename);
+                                            logCOBOLChannelLine("Removed Cache for " + copyBookfilename);
                                             workspaceState.update(key,null);
                                         }
                                     }
@@ -506,14 +509,14 @@ export default class QuickCOBOLParse {
                     }
                 }
             }
-            var end = new Date().getMilliseconds() - start.getMilliseconds();
-            console.info('Execution time: %dms', end);
+
+            logCOBOLChannelLine('wipeOutCopyBookCache -> Execution time: %dms', performance.now()- start);
         }
     }
 
     public static processAllFilesInWorkspace() {
         if (workspace.workspaceFolders) {
-            var start = new Date();
+            var start = performance.now();
 
             var exts: string[] = getExtensions();
 
@@ -539,7 +542,7 @@ export default class QuickCOBOLParse {
 
                                         if (cachedObject === null) {
                                             let qcpf = QuickCOBOLParse.getCachedObject(undefined, copyBookfilename);
-                                            console.log("Cached : " + copyBookfilename);
+                                            logCOBOLChannelLine("Cached : " + copyBookfilename);
                                         }
                                     }
                                 }
@@ -553,8 +556,9 @@ export default class QuickCOBOLParse {
                     }
                 }
             }
-            var end = new Date().getMilliseconds() - start.getMilliseconds();
-            console.info('Execution time: %dms', end);
+            var end = performance.now() - start;
+            
+            logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end));
         }
 
     }

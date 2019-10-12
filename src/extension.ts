@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -16,13 +16,17 @@ import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
 import QuickCOBOLParse from './cobolquickparse';
 
+const util = require('util');
+
 let formatStatusBarItem: StatusBarItem;
 
 var currentContext: ExtensionContext;
+var COBOLOutputChannel: OutputChannel;
 
 export function getCurrentContext() : ExtensionContext {
     return currentContext;
 }
+
 export function activate(context: ExtensionContext) {
     currentContext = context;
 
@@ -134,7 +138,7 @@ export function activate(context: ExtensionContext) {
     });
  
     var wipeOutCopyBookCache = commands.registerCommand('cobolplugin.wipeOutCopyBookCache', function () {
-        QuickCOBOLParse.wipeOutCopyBookCache();
+            QuickCOBOLParse.wipeOutCopyBookCache();
     });
 
     context.subscriptions.push(move2pdCommand);
@@ -270,4 +274,28 @@ export function hideMarginStatusBar() {
 
 export function deactivate() {
     formatStatusBarItem.dispose();
+}
+
+export function logCOBOLChannelLine(message: string, ...parameters:any[]){ 
+    if (COBOLOutputChannel === null || COBOLOutputChannel === undefined) {
+        COBOLOutputChannel = window.createOutputChannel("COBOL");
+    }
+
+    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+        COBOLOutputChannel.appendLine(util.format(message, parameters));
+        return;
+    }
+    COBOLOutputChannel.appendLine(message);
+}
+
+export function logCOBOLChannel(message: string, ...parameters:any[]) {
+    if (COBOLOutputChannel !== null ||  COBOLOutputChannel !== undefined) {
+        COBOLOutputChannel = window.createOutputChannel("COBOL");
+    }
+
+    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+        COBOLOutputChannel.append(util.format(message, parameters));
+        return;
+    }
+    COBOLOutputChannel.append(message);
 }

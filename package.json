@@ -483,11 +483,11 @@
             {
                 "command": "cobolplugin.processAllCopybookFiles",
                 "title": "COBOL: Process All Copybook Files"
-            }, 
+            },
             {
                 "command": "cobolplugin.wipeOutCopyBookCache",
                 "title": "COBOL: Wipeout copybookcache"
-            }           
+            }
         ],
         "menus": {
             "editor/context": [
