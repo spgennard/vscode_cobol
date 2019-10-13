@@ -870,6 +870,10 @@
         "@types/fs-extra": "^5.1.0",
         "@types/minimatch": "^3.0.3",
         "trie-search": "^1.2.11",
+        "detab": "^2.0.2",
+        "n-readlines": "1.0.0",
+        "flatted": "^2.0.1",
+        "reflect-metadata": "^0.1.13",
         "typescript-collections": "^1.3.2",
         "vsce": "^1.66.0"
     }

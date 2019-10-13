@@ -1,9 +1,7 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, QuickCOBOLParseData } from './cobolquickparse';
-import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { getCopyBookFileOrNull } from './opencopybook';
-import { FileSourceHandler } from './FileSourceHandler';
 
 function getFuzzyVariableSearch(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
@@ -75,20 +73,30 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         return undefined;
     }
 
-    if (sf.sections.has(word)) {
-        let token = sf.sections.get(word);
-        if (token !== undefined) {
-            let srange = new vscode.Position(token.startLine, token.startColumn - 1);
-            return new vscode.Location(uri, srange);
+    try {
+        if (sf.sections.has(word)) {
+            let token = sf.sections.get(word);
+            if (token !== undefined) {
+                let srange = new vscode.Position(token.startLine, token.startColumn);
+                return new vscode.Location(uri, srange);
+            }
         }
     }
+    catch (e) {
+        console.log(e);
+    }
 
-    if (sf.paragraphs.has(word)) {
-        let token = sf.paragraphs.get(word);
-        if (token !== undefined) {
-            let srange = new vscode.Position(token.startLine, token.startColumn - 1);
-            return new vscode.Location(uri, srange);
+    try {
+        if (sf.paragraphs.has(word)) {
+            let token = sf.paragraphs.get(word);
+            if (token !== undefined) {
+                let srange = new vscode.Position(token.startLine, token.startColumn);
+                return new vscode.Location(uri, srange);
+            }
         }
+    }
+    catch (e) {
+        console.log(e);
     }
     return undefined;
 }
@@ -148,12 +156,12 @@ function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, p
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
     let location: vscode.Location[] = [];
     let loc;
-    let qcp: QuickCOBOLParseData|undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
+    let qcp: QuickCOBOLParseData | undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
 
     if (qcp === undefined) {
         return location;
     }
-    
+
     let theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
         loc = getSectionOrParaLocation(document, document.uri, qcp, position);

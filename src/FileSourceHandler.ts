@@ -3,6 +3,9 @@ import * as vscode from 'vscode';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import * as fs from 'fs';
 
+var detab = require('detab');
+const lineByLine = require('n-readlines');
+
 export class FileSourceHandler implements ISourceHandler {
     document: string;
     dumpNumbersInAreaA: boolean;
@@ -13,7 +16,33 @@ export class FileSourceHandler implements ISourceHandler {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.dumpAreaBOnwards = false;
-        this.lines = fs.readFileSync(document).toString().split('\n');
+        this.lines = [];
+
+        let line: string;
+        const editor = vscode.window.activeTextEditor;
+        let tabSize: number = 4;
+        if (editor) {
+            if (typeof (editor.options.tabSize) === "number") {
+                tabSize = editor.options.tabSize as number;
+            }
+            if (typeof (editor.options.tabSize) === "string") {
+                tabSize = Number.parseInt(editor.options.tabSize as string);
+            }
+        }
+
+        try {
+            const liner = new lineByLine(document);
+            while (line = liner.next()) {
+                // if (line.indexOf('\t') !== -1) {
+                //     line = detab(line.toString(), tabSize);
+                // }
+                this.lines.push(line.toString());
+            }
+        }
+        catch (e) {
+            console.log("File failed!");
+            console.log(e);
+        }
     }
 
     getLineCount(): number {

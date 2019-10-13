@@ -8,11 +8,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getCurrentContext, logCOBOLChannelLine } from "./extension";
 import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
-import { pathExists } from "fs-extra";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
+
 const util = require('util');
 
+const InMemoryCache: Map<string,any> = new Map<string,any>();
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -81,14 +82,26 @@ export function splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: bo
     return ret;
 }
 
-class COBOLToken {
+interface ICOBOLToken {
+    tokenType: COBOLTokenStyle;
+    startLine: number;
+    startColumn: number;
+    token: string;
+    description: string;
+    level: number;
+    endLine: number;
+    endColumn: number;
+    parentToken: ICOBOLToken|undefined;
+}
+
+class COBOLToken implements ICOBOLToken {
     public tokenType: COBOLTokenStyle;
     public startLine: number;
     public startColumn: number;
     public token: string;
     public description: string;
     public level: number;
-    public parentToken: COBOLToken | undefined;
+    public parentToken: ICOBOLToken | undefined;
     public endLine: number;
     public endColumn: number;
 
@@ -100,7 +113,7 @@ class COBOLToken {
         return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, "", this.token, this.description, this.parentToken);
     }
 
-    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
+    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: ICOBOLToken | undefined) {
         this.tokenType = tokenType;
         this.startLine = startLine;
         this.token = token.trim();
@@ -116,17 +129,6 @@ class COBOLToken {
                 this.startColumn = 0;
             }
         }
-    }
-
-    public dump() {
-        let prefix = "";
-        for (let i = 1; i < this.level; i++) {
-            prefix += " ";
-        }
-        console.log(prefix + this.tokenType + "=>" +
-            this.startLine + ":" + this.startColumn + "<=>" +
-            this.endLine + ":" + this.endColumn +
-            " is [" + this.description + "]");
     }
 }
 
@@ -237,38 +239,48 @@ class Token {
 
 
 export class QuickCOBOLParseData {
-    public tokensInOrder: COBOLToken[] = [];
 
-    public copyBooksUsed: Map<string, string>;
+    public tokensInOrder: ICOBOLToken[] = [];
 
-    public sections: Map<string, COBOLToken>;
-    public paragraphs: Map<string, COBOLToken>;
+    public copyBooksUsed: Map<string, string> = new Map<string, string>();
 
-    public constantsOrVariables: COBOLToken[] = [];
+    public sections: Map<string, ICOBOLToken> = new Map<string, ICOBOLToken>();
 
-    public callTargets: COBOLToken[] = [];
+    public paragraphs: Map<string, ICOBOLToken> = new Map<string, ICOBOLToken>();
 
-    public lastModifiedTime: number;
+    public constantsOrVariables: ICOBOLToken[] = [];
 
-    public generation: number;
+    public callTargets: ICOBOLToken[] = [];
 
-    public fileName: string;
+    public lastModifiedTime: number = 0;
 
-    public static EXPECTED_GENERATION: number = 2;
+    public generation: number = 0;
+    public fileName: string = "";
 
-    public constructor(source: QuickCOBOLParse, fileName: string, lastModifiedTime: number) {
-        this.sections = source.sections;
-        this.paragraphs = source.paragraphs;
-        this.constantsOrVariables = source.constantsOrVariables;
-        this.callTargets = source.callTargets;
-        this.lastModifiedTime = lastModifiedTime;
-        this.fileName = fileName;
-        this.copyBooksUsed = source.copyBooksUsed;
-        this.tokensInOrder = source.tokensInOrder;
-        this.generation = QuickCOBOLParseData.EXPECTED_GENERATION;
+    public constructor() {
     }
+
+    public static readonly EXPECTED_GENERATION: number = 3;
+
 }
 
+export class QuickCOBOLParseDataHelper {
+    public static fromQuickCOBOLParse(source: QuickCOBOLParse, fileName: string, lastModifiedTime: number) {
+
+        let qp = new QuickCOBOLParseData();
+        qp.sections = source.sections;
+        qp.paragraphs = source.paragraphs;
+        qp.constantsOrVariables = source.constantsOrVariables;
+        qp.callTargets = source.callTargets;
+        qp.lastModifiedTime = lastModifiedTime;
+        qp.fileName = fileName;
+        qp.copyBooksUsed = source.copyBooksUsed;
+        qp.tokensInOrder = source.tokensInOrder;
+        qp.generation = QuickCOBOLParseData.EXPECTED_GENERATION;
+
+        return qp;
+    }
+}
 
 export default class QuickCOBOLParse {
     public tokensInOrder: COBOLToken[] = [];
@@ -321,17 +333,6 @@ export default class QuickCOBOLParse {
         }
 
         return false;
-    }
-
-    private isValidQuotedLiteral(id: string): boolean {
-
-        if (id === null || id.length === 0) {
-            return false;
-        }
-        id = id.replace(/\"/g, "");
-        id = id.replace(/\'/g, "");
-
-        return this.isValidLiteral(id);
     }
 
     inProcedureDivision: boolean;
@@ -479,7 +480,7 @@ export default class QuickCOBOLParse {
                             let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(filename);
                             if (cachedObject !== null) {
                                 logCOBOLChannelLine("Removed Cache for " + filename);
-                                workspaceState.update(filename,null);
+                                workspaceState.update(filename, null);
                             }
 
                             let filefs = new FileSourceHandler(filename, false);
@@ -495,7 +496,7 @@ export default class QuickCOBOLParse {
 
                                         if (cachedObject !== null) {
                                             logCOBOLChannelLine("Removed Cache for " + copyBookfilename);
-                                            workspaceState.update(key,null);
+                                            workspaceState.update(key, null);
                                         }
                                     }
                                 }
@@ -510,7 +511,7 @@ export default class QuickCOBOLParse {
                 }
             }
 
-            logCOBOLChannelLine('wipeOutCopyBookCache -> Execution time: %dms', performance.now()- start);
+            logCOBOLChannelLine('wipeOutCopyBookCache -> Execution time: %dms', performance.now() - start);
         }
     }
 
@@ -557,7 +558,7 @@ export default class QuickCOBOLParse {
                 }
             }
             var end = performance.now() - start;
-            
+
             logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end));
         }
 
@@ -576,20 +577,21 @@ export default class QuickCOBOLParse {
             let file = new FileSourceHandler(fileName, false);
             let qcpf = new QuickCOBOLParse(file);
 
-            return new QuickCOBOLParseData(qcpf, fileName, stat.mtimeMs);
+            return QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, stat.mtimeMs);
         }
 
-        let context: ExtensionContext = getCurrentContext();
-        let workspaceState = context.workspaceState;
-        let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(fileName);
+        let cachedObject: QuickCOBOLParseData|undefined = undefined;
 
+        if (InMemoryCache.has(fileName)) {
+            cachedObject = InMemoryCache.get(fileName);
+        }
         /* if the document is edited, drop the workspace cached object */
         if (document !== undefined && document.isDirty) {
-            workspaceState.update(document.fileName, null);
+            InMemoryCache.delete(fileName);
             let file = new VSCodeSourceHandler(document, false);
             let qcpf = new QuickCOBOLParse(file);
 
-            return new QuickCOBOLParseData(qcpf, fileName, 0);
+            return QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, 0);
         }
 
         /* does the cache object need to be updated? */
@@ -597,27 +599,31 @@ export default class QuickCOBOLParse {
 
             /* validate */
             if (cachedObject.generation !== QuickCOBOLParseData.EXPECTED_GENERATION) {
-                workspaceState.update(fileName, null);
+                InMemoryCache.delete(fileName);
                 cachedObject = undefined;
             } else {
                 let stat: fs.Stats = fs.statSync(fileName);
                 if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
-                    workspaceState.update(fileName, null);
+                    InMemoryCache.delete(fileName);
                     cachedObject = undefined;
                 }
             }
         }
 
         if (cachedObject === null || cachedObject === undefined) {
-            let stat: fs.Stats = fs.statSync(fileName);
+            try {
+                let stat: fs.Stats = fs.statSync(fileName);
 
-            let file = new FileSourceHandler(fileName, false);
-            let qcpf = new QuickCOBOLParse(file);
+                let file = new FileSourceHandler(fileName, false);
+                let qcpf = new QuickCOBOLParse(file);
 
-            let qcpd = new QuickCOBOLParseData(qcpf, fileName, stat.mtimeMs);
-
-            workspaceState.update(fileName, qcpd);
-            return qcpd;
+                let qcpd = QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, stat.mtimeMs);
+                InMemoryCache.set(fileName, qcpd);
+                return qcpd;
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
 
         return cachedObject;
@@ -1179,13 +1185,6 @@ export default class QuickCOBOLParse {
                 token.endLine = token.startLine;
                 token.endColumn = token.startColumn + token.token.length;
             }
-        }
-    }
-
-    public dump() {
-        for (var i = 0; i < this.tokensInOrder.length; i++) {
-            let token = this.tokensInOrder[i];
-            token.dump();
         }
     }
 }
