@@ -13,7 +13,7 @@ import { performance } from "perf_hooks";
 
 const util = require('util');
 
-const InMemoryCache: Map<string,any> = new Map<string,any>();
+const InMemoryCache: Map<string, any> = new Map<string, any>();
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -91,7 +91,7 @@ interface ICOBOLToken {
     level: number;
     endLine: number;
     endColumn: number;
-    parentToken: ICOBOLToken|undefined;
+    parentToken: ICOBOLToken | undefined;
 }
 
 class COBOLToken implements ICOBOLToken {
@@ -479,7 +479,7 @@ export default class QuickCOBOLParse {
 
                             let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(filename);
                             if (cachedObject !== null) {
-                                logCOBOLChannelLine("Removed Cache for " + filename);
+                                logCOBOLChannelLine(" Removed Cache for " + filename);
                                 workspaceState.update(filename, null);
                             }
 
@@ -495,7 +495,7 @@ export default class QuickCOBOLParse {
                                         let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(key);
 
                                         if (cachedObject !== null) {
-                                            logCOBOLChannelLine("Removed Cache for " + copyBookfilename);
+                                            logCOBOLChannelLine(" Removed Cache for " + copyBookfilename);
                                             workspaceState.update(key, null);
                                         }
                                     }
@@ -511,7 +511,7 @@ export default class QuickCOBOLParse {
                 }
             }
 
-            logCOBOLChannelLine('wipeOutCopyBookCache -> Execution time: %dms', performance.now() - start);
+            logCOBOLChannelLine(' wipeOutCopyBookCache -> Execution time: %dms', performance.now() - start);
         }
     }
 
@@ -543,7 +543,7 @@ export default class QuickCOBOLParse {
 
                                         if (cachedObject === null) {
                                             let qcpf = QuickCOBOLParse.getCachedObject(undefined, copyBookfilename);
-                                            logCOBOLChannelLine("Cached : " + copyBookfilename);
+                                            logCOBOLChannelLine(" Cached : " + copyBookfilename);
                                         }
                                     }
                                 }
@@ -569,23 +569,13 @@ export default class QuickCOBOLParse {
             return undefined;
         }
 
-        let ws = workspace.getWorkspaceFolder;
-        if (ws === undefined || ws === null) {
-            /* no cache */
-            let stat: fs.Stats = fs.statSync(fileName);
-
-            let file = new FileSourceHandler(fileName, false);
-            let qcpf = new QuickCOBOLParse(file);
-
-            return QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, stat.mtimeMs);
-        }
-
-        let cachedObject: QuickCOBOLParseData|undefined = undefined;
+        let cachedObject: QuickCOBOLParseData | undefined = undefined;
 
         if (InMemoryCache.has(fileName)) {
             cachedObject = InMemoryCache.get(fileName);
         }
-        /* if the document is edited, drop the workspace cached object */
+
+        /* if the document is edited, drop the in cached object */
         if (document !== undefined && document.isDirty) {
             InMemoryCache.delete(fileName);
             let file = new VSCodeSourceHandler(document, false);
@@ -596,22 +586,17 @@ export default class QuickCOBOLParse {
 
         /* does the cache object need to be updated? */
         if (cachedObject !== null && cachedObject !== undefined) {
-
-            /* validate */
-            if (cachedObject.generation !== QuickCOBOLParseData.EXPECTED_GENERATION) {
+            let stat: fs.Stats = fs.statSync(fileName);
+            if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
                 InMemoryCache.delete(fileName);
                 cachedObject = undefined;
-            } else {
-                let stat: fs.Stats = fs.statSync(fileName);
-                if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
-                    InMemoryCache.delete(fileName);
-                    cachedObject = undefined;
-                }
             }
         }
 
+        /* grab, the file parse it can cache it */
         if (cachedObject === null || cachedObject === undefined) {
             try {
+                var startTime = performance.now();
                 let stat: fs.Stats = fs.statSync(fileName);
 
                 let file = new FileSourceHandler(fileName, false);
@@ -619,6 +604,7 @@ export default class QuickCOBOLParse {
 
                 let qcpd = QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, stat.mtimeMs);
                 InMemoryCache.set(fileName, qcpd);
+                logCOBOLChannelLine(' Cache -> Execution time: %dms -> '+fileName, performance.now() - startTime);
                 return qcpd;
             }
             catch (e) {

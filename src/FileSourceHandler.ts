@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import * as fs from 'fs';
 
-var detab = require('detab');
+// var detab = require('detab');
 const lineByLine = require('n-readlines');
 
 export class FileSourceHandler implements ISourceHandler {
@@ -19,16 +19,16 @@ export class FileSourceHandler implements ISourceHandler {
         this.lines = [];
 
         let line: string;
-        const editor = vscode.window.activeTextEditor;
-        let tabSize: number = 4;
-        if (editor) {
-            if (typeof (editor.options.tabSize) === "number") {
-                tabSize = editor.options.tabSize as number;
-            }
-            if (typeof (editor.options.tabSize) === "string") {
-                tabSize = Number.parseInt(editor.options.tabSize as string);
-            }
-        }
+        //const editor = vscode.window.activeTextEditor;
+        // let tabSize: number = 4;
+        // if (editor) {
+        //     if (typeof (editor.options.tabSize) === "number") {
+        //         tabSize = editor.options.tabSize as number;
+        //     }
+        //     if (typeof (editor.options.tabSize) === "string") {
+        //         tabSize = Number.parseInt(editor.options.tabSize as string);
+        //     }
+        // }
 
         try {
             const liner = new lineByLine(document);
@@ -63,6 +63,8 @@ export class FileSourceHandler implements ISourceHandler {
         }
     }
 
+    private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
+
     getLine(lineNumber: number): string {
         let line = this.getRawLine(lineNumber);
 
@@ -74,14 +76,15 @@ export class FileSourceHandler implements ISourceHandler {
         if (line.length > 1 && line[0] === '*') {
             return "";
         }
+
         // drop fixed format line
         if (line.length > 7 && line[6] === '*') {
             return "";
         }
+
         // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
-            let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
-            if (line.match(paraPrefixRegex1)) {
+            if (line.match(FileSourceHandler.paraPrefixRegex1)) {
                 line = "       " + line.substr(6);
             } else {
                 if (line.length > 7 && line[6] === ' ') {
