@@ -276,7 +276,13 @@ export function deactivate() {
     formatStatusBarItem.dispose();
 }
 
+const logChannelDisabled: boolean = true;
+
 export function logCOBOLChannelLine(message: string, ...parameters:any[]){ 
+    if (logChannelDisabled) {
+        return;
+    }
+
     if (COBOLOutputChannel === null || COBOLOutputChannel === undefined) {
         COBOLOutputChannel = window.createOutputChannel("COBOL");
     }
@@ -289,6 +295,10 @@ export function logCOBOLChannelLine(message: string, ...parameters:any[]){
 }
 
 export function logCOBOLChannel(message: string, ...parameters:any[]) {
+    if (logChannelDisabled) {
+        return;
+    }
+
     if (COBOLOutputChannel !== null ||  COBOLOutputChannel !== undefined) {
         COBOLOutputChannel = window.createOutputChannel("COBOL");
     }
