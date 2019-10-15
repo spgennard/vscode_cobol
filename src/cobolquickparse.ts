@@ -82,26 +82,14 @@ export function splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: bo
     return ret;
 }
 
-interface ICOBOLToken {
-    tokenType: COBOLTokenStyle;
-    startLine: number;
-    startColumn: number;
-    token: string;
-    description: string;
-    level: number;
-    endLine: number;
-    endColumn: number;
-    parentToken: ICOBOLToken | undefined;
-}
-
-class COBOLToken implements ICOBOLToken {
+export class COBOLToken {
     public tokenType: COBOLTokenStyle;
     public startLine: number;
     public startColumn: number;
     public token: string;
     public description: string;
     public level: number;
-    public parentToken: ICOBOLToken | undefined;
+    public parentToken: COBOLToken | undefined;
     public endLine: number;
     public endColumn: number;
 
@@ -113,7 +101,7 @@ class COBOLToken implements ICOBOLToken {
         return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, "", this.token, this.description, this.parentToken);
     }
 
-    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: ICOBOLToken | undefined) {
+    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
         this.tokenType = tokenType;
         this.startLine = startLine;
         this.token = token.trim();
@@ -240,17 +228,17 @@ class Token {
 
 export class QuickCOBOLParseData {
 
-    public tokensInOrder: ICOBOLToken[] = [];
+    public tokensInOrder: COBOLToken[] = [];
 
     public copyBooksUsed: Map<string, string> = new Map<string, string>();
 
-    public sections: Map<string, ICOBOLToken> = new Map<string, ICOBOLToken>();
+    public sections: Map<string, COBOLToken> = new Map<string, COBOLToken>();
 
-    public paragraphs: Map<string, ICOBOLToken> = new Map<string, ICOBOLToken>();
+    public paragraphs: Map<string, COBOLToken> = new Map<string, COBOLToken>();
 
-    public constantsOrVariables: ICOBOLToken[] = [];
+    public constantsOrVariables: Map<string,COBOLToken[]> = new Map<string, COBOLToken[]>();
 
-    public callTargets: ICOBOLToken[] = [];
+    public callTargets: COBOLToken[] = [];
 
     public lastModifiedTime: number = 0;
 
@@ -287,13 +275,10 @@ export default class QuickCOBOLParse {
 
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
-
-    public constantsOrVariables: COBOLToken[] = [];
-
+    public constantsOrVariables: Map<string,COBOLToken[]>;
     public callTargets: COBOLToken[] = [];
-
     public isCached: boolean;
-
+    public copyBooksUsed: Map<string, string>;
 
     inProcedureDivision: boolean;
     pickFields: boolean;
@@ -318,7 +303,6 @@ export default class QuickCOBOLParse {
 
     copybookNestedInSection: boolean;
 
-    copyBooksUsed: Map<string, string>;
 
     public constructor(sourceHandler: ISourceHandler) {
         this.inProcedureDivision = false;
@@ -342,6 +326,7 @@ export default class QuickCOBOLParse {
         this.isCached = false;
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
+        this.constantsOrVariables = new Map<string, COBOLToken[]>();
 
         let prevToken: Token = Token.Blank;
 
@@ -413,7 +398,7 @@ export default class QuickCOBOLParse {
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
-         description: string, parentToken: ICOBOLToken | undefined) : COBOLToken
+         description: string, parentToken: COBOLToken | undefined) : COBOLToken
     {
         let ctoken = new COBOLToken(tokenType, startLine, line, token, description, parentToken);
         this.tokensInOrder.push(ctoken);
@@ -571,6 +556,10 @@ export default class QuickCOBOLParse {
                 let qcpd = QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, stat.mtimeMs);
                 InMemoryCache.set(fileName, qcpd);
                 logCOBOLChannelLine(' Cache -> Execution time: %dms -> ' + fileName, performance.now() - startTime);
+                if (InMemoryCache.size > 20) {
+                    let firstKey = InMemoryCache.keys().next().value;
+                    InMemoryCache.delete(firstKey);
+                }
                 return qcpd;
             }
             catch (e) {
@@ -579,8 +568,8 @@ export default class QuickCOBOLParse {
         }
 
         return cachedObject;
-
     }
+
     private static readonly literalRegex = /^[a-zA-Z][a-zA-Z0-9-_]*/g;
 
     private isValidLiteral(id: string): boolean {
@@ -680,7 +669,6 @@ export default class QuickCOBOLParse {
     }
 
     private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
-
         let token = new Token(line, prevToken);
         let tokenCountPerLine = 0;
         do {
@@ -699,7 +687,6 @@ export default class QuickCOBOLParse {
                 } else {
                     token.endsWithDot = false;
                 }
-
 
                 if (tokenCountPerLine === 1) {
                     let tokenAsNumber = Number.parseInt(tcurrent);
@@ -747,8 +734,21 @@ export default class QuickCOBOLParse {
         return token;
     }
 
-    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
+    private addVariableOrConstant(lowerCaseVariable: string, token:COBOLToken) {
+        if (this.constantsOrVariables.has(lowerCaseVariable)) {
+            let tokens : COBOLToken[]|undefined = this.constantsOrVariables.get(lowerCaseVariable);
+            if (tokens !== undefined) {
+                tokens.push(token);
+                return;
+            }
+        }
 
+        let tokens:COBOLToken[] = [];
+        tokens.push(token);
+        this.constantsOrVariables.set(lowerCaseVariable, tokens);
+
+    }
+    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
         let token = new Token(line, prevToken);
 
         do {
@@ -1021,7 +1021,7 @@ export default class QuickCOBOLParse {
                             if (this.isValidLiteral(currentLower)) {
                                 const style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
                                 let constantToken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision);
-                                this.constantsOrVariables.push(constantToken);
+                                this.addVariableOrConstant(currentLower, constantToken);
                             }
                         }
                         continue;
@@ -1031,7 +1031,7 @@ export default class QuickCOBOLParse {
                         let trimToken = this.trimLiteral(current);
                         if (this.isValidLiteral(currentLower)) {
                             let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision);
-                            this.constantsOrVariables.push(variableToken);
+                            this.addVariableOrConstant(currentLower, variableToken);
                         }
                         continue;
                     }
@@ -1040,7 +1040,7 @@ export default class QuickCOBOLParse {
                         if (this.isValidKeyword(nextTokenLower) === false) {
                             let trimmedNextToken = this.trimLiteral(nextToken);
                             let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision);
-                            this.constantsOrVariables.push(variableToken);
+                            this.addVariableOrConstant(trimmedNextToken.toLowerCase(), variableToken);
                         }
                     }
                 }

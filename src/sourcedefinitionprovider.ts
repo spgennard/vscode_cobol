@@ -1,6 +1,6 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, QuickCOBOLParseData } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, QuickCOBOLParseData, COBOLToken } from './cobolquickparse';
 import { getCopyBookFileOrNull } from './opencopybook';
 
 function getFuzzyVariableSearch(): boolean {
@@ -101,32 +101,48 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
     return undefined;
 }
 
-function getVariable(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParseData, position: vscode.Position): vscode.Location | undefined {
+function getVariable(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParseData, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
-        return undefined;
+        return false;
     }
 
-    for (var i = 0; i < sf.constantsOrVariables.length; i++) {
-        let token = sf.constantsOrVariables[i];
+    let tokenLower: string = word.toLowerCase();
+    if (sf.constantsOrVariables.has(tokenLower) === false) {
+        return false;
+    }
+
+    let tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(tokenLower);
+    if (tokens === undefined) {
+        return false;
+    }
+
+    for (var i = 0; i < tokens.length; i++) {
+        let token: COBOLToken = tokens[i];
 
         if (word === token.token || word === token.description) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
                     {
                         let srange = new vscode.Position(token.startLine, token.startColumn);
-                        return new vscode.Location(uri, srange);
+                        locations.push(new vscode.Location(uri, srange));
+                        break;
                     }
                 case COBOLTokenStyle.Variable:
                     {
                         let srange = new vscode.Position(token.startLine, token.startColumn);
-                        return new vscode.Location(uri, srange);
+                        locations.push(new vscode.Location(uri, srange));
+                        break;
                     }
             }
         }
     }
-    return undefined;
+
+    if (locations.length === 0) {
+        return false;
+    }
+    return true;
 }
 
 function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, position: vscode.Position): vscode.Location | undefined {
@@ -154,20 +170,20 @@ function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, p
 
 
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
-    let location: vscode.Location[] = [];
+    let locations: vscode.Location[] = [];
     let loc;
     let qcp: QuickCOBOLParseData | undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
 
     if (qcp === undefined) {
-        return location;
+        return locations;
     }
 
     let theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
         loc = getSectionOrParaLocation(document, document.uri, qcp, position);
         if (loc) {
-            location.push(loc);
-            return location;
+            locations.push(loc);
+            return locations;
         }
 
         /* search for targets in a copybook */
@@ -183,8 +199,8 @@ export function provideDefinition(document: TextDocument, position: Position, to
                         let uri = vscode.Uri.file(fileName);
                         loc = getSectionOrParaLocation(document, uri, qcpf, position);
                         if (loc) {
-                            location.push(loc);
-                            return location;
+                            locations.push(loc);
+                            return locations;
                         }
                     }
                 }
@@ -199,16 +215,14 @@ export function provideDefinition(document: TextDocument, position: Position, to
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, qcp, position);
         if (loc) {
-            location.push(loc);
-            return location;
+            locations.push(loc);
+            return locations;
         }
     }
 
     /* is it a known variable? */
-    loc = getVariable(document, document.uri, qcp, position);
-    if (loc) {
-        location.push(loc);
-        return location;
+    if (getVariable(locations, document, document.uri, qcp, position)) {
+        return locations;
     }
 
     /* search inside on disk copybooks referenced by the current program 
@@ -223,10 +237,8 @@ export function provideDefinition(document: TextDocument, position: Position, to
                 let qcpf = QuickCOBOLParse.getCachedObject(document, fileName);
                 if (qcpf !== undefined) {
                     let uri = vscode.Uri.file(fileName);
-                    loc = getVariable(document, uri, qcpf, position);
-                    if (loc) {
-                        location.push(loc);
-                        return location;
+                    if (getVariable(locations, document, uri, qcpf, position)) {
+                        return locations;
                     }
                 }
             }
@@ -244,12 +256,12 @@ export function provideDefinition(document: TextDocument, position: Position, to
         /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
         loc = getFuzzyVariable(document, position);
         if (loc) {
-            location.push(loc);
-            return location;
+            locations.push(loc);
+            return locations;
         }
     }
 
-    return location;
+    return locations;
 
 }
 
