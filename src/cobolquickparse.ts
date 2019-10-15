@@ -238,7 +238,7 @@ export class QuickCOBOLParseData {
 
     public constantsOrVariables: Map<string,COBOLToken[]> = new Map<string, COBOLToken[]>();
 
-    public callTargets: COBOLToken[] = [];
+    public callTargets: Map<string,COBOLToken> = new Map<string, COBOLToken>();
 
     public lastModifiedTime: number = 0;
 
@@ -247,9 +247,6 @@ export class QuickCOBOLParseData {
 
     public constructor() {
     }
-
-    public static readonly EXPECTED_GENERATION: number = 3;
-
 }
 
 export class QuickCOBOLParseDataHelper {
@@ -264,8 +261,6 @@ export class QuickCOBOLParseDataHelper {
         qp.fileName = fileName;
         qp.copyBooksUsed = source.copyBooksUsed;
         qp.tokensInOrder = source.tokensInOrder;
-        qp.generation = QuickCOBOLParseData.EXPECTED_GENERATION;
-
         return qp;
     }
 }
@@ -276,7 +271,7 @@ export default class QuickCOBOLParse {
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
     public constantsOrVariables: Map<string,COBOLToken[]>;
-    public callTargets: COBOLToken[] = [];
+    public callTargets: Map<string,COBOLToken>;
     public isCached: boolean;
     public copyBooksUsed: Map<string, string>;
 
@@ -327,6 +322,7 @@ export default class QuickCOBOLParse {
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
         this.constantsOrVariables = new Map<string, COBOLToken[]>();
+        this.callTargets = new Map<string, COBOLToken>();
 
         let prevToken: Token = Token.Blank;
 
@@ -855,14 +851,14 @@ export default class QuickCOBOLParse {
                 // handle entries
                 if (prevTokenLower === "entry" && current.length !== 0) {
                     let ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
-                    this.callTargets.push(ctoken);
+                    this.callTargets.set(currentLower, ctoken);
                     continue;
                 }
 
                 // handle program-id
                 if (prevTokenLower === "program-id" && current.length !== 0) {
                     let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
-                    this.callTargets.push(ctoken);
+                    this.callTargets.set(currentLower, ctoken);
 
                     // So we don't have any division?
                     if (this.currentDivision === COBOLToken.Null) {

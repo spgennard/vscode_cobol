@@ -27,6 +27,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
     }
 
+    private static paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
+
     getLine(lineNumber: number): string {
         let line = this.document.lineAt(lineNumber).text;
 
@@ -44,8 +46,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
         // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
-            let paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
-            if (line.match(paraPrefixRegex1)) {
+            if (line.match(VSCodeSourceHandler.paraPrefixRegex1)) {
                 line = "       " + line.substr(6);
             } else {
                 if (line.length > 7 && line[6] === ' ') {

@@ -66,8 +66,10 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     return undefined;
 }
 
+const sectionRegEx: RegExp =  new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+
 function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParseData, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
+    let wordRange = document.getWordRangeAtPosition(position,sectionRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
@@ -101,8 +103,10 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
     return undefined;
 }
 
+const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+
 function getVariable(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParseData, position: vscode.Position): boolean {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
+    let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return false;
@@ -145,24 +149,21 @@ function getVariable(locations: vscode.Location[], document: vscode.TextDocument
     return true;
 }
 
+const callRegEx : RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+
 function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*'));
+    let wordRange = document.getWordRangeAtPosition(position, callRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
-    for (var i = 0; i < sf.callTargets.length; i++) {
-        let token = sf.callTargets[i];
-
-        if (word === token.token) {
-            switch (token.tokenType) {
-                case COBOLTokenStyle.EntryPoint:
-                case COBOLTokenStyle.ProgramId:
-                    let srange = new vscode.Position(token.startLine, token.startColumn);
-                    return new vscode.Location(document.uri, srange);
-                    break;
-            }
+    let workLower = word.toLowerCase();
+    if (sf.callTargets.has(workLower)) {
+        let token: COBOLToken|undefined = sf.callTargets.get(workLower);
+        if (token !== undefined) {
+            let srange = new vscode.Position(token.startLine, token.startColumn);
+            return new vscode.Location(document.uri, srange);
         }
     }
     return undefined;

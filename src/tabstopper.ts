@@ -55,14 +55,15 @@ function multipleSelectionTab(edit: TextEditorEdit, d: TextDocument, sel: Select
     }
 }
 
+const multipleSelectionUnTabPttrn = /^\s*/;
+
 function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
         var charpos =  sel.start.character;
-        if (charpos === 0) {
-            const pttrn = /^\s*/;
+        if (charpos === 0) {     
             var selline = d.getText(sel);
             if (selline !== null) {
-                var match = selline.match(pttrn);
+                var match = selline.match(multipleSelectionUnTabPttrn);
                 if (match !== null) {
                     charpos = match[0].length;
                 }
