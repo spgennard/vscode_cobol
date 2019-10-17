@@ -263,13 +263,27 @@ export function isTabstopEnabled(): boolean {
     return expEnabled;
 }
 
-export function isOutlineEnabled(): boolean {
+export enum outlineFlag {
+ On = "on",
+ Off = "off",
+ Partial = "partial",
+ Skeleton = "skeleton"
+}
+
+export function isOutlineEnabled(): outlineFlag {
     var editorConfig = workspace.getConfiguration('coboleditor');
-    var outlineEnabled = editorConfig.get<boolean>('outline');
+    var outlineEnabled = editorConfig.get('outline');
     if (outlineEnabled === undefined || outlineEnabled === null) {
-        outlineEnabled = true;
+        return outlineFlag.On;
     }
-    return outlineEnabled;
+
+    switch(outlineEnabled) {
+        case "on" : return outlineFlag.On;
+        case "off" : return outlineFlag.Off;
+        case "partial" : return outlineFlag.Partial;
+        case "skeleton" : return outlineFlag.Skeleton;
+    }
+    return outlineFlag.On;
 }
 
 

@@ -31,7 +31,7 @@ export class FileSourceHandler implements ISourceHandler {
         // }
 
         try {
-            const liner = new lineByLine(document);
+            const liner = new lineByLine(document, {readChunk:256*1024} );
             while (line = liner.next()) {
                 // if (line.indexOf('\t') !== -1) {
                 //     line = detab(line.toString(), tabSize);

@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, splitArgument } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
-import { isOutlineEnabled } from './extension';
+import { isOutlineEnabled, outlineFlag } from './extension';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
 
-        if (isOutlineEnabled() === false) {
+        if (isOutlineEnabled() === outlineFlag.Off) {
             return symbols;
         }
 
@@ -72,8 +72,8 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
 
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
-
-        if (isOutlineEnabled() === false) {
+        let outlineLevel = isOutlineEnabled();
+        if (outlineLevel === outlineFlag.Off) {
             return symbols;
         }
 
@@ -84,6 +84,20 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
         }
 
         let ownerUri = document.uri;
+
+        let includePara: boolean = true;
+        let includeVars: boolean = true;
+        let includeSections: boolean = true;
+
+        if (outlineLevel === outlineFlag.Partial) {
+            includePara = false;
+        }
+
+        if (outlineLevel === outlineFlag.Skeleton) {
+            includeVars = false;
+            includeSections = false;
+            includePara = false;
+        }
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {
             let token = sf.tokensInOrder[i];
@@ -107,7 +121,13 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                     break;
                 case COBOLTokenStyle.Paragraph:
+                    if (includePara === false) {
+                        break;
+                    }
                 case COBOLTokenStyle.Section:
+                    if (includeSections === false) {
+                        break;
+                    }
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                     break;
                 case COBOLTokenStyle.EntryPoint:
@@ -124,9 +144,15 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
                     break;
                 case COBOLTokenStyle.Variable:
+                    if (includeVars === false) {
+                        break;
+                    }
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
                     break;
                 case COBOLTokenStyle.Constant:
+                    if (includeVars === false) {
+                        break;
+                    }
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constant, container, lrange));
                     break;
                 case COBOLTokenStyle.MethodId:
