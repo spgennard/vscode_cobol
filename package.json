@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.5.1",
+    "version": "5.5.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -216,6 +216,11 @@
                 "coboleditor.enable_tabstop": {
                     "type": "boolean",
                     "title": "Enable COBOL tab/detab key",
+                    "default": true
+                },
+                "coboleditor.outline": {
+                    "type": "boolean",
+                    "title": "Enable Outline",
                     "default": true
                 }
             }

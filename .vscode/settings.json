@@ -7,5 +7,6 @@
         "out": true
     },
     "typescript.tsc.autoDetect": "off",
-    "coboleditor.ignorecolumn_b_onwards": false
+    "coboleditor.ignorecolumn_b_onwards": false,
+    "cSpell.enabled": false
 }

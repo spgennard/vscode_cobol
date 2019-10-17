@@ -2,6 +2,7 @@ import { TextDocument, Definition, Position, CancellationToken, ProviderResult, 
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, QuickCOBOLParseData, COBOLToken } from './cobolquickparse';
 import { getCopyBookFileOrNull } from './opencopybook';
+import { isOutlineEnabled } from './extension';
 
 function getFuzzyVariableSearch(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
@@ -226,7 +227,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
         return locations;
     }
 
-    /* search inside on disk copybooks referenced by the current program 
+    /* search inside on disk copybooks referenced by the current program
      * for variables
      */
     if (getCopyBookSearch()) {

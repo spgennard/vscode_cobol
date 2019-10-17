@@ -1,10 +1,15 @@
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, splitArgument } from './cobolquickparse';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
+import { isOutlineEnabled } from './extension';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
+
+        if (isOutlineEnabled() === false) {
+            return symbols;
+        }
 
         let ownerUri = document.uri;
 
@@ -15,11 +20,11 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
         for (let i = 0; i < document.lineCount; i++) {
             const line = document.lineAt(i);
             let textText = line.text;
-            
+
             if (textText.startsWith("//*")) {
                 continue;
             }
-                
+
             if (textText.startsWith("//")) {
                 let textLineClean = textText.substr(2);
                 let lineTokens = [];
@@ -44,7 +49,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
                             symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Field, container, lrange));
                             container = lineTokens[0];
                         }
-                    
+
                         if (lineTokens[1].toLowerCase().indexOf("exec") !== -1) {
                             let srange = new vscode.Range(new vscode.Position(i, 0),
                                 new vscode.Position(i, lineTokens.length));
@@ -56,7 +61,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
                     }
                 }
             }
-            
+
         }
 
         return symbols;
@@ -68,12 +73,16 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
 
+        if (isOutlineEnabled() === false) {
+            return symbols;
+        }
+
         let sf = QuickCOBOLParse.getCachedObject(document, document.fileName);
 
         if (sf === undefined) {
             return symbols;
         }
-    
+
         let ownerUri = document.uri;
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {
@@ -81,7 +90,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
 
             let srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                 new vscode.Position(token.endLine, token.endColumn));
-            
+
             let lrange = new vscode.Location(ownerUri, srange);
 
             let container = token.parentToken !== undefined ? token.parentToken.description : "";
@@ -128,8 +137,8 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                     break;
                 case COBOLTokenStyle.Constructor:
                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
-                    break;                              
-                }
+                    break;
+            }
         }
         return symbols;
     }

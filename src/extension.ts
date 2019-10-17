@@ -57,9 +57,9 @@ export function activate(context: ExtensionContext) {
         } else {
             commands.executeCommand("tab");
         }
-        
+
     });
-    
+
     var unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
         if (isTabstopEnabled())
         {
@@ -136,7 +136,7 @@ export function activate(context: ExtensionContext) {
         QuickCOBOLParse.wipeOutCopyBookCache();
         QuickCOBOLParse.processAllFilesInWorkspace();
     });
- 
+
     var wipeOutCopyBookCache = commands.registerCommand('cobolplugin.wipeOutCopyBookCache', function () {
             QuickCOBOLParse.wipeOutCopyBookCache();
     });
@@ -149,7 +149,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
     context.subscriptions.push(changeSourceFormat);
-    
+
     context.subscriptions.push(changeLanguageToAcu);
     context.subscriptions.push(changeLanguageToCOBOL);
     context.subscriptions.push(changeLanguageToOpenCOBOL);
@@ -192,19 +192,20 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
-    context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
- 
+    if (isOutlineEnabled()) {
+        const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
 
-    /* TODO: add .DIR keywords too */
-    const documentSymbolProvider = new CobolDocumentSymbolProvider();
-    context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
- 
+        /* TODO: add .DIR keywords too */
+        const documentSymbolProvider = new CobolDocumentSymbolProvider();
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
+    }
+
     /* hover provider */
     if (getExperimentialFeatures()) {
         let disposable = languages.registerHoverProvider(allCobolSelectors, {
             provideHover(document, position, token) {
-         
+
                 // window.showInformationMessage(position.toString());
                 let txt = document.getText(document.getWordRangeAtPosition(position));
                 let txtTarger = getCallTarget(txt);
@@ -262,6 +263,16 @@ export function isTabstopEnabled(): boolean {
     return expEnabled;
 }
 
+export function isOutlineEnabled(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var outlineEnabled = editorConfig.get<boolean>('outline');
+    if (outlineEnabled === undefined || outlineEnabled === null) {
+        outlineEnabled = true;
+    }
+    return outlineEnabled;
+}
+
+
 export function enableMarginStatusBar(formatStyle: ESourceFormat) {
     formatStatusBarItem.text = "Source:"+formatStyle;
     formatStyle.toString();
@@ -278,7 +289,7 @@ export function deactivate() {
 
 const logChannelDisabled: boolean = true;
 
-export function logCOBOLChannelLine(message: string, ...parameters:any[]){ 
+export function logCOBOLChannelLine(message: string, ...parameters:any[]){
     if (logChannelDisabled) {
         return;
     }
