@@ -133,12 +133,7 @@ export function activate(context: ExtensionContext) {
 
 
     var processAllCopybookFiles = commands.registerCommand('cobolplugin.processAllCopybookFiles', function () {
-        QuickCOBOLParse.wipeOutCopyBookCache();
         QuickCOBOLParse.processAllFilesInWorkspace();
-    });
-
-    var wipeOutCopyBookCache = commands.registerCommand('cobolplugin.wipeOutCopyBookCache', function () {
-            QuickCOBOLParse.wipeOutCopyBookCache();
     });
 
     context.subscriptions.push(move2pdCommand);
@@ -158,7 +153,6 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(toggleCOBOLMargin);
 
     context.subscriptions.push(processAllCopybookFiles);
-    context.subscriptions.push(wipeOutCopyBookCache);
 
     context.subscriptions.push(DocComment.register());
 
@@ -301,7 +295,7 @@ export function deactivate() {
     formatStatusBarItem.dispose();
 }
 
-const logChannelDisabled: boolean = true;
+const logChannelDisabled: boolean = false;
 
 export function logCOBOLChannelLine(message: string, ...parameters:any[]){
     if (logChannelDisabled) {
@@ -314,9 +308,12 @@ export function logCOBOLChannelLine(message: string, ...parameters:any[]){
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
+        console.log(util.format(message, parameters)+"\n");
         return;
     }
+
     COBOLOutputChannel.appendLine(message);
+    console.log(message+"\n");
 }
 
 export function logCOBOLChannel(message: string, ...parameters:any[]) {
@@ -330,7 +327,10 @@ export function logCOBOLChannel(message: string, ...parameters:any[]) {
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.append(util.format(message, parameters));
+        console.log(util.format(message, parameters));
         return;
     }
     COBOLOutputChannel.append(message);
+    console.log(message);
+    
 }

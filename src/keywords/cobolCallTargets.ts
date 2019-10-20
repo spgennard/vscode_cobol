@@ -1,4 +1,3 @@
-import * as Collections from 'typescript-collections';
 import { Hover } from 'vscode';
 
 import ile_datatime from './ile_datetime.json';

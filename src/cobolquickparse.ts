@@ -6,12 +6,22 @@ import { FileSourceHandler } from "./FileSourceHandler";
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
+import * as crypto from 'crypto';
+
 import { getCurrentContext, logCOBOLChannelLine } from "./extension";
 import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
+import { TSMap } from "typescript-map";
+import { Hash } from "crypto";
+import { getServers } from "dns";
+import { start } from "repl";
 
 const util = require('util');
+
+
+
 
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 
@@ -86,7 +96,7 @@ export class COBOLToken {
     public tokenType: COBOLTokenStyle;
     public startLine: number;
     public startColumn: number;
-    public token: string;
+    public tokenName: string;
     public description: string;
     public level: number;
     public parentToken: COBOLToken | undefined;
@@ -98,20 +108,20 @@ export class COBOLToken {
     static Null: COBOLToken = new COBOLToken(COBOLTokenStyle.Null, -1, "", "", "", undefined);
 
     public getEndDelimiterToken(): COBOLToken {
-        return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, "", this.token, this.description, this.parentToken);
+        return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken);
     }
 
     public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
         this.tokenType = tokenType;
         this.startLine = startLine;
-        this.token = token.trim();
-        this.startColumn = line.indexOf(this.token);
+        this.tokenName = token.trim();
+        this.startColumn = line.indexOf(this.tokenName);
         this.description = description;
         this.endLine = this.endColumn = 0;
         this.level = (parentToken === undefined) ? 1 : 1 + parentToken.level;
         this.parentToken = parentToken;
 
-        if (this.token.length !== 0) {
+        if (this.tokenName.length !== 0) {
             /* ensure we don't have any odd start columns */
             if (this.startColumn < 0) {
                 this.startColumn = 0;
@@ -226,52 +236,17 @@ class Token {
 }
 
 
-export class QuickCOBOLParseData {
-
-    public tokensInOrder: COBOLToken[] = [];
-
-    public copyBooksUsed: Map<string, string> = new Map<string, string>();
-
-    public sections: Map<string, COBOLToken> = new Map<string, COBOLToken>();
-
-    public paragraphs: Map<string, COBOLToken> = new Map<string, COBOLToken>();
-
-    public constantsOrVariables: Map<string,COBOLToken[]> = new Map<string, COBOLToken[]>();
-
-    public callTargets: Map<string,COBOLToken> = new Map<string, COBOLToken>();
-
-    public lastModifiedTime: number = 0;
-
-    public generation: number = 0;
-    public fileName: string = "";
-
-    public constructor() {
-    }
-}
-
-export class QuickCOBOLParseDataHelper {
-    public static fromQuickCOBOLParse(source: QuickCOBOLParse, fileName: string, lastModifiedTime: number) {
-
-        let qp = new QuickCOBOLParseData();
-        qp.sections = source.sections;
-        qp.paragraphs = source.paragraphs;
-        qp.constantsOrVariables = source.constantsOrVariables;
-        qp.callTargets = source.callTargets;
-        qp.lastModifiedTime = lastModifiedTime;
-        qp.fileName = fileName;
-        qp.copyBooksUsed = source.copyBooksUsed;
-        qp.tokensInOrder = source.tokensInOrder;
-        return qp;
-    }
-}
 
 export default class QuickCOBOLParse {
+    public filename: string;
+    public lastModifiedTime: number;
+
     public tokensInOrder: COBOLToken[] = [];
 
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
-    public constantsOrVariables: Map<string,COBOLToken[]>;
-    public callTargets: Map<string,COBOLToken>;
+    public constantsOrVariables: Map<string, COBOLToken[]>;
+    public callTargets: Map<string, COBOLToken>;
     public isCached: boolean;
     public copyBooksUsed: Map<string, string>;
 
@@ -298,8 +273,9 @@ export default class QuickCOBOLParse {
 
     copybookNestedInSection: boolean;
 
-
-    public constructor(sourceHandler: ISourceHandler) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, lastModifiedTime: number) {
+        this.filename = filename;
+        this.lastModifiedTime = lastModifiedTime;
         this.inProcedureDivision = false;
         this.pickFields = false;
         this.guessFields = false;       // does not pickup the initial group item in a copybook, so it's not quite ready
@@ -346,8 +322,8 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                console.log("CobolQuickParse - Parse error : " + e);
-                console.log(e.stack);
+                logCOBOLChannelLine("CobolQuickParse - Parse error : " + e);
+                logCOBOLChannelLine(e.stack);
             }
         }
 
@@ -386,21 +362,21 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                console.log("CobolQuickParse - Parse error : " + e);
-                console.log(e.stack);
+                logCOBOLChannelLine("CobolQuickParse - Parse error : " + e);
+                logCOBOLChannelLine(e.stack);
             }
         }
         this.updateEndings(sourceHandler);
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
-         description: string, parentToken: COBOLToken | undefined) : COBOLToken
-    {
+        description: string, parentToken: COBOLToken | undefined): COBOLToken {
         let ctoken = new COBOLToken(tokenType, startLine, line, token, description, parentToken);
         this.tokensInOrder.push(ctoken);
         return ctoken;
 
     }
+
     private static canReadFIle(fileName: string): boolean {
         try {
             fs.accessSync(fileName, fs.constants.R_OK);
@@ -410,113 +386,12 @@ export default class QuickCOBOLParse {
         }
     }
 
-    public static wipeOutCopyBookCache() {
-        if (workspace.workspaceFolders) {
-            var start = performance.now();
-
-            var exts: string[] = getExtensions();
-            let context: ExtensionContext = getCurrentContext();
-            let workspaceState = context.workspaceState;
-
-            for (var folder of workspace.workspaceFolders) {
-                for (var file of fs.readdirSync(folder.uri.fsPath)) {
-                    for (let extpos = 0; extpos < exts.length; extpos++) {
-                        if (file.endsWith(exts[extpos])) {
-                            var filename = folder.uri.fsPath + path.sep + file;
-
-                            let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(filename);
-                            if (cachedObject !== null) {
-                                logCOBOLChannelLine(" Removed Cache for " + filename);
-                                workspaceState.update(filename, null);
-                            }
-
-                            let filefs = new FileSourceHandler(filename, false);
-                            let qcp = new QuickCOBOLParse(filefs);
-
-                            /* iterater through all the known copybook references */
-                            for (let [key, value] of qcp.getcopyBooksUsed()) {
-                                try {
-                                    let copyBookfilename = getCopyBookFileOrNull(key);
-                                    if (copyBookfilename !== null && copyBookfilename.length !== 0) {
-
-                                        let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(key);
-
-                                        if (cachedObject !== null) {
-                                            logCOBOLChannelLine(" Removed Cache for " + copyBookfilename);
-                                            workspaceState.update(key, null);
-                                        }
-                                    }
-                                }
-                                catch
-                                {
-                                    // should not happen but if it does, continue on to the next copybook reference
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            logCOBOLChannelLine(' wipeOutCopyBookCache -> Execution time: %dms', performance.now() - start);
-        }
-    }
-
-    public static processAllFilesInWorkspace() {
-        if (workspace.workspaceFolders) {
-            var start = performance.now();
-
-            var exts: string[] = getExtensions();
-
-            for (var folder of workspace.workspaceFolders) {
-                for (var file of fs.readdirSync(folder.uri.fsPath)) {
-                    for (let extpos = 0; extpos < exts.length; extpos++) {
-                        if (file.endsWith(exts[extpos])) {
-                            var filename = folder.uri.fsPath + path.sep + file;
-                            // console.log("SPG: " + filename);
-
-                            let filefs = new FileSourceHandler(filename, false);
-                            let qcp = new QuickCOBOLParse(filefs);
-
-                            /* iterater through all the known copybook references */
-                            for (let [key, value] of qcp.getcopyBooksUsed()) {
-                                try {
-                                    let copyBookfilename = getCopyBookFileOrNull(key);
-                                    if (copyBookfilename !== null && copyBookfilename.length !== 0) {
-
-                                        let context: ExtensionContext = getCurrentContext();
-                                        let workspaceState = context.workspaceState;
-                                        let cachedObject: QuickCOBOLParseData | undefined = workspaceState.get<QuickCOBOLParseData>(key);
-
-                                        if (cachedObject === null) {
-                                            let qcpf = QuickCOBOLParse.getCachedObject(undefined, copyBookfilename);
-                                            logCOBOLChannelLine(" Cached : " + copyBookfilename);
-                                        }
-                                    }
-                                }
-                                catch
-                                {
-                                    // should not happen but if it does, continue on to the next copybook reference
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-            var end = performance.now() - start;
-
-            logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end));
-        }
-
-    }
-
-    public static getCachedObject(document: TextDocument | undefined, fileName: string): QuickCOBOLParseData | undefined {
+    public static getCachedObject(document: TextDocument | undefined, fileName: string): QuickCOBOLParse | undefined {
         if (this.canReadFIle(fileName) === false) {
             return undefined;
         }
 
-        let cachedObject: QuickCOBOLParseData | undefined = undefined;
+        let cachedObject: QuickCOBOLParse | undefined = undefined;
 
         if (InMemoryCache.has(fileName)) {
             cachedObject = InMemoryCache.get(fileName);
@@ -526,9 +401,7 @@ export default class QuickCOBOLParse {
         if (document !== undefined && document.isDirty) {
             InMemoryCache.delete(fileName);
             let file = new VSCodeSourceHandler(document, false);
-            let qcpf = new QuickCOBOLParse(file);
-
-            return QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, 0);
+            return new QuickCOBOLParse(file, document.fileName, 0);
         }
 
         /* does the cache object need to be updated? */
@@ -547,9 +420,8 @@ export default class QuickCOBOLParse {
                 let stat: fs.Stats = fs.statSync(fileName);
 
                 let file = new FileSourceHandler(fileName, false);
-                let qcpf = new QuickCOBOLParse(file);
+                let qcpd = new QuickCOBOLParse(file, fileName, stat.mtimeMs);
 
-                let qcpd = QuickCOBOLParseDataHelper.fromQuickCOBOLParse(qcpf, fileName, stat.mtimeMs);
                 InMemoryCache.set(fileName, qcpd);
                 logCOBOLChannelLine(' Cache -> Execution time: %dms -> ' + fileName, performance.now() - startTime);
                 if (InMemoryCache.size > 20) {
@@ -559,11 +431,72 @@ export default class QuickCOBOLParse {
                 return qcpd;
             }
             catch (e) {
-                console.log(e);
+                logCOBOLChannelLine(e);
             }
         }
 
         return cachedObject;
+    }
+
+
+    public static processAllFilesInWorkspace() {
+        if (workspace.workspaceFolders) {
+            var start = performance.now();
+
+            var exts: string[] = getExtensions();
+
+            try {
+                for (var folder of workspace.workspaceFolders) {
+                    for (var file of fs.readdirSync(folder.uri.fsPath)) {
+                        for (let extpos = 0; extpos < exts.length; extpos++) {
+                            if (file.endsWith(exts[extpos])) {
+                                var filename = folder.uri.fsPath + path.sep + file;
+                                // logCOBOLChannelLine("SPG: " + filename);
+
+                                let filefs = new FileSourceHandler(filename, false);
+                                let qcp = new QuickCOBOLParse(filefs, filename, 0);
+
+                                /* iterater through all the known copybook references */
+                                for (let [key, value] of qcp.getcopyBooksUsed()) {
+                                    try {
+                                        let copyBookfilename: string = "";
+                                        try {
+                                            copyBookfilename = getCopyBookFileOrNull(key);
+                                            if (copyBookfilename !== null && copyBookfilename.length !== 0) {
+                                                let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                                                let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, 0);
+                                                let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+
+                                                COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                                            }
+                                        }
+                                        catch (ex) {
+                                            if (copyBookfilename !== null) {
+                                                logCOBOLChannelLine("Copybook: " + copyBookfilename);
+                                            }
+                                            logCOBOLChannelLine(ex);
+                                            logCOBOLChannelLine(ex.stack);
+                                        }
+                                    }
+                                    catch (fe) {
+                                        logCOBOLChannelLine(fe);
+                                        logCOBOLChannelLine(fe.stack);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (re) {
+                logCOBOLChannelLine(re);
+                logCOBOLChannelLine(re.stack);
+            }
+            var end = performance.now() - start;
+
+            logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end));
+        }
+
     }
 
     private static readonly literalRegex = /^[a-zA-Z][a-zA-Z0-9-_]*/g;
@@ -721,8 +654,8 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                console.log("Cobolquickparse relaxedParseLineByLine line error: " + e);
-                console.log(e.stack);
+                logCOBOLChannelLine("Cobolquickparse relaxedParseLineByLine line error: " + e);
+                logCOBOLChannelLine(e.stack);
             }
         }
         while (token.moveToNextToken() === false);
@@ -730,16 +663,16 @@ export default class QuickCOBOLParse {
         return token;
     }
 
-    private addVariableOrConstant(lowerCaseVariable: string, token:COBOLToken) {
+    private addVariableOrConstant(lowerCaseVariable: string, token: COBOLToken) {
         if (this.constantsOrVariables.has(lowerCaseVariable)) {
-            let tokens : COBOLToken[]|undefined = this.constantsOrVariables.get(lowerCaseVariable);
+            let tokens: COBOLToken[] | undefined = this.constantsOrVariables.get(lowerCaseVariable);
             if (tokens !== undefined) {
                 tokens.push(token);
                 return;
             }
         }
 
-        let tokens:COBOLToken[] = [];
+        let tokens: COBOLToken[] = [];
         tokens.push(token);
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
 
@@ -809,7 +742,7 @@ export default class QuickCOBOLParse {
                     }
 
                     // So we need to insert a fake data division?
-                    if (this.currentDivision === COBOLToken.Null || this.currentDivision.token.toLowerCase().startsWith("data") === false) {
+                    if (this.currentDivision === COBOLToken.Null || this.currentDivision.tokenName.toLowerCase().startsWith("data") === false) {
                         if (prevTokenLower === 'file' ||
                             prevTokenLower === 'working-storage' ||
                             prevTokenLower === 'local-storage' ||
@@ -1042,8 +975,8 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                console.log("Cobolquickparse line error: " + e);
-                console.log(e.stack);
+                logCOBOLChannelLine("Cobolquickparse line error: " + e);
+                logCOBOLChannelLine(e.stack);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1082,8 +1015,8 @@ export default class QuickCOBOLParse {
             }
         }
         catch (e) {
-            console.log("Cobolquickparse/processInsideTokens line error: " + e);
-            console.log(e.stack);
+            logCOBOLChannelLine("Cobolquickparse/processInsideTokens line error: " + e);
+            logCOBOLChannelLine(e.stack);
         }
     }
 
@@ -1140,10 +1073,129 @@ export default class QuickCOBOLParse {
 
             if (token.endLine === 0) {
                 token.endLine = token.startLine;
-                token.endColumn = token.startColumn + token.token.length;
+                token.endColumn = token.startColumn + token.tokenName.length;
             }
         }
     }
 }
 
+export class COBOLSymbol {
+    public typeOfSymbol: string | undefined;
+    public symbol: string | undefined;
+    public lineNumber: number | undefined;
 
+    public constructor(typeOfSymbol?: string, symbol?: string, lineNumber?: number) {
+        this.typeOfSymbol = typeOfSymbol;
+        this.symbol = symbol;
+        this.lineNumber = lineNumber;
+    }
+
+    static fromJSON(d: Object): COBOLSymbol {
+        return Object.assign(new COBOLSymbol(), d);
+    }
+}
+
+// JSON callbacks to Map to something that can be serialised
+function replacer(this: any, key: any, value: any) {
+    const originalObject = this[key];
+    if (originalObject instanceof Map) {
+        return {
+            dataType: 'Map',
+            value: Array.from(originalObject.entries()), // or with spread: value: [...originalObject]
+        };
+    } else {
+        return value;
+    }
+}
+
+function reviver(key: any, value: any) {
+    if (typeof value === 'object' && value !== null) {
+        if (value.dataType === 'Map') {
+            return new Map(value.value);
+        }
+    }
+    return value;
+}
+export class COBOLSymbolTable {
+    public lastModifiedTime: number = 0;
+
+    public fileName: string = "";
+
+    public symbols: Map<string, COBOLSymbol>;
+
+    public constructor(source?: QuickCOBOLParse) {
+        this.symbols = new Map<string, COBOLSymbol>();
+    }
+
+    static fromJSON(d: Object): COBOLSymbolTable {
+        return Object.assign(new COBOLSymbolTable(), d);
+    }
+}
+
+export class COBOLSymbolTableHelper {
+    public static getCOBOLSymbolTable(qp: QuickCOBOLParse): COBOLSymbolTable {
+        let st = new COBOLSymbolTable();
+        st.fileName = qp.filename;
+        st.lastModifiedTime = qp.lastModifiedTime;
+
+        logCOBOLChannelLine("Creating symbol table for " + st.fileName + " length=" + qp.tokensInOrder.length);
+        var startTime = performance.now();
+        for (let i = 0; i < qp.tokensInOrder.length; i++) {
+            let token = qp.tokensInOrder[i];
+            switch (token.tokenType) {
+                case COBOLTokenStyle.Constant:
+                    st.symbols.set(token.tokenName, new COBOLSymbol("C", token.tokenName, token.startLine));
+                    break;
+                case COBOLTokenStyle.Variable:
+                    st.symbols.set(token.tokenName, new COBOLSymbol("V", token.tokenName, token.startLine));
+                    break;
+                case COBOLTokenStyle.Paragraph:
+                    st.symbols.set(token.tokenName, new COBOLSymbol("P", token.tokenName, token.startLine));
+                    break;
+                case COBOLTokenStyle.Section:
+                    st.symbols.set(token.tokenName, new COBOLSymbol("S", token.tokenName, token.startLine));
+                    break;
+            }
+        }
+        logCOBOLChannelLine("Complete - "+(performance.now() - startTime));
+        return st;
+    }
+
+    public static getCacheDirectory(): string {
+        let cacheDir: string = path.join(os.homedir(), ".vscode_cobol");
+
+        if (workspace.workspaceFolders) {
+            for (var folder of workspace.workspaceFolders) {
+            }
+        }
+
+        if (fs.existsSync(cacheDir) === false) {
+            fs.mkdirSync(cacheDir);
+        }
+        return cacheDir;
+
+    }
+
+    public static getHashForFilename(filename: string) {
+        let hash: Hash = crypto.createHash('sha256');
+        hash.update(filename);
+        return hash.digest('hex');
+    }
+
+    public static saveToFile(st: COBOLSymbolTable) {
+        let fn = path.join(this.getCacheDirectory(), this.getHashForFilename(st.fileName) + ".sym");
+
+        let j = JSON.stringify(st, replacer);
+        fs.writeFileSync(fn, j);
+    }
+
+    public static loadFromFile(filename: string): COBOLSymbolTable | undefined {
+        let fn = path.join(this.getCacheDirectory(), this.getHashForFilename(filename) + ".sym");
+
+        if (fs.existsSync) {
+            let str: string = fs.readFileSync(fn).toString();
+            return JSON.parse(str, reviver);
+        }
+        return undefined;
+    }
+}

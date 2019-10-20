@@ -495,10 +495,6 @@
             {
                 "command": "cobolplugin.processAllCopybookFiles",
                 "title": "COBOL: Process All Copybook Files"
-            },
-            {
-                "command": "cobolplugin.wipeOutCopyBookCache",
-                "title": "COBOL: Wipeout copybookcache"
             }
         ],
         "menus": {
@@ -873,20 +869,19 @@
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
-        "@types/node": "^10.14.19",
+        "@types/node": "^10.14.22",
         "tslint": "^5.20.0",
-        "typescript": "^3.6.3",
+        "typescript": "^3.6.4",
         "vscode": "^1.1.36"
     },
     "dependencies": {
         "@types/fs-extra": "^5.1.0",
         "@types/minimatch": "^3.0.3",
-        "trie-search": "^1.2.11",
         "detab": "^2.0.2",
         "n-readlines": "1.0.0",
-        "flatted": "^2.0.1",
-        "reflect-metadata": "^0.1.13",
+        "trie-search": "^1.2.11",
         "typescript-collections": "^1.3.2",
-        "vsce": "^1.66.0"
+        "typescript-map": "^0.0.7",
+        "vsce": "^1.68.0"
     }
 }

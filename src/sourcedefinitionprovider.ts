@@ -1,8 +1,8 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, QuickCOBOLParseData, COBOLToken } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol } from './cobolquickparse';
 import { getCopyBookFileOrNull } from './opencopybook';
-import { isOutlineEnabled } from './extension';
+import { isOutlineEnabled, logCOBOLChannelLine } from './extension';
 
 function getFuzzyVariableSearch(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
@@ -67,10 +67,10 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     return undefined;
 }
 
-const sectionRegEx: RegExp =  new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
-function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParseData, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position,sectionRegEx);
+function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
@@ -86,7 +86,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         }
     }
     catch (e) {
-        console.log(e);
+        logCOBOLChannelLine(e);
     }
 
     try {
@@ -99,14 +99,14 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         }
     }
     catch (e) {
-        console.log(e);
+        logCOBOLChannelLine(e);
     }
     return undefined;
 }
 
 const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
-function getVariable(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParseData, position: vscode.Position): boolean {
+function getVariable(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -126,7 +126,7 @@ function getVariable(locations: vscode.Location[], document: vscode.TextDocument
     for (var i = 0; i < tokens.length; i++) {
         let token: COBOLToken = tokens[i];
 
-        if (word === token.token || word === token.description) {
+        if (word === token.tokenName || word === token.description) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
                     {
@@ -150,9 +150,9 @@ function getVariable(locations: vscode.Location[], document: vscode.TextDocument
     return true;
 }
 
-const callRegEx : RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const callRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
-function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, position: vscode.Position): vscode.Location | undefined {
+function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, callRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -161,7 +161,7 @@ function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, p
 
     let workLower = word.toLowerCase();
     if (sf.callTargets.has(workLower)) {
-        let token: COBOLToken|undefined = sf.callTargets.get(workLower);
+        let token: COBOLToken | undefined = sf.callTargets.get(workLower);
         if (token !== undefined) {
             let srange = new vscode.Position(token.startLine, token.startColumn);
             return new vscode.Location(document.uri, srange);
@@ -174,7 +174,7 @@ function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParseData, p
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
     let locations: vscode.Location[] = [];
     let loc;
-    let qcp: QuickCOBOLParseData | undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
+    let qcp: QuickCOBOLParse | undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
 
     if (qcp === undefined) {
         return locations;
@@ -190,17 +190,22 @@ export function provideDefinition(document: TextDocument, position: Position, to
 
         /* search for targets in a copybook */
         if (getCopyBookSearch()) {
+            let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
+            let word = wordRange ? document.getText(wordRange) : '';
+        
             /* iterater through all the known copybook references */
             for (let [key, value] of qcp.copyBooksUsed) {
                 try {
 
                     let fileName = getCopyBookFileOrNull(key);
-                    let qcpf = QuickCOBOLParse.getCachedObject(document, fileName);
 
-                    if (qcpf !== undefined) {
-                        let uri = vscode.Uri.file(fileName);
-                        loc = getSectionOrParaLocation(document, uri, qcpf, position);
-                        if (loc) {
+                    let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.loadFromFile(fileName);
+                    if (symboleTable !== undefined) {
+                        let symbol: COBOLSymbol | undefined = symboleTable.symbols.get(word);
+                        if (symbol !== undefined && symbol.lineNumber !== undefined) {
+                            let uri = vscode.Uri.file(fileName);
+                            let startPos = new vscode.Position(symbol.lineNumber, 0);
+                            let loc = new vscode.Location(uri, new vscode.Range(startPos, startPos));
                             locations.push(loc);
                             return locations;
                         }
@@ -232,23 +237,23 @@ export function provideDefinition(document: TextDocument, position: Position, to
      */
     if (getCopyBookSearch()) {
 
-        /* iterater through all the known copybook references */
-        for (let [key, value] of qcp.copyBooksUsed) {
-            try {
-                let fileName = getCopyBookFileOrNull(key);
-                let qcpf = QuickCOBOLParse.getCachedObject(document, fileName);
-                if (qcpf !== undefined) {
-                    let uri = vscode.Uri.file(fileName);
-                    if (getVariable(locations, document, uri, qcpf, position)) {
-                        return locations;
-                    }
-                }
-            }
-            catch
-            {
-                // should not happen but if it does, continue on to the next copybook reference
-            }
-        }
+        // /* iterater through all the known copybook references */
+        // for (let [key, value] of qcp.copyBooksUsed) {
+        //     try {
+        //         let fileName = getCopyBookFileOrNull(key);
+        //         let qcpf = QuickCOBOLParse.getCachedObject(document, fileName);
+        //         if (qcpf !== undefined) {
+        //             let uri = vscode.Uri.file(fileName);
+        //             if (getVariable(locations, document, uri, qcpf, position)) {
+        //                 return locations;
+        //             }
+        //         }
+        //     }
+        //     catch
+        //     {
+        //         // should not happen but if it does, continue on to the next copybook reference
+        //     }
+        // }
     }
 
     /* fuzzy search is not using the parser and it give false positive's, so lets

@@ -2,6 +2,7 @@ import ISourceHandler from './isourcehandler';
 import * as vscode from 'vscode';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import * as fs from 'fs';
+import { logCOBOLChannelLine } from './extension';
 
 // var detab = require('detab');
 const lineByLine = require('n-readlines');
@@ -40,8 +41,8 @@ export class FileSourceHandler implements ISourceHandler {
             }
         }
         catch (e) {
-            console.log("File failed!");
-            console.log(e);
+            logCOBOLChannelLine("File failed!");
+            logCOBOLChannelLine(e);
         }
     }
 
