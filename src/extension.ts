@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -237,6 +237,13 @@ export function activate(context: ExtensionContext) {
     formatStatusBarItem.show();
 
     updateDecorations(window.activeTextEditor);
+
+    if (logChannelDisabled === false) {
+        let thisExtension = extensions.getExtension("bitlang.cobol");
+        if (thisExtension !== undefined) {
+            logCOBOLChannelLine("Extension path is "+thisExtension.extensionPath+" version:"+thisExtension.packageJSON.version);
+        }
+    }
 }
 
 export function getExperimentialFeatures(): boolean {

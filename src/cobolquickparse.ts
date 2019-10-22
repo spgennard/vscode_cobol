@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine } from "./extension";
+import { logCOBOLChannelLine, logCOBOLChannel } from "./extension";
 import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
@@ -271,7 +271,7 @@ export default class QuickCOBOLParse {
     public constructor(sourceHandler: ISourceHandler, filename: string) {
         let stat: fs.Stats = fs.statSync(filename);
 
-        this.filename = filename;
+        this.filename = path.normalize(filename);
         this.lastModifiedTime = stat.mtimeMs;
         this.inProcedureDivision = false;
         this.pickFields = false;
@@ -419,7 +419,7 @@ export default class QuickCOBOLParse {
                 let qcpd = new QuickCOBOLParse(file, fileName);
 
                 InMemoryCache.set(fileName, qcpd);
-                logCOBOLChannelLine(' Cache -> Execution time: %dms -> ' + fileName, performance.now() - startTime);
+                logCOBOLChannelLine(' - Load/Parse - Execution time: %dms -> ' + fileName, performance.now() - startTime);
                 if (InMemoryCache.size > 20) {
                     let firstKey = InMemoryCache.keys().next().value;
                     InMemoryCache.delete(firstKey);
@@ -459,11 +459,13 @@ export default class QuickCOBOLParse {
                                         try {
                                             copyBookfilename = getCopyBookFileOrNull(key);
                                             if (copyBookfilename !== null && copyBookfilename.length !== 0) {
-                                                let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                                                let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
-                                                let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+                                                if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
+                                                    let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                                                    let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
+                                                    let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
-                                                COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                                                    COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                                                }
                                             }
                                         }
                                         catch (ex) {
@@ -1102,6 +1104,7 @@ function reviver(key: any, value: any) {
     }
     return value;
 }
+
 export class COBOLSymbolTable {
     public lastModifiedTime: number = 0;
 
@@ -1124,7 +1127,6 @@ export class COBOLSymbolTableHelper {
         st.fileName = qp.filename;
         st.lastModifiedTime = qp.lastModifiedTime;
 
-        logCOBOLChannelLine("Creating symbol table for " + st.fileName + " length=" + qp.tokensInOrder.length);
         var startTime = performance.now();
         for (let i = 0; i < qp.tokensInOrder.length; i++) {
             let token = qp.tokensInOrder[i];
@@ -1143,7 +1145,7 @@ export class COBOLSymbolTableHelper {
                     break;
             }
         }
-        logCOBOLChannelLine("Complete - " + (performance.now() - startTime));
+        logCOBOLChannelLine("- Creating symbol table for " + st.fileName + " (" + qp.tokensInOrder.length + ") - " + (performance.now() - startTime));
         return st;
     }
 
@@ -1192,7 +1194,38 @@ export class COBOLSymbolTableHelper {
         fs.writeFileSync(fn, j);
     }
 
-    public static loadFromFile(filename: string): COBOLSymbolTable | undefined {
+    public static cacheUpdateRequired(nfilename: string): boolean {
+        let filename = path.normalize(nfilename);
+
+        // check memory first
+        if (InMemorySymbolCache.has(filename)) {
+            let cachedTable: COBOLSymbolTable | undefined = InMemorySymbolCache.get(filename);
+            if (cachedTable !== undefined) {
+
+                /* is the cache table still valid? */
+                let stat4src = fs.statSync(filename);
+                if (stat4src.mtimeMs === cachedTable.lastModifiedTime) {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        let fn: string = path.join(this.getCacheDirectory(), this.getHashForFilename(filename) + ".sym");
+        if (fs.existsSync(fn)) {
+            let stat4cache: fs.Stats = fs.statSync(fn);
+            let stat4src = fs.statSync(filename);
+            if (stat4cache.mtimeMs < stat4src.mtimeMs) {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public static loadFromFile(nfilename: string): COBOLSymbolTable | undefined {
+        let filename = path.normalize(nfilename);
         if (InMemorySymbolCache.has(filename)) {
             let cachedTable: COBOLSymbolTable | undefined = InMemorySymbolCache.get(filename);
             if (cachedTable !== undefined) {
@@ -1207,7 +1240,7 @@ export class COBOLSymbolTableHelper {
         }
 
         let fn: string = path.join(this.getCacheDirectory(), this.getHashForFilename(filename) + ".sym");
-        if (fs.existsSync) {
+        if (fs.existsSync(fn)) {
             let stat4cache: fs.Stats = fs.statSync(fn);
             let stat4src = fs.statSync(filename);
             if (stat4cache.mtimeMs < stat4src.mtimeMs) {
@@ -1216,7 +1249,7 @@ export class COBOLSymbolTableHelper {
                 return undefined;
             }
             let str: string = fs.readFileSync(fn).toString();
-            let cachableTable= JSON.parse(str, reviver);
+            let cachableTable = JSON.parse(str, reviver);
             InMemorySymbolCache.set(filename, cachableTable);
             return cachableTable;
         }
