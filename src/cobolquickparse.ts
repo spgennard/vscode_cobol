@@ -1149,15 +1149,32 @@ export class COBOLSymbolTableHelper {
 
     public static getCacheDirectory(): string {
         let cacheDir: string = path.join(os.homedir(), ".vscode_cobol");
+        let firstCacheDir = "";
 
         if (workspace.workspaceFolders) {
             for (var folder of workspace.workspaceFolders) {
+                let cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
+                if (fs.existsSync(cacheDir2)) {
+                    return cacheDir2;
+                }
+                if (firstCacheDir === "") {
+                    firstCacheDir = cacheDir2;
+                }
+            }
+
+            if (fs.existsSync(firstCacheDir) === false) {
+                fs.mkdirSync(firstCacheDir);
+            }
+
+            if (fs.existsSync(firstCacheDir)) {
+                return firstCacheDir;
             }
         }
 
         if (fs.existsSync(cacheDir) === false) {
             fs.mkdirSync(cacheDir);
         }
+
         return cacheDir;
 
     }
