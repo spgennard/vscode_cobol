@@ -1,8 +1,9 @@
-import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace } from 'vscode';
+import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace, Uri, Range } from 'vscode';
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol } from './cobolquickparse';
 import { getCopyBookFileOrNull } from './opencopybook';
 import { isOutlineEnabled, logCOBOLChannelLine } from './extension';
+import path = require("path");
 
 function getFuzzyVariableSearch(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
@@ -203,11 +204,9 @@ export function provideDefinition(document: TextDocument, position: Position, to
                     if (symboleTable !== undefined) {
                         let symbol: COBOLSymbol | undefined = symboleTable.symbols.get(word);
                         if (symbol !== undefined && symbol.lineNumber !== undefined) {
-                            let uri = vscode.Uri.file(fileName);
+                            let uri = vscode.Uri.file(path.normalize(fileName));
                             let startPos = new vscode.Position(symbol.lineNumber, 0);
-                            let loc = new vscode.Location(uri, new vscode.Range(startPos, startPos));
-                            locations.push(loc);
-                            return locations;
+                            locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
                         }
                     }
                 }
@@ -216,6 +215,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
                     // should not happen but if it does, continue on to the next copybook reference
                 }
             }
+            return locations;
         }
     }
 

@@ -8,5 +8,19 @@
     },
     "typescript.tsc.autoDetect": "off",
     "coboleditor.ignorecolumn_b_onwards": false,
-    "cSpell.enabled": false
+    "cSpell.enabled": false,
+    "coboleditor.copybookdirs": [
+        ".",
+        "CopyBooks",
+        "Shared"
+    ],
+    "coboleditor.copybookexts": [
+        "cpy",
+        "scr",
+        "CPY",
+        "SCR",
+        "cbl",
+        "CBL",
+        ""
+    ]
 }

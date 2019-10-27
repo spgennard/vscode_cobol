@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine, logCOBOLChannel } from "./extension";
+import { logCOBOLChannelLine } from "./extension";
 import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
@@ -374,17 +374,27 @@ export default class QuickCOBOLParse {
 
     }
 
-    private static canReadFIle(fileName: string): boolean {
-        try {
-            fs.accessSync(fileName, fs.constants.R_OK);
-            return true;
-        } catch (err) {
+    public static isFile(fileName: string): boolean {
+
+        if (fs.existsSync(fileName) === false) {
             return false;
         }
+
+        try {
+            let stat: fs.Stats = fs.statSync(fileName);
+            if (stat.isFile()) {
+                return true;
+            }
+
+        } catch (err) {
+
+        }
+
+        return false;
     }
 
     public static getCachedObject(document: TextDocument | undefined, fileName: string): QuickCOBOLParse | undefined {
-        if (this.canReadFIle(fileName) === false) {
+        if (this.isFile(fileName) === false) {
             return undefined;
         }
 
@@ -428,6 +438,7 @@ export default class QuickCOBOLParse {
             }
             catch (e) {
                 logCOBOLChannelLine(e);
+                logCOBOLChannelLine(e.stack);
             }
         }
 
@@ -448,37 +459,39 @@ export default class QuickCOBOLParse {
                             if (file.endsWith(exts[extpos])) {
                                 var filename = folder.uri.fsPath + path.sep + file;
                                 // logCOBOLChannelLine("SPG: " + filename);
+                                if (QuickCOBOLParse.isFile(filename) === true) {
 
-                                let filefs = new FileSourceHandler(filename, false);
-                                let qcp = new QuickCOBOLParse(filefs, filename);
+                                    let filefs = new FileSourceHandler(filename, false);
+                                    let qcp = new QuickCOBOLParse(filefs, filename);
 
-                                /* iterater through all the known copybook references */
-                                for (let [key, value] of qcp.getcopyBooksUsed()) {
-                                    try {
-                                        let copyBookfilename: string = "";
+                                    /* iterater through all the known copybook references */
+                                    for (let [key, value] of qcp.getcopyBooksUsed()) {
                                         try {
-                                            copyBookfilename = getCopyBookFileOrNull(key);
-                                            if (copyBookfilename !== null && copyBookfilename.length !== 0) {
-                                                if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
-                                                    let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                                                    let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
-                                                    let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+                                            let copyBookfilename: string = "";
+                                            try {
+                                                copyBookfilename = getCopyBookFileOrNull(key);
+                                                if (copyBookfilename !== null && copyBookfilename.length !== 0) {
+                                                    if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
+                                                        let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                                                        let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
+                                                        let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
-                                                    COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                                                        COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                                                    }
                                                 }
                                             }
-                                        }
-                                        catch (ex) {
-                                            if (copyBookfilename !== null) {
-                                                logCOBOLChannelLine("Copybook: " + copyBookfilename);
+                                            catch (ex) {
+                                                if (copyBookfilename !== null) {
+                                                    logCOBOLChannelLine("Copybook: " + copyBookfilename);
+                                                }
+                                                logCOBOLChannelLine(ex);
+                                                logCOBOLChannelLine(ex.stack);
                                             }
-                                            logCOBOLChannelLine(ex);
-                                            logCOBOLChannelLine(ex.stack);
                                         }
-                                    }
-                                    catch (fe) {
-                                        logCOBOLChannelLine(fe);
-                                        logCOBOLChannelLine(fe.stack);
+                                        catch (fe) {
+                                            logCOBOLChannelLine(fe);
+                                            logCOBOLChannelLine(fe.stack);
+                                        }
                                     }
                                 }
                             }
@@ -1099,7 +1112,7 @@ function replacer(this: any, key: any, value: any) {
 function reviver(key: any, value: any) {
     if (typeof value === 'object' && value !== null) {
         if (value.dataType === 'Map') {
-            return new Map(value.value);
+            return new Map<string, COBOLSymbol>(value.value);
         }
     }
     return value;

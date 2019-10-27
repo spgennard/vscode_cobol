@@ -322,22 +322,3 @@ export function logCOBOLChannelLine(message: string, ...parameters:any[]){
     COBOLOutputChannel.appendLine(message);
     console.log(message+"\n");
 }
-
-export function logCOBOLChannel(message: string, ...parameters:any[]) {
-    if (logChannelDisabled) {
-        return;
-    }
-
-    if (COBOLOutputChannel !== null ||  COBOLOutputChannel !== undefined) {
-        COBOLOutputChannel = window.createOutputChannel("COBOL");
-    }
-
-    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        COBOLOutputChannel.append(util.format(message, parameters));
-        console.log(util.format(message, parameters));
-        return;
-    }
-    COBOLOutputChannel.append(message);
-    console.log(message);
-    
-}

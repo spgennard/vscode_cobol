@@ -41,8 +41,9 @@ export class FileSourceHandler implements ISourceHandler {
             }
         }
         catch (e) {
-            logCOBOLChannelLine("File failed!");
+            logCOBOLChannelLine("File failed! ("+document+")");
             logCOBOLChannelLine(e);
+            logCOBOLChannelLine(e.stack);
         }
     }
 

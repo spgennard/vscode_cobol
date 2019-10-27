@@ -136,10 +136,10 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
     if (fs.existsSync(fullPath)) {
         return fullPath;
     }
+    
     var extsdir = getcopybookdirs();
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
-
 
         const basefullPath = isDirectPath(extdir) ?
             extdir + path.sep + filename :
@@ -151,17 +151,15 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
             const exts = getExtensions();
             for (let extpos = 0; extpos < exts.length; extpos++) {
                 var ext = exts[extpos];
-                var possibleFile = basefullPath + "." + ext;
+                var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");
 
-                if (!fs.existsSync(possibleFile) === false) {
-                    fullPath = possibleFile;
-                    break;
+                if (fs.existsSync(possibleFile)) {
+                    return possibleFile;
                 }
             }
         } else {
             if (fs.existsSync(basefullPath)) {
-                fullPath = basefullPath;
-                break;
+                return basefullPath;
             }
         }
     }
