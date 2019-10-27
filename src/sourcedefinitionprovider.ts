@@ -1,7 +1,7 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace, Uri, Range } from 'vscode';
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol } from './cobolquickparse';
-import { getCopyBookFileOrNull } from './opencopybook';
+import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { isOutlineEnabled, logCOBOLChannelLine } from './extension';
 import path = require("path");
 
@@ -14,7 +14,7 @@ function getFuzzyVariableSearch(): boolean {
     return fuzzyVarOn;
 }
 
-function getCopyBookSearch(): boolean {
+export function getCopyBookSearch(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var copybookSearch = editorConfig.get<boolean>('copybook_search');
     if (copybookSearch === undefined || copybookSearch === null) {
@@ -107,7 +107,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
 
 const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
-function getVariable(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): boolean {
+function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -193,20 +193,70 @@ export function provideDefinition(document: TextDocument, position: Position, to
         if (getCopyBookSearch()) {
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
-        
+
+            if (word.length > 0) {
+                /* iterater through all the known copybook references */
+                for (let [key, value] of qcp.copyBooksUsed) {
+                    try {
+
+                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
+                        if (fileName.length > 0) {
+                            let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
+                            if (symboleTable !== undefined) {
+                                let symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(word);
+                                if (symbol !== undefined && symbol.lnum !== undefined) {
+                                    let uri = vscode.Uri.file(fileName);
+                                    let startPos = new vscode.Position(symbol.lnum, 0);
+                                    locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // should not happen but if it does, continue on to the next copybook reference
+                    }
+                }
+                return locations;
+            }
+        }
+    }
+
+    if (theline.match(/.*(call|cancel|chain).*$/i)) {
+        loc = getCallTarget(document, qcp, position);
+        if (loc !== undefined) {
+            locations.push(loc);
+            return locations;
+        }
+    }
+
+    /* is it a known variable? */
+    if (getVariableInCurrentDocument(locations, document, document.uri, qcp, position)) {
+        return locations;
+    }
+
+    /* search inside on disk copybooks referenced by the current program
+     * for variables
+     */
+    if (getCopyBookSearch()) {
+        let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
+        let word = wordRange ? document.getText(wordRange) : '';
+
+        if (word.length > 0) {
             /* iterater through all the known copybook references */
             for (let [key, value] of qcp.copyBooksUsed) {
                 try {
 
-                    let fileName = getCopyBookFileOrNull(key);
-
-                    let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.loadFromFile(fileName);
-                    if (symboleTable !== undefined) {
-                        let symbol: COBOLSymbol | undefined = symboleTable.symbols.get(word);
-                        if (symbol !== undefined && symbol.lineNumber !== undefined) {
-                            let uri = vscode.Uri.file(path.normalize(fileName));
-                            let startPos = new vscode.Position(symbol.lineNumber, 0);
-                            locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+                    let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
+                    if (fileName.length > 0) {
+                        let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
+                        if (symboleTable !== undefined) {
+                            let symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(word);
+                            if (symbol !== undefined && symbol.lnum !== undefined) {
+                                let uri = vscode.Uri.file(fileName);
+                                let startPos = new vscode.Position(symbol.lnum, 0);
+                                locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+                            }
                         }
                     }
                 }
@@ -217,43 +267,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
             }
             return locations;
         }
-    }
 
-    if (theline.match(/.*(call|cancel|chain).*$/i)) {
-        loc = getCallTarget(document, qcp, position);
-        if (loc) {
-            locations.push(loc);
-            return locations;
-        }
-    }
-
-    /* is it a known variable? */
-    if (getVariable(locations, document, document.uri, qcp, position)) {
-        return locations;
-    }
-
-    /* search inside on disk copybooks referenced by the current program
-     * for variables
-     */
-    if (getCopyBookSearch()) {
-
-        // /* iterater through all the known copybook references */
-        // for (let [key, value] of qcp.copyBooksUsed) {
-        //     try {
-        //         let fileName = getCopyBookFileOrNull(key);
-        //         let qcpf = QuickCOBOLParse.getCachedObject(document, fileName);
-        //         if (qcpf !== undefined) {
-        //             let uri = vscode.Uri.file(fileName);
-        //             if (getVariable(locations, document, uri, qcpf, position)) {
-        //                 return locations;
-        //             }
-        //         }
-        //     }
-        //     catch
-        //     {
-        //         // should not happen but if it does, continue on to the next copybook reference
-        //     }
-        // }
     }
 
     /* fuzzy search is not using the parser and it give false positive's, so lets

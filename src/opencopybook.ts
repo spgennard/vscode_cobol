@@ -192,13 +192,13 @@ function findFile(filename: string, filenameDir: string): string | undefined {
     return;
 }
 
-export function getCopyBookFileOrNull(filename: string): string {
+export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string {
     const dirOfFilename = path.dirname(filename);
 
     if (filename) {
         const fullPath = findFile(filename, dirOfFilename);
         if (fullPath) {
-            return fullPath;
+            return path.normalize(fullPath);
         }
     }
 

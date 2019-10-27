@@ -10,10 +10,11 @@ import * as os from 'os';
 import * as crypto from 'crypto';
 
 import { logCOBOLChannelLine } from "./extension";
-import { getExtensions, getCopyBookFileOrNull } from "./opencopybook";
+import { getExtensions, expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
 import { Hash } from "crypto";
+import { getCopyBookSearch } from "./sourcedefinitionprovider";
 
 const util = require('util');
 
@@ -364,6 +365,10 @@ export default class QuickCOBOLParse {
             }
         }
         this.updateEndings(sourceHandler);
+
+        if (getCopyBookSearch()) {
+            QuickCOBOLParse.processOneFile(this);
+        }
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
@@ -445,6 +450,47 @@ export default class QuickCOBOLParse {
         return cachedObject;
     }
 
+    public static processOneFile(qcp: QuickCOBOLParse) {
+
+        let filename = qcp.filename;
+
+        if (COBOLSymbolTableHelper.cacheUpdateRequired(filename)) {
+            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp);
+
+            COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+        }
+
+        /* iterater through all the known copybook references */
+        for (let [key, value] of qcp.getcopyBooksUsed()) {
+            try {
+                let copyBookfilename: string = "";
+                try {
+                    copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
+                    if (copyBookfilename.length !== 0) {
+                        if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
+                            let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                            let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
+                            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+
+                            COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                        }
+                    }
+                }
+                catch (ex) {
+                    if (copyBookfilename !== null) {
+                        logCOBOLChannelLine("Copybook: " + copyBookfilename);
+                    }
+                    logCOBOLChannelLine(ex);
+                    logCOBOLChannelLine(ex.stack);
+                }
+            }
+            catch (fe) {
+                logCOBOLChannelLine(fe);
+                logCOBOLChannelLine(fe.stack);
+            }
+
+        }
+    }
 
     public static processAllFilesInWorkspace() {
         if (workspace.workspaceFolders) {
@@ -458,7 +504,6 @@ export default class QuickCOBOLParse {
                         for (let extpos = 0; extpos < exts.length; extpos++) {
                             if (file.endsWith(exts[extpos])) {
                                 var filename = folder.uri.fsPath + path.sep + file;
-                                // logCOBOLChannelLine("SPG: " + filename);
                                 if (QuickCOBOLParse.isFile(filename) === true) {
 
                                     let filefs = new FileSourceHandler(filename, false);
@@ -469,8 +514,8 @@ export default class QuickCOBOLParse {
                                         try {
                                             let copyBookfilename: string = "";
                                             try {
-                                                copyBookfilename = getCopyBookFileOrNull(key);
-                                                if (copyBookfilename !== null && copyBookfilename.length !== 0) {
+                                                copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
+                                                if (copyBookfilename.length !== 0) {
                                                     if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
                                                         let filefs_vb = new FileSourceHandler(copyBookfilename, false);
                                                         let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
@@ -1081,14 +1126,12 @@ export default class QuickCOBOLParse {
 }
 
 export class COBOLSymbol {
-    public typeOfSymbol: string | undefined;
     public symbol: string | undefined;
-    public lineNumber: number | undefined;
+    public lnum: number | undefined;
 
-    public constructor(typeOfSymbol?: string, symbol?: string, lineNumber?: number) {
-        this.typeOfSymbol = typeOfSymbol;
+    public constructor(symbol?: string, lineNumber?: number) {
         this.symbol = symbol;
-        this.lineNumber = lineNumber;
+        this.lnum = lineNumber;
     }
 
     static fromJSON(d: Object): COBOLSymbol {
@@ -1123,10 +1166,12 @@ export class COBOLSymbolTable {
 
     public fileName: string = "";
 
-    public symbols: Map<string, COBOLSymbol>;
+    public variableSymbols: Map<string, COBOLSymbol>;
+    public labelSymbols: Map<string, COBOLSymbol>;
 
-    public constructor(source?: QuickCOBOLParse) {
-        this.symbols = new Map<string, COBOLSymbol>();
+    public constructor() {
+        this.variableSymbols = new Map<string, COBOLSymbol>();
+        this.labelSymbols = new Map<string, COBOLSymbol>();
     }
 
     static fromJSON(d: Object): COBOLSymbolTable {
@@ -1145,16 +1190,16 @@ export class COBOLSymbolTableHelper {
             let token = qp.tokensInOrder[i];
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
-                    st.symbols.set(token.tokenName, new COBOLSymbol("C", token.tokenName, token.startLine));
+                    st.variableSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Variable:
-                    st.symbols.set(token.tokenName, new COBOLSymbol("V", token.tokenName, token.startLine));
+                    st.variableSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Paragraph:
-                    st.symbols.set(token.tokenName, new COBOLSymbol("P", token.tokenName, token.startLine));
+                    st.labelSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Section:
-                    st.symbols.set(token.tokenName, new COBOLSymbol("S", token.tokenName, token.startLine));
+                    st.labelSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
             }
         }
@@ -1237,7 +1282,7 @@ export class COBOLSymbolTableHelper {
         return true;
     }
 
-    public static loadFromFile(nfilename: string): COBOLSymbolTable | undefined {
+    public static getSymbolTableGivenFile(nfilename: string): COBOLSymbolTable | undefined {
         let filename = path.normalize(nfilename);
         if (InMemorySymbolCache.has(filename)) {
             let cachedTable: COBOLSymbolTable | undefined = InMemorySymbolCache.get(filename);
