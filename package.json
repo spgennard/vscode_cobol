@@ -880,6 +880,7 @@
         "detab": "^2.0.2",
         "n-readlines": "1.0.0",
         "trie-search": "^1.2.11",
+        "lzjs": "1.3.0",
         "typescript-collections": "^1.3.2",
         "typescript-map": "^0.0.7",
         "vsce": "^1.68.0"

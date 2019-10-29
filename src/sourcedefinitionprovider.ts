@@ -171,6 +171,39 @@ function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, posit
     return undefined;
 }
 
+function delay(ms: number) {
+    if (ms > 0) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+const enableUrlOpenBodge: boolean = false;
+
+function openFileViaCommand(filename: string, linnumber: number, locations: vscode.Location[]): boolean {
+    let uri = vscode.Uri.file(filename);
+
+    // just do it quickly
+    if (enableUrlOpenBodge === false) {
+        let startPos = new vscode.Position(linnumber, 0);
+        locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+        return false;
+    }
+
+    if (enableUrlOpenBodge && filename.indexOf(".") === -1) {
+        let l = linnumber;
+        vscode.workspace
+            .openTextDocument(uri)
+            .then(vscode.window.showTextDocument)
+            .then(() => {
+                let a = vscode.window.activeTextEditor;
+                if (a !== undefined) {
+                    a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
+                }
+            });
+    }
+
+    return true;
+}
 
 export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
     let locations: vscode.Location[] = [];
@@ -191,6 +224,8 @@ export function provideDefinition(document: TextDocument, position: Position, to
 
         /* search for targets in a copybook */
         if (getCopyBookSearch()) {
+            QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
+
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
 
@@ -205,16 +240,16 @@ export function provideDefinition(document: TextDocument, position: Position, to
                             if (symboleTable !== undefined) {
                                 let symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(word);
                                 if (symbol !== undefined && symbol.lnum !== undefined) {
-                                    let uri = vscode.Uri.file(fileName);
-                                    let startPos = new vscode.Position(symbol.lnum, 0);
-                                    locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+                                    if (openFileViaCommand(fileName, symbol.lnum, locations)) {
+                                        return locations;
+                                    }
                                 }
                             }
                         }
                     }
-                    catch
-                    {
-                        // should not happen but if it does, continue on to the next copybook reference
+                    catch (fe) {
+                        console.log(fe.message);
+                        console.log(fe.stacktrace);
                     }
                 }
                 return locations;
@@ -239,6 +274,8 @@ export function provideDefinition(document: TextDocument, position: Position, to
      * for variables
      */
     if (getCopyBookSearch()) {
+        QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
+
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';
 
@@ -253,9 +290,9 @@ export function provideDefinition(document: TextDocument, position: Position, to
                         if (symboleTable !== undefined) {
                             let symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(word);
                             if (symbol !== undefined && symbol.lnum !== undefined) {
-                                let uri = vscode.Uri.file(fileName);
-                                let startPos = new vscode.Position(symbol.lnum, 0);
-                                locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+                                if (openFileViaCommand(fileName, symbol.lnum, locations)) {
+                                    return locations;
+                                }
                             }
                         }
                     }

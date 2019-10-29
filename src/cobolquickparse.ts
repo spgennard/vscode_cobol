@@ -18,6 +18,8 @@ import { getCopyBookSearch } from "./sourcedefinitionprovider";
 
 const util = require('util');
 
+var lzjs = require('lzjs');
+
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
 
@@ -1248,8 +1250,7 @@ export class COBOLSymbolTableHelper {
     public static saveToFile(st: COBOLSymbolTable) {
         let fn = path.join(this.getCacheDirectory(), this.getHashForFilename(st.fileName) + ".sym");
 
-        let j = JSON.stringify(st, replacer);
-        fs.writeFileSync(fn, j);
+        fs.writeFileSync(fn,  lzjs.compress(JSON.stringify(st, replacer)));
     }
 
     public static cacheUpdateRequired(nfilename: string): boolean {
@@ -1307,7 +1308,7 @@ export class COBOLSymbolTableHelper {
                 return undefined;
             }
             let str: string = fs.readFileSync(fn).toString();
-            let cachableTable = JSON.parse(str, reviver);
+            let cachableTable =  JSON.parse(lzjs.decompress(str), reviver);
             InMemorySymbolCache.set(filename, cachableTable);
             return cachableTable;
         }
