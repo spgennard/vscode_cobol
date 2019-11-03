@@ -20,8 +20,6 @@ const util = require('util');
 
 var lzjs = require('lzjs');
 
-const InMemoryCache: Map<string, any> = new Map<string, any>();
-const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -1127,6 +1125,20 @@ export default class QuickCOBOLParse {
     }
 }
 
+export class COBOLFileSymbol {
+    public filename: string | undefined;
+    public lnum: number | undefined;
+
+    public constructor(symbol?: string, lineNumber?: number) {
+        this.filename = symbol;
+        this.lnum = lineNumber;
+    }
+
+    static fromJSON(d: Object): COBOLFileSymbol {
+        return Object.assign(new COBOLFileSymbol(), d);
+    }
+}
+
 export class COBOLSymbol {
     public symbol: string | undefined;
     public lnum: number | undefined;
@@ -1163,9 +1175,22 @@ function reviver(key: any, value: any) {
     return value;
 }
 
+export class COBOLGlobalSymbolTable {
+    public lastModifiedTime: number = 0;
+    public callableSymbols: Map<string, COBOLFileSymbol[]>;
+    public isDirty: boolean = false;
+
+    public constructor() {
+        this.callableSymbols = new Map<string, COBOLFileSymbol[]>();
+    }
+
+    static fromJSON(d: Object): COBOLGlobalSymbolTable {
+        return Object.assign(new COBOLGlobalSymbolTable(), d);
+    }
+}
+
 export class COBOLSymbolTable {
     public lastModifiedTime: number = 0;
-
     public fileName: string = "";
 
     public variableSymbols: Map<string, COBOLSymbol>;
@@ -1202,6 +1227,12 @@ export class COBOLSymbolTableHelper {
                     break;
                 case COBOLTokenStyle.Section:
                     st.labelSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
+                    break;
+                case COBOLTokenStyle.ProgramId:
+                    InMemoryGlobalSymbolCacheHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
+                    break;
+                case COBOLTokenStyle.EntryPoint:
+                    InMemoryGlobalSymbolCacheHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
             }
         }
@@ -1250,7 +1281,7 @@ export class COBOLSymbolTableHelper {
     public static saveToFile(st: COBOLSymbolTable) {
         let fn = path.join(this.getCacheDirectory(), this.getHashForFilename(st.fileName) + ".sym");
 
-        fs.writeFileSync(fn,  lzjs.compress(JSON.stringify(st, replacer)));
+        fs.writeFileSync(fn, lzjs.compress(JSON.stringify(st, replacer)));
     }
 
     public static cacheUpdateRequired(nfilename: string): boolean {
@@ -1308,10 +1339,73 @@ export class COBOLSymbolTableHelper {
                 return undefined;
             }
             let str: string = fs.readFileSync(fn).toString();
-            let cachableTable =  JSON.parse(lzjs.decompress(str), reviver);
+            let cachableTable = JSON.parse(lzjs.decompress(str), reviver);
             InMemorySymbolCache.set(filename, cachableTable);
             return cachableTable;
         }
         return undefined;
     }
 }
+
+export class InMemoryGlobalSymbolCacheHelper {
+
+    public static loadInMemoryGlobalSymbolCache() {
+        let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
+        let fn: string = path.join(symbolDir, symbolFilename);
+        if (fs.existsSync(fn)) {
+            let stat4cache: fs.Stats = fs.statSync(fn);
+            if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
+                let str: string = fs.readFileSync(fn).toString();
+                let cachableTable: COBOLGlobalSymbolTable = JSON.parse(lzjs.decompress(str), reviver);
+                InMemoryGlobalSymbolCache.callableSymbols = cachableTable.callableSymbols;
+                InMemoryGlobalSymbolCache.lastModifiedTime = stat4cache.mtimeMs;
+            }
+            return false;
+        }
+    }
+
+    public static saveInMemoryGlobalSymbolCache() {
+        if (InMemoryGlobalSymbolCache.isDirty === false) {
+            return;
+        }
+        let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
+        let fn: string = path.join(symbolDir, symbolFilename);
+
+        fs.writeFileSync(fn, lzjs.compress(JSON.stringify(InMemoryGlobalSymbolCache, replacer)));
+        InMemoryGlobalSymbolCache.isDirty = false;
+    }
+
+    public static addSymbol(srcfilename:string, symbol: string, lineNumber: number) {
+        let symbolsCache = InMemoryGlobalSymbolCache.callableSymbols;
+        if (symbolsCache.has(symbol)) {
+            let symbolList: COBOLFileSymbol[]|undefined = symbolsCache.get(symbol);
+
+            /* search the list of COBOLFileSymbols */
+            if (symbolList !== undefined) {
+                let found: boolean = false;
+                for(let i=0; i<symbolList.length; i++) {
+                    if (symbolList[i].filename === srcfilename && symbolList[i].lnum === lineNumber) {
+                        found = true;
+                        break;
+                    }
+                }
+                // not found?
+                if (found === false) {
+                    symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
+                    InMemoryGlobalSymbolCache.isDirty = true;
+                }
+            }
+        }
+        let symbolList = [];
+        symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
+        InMemoryGlobalSymbolCache.callableSymbols.set(symbol, symbolList);
+        InMemoryGlobalSymbolCache.isDirty = true;
+        return;
+    }
+}
+
+const symbolFilename: string = "globalsymbols.sym";
+const InMemoryCache: Map<string, any> = new Map<string, any>();
+const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
+const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
+

@@ -1,6 +1,6 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace, Uri, Range } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper } from './cobolquickparse';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { isOutlineEnabled, logCOBOLChannelLine } from './extension';
 import path = require("path");
@@ -252,6 +252,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
                         console.log(fe.stacktrace);
                     }
                 }
+                InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
                 return locations;
             }
         }
@@ -302,6 +303,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
                     // should not happen but if it does, continue on to the next copybook reference
                 }
             }
+            InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
             return locations;
         }
 
