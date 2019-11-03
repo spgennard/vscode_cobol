@@ -1,27 +1,11 @@
 import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace, Uri, Range } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
-import { isOutlineEnabled, logCOBOLChannelLine } from './extension';
+import { isOutlineEnabled, logCOBOLChannelLine, isCachingEnabled, getFuzzyVariableSearch } from './extension';
 import path = require("path");
 
-function getFuzzyVariableSearch(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var fuzzyVarOn = editorConfig.get<boolean>('fuzzy_variable_search');
-    if (fuzzyVarOn === undefined || fuzzyVarOn === null) {
-        fuzzyVarOn = false;
-    }
-    return fuzzyVarOn;
-}
 
-export function getCopyBookSearch(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var copybookSearch = editorConfig.get<boolean>('copybook_search');
-    if (copybookSearch === undefined || copybookSearch === null) {
-        copybookSearch = false;
-    }
-    return copybookSearch;
-}
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -223,7 +207,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
         }
 
         /* search for targets in a copybook */
-        if (getCopyBookSearch()) {
+        if (isCachingEnabled()) {
             QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
@@ -233,7 +217,6 @@ export function provideDefinition(document: TextDocument, position: Position, to
                 /* iterater through all the known copybook references */
                 for (let [key, value] of qcp.copyBooksUsed) {
                     try {
-
                         let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
                         if (fileName.length > 0) {
                             let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
@@ -264,6 +247,30 @@ export function provideDefinition(document: TextDocument, position: Position, to
             locations.push(loc);
             return locations;
         }
+
+        /* search for targets in a copybook */
+        if (isCachingEnabled()) {
+            QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
+            let wordRange = document.getWordRangeAtPosition(position, callRegEx);
+            let word = wordRange ? document.getText(wordRange) : '';
+            if (word !== "") {
+                let img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCacheHelper.getGlobalSymbolCache();
+                let wordLower = word.toLocaleLowerCase();
+                if (img.callableSymbols.has(wordLower)) {
+                    let symbols = img.callableSymbols.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            let symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
+                                    return locations;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /* is it a known variable? */
@@ -274,7 +281,7 @@ export function provideDefinition(document: TextDocument, position: Position, to
     /* search inside on disk copybooks referenced by the current program
      * for variables
      */
-    if (getCopyBookSearch()) {
+    if (isCachingEnabled()) {
         QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);

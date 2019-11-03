@@ -158,11 +158,15 @@
                     "title": "fuzzy variable search",
                     "default": false
                 },
-                "coboleditor.copybook_search": {
-                    "type": "boolean",
-                    "markdownDescription": "Search inside copybooks using references in current program",
-                    "title": "search inside copybook references",
-                    "default": false
+                "coboleditor.cache_metadata": {
+                    "enum": [
+                        "off",
+                        "partial",
+                        "on"
+                    ],
+                    "default": "off",
+                    "markdownDescription": "Enable metadata cache",
+                    "title": "search inside copybook references and more"
                 },
                 "coboleditor.margin": {
                     "type": "boolean",
@@ -229,6 +233,11 @@
                         "off"
                     ],
                     "default": "on"
+                },
+                "coboleditor.diagnostic": {
+                    "type": "boolean",
+                    "title": "Enable COBOL diagnostic channel",
+                    "default": true
                 }
             }
         },
@@ -240,7 +249,11 @@
                 "**/*.so": true,
                 "**/*.acu": true,
                 "**/*.idy": true,
-                "**/*.pdb": true
+                "**/*.pdb": true,
+                "**/.vscode_cobol": true
+            },
+            "files.exclude" : {
+                "**/.vscode_cobol" : true
             },
             "[COBOL]": {
                 "files.autoGuessEncoding": true,

@@ -14,7 +14,7 @@ import { getExtensions, expandLogicalCopyBookToFilenameOrEmpty } from "./opencop
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
 import { Hash } from "crypto";
-import { getCopyBookSearch } from "./sourcedefinitionprovider";
+import { isCachingEnabled } from "./extension";
 
 const util = require('util');
 
@@ -366,7 +366,7 @@ export default class QuickCOBOLParse {
         }
         this.updateEndings(sourceHandler);
 
-        if (getCopyBookSearch()) {
+        if (isCachingEnabled()) {
             QuickCOBOLParse.processOneFile(this);
         }
     }
@@ -1359,6 +1359,7 @@ export class InMemoryGlobalSymbolCacheHelper {
                 let cachableTable: COBOLGlobalSymbolTable = JSON.parse(lzjs.decompress(str), reviver);
                 InMemoryGlobalSymbolCache.callableSymbols = cachableTable.callableSymbols;
                 InMemoryGlobalSymbolCache.lastModifiedTime = stat4cache.mtimeMs;
+                return true;
             }
             return false;
         }
@@ -1375,8 +1376,9 @@ export class InMemoryGlobalSymbolCacheHelper {
         InMemoryGlobalSymbolCache.isDirty = false;
     }
 
-    public static addSymbol(srcfilename:string, symbol: string, lineNumber: number) {
+    public static addSymbol(srcfilename:string, symbolUnchanged: string, lineNumber: number) {
         let symbolsCache = InMemoryGlobalSymbolCache.callableSymbols;
+        let symbol = symbolUnchanged.toLowerCase();
         if (symbolsCache.has(symbol)) {
             let symbolList: COBOLFileSymbol[]|undefined = symbolsCache.get(symbol);
 
@@ -1401,6 +1403,10 @@ export class InMemoryGlobalSymbolCacheHelper {
         InMemoryGlobalSymbolCache.callableSymbols.set(symbol, symbolList);
         InMemoryGlobalSymbolCache.isDirty = true;
         return;
+    }
+
+    public static getGlobalSymbolCache(): COBOLGlobalSymbolTable {
+        return InMemoryGlobalSymbolCache;
     }
 }
 
