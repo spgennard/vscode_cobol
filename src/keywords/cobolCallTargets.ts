@@ -1,5 +1,3 @@
-import { Hover } from 'vscode';
-
 import ile_datatime from './ile_datetime.json';
 import cbl_apis from './mf_cbl_apis.json';
 

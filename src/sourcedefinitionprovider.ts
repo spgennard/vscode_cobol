@@ -1,11 +1,12 @@
-import { TextDocument, Definition, Position, CancellationToken, ProviderResult, workspace, Uri, Range } from 'vscode';
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
-import { isOutlineEnabled, logCOBOLChannelLine, isCachingEnabled, getFuzzyVariableSearch } from './extension';
-import path = require("path");
+import { logCOBOLChannelLine, isCachingEnabled, getFuzzyVariableSearch } from './extension';
+import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 
-
+const sectionRegEx: RegExp =  new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const callRegEx: RegExp =     new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const classRegEx: RegExp =    new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -52,7 +53,6 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
     return undefined;
 }
 
-const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
 function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
@@ -89,7 +89,6 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
     return undefined;
 }
 
-const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
 function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
@@ -135,24 +134,34 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
     return true;
 }
 
-const callRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-
-function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, callRegEx);
+function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>,document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+    let wordRange = document.getWordRangeAtPosition(position, queryRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
     let workLower = word.toLowerCase();
-    if (sf.callTargets.has(workLower)) {
-        let token: COBOLToken | undefined = sf.callTargets.get(workLower);
+    if (tokenMap.has(workLower)) {
+        let token: COBOLToken | undefined = tokenMap.get(workLower);
         if (token !== undefined) {
             let srange = new vscode.Position(token.startLine, token.startColumn);
             return new vscode.Location(document.uri, srange);
         }
     }
     return undefined;
+}
+
+function getClassTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+    return getGenericTarget(callRegEx, sf.classes, document, position);
+}
+
+function getMethodTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+    return getGenericTarget(callRegEx, sf.methods, document, position);
+}
+
+function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+    return getGenericTarget(callRegEx, sf.callTargets, document, position);
 }
 
 function delay(ms: number) {
@@ -189,7 +198,7 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
     return true;
 }
 
-export function provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition> {
+export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     let locations: vscode.Location[] = [];
     let loc;
     let qcp: QuickCOBOLParse | undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
@@ -241,6 +250,21 @@ export function provideDefinition(document: TextDocument, position: Position, to
         }
     }
 
+    if (theline.match(/.*(type).*$/i)) {
+        loc = getClassTarget(document, qcp, position);
+        if (loc !== undefined) {
+            locations.push(loc);
+            return locations;
+        }
+    }
+
+    if (theline.match(/.*(::).*$/i)) {
+        loc = getMethodTarget(document, qcp, position);
+        if (loc !== undefined) {
+            locations.push(loc);
+            return locations;
+        }
+    }
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, qcp, position);
         if (loc !== undefined) {

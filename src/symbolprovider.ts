@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, splitArgument } from './cobolquickparse';
-import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { isOutlineEnabled, outlineFlag } from './extension';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
