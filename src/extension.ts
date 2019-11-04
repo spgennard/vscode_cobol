@@ -246,7 +246,7 @@ export function activate(context: ExtensionContext) {
     }
 
     InMemoryGlobalSymbolCacheHelper.loadInMemoryGlobalSymbolCache();
-    
+
     if (isCachingSetToON()) {
         commands.executeCommand("cobolplugin.processAllCopybookFiles");
     }
@@ -256,9 +256,9 @@ export function isLogChannelDisabled(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var diagnosticOn = editorConfig.get<boolean>('diagnostic');
     if (diagnosticOn === undefined || diagnosticOn === null) {
-        diagnosticOn = false;
+        return false;
     }
-    return diagnosticOn;
+    return !diagnosticOn;
 }
 
 export function getExperimentialFeatures(): boolean {

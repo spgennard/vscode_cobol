@@ -252,8 +252,8 @@
                 "**/*.pdb": true,
                 "**/.vscode_cobol": true
             },
-            "files.exclude" : {
-                "**/.vscode_cobol" : true
+            "files.exclude": {
+                "**/.vscode_cobol": true
             },
             "[COBOL]": {
                 "files.autoGuessEncoding": true,

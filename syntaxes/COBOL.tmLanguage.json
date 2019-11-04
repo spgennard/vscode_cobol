@@ -11,7 +11,12 @@
     "pco"
   ],
   "name": "COBOL",
+
   "patterns": [
+    {
+      "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])(D\\s.*$)",
+      "name": "token.info-token.cobol"
+    },
     {
       "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])(\\*.*$)",
       "name": "comment.line.cobol.fixed"
