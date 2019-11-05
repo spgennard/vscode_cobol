@@ -59,32 +59,27 @@ function extractText(str: string) {
             return match ? match[1] : null;
         };
 
-    if (/"/.test(str)) {
-        return getFirstMatchOrDefault(str, /"(.*?)"/);
-    }
-
-    if (/'/.test(str)) {
-        return getFirstMatchOrDefault(str, /'(.*?)'/);
-    }
-
     const strl = str.toLowerCase();
     let result: string | null;
     if (/copy/.test(strl)) {
 
         let copyRegs: RegExp[] = [
-            /.*\s[cC][oO][pP][yY]\s*([\-a-zA-Z0-9_@]*)$/,
-            /.*\s[cC][oO][pP][yY]\s*([\-a-zA-Z0-9_@]*)[\s\.].*$/,
-            /[cC][oO][pP][yY]\s*(.*)$/
+            new RegExp(".*copy\\s*[\"'](.*)[\"'].*$","i"),
+            new RegExp(".*copy\\s*[\"'](.*)[\"']$","i"),
+            new RegExp(".*copy\\s*(.*).*$","i"),
+            new RegExp(".*copy\\s*(.*)$","i"),
         ];
 
         for (let regPos = 0; regPos < copyRegs.length; regPos++) {
             try {
                 result = getFirstMatchOrDefault(str, copyRegs[regPos]);
-                if (result !== null && result.length > 1) {
+                if (result !== null && result.length > 0) {
                     return result;
                 }
             } catch (e) {
                 /* continue */
+                console.log(e);
+                console.log(e.stacktrace);
             }
         }
 
@@ -206,6 +201,7 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string
 }
 
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+
     const dirOfFilename = path.dirname(doc.fileName);
     const line = doc.lineAt(pos);
     const filename = extractText(line.text);
