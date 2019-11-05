@@ -725,8 +725,8 @@ export default class QuickCOBOLParse {
         let tokens: COBOLToken[] = [];
         tokens.push(token);
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
-
     }
+
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
         let token = new Token(line, prevToken);
 
@@ -1255,7 +1255,7 @@ export class COBOLSymbolTableHelper {
                     InMemoryGlobalSymbolCacheHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
                 case COBOLTokenStyle.MethodId:
-                    InMemoryGlobalSymbolCacheHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalSymbolCacheHelper.addMethodSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
             }
         }
@@ -1429,7 +1429,7 @@ export class InMemoryGlobalSymbolCacheHelper {
         }
         let symbolList = [];
         symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
-        InMemoryGlobalSymbolCache.callableSymbols.set(symbol, symbolList);
+        symbolsCache.set(symbol, symbolList);
         InMemoryGlobalSymbolCache.isDirty = true;
         return;
     }

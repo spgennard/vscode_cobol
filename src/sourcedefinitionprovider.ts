@@ -3,10 +3,11 @@ import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { logCOBOLChannelLine, isCachingEnabled, getFuzzyVariableSearch } from './extension';
 import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 
-const sectionRegEx: RegExp =  new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-const callRegEx: RegExp =     new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-const classRegEx: RegExp =    new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const callRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const classRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const methodRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
@@ -134,7 +135,7 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
     return true;
 }
 
-function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>,document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
+function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>, document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, queryRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -153,11 +154,11 @@ function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>,
 }
 
 function getClassTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
-    return getGenericTarget(callRegEx, sf.classes, document, position);
+    return getGenericTarget(classRegEx, sf.classes, document, position);
 }
 
 function getMethodTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
-    return getGenericTarget(callRegEx, sf.methods, document, position);
+    return getGenericTarget(methodRegEx, sf.methods, document, position);
 }
 
 function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
@@ -258,13 +259,37 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
     }
 
-    if (theline.match(/.*(::).*$/i)) {
+    if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
         loc = getMethodTarget(document, qcp, position);
         if (loc !== undefined) {
             locations.push(loc);
             return locations;
         }
+
+        if (isCachingEnabled()) {
+            let wordRange = document.getWordRangeAtPosition(position, callRegEx);
+            let word = wordRange ? document.getText(wordRange) : '';
+            if (word !== "") {
+                let img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCacheHelper.getGlobalSymbolCache();
+                let wordLower = word.toLocaleLowerCase();
+                if (img.classSymbols.has(wordLower)) {
+                    let symbols = img.classSymbols.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            let symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
+                                    return locations;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, qcp, position);
         if (loc !== undefined) {
