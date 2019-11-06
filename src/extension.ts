@@ -245,9 +245,8 @@ export function activate(context: ExtensionContext) {
         }
     }
 
-    InMemoryGlobalSymbolCacheHelper.loadInMemoryGlobalSymbolCache();
-
     if (isCachingSetToON()) {
+        InMemoryGlobalSymbolCacheHelper.loadInMemoryGlobalSymbolCache();
         commands.executeCommand("cobolplugin.processAllCopybookFiles");
     }
 }
@@ -313,7 +312,9 @@ export function hideMarginStatusBar() {
 }
 
 export function deactivate() {
-    InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
+    if (isCachingEnabled()) {
+        InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
+    }
     formatStatusBarItem.dispose();
 }
 
