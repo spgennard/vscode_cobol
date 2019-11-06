@@ -251,7 +251,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
     }
 
-    if (theline.match(/.*(type).*$/i)) {
+    if (theline.match(/.*(new\s*|type).*$/i)) {
         loc = getClassTarget(document, qcp, position);
         if (loc !== undefined) {
             locations.push(loc);
