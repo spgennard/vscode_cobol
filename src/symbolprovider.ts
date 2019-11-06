@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, splitArgument } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, splitArgument, COBOLToken } from './cobolquickparse';
 import { isOutlineEnabled, outlineFlag } from './extension';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
@@ -99,7 +99,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
         }
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {
-            let token = sf.tokensInOrder[i];
+            let token:COBOLToken = sf.tokensInOrder[i];
 
             let srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                 new vscode.Position(token.endLine, token.endColumn));
