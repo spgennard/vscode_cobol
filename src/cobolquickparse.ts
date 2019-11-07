@@ -3,14 +3,15 @@ import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKe
 
 import { workspace, TextDocument } from 'vscode';
 import { FileSourceHandler } from "./FileSourceHandler";
+import { String, StringBuilder } from 'typescript-string-operations';
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine } from "./extension";
-import { getExtensions, expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
+import { logCOBOLChannelLine, getCachingSetting, activateLogChannel } from "./extension";
+import { getExtensions, expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
 import { Hash } from "crypto";
@@ -438,7 +439,7 @@ export default class QuickCOBOLParse {
                 let qcpd = new QuickCOBOLParse(file, fileName);
 
                 InMemoryCache.set(fileName, qcpd);
-                logCOBOLChannelLine(' - Load/Parse - Execution time: %dms -> ' + fileName, performance.now() - startTime);
+                logCOBOLChannelLine(' - Load/Parse - Execution time: %dms -> ' + fileName, (performance.now() - startTime).toFixed(2));
                 if (InMemoryCache.size > 20) {
                     let firstKey = InMemoryCache.keys().next().value;
                     InMemoryCache.delete(firstKey);
@@ -496,6 +497,49 @@ export default class QuickCOBOLParse {
         }
     }
 
+    public static dumpMetaData() {
+        activateLogChannel(true);       /* ignore setting */
+        if (isCachingEnabled() === false) {
+            logCOBOLChannelLine("Metadata is not enabled");
+            return;
+        }
+
+        let cacheDir = COBOLSymbolTableHelper.getCacheDirectory();
+        logCOBOLChannelLine("Metadata Dump");
+        
+        logCOBOLChannelLine(" cache folder   : "+cacheDir);
+        logCOBOLChannelLine(" cache_metadata : " + getCachingSetting() + "\n");
+        logCOBOLChannelLine(" Last modified  : " + InMemoryGlobalSymbolCache.lastModifiedTime);
+        logCOBOLChannelLine(" Dirty flag     : " + InMemoryGlobalSymbolCache.isDirty);
+        logCOBOLChannelLine("");
+        logCOBOLChannelLine("Global symbols  : (made lowercase)");
+
+        for (let [i, tag] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
+            let fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
+            if (fileSymbol === undefined) {
+                logCOBOLChannelLine("  " + i + " => empty");
+            } else {
+                fileSymbol.forEach(function (value: COBOLFileSymbol) {
+                    logCOBOLChannelLine(String.Format(" {0} => {1} @ {2}", i.padEnd(40), value.filename, value.lnum));
+                });
+            }
+        }
+
+        logCOBOLChannelLine("");
+        logCOBOLChannelLine("File symbols    :");
+        
+        for (var file of fs.readdirSync(cacheDir)) {
+            if (file !== "globalsymbols.sym" && file.endsWith(".sym")) {
+                let symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDir, file));
+                if (symTable !== undefined) {
+                  logCOBOLChannelLine(" "+symTable.fileName+" in "+file);
+                  logCOBOLChannelLine("   Label symbol count    : "+symTable.labelSymbols.size);
+                  logCOBOLChannelLine("   Variable symbol count : "+symTable.variableSymbols.size);
+                }
+            }
+        }
+    }
+
     public static processAllFilesInWorkspace() {
         if (workspace.workspaceFolders) {
             var start = performance.now();
@@ -505,42 +549,40 @@ export default class QuickCOBOLParse {
             try {
                 for (var folder of workspace.workspaceFolders) {
                     for (var file of fs.readdirSync(folder.uri.fsPath)) {
-                        for (let extpos = 0; extpos < exts.length; extpos++) {
-                            if (file.endsWith(exts[extpos])) {
-                                var filename = folder.uri.fsPath + path.sep + file;
-                                if (QuickCOBOLParse.isFile(filename) === true) {
+                        if (isValidExtension(file)) {
+                            var filename = folder.uri.fsPath + path.sep + file;
+                            if (QuickCOBOLParse.isFile(filename) === true) {
 
-                                    let filefs = new FileSourceHandler(filename, false);
-                                    let qcp = new QuickCOBOLParse(filefs, filename);
+                                let filefs = new FileSourceHandler(filename, false);
+                                let qcp = new QuickCOBOLParse(filefs, filename);
 
-                                    /* iterater through all the known copybook references */
-                                    for (let [key, value] of qcp.getcopyBooksUsed()) {
+                                /* iterater through all the known copybook references */
+                                for (let [key, value] of qcp.getcopyBooksUsed()) {
+                                    try {
+                                        let copyBookfilename: string = "";
                                         try {
-                                            let copyBookfilename: string = "";
-                                            try {
-                                                copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
-                                                if (copyBookfilename.length !== 0) {
-                                                    if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
-                                                        let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                                                        let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
-                                                        let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+                                            copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
+                                            if (copyBookfilename.length !== 0) {
+                                                if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
+                                                    let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                                                    let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
+                                                    let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
-                                                        COBOLSymbolTableHelper.saveToFile(qcp_symtable);
-                                                    }
+                                                    COBOLSymbolTableHelper.saveToFile(qcp_symtable);
                                                 }
                                             }
-                                            catch (ex) {
-                                                if (copyBookfilename !== null) {
-                                                    logCOBOLChannelLine("Copybook: " + copyBookfilename);
-                                                }
-                                                logCOBOLChannelLine(ex);
-                                                logCOBOLChannelLine(ex.stack);
+                                        }
+                                        catch (ex) {
+                                            if (copyBookfilename !== null) {
+                                                logCOBOLChannelLine("Copybook: " + copyBookfilename);
                                             }
+                                            logCOBOLChannelLine(ex);
+                                            logCOBOLChannelLine(ex.stack);
                                         }
-                                        catch (fe) {
-                                            logCOBOLChannelLine(fe);
-                                            logCOBOLChannelLine(fe.stack);
-                                        }
+                                    }
+                                    catch (fe) {
+                                        logCOBOLChannelLine(fe);
+                                        logCOBOLChannelLine(fe.stack);
                                     }
                                 }
                             }
@@ -554,7 +596,7 @@ export default class QuickCOBOLParse {
             }
             var end = performance.now() - start;
 
-            logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end));
+            logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end.toFixed(2)));
         }
 
     }
@@ -1368,6 +1410,12 @@ export class COBOLSymbolTableHelper {
         }
         return undefined;
     }
+
+    public static getSymbolTable_direct(nfilename: string): COBOLSymbolTable | undefined {
+        let str: string = fs.readFileSync(nfilename).toString();
+        return JSON.parse(lzjs.decompress(str), reviver);
+    }
+    
 }
 
 export class InMemoryGlobalSymbolCacheHelper {

@@ -18,6 +18,23 @@ export function getExtensions(): string[] {
     return extensions;
 }
 
+export function isValidExtension(filename: string) : boolean {
+    switch(filename) {
+        case "tags" :
+        case ".tag" :
+        case ".ctags" :
+            return false;
+    }
+    const exts = getExtensions();
+    for (let extpos = 0; extpos < exts.length; extpos++) {
+        let ext = exts[extpos];
+        if (filename.endsWith(ext)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function getcopybookdirs(): string[] {
     let editorConfig = workspace.getConfiguration('coboleditor');
     let dirs = editorConfig.get<string[]>('copybookdirs');

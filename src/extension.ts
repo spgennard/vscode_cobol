@@ -23,7 +23,25 @@ let formatStatusBarItem: StatusBarItem;
 var currentContext: ExtensionContext;
 var COBOLOutputChannel: OutputChannel;
 
-const logChannelDisabled:boolean = isLogChannelDisabled();
+let logChannelDisabled:boolean = isLogChannelDisabled();
+
+export function activateLogChannel(show: boolean) {
+    logChannelDisabled = false;
+    let thisExtension = extensions.getExtension("bitlang.cobol");
+    logCOBOLChannelLine("");
+    COBOLOutputChannel.clear();
+    if (thisExtension !== undefined) {
+        logCOBOLChannelLine("Extension Information:");
+        logCOBOLChannelLine(" Extension path : " + thisExtension.extensionPath);
+        logCOBOLChannelLine(" Version        : " + thisExtension.packageJSON.version);
+        logCOBOLChannelLine("");
+    }
+
+    if (show) {
+        COBOLOutputChannel.show();
+    }
+
+}
 
 export function getCurrentContext(): ExtensionContext {
     return currentContext;
@@ -136,6 +154,10 @@ export function activate(context: ExtensionContext) {
         QuickCOBOLParse.processAllFilesInWorkspace();
     });
 
+    var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
+        QuickCOBOLParse.dumpMetaData();
+    });
+
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -153,6 +175,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(toggleCOBOLMargin);
 
     context.subscriptions.push(processAllCopybookFiles);
+    context.subscriptions.push(dumpMetadata);
 
     context.subscriptions.push(DocComment.register());
 
@@ -167,6 +190,7 @@ export function activate(context: ExtensionContext) {
             return opencopybook.provideDefinition(doc, pos, ct);
         }
     });
+
     languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return sourcedefinitionprovider.provideDefinition(doc, pos, ct);
@@ -239,10 +263,7 @@ export function activate(context: ExtensionContext) {
     updateDecorations(window.activeTextEditor);
 
     if (logChannelDisabled === false) {
-        let thisExtension = extensions.getExtension("bitlang.cobol");
-        if (thisExtension !== undefined) {
-            logCOBOLChannelLine("Extension path is " + thisExtension.extensionPath + " version:" + thisExtension.packageJSON.version);
-        }
+        activateLogChannel(false);
     }
 
     if (isCachingSetToON()) {
@@ -346,12 +367,20 @@ export function getFuzzyVariableSearch(): boolean {
     return fuzzyVarOn;
 }
 
-export function isCachingEnabled(): boolean {
+export function getCachingSetting() : string {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var cacheEnum = editorConfig.get<string>('cache_metadata');
+
     if (cacheEnum === undefined || cacheEnum === null) {
-        return false;
+        return "";
     }
+
+    return cacheEnum;
+}
+
+export function isCachingEnabled(): boolean {
+    var cacheEnum = getCachingSetting();
+
     switch(cacheEnum) {
         case "on" : return true;
         case "partial": return true;
@@ -361,11 +390,7 @@ export function isCachingEnabled(): boolean {
 }
 
 export function isCachingSetToON(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var cacheEnum = editorConfig.get<string>('cache_metadata');
-    if (cacheEnum === undefined || cacheEnum === null) {
-        return false;
-    }
+    var cacheEnum = getCachingSetting();
     switch(cacheEnum) {
         case "on" : return true;
         case "partial": return false;
