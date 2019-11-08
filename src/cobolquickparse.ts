@@ -612,7 +612,7 @@ export default class QuickCOBOLParse {
 
             }
         } else {
-            if (stat.isDirectory) {
+            if (stat.isDirectory()) {
                 QuickCOBOLParse.processAllFilesDirectory(filename);
             } else {
                 logCOBOLChannelLine(" - Ignoring : " + filename);
