@@ -28,7 +28,10 @@ export function isValidExtension(filename: string) : boolean {
     const exts = getExtensions();
     for (let extpos = 0; extpos < exts.length; extpos++) {
         let ext = exts[extpos];
-        if (filename.endsWith(ext)) {
+        if (ext.length === 0) {
+
+        }
+        else if (filename.endsWith(ext)) {
             return true;
         }
     }

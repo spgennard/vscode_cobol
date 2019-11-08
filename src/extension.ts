@@ -151,7 +151,7 @@ export function activate(context: ExtensionContext) {
 
 
     var processAllCopybookFiles = commands.registerCommand('cobolplugin.processAllCopybookFiles', function () {
-        QuickCOBOLParse.processAllFilesInWorkspace();
+        QuickCOBOLParse.processAllFilesInWorkspaces();
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
