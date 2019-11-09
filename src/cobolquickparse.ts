@@ -45,7 +45,61 @@ export enum COBOLTokenStyle {
     Null = "Null"
 }
 
-export function splitArgument(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
+export function splitArgument(input: string): string[] {
+    let ret:string[] = [];
+    let inQuote:boolean = false;
+    let inQuoteSingle: boolean = false;
+    let lineLength = input.length;
+    let cArg: string = "";
+    for(let i=0; i<lineLength; i++) {
+        let c = input.charAt(i);
+
+        /* handle quotes */
+        if (c === '"') {
+            inQuoteSingle = !inQuoteSingle;
+            cArg += c;
+            if (inQuoteSingle === false) {
+                ret.push(cArg);
+                cArg = "";
+            }
+            continue;
+        }
+
+        if (c === "\"") {
+            inQuote = !inQuote;
+            cArg += c;
+            if (inQuote === false) {
+                ret.push(cArg);
+                cArg = "";
+            }
+            continue;
+        }
+
+        /* skip white space */
+        if ((c === ' ' ) || (c === '\t')) {
+            if (cArg.length !== 0) {
+                ret.push(cArg);
+                cArg = "";
+            }
+            while((c === ' ' ) || (c === '\t')) {
+                i++;
+                c = cArg.charAt(i);
+            }
+            i--;
+            continue;
+        }
+
+        cArg += c;
+    }
+    
+    if (cArg.length !== 0) {
+        ret.push(cArg);
+    }
+
+    return ret;
+}
+
+export function splitArgumentOld(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
     let separator = sep || /\s/g;
     var singleQuoteOpen = false;
     var doubleQuoteOpen = false;
@@ -169,18 +223,7 @@ class Token {
     public static Blank = new Token("", undefined);
 
     private setupLine() {
-        let possibleTokens = splitArgument(this.line);
-        //this.line.split(/[\s \,]/g); //.filter(v=>v!=='');
-        this.lineTokens = [];
-        for (let l = 0; l < possibleTokens.length; l++) {
-            if (possibleTokens[l] !== undefined) {
-                let possibleToken = possibleTokens[l].trim();
-                if (possibleToken.length > 0) {
-                    this.lineTokens.push(possibleToken);
-                }
-            }
-        }
-
+        this.lineTokens = splitArgument(this.line);
         this.tokenIndex = 0;
         this.setupToken();
     }
@@ -228,8 +271,6 @@ class Token {
         this.setupToken();
         return false;
     }
-
-
 }
 
 
@@ -336,7 +377,7 @@ export default class QuickCOBOLParse {
         if (this.sectionsInToken === 0 && this.divisionsInToken === 0) {
             /* if we have items that could be in a data division */
 
-            if (this.procedureDivisionRelatedTokens !== 0) {
+            if (this.procedureDivisionRelatedTokens !== 0 && this.procedureDivisionRelatedTokens > this.workingStorageRelatedTokens ) {
                 let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure", "Division", "Procedure Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.procedureDivision = fakeDivision;
@@ -568,6 +609,7 @@ export default class QuickCOBOLParse {
             QuickCOBOLParse.processFileInDirectory(path.join(dir, file));
         }
     }
+    
     private static processFileInDirectory(filename: string) {
         let stat = fs.statSync(filename);
 
