@@ -14,7 +14,7 @@ import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
 import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
-import QuickCOBOLParse, { InMemoryGlobalSymbolCacheHelper } from './cobolquickparse';
+import QuickCOBOLParse, { InMemoryGlobalCachesHelper } from './cobolquickparse';
 
 const util = require('util');
 
@@ -267,7 +267,7 @@ export function activate(context: ExtensionContext) {
     }
 
     if (isCachingSetToON()) {
-        InMemoryGlobalSymbolCacheHelper.loadInMemoryGlobalSymbolCache();
+        InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches();
         commands.executeCommand("cobolplugin.processAllCopybookFiles");
     }
 }
@@ -334,7 +334,7 @@ export function hideMarginStatusBar() {
 
 export function deactivate() {
     if (isCachingEnabled()) {
-        InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
+        InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
     }
     formatStatusBarItem.dispose();
 }

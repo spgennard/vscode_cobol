@@ -18,21 +18,20 @@ export function getExtensions(): string[] {
     return extensions;
 }
 
-export function isValidExtension(filename: string) : boolean {
-    switch(filename) {
-        case "tags" :
-        case ".tag" :
-        case ".ctags" :
+export function isValidExtension(filename: string): boolean {
+    switch (filename) {
+        case "tags":
+        case ".tag":
+        case ".ctags":
             return false;
     }
     const exts = getExtensions();
     for (let extpos = 0; extpos < exts.length; extpos++) {
         let ext = exts[extpos];
-        if (ext.length === 0) {
-
-        }
-        else if (filename.endsWith(ext)) {
-            return true;
+        if (ext.length !== 0) {
+            if (filename.endsWith(ext)) {
+                return true;
+            }
         }
     }
     return false;
@@ -84,10 +83,10 @@ function extractText(str: string) {
     if (/copy/.test(strl)) {
 
         let copyRegs: RegExp[] = [
-            new RegExp(".*copy\\s*[\"'](.*)[\"'].*$","i"),
-            new RegExp(".*copy\\s*[\"'](.*)[\"']$","i"),
-            new RegExp(".*copy\\s*(.*).*$","i"),
-            new RegExp(".*copy\\s*(.*)$","i"),
+            new RegExp(".*copy\\s*[\"'](.*)[\"'].*$", "i"),
+            new RegExp(".*copy\\s*[\"'](.*)[\"']$", "i"),
+            new RegExp(".*copy\\s*(.*).*$", "i"),
+            new RegExp(".*copy\\s*(.*)$", "i"),
         ];
 
         for (let regPos = 0; regPos < copyRegs.length; regPos++) {
@@ -151,7 +150,7 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
     if (fs.existsSync(fullPath)) {
         return fullPath;
     }
-    
+
     var extsdir = getcopybookdirs();
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];

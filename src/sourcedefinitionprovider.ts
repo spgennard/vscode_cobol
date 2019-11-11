@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { logCOBOLChannelLine, isCachingEnabled, getFuzzyVariableSearch } from './extension';
-import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalSymbolCacheHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
+import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalCachesHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 
 const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -245,7 +245,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         console.log(fe.stacktrace);
                     }
                 }
-                InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
                 return locations;
             }
         }
@@ -270,7 +270,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
-                let img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCacheHelper.getGlobalSymbolCache();
+                let img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
                 let wordLower = word.toLocaleLowerCase();
                 if (img.classSymbols.has(wordLower)) {
                     let symbols = img.classSymbols.get(wordLower);
@@ -303,7 +303,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
-                let img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCacheHelper.getGlobalSymbolCache();
+                let img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
                 let wordLower = word.toLocaleLowerCase();
                 if (img.callableSymbols.has(wordLower)) {
                     let symbols = img.callableSymbols.get(wordLower);
@@ -359,7 +359,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                     // should not happen but if it does, continue on to the next copybook reference
                 }
             }
-            InMemoryGlobalSymbolCacheHelper.saveInMemoryGlobalSymbolCache();
+            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
             return locations;
         }
 

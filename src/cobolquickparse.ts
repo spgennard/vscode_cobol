@@ -614,8 +614,8 @@ export default class QuickCOBOLParse {
         let stat = fs.statSync(filename);
 
         if (stat.isDirectory() === false) {
-            logCOBOLChannelLine(" - Processing file : " + filename);
             if (isValidExtension(filename)) {
+                logCOBOLChannelLine(" - Processing file : " + filename);
                 if (QuickCOBOLParse.isFile(filename) === true) {
 
                     let filefs = new FileSourceHandler(filename, false);
@@ -1305,6 +1305,18 @@ function reviver(key: any, value: any) {
     return value;
 }
 
+export class COBOLGlobalFileTable {
+    public lastModifiedTime: number = 0;
+    public isDirty: boolean = false;
+    public callableFileSymbols: Map<string, COBOLFileSymbol[]>;
+    public copybookFileSymbols: Map<string, COBOLFileSymbol[]>;
+
+    public constructor() {
+        this.callableFileSymbols = new Map<string, COBOLFileSymbol[]>();
+        this.copybookFileSymbols = new Map<string, COBOLFileSymbol[]>();
+    }
+}
+
 export class COBOLGlobalSymbolTable {
     public lastModifiedTime: number = 0;
     public callableSymbols: Map<string, COBOLFileSymbol[]>;
@@ -1363,22 +1375,22 @@ export class COBOLSymbolTableHelper {
                     st.labelSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.ProgramId:
-                    InMemoryGlobalSymbolCacheHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
                 case COBOLTokenStyle.EntryPoint:
-                    InMemoryGlobalSymbolCacheHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
                 case COBOLTokenStyle.InterfaceId:
-                    InMemoryGlobalSymbolCacheHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
                 case COBOLTokenStyle.EnumId:
-                    InMemoryGlobalSymbolCacheHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
                 case COBOLTokenStyle.ClassId:
-                    InMemoryGlobalSymbolCacheHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
                 case COBOLTokenStyle.MethodId:
-                    InMemoryGlobalSymbolCacheHelper.addMethodSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addMethodSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
             }
         }
@@ -1499,11 +1511,11 @@ export class COBOLSymbolTableHelper {
 
 }
 
-export class InMemoryGlobalSymbolCacheHelper {
+export class InMemoryGlobalCachesHelper {
 
-    public static loadInMemoryGlobalSymbolCache() {
+    public static loadInMemoryGlobalSymbolCaches() {
         let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
-        let fn: string = path.join(symbolDir, symbolFilename);
+        let fn: string = path.join(symbolDir, globalSymbolFilename);
         if (fs.existsSync(fn)) {
             let stat4cache: fs.Stats = fs.statSync(fn);
             if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
@@ -1524,15 +1536,21 @@ export class InMemoryGlobalSymbolCacheHelper {
         }
     }
 
-    public static saveInMemoryGlobalSymbolCache() {
-        if (InMemoryGlobalSymbolCache.isDirty === false) {
+    public static saveInMemoryGlobalCaches() {
+        if (InMemoryGlobalSymbolCache.isDirty === false && InMemoryGlobalFileCache.isDirty === false) {
             return;
         }
-        let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
-        let fn: string = path.join(symbolDir, symbolFilename);
 
-        fs.writeFileSync(fn, lzjs.compress(JSON.stringify(InMemoryGlobalSymbolCache, replacer)));
+        let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
+
+        let fnGlobalSymbolFilename: string = path.join(symbolDir, globalSymbolFilename);
+        fs.writeFileSync(fnGlobalSymbolFilename, lzjs.compress(JSON.stringify(InMemoryGlobalSymbolCache, replacer)));
         InMemoryGlobalSymbolCache.isDirty = false;
+
+
+        let fnFileSymbolFilename: string = path.join(symbolDir, fileSymbolFilename);
+        fs.writeFileSync(fnFileSymbolFilename, lzjs.compress(JSON.stringify(InMemoryGlobalFileCache, replacer)));
+        InMemoryGlobalFileCache.isDirty = false;
     }
 
     private static addSymbolToCache(srcfilename: string, symbolUnchanged: string, lineNumber: number, symbolsCache: Map<string, COBOLFileSymbol[]>) {
@@ -1567,17 +1585,17 @@ export class InMemoryGlobalSymbolCacheHelper {
     public static addClassSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number) {
         let symbolsCache = InMemoryGlobalSymbolCache.classSymbols;
 
-        InMemoryGlobalSymbolCacheHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
+        InMemoryGlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
     }
 
     public static addMethodSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number) {
         let symbolsCache = InMemoryGlobalSymbolCache.methodSymbols;
-        InMemoryGlobalSymbolCacheHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
+        InMemoryGlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
     }
 
     public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number) {
         let symbolsCache = InMemoryGlobalSymbolCache.callableSymbols;
-        InMemoryGlobalSymbolCacheHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
+        InMemoryGlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
     }
 
     public static getGlobalSymbolCache(): COBOLGlobalSymbolTable {
@@ -1585,8 +1603,11 @@ export class InMemoryGlobalSymbolCacheHelper {
     }
 }
 
-const symbolFilename: string = "globalsymbols.sym";
+const globalSymbolFilename: string = "globalsymbols.sym";
+const fileSymbolFilename: string = "filesymbols.sym";
+
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
-const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
 
+const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
+const InMemoryGlobalFileCache: COBOLGlobalFileTable = new COBOLGlobalFileTable();
