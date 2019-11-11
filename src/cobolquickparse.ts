@@ -46,12 +46,12 @@ export enum COBOLTokenStyle {
 }
 
 export function splitArgument(input: string): string[] {
-    let ret:string[] = [];
-    let inQuote:boolean = false;
+    let ret: string[] = [];
+    let inQuote: boolean = false;
     let inQuoteSingle: boolean = false;
     let lineLength = input.length;
     let cArg: string = "";
-    for(let i=0; i<lineLength; i++) {
+    for (let i = 0; i < lineLength; i++) {
         let c = input.charAt(i);
 
         /* handle quotes */
@@ -76,12 +76,12 @@ export function splitArgument(input: string): string[] {
         }
 
         /* skip white space */
-        if ((c === ' ' ) || (c === '\t')) {
+        if ((c === ' ') || (c === '\t')) {
             if (cArg.length !== 0) {
                 ret.push(cArg);
                 cArg = "";
             }
-            while((c === ' ' ) || (c === '\t')) {
+            while ((c === ' ') || (c === '\t')) {
                 i++;
                 c = cArg.charAt(i);
             }
@@ -91,7 +91,7 @@ export function splitArgument(input: string): string[] {
 
         cArg += c;
     }
-    
+
     if (cArg.length !== 0) {
         ret.push(cArg);
     }
@@ -188,6 +188,7 @@ class Token {
     public line: string = "";
 
     private lineTokens: string[] = [];
+    private lineLowerTokens: string[] = [];
     private tokenIndex: number = 0;
 
     public currentToken: string = "";
@@ -198,7 +199,6 @@ class Token {
     public currentTokenLower: string = "";
     public prevTokenLower: string = "";
     public nextTokenLower: string = "";
-
 
     public currentCol: number = 0;
     public prevCol: number = 0;
@@ -213,6 +213,7 @@ class Token {
         this.setupLine();
 
         if (previousToken !== undefined) {
+            // wire in previous token into this token
             if (previousToken.lineTokens.length > 0) {
                 let lastToken = previousToken.lineTokens[previousToken.lineTokens.length - 1];
                 this.prevCol = previousToken.line.indexOf(lastToken);
@@ -226,20 +227,24 @@ class Token {
 
     private setupLine() {
         this.lineTokens = splitArgument(this.line);
+        this.lineLowerTokens = [];
+        for(let c=0; c<this.lineTokens.length; c++) {
+            this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
+        }
         this.tokenIndex = 0;
         this.setupToken();
     }
 
     private setupToken() {
-        this.prevToken = this.currentToken.trim();
-        this.prevTokenLower = this.currentTokenLower.trim();
+        this.prevToken = this.currentToken;
+        this.prevTokenLower = this.currentTokenLower;
 
         this.currentToken = this.lineTokens[this.tokenIndex];
         if (this.currentToken === undefined) {
-            this.currentToken = "";
+            this.currentToken = this.currentTokenLower = "";
+        } else {
+            this.currentTokenLower = this.lineLowerTokens[this.tokenIndex];
         }
-        this.currentToken = this.currentToken.trim();
-        this.currentTokenLower = this.currentToken.toLowerCase();
 
         this.prevCol = this.currentCol;
         this.currentCol = this.line.indexOf(this.currentToken, this.rollingColumn);
@@ -255,10 +260,10 @@ class Token {
         if (1 + this.tokenIndex < this.lineTokens.length) {
             this.nextToken = this.lineTokens[1 + this.tokenIndex];
             if (this.nextToken === undefined) {
-                this.nextToken = "";
+                this.nextToken = this.nextTokenLower = "";
+            } else {
+                this.nextTokenLower = this.lineLowerTokens[1 + this.tokenIndex];
             }
-            this.nextToken = this.nextToken.trim();
-            this.nextTokenLower = this.nextToken.toLowerCase();
         } else {
             this.nextToken = this.nextTokenLower = "";
         }
@@ -379,7 +384,7 @@ export default class QuickCOBOLParse {
         if (this.sectionsInToken === 0 && this.divisionsInToken === 0) {
             /* if we have items that could be in a data division */
 
-            if (this.procedureDivisionRelatedTokens !== 0 && this.procedureDivisionRelatedTokens > this.workingStorageRelatedTokens ) {
+            if (this.procedureDivisionRelatedTokens !== 0 && this.procedureDivisionRelatedTokens > this.workingStorageRelatedTokens) {
                 let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure", "Division", "Procedure Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.procedureDivision = fakeDivision;
@@ -599,7 +604,7 @@ export default class QuickCOBOLParse {
     private static processAllFilesDirectory(dir: string) {
         let lastSlash = dir.lastIndexOf(path.sep);
         if (lastSlash !== -1) {
-            let lastDir = dir.substr(1 +lastSlash);
+            let lastDir = dir.substr(1 + lastSlash);
             /* do not traverse into . directories */
             if (lastDir.length > 0 && lastDir.startsWith(".")) {
                 return;
@@ -611,7 +616,7 @@ export default class QuickCOBOLParse {
             QuickCOBOLParse.processFileInDirectory(path.join(dir, file));
         }
     }
-    
+
     private static processFileInDirectory(filename: string) {
         let stat = fs.statSync(filename);
 
