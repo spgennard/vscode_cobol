@@ -73,7 +73,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
                 return new vscode.Location(uri, srange);
             }
         }
-        
+
     }
     catch (e) {
         logCOBOLChannelLine(e);
@@ -115,21 +115,19 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
     for (var i = 0; i < tokens.length; i++) {
         let token: COBOLToken = tokens[i];
 
-        if (word === token.tokenName || word === token.description) {
-            switch (token.tokenType) {
-                case COBOLTokenStyle.Constant:
-                    {
-                        let srange = new vscode.Position(token.startLine, token.startColumn);
-                        locations.push(new vscode.Location(uri, srange));
-                        break;
-                    }
-                case COBOLTokenStyle.Variable:
-                    {
-                        let srange = new vscode.Position(token.startLine, token.startColumn);
-                        locations.push(new vscode.Location(uri, srange));
-                        break;
-                    }
-            }
+        switch (token.tokenType) {
+            case COBOLTokenStyle.Constant:
+                {
+                    let srange = new vscode.Position(token.startLine, token.startColumn);
+                    locations.push(new vscode.Location(uri, srange));
+                    break;
+                }
+            case COBOLTokenStyle.Variable:
+                {
+                    let srange = new vscode.Position(token.startLine, token.startColumn);
+                    locations.push(new vscode.Location(uri, srange));
+                    break;
+                }
         }
     }
 
