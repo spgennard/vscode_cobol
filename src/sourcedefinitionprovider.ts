@@ -62,22 +62,26 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         return undefined;
     }
 
+    let wordLower = word.toLowerCase();
+
     try {
-        if (sf.sections.has(word)) {
-            let token = sf.sections.get(word);
+
+        if (sf.sections.has(wordLower)) {
+            let token = sf.sections.get(wordLower);
             if (token !== undefined) {
                 let srange = new vscode.Position(token.startLine, token.startColumn);
                 return new vscode.Location(uri, srange);
             }
         }
+        
     }
     catch (e) {
         logCOBOLChannelLine(e);
     }
 
     try {
-        if (sf.paragraphs.has(word)) {
-            let token = sf.paragraphs.get(word);
+        if (sf.paragraphs.has(wordLower)) {
+            let token = sf.paragraphs.get(wordLower);
             if (token !== undefined) {
                 let srange = new vscode.Position(token.startLine, token.startColumn);
                 return new vscode.Location(uri, srange);
@@ -222,8 +226,9 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
+            let wordLower = word.toLocaleLowerCase();
 
-            if (word.length > 0) {
+            if (wordLower.length > 0) {
                 /* iterater through all the known copybook references */
                 for (let [key, value] of qcp.copyBooksUsed) {
                     try {
@@ -231,7 +236,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         if (fileName.length > 0) {
                             let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
                             if (symboleTable !== undefined) {
-                                let symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(word);
+                                let symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
                                 if (symbol !== undefined && symbol.lnum !== undefined) {
                                     if (openFileViaCommand(fileName, symbol.lnum, locations)) {
                                         return locations;
@@ -335,8 +340,9 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';
+        let wordLower = word.toLowerCase();
 
-        if (word.length > 0) {
+        if (wordLower.length > 0) {
             /* iterater through all the known copybook references */
             for (let [key, value] of qcp.copyBooksUsed) {
                 try {
@@ -345,7 +351,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                     if (fileName.length > 0) {
                         let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
                         if (symboleTable !== undefined) {
-                            let symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(word);
+                            let symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
                             if (symbol !== undefined && symbol.lnum !== undefined) {
                                 if (openFileViaCommand(fileName, symbol.lnum, locations)) {
                                     return locations;

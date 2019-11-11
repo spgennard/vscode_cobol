@@ -148,6 +148,7 @@ export class COBOLToken {
     public startLine: number;
     public startColumn: number;
     public tokenName: string;
+    public tokenNameLower: string;
     public description: string;
     public level: number;
     public parentToken: COBOLToken | undefined;
@@ -166,6 +167,7 @@ export class COBOLToken {
         this.tokenType = tokenType;
         this.startLine = startLine;
         this.tokenName = token.trim();
+        this.tokenNameLower = this.tokenName.toLowerCase();
         this.startColumn = line.indexOf(this.tokenName);
         this.description = description;
         this.endLine = this.endColumn = 0;
@@ -915,7 +917,7 @@ export default class QuickCOBOLParse {
                     }
 
                     // So we need to insert a fake data division?
-                    if (this.currentDivision === COBOLToken.Null || this.currentDivision.tokenName.toLowerCase().startsWith("data") === false) {
+                    if (this.currentDivision === COBOLToken.Null || this.currentDivision.tokenNameLower.startsWith("data") === false) {
                         if (prevTokenLower === 'file' ||
                             prevTokenLower === 'working-storage' ||
                             prevTokenLower === 'local-storage' ||
@@ -927,7 +929,7 @@ export default class QuickCOBOLParse {
                     }
 
                     this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
-                    this.sections.set(prevToken, this.currentSection);
+                    this.sections.set(prevTokenLower, this.currentSection);
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || prevTokenLower === "file") {
                         this.pickFields = true;
@@ -1091,11 +1093,11 @@ export default class QuickCOBOLParse {
                                     if (this.currentSection !== COBOLToken.Null) {
                                         let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentSection);
                                         this.currentSection.childTokens.push(newToken);
-                                        this.paragraphs.set(c, newToken);
+                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
                                     } else {
                                         let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision);
                                         this.currentDivision.childTokens.push(newToken);
-                                        this.paragraphs.set(c, newToken);
+                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
                                     }
                                 }
                             }
@@ -1363,22 +1365,22 @@ export class COBOLSymbolTableHelper {
             let token = qp.tokensInOrder[i];
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
-                    st.variableSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
+                    st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Variable:
-                    st.variableSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
+                    st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Paragraph:
-                    st.labelSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
+                    st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Section:
-                    st.labelSymbols.set(token.tokenName, new COBOLSymbol(token.tokenName, token.startLine));
+                    st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.ProgramId:
-                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenNameLower, token.startLine);
                     break;
                 case COBOLTokenStyle.EntryPoint:
-                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenName, token.startLine);
+                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenNameLower, token.startLine);
                     break;
                 case COBOLTokenStyle.InterfaceId:
                     InMemoryGlobalCachesHelper.addClassSymbol(st.fileName, token.tokenName, token.startLine);
