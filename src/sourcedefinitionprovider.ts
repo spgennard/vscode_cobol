@@ -294,7 +294,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
     }
 
-
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
         loc = getCallTarget(document, qcp, position);
         if (loc !== undefined) {
