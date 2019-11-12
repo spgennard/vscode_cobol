@@ -806,11 +806,10 @@ export default class QuickCOBOLParse {
                 }
                 switch (tcurrentLower) {
                     case 'section':
-                        switch (token.prevTokenLower) {
-                            case "working-storage": this.sectionsInToken++; break;
-                            case "local-storage": this.sectionsInToken++; break;
-                            case "linkage": this.sectionsInToken++; break;
+                        if (token.prevToken.length !== 0) {
+                            this.sectionsInToken++; 
                         }
+                        break;
                     case "division":
                         switch (token.prevTokenLower) {
                             case "identification": this.divisionsInToken++; break;

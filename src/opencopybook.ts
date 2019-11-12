@@ -4,6 +4,7 @@ import { Range, TextDocument, workspace, Definition, Position, CancellationToken
 import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
+import { logCOBOLChannelLine } from './extension';
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 const DEFAULT_COPYBOOK_DIR = ["."];
@@ -15,6 +16,7 @@ export function getExtensions(): string[] {
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_COPYBOOK_EXTS;
     }
+    extensions.push("");
     return extensions;
 }
 
@@ -71,7 +73,7 @@ function getcopybookdirs(): string[] {
     return extraDirs;
 }
 
-function extractText(str: string) {
+function extractCopyBoolFilename(str: string) {
     let getFirstMatchOrDefault =
         (s: string, pattern: RegExp) => {
             const match = s.match(pattern);
@@ -111,7 +113,7 @@ function extractText(str: string) {
             /* continue */
         }
     }
-    return str;
+    return "";
 }
 
 function isDirectPath(dir: string) {
@@ -140,13 +142,17 @@ function isDirectPath(dir: string) {
     return false;
 }
 
-function findFileInDirectory(filename: string, filenameDir: string): string | undefined {
+function findFileInDirectory(filename: string, filenameDir: string): string {
     if (!filename) {
-        return;
+        return "";
+    }
+
+    if (filenameDir === '.') {
+        filenameDir = "";
     }
 
     var fileExtension = filename.split('.').pop();
-    var fullPath = filenameDir + path.sep + filename;
+    var fullPath = path.join(filenameDir,filename);
     if (fs.existsSync(fullPath)) {
         return fullPath;
     }
@@ -156,8 +162,8 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
         var extdir = extsdir[extsdirpos];
 
         const basefullPath = isDirectPath(extdir) ?
-            extdir + path.sep + filename :
-            filenameDir + path.sep + extdir + path.sep + filename;
+            path.join(extdir, filename) :
+            path.join(filenameDir, extdir + path.sep + filename);
 
         //No extension?
         if (filename === fileExtension) {
@@ -167,6 +173,7 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
                 var ext = exts[extpos];
                 var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");
 
+                // logCOBOLChannelLine(" - Search : " + possibleFile);
                 if (fs.existsSync(possibleFile)) {
                     return possibleFile;
                 }
@@ -179,41 +186,39 @@ function findFileInDirectory(filename: string, filenameDir: string): string | un
     }
 
     if (fs.existsSync(fullPath) === false) {
-        return;
+        return "";
     }
 
     return fullPath;
 }
 
-function findFile(filename: string, filenameDir: string): string | undefined {
+function findFile(filename: string, filenameDir: string): string {
     if (!filename) {
-        return;
+        return "";
     }
 
-    var foundFile = findFileInDirectory(filename, filenameDir);
-    if (foundFile) {
-        return foundFile;
+    if (filenameDir.length !== 0) {
+        var foundFile = findFileInDirectory(filename, filenameDir);
+        if (foundFile.length !== 0) {
+            return foundFile;
+        }
     }
 
     if (workspace.workspaceFolders) {
         for (var folder of workspace.workspaceFolders) {
             let foundFile = findFileInDirectory(filename, folder.uri.fsPath);
-            if (foundFile !== null) {
+            if (foundFile.length !== 0) {
                 return foundFile;
             }
         }
     }
-    return;
+    return "";
 }
 
 export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string {
-    const dirOfFilename = path.dirname(filename);
-
-    if (filename) {
-        const fullPath = findFile(filename, dirOfFilename);
-        if (fullPath) {
-            return path.normalize(fullPath);
-        }
+    const fullPath = findFile(filename, "");
+    if (fullPath.length !== 0) {
+        return path.normalize(fullPath);
     }
 
     return "";
@@ -223,15 +228,11 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
 
     const dirOfFilename = path.dirname(doc.fileName);
     const line = doc.lineAt(pos);
-    const filename = extractText(line.text);
+    const filename = extractCopyBoolFilename(line.text);
 
-    // No way this could be a filename...
-    if (filename && filename.includes(" ")) {
-        return;
-    }
-    if (filename) {
-        const fullPath = findFile(filename, dirOfFilename);
-        if (fullPath) {
+    if (filename !== null && filename.length !== 0) {
+        const fullPath = findFile(filename.trim(), dirOfFilename);
+        if (fullPath.length !== 0) {
             return {
                 uri: Uri.file(fullPath),
                 range: new Range(new Position(0, 0), new Position(0, 0))

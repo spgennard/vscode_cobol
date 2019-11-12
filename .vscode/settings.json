@@ -10,7 +10,6 @@
     "coboleditor.ignorecolumn_b_onwards": false,
     "cSpell.enabled": false,
     "coboleditor.copybookdirs": [
-        ".",
         "CopyBooks",
         "Shared"
     ],
@@ -20,7 +19,6 @@
         "CPY",
         "SCR",
         "cbl",
-        "CBL",
-        ""
+        "CBL"
     ]
 }
