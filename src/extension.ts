@@ -281,6 +281,7 @@ export function isLogChannelDisabled(): boolean {
     return !diagnosticOn;
 }
 
+
 export function getExperimentialFeatures(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var expEnabled = editorConfig.get<boolean>('experimential.features');
@@ -337,6 +338,13 @@ export function deactivate() {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
     }
     formatStatusBarItem.dispose();
+}
+
+export function logCOBOLChannelLineException(message: string, ex: Error) {
+    logCOBOLChannelLine(ex.name+ ":" + message);
+    if (ex !== undefined && ex.stack !== undefined) {
+        logCOBOLChannelLine(ex.stack);
+    }
 }
 
 export function logCOBOLChannelLine(message: string, ...parameters: any[]) {

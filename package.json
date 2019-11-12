@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.7.4",
+    "version": "5.7.5",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -237,7 +237,7 @@
                 "coboleditor.diagnostic": {
                     "type": "boolean",
                     "title": "Enable COBOL diagnostic channel",
-                    "default": true
+                    "default": false
                 }
             }
         },

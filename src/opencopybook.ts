@@ -106,9 +106,10 @@ function extractCopyBoolFilename(str: string) {
 
     }
 
+    //FIXME this could be better
     if (/exec sql include/.test(strl)) {
         try {
-            return getFirstMatchOrDefault(strl, /exec sql include\s(.*)\send-exec/);
+            return getFirstMatchOrDefault(strl, /exec\\s*sql\\s*include\s(.*)\s*end-exec/);
         } catch (e) {
             /* continue */
         }

@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine, getCachingSetting, activateLogChannel } from "./extension";
+import { logCOBOLChannelLine, getCachingSetting, activateLogChannel, logCOBOLChannelLineException } from "./extension";
 import { getExtensions, expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
@@ -375,8 +375,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLine("CobolQuickParse - Parse error : " + e);
-                logCOBOLChannelLine(e.stack);
+                logCOBOLChannelLineException("CobolQuickParse - Parse error : " + e, e);
             }
         }
 
@@ -426,8 +425,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLine("CobolQuickParse - Parse error : " + e);
-                logCOBOLChannelLine(e.stack);
+                logCOBOLChannelLineException("CobolQuickParse - Parse error", e);
             }
         }
         this.updateEndings(sourceHandler);
@@ -508,8 +506,7 @@ export default class QuickCOBOLParse {
                 return qcpd;
             }
             catch (e) {
-                logCOBOLChannelLine(e);
-                logCOBOLChannelLine(e.stack);
+                logCOBOLChannelLineException("getCachedObject", e);
             }
         }
 
@@ -544,15 +541,14 @@ export default class QuickCOBOLParse {
                 }
                 catch (ex) {
                     if (copyBookfilename !== null) {
-                        logCOBOLChannelLine("Copybook: " + copyBookfilename);
+                        logCOBOLChannelLineException("processOneFile:"+copyBookfilename, ex);
+                    } else {
+                        logCOBOLChannelLineException("processOneFile:", ex);
                     }
-                    logCOBOLChannelLine(ex);
-                    logCOBOLChannelLine(ex.stack);
                 }
             }
             catch (fe) {
-                logCOBOLChannelLine(fe);
-                logCOBOLChannelLine(fe.stack);
+                logCOBOLChannelLineException("processOneFile", fe);
             }
 
         }
@@ -646,15 +642,14 @@ export default class QuickCOBOLParse {
                             }
                             catch (ex) {
                                 if (copyBookfilename !== null) {
-                                    logCOBOLChannelLine("Copybook: " + copyBookfilename);
+                                    logCOBOLChannelLineException("processFileInDirectory/1: " + copyBookfilename,ex);
+                                } else {
+                                    logCOBOLChannelLineException("processFileInDirectory/1",ex);
                                 }
-                                logCOBOLChannelLine(ex);
-                                logCOBOLChannelLine(ex.stack);
                             }
                         }
                         catch (fe) {
-                            logCOBOLChannelLine(fe);
-                            logCOBOLChannelLine(fe.stack);
+                            logCOBOLChannelLineException("processFileInDirectory/2",fe);
                         }
                     }
                 }
@@ -679,8 +674,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (re) {
-                logCOBOLChannelLine(re);
-                logCOBOLChannelLine(re.stack);
+                logCOBOLChannelLineException("processAllFilesInWorkspaces",re);
             }
             var end = performance.now() - start;
 
@@ -805,7 +799,7 @@ export default class QuickCOBOLParse {
                     }
                 }
                 switch (tcurrentLower) {
-                    case 'section':
+                    case "section":
                         if (token.prevToken.length !== 0) {
                             this.sectionsInToken++; 
                         }
@@ -833,8 +827,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLine("Cobolquickparse relaxedParseLineByLine line error: " + e);
-                logCOBOLChannelLine(e.stack);
+                logCOBOLChannelLineException("Cobolquickparse relaxedParseLineByLine line error: ",e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1157,8 +1150,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLine("Cobolquickparse line error: " + e);
-                logCOBOLChannelLine(e.stack);
+                logCOBOLChannelLineException("Cobolquickparse line error: ",e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1197,8 +1189,7 @@ export default class QuickCOBOLParse {
             }
         }
         catch (e) {
-            logCOBOLChannelLine("Cobolquickparse/processInsideTokens line error: " + e);
-            logCOBOLChannelLine(e.stack);
+            logCOBOLChannelLineException("Cobolquickparse/processInsideTokens line error: ",e);
         }
     }
 

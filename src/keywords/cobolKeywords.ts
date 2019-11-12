@@ -431,6 +431,7 @@ export const cobolKeywords: string[] = [
 ];
 
 export const cobolStorageKeywords: string[] = [
+	"external",
 	"comp",
 	"comp-1",
 	"comp-2",

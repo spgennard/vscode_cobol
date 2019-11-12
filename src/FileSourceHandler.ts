@@ -1,6 +1,6 @@
 import ISourceHandler from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logCOBOLChannelLine } from './extension';
+import { logCOBOLChannelLine, logCOBOLChannelLineException } from './extension';
 
 // var detab = require('detab');
 const lineByLine = require('n-readlines');
@@ -39,9 +39,7 @@ export class FileSourceHandler implements ISourceHandler {
             }
         }
         catch (e) {
-            logCOBOLChannelLine("File failed! ("+document+")");
-            logCOBOLChannelLine(e);
-            logCOBOLChannelLine(e.stack);
+            logCOBOLChannelLineException("File failed! ("+document+")",e);
         }
     }
 
