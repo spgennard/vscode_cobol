@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.7.5",
+    "version": "5.7.6",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -506,8 +506,12 @@
                 "title": "COBOL: Toggle margin"
             },
             {
-                "command": "cobolplugin.processAllCopybookFiles",
-                "title": "COBOL: Process file in workspace for metadata"
+                "command": "cobolplugin.processAllFilesInWorkspace",
+                "title": "COBOL: Process files in workspace for metadata"
+            },
+            {
+                "command": "cobolplugin.processAllFilesInWorkspaceAndSubdirs",
+                "title": "COBOL: Process all files in workspace and sub directories for metadata"
             },
             {
                 "command": "cobolplugin.dumpMetaData",

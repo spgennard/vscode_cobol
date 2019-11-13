@@ -150,8 +150,12 @@ export function activate(context: ExtensionContext) {
     });
 
 
-    var processAllCopybookFiles = commands.registerCommand('cobolplugin.processAllCopybookFiles', function () {
-        QuickCOBOLParse.processAllFilesInWorkspaces();
+    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', function () {
+        QuickCOBOLParse.processAllFilesInWorkspaces(false);
+    });
+
+    var processAllFilesInWorkspaceAndSubDirs = commands.registerCommand('cobolplugin.processAllFilesInWorkspaceAndSubdirs', function () {
+        QuickCOBOLParse.processAllFilesInWorkspaces(true);
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
@@ -174,7 +178,8 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(toggleCOBOLMargin);
 
-    context.subscriptions.push(processAllCopybookFiles);
+    context.subscriptions.push(processAllFilesInWorkspace);
+    context.subscriptions.push(processAllFilesInWorkspaceAndSubDirs);
     context.subscriptions.push(dumpMetadata);
 
     context.subscriptions.push(DocComment.register());
@@ -268,7 +273,7 @@ export function activate(context: ExtensionContext) {
 
     if (isCachingSetToON()) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches();
-        commands.executeCommand("cobolplugin.processAllCopybookFiles");
+        commands.executeCommand("cobolplugin.processAllFilesInWorkspace");
     }
 }
 

@@ -228,7 +228,7 @@ class Token {
     private setupLine() {
         this.lineTokens = splitArgument(this.line);
         this.lineLowerTokens = [];
-        for(let c=0; c<this.lineTokens.length; c++) {
+        for (let c = 0; c < this.lineTokens.length; c++) {
             this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
         }
         this.tokenIndex = 0;
@@ -541,7 +541,7 @@ export default class QuickCOBOLParse {
                 }
                 catch (ex) {
                     if (copyBookfilename !== null) {
-                        logCOBOLChannelLineException("processOneFile:"+copyBookfilename, ex);
+                        logCOBOLChannelLineException("processOneFile:" + copyBookfilename, ex);
                     } else {
                         logCOBOLChannelLineException("processOneFile:", ex);
                     }
@@ -597,7 +597,7 @@ export default class QuickCOBOLParse {
         }
     }
 
-    private static processAllFilesDirectory(dir: string) {
+    private static processAllFilesDirectory(dir: string, recurse: boolean) {
         let lastSlash = dir.lastIndexOf(path.sep);
         if (lastSlash !== -1) {
             let lastDir = dir.substr(1 + lastSlash);
@@ -609,11 +609,11 @@ export default class QuickCOBOLParse {
 
         logCOBOLChannelLine(" - Processing directory : " + dir);
         for (var file of fs.readdirSync(dir)) {
-            QuickCOBOLParse.processFileInDirectory(path.join(dir, file));
+            QuickCOBOLParse.processFileInDirectory(path.join(dir, file), recurse);
         }
     }
 
-    private static processFileInDirectory(filename: string) {
+    private static processFileInDirectory(filename: string, recurse: boolean) {
         let stat = fs.statSync(filename);
 
         if (stat.isDirectory() === false) {
@@ -642,39 +642,43 @@ export default class QuickCOBOLParse {
                             }
                             catch (ex) {
                                 if (copyBookfilename !== null) {
-                                    logCOBOLChannelLineException("processFileInDirectory/1: " + copyBookfilename,ex);
+                                    logCOBOLChannelLineException("processFileInDirectory/1: " + copyBookfilename, ex);
                                 } else {
-                                    logCOBOLChannelLineException("processFileInDirectory/1",ex);
+                                    logCOBOLChannelLineException("processFileInDirectory/1", ex);
                                 }
                             }
                         }
                         catch (fe) {
-                            logCOBOLChannelLineException("processFileInDirectory/2",fe);
+                            logCOBOLChannelLineException("processFileInDirectory/2", fe);
                         }
                     }
                 }
 
             }
         } else {
-            if (stat.isDirectory()) {
-                QuickCOBOLParse.processAllFilesDirectory(filename);
-            } else {
-                logCOBOLChannelLine(" - Ignoring : " + filename);
-            }
+            if (recurse) {
+                if (stat.isDirectory()) {
+                    QuickCOBOLParse.processAllFilesDirectory(filename, recurse);
+                } else {
+                    logCOBOLChannelLine(" - Ignoring : " + filename);
+                }
+            } 
         }
     }
 
-    public static processAllFilesInWorkspaces() {
+    public static processAllFilesInWorkspaces(recurse: boolean) {
+
+        activateLogChannel(true);
         if (workspace.workspaceFolders) {
             var start = performance.now();
 
             try {
                 for (var folder of workspace.workspaceFolders) {
-                    QuickCOBOLParse.processAllFilesDirectory(folder.uri.fsPath);
+                    QuickCOBOLParse.processAllFilesDirectory(folder.uri.fsPath, recurse);
                 }
             }
             catch (re) {
-                logCOBOLChannelLineException("processAllFilesInWorkspaces",re);
+                logCOBOLChannelLineException("processAllFilesInWorkspaces", re);
             }
             var end = performance.now() - start;
 
@@ -801,7 +805,7 @@ export default class QuickCOBOLParse {
                 switch (tcurrentLower) {
                     case "section":
                         if (token.prevToken.length !== 0) {
-                            this.sectionsInToken++; 
+                            this.sectionsInToken++;
                         }
                         break;
                     case "division":
@@ -827,7 +831,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLineException("Cobolquickparse relaxedParseLineByLine line error: ",e);
+                logCOBOLChannelLineException("Cobolquickparse relaxedParseLineByLine line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1150,7 +1154,7 @@ export default class QuickCOBOLParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLineException("Cobolquickparse line error: ",e);
+                logCOBOLChannelLineException("Cobolquickparse line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1189,7 +1193,7 @@ export default class QuickCOBOLParse {
             }
         }
         catch (e) {
-            logCOBOLChannelLineException("Cobolquickparse/processInsideTokens line error: ",e);
+            logCOBOLChannelLineException("Cobolquickparse/processInsideTokens line error: ", e);
         }
     }
 
