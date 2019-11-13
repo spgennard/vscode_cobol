@@ -35,7 +35,7 @@ export function activateLogChannel(show: boolean) {
         logCOBOLChannelLine(" Extension path    : " + thisExtension.extensionPath);
         logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
         logCOBOLChannelLine(" Caching           : "+getCachingSetting());
-        if (isCachingEnabled) {
+        if (isCachingEnabled()) {
             logCOBOLChannelLine("  Cache directory  : "+COBOLSymbolTableHelper.getCacheDirectory());
         }
         logCOBOLChannelLine("");
