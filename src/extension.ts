@@ -14,7 +14,7 @@ import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 
 import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
-import QuickCOBOLParse, { InMemoryGlobalCachesHelper } from './cobolquickparse';
+import QuickCOBOLParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
 
 const util = require('util');
 
@@ -32,8 +32,12 @@ export function activateLogChannel(show: boolean) {
     COBOLOutputChannel.clear();
     if (thisExtension !== undefined) {
         logCOBOLChannelLine("Extension Information:");
-        logCOBOLChannelLine(" Extension path : " + thisExtension.extensionPath);
-        logCOBOLChannelLine(" Version        : " + thisExtension.packageJSON.version);
+        logCOBOLChannelLine(" Extension path    : " + thisExtension.extensionPath);
+        logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
+        logCOBOLChannelLine(" Caching           : "+getCachingSetting());
+        if (isCachingEnabled) {
+            logCOBOLChannelLine("  Cache directory  : "+COBOLSymbolTableHelper.getCacheDirectory());
+        }
         logCOBOLChannelLine("");
     }
 

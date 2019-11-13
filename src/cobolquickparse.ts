@@ -531,12 +531,17 @@ export default class QuickCOBOLParse {
                     copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
                     if (copyBookfilename.length !== 0) {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
+                            logCOBOLChannelLine("   CopyBook: "+key+" => "+copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
                             let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                             COBOLSymbolTableHelper.saveToFile(qcp_symtable);
+                        } else {
+                            logCOBOLChannelLine("   CopyBook: "+key+" (no update required)");
                         }
+                    } else {
+                        logCOBOLChannelLine("   CopyBook: "+key+" (not found)");
                     }
                 }
                 catch (ex) {
@@ -598,16 +603,9 @@ export default class QuickCOBOLParse {
     }
 
     private static processAllFilesDirectory(dir: string, recurse: boolean) {
-        let lastSlash = dir.lastIndexOf(path.sep);
-        if (lastSlash !== -1) {
-            let lastDir = dir.substr(1 + lastSlash);
-            /* do not traverse into . directories */
-            if (lastDir.length > 0 && lastDir.startsWith(".")) {
-                return;
-            }
+        if (recurse) {
+            logCOBOLChannelLine(" - Processing directory : " + dir);
         }
-
-        logCOBOLChannelLine(" - Processing directory : " + dir);
         for (var file of fs.readdirSync(dir)) {
             QuickCOBOLParse.processFileInDirectory(path.join(dir, file), recurse);
         }
@@ -682,7 +680,7 @@ export default class QuickCOBOLParse {
             }
             var end = performance.now() - start;
 
-            logCOBOLChannelLine(util.format('processAllFilesInWorkspace -> Execution time: %dms', end.toFixed(2)));
+            logCOBOLChannelLine(util.format('Process all files in workspace -> Execution time: %dms', end.toFixed(2)));
         }
 
     }
