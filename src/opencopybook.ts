@@ -4,10 +4,9 @@ import { Range, TextDocument, workspace, Definition, Position, CancellationToken
 import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
-import { logCOBOLChannelLine } from './extension';
+import { logCOBOLChannelLine, getcopybookdirs } from './extension';
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy"];
-const DEFAULT_COPYBOOK_DIR = ["."];
 
 export function getExtensions(): string[] {
     var editorConfig = workspace.getConfiguration('coboleditor');
@@ -39,39 +38,6 @@ export function isValidExtension(filename: string): boolean {
     return false;
 }
 
-function getcopybookdirs(): string[] {
-    let editorConfig = workspace.getConfiguration('coboleditor');
-    let dirs = editorConfig.get<string[]>('copybookdirs');
-    if (!dirs || (dirs !== null && dirs.length === 0)) {
-        dirs = DEFAULT_COPYBOOK_DIR;
-    }
-
-    let extraDirs: string[] = [];
-
-    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
-        let dir = dirs[dirpos];
-
-        if (dir.startsWith("$")) {
-            var e = process.env[dir.substr(1)];
-            if (e !== undefined && e !== null) {
-                e.split(path.delimiter).forEach(function (item) {
-                    if (item !== undefined && item !== null && item.length > 0) {
-                        extraDirs.push(item);
-                    }
-                });
-            }
-        }
-    }
-
-    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
-        let dir = dirs[dirpos];
-        if (!dir.startsWith("$")) {
-            extraDirs.push(dir);
-        }
-    }
-
-    return extraDirs;
-}
 
 function extractCopyBoolFilename(str: string) {
     let getFirstMatchOrDefault =
@@ -117,7 +83,7 @@ function extractCopyBoolFilename(str: string) {
     return "";
 }
 
-function isDirectPath(dir: string) {
+export function isDirectPath(dir: string) {
     var isWin = process.platform === "win32";
 
     if (dir === undefined && dir === null) {

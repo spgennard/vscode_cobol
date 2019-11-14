@@ -1393,7 +1393,7 @@ export class COBOLSymbolTableHelper {
                     break;
             }
         }
-        logCOBOLChannelLine("- Creating symbol table for " + st.fileName + " (" + qp.tokensInOrder.length + ") - " + (performance.now() - startTime));
+        logCOBOLChannelLine("- Creating symbol table for " + st.fileName + ", symbols found: " + qp.tokensInOrder.length + " -> " + (performance.now() - startTime).toFixed(2));
         return st;
     }
 

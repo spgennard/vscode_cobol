@@ -11,10 +11,13 @@ import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } f
 import { jclStatements } from "./keywords/jclstatements";
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
+import * as path from 'path';
+import * as fs from 'fs';
 
 import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
 import QuickCOBOLParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
+import { isDirectPath } from './opencopybook';
 
 const util = require('util');
 
@@ -23,10 +26,92 @@ let formatStatusBarItem: StatusBarItem;
 var currentContext: ExtensionContext;
 var COBOLOutputChannel: OutputChannel;
 
-let logChannelDisabled:boolean = isLogChannelDisabled();
+let logChannelDisabled: boolean = isLogChannelDisabled();
+
+
+const DEFAULT_COPYBOOK_DIR = ["."];
+
+export function getcopybookdirs(): string[] {
+    return fileSearchDirectory;
+}
+
+function getcopybookdirs_defaults(): string[] {
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let dirs = editorConfig.get<string[]>('copybookdirs');
+    if (!dirs || (dirs !== null && dirs.length === 0)) {
+        dirs = DEFAULT_COPYBOOK_DIR;
+    }
+
+    let extraDirs: string[] = [];
+
+    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
+        let dir = dirs[dirpos];
+
+        if (dir.startsWith("$")) {
+            var e = process.env[dir.substr(1)];
+            if (e !== undefined && e !== null) {
+                e.split(path.delimiter).forEach(function (item) {
+                    if (item !== undefined && item !== null && item.length > 0) {
+                        extraDirs.push(item);
+                    }
+                });
+            }
+        }
+    }
+
+    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
+        let dir = dirs[dirpos];
+        if (!dir.startsWith("$")) {
+            extraDirs.push(dir);
+        }
+    }
+
+    return extraDirs;
+}
+
+let fileSearchDirectory: string[] = [];
+let invalidSearchDirectory: string[] = [];
+
+function initExtensions() {
+    fileSearchDirectory = [];
+    var extsdir = getcopybookdirs_defaults();
+
+    if (workspace.workspaceFolders) {
+        for (var folder of workspace.workspaceFolders) {
+            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+                try {
+                    var extdir = extsdir[extsdirpos];
+
+                    let sdir: string;
+                    if (isDirectPath(extdir)) {
+                        sdir = extdir;
+                    } else {
+                        sdir = path.join(folder.uri.fsPath, extdir);
+                    }
+                    if (fs.existsSync(sdir)) {
+                        let f = fs.statSync(sdir);
+                        if (f.isDirectory()) {
+                            fileSearchDirectory.push(sdir);
+                        } else {
+                            invalidSearchDirectory.push(sdir);
+                        }
+                    } else {
+                        invalidSearchDirectory.push(sdir);
+                    }
+                }
+                catch (e) {
+                    logCOBOLChannelLineException("dir", e);
+                }
+            }
+        }
+    }
+
+    fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos); 
+}
 
 export function activateLogChannel(show: boolean) {
     logChannelDisabled = false;
+    initExtensions();
     let thisExtension = extensions.getExtension("bitlang.cobol");
     logCOBOLChannelLine("");
     COBOLOutputChannel.clear();
@@ -34,10 +119,24 @@ export function activateLogChannel(show: boolean) {
         logCOBOLChannelLine("Extension Information:");
         logCOBOLChannelLine(" Extension path    : " + thisExtension.extensionPath);
         logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
-        logCOBOLChannelLine(" Caching           : "+getCachingSetting());
+        logCOBOLChannelLine(" Caching           : " + getCachingSetting());
         if (isCachingEnabled()) {
-            logCOBOLChannelLine("  Cache directory  : "+COBOLSymbolTableHelper.getCacheDirectory());
+            logCOBOLChannelLine("  Cache directory  : " + COBOLSymbolTableHelper.getCacheDirectory());
         }
+
+        var extsdir = fileSearchDirectory;
+        for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+            let sdir = extsdir[extsdirpos];
+            logCOBOLChannelLine("  Search directory : " + sdir);
+        }
+
+        extsdir = invalidSearchDirectory;
+        for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+            let sdir = extsdir[extsdirpos];
+            logCOBOLChannelLine("  Invalid Search directory : " + sdir);
+        }
+
+
         logCOBOLChannelLine("");
     }
 
@@ -53,6 +152,7 @@ export function getCurrentContext(): ExtensionContext {
 
 export function activate(context: ExtensionContext) {
     currentContext = context;
+    initExtensions();
 
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
@@ -350,7 +450,7 @@ export function deactivate() {
 }
 
 export function logCOBOLChannelLineException(message: string, ex: Error) {
-    logCOBOLChannelLine(ex.name+ ":" + message);
+    logCOBOLChannelLine(ex.name + ":" + message);
     if (ex !== undefined && ex.stack !== undefined) {
         logCOBOLChannelLine(ex.stack);
     }
@@ -384,7 +484,7 @@ export function getFuzzyVariableSearch(): boolean {
     return fuzzyVarOn;
 }
 
-export function getCachingSetting() : string {
+export function getCachingSetting(): string {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var cacheEnum = editorConfig.get<string>('cache_metadata');
 
@@ -398,20 +498,20 @@ export function getCachingSetting() : string {
 export function isCachingEnabled(): boolean {
     var cacheEnum = getCachingSetting();
 
-    switch(cacheEnum) {
-        case "on" : return true;
+    switch (cacheEnum) {
+        case "on": return true;
         case "partial": return true;
-        case "off" : return false;
+        case "off": return false;
     }
     return false;
 }
 
 export function isCachingSetToON(): boolean {
     var cacheEnum = getCachingSetting();
-    switch(cacheEnum) {
-        case "on" : return true;
+    switch (cacheEnum) {
+        case "on": return true;
         case "partial": return false;
-        case "off" : return false;
+        case "off": return false;
     }
     return false;
 }
