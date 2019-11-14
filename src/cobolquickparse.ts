@@ -451,7 +451,7 @@ export default class QuickCOBOLParse {
 
         try {
             let stat: fs.Stats = fs.statSync(fileName);
-            if (stat.isFile()) {
+            if (stat.isFile() && !stat.isDirectory()) {
                 return true;
             }
 
@@ -616,8 +616,8 @@ export default class QuickCOBOLParse {
 
         if (stat.isDirectory() === false) {
             if (isValidExtension(filename)) {
-                logCOBOLChannelLine(" - Processing file : " + filename);
                 if (QuickCOBOLParse.isFile(filename) === true) {
+                    logCOBOLChannelLine(" - Processing file : " + filename);
 
                     let filefs = new FileSourceHandler(filename, false);
                     let qcp = new QuickCOBOLParse(filefs, filename);
