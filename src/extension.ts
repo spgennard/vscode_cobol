@@ -107,6 +107,7 @@ function initExtensions() {
     }
 
     fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos); 
+    invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos); 
 }
 
 export function activateLogChannel(show: boolean) {
