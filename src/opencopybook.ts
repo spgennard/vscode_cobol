@@ -46,14 +46,15 @@ function extractCopyBoolFilename(str: string) {
             return match ? match[1] : null;
         };
 
-    const strl = str.toLowerCase();
+    //const strl = str.toLowerCase();
     let result: string | null;
-    if (/copy/.test(strl)) {
+    if (/copy/i.test(str)) {
 
         let copyRegs: RegExp[] = [
             new RegExp(".*copy\\s*[\"'](.*)[\"'].*$", "i"),
             new RegExp(".*copy\\s*[\"'](.*)[\"']$", "i"),
-            new RegExp(".*copy\\s*(.*).*$", "i"),
+            new RegExp(".*copy\\s*(.*)\\.$", "i"),
+            new RegExp(".*copy\\s*(.*)\\s.*$", "i"),
             new RegExp(".*copy\\s*(.*)$", "i"),
         ];
 
@@ -61,6 +62,7 @@ function extractCopyBoolFilename(str: string) {
             try {
                 result = getFirstMatchOrDefault(str, copyRegs[regPos]);
                 if (result !== null && result.length > 0) {
+                    //console.log("Found ["+result+"] test "+regPos+"["+strl+"]");
                     return result;
                 }
             } catch (e) {
@@ -73,9 +75,9 @@ function extractCopyBoolFilename(str: string) {
     }
 
     //FIXME this could be better
-    if (/exec sql include/.test(strl)) {
+    if (/exec sql include/i.test(str)) {
         try {
-            return getFirstMatchOrDefault(strl, /exec\\s*sql\\s*include\s(.*)\s*end-exec/);
+            return getFirstMatchOrDefault(str, /exec\\s*sql\\s*include\s(.*)\s*end-exec/);
         } catch (e) {
             /* continue */
         }

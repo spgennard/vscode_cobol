@@ -456,7 +456,8 @@ export const cobolStorageKeywords: string[] = [
 	"zero",
 	"zeroes",
 	"zeros",
-	"occurs"
+	"occurs",
+	"property"
 ];
 
  export const cobolProcedureKeywords: string[] = [

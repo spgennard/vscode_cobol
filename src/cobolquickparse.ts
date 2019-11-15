@@ -299,7 +299,6 @@ export default class QuickCOBOLParse {
 
     inProcedureDivision: boolean;
     pickFields: boolean;
-    guessFields: boolean;
 
     currentToken: COBOLToken;
     currentRegion: COBOLToken;
@@ -329,7 +328,6 @@ export default class QuickCOBOLParse {
         this.lastModifiedTime = stat.mtimeMs;
         this.inProcedureDivision = false;
         this.pickFields = false;
-        this.guessFields = false;       // does not pickup the initial group item in a copybook, so it's not quite ready
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;
@@ -531,17 +529,17 @@ export default class QuickCOBOLParse {
                     copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
                     if (copyBookfilename.length !== 0) {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(copyBookfilename)) {
-                            logCOBOLChannelLine("   CopyBook: "+key+" => "+copyBookfilename);
+                            logCOBOLChannelLine("   CopyBook: " + key + " => " + copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
                             let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                             COBOLSymbolTableHelper.saveToFile(qcp_symtable);
                         } else {
-                            logCOBOLChannelLine("   CopyBook: "+key+" (no update required)");
+                            logCOBOLChannelLine("   CopyBook: " + key + " (no update required)");
                         }
                     } else {
-                        logCOBOLChannelLine("   CopyBook: "+key+" (not found)");
+                        logCOBOLChannelLine("   CopyBook: " + key + " (not found)");
                     }
                 }
                 catch (ex) {
@@ -602,16 +600,13 @@ export default class QuickCOBOLParse {
         }
     }
 
-    private static processAllFilesDirectory(dir: string, recurse: boolean) {
-        if (recurse) {
-            logCOBOLChannelLine(" - Processing directory : " + dir);
-        }
+    private static processAllFilesDirectory(dir: string) {
         for (var file of fs.readdirSync(dir)) {
-            QuickCOBOLParse.processFileInDirectory(path.join(dir, file), recurse);
+            QuickCOBOLParse.processFileInDirectory(path.join(dir, file));
         }
     }
 
-    private static processFileInDirectory(filename: string, recurse: boolean) {
+    private static processFileInDirectory(filename: string) {
         let stat = fs.statSync(filename);
 
         if (stat.isDirectory() === false) {
@@ -653,31 +648,24 @@ export default class QuickCOBOLParse {
                 }
 
             }
-        } else {
-            if (recurse) {
-                if (stat.isDirectory()) {
-                    QuickCOBOLParse.processAllFilesDirectory(filename, recurse);
-                } else {
-                    logCOBOLChannelLine(" - Ignoring : " + filename);
-                }
-            } 
         }
     }
 
-    public static processAllFilesInWorkspaces(recurse: boolean) {
+    public static processAllFilesInWorkspaces() {
 
         activateLogChannel(true);
         if (workspace.workspaceFolders) {
             var start = performance.now();
 
-            try {
-                for (var folder of workspace.workspaceFolders) {
-                    QuickCOBOLParse.processAllFilesDirectory(folder.uri.fsPath, recurse);
+            for (var folder of workspace.workspaceFolders) {
+                try {
+                    QuickCOBOLParse.processAllFilesDirectory(folder.uri.fsPath);
+                }
+                catch (re) {
+                    logCOBOLChannelLineException("processAllFilesInWorkspaces", re);
                 }
             }
-            catch (re) {
-                logCOBOLChannelLineException("processAllFilesInWorkspaces", re);
-            }
+
             var end = performance.now() - start;
 
             logCOBOLChannelLine(util.format('Process all files in workspace -> Execution time: %dms', end.toFixed(2)));
@@ -872,7 +860,10 @@ export default class QuickCOBOLParse {
                     continue;
                 }
 
-                if (tcurrent.endsWith(".")) {
+                if (tcurrent.endsWith(",")) {
+                    tcurrent = tcurrent.substr(0, tcurrent.length - 1);
+                    tcurrentLower = tcurrent.toLowerCase();
+                } else if (tcurrent.endsWith(".")) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
                     endWithDot = true;
@@ -916,7 +907,7 @@ export default class QuickCOBOLParse {
                     }
 
                     // So we need to insert a fake data division?
-                    if (this.currentDivision === COBOLToken.Null ) {
+                    if (this.currentDivision === COBOLToken.Null) {
                         if (prevTokenLower === 'file' ||
                             prevTokenLower === 'working-storage' ||
                             prevTokenLower === 'local-storage' ||
@@ -1101,20 +1092,6 @@ export default class QuickCOBOLParse {
                                 }
                             }
                         }
-                    }
-                }
-
-                // guess fields
-                if (this.guessFields && this.currentDivision === COBOLToken.Null) {
-                    if (this.isNumber(prevToken) && !this.isNumber(current) && nextTokenLower.startsWith("pic")) {
-                        this.pickFields = true;
-
-                        let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data", "Division", "Data Division (Optional)", this.currentDivision);
-                        this.currentDivision = fakeDivision;
-
-                        let fakeWorkingStorage = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, "Working", "Storage", "Working Storage (Optional)", this.currentDivision);
-                        fakeDivision.childTokens.push(fakeWorkingStorage);
-                        this.currentSection = fakeWorkingStorage;
                     }
                 }
 

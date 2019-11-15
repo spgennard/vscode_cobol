@@ -287,7 +287,7 @@ export function activate(context: ExtensionContext) {
 
 
     var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', function () {
-        QuickCOBOLParse.processAllFilesInWorkspaces(false);
+        QuickCOBOLParse.processAllFilesInWorkspaces();
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
