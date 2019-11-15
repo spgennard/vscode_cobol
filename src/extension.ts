@@ -19,6 +19,8 @@ import { getCallTarget } from './keywords/cobolCallTargets';
 import QuickCOBOLParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
 import { isDirectPath } from './opencopybook';
 
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
+
 const util = require('util');
 
 let formatStatusBarItem: StatusBarItem;
@@ -149,6 +151,35 @@ export function activateLogChannel(show: boolean) {
 
 export function getCurrentContext(): ExtensionContext {
     return currentContext;
+}
+
+function activateLanguageServer(context: ExtensionContext) {
+    const serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
+    const serverOptions: ServerOptions = {
+        run: {
+            module: serverModule,
+            transport: TransportKind.ipc,
+        },
+        debug: {
+            module: serverModule,
+            transport: TransportKind.ipc,
+            options: {
+                execArgv: ['--nolazy', '--inspect=6009'],
+            },
+        },
+    };
+
+    const clientOptions: LanguageClientOptions = {
+        documentSelector: [{
+            scheme: 'file',
+            language: 'COBOL',
+        }],
+    };
+
+    const client = new LanguageClient('hoverExample', 'Language Server Hover Example', serverOptions, clientOptions);
+    const disposable = client.start();
+
+    context.subscriptions.push(disposable);
 }
 
 export function activate(context: ExtensionContext) {
@@ -463,12 +494,12 @@ export function logCOBOLChannelLine(message: string, ...parameters: any[]) {
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
-        console.log(util.format(message, parameters) + "\n");
+        //console.log(util.format(message, parameters) + "\n");
         return;
     }
 
     COBOLOutputChannel.appendLine(message);
-    console.log(message + "\n");
+    //console.log(message + "\n");
 }
 
 export function getFuzzyVariableSearch(): boolean {

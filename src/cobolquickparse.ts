@@ -916,7 +916,7 @@ export default class QuickCOBOLParse {
                     }
 
                     // So we need to insert a fake data division?
-                    if (this.currentDivision === COBOLToken.Null || this.currentDivision.tokenNameLower.startsWith("data") === false) {
+                    if (this.currentDivision === COBOLToken.Null ) {
                         if (prevTokenLower === 'file' ||
                             prevTokenLower === 'working-storage' ||
                             prevTokenLower === 'local-storage' ||
