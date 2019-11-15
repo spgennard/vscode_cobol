@@ -119,12 +119,8 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
     }
 
     var fileExtension = filename.split('.').pop();
-    var fullPath = path.join(filenameDir,filename);
-    if (fs.existsSync(fullPath)) {
-        return fullPath;
-    }
-
     var extsdir = getcopybookdirs();
+    extsdir.push(filenameDir);
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
 
@@ -152,11 +148,7 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
         }
     }
 
-    if (fs.existsSync(fullPath) === false) {
-        return "";
-    }
-
-    return fullPath;
+    return "";
 }
 
 function findFile(filename: string, filenameDir: string): string {
