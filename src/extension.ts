@@ -106,8 +106,8 @@ function initExtensions() {
         }
     }
 
-    fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos); 
-    invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos); 
+    fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
+    invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
 export function activateLogChannel(show: boolean) {
@@ -259,10 +259,6 @@ export function activate(context: ExtensionContext) {
         QuickCOBOLParse.processAllFilesInWorkspaces(false);
     });
 
-    var processAllFilesInWorkspaceAndSubDirs = commands.registerCommand('cobolplugin.processAllFilesInWorkspaceAndSubdirs', function () {
-        QuickCOBOLParse.processAllFilesInWorkspaces(true);
-    });
-
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
         QuickCOBOLParse.dumpMetaData();
     });
@@ -284,7 +280,6 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(toggleCOBOLMargin);
 
     context.subscriptions.push(processAllFilesInWorkspace);
-    context.subscriptions.push(processAllFilesInWorkspaceAndSubDirs);
     context.subscriptions.push(dumpMetadata);
 
     context.subscriptions.push(DocComment.register());

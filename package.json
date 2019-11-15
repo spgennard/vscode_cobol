@@ -510,10 +510,6 @@
                 "title": "COBOL: Process files in workspace for metadata"
             },
             {
-                "command": "cobolplugin.processAllFilesInWorkspaceAndSubdirs",
-                "title": "COBOL: Process all files in workspace and sub directories for metadata"
-            },
-            {
                 "command": "cobolplugin.dumpMetaData",
                 "title": "COBOL: Dump metadata for diagnostic"
             }
