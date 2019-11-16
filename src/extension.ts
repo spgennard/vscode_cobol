@@ -404,6 +404,7 @@ export function activate(context: ExtensionContext) {
 
     if (isCachingSetToON()) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches();
+        InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache();
         commands.executeCommand("cobolplugin.processAllFilesInWorkspace");
     }
 }
@@ -469,11 +470,15 @@ export function hideMarginStatusBar() {
     formatStatusBarItem.hide();
 }
 
-export function deactivate() {
+export async function deactivateAsync() {
     if (isCachingEnabled()) {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
     }
     formatStatusBarItem.dispose();
+}
+
+export async function deactivate(): Promise<void> {
+    await deactivateAsync();
 }
 
 export function logCOBOLChannelLineException(message: string, ex: Error) {

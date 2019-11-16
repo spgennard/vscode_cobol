@@ -33,6 +33,11 @@ export function isValidExtension(filename: string): boolean {
             if (filename.endsWith(ext)) {
                 return true;
             }
+        } else {
+            // true to parse it, if we have no extension
+            if (filename.indexOf(".") === -1) {
+                return true;
+            }
         }
     }
     return false;
