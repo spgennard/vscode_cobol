@@ -40,6 +40,7 @@ export const cobolKeywords: string[] = [
 	"cancel",
 	"cbl",
 	"cd",
+	"cells",
 	"cf",
 	"ch",
 	"character",

@@ -249,7 +249,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                     }
                 }
                 InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
-                return locations;
             }
         }
     }
@@ -288,6 +287,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
             }
         }
     }
@@ -320,6 +320,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
             }
         }
     }
@@ -365,7 +366,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
             return locations;
         }
-
     }
 
     /* fuzzy search is not using the parser and it give false positive's, so lets
