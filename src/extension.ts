@@ -154,7 +154,7 @@ export function getCurrentContext(): ExtensionContext {
 }
 
 function activateLanguageServer(context: ExtensionContext) {
-    const serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
+    const serverModule = context.asAbsolutePath(path.join('out', 'server', 'src', 'server.js'));
     const serverOptions: ServerOptions = {
         run: {
             module: serverModule,
@@ -185,6 +185,7 @@ function activateLanguageServer(context: ExtensionContext) {
 export function activate(context: ExtensionContext) {
     currentContext = context;
     initExtensions();
+    //TODO - Not in use : activateLanguageServer(context);
 
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
