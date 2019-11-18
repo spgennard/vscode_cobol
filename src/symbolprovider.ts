@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import QuickCOBOLParse, { COBOLTokenStyle, splitArgument, COBOLToken } from './cobolquickparse';
 import { isOutlineEnabled, outlineFlag } from './extension';
+import VSQuickCOBOLParse from './vscobolquickparse';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
@@ -76,7 +77,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
             return symbols;
         }
 
-        let sf = QuickCOBOLParse.getCachedObject(document, document.fileName);
+        let sf = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
 
         if (sf === undefined) {
             return symbols;

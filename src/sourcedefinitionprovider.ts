@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { logCOBOLChannelLine, isCachingEnabled, getFuzzyVariableSearch } from './extension';
 import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalCachesHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
+import VSQuickCOBOLParse from './vscobolquickparse';
 
 const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -204,8 +205,8 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     let locations: vscode.Location[] = [];
     let loc;
-    let qcp: QuickCOBOLParse | undefined = QuickCOBOLParse.getCachedObject(document, document.fileName);
-
+    let qcp: QuickCOBOLParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
+    let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
     if (qcp === undefined) {
         return locations;
     }
@@ -220,7 +221,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (isCachingEnabled()) {
-            QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
+            QuickCOBOLParse.processOneFile(cacheDirectory,qcp);    /* ensure we have all the copybooks in the symbol cache */
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
@@ -232,7 +233,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                     try {
                         let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
                         if (fileName.length > 0) {
-                            let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
+                            let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
                                 let symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
                                 if (symbol !== undefined && symbol.lnum !== undefined) {
@@ -248,7 +249,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         console.log(fe.stacktrace);
                     }
                 }
-                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
     }
@@ -287,7 +288,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
-                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
     }
@@ -301,7 +302,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (isCachingEnabled()) {
-            QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
+            QuickCOBOLParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
@@ -320,7 +321,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
-                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
     }
@@ -334,7 +335,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
      * for variables
      */
     if (isCachingEnabled()) {
-        QuickCOBOLParse.processOneFile(qcp);    /* ensure we have all the copybooks in the symbol cache */
+        QuickCOBOLParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';
@@ -347,7 +348,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
                     let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
                     if (fileName.length > 0) {
-                        let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(fileName);
+                        let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                         if (symboleTable !== undefined) {
                             let symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
                             if (symbol !== undefined && symbol.lnum !== undefined) {
@@ -363,7 +364,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                     // should not happen but if it does, continue on to the next copybook reference
                 }
             }
-            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
+            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             return locations;
         }
     }

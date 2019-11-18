@@ -20,6 +20,7 @@ import QuickCOBOLParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } f
 import { isDirectPath } from './opencopybook';
 
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
+import VSQuickCOBOLParse from './vscobolquickparse';
 
 const util = require('util');
 
@@ -124,7 +125,7 @@ export function activateLogChannel(show: boolean) {
         logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
         logCOBOLChannelLine(" Caching           : " + getCachingSetting());
         if (isCachingEnabled()) {
-            logCOBOLChannelLine("  Cache directory  : " + COBOLSymbolTableHelper.getCacheDirectory());
+            logCOBOLChannelLine("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
         }
 
         var extsdir = fileSearchDirectory;
@@ -288,11 +289,11 @@ export function activate(context: ExtensionContext) {
 
 
     var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', function () {
-        QuickCOBOLParse.processAllFilesInWorkspaces();
+        VSQuickCOBOLParse.processAllFilesInWorkspaces();
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        QuickCOBOLParse.dumpMetaData();
+        QuickCOBOLParse.dumpMetaData(VSQuickCOBOLParse.getCacheDirectory());
     });
 
     context.subscriptions.push(move2pdCommand);
@@ -404,8 +405,9 @@ export function activate(context: ExtensionContext) {
     }
 
     if (isCachingSetToON()) {
-        InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches();
-        InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache();
+        let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
+        InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
         commands.executeCommand("cobolplugin.processAllFilesInWorkspace");
     }
 }
@@ -483,7 +485,7 @@ export function hideMarginStatusBar() {
 
 export async function deactivateAsync() {
     if (isCachingEnabled()) {
-        InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches();
+        InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
     }
     formatStatusBarItem.dispose();
 }
@@ -518,6 +520,25 @@ export function logCOBOLChannelLine(message: string, ...parameters: any[]) {
     //console.log(message + "\n");
 }
 
+
+export function logCOBOLErrorChannelLine(message: string, ...parameters: any[]) {
+    if (logChannelDisabled) {
+        return;
+    }
+
+    if (COBOLOutputChannel === null || COBOLOutputChannel === undefined) {
+        COBOLOutputChannel = window.createOutputChannel("COBOL");
+    }
+
+    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+        COBOLOutputChannel.appendLine(util.format(message, parameters));
+        //console.log(util.format(message, parameters) + "\n");
+        return;
+    }
+
+    COBOLOutputChannel.appendLine(message);
+    //console.log(message + "\n");
+}
 export function getFuzzyVariableSearch(): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var fuzzyVarOn = editorConfig.get<boolean>('fuzzy_variable_search');
@@ -557,4 +578,23 @@ export function isCachingSetToON(): boolean {
         case "off": return false;
     }
     return false;
+}
+
+
+export function getColumBParsing(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var parsingB = editorConfig.get<boolean>('ignorecolumn_b_onwards');
+    if (parsingB === undefined || parsingB === null) {
+        parsingB = false;
+    }
+    return parsingB;
+}
+
+export function getCopybookNestedInSection(): boolean {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var nestedFlag = editorConfig.get<boolean>('copybooks_nested');
+    if (nestedFlag === undefined || nestedFlag === null) {
+        nestedFlag = false;
+    }
+    return nestedFlag;
 }

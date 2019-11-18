@@ -239,11 +239,11 @@
                     "title": "Enable COBOL diagnostic channel",
                     "default": false
                 },
-                "coboleditor.pre_parse_line_limit" : {
-                    "type" : "number",
-                    "title" : "Set pre-parse line limit",
+                "coboleditor.pre_parse_line_limit": {
+                    "type": "number",
+                    "title": "Set pre-parse line limit",
                     "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
-                    "default" : 25
+                    "default": 25
                 }
             }
         },
