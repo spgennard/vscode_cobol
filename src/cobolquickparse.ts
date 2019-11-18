@@ -943,7 +943,7 @@ export default class QuickCOBOLParse {
                     this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.sections.set(prevTokenLower, this.currentSection);
 
-                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || prevTokenLower === "file") {
+                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || prevTokenLower === "local-storage" || prevTokenLower === "file-control") {
                         this.pickFields = true;
                         this.inProcedureDivision = false;
                         sourceHandler.setDumpAreaA(false);
@@ -1115,6 +1115,10 @@ export default class QuickCOBOLParse {
                             }
                         }
                     }
+                }
+
+                if (this.currentSection.tokenNameLower === "input-output" && prevTokenLower === 'fd') {
+                    this.pickFields = true;
                 }
 
                 // are we in the working-storage section?
