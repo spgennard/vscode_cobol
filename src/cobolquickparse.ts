@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine, getCachingSetting, activateLogChannel, logCOBOLChannelLineException } from "./extension";
+import { logCOBOLChannelLine, getCachingSetting, activateLogChannel, logCOBOLChannelLineException, getPreParseLineLimit } from "./extension";
 import { getExtensions, expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { performance } from "perf_hooks";
@@ -353,9 +353,13 @@ export default class QuickCOBOLParse {
         this.sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;
 
+        let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
+
+        /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
+        let lineLimit = getPreParseLineLimit();
         let maxLines = sourceHandler.getLineCount();
-        if (maxLines > 25) {
-            maxLines = 25;
+        if (maxLines > lineLimit) {
+            maxLines = lineLimit;
         }
 
         for (let l = 0; l < maxLines; l++) {
@@ -398,7 +402,12 @@ export default class QuickCOBOLParse {
             }
         }
 
-        if (this.sectionsInToken !== 0 || this.divisionsInToken !== 0) {
+        /* if the source has an extension, then continue on reguardless */
+        if (hasCOBOLExtension) {
+            this.sourceLooksLikeCOBOL = true;
+        
+        /* otherwise, does it look like COBOL? */
+        } else if (this.sectionsInToken !== 0 || this.divisionsInToken !== 0) {
             this.sourceLooksLikeCOBOL = true;
         }
 
@@ -615,6 +624,10 @@ export default class QuickCOBOLParse {
     }
 
     private static processFileInDirectory(filename: string, filterOnExtension: boolean) {
+        if (fs.existsSync(filename) === false) {
+            return false;
+        }
+
         let stat = fs.statSync(filename);
 
         if (stat.isDirectory() === false) {
@@ -684,7 +697,7 @@ export default class QuickCOBOLParse {
                         QuickCOBOLParse.processFileInDirectory(i, false);
                     }
                     catch (re) {
-                        logCOBOLChannelLineException("processAllFilesInWorkspaces/2", re);
+                        logCOBOLChannelLineException("processAllFilesInWorkspaces/2 => " + i, re);
                     }
                 }
             }

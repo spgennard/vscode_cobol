@@ -461,11 +461,21 @@ export function isOutlineEnabled(): outlineFlag {
     return outlineFlag.On;
 }
 
+export function getPreParseLineLimit(): number {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var lineLimit = editorConfig.get<number>('pre_parse_line_limit');
+    if (lineLimit === undefined || lineLimit === null) {
+        lineLimit = 25;
+    }
+    return lineLimit;
+}
+
 export function enableMarginStatusBar(formatStyle: ESourceFormat) {
     formatStatusBarItem.text = "Source:" + formatStyle;
     formatStyle.toString();
     formatStatusBarItem.show();
 }
+
 
 export function hideMarginStatusBar() {
     formatStatusBarItem.hide();
