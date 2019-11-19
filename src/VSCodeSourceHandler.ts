@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
 export class VSCodeSourceHandler implements ISourceHandler {
+    commentCount: number;
     document: vscode.TextDocument;
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
@@ -10,10 +11,15 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.dumpAreaBOnwards = false;
+        this.commentCount = 0;
     }
     
     getLineCount(): number {
         return this.document.lineCount;
+    }
+
+    getCommentCount(): number {
+        return this.commentCount;
     }
 
     getRawLine(lineNumber: number): string {
@@ -35,15 +41,19 @@ export class VSCodeSourceHandler implements ISourceHandler {
         let startComment = line.indexOf("*>");
         if (startComment !== -1) {
             line = line.substring(0, startComment);
+            this.commentCount++;
         }
         // drop fixed format line
         if (line.length > 1 && line[0] === '*') {
+            this.commentCount++;
             return "";
         }
         // drop fixed format line
         if (line.length > 7 && line[6] === '*') {
+            this.commentCount++;
             return "";
         }
+        
         // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
             if (line.match(VSCodeSourceHandler.paraPrefixRegex1)) {
