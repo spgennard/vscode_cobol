@@ -404,7 +404,7 @@ export default class QuickCOBOLParse {
         /* if the source has an extension, then continue on reguardless */
         if (hasCOBOLExtension) {
             this.sourceLooksLikeCOBOL = true;
-        
+
         /* otherwise, does it look like COBOL? */
         } else if (this.sectionsInToken !== 0 || this.divisionsInToken !== 0) {
             this.sourceLooksLikeCOBOL = true;
@@ -803,15 +803,17 @@ export default class QuickCOBOLParse {
 
                 // handle entries
                 if (prevTokenLower === "entry" && current.length !== 0) {
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
-                    this.callTargets.set(currentLower, ctoken);
+                    let trimmedCurrent = this.trimLiteral(current);
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                    this.callTargets.set(trimmedCurrent, ctoken);
                     continue;
                 }
 
                 // handle program-id
                 if (prevTokenLower === "program-id" && current.length !== 0) {
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
-                    this.callTargets.set(currentLower, ctoken);
+                    let trimmedCurrent = this.trimLiteral(current);
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                    this.callTargets.set(trimmedCurrent, ctoken);
 
                     // So we don't have any division?
                     if (this.currentDivision === COBOLToken.Null) {
@@ -822,11 +824,12 @@ export default class QuickCOBOLParse {
 
                 // handle class-id
                 if (prevTokenLower === "class-id" && current.length !== 0) {
-                    this.currentClass = this.newCOBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                    let trimmedCurrent = this.trimLiteral(current);
+                    this.currentClass = this.newCOBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
                     this.captureDivisions = false;
                     this.currentMethod = COBOLToken.Null;
                     this.pickFields = true;
-                    this.classes.set(currentLower, this.currentClass);
+                    this.classes.set(trimmedCurrent, this.currentClass);
 
                     continue;
                 }
@@ -886,14 +889,17 @@ export default class QuickCOBOLParse {
                     let style = currentLowerTrim === "new" ? COBOLTokenStyle.Constructor : COBOLTokenStyle.MethodId;
 
                     if (nextTokenLower === "property") {
-                        this.currentMethod = this.newCOBOLToken(COBOLTokenStyle.Property, lineNumber, line, this.trimLiteral(nextPlusOneToken), nextToken + " " + nextPlusOneToken, this.currentDivision);
+                        let trimmedProperty = this.trimLiteral(nextPlusOneToken);
+                        this.currentMethod = this.newCOBOLToken(COBOLTokenStyle.Property, lineNumber, line, trimmedProperty, nextToken + " " + nextPlusOneToken, this.currentDivision);
+                        this.methods.set(trimmedProperty, this.currentMethod);
                     } else {
-                        this.currentMethod = this.newCOBOLToken(style, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                        let trimmedCurrent = this.trimLiteral(current);
+                        this.currentMethod = this.newCOBOLToken(style, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                        this.methods.set(trimmedCurrent, this.currentMethod);
                     }
 
                     this.pickFields = true;
                     this.captureDivisions = false;
-                    this.methods.set(currentLowerTrim, this.currentMethod);
                     continue;
                 }
 

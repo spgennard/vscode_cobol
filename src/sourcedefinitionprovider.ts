@@ -70,8 +70,9 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         if (sf.sections.has(wordLower)) {
             let token = sf.sections.get(wordLower);
             if (token !== undefined) {
-                let srange = new vscode.Position(token.startLine, token.startColumn);
-                return new vscode.Location(uri, srange);
+                let validStartColumn = token.startColumn > 0 ? token.startColumn - 1 : 0;
+                let srange = new vscode.Position(token.startLine, validStartColumn);
+                return new vscode.Location(uri, new vscode.Range(srange, srange));
             }
         }
 
@@ -84,8 +85,9 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         if (sf.paragraphs.has(wordLower)) {
             let token = sf.paragraphs.get(wordLower);
             if (token !== undefined) {
-                let srange = new vscode.Position(token.startLine, token.startColumn);
-                return new vscode.Location(uri, srange);
+                let validStartColumn = token.startColumn > 0 ? token.startColumn - 1 : 0;
+                let srange = new vscode.Position(token.startLine, validStartColumn);
+                return new vscode.Location(uri,  new vscode.Range(srange, srange));
             }
         }
     }
