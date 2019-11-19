@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
  - OS: [e.g. iOS]
  - Version [e.g. 22]
 
-** What user & workspace settings are being used?
+**What user & workspace settings are being used?:**
 
 **Additional context**
 Add any other context about the problem here.
