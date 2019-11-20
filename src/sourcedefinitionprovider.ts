@@ -5,7 +5,7 @@ import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, C
 import VSQuickCOBOLParse from './vscobolquickparse';
 
 const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-const variableRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const variableRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
 const callRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const classRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const methodRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');

@@ -546,7 +546,7 @@ export default class QuickCOBOLParse {
             }
         }
     }
-    private static readonly literalRegex = /^[a-zA-Z][a-zA-Z0-9-_]*/g;
+    private static readonly literalRegex = /^[#a-zA-Z][a-zA-Z0-9-_]*/g;
 
     private isValidLiteral(id: string): boolean {
 
