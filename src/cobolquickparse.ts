@@ -96,50 +96,6 @@ export function splitArgument(input: string): string[] {
     return ret;
 }
 
-export function splitArgumentOld(input: string, sep: RegExp = /\s/g, keepQuotes: boolean = true): string[] {
-    let separator = sep || /\s/g;
-    var singleQuoteOpen = false;
-    var doubleQuoteOpen = false;
-    var tokenBuffer = [];
-    var ret = [];
-
-    var arr = input.split('');
-    for (var i = 0; i < arr.length; ++i) {
-        var element = arr[i];
-        var matches = element.match(separator);
-        if (element === "'" && !doubleQuoteOpen) {
-            if (keepQuotes === true) {
-                tokenBuffer.push(element);
-            }
-            singleQuoteOpen = !singleQuoteOpen;
-            continue;
-        } else if (element === '"' && !singleQuoteOpen) {
-            if (keepQuotes === true) {
-                tokenBuffer.push(element);
-            }
-            doubleQuoteOpen = !doubleQuoteOpen;
-            continue;
-        }
-
-        if (!singleQuoteOpen && !doubleQuoteOpen && matches) {
-            if (tokenBuffer.length > 0) {
-                ret.push(tokenBuffer.join(''));
-                tokenBuffer = [];
-            } else if (!!sep) {
-                ret.push(element);
-            }
-        } else {
-            tokenBuffer.push(element);
-        }
-    }
-    if (tokenBuffer.length > 0) {
-        ret.push(tokenBuffer.join(''));
-    } else if (!!sep) {
-        ret.push('');
-    }
-    return ret;
-}
-
 export class COBOLToken {
     public tokenType: COBOLTokenStyle;
     public startLine: number;
@@ -318,7 +274,7 @@ export default class QuickCOBOLParse {
 
     sourceLooksLikeCOBOL: boolean;
 
-    public constructor(sourceHandler: ISourceHandler, filename: string, parseColumnBOnwards: boolean, copybookNestedInSection: boolean, cacheDirectory:string ) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, parseColumnBOnwards: boolean, copybookNestedInSection: boolean, cacheDirectory: string) {
         let stat: fs.Stats = fs.statSync(filename);
 
         this.filename = path.normalize(filename);
@@ -404,9 +360,8 @@ export default class QuickCOBOLParse {
         /* if the source has an extension, then continue on reguardless */
         if (hasCOBOLExtension) {
             this.sourceLooksLikeCOBOL = true;
-
-        /* otherwise, does it look like COBOL? */
-        } else if (this.sectionsInToken !== 0 || this.divisionsInToken !== 0) {
+            /* otherwise, does it look like COBOL? */
+        } else if (this.sectionsInToken !== 0 || this.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
             this.sourceLooksLikeCOBOL = true;
         }
 
@@ -451,7 +406,7 @@ export default class QuickCOBOLParse {
 
 
 
-    public static processOneFile(cacheDirectory:string, qcp: QuickCOBOLParse) {
+    public static processOneFile(cacheDirectory: string, qcp: QuickCOBOLParse) {
 
         let filename = qcp.filename;
 
@@ -471,7 +426,7 @@ export default class QuickCOBOLParse {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                             logCOBOLChannelLine("   CopyBook: " + key + " => " + copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                            let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, getColumBParsing(),getCopybookNestedInSection(), cacheDirectory);
+                            let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, getColumBParsing(), getCopybookNestedInSection(), cacheDirectory);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                             COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
@@ -735,7 +690,7 @@ export default class QuickCOBOLParse {
                 const prevTokenLower = this.trimLiteral(token.prevTokenLower);
                 const nextPlusOneToken = token.nextPlusOneToken;
 
-                let prevPlusCurrent = token.prevToken + " " + current;
+                const prevPlusCurrent = token.prevToken + " " + current;
 
                 if (currentLower === "exec") {
                     this.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, prevToken, "", this.currentDivision);

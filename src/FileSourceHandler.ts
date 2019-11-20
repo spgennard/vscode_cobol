@@ -10,14 +10,16 @@ export class FileSourceHandler implements ISourceHandler {
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
     lines: string[];
+    commentCount: number;
 
     public constructor(document: string, dumpNumbersInAreaA: boolean) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.dumpAreaBOnwards = false;
         this.lines = [];
-
+        this.commentCount = 0;
         let line: string;
+
         //const editor = vscode.window.activeTextEditor;
         // let tabSize: number = 4;
         // if (editor) {
@@ -47,6 +49,9 @@ export class FileSourceHandler implements ISourceHandler {
         return this.lines.length;
     }
 
+    getCommentCount(): number {
+        return this.commentCount;
+    }
     getRawLine(lineNumber: number): string {
         try {
             let line = this.lines[lineNumber];
@@ -69,14 +74,17 @@ export class FileSourceHandler implements ISourceHandler {
         let startComment = line.indexOf("*>");
         if (startComment !== -1) {
             line = line.substring(0, startComment);
+            this.commentCount++;
         }
         // drop fixed format line
         if (line.length > 1 && line[0] === '*') {
+            this.commentCount++;
             return "";
         }
 
         // drop fixed format line
         if (line.length > 7 && line[6] === '*') {
+            this.commentCount++;
             return "";
         }
 
