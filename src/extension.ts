@@ -55,16 +55,16 @@ function getcopybookdirs_defaults(): string[] {
             if (e !== undefined && e !== null) {
                 e.split(path.delimiter).forEach(function (item) {
                     if (item !== undefined && item !== null && item.length > 0) {
-                        extraDirs.push(item);
+                        if (fs.existsSync(item)) {
+                            var itemStat = fs.statSync(item);
+                            if (itemStat.isDirectory()) {
+                                extraDirs.push(item);
+                            }
+                        }
                     }
                 });
             }
-        }
-    }
-
-    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
-        let dir = dirs[dirpos];
-        if (!dir.startsWith("$")) {
+        } else {
             extraDirs.push(dir);
         }
     }
