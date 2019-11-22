@@ -202,6 +202,11 @@ export default class VSQuickCOBOLParse {
                 return "";
             }
 
+            if (fs.existsSync(firstCacheDir) === false) {
+                fs.mkdirSync(firstCacheDir);
+            }
+
+            return firstCacheDir;
         }
 
         return "";
