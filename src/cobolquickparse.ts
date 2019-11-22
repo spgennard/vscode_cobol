@@ -391,7 +391,7 @@ export default class QuickCOBOLParse {
         }
         this.updateEndings(sourceHandler);
 
-        if (isCachingEnabled() && this.sourceLooksLikeCOBOL === true) {
+        if (isCachingEnabled() && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
             QuickCOBOLParse.processOneFile(cacheDirectory, this);
         }
     }

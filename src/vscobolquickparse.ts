@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-import { getColumBParsing, getCopybookNestedInSection, logCOBOLChannelLine, logCOBOLChannelLineException, activateLogChannel } from "./extension";
+import { getColumBParsing, getCopybookNestedInSection, logCOBOLChannelLine, logCOBOLChannelLineException, activateLogChannel, isCachingSetToON } from "./extension";
 import { performance } from "perf_hooks";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
@@ -86,8 +86,13 @@ export default class VSQuickCOBOLParse {
 
 
     public static processAllFilesInWorkspaces() {
-
         activateLogChannel(true);
+
+        if (isCachingSetToON() === false) {
+            logCOBOLChannelLine("Metadata cache is off, no action taken");
+            return;
+        }
+
         if (workspace.workspaceFolders) {
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             var start = performance.now();
@@ -179,10 +184,10 @@ export default class VSQuickCOBOLParse {
     }
 
     public static getCacheDirectory(): string {
-        let cacheDir: string = path.join(os.homedir(), ".vscode_cobol");
-        let firstCacheDir = "";
 
-        if (workspace.workspaceFolders) {
+        if (workspace.workspaceFolders && isCachingSetToON() === true) {
+            let firstCacheDir = "";
+
             for (var folder of workspace.workspaceFolders) {
                 let cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
                 if (fs.existsSync(cacheDir2)) {
@@ -193,20 +198,13 @@ export default class VSQuickCOBOLParse {
                 }
             }
 
-            if (fs.existsSync(firstCacheDir) === false) {
-                fs.mkdirSync(firstCacheDir);
+            if (firstCacheDir.length === 0) {
+                return "";
             }
 
-            if (fs.existsSync(firstCacheDir)) {
-                return firstCacheDir;
-            }
         }
 
-        if (fs.existsSync(cacheDir) === false) {
-            fs.mkdirSync(cacheDir);
-        }
-
-        return cacheDir;
+        return "";
 
     }
 
