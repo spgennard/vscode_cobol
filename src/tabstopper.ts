@@ -1,17 +1,9 @@
 'use strict';
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, workspace } from 'vscode';
+import { COBOLConfiguration } from './configuration';
 
-const DEFAULT_RULER = [0, 7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47, 51,  55, 59,  63,  67,  71,  75,  79];
 
-function getTabs(): number[] {
-    let editorConfig =  workspace.getConfiguration('coboleditor');
-    let tabStops = editorConfig.get<number[]>('tabstops');
-    if (!tabStops || (tabStops !== null && tabStops.length === 0)) {
-        tabStops = DEFAULT_RULER;
-    }
-    return tabStops;
-}
 
 function executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean) {
     editor.edit(edit => {
@@ -76,7 +68,7 @@ function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Sele
 }
 
 function tabSize(pos: number) {
-    var tabs = getTabs();
+    var tabs = COBOLConfiguration.getTabStops();
     var tab = 0;
     for (var index = 0; index < tabs.length; index++) {
         tab = tabs[index];
@@ -91,7 +83,7 @@ function tabSize(pos: number) {
 
 
 function unTabSize(pos: number) {
-    var tabs = getTabs();
+    var tabs = COBOLConfiguration.getTabStops();
 
     // outside range?
     if (pos > tabs[tabs.length - 1]) {

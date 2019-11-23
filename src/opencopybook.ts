@@ -5,19 +5,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
 import { logCOBOLChannelLine, getcopybookdirs } from './extension';
+import { COBOLConfiguration } from './configuration';
 
-const DEFAULT_COPYBOOK_EXTS = ["cpy"];
 
-export function getExtensions(): string[] {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    editorConfig = editorConfig;
-    var extensions = editorConfig.get<string[]>('copybookexts');
-    if (!extensions || (extensions !== null && extensions.length === 0)) {
-        extensions = DEFAULT_COPYBOOK_EXTS;
-    }
-    extensions.push("");
-    return extensions;
-}
 
 export function isValidExtension(filename: string): boolean {
     switch (filename) {
@@ -26,7 +16,7 @@ export function isValidExtension(filename: string): boolean {
         case ".ctags":
             return false;
     }
-    const exts = getExtensions();
+    const exts = COBOLConfiguration.getExtentions();
     for (let extpos = 0; extpos < exts.length; extpos++) {
         let ext = exts[extpos];
         if (ext.length !== 0) {
@@ -138,7 +128,7 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
         //No extension?
         if (filename === fileExtension) {
             // search through the possible extensions
-            const exts = getExtensions();
+            const exts = COBOLConfiguration.getExtentions();
             for (let extpos = 0; extpos < exts.length; extpos++) {
                 var ext = exts[extpos];
                 var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");

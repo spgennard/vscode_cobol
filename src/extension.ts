@@ -21,63 +21,27 @@ import { isDirectPath } from './opencopybook';
 
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import VSQuickCOBOLParse from './vscobolquickparse';
+import { COBOLConfiguration } from './configuration';
 
 const util = require('util');
 
 let formatStatusBarItem: StatusBarItem;
 
 var currentContext: ExtensionContext;
-var COBOLOutputChannel: OutputChannel;
+const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 
-let logChannelDisabled: boolean = isLogChannelDisabled();
-
-
-const DEFAULT_COPYBOOK_DIR = ["."];
 
 export function getcopybookdirs(): string[] {
     return fileSearchDirectory;
 }
 
-function getcopybookdirs_defaults(): string[] {
-    let editorConfig = workspace.getConfiguration('coboleditor');
-    let dirs = editorConfig.get<string[]>('copybookdirs');
-    if (!dirs || (dirs !== null && dirs.length === 0)) {
-        dirs = DEFAULT_COPYBOOK_DIR;
-    }
-
-    let extraDirs: string[] = [];
-
-    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
-        let dir = dirs[dirpos];
-
-        if (dir.startsWith("$")) {
-            var e = process.env[dir.substr(1)];
-            if (e !== undefined && e !== null) {
-                e.split(path.delimiter).forEach(function (item) {
-                    if (item !== undefined && item !== null && item.length > 0) {
-                        if (fs.existsSync(item)) {
-                            var itemStat = fs.statSync(item);
-                            if (itemStat.isDirectory()) {
-                                extraDirs.push(item);
-                            }
-                        }
-                    }
-                });
-            }
-        } else {
-            extraDirs.push(dir);
-        }
-    }
-
-    return extraDirs;
-}
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 
 function initExtensions() {
     fileSearchDirectory = [];
-    var extsdir = getcopybookdirs_defaults();
+    var extsdir = COBOLConfiguration.getCopybookdirs_defaults();
 
     if (workspace.workspaceFolders) {
         for (var folder of workspace.workspaceFolders) {
@@ -113,8 +77,11 @@ function initExtensions() {
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
-export function activateLogChannel(show: boolean) {
-    logChannelDisabled = false;
+export function showLogChannel() {
+    COBOLOutputChannel.show();
+}
+
+function activateLogChannel() {
     initExtensions();
     let thisExtension = extensions.getExtension("bitlang.cobol");
     logCOBOLChannelLine("");
@@ -123,8 +90,8 @@ export function activateLogChannel(show: boolean) {
         logCOBOLChannelLine("Extension Information:");
         logCOBOLChannelLine(" Extension path    : " + thisExtension.extensionPath);
         logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
-        logCOBOLChannelLine(" Caching           : " + getCachingSetting());
-        if (isCachingEnabled()) {
+        logCOBOLChannelLine(" Caching           : " + COBOLConfiguration.getCachingSetting());
+        if (COBOLConfiguration.isCachingEnabled()) {
             logCOBOLChannelLine("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
         }
 
@@ -143,11 +110,6 @@ export function activateLogChannel(show: boolean) {
 
         logCOBOLChannelLine("");
     }
-
-    if (show) {
-        COBOLOutputChannel.show();
-    }
-
 }
 
 export function getCurrentContext(): ExtensionContext {
@@ -185,6 +147,8 @@ function activateLanguageServer(context: ExtensionContext) {
 
 export function activate(context: ExtensionContext) {
     currentContext = context;
+    COBOLConfiguration.init();
+    
     initExtensions();
     //TODO - Not in use : activateLanguageServer(context);
 
@@ -209,7 +173,7 @@ export function activate(context: ExtensionContext) {
     });
 
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
-        if (isTabstopEnabled()) {
+        if (COBOLConfiguration.isTabstopEnabled()) {
             tabstopper.processTabKey(true);
         } else {
             commands.executeCommand("tab");
@@ -218,7 +182,7 @@ export function activate(context: ExtensionContext) {
     });
 
     var unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
-        if (isTabstopEnabled()) {
+        if (COBOLConfiguration.isTabstopEnabled()) {
             tabstopper.processTabKey(false);
         } else {
             commands.executeCommand("outdent");
@@ -296,6 +260,14 @@ export function activate(context: ExtensionContext) {
         QuickCOBOLParse.dumpMetaData(VSQuickCOBOLParse.getCacheDirectory());
     });
 
+    
+	const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
+		COBOLOutputChannel.appendLine('Configuration changed... Refreshing...');
+        COBOLConfiguration.init();
+        initExtensions();
+		COBOLOutputChannel.appendLine('Refresh done!');
+    });
+    
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -348,7 +320,7 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    if (isOutlineEnabled()) {
+    if (COBOLConfiguration.isOutlineEnabled()) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
 
@@ -358,7 +330,7 @@ export function activate(context: ExtensionContext) {
     }
 
     /* hover provider */
-    if (getExperimentialFeatures()) {
+    if (COBOLConfiguration.getExperimentialFeatures()) {
         let disposable = languages.registerHoverProvider(allCobolSelectors, {
             provideHover(document, position, token) {
 
@@ -400,76 +372,14 @@ export function activate(context: ExtensionContext) {
 
     updateDecorations(window.activeTextEditor);
 
-    if (logChannelDisabled === false) {
-        activateLogChannel(false);
-    }
-
-    if (isCachingSetToON()) {
+    activateLogChannel();
+    
+    if (COBOLConfiguration.isCachingSetToON()) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
         InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
         commands.executeCommand("cobolplugin.processAllFilesInWorkspace");
     }
-}
-
-export function isLogChannelDisabled(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var diagnosticOn = editorConfig.get<boolean>('diagnostic');
-    if (diagnosticOn === undefined || diagnosticOn === null) {
-        return false;
-    }
-    return !diagnosticOn;
-}
-
-
-export function getExperimentialFeatures(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var expEnabled = editorConfig.get<boolean>('experimential.features');
-    if (expEnabled === undefined || expEnabled === null) {
-        expEnabled = false;
-    }
-    return expEnabled;
-}
-
-export function isTabstopEnabled(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var expEnabled = editorConfig.get<boolean>('enable_tabstop');
-    if (expEnabled === undefined || expEnabled === null) {
-        expEnabled = false;
-    }
-    return expEnabled;
-}
-
-export enum outlineFlag {
-    On = "on",
-    Off = "off",
-    Partial = "partial",
-    Skeleton = "skeleton"
-}
-
-export function isOutlineEnabled(): outlineFlag {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var outlineEnabled = editorConfig.get('outline');
-    if (outlineEnabled === undefined || outlineEnabled === null) {
-        return outlineFlag.On;
-    }
-
-    switch (outlineEnabled) {
-        case "on": return outlineFlag.On;
-        case "off": return outlineFlag.Off;
-        case "partial": return outlineFlag.Partial;
-        case "skeleton": return outlineFlag.Skeleton;
-    }
-    return outlineFlag.On;
-}
-
-export function getPreParseLineLimit(): number {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var lineLimit = editorConfig.get<number>('pre_parse_line_limit');
-    if (lineLimit === undefined || lineLimit === null) {
-        lineLimit = 25;
-    }
-    return lineLimit;
 }
 
 export function enableMarginStatusBar(formatStyle: ESourceFormat) {
@@ -484,7 +394,7 @@ export function hideMarginStatusBar() {
 }
 
 export async function deactivateAsync() {
-    if (isCachingEnabled()) {
+    if (COBOLConfiguration.isCachingEnabled()) {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
     }
     formatStatusBarItem.dispose();
@@ -502,13 +412,6 @@ export function logCOBOLChannelLineException(message: string, ex: Error) {
 }
 
 export function logCOBOLChannelLine(message: string, ...parameters: any[]) {
-    if (logChannelDisabled) {
-        return;
-    }
-
-    if (COBOLOutputChannel === null || COBOLOutputChannel === undefined) {
-        COBOLOutputChannel = window.createOutputChannel("COBOL");
-    }
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
@@ -522,14 +425,6 @@ export function logCOBOLChannelLine(message: string, ...parameters: any[]) {
 
 
 export function logCOBOLErrorChannelLine(message: string, ...parameters: any[]) {
-    if (logChannelDisabled) {
-        return;
-    }
-
-    if (COBOLOutputChannel === null || COBOLOutputChannel === undefined) {
-        COBOLOutputChannel = window.createOutputChannel("COBOL");
-    }
-
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
         //console.log(util.format(message, parameters) + "\n");
@@ -539,62 +434,6 @@ export function logCOBOLErrorChannelLine(message: string, ...parameters: any[]) 
     COBOLOutputChannel.appendLine(message);
     //console.log(message + "\n");
 }
-export function getFuzzyVariableSearch(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var fuzzyVarOn = editorConfig.get<boolean>('fuzzy_variable_search');
-    if (fuzzyVarOn === undefined || fuzzyVarOn === null) {
-        fuzzyVarOn = false;
-    }
-    return fuzzyVarOn;
-}
-
-export function getCachingSetting(): string {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var cacheEnum = editorConfig.get<string>('cache_metadata');
-
-    if (cacheEnum === undefined || cacheEnum === null) {
-        return "";
-    }
-
-    return cacheEnum;
-}
-
-export function isCachingEnabled(): boolean {
-    var cacheEnum = getCachingSetting();
-
-    switch (cacheEnum) {
-        case "on": return true;
-        case "partial": return true;
-        case "off": return false;
-    }
-    return false;
-}
-
-export function isCachingSetToON(): boolean {
-    var cacheEnum = getCachingSetting();
-    switch (cacheEnum) {
-        case "on": return true;
-        case "partial": return false;
-        case "off": return false;
-    }
-    return false;
-}
 
 
-export function getColumBParsing(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var parsingB = editorConfig.get<boolean>('ignorecolumn_b_onwards');
-    if (parsingB === undefined || parsingB === null) {
-        parsingB = false;
-    }
-    return parsingB;
-}
 
-export function getCopybookNestedInSection(): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var nestedFlag = editorConfig.get<boolean>('copybooks_nested');
-    if (nestedFlag === undefined || nestedFlag === null) {
-        nestedFlag = false;
-    }
-    return nestedFlag;
-}

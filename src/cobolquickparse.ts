@@ -8,12 +8,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine, getCachingSetting, activateLogChannel, logCOBOLChannelLineException, getPreParseLineLimit, getColumBParsing, getCopybookNestedInSection } from "./extension";
+import { logCOBOLChannelLine, logCOBOLChannelLineException } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { performance } from "perf_hooks";
 import { Hash } from "crypto";
-import { isCachingEnabled } from "./extension";
+import { COBOLConfiguration } from "./configuration";
 
 
 var lzjs = require('lzjs');
@@ -234,7 +234,6 @@ class Token {
 }
 
 
-
 export default class QuickCOBOLParse {
     public filename: string;
     public lastModifiedTime: number;
@@ -311,7 +310,7 @@ export default class QuickCOBOLParse {
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
 
         /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
-        let lineLimit = getPreParseLineLimit();
+        let lineLimit = COBOLConfiguration.getPreParseLineLimit();
         let maxLines = sourceHandler.getLineCount();
         if (maxLines > lineLimit) {
             maxLines = lineLimit;
@@ -391,7 +390,7 @@ export default class QuickCOBOLParse {
         }
         this.updateEndings(sourceHandler);
 
-        if (isCachingEnabled() && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
+        if (COBOLConfiguration.isCachingEnabled() && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
             QuickCOBOLParse.processOneFile(cacheDirectory, this);
         }
     }
@@ -426,7 +425,7 @@ export default class QuickCOBOLParse {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                             logCOBOLChannelLine("   CopyBook: " + key + " => " + copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                            let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, getColumBParsing(), getCopybookNestedInSection(), cacheDirectory);
+                            let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, COBOLConfiguration.getColumBParsing(), COBOLConfiguration.getCopybookNestedInSection(), cacheDirectory);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                             COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
@@ -453,8 +452,7 @@ export default class QuickCOBOLParse {
     }
 
     public static dumpMetaData(cacheDirectory: string) {
-        activateLogChannel(true);       /* ignore setting */
-        if (isCachingEnabled() === false) {
+        if (COBOLConfiguration.isCachingEnabled() === false) {
             logCOBOLChannelLine("Metadata is not enabled");
             return;
         }
@@ -462,7 +460,7 @@ export default class QuickCOBOLParse {
         logCOBOLChannelLine("Metadata Dump");
 
         logCOBOLChannelLine(" cache folder   : " + cacheDirectory);
-        logCOBOLChannelLine(" cache_metadata : " + getCachingSetting() + "\n");
+        logCOBOLChannelLine(" cache_metadata : " + COBOLConfiguration.getCachingSetting() + "\n");
         logCOBOLChannelLine(" Last modified  : " + InMemoryGlobalSymbolCache.lastModifiedTime);
         logCOBOLChannelLine(" Dirty flag     : " + InMemoryGlobalSymbolCache.isDirty);
         logCOBOLChannelLine("");
@@ -501,6 +499,7 @@ export default class QuickCOBOLParse {
             }
         }
     }
+
     private static readonly literalRegex = /^[#a-zA-Z][a-zA-Z0-9-_]*/g;
 
     private isValidLiteral(id: string): boolean {

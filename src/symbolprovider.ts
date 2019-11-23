@@ -1,13 +1,14 @@
 import * as vscode from 'vscode';
-import QuickCOBOLParse, { COBOLTokenStyle, splitArgument, COBOLToken } from './cobolquickparse';
-import { isOutlineEnabled, outlineFlag } from './extension';
+import { COBOLTokenStyle, splitArgument, COBOLToken } from './cobolquickparse';
+import { COBOLConfiguration } from './configuration';
+import { outlineFlag} from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
 
-        if (isOutlineEnabled() === outlineFlag.Off) {
+        if (COBOLConfiguration.isOutlineEnabled() === outlineFlag.Off) {
             return symbols;
         }
 
@@ -72,7 +73,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
 
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         let symbols: vscode.SymbolInformation[] = [];
-        let outlineLevel = isOutlineEnabled();
+        let outlineLevel = COBOLConfiguration.isOutlineEnabled();
         if (outlineLevel === outlineFlag.Off) {
             return symbols;
         }
