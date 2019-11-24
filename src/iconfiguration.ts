@@ -48,3 +48,27 @@ export class COBOLSettings implements ICOBOLSettings {
         this.TabStops = [];
     }
 }
+
+export class COBOLSettingsHelper {
+    public static isCachingEnabled(setting: ICOBOLSettings): boolean {
+        var cacheEnum = setting.CachingSetting;
+    
+        switch (cacheEnum) {
+            case "on": return true;
+            case "partial": return true;
+            case "off": return false;
+        }
+        return false;
+    }
+    
+    public static isCachingSetToON(setting: ICOBOLSettings): boolean {
+        var cacheEnum = setting.CachingSetting;
+        switch (cacheEnum) {
+            case "on": return true;
+            case "partial": return false;
+            case "off": return false;
+        }
+        return false;
+    }
+
+}

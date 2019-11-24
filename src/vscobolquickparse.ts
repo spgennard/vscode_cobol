@@ -49,7 +49,7 @@ export default class VSQuickCOBOLParse {
         if (document !== undefined && document.isDirty) {
             InMemoryCache.delete(fileName);
             let file = new VSCodeSourceHandler(document, false);
-            return new QuickCOBOLParse(file, document.fileName, COBOLConfiguration.getColumBParsing(), COBOLConfiguration.getCopybookNestedInSection(), VSQuickCOBOLParse.getCacheDirectory());
+            return new QuickCOBOLParse(file, document.fileName, COBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
         }
 
         /* does the cache object need to be updated? */
@@ -64,13 +64,14 @@ export default class VSQuickCOBOLParse {
         /* grab, the file parse it can cache it */
         if (cachedObject === null || cachedObject === undefined) {
             try {
-                var startTime = performance.now();
 
                 let file = new FileSourceHandler(fileName, false);
-                let qcpd = new QuickCOBOLParse(file, fileName, COBOLConfiguration.getColumBParsing(), COBOLConfiguration.getCopybookNestedInSection(), VSQuickCOBOLParse.getCacheDirectory());
 
+                var startTime = performance.now();
+                let qcpd = new QuickCOBOLParse(file, fileName, COBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
-                logCOBOLChannelLine(' - Load/Parse - Execution time: %dms -> ' + fileName, (performance.now() - startTime).toFixed(2));
+                logCOBOLChannelLine(' - Parse - Execution time: %dms -> ' + fileName, (performance.now() - startTime).toFixed(2));
+
                 if (InMemoryCache.size > 20) {
                     let firstKey = InMemoryCache.keys().next().value;
                     InMemoryCache.delete(firstKey);
@@ -145,7 +146,7 @@ export default class VSQuickCOBOLParse {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
 
                         let filefs = new FileSourceHandler(filename, false);
-                        let qcp = new QuickCOBOLParse(filefs, filename, COBOLConfiguration.getColumBParsing(), COBOLConfiguration.getCopybookNestedInSection(),cacheDirectory);
+                        let qcp = new QuickCOBOLParse(filefs, filename, COBOLConfiguration.get(), cacheDirectory);
                         if (qcp.sourceLooksLikeCOBOL) {
                             logCOBOLChannelLine(" - Processing file : " + filename);
 
@@ -158,7 +159,7 @@ export default class VSQuickCOBOLParse {
                                         if (copyBookfilename.length !== 0) {
                                             if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                                                 let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                                                let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, COBOLConfiguration.getColumBParsing(), COBOLConfiguration.getCopybookNestedInSection(), cacheDirectory);
+                                                let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, COBOLConfiguration.get(),  cacheDirectory);
                                                 let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                                                 COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);

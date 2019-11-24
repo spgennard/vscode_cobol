@@ -257,7 +257,7 @@ export function activate(context: ExtensionContext) {
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        QuickCOBOLParse.dumpMetaData(VSQuickCOBOLParse.getCacheDirectory());
+        QuickCOBOLParse.dumpMetaData(COBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
     

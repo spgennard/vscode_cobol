@@ -1,9 +1,11 @@
 import ISourceHandler from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { logCOBOLChannelLine, logCOBOLChannelLineException } from './extension';
+import { performance } from 'perf_hooks';
 
 // var detab = require('detab');
 const lineByLine = require('n-readlines');
+import fs from 'fs';
 
 export class FileSourceHandler implements ISourceHandler {
     document: string;
@@ -17,32 +19,24 @@ export class FileSourceHandler implements ISourceHandler {
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.dumpAreaBOnwards = false;
         this.lines = [];
-        this.commentCount = 0;
+        this.commentCount = 0;  
+
+        let docstat = fs.statSync(document);
+        let docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
-
-        //const editor = vscode.window.activeTextEditor;
-        // let tabSize: number = 4;
-        // if (editor) {
-        //     if (typeof (editor.options.tabSize) === "number") {
-        //         tabSize = editor.options.tabSize as number;
-        //     }
-        //     if (typeof (editor.options.tabSize) === "string") {
-        //         tabSize = Number.parseInt(editor.options.tabSize as string);
-        //     }
-        // }
-
+        var startTime = performance.now();
         try {
-            const liner = new lineByLine(document, {readChunk:256*1024} );
+            const liner = new lineByLine(document, { readChunk: docChunkSize });
             while (line = liner.next()) {
-                // if (line.indexOf('\t') !== -1) {
-                //     line = detab(line.toString(), tabSize);
-                // }
                 this.lines.push(line.toString());
             }
+            logCOBOLChannelLine(' - File Load time-> ' + document + " " + (performance.now() - startTime).toFixed(2) + "ms");
         }
         catch (e) {
-            logCOBOLChannelLineException("File failed! ("+document+")",e);
+            logCOBOLChannelLineException("File failed! (" + document + ")", e);
         }
+
+        logCOBOLChannelLine(' - File Load time-> ' + document + " " + (performance.now() - startTime).toFixed(2) + "ms");
     }
 
     getLineCount(): number {
@@ -52,6 +46,7 @@ export class FileSourceHandler implements ISourceHandler {
     getCommentCount(): number {
         return this.commentCount;
     }
+
     getRawLine(lineNumber: number): string {
         try {
             let line = this.lines[lineNumber];
