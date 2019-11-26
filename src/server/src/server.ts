@@ -12,9 +12,12 @@ import {
 	TextDocumentPositionParams
 } from 'vscode-languageserver';
 
+import { ICOBOLSettings, COBOLSettings } from '../../iconfiguration';
+
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 let connection = createConnection(ProposedFeatures.all);
+export let connectionWorkspace = connection.workspace;
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
@@ -64,27 +67,22 @@ connection.onInitialized(() => {
 	}
 });
 
-// The example settings
-// tslint:disable-next-line: class-name
-interface COBOL_LSP_Settings {
-
-}
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: COBOL_LSP_Settings = { maxNumberOfProblems: 1000 };
-let globalSettings: COBOL_LSP_Settings = defaultSettings;
+const defaultSettings: ICOBOLSettings = new COBOLSettings();
+let globalSettings: ICOBOLSettings = defaultSettings;
 
 // Cache the settings of all open documents
-let documentSettings: Map<string, Thenable<COBOL_LSP_Settings>> = new Map();
+let documentSettings: Map<string, Thenable<ICOBOLSettings>> = new Map();
 
 connection.onDidChangeConfiguration(change => {
 	if (hasConfigurationCapability) {
 		// Reset all cached document settings
 		documentSettings.clear();
 	} else {
-		globalSettings = <COBOL_LSP_Settings>(
+		globalSettings = <ICOBOLSettings>(
 			(change.settings.languageServerExample || defaultSettings)
 		);
 	}
@@ -93,7 +91,7 @@ connection.onDidChangeConfiguration(change => {
 	documents.all().forEach(validateTextDocument);
 });
 
-function getDocumentSettings(resource: string): Thenable<COBOL_LSP_Settings> {
+function getDocumentSettings(resource: string): Thenable<ICOBOLSettings> {
 	if (!hasConfigurationCapability) {
 		return Promise.resolve(globalSettings);
 	}
@@ -120,7 +118,7 @@ documents.onDidChangeContent(change => {
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-	// let settings = await getDocumentSettings(textDocument.uri);
+	 let settings = await getDocumentSettings(textDocument.uri);
 
 	// The validator creates diagnostics for all uppercase words length 2 and more
 	let text = textDocument.getText();

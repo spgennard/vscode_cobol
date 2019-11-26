@@ -21,7 +21,7 @@ import { isDirectPath } from './opencopybook';
 
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import VSQuickCOBOLParse from './vscobolquickparse';
-import { COBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './configuration';
 
 const util = require('util');
 
@@ -41,7 +41,7 @@ let invalidSearchDirectory: string[] = [];
 
 function initExtensions() {
     fileSearchDirectory = [];
-    var extsdir = COBOLConfiguration.getCopybookdirs_defaults();
+    var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
 
     if (workspace.workspaceFolders) {
         for (var folder of workspace.workspaceFolders) {
@@ -90,8 +90,8 @@ function activateLogChannel() {
         logCOBOLChannelLine("Extension Information:");
         logCOBOLChannelLine(" Extension path    : " + thisExtension.extensionPath);
         logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
-        logCOBOLChannelLine(" Caching           : " + COBOLConfiguration.getCachingSetting());
-        if (COBOLConfiguration.isCachingEnabled()) {
+        logCOBOLChannelLine(" Caching           : " + VSCOBOLConfiguration.getCachingSetting());
+        if (VSCOBOLConfiguration.isCachingEnabled()) {
             logCOBOLChannelLine("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
         }
 
@@ -137,9 +137,15 @@ function activateLanguageServer(context: ExtensionContext) {
             scheme: 'file',
             language: 'COBOL',
         }],
+        synchronize: {
+			// Synchronize the setting section 'coboleditor' to the server
+			configurationSection: 'coboleditor',
+			// Notify the server about file changes to '.clientrc files contain in the workspace
+			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
+		}
     };
 
-    const client = new LanguageClient('hoverExample', 'Language Server Hover Example', serverOptions, clientOptions);
+    const client = new LanguageClient('COBOL', 'Language Server for COBOL', serverOptions, clientOptions);
     const disposable = client.start();
 
     context.subscriptions.push(disposable);
@@ -147,10 +153,13 @@ function activateLanguageServer(context: ExtensionContext) {
 
 export function activate(context: ExtensionContext) {
     currentContext = context;
-    COBOLConfiguration.init();
+    VSCOBOLConfiguration.init();
     
     initExtensions();
-    //TODO - Not in use : activateLanguageServer(context);
+    
+    // if (COBOLConfiguration.get().ExperimentialFeatures) {
+        // activateLanguageServer(context);
+    // }
 
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
@@ -173,7 +182,7 @@ export function activate(context: ExtensionContext) {
     });
 
     var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
-        if (COBOLConfiguration.isTabstopEnabled()) {
+        if (VSCOBOLConfiguration.isTabstopEnabled()) {
             tabstopper.processTabKey(true);
         } else {
             commands.executeCommand("tab");
@@ -182,7 +191,7 @@ export function activate(context: ExtensionContext) {
     });
 
     var unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
-        if (COBOLConfiguration.isTabstopEnabled()) {
+        if (VSCOBOLConfiguration.isTabstopEnabled()) {
             tabstopper.processTabKey(false);
         } else {
             commands.executeCommand("outdent");
@@ -257,13 +266,13 @@ export function activate(context: ExtensionContext) {
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        QuickCOBOLParse.dumpMetaData(COBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+        QuickCOBOLParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
     
 	const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
 		COBOLOutputChannel.appendLine('Configuration changed... Refreshing...');
-        COBOLConfiguration.init();
+        VSCOBOLConfiguration.init();
         initExtensions();
 		COBOLOutputChannel.appendLine('Refresh done!');
     });
@@ -320,7 +329,7 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    if (COBOLConfiguration.isOutlineEnabled()) {
+    if (VSCOBOLConfiguration.isOutlineEnabled()) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
 
@@ -330,7 +339,7 @@ export function activate(context: ExtensionContext) {
     }
 
     /* hover provider */
-    if (COBOLConfiguration.getExperimentialFeatures()) {
+    if (VSCOBOLConfiguration.getExperimentialFeatures()) {
         let disposable = languages.registerHoverProvider(allCobolSelectors, {
             provideHover(document, position, token) {
 
@@ -374,7 +383,7 @@ export function activate(context: ExtensionContext) {
 
     activateLogChannel();
     
-    if (COBOLConfiguration.isCachingSetToON()) {
+    if (VSCOBOLConfiguration.isCachingSetToON()) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
         InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
@@ -394,7 +403,7 @@ export function hideMarginStatusBar() {
 }
 
 export async function deactivateAsync() {
-    if (COBOLConfiguration.isCachingEnabled()) {
+    if (VSCOBOLConfiguration.isCachingEnabled()) {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
     }
     formatStatusBarItem.dispose();
