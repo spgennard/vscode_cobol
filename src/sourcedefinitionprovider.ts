@@ -3,7 +3,7 @@ import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { logCOBOLChannelLine } from './extension';
 import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalCachesHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 import VSQuickCOBOLParse from './vscobolquickparse';
-import { COBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './configuration';
 
 const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -223,7 +223,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
 
         /* search for targets in a copybook */
-        if (COBOLConfiguration.isCachingEnabled()) {
+        if (VSCOBOLConfiguration.isCachingEnabled()) {
             QuickCOBOLParse.processOneFile(cacheDirectory,qcp);    /* ensure we have all the copybooks in the symbol cache */
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
@@ -272,7 +272,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             return locations;
         }
 
-        if (COBOLConfiguration.isCachingEnabled()) {
+        if (VSCOBOLConfiguration.isCachingEnabled()) {
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
@@ -304,7 +304,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
 
         /* search for targets in a copybook */
-        if (COBOLConfiguration.isCachingEnabled()) {
+        if (VSCOBOLConfiguration.isCachingEnabled()) {
             QuickCOBOLParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
@@ -337,7 +337,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     /* search inside on disk copybooks referenced by the current program
      * for variables
      */
-    if (COBOLConfiguration.isCachingEnabled()) {
+    if (VSCOBOLConfiguration.isCachingEnabled()) {
         QuickCOBOLParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
@@ -375,7 +375,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     /* fuzzy search is not using the parser and it give false positive's, so lets
      * disable it by default but allow it to be re-enabled via config setting
      */
-    if (COBOLConfiguration.getFuzzyVariableSearch()) {
+    if (VSCOBOLConfiguration.getFuzzyVariableSearch()) {
         /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
         loc = getFuzzyVariable(document, position);
         if (loc) {

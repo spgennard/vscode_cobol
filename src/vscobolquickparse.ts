@@ -10,7 +10,7 @@ import { logCOBOLChannelLine, logCOBOLChannelLineException, showLogChannel } fro
 import { performance } from "perf_hooks";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
-import { COBOLConfiguration } from "./configuration";
+import { VSCOBOLConfiguration } from "./configuration";
 
 const util = require('util');
 
@@ -49,7 +49,7 @@ export default class VSQuickCOBOLParse {
         if (document !== undefined && document.isDirty) {
             InMemoryCache.delete(fileName);
             let file = new VSCodeSourceHandler(document, false);
-            return new QuickCOBOLParse(file, document.fileName, COBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+            return new QuickCOBOLParse(file, document.fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
         }
 
         /* does the cache object need to be updated? */
@@ -68,7 +68,7 @@ export default class VSQuickCOBOLParse {
                 let file = new FileSourceHandler(fileName, false);
 
                 var startTime = performance.now();
-                let qcpd = new QuickCOBOLParse(file, fileName, COBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+                let qcpd = new QuickCOBOLParse(file, fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
                 logCOBOLChannelLine(' - Parse - Execution time: %dms -> ' + fileName, (performance.now() - startTime).toFixed(2));
 
@@ -90,7 +90,7 @@ export default class VSQuickCOBOLParse {
     public static processAllFilesInWorkspaces() {
         showLogChannel();
 
-        if (COBOLConfiguration.isCachingSetToON() === false) {
+        if (VSCOBOLConfiguration.isCachingSetToON() === false) {
             logCOBOLChannelLine("Metadata cache is off, no action taken");
             return;
         }
@@ -146,7 +146,7 @@ export default class VSQuickCOBOLParse {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
 
                         let filefs = new FileSourceHandler(filename, false);
-                        let qcp = new QuickCOBOLParse(filefs, filename, COBOLConfiguration.get(), cacheDirectory);
+                        let qcp = new QuickCOBOLParse(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
                         if (qcp.sourceLooksLikeCOBOL) {
                             logCOBOLChannelLine(" - Processing file : " + filename);
 
@@ -159,7 +159,7 @@ export default class VSQuickCOBOLParse {
                                         if (copyBookfilename.length !== 0) {
                                             if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                                                 let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                                                let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, COBOLConfiguration.get(),  cacheDirectory);
+                                                let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, VSCOBOLConfiguration.get(),  cacheDirectory);
                                                 let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                                                 COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
@@ -187,7 +187,7 @@ export default class VSQuickCOBOLParse {
 
     public static getCacheDirectory(): string {
 
-        if (workspace.workspaceFolders && COBOLConfiguration.isCachingSetToON() === true) {
+        if (workspace.workspaceFolders && VSCOBOLConfiguration.isCachingSetToON() === true) {
             let firstCacheDir = "";
 
             for (var folder of workspace.workspaceFolders) {

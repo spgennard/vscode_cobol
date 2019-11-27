@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
 import { logCOBOLChannelLine, getcopybookdirs } from './extension';
-import { COBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './configuration';
 
 
 
@@ -16,7 +16,7 @@ export function isValidExtension(filename: string): boolean {
         case ".ctags":
             return false;
     }
-    const exts = COBOLConfiguration.getExtentions();
+    const exts = VSCOBOLConfiguration.getExtentions();
     for (let extpos = 0; extpos < exts.length; extpos++) {
         let ext = exts[extpos];
         if (ext.length !== 0) {
@@ -128,7 +128,7 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
         //No extension?
         if (filename === fileExtension) {
             // search through the possible extensions
-            const exts = COBOLConfiguration.getExtentions();
+            const exts = VSCOBOLConfiguration.getExtentions();
             for (let extpos = 0; extpos < exts.length; extpos++) {
                 var ext = exts[extpos];
                 var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");

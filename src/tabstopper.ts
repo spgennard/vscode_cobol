@@ -1,7 +1,7 @@
 'use strict';
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, workspace } from 'vscode';
-import { COBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './configuration';
 
 
 
@@ -68,7 +68,7 @@ function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Sele
 }
 
 function tabSize(pos: number) {
-    var tabs = COBOLConfiguration.getTabStops();
+    var tabs = VSCOBOLConfiguration.getTabStops();
     var tab = 0;
     for (var index = 0; index < tabs.length; index++) {
         tab = tabs[index];
@@ -83,7 +83,7 @@ function tabSize(pos: number) {
 
 
 function unTabSize(pos: number) {
-    var tabs = COBOLConfiguration.getTabStops();
+    var tabs = VSCOBOLConfiguration.getTabStops();
 
     // outside range?
     if (pos > tabs[tabs.length - 1]) {
