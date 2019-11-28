@@ -292,7 +292,7 @@ export default class QuickCOBOLParse {
         this.procedureDivisionRelatedTokens = 0;
         this.sectionsInToken = 0;
         this.divisionsInToken = 0;
-        this.copybookNestedInSection = configHandler.CopybookNestedInSection;
+        this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map();
         this.isCached = false;
         this.sections = new Map<string, COBOLToken>();
@@ -302,14 +302,14 @@ export default class QuickCOBOLParse {
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.sourceLooksLikeCOBOL = false;
-        this.parseColumnBOnwards = configHandler.ColumBParsing;
+        this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
 
         let prevToken: Token = Token.Blank;
 
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
 
         /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
-        let lineLimit = configHandler.PreParseLineLimit;
+        let lineLimit = configHandler.pre_parse_line_limit;
         let maxLines = sourceHandler.getLineCount();
         if (maxLines > lineLimit) {
             maxLines = lineLimit;
@@ -459,7 +459,7 @@ export default class QuickCOBOLParse {
         logCOBOLChannelLine("Metadata Dump");
 
         logCOBOLChannelLine(" cache folder   : " + cacheDirectory);
-        logCOBOLChannelLine(" cache_metadata : " + settings.CachingSetting + "\n");
+        logCOBOLChannelLine(" cache_metadata : " + settings.cache_metadata + "\n");
         logCOBOLChannelLine(" Last modified  : " + InMemoryGlobalSymbolCache.lastModifiedTime);
         logCOBOLChannelLine(" Dirty flag     : " + InMemoryGlobalSymbolCache.isDirty);
         logCOBOLChannelLine("");

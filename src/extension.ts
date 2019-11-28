@@ -133,13 +133,15 @@ function activateLanguageServer(context: ExtensionContext) {
     };
 
     const clientOptions: LanguageClientOptions = {
+
         documentSelector: [{
             scheme: 'file',
             language: 'COBOL',
         }],
         synchronize: {
 			// Synchronize the setting section 'coboleditor' to the server
-			configurationSection: 'coboleditor',
+            configurationSection: 'coboleditor',
+            
 			// Notify the server about file changes to '.clientrc files contain in the workspace
 			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
 		}
@@ -157,9 +159,9 @@ export function activate(context: ExtensionContext) {
     
     initExtensions();
     
-    // if (COBOLConfiguration.get().ExperimentialFeatures) {
-        // activateLanguageServer(context);
-    // }
+    if (VSCOBOLConfiguration.get().experimential_features) {
+        activateLanguageServer(context);
+    }
 
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();

@@ -12,17 +12,17 @@ export class VSLCOBOLConfiguration {
 
     public static init() {
         VSLCOBOLConfiguration.config = new COBOLSettings();
-        VSLCOBOLConfiguration.config.ExperimentialFeatures = getExperimentialFeatures();
-        VSLCOBOLConfiguration.config.TabstopEnabled = isTabstopEnabled();
-        VSLCOBOLConfiguration.config.ColumBParsing = getColumBParsing();
-        VSLCOBOLConfiguration.config.CopybookNestedInSection = getCopybookNestedInSection();
-        VSLCOBOLConfiguration.config.FuzzyVariableSearch = getFuzzyVariableSearch();
-        VSLCOBOLConfiguration.config.CachingSetting = getCachingSetting();
-        VSLCOBOLConfiguration.config.OutlineEnabled = isOutlineEnabled();
-        VSLCOBOLConfiguration.config.Copybookdirs_defaults = getCopybookdirs_defaults();
-        VSLCOBOLConfiguration.config.PreParseLineLimit = getPreParseLineLimit();
-        VSLCOBOLConfiguration.config.CopybookExts = getCopybookExts();
-        VSLCOBOLConfiguration.config.TabStops = getTabStops();
+        VSLCOBOLConfiguration.config.experimential_features = getExperimentialFeatures();
+        VSLCOBOLConfiguration.config.enable_tabstop = isTabstopEnabled();
+        VSLCOBOLConfiguration.config.ignorecolumn_b_onwards = getColumBParsing();
+        VSLCOBOLConfiguration.config.copybooks_nested = getCopybookNestedInSection();
+        VSLCOBOLConfiguration.config.fuzzy_variable_search = getFuzzyVariableSearch();
+        VSLCOBOLConfiguration.config.cache_metadata = getCachingSetting();
+        VSLCOBOLConfiguration.config.outline = isOutlineEnabled();
+        VSLCOBOLConfiguration.config.copybookdirs = getCopybookdirs_defaults();
+        VSLCOBOLConfiguration.config.pre_parse_line_limit = getPreParseLineLimit();
+        VSLCOBOLConfiguration.config.copybookexts = getCopybookExts();
+        VSLCOBOLConfiguration.config.tabstops = getTabStops();
     }
     
     public static get(): ICOBOLSettings {
@@ -30,31 +30,31 @@ export class VSLCOBOLConfiguration {
     }
 
     public static getExperimentialFeatures(): boolean {
-        return VSLCOBOLConfiguration.config.ExperimentialFeatures;
+        return VSLCOBOLConfiguration.config.experimential_features;
     }
 
     public static isTabstopEnabled(): boolean {
-        return VSLCOBOLConfiguration.config.TabstopEnabled;
+        return VSLCOBOLConfiguration.config.enable_tabstop;
     }
 
     public static getPreParseLineLimit() : number {
-        return VSLCOBOLConfiguration.config.PreParseLineLimit;
+        return VSLCOBOLConfiguration.config.pre_parse_line_limit;
     }
 
     public static getColumBParsing() : boolean {
-        return VSLCOBOLConfiguration.config.ColumBParsing;
+        return VSLCOBOLConfiguration.config.ignorecolumn_b_onwards;
     }
 
     public static getCopybookNestedInSection() : boolean {
-        return VSLCOBOLConfiguration.config.CopybookNestedInSection;
+        return VSLCOBOLConfiguration.config.copybooks_nested;
     }
 
     public static getFuzzyVariableSearch() : boolean {
-        return VSLCOBOLConfiguration.config.FuzzyVariableSearch;
+        return VSLCOBOLConfiguration.config.fuzzy_variable_search;
     }
     
     public static getCachingSetting() : string {
-        return VSLCOBOLConfiguration.config.CachingSetting;
+        return VSLCOBOLConfiguration.config.cache_metadata;
     }
 
     public static isCachingEnabled(): boolean {
@@ -79,19 +79,19 @@ export class VSLCOBOLConfiguration {
     }
     
     public static isOutlineEnabled(): outlineFlag {
-        return VSLCOBOLConfiguration.config.OutlineEnabled;
+        return VSLCOBOLConfiguration.config.outline;
     }
     
     public static getCopybookdirs_defaults(): string[] {
-        return VSLCOBOLConfiguration.config.Copybookdirs_defaults;
+        return VSLCOBOLConfiguration.config.copybookdirs;
     }
 
     public static getExtentions() : string[] {
-        return VSLCOBOLConfiguration.config.CopybookExts;
+        return VSLCOBOLConfiguration.config.copybookexts;
     }
 
     public static getTabStops(): number[] {
-        return VSLCOBOLConfiguration.config.TabStops;
+        return VSLCOBOLConfiguration.config.tabstops;
     }
 }
 
@@ -108,7 +108,7 @@ function getBoolean(configSection: string, defaultValue: boolean) : boolean {
 }
 
 function getExperimentialFeatures(): boolean {
-    return getBoolean('experimential.features', false);
+    return getBoolean('experimential_features', false);
 }
 
 function isTabstopEnabled(): boolean {

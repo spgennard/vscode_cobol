@@ -212,7 +212,7 @@
                     ],
                     "description": "An array of filenames/patterns and its associated source formmat"
                 },
-                "coboleditor.experimential.features": {
+                "coboleditor.experimential_features": {
                     "type": "boolean",
                     "title": "Experimential features",
                     "default": false

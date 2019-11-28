@@ -23,7 +23,7 @@ export let connectionWorkspace = connection.workspace;
 // supports full document sync only
 let documents: TextDocuments = new TextDocuments();
 
-let hasConfigurationCapability: boolean = false;
+let hasConfigurationCapability: boolean = true;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
@@ -99,7 +99,7 @@ function getDocumentSettings(resource: string): Thenable<ICOBOLSettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'languageServerExample'
+			section: 'coboleditor'
 		});
 		documentSettings.set(resource, result);
 	}
@@ -119,6 +119,7 @@ documents.onDidChangeContent(change => {
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	 let settings = await getDocumentSettings(textDocument.uri);
+	
 
 	// The validator creates diagnostics for all uppercase words length 2 and more
 	let text = textDocument.getText();
