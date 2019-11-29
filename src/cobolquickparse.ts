@@ -533,8 +533,13 @@ export default class COBOLQuickParse {
             return false;
         }
 
-        if (id.match(COBOLQuickParse.paragraphRegex)) {
-            return true;
+        if (id.match(COBOLQuickParse.paragraphRegex) === null) {
+            return false;
+        }
+
+        /* paragraph can't be a variable or constant */
+        if (this.constantsOrVariables.has(id.toLowerCase()) === true) {
+            return false;
         }
 
         return false;
