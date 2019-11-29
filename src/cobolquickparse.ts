@@ -133,8 +133,18 @@ export class COBOLToken {
     }
 }
 
+export class SourceReference {
+    public line: number;
+    public columnn : number;
+
+    public constructor(line: number, column: number) {
+        this.line = line;
+        this.columnn = column;
+    }
+    
+}
+
 class Token {
-    public lineNumber: number = 0;
     public line: string = "";
 
     private lineTokens: string[] = [];
@@ -157,8 +167,6 @@ class Token {
     public endsWithDot: boolean = false;
 
     public constructor(line: string, previousToken?: Token) {
-        this.lineNumber = 1;
-
         this.line = line;
         this.setupLine();
 
@@ -231,7 +239,7 @@ class Token {
 }
 
 
-export default class QuickCOBOLParse {
+export default class COBOLQuickParse {
     public filename: string;
     public lastModifiedTime: number;
 
@@ -245,6 +253,8 @@ export default class QuickCOBOLParse {
     public methods: Map<string, COBOLToken>;
     public isCached: boolean;
     public copyBooksUsed: Map<string, string>;
+    public parseReferences: boolean;
+    public targetReferences: Map<string, SourceReference[]>;
 
     inProcedureDivision: boolean;
     pickFields: boolean;
@@ -272,7 +282,7 @@ export default class QuickCOBOLParse {
 
     configHandler: ICOBOLSettings;
 
-    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, parseReferences: boolean = false) {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
@@ -301,9 +311,10 @@ export default class QuickCOBOLParse {
         this.callTargets = new Map<string, COBOLToken>();
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
+        this.targetReferences = new Map<string, SourceReference[]>();
         this.sourceLooksLikeCOBOL = false;
         this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
-
+        this.parseReferences = parseReferences;
         let prevToken: Token = Token.Blank;
 
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
@@ -390,7 +401,7 @@ export default class QuickCOBOLParse {
         this.updateEndings(sourceHandler);
 
         if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
-            QuickCOBOLParse.processOneFile(cacheDirectory, this);
+            COBOLQuickParse.processOneFile(cacheDirectory, this);
         }
     }
 
@@ -404,7 +415,7 @@ export default class QuickCOBOLParse {
 
 
 
-    public static processOneFile(cacheDirectory: string, qcp: QuickCOBOLParse) {
+    public static processOneFile(cacheDirectory: string, qcp: COBOLQuickParse) {
 
         let filename = qcp.filename;
 
@@ -424,7 +435,7 @@ export default class QuickCOBOLParse {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                             logCOBOLChannelLine("   CopyBook: " + key + " => " + copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                            let qcp_vb = new QuickCOBOLParse(filefs_vb, copyBookfilename, qcp.configHandler, cacheDirectory);
+                            let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, qcp.configHandler, cacheDirectory);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                             COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
@@ -507,7 +518,7 @@ export default class QuickCOBOLParse {
             return false;
         }
 
-        if (id.match(QuickCOBOLParse.literalRegex)) {
+        if (id.match(COBOLQuickParse.literalRegex)) {
             return true;
         }
 
@@ -522,7 +533,7 @@ export default class QuickCOBOLParse {
             return false;
         }
 
-        if (id.match(QuickCOBOLParse.paragraphRegex)) {
+        if (id.match(COBOLQuickParse.paragraphRegex)) {
             return true;
         }
 
@@ -631,6 +642,20 @@ export default class QuickCOBOLParse {
         while (token.moveToNextToken() === false);
 
         return token;
+    }
+
+    private addReference(lowerCaseVariable: string, line: number, column: number) {
+        if (this.targetReferences.has(lowerCaseVariable)) {
+            let sourceRefs: SourceReference[] | undefined = this.targetReferences.get(lowerCaseVariable);
+            if (sourceRefs !== undefined) {
+                sourceRefs.push(new SourceReference(line, column));
+                return;
+            }
+        }
+
+        let sourceRefs: SourceReference[] = [];
+        sourceRefs.push(new SourceReference(line, column));
+        this.targetReferences.set(lowerCaseVariable, sourceRefs);
     }
 
     private addVariableOrConstant(lowerCaseVariable: string, token: COBOLToken) {
@@ -945,6 +970,15 @@ export default class QuickCOBOLParse {
                         }
                     }
                 }
+
+                /* add reference when perform is used */
+                if (this.parseReferences) {
+                    if (prevTokenLower === 'perform' || prevTokenLower === "to"  || prevTokenLower === "goto") {
+                        if (this.isValidKeyword(currentLower) === false) {
+                            this.addReference(currentLower, lineNumber, token.currentCol);
+                        }
+                    }
+                }
             }
             catch (e) {
                 logCOBOLChannelLineException("Cobolquickparse line error: ", e);
@@ -1147,7 +1181,7 @@ export class COBOLSymbolTable {
 }
 
 export class COBOLSymbolTableHelper {
-    public static getCOBOLSymbolTable(qp: QuickCOBOLParse): COBOLSymbolTable {
+    public static getCOBOLSymbolTable(qp: COBOLQuickParse): COBOLSymbolTable {
         let st = new COBOLSymbolTable();
         st.fileName = qp.filename;
         st.lastModifiedTime = qp.lastModifiedTime;

@@ -14,6 +14,9 @@ import {
 
 import { ICOBOLSettings, COBOLSettings } from '../../iconfiguration';
 
+// References! https://code.visualstudio.com/api/language-extensions/programmatic-language-features
+
+
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 let connection = createConnection(ProposedFeatures.all);

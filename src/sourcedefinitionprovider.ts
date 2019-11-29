@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { logCOBOLChannelLine } from './extension';
-import QuickCOBOLParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalCachesHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
+import COBOLQuickParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalCachesHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 
@@ -57,7 +57,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
 }
 
 
-function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: COBOLQuickParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -99,7 +99,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
 }
 
 
-function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: QuickCOBOLParse, position: vscode.Position): boolean {
+function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: COBOLQuickParse, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -159,15 +159,15 @@ function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>,
     return undefined;
 }
 
-function getClassTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getClassTarget(document: vscode.TextDocument, sf: COBOLQuickParse, position: vscode.Position): vscode.Location | undefined {
     return getGenericTarget(classRegEx, sf.classes, document, position);
 }
 
-function getMethodTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getMethodTarget(document: vscode.TextDocument, sf: COBOLQuickParse, position: vscode.Position): vscode.Location | undefined {
     return getGenericTarget(methodRegEx, sf.methods, document, position);
 }
 
-function getCallTarget(document: vscode.TextDocument, sf: QuickCOBOLParse, position: vscode.Position): vscode.Location | undefined {
+function getCallTarget(document: vscode.TextDocument, sf: COBOLQuickParse, position: vscode.Position): vscode.Location | undefined {
     return getGenericTarget(callRegEx, sf.callTargets, document, position);
 }
 
@@ -208,7 +208,7 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     let locations: vscode.Location[] = [];
     let loc;
-    let qcp: QuickCOBOLParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
+    let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
     let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
     if (qcp === undefined) {
         return locations;
@@ -224,7 +224,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            QuickCOBOLParse.processOneFile(cacheDirectory,qcp);    /* ensure we have all the copybooks in the symbol cache */
+            COBOLQuickParse.processOneFile(cacheDirectory,qcp);    /* ensure we have all the copybooks in the symbol cache */
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
@@ -305,7 +305,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            QuickCOBOLParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
+            COBOLQuickParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
@@ -338,7 +338,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
      * for variables
      */
     if (VSCOBOLConfiguration.isCachingEnabled()) {
-        QuickCOBOLParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
+        COBOLQuickParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';

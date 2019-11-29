@@ -14,7 +14,7 @@ import { performance } from 'perf_hooks';
 // import * as myExtension from '../extension';
 import ISourceHandler from '../isourcehandler';
 import { FileSourceHandler } from '../FileSourceHandler';
-import QuickCOBOLParse from '../cobolquickparse';
+import COBOLQuickParse from '../cobolquickparse';
 import { ICOBOLSettings, COBOLSettings } from '../iconfiguration';
 
 
@@ -34,7 +34,7 @@ suite("Extension Tests", function () {
 
         let cobolSettings: ICOBOLSettings = new COBOLSettings();
         // var startTime = performance.now();
-        let qcpd = new QuickCOBOLParse(fr, fileName, cobolSettings, "");
+        let qcpd = new COBOLQuickParse(fr, fileName, cobolSettings, "");
     
         assert.ok(qcpd.constantsOrVariables.size > 0, "constantsOrVariables == 0 for Program1.cbl");
     });

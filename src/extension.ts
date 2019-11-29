@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -16,12 +16,13 @@ import * as fs from 'fs';
 
 import updateDecorations from './margindecorations';
 import { getCallTarget } from './keywords/cobolCallTargets';
-import QuickCOBOLParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
+import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
 import { isDirectPath } from './opencopybook';
 
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
+import { CobolReferenceProvider } from './cobolreferenceprovider';
 
 const util = require('util');
 
@@ -159,9 +160,9 @@ export function activate(context: ExtensionContext) {
     
     initExtensions();
     
-    if (VSCOBOLConfiguration.get().experimential_features) {
-        activateLanguageServer(context);
-    }
+    // if (VSCOBOLConfiguration.get().experimential_features) {
+    //     activateLanguageServer(context);
+    // }
 
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
@@ -268,7 +269,7 @@ export function activate(context: ExtensionContext) {
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        QuickCOBOLParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+        COBOLQuickParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
     
@@ -318,7 +319,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-
+    let referenceDisposable: Disposable  = languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider());
     // const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
     // const completionItemProviderDisposable = languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
     // context.subscriptions.push(completionItemProviderDisposable);
