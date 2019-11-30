@@ -135,13 +135,13 @@ export class COBOLToken {
 
 export class SourceReference {
     public line: number;
-    public columnn : number;
+    public columnn: number;
 
     public constructor(line: number, column: number) {
         this.line = line;
         this.columnn = column;
     }
-    
+
 }
 
 class Token {
@@ -255,6 +255,7 @@ export default class COBOLQuickParse {
     public copyBooksUsed: Map<string, string>;
     public parseReferences: boolean;
     public targetReferences: Map<string, SourceReference[]>;
+    public constantsOrVariablesReferences: Map<string, SourceReference[]>;
 
     inProcedureDivision: boolean;
     pickFields: boolean;
@@ -312,6 +313,7 @@ export default class COBOLQuickParse {
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.targetReferences = new Map<string, SourceReference[]>();
+        this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
         this.sourceLooksLikeCOBOL = false;
         this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
         this.parseReferences = parseReferences;
@@ -542,7 +544,7 @@ export default class COBOLQuickParse {
             return false;
         }
 
-        return false;
+        return true;
     }
 
     private isValidKeyword(keyword: string): boolean {
@@ -649,9 +651,9 @@ export default class COBOLQuickParse {
         return token;
     }
 
-    private addReference(lowerCaseVariable: string, line: number, column: number) {
-        if (this.targetReferences.has(lowerCaseVariable)) {
-            let sourceRefs: SourceReference[] | undefined = this.targetReferences.get(lowerCaseVariable);
+    private addReference(referencesMap: Map<string, SourceReference[]>, lowerCaseVariable: string, line: number, column: number) {
+        if (referencesMap.has(lowerCaseVariable)) {
+            let sourceRefs: SourceReference[] | undefined = referencesMap.get(lowerCaseVariable);
             if (sourceRefs !== undefined) {
                 sourceRefs.push(new SourceReference(line, column));
                 return;
@@ -660,7 +662,7 @@ export default class COBOLQuickParse {
 
         let sourceRefs: SourceReference[] = [];
         sourceRefs.push(new SourceReference(line, column));
-        this.targetReferences.set(lowerCaseVariable, sourceRefs);
+        referencesMap.set(lowerCaseVariable, sourceRefs);
     }
 
     private addVariableOrConstant(lowerCaseVariable: string, token: COBOLToken) {
@@ -978,9 +980,11 @@ export default class COBOLQuickParse {
 
                 /* add reference when perform is used */
                 if (this.parseReferences) {
-                    if (prevTokenLower === 'perform' || prevTokenLower === "to"  || prevTokenLower === "goto") {
-                        if (this.isValidKeyword(currentLower) === false) {
-                            this.addReference(currentLower, lineNumber, token.currentCol);
+                    if (this.inProcedureDivision) {
+                        if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
+                            if (this.isValidKeyword(currentLower) === false) {
+                                this.addReference(this.targetReferences, currentLower, lineNumber, token.currentCol);
+                            }
                         }
                     }
                 }
