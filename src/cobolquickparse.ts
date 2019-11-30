@@ -512,7 +512,7 @@ export default class COBOLQuickParse {
         }
     }
 
-    private static readonly literalRegex = /^[#a-zA-Z][a-zA-Z0-9-_]*/g;
+    private static readonly literalRegex = /^[#a-zA-Z][a-zA-Z0-9-_]*$/g;
 
     private isValidLiteral(id: string): boolean {
 
@@ -527,7 +527,7 @@ export default class COBOLQuickParse {
         return false;
     }
 
-    private static readonly paragraphRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_]*/g;
+    private static readonly paragraphRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
 
     private isParagraph(id: string): boolean {
 
@@ -761,7 +761,9 @@ export default class COBOLQuickParse {
                     this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.sections.set(prevTokenLower, this.currentSection);
 
-                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || prevTokenLower === "local-storage" || prevTokenLower === "file-control") {
+                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || 
+                        prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
+                        prevTokenLower === "screen") {
                         this.pickFields = true;
                         this.inProcedureDivision = false;
                         sourceHandler.setDumpAreaA(false);
