@@ -35,18 +35,40 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         let qp = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", true);
 
         if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
-            let paraToken: COBOLToken|undefined = qp.paragraphs.get(workLower);
+            let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
             if (paraToken !== undefined) {
                 list.push(new vscode.Location(document.uri, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
             }
 
-            let sectionToken: COBOLToken|undefined = qp.sections.get(workLower);
+            let sectionToken: COBOLToken | undefined = qp.sections.get(workLower);
             if (sectionToken !== undefined) {
                 list.push(new vscode.Location(document.uri, new vscode.Position(sectionToken.startLine, sectionToken.startColumn)));
             }
 
             if (qp.targetReferences.has(workLower) === true) {
                 let targetRefs: SourceReference[] | undefined = qp.targetReferences.get(workLower);
+                if (targetRefs === undefined) {
+                    return Promise.resolve(null);
+                }
+                for (let trpos = 0; trpos < targetRefs.length; trpos++) {
+                    let tref = targetRefs[trpos];
+                    list.push(new vscode.Location(document.uri, new vscode.Position(tref.line, tref.columnn)));
+                }
+            }
+        }
+
+        if (qp.constantsOrVariables.has(workLower)) {
+            let paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
+            if (paraTokens !== undefined) {
+                for (let ptref = 0; ptref < paraTokens.length; ptref++) {
+                    let paraToken = paraTokens[ptref];
+
+                    list.push(new vscode.Location(document.uri, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
+                }
+            }
+
+            if (qp.constantsOrVariablesReferences.has(workLower) === true) {
+                let targetRefs: SourceReference[] | undefined = qp.constantsOrVariablesReferences.get(workLower);
                 if (targetRefs === undefined) {
                     return Promise.resolve(null);
                 }

@@ -986,7 +986,15 @@ export default class COBOLQuickParse {
                         if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
                             if (this.isValidKeyword(currentLower) === false) {
                                 this.addReference(this.targetReferences, currentLower, lineNumber, token.currentCol);
+                                continue;
                             }
+                        }
+
+                        /* is this a reference to a variable? */
+                        if (this.constantsOrVariables.has(currentLower) === true) {
+                            this.addReference(this.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol);
+                            continue;
+
                         }
                     }
                 }
