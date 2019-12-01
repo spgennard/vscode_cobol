@@ -1,5 +1,7 @@
+import { Uri } from "vscode";
 
 export default interface ISourceHandler {
+    getUri(): Uri;
     getLineCount(): number;
     getCommentCount(): number;
     getLine(lineNumber: number): string;

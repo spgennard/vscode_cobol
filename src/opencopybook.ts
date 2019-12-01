@@ -4,7 +4,7 @@ import { Range, TextDocument, workspace, Definition, Position, CancellationToken
 import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
-import { logCOBOLChannelLine, getcopybookdirs } from './extension';
+import { getcopybookdirs } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 
@@ -148,7 +148,7 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
     return "";
 }
 
-function findFile(filename: string, filenameDir: string): string {
+function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): string {
     if (!filename) {
         return "";
     }
@@ -172,7 +172,7 @@ function findFile(filename: string, filenameDir: string): string {
 }
 
 export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string {
-    const fullPath = findFile(filename, "");
+    const fullPath = findFileInDirectoryOrWorkspace(filename, "");
     if (fullPath.length !== 0) {
         return path.normalize(fullPath);
     }
@@ -187,7 +187,7 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
     const filename = extractCopyBoolFilename(line.text);
 
     if (filename !== null && filename.length !== 0) {
-        const fullPath = findFile(filename.trim(), dirOfFilename);
+        const fullPath = findFileInDirectoryOrWorkspace(filename.trim(), dirOfFilename);
         if (fullPath.length !== 0) {
             return {
                 uri: Uri.file(fullPath),

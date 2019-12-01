@@ -6,6 +6,7 @@ import { performance } from 'perf_hooks';
 // var detab = require('detab');
 const lineByLine = require('n-readlines');
 import fs from 'fs';
+import { Uri } from 'vscode';
 
 export class FileSourceHandler implements ISourceHandler {
     document: string;
@@ -113,5 +114,9 @@ export class FileSourceHandler implements ISourceHandler {
 
     isValidKeyword(keyword: string): boolean {
         return cobolKeywordDictionary.containsKey(keyword);
+    }
+
+    getUri() : Uri {
+        return Uri.file(this.document);
     }
 }

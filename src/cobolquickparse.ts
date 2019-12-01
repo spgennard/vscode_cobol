@@ -13,6 +13,7 @@ import { logCOBOLChannelLine, logCOBOLChannelLineException } from "./extension";
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
 import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
+import { Uri } from "vscode";
 
 var lzjs = require('lzjs');
 
@@ -134,10 +135,12 @@ export class COBOLToken {
 }
 
 export class SourceReference {
+    public fileIdentifer: number;
     public line: number;
     public columnn: number;
 
-    public constructor(line: number, column: number) {
+    public constructor(fileIdentifer: number, line: number, column: number) {
+        this.fileIdentifer = fileIdentifer;
         this.line = line;
         this.columnn = column;
     }
@@ -238,6 +241,18 @@ class Token {
     }
 }
 
+export class SourceReferences {
+    public filenames: Uri[];
+    public targetReferences: Map<string, SourceReference[]>;
+    public constantsOrVariablesReferences: Map<string, SourceReference[]>;
+
+    constructor() {
+        this.filenames = [];
+        this.targetReferences = new Map<string, SourceReference[]>();
+        this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
+    }
+
+}
 
 export default class COBOLQuickParse {
     public filename: string;
@@ -253,9 +268,10 @@ export default class COBOLQuickParse {
     public methods: Map<string, COBOLToken>;
     public isCached: boolean;
     public copyBooksUsed: Map<string, string>;
+
     public parseReferences: boolean;
-    public targetReferences: Map<string, SourceReference[]>;
-    public constantsOrVariablesReferences: Map<string, SourceReference[]>;
+    public sourceReferences?: SourceReferences;
+    public sourceFileId: number;
 
     inProcedureDivision: boolean;
     pickFields: boolean;
@@ -283,7 +299,7 @@ export default class COBOLQuickParse {
 
     configHandler: ICOBOLSettings;
 
-    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, parseReferences: boolean = false) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SourceReferences) {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
@@ -312,14 +328,21 @@ export default class COBOLQuickParse {
         this.callTargets = new Map<string, COBOLToken>();
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
-        this.targetReferences = new Map<string, SourceReference[]>();
-        this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
         this.sourceLooksLikeCOBOL = false;
         this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
-        this.parseReferences = parseReferences;
+        this.parseReferences = sourceHandler !== null;
+        this.sourceReferences = sourceReferences;
         let prevToken: Token = Token.Blank;
 
+
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
+
+        if (sourceReferences !== undefined) {
+            this.sourceFileId = sourceReferences.filenames.length;
+            sourceReferences.filenames.push(sourceHandler.getUri());
+        } else {
+            this.sourceFileId = 0;
+        }
 
         /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
         let lineLimit = configHandler.pre_parse_line_limit;
@@ -655,13 +678,13 @@ export default class COBOLQuickParse {
         if (referencesMap.has(lowerCaseVariable)) {
             let sourceRefs: SourceReference[] | undefined = referencesMap.get(lowerCaseVariable);
             if (sourceRefs !== undefined) {
-                sourceRefs.push(new SourceReference(line, column));
+                sourceRefs.push(new SourceReference(this.sourceFileId, line, column));
                 return;
             }
         }
 
         let sourceRefs: SourceReference[] = [];
-        sourceRefs.push(new SourceReference(line, column));
+        sourceRefs.push(new SourceReference(this.sourceFileId, line, column));
         referencesMap.set(lowerCaseVariable, sourceRefs);
     }
 
@@ -981,18 +1004,18 @@ export default class COBOLQuickParse {
                 }
 
                 /* add reference when perform is used */
-                if (this.parseReferences) {
+                if (this.parseReferences && this.sourceReferences !== undefined) {
                     if (this.inProcedureDivision) {
                         if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
                             if (this.isValidKeyword(currentLower) === false) {
-                                this.addReference(this.targetReferences, currentLower, lineNumber, token.currentCol);
+                                this.addReference(this.sourceReferences.targetReferences, currentLower, lineNumber, token.currentCol);
                                 continue;
                             }
                         }
 
                         /* is this a reference to a variable? */
                         if (this.constantsOrVariables.has(currentLower) === true) {
-                            this.addReference(this.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol);
+                            this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol);
                             continue;
 
                         }

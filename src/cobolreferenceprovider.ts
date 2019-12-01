@@ -1,9 +1,12 @@
 
 import * as vscode from 'vscode';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
-import COBOLQuickParse, { SourceReference, COBOLToken } from './cobolquickparse';
+import COBOLQuickParse, { SourceReference, COBOLToken, SourceReferences } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import VSQuickCOBOLParse from './vscobolquickparse';
+import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
+import { logCOBOLChannelLineException } from './extension';
+import { FileSourceHandler } from './FileSourceHandler';
 
 const wordRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
 
@@ -32,52 +35,70 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         let workLower = word.toLocaleLowerCase();
 
         let file = new VSCodeSourceHandler(document, false);
-        let qp = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", true);
-
-        if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
-            let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
-            if (paraToken !== undefined) {
-                list.push(new vscode.Location(document.uri, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
-            }
-
-            let sectionToken: COBOLToken | undefined = qp.sections.get(workLower);
-            if (sectionToken !== undefined) {
-                list.push(new vscode.Location(document.uri, new vscode.Position(sectionToken.startLine, sectionToken.startColumn)));
-            }
-
-            if (qp.targetReferences.has(workLower) === true) {
-                let targetRefs: SourceReference[] | undefined = qp.targetReferences.get(workLower);
-                if (targetRefs === undefined) {
-                    return Promise.resolve(null);
+        let sourceRefs: SourceReferences = new SourceReferences();
+        let qps: COBOLQuickParse[] = [];
+        let top_qp = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
+        qps.push(top_qp);
+        for (let [key, value] of top_qp.copyBooksUsed) {
+            try {
+                let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
+                if (fileName.length > 0) {
+                    let qfile = new FileSourceHandler(fileName, false);
+                    qps.push(new COBOLQuickParse(qfile, fileName, VSCOBOLConfiguration.get(), "", sourceRefs));
                 }
-                for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                    let tref = targetRefs[trpos];
-                    list.push(new vscode.Location(document.uri, new vscode.Position(tref.line, tref.columnn)));
+            }
+            catch (e) {
+                logCOBOLChannelLineException("processSearch", e);
+            }
+        }
+
+        for (let qpos = 0; qpos < qps.length; qpos++) {
+            let qp = qps[qpos];
+            let qpsUrl: vscode.Uri = vscode.Uri.file(qp.filename);
+            if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
+                let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
+                if (paraToken !== undefined) {
+                    list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
+                }
+
+                let sectionToken: COBOLToken | undefined = qp.sections.get(workLower);
+                if (sectionToken !== undefined) {
+                    list.push(new vscode.Location(qpsUrl, new vscode.Position(sectionToken.startLine, sectionToken.startColumn)));
+                }
+            }
+
+            if (qp.constantsOrVariables.has(workLower)) {
+                let paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
+                if (paraTokens !== undefined) {
+                    for (let ptref = 0; ptref < paraTokens.length; ptref++) {
+                        let paraToken = paraTokens[ptref];
+
+                        list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
+                    }
                 }
             }
         }
 
-        if (qp.constantsOrVariables.has(workLower)) {
-            let paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
-            if (paraTokens !== undefined) {
-                for (let ptref = 0; ptref < paraTokens.length; ptref++) {
-                    let paraToken = paraTokens[ptref];
-
-                    list.push(new vscode.Location(document.uri, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
-                }
-            }
-
-            if (qp.constantsOrVariablesReferences.has(workLower) === true) {
-                let targetRefs: SourceReference[] | undefined = qp.constantsOrVariablesReferences.get(workLower);
-                if (targetRefs === undefined) {
-                    return Promise.resolve(null);
-                }
+        if (sourceRefs.targetReferences.has(workLower) === true) {
+            let targetRefs: SourceReference[] | undefined = sourceRefs.targetReferences.get(workLower);
+            if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                     let tref = targetRefs[trpos];
-                    list.push(new vscode.Location(document.uri, new vscode.Position(tref.line, tref.columnn)));
+                    list.push(new vscode.Location(sourceRefs.filenames[tref.fileIdentifer], new vscode.Position(tref.line, tref.columnn)));
                 }
             }
         }
+
+        if (sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
+            let targetRefs: SourceReference[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
+            if (targetRefs !== undefined) {
+                for (let trpos = 0; trpos < targetRefs.length; trpos++) {
+                    let tref = targetRefs[trpos];
+                    list.push(new vscode.Location(sourceRefs.filenames[tref.fileIdentifer], new vscode.Position(tref.line, tref.columnn)));
+                }
+            }
+        }
+
 
         if (list.length > 0) {
             return Promise.resolve(list);
