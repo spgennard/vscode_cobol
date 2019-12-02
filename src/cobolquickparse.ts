@@ -1006,8 +1006,13 @@ export default class COBOLQuickParse {
                 /* add reference when perform is used */
                 if (this.parseReferences && this.sourceReferences !== undefined) {
                     if (this.inProcedureDivision) {
+                        if (this.isNumber(currentLower) === true) {
+                            continue;
+                        }
                         if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
-                            if (this.isValidKeyword(currentLower) === false) {
+
+                            /* go nn, could be "move xx to nn" or "go to nn" */
+                            if (this.constantsOrVariables.has(currentLower) === false && this.isValidKeyword(currentLower) === false) {
                                 this.addReference(this.sourceReferences.targetReferences, currentLower, lineNumber, token.currentCol);
                                 continue;
                             }
@@ -1017,7 +1022,6 @@ export default class COBOLQuickParse {
                         if (this.constantsOrVariables.has(currentLower) === true) {
                             this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol);
                             continue;
-
                         }
                     }
                 }
