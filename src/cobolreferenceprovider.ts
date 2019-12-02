@@ -54,15 +54,17 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
         for (let qpos = 0; qpos < qps.length; qpos++) {
             let qp = qps[qpos];
-            let qpsUrl: vscode.Uri = vscode.Uri.file(qp.filename);
+
             if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
                 let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
                 if (paraToken !== undefined) {
+                    let qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
                     list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
                 }
 
                 let sectionToken: COBOLToken | undefined = qp.sections.get(workLower);
                 if (sectionToken !== undefined) {
+                    let qpsUrl: vscode.Uri = vscode.Uri.file(sectionToken.filename);
                     list.push(new vscode.Location(qpsUrl, new vscode.Position(sectionToken.startLine, sectionToken.startColumn)));
                 }
             }
@@ -72,7 +74,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
                 if (paraTokens !== undefined) {
                     for (let ptref = 0; ptref < paraTokens.length; ptref++) {
                         let paraToken = paraTokens[ptref];
-
+                        let qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
                         list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
                     }
                 }

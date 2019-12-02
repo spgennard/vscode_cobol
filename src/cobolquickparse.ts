@@ -95,26 +95,27 @@ export function splitArgument(input: string): string[] {
 }
 
 export class COBOLToken {
+    public filename: string;
     public tokenType: COBOLTokenStyle;
     public startLine: number;
     public startColumn: number;
     public tokenName: string;
     public tokenNameLower: string;
     public description: string;
-    public level: number;
     public parentToken: COBOLToken | undefined;
     public endLine: number;
     public endColumn: number;
 
     public childTokens: COBOLToken[] = [];
 
-    static Null: COBOLToken = new COBOLToken(COBOLTokenStyle.Null, -1, "", "", "", undefined);
+    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined);
 
     public getEndDelimiterToken(): COBOLToken {
-        return new COBOLToken(COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken);
+        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken);
     }
 
-    public constructor(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
+    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
+        this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
         this.tokenName = token.trim();
@@ -122,7 +123,6 @@ export class COBOLToken {
         this.startColumn = line.indexOf(this.tokenName);
         this.description = description;
         this.endLine = this.endColumn = 0;
-        this.level = (parentToken === undefined) ? 1 : 1 + parentToken.level;
         this.parentToken = parentToken;
 
         if (this.tokenName.length !== 0) {
@@ -432,13 +432,10 @@ export default class COBOLQuickParse {
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
         description: string, parentToken: COBOLToken | undefined): COBOLToken {
-        let ctoken = new COBOLToken(tokenType, startLine, line, token, description, parentToken);
+        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken);
         this.tokensInOrder.push(ctoken);
         return ctoken;
-
     }
-
-
 
     public static processOneFile(cacheDirectory: string, qcp: COBOLQuickParse) {
 
@@ -583,10 +580,16 @@ export default class COBOLQuickParse {
     }
 
     private isNumber(value: string): boolean {
-        if (value.toString().length === 0) {
+        try {
+            if (value.toString().length === 0) {
+                return false;
+            }
+            return !isNaN(Number(value.toString()));
+        }
+        catch (e) {
+            logCOBOLChannelLineException("isNumber(" + value + ")", e);
             return false;
         }
-        return !isNaN(Number(value.toString()));
     }
 
     private trimLiteral(literal: string) {
@@ -784,7 +787,7 @@ export default class COBOLQuickParse {
                     this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.sections.set(prevTokenLower, this.currentSection);
 
-                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" || 
+                    if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
                         prevTokenLower === "screen") {
                         this.pickFields = true;
