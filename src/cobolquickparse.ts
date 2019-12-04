@@ -595,13 +595,31 @@ export default class COBOLQuickParse {
     private trimLiteral(literal: string) {
         let literalTrimmed = literal.trim();
 
-        /* remove quotes */
-        if (literalTrimmed.startsWith("\"") && literalTrimmed.endsWith("\"")) {
-            return literalTrimmed.substr(1, literalTrimmed.length - 2);
+        if (literalTrimmed.length === 0) {
+            return literalTrimmed;
+        }
+
+        /* remove ( */
+        if (literalTrimmed[0] === "(") {
+            literalTrimmed = literalTrimmed.substr(1, literalTrimmed.length - 1);
+        }
+
+        /* remove  */
+        if (literalTrimmed.endsWith(")")) {
+            literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
+        }
+
+        literalTrimmed = literalTrimmed.trim();
+        if (literalTrimmed.length === 0) {
+            return literalTrimmed;
         }
 
         /* remove quotes */
-        if (literalTrimmed.startsWith("\'") && literalTrimmed.endsWith("\'")) {
+        if (literalTrimmed[0] === "\"" && literalTrimmed.endsWith("\"")) {
+            return literalTrimmed.substr(1, literalTrimmed.length - 2);
+        }
+        /* remove quotes */
+        if (literalTrimmed[0] === "\'" && literalTrimmed.endsWith("\'")) {
             return literalTrimmed.substr(1, literalTrimmed.length - 2);
         }
 
@@ -1009,21 +1027,22 @@ export default class COBOLQuickParse {
                 /* add reference when perform is used */
                 if (this.parseReferences && this.sourceReferences !== undefined) {
                     if (this.inProcedureDivision) {
-                        if (this.isNumber(currentLower) === true) {
+                        let trimmedCurrentLower = this.trimLiteral(currentLower);
+                        if (this.isNumber(trimmedCurrentLower) === true) {
                             continue;
                         }
                         if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
 
                             /* go nn, could be "move xx to nn" or "go to nn" */
-                            if (this.constantsOrVariables.has(currentLower) === false && this.isValidKeyword(currentLower) === false) {
-                                this.addReference(this.sourceReferences.targetReferences, currentLower, lineNumber, token.currentCol);
+                            if (this.constantsOrVariables.has(trimmedCurrentLower) === false && this.isValidKeyword(trimmedCurrentLower) === false) {
+                                this.addReference(this.sourceReferences.targetReferences, trimmedCurrentLower, lineNumber, token.currentCol);
                                 continue;
                             }
                         }
 
                         /* is this a reference to a variable? */
-                        if (this.constantsOrVariables.has(currentLower) === true) {
-                            this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol);
+                        if (this.constantsOrVariables.has(trimmedCurrentLower) === true) {
+                            this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol);
                             continue;
                         }
                     }
