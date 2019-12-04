@@ -241,15 +241,22 @@ class Token {
     }
 }
 
-export class SourceReferences {
+export class SharedSourceReferences {
     public filenames: Uri[];
+
     public targetReferences: Map<string, SourceReference[]>;
     public constantsOrVariablesReferences: Map<string, SourceReference[]>;
+    public sharedConstantsOrVariables: Map<string, COBOLToken[]>;
+    public sharedSections: Map<string, COBOLToken>;
+    public sharedParagraphs: Map<string, COBOLToken>;
 
     constructor() {
         this.filenames = [];
         this.targetReferences = new Map<string, SourceReference[]>();
         this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
+        this.sharedConstantsOrVariables = new Map<string, COBOLToken[]>();
+        this.sharedSections = new Map<string, COBOLToken>();
+        this.sharedParagraphs = new Map<string, COBOLToken>();
     }
 
 }
@@ -270,7 +277,7 @@ export default class COBOLQuickParse {
     public copyBooksUsed: Map<string, string>;
 
     public parseReferences: boolean;
-    public sourceReferences?: SourceReferences;
+    public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
     inProcedureDivision: boolean;
@@ -299,7 +306,7 @@ export default class COBOLQuickParse {
 
     configHandler: ICOBOLSettings;
 
-    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SourceReferences) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
@@ -340,6 +347,9 @@ export default class COBOLQuickParse {
         if (sourceReferences !== undefined) {
             this.sourceFileId = sourceReferences.filenames.length;
             sourceReferences.filenames.push(sourceHandler.getUri());
+            this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
+            this.paragraphs = sourceReferences.sharedParagraphs;
+            this.sections = sourceReferences.sharedSections;
         } else {
             this.sourceFileId = 0;
         }
@@ -947,8 +957,10 @@ export default class COBOLQuickParse {
                 // copybook handling
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     let trimmedCopyBook = this.trimLiteral(current);
+                    let newCopybook: boolean = false;
                     if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                         this.copyBooksUsed.set(trimmedCopyBook, current);
+                        newCopybook = true;
                     }
 
                     if (this.copybookNestedInSection) {
@@ -959,6 +971,14 @@ export default class COBOLQuickParse {
                         }
                     } else {
                         this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                    }
+
+                    if (this.sourceReferences !== undefined && newCopybook) {
+                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook);
+                        if (fileName.length > 0) {
+                            let qfile = new FileSourceHandler(fileName, false);
+                            let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                        }
                     }
                     continue;
                 }
