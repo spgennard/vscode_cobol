@@ -22,6 +22,17 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
     private current?: COBOLQuickParse;
     private currentVersion?: number;
+    private sourceRefs?: SharedSourceReferences;
+
+    private setupCOBOLQuickParse(document: vscode.TextDocument) {
+        // cache current document, interatives search to be faster
+        if (this.current === undefined || this.currentVersion !== document.version) {
+            let file = new VSCodeSourceHandler(document, false);
+            this.sourceRefs = new SharedSourceReferences();
+            this.current = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", this.sourceRefs);
+            this.currentVersion = document.version;
+        } 
+    }
 
     private processSearch(
         document: vscode.TextDocument,
@@ -35,21 +46,13 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
         let workLower = word.toLocaleLowerCase();
 
-        let file = new VSCodeSourceHandler(document, false);
-        let sourceRefs: SharedSourceReferences = new SharedSourceReferences();
-        let qp: COBOLQuickParse;
-
-        // cache current document, interatives search to be faster
-        if (this.current === undefined || this.currentVersion !== document.version) {
-            qp = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
-        } else {
-            qp = this.current;
+        this.setupCOBOLQuickParse(document);
+        if (this.current === undefined || this.sourceRefs === undefined) {
+            return Promise.resolve(null);
         }
 
-        if (qp !== this.current) {
-            this.currentVersion = document.version;
-            this.current = qp;
-        }
+        let qp: COBOLQuickParse = this.current;
+        let sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
             let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
