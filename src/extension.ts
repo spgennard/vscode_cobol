@@ -68,7 +68,7 @@ function initExtensions() {
                     }
                 }
                 catch (e) {
-                    logCOBOLChannelLineException("dir", e);
+                    logException("dir", e);
                 }
             }
         }
@@ -85,31 +85,31 @@ export function showLogChannel() {
 function activateLogChannel() {
     initExtensions();
     let thisExtension = extensions.getExtension("bitlang.cobol");
-    logCOBOLChannelLine("");
+    logMessage("");
     COBOLOutputChannel.clear();
     if (thisExtension !== undefined) {
-        logCOBOLChannelLine("Extension Information:");
-        logCOBOLChannelLine(" Extension path    : " + thisExtension.extensionPath);
-        logCOBOLChannelLine(" Version           : " + thisExtension.packageJSON.version);
-        logCOBOLChannelLine(" Caching           : " + VSCOBOLConfiguration.getCachingSetting());
+        logMessage("Extension Information:");
+        logMessage(" Extension path    : " + thisExtension.extensionPath);
+        logMessage(" Version           : " + thisExtension.packageJSON.version);
+        logMessage(" Caching           : " + VSCOBOLConfiguration.getCachingSetting());
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            logCOBOLChannelLine("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
+            logMessage("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
         }
 
         var extsdir = fileSearchDirectory;
         for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
             let sdir = extsdir[extsdirpos];
-            logCOBOLChannelLine("  Search directory : " + sdir);
+            logMessage("  Search directory : " + sdir);
         }
 
         extsdir = invalidSearchDirectory;
         for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
             let sdir = extsdir[extsdirpos];
-            logCOBOLChannelLine("  Invalid Search directory : " + sdir);
+            logMessage("  Invalid Search directory : " + sdir);
         }
 
 
-        logCOBOLChannelLine("");
+        logMessage("");
     }
 }
 
@@ -416,27 +416,35 @@ export async function deactivate(): Promise<void> {
     await deactivateAsync();
 }
 
-export function logCOBOLChannelLineException(message: string, ex: Error) {
-    logCOBOLChannelLine(ex.name + ":" + message);
+export function logException(message: string, ex: Error) {
+    logMessage(ex.name + ":" + message);
     if (ex !== undefined && ex.stack !== undefined) {
-        logCOBOLChannelLine(ex.stack);
+        logMessage(ex.stack);
     }
 }
 
-export function logCOBOLChannelLine(message: string, ...parameters: any[]) {
+let thresholdTime: number = 30;
+
+export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]) {
+    let fixedTimeTaken = " ("+timeTaken.toFixed(2)+"ms)";
+
+    if (timeTaken < thresholdTime) {
+        return;
+    }
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        COBOLOutputChannel.appendLine(util.format(message, parameters));
+        let m:string = util.format(message, parameters);
+        COBOLOutputChannel.appendLine(m.padEnd(60)+fixedTimeTaken);
         //console.log(util.format(message, parameters) + "\n");
         return;
     }
 
-    COBOLOutputChannel.appendLine(message);
+    COBOLOutputChannel.appendLine(message.padEnd(60)+fixedTimeTaken);
     //console.log(message + "\n");
 }
 
 
-export function logCOBOLErrorChannelLine(message: string, ...parameters: any[]) {
+export function logMessage(message: string, ...parameters: any[]) {
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
         //console.log(util.format(message, parameters) + "\n");

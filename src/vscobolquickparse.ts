@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-import { logCOBOLChannelLine, logCOBOLChannelLineException, showLogChannel } from "./extension";
+import { logMessage, logException, showLogChannel, logTimedMessage } from "./extension";
 import { performance } from "perf_hooks";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
@@ -70,7 +70,7 @@ export default class VSQuickCOBOLParse {
                 var startTime = performance.now();
                 let qcpd = new COBOLQuickParse(file, fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
-                logCOBOLChannelLine(' - Parse - Execution time: %dms -> ' + fileName, (performance.now() - startTime).toFixed(2));
+                logTimedMessage(performance.now() - startTime, " - Parsing " + fileName);
 
                 if (InMemoryCache.size > 20) {
                     let firstKey = InMemoryCache.keys().next().value;
@@ -79,7 +79,7 @@ export default class VSQuickCOBOLParse {
                 return qcpd;
             }
             catch (e) {
-                logCOBOLChannelLineException("getCachedObject", e);
+                logException("getCachedObject", e);
             }
         }
 
@@ -91,7 +91,7 @@ export default class VSQuickCOBOLParse {
         showLogChannel();
 
         if (VSCOBOLConfiguration.isCachingSetToON() === false) {
-            logCOBOLChannelLine("Metadata cache is off, no action taken");
+            logMessage("Metadata cache is off, no action taken");
             return;
         }
 
@@ -104,7 +104,7 @@ export default class VSQuickCOBOLParse {
                     VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                 }
                 catch (re) {
-                    logCOBOLChannelLineException("processAllFilesInWorkspaces/1", re);
+                    logException("processAllFilesInWorkspaces/1", re);
                 }
             }
 
@@ -114,13 +114,13 @@ export default class VSQuickCOBOLParse {
                         VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
                     }
                     catch (re) {
-                        logCOBOLChannelLineException("processAllFilesInWorkspaces/2 => " + i, re);
+                        logException("processAllFilesInWorkspaces/2 => " + i, re);
                     }
                 }
             }
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
             var end = performance.now() - start;
-            logCOBOLChannelLine(util.format('Process all files in workspace -> Execution time: %dms', end.toFixed(2)));
+            logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
         }
 
     }
@@ -148,7 +148,7 @@ export default class VSQuickCOBOLParse {
                         let filefs = new FileSourceHandler(filename, false);
                         let qcp = new COBOLQuickParse(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
                         if (qcp.sourceLooksLikeCOBOL) {
-                            logCOBOLChannelLine(" - Processing file : " + filename);
+                            logMessage(" - Processing file : " + filename);
 
                             /* iterater through all the known copybook references */
                             for (let [key, value] of qcp.getcopyBooksUsed()) {
@@ -168,14 +168,14 @@ export default class VSQuickCOBOLParse {
                                     }
                                     catch (ex) {
                                         if (copyBookfilename !== null) {
-                                            logCOBOLChannelLineException("processFileInDirectory/1: " + copyBookfilename, ex);
+                                            logException("processFileInDirectory/1: " + copyBookfilename, ex);
                                         } else {
-                                            logCOBOLChannelLineException("processFileInDirectory/1", ex);
+                                            logException("processFileInDirectory/1", ex);
                                         }
                                     }
                                 }
                                 catch (fe) {
-                                    logCOBOLChannelLineException("processFileInDirectory/2", fe);
+                                    logException("processFileInDirectory/2", fe);
                                 }
                             }
                         }
@@ -214,8 +214,6 @@ export default class VSQuickCOBOLParse {
         return "";
 
     }
-
-
 }
 
 const InMemoryCache: Map<string, any> = new Map<string, any>();

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
-import { logCOBOLChannelLine } from './extension';
+import { logMessage } from './extension';
 import COBOLQuickParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, InMemoryGlobalCachesHelper, COBOLGlobalSymbolTable } from './cobolquickparse';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
@@ -79,7 +79,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
 
     }
     catch (e) {
-        logCOBOLChannelLine(e);
+        logMessage(e);
     }
 
     try {
@@ -93,7 +93,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
         }
     }
     catch (e) {
-        logCOBOLChannelLine(e);
+        logMessage(e);
     }
     return undefined;
 }

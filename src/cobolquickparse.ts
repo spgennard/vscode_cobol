@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logCOBOLChannelLine, logCOBOLChannelLineException } from "./extension";
+import { logMessage, logException } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
@@ -376,7 +376,7 @@ export default class COBOLQuickParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLineException("CobolQuickParse - Parse error : " + e, e);
+                logException("CobolQuickParse - Parse error : " + e, e);
             }
         }
 
@@ -430,7 +430,7 @@ export default class COBOLQuickParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLineException("CobolQuickParse - Parse error", e);
+                logException("CobolQuickParse - Parse error", e);
             }
         }
         this.updateEndings(sourceHandler);
@@ -465,7 +465,7 @@ export default class COBOLQuickParse {
                     copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
                     if (copyBookfilename.length !== 0) {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                            logCOBOLChannelLine("   CopyBook: " + key + " => " + copyBookfilename);
+                            logMessage("   CopyBook: " + key + " => " + copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
                             let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, qcp.configHandler, cacheDirectory);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
@@ -475,19 +475,19 @@ export default class COBOLQuickParse {
                             // logCOBOLChannelLine("   CopyBook: " + key + " (no update required)");
                         }
                     } else {
-                        logCOBOLChannelLine("   CopyBook: " + key + " (not found)");
+                        logMessage("   CopyBook: " + key + " (not found)");
                     }
                 }
                 catch (ex) {
                     if (copyBookfilename !== null) {
-                        logCOBOLChannelLineException("processOneFile:" + copyBookfilename, ex);
+                        logException("processOneFile:" + copyBookfilename, ex);
                     } else {
-                        logCOBOLChannelLineException("processOneFile:", ex);
+                        logException("processOneFile:", ex);
                     }
                 }
             }
             catch (fe) {
-                logCOBOLChannelLineException("processOneFile", fe);
+                logException("processOneFile", fe);
             }
 
         }
@@ -495,49 +495,49 @@ export default class COBOLQuickParse {
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string) {
         if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {
-            logCOBOLChannelLine("Metadata is not enabled");
+            logMessage("Metadata is not enabled");
             return;
         }
 
-        logCOBOLChannelLine("Metadata Dump");
+        logMessage("Metadata Dump");
 
-        logCOBOLChannelLine(" cache folder   : " + cacheDirectory);
-        logCOBOLChannelLine(" cache_metadata : " + settings.cache_metadata + "\n");
-        logCOBOLChannelLine(" Last modified  : " + InMemoryGlobalSymbolCache.lastModifiedTime);
-        logCOBOLChannelLine(" Dirty flag     : " + InMemoryGlobalSymbolCache.isDirty);
-        logCOBOLChannelLine("");
-        logCOBOLChannelLine("Global symbols  : (made lowercase)");
+        logMessage(" cache folder   : " + cacheDirectory);
+        logMessage(" cache_metadata : " + settings.cache_metadata + "\n");
+        logMessage(" Last modified  : " + InMemoryGlobalSymbolCache.lastModifiedTime);
+        logMessage(" Dirty flag     : " + InMemoryGlobalSymbolCache.isDirty);
+        logMessage("");
+        logMessage("Global symbols  : (made lowercase)");
 
         for (let [i, tag] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
             let fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
             if (fileSymbol === undefined) {
-                logCOBOLChannelLine("  " + i + " => empty");
+                logMessage("  " + i + " => empty");
             } else {
                 fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                    logCOBOLChannelLine(String.Format(" {0} => {1} @ {2}", i.padEnd(40), value.filename, value.lnum));
+                    logMessage(String.Format(" {0} => {1} @ {2}", i.padEnd(40), value.filename, value.lnum));
                 });
             }
         }
 
-        logCOBOLChannelLine("");
-        logCOBOLChannelLine("File symbols    :");
+        logMessage("");
+        logMessage("File symbols    :");
 
         for (var file of fs.readdirSync(cacheDirectory)) {
             if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
                 let symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
                 if (symTable !== undefined) {
-                    logCOBOLChannelLine(" " + symTable.fileName + " in " + file);
-                    logCOBOLChannelLine("   Label symbol count    : " + symTable.labelSymbols.size);
-                    logCOBOLChannelLine("   Variable symbol count : " + symTable.variableSymbols.size);
+                    logMessage(" " + symTable.fileName + " in " + file);
+                    logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
+                    logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
                 }
             }
         }
 
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-            logCOBOLChannelLine("");
-            logCOBOLChannelLine("Global copybooks:");
+            logMessage("");
+            logMessage("Global copybooks:");
             for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                logCOBOLChannelLine(" " + i);
+                logMessage(" " + i);
             }
         }
     }
@@ -597,7 +597,7 @@ export default class COBOLQuickParse {
             return !isNaN(Number(value.toString()));
         }
         catch (e) {
-            logCOBOLChannelLineException("isNumber(" + value + ")", e);
+            logException("isNumber(" + value + ")", e);
             return false;
         }
     }
@@ -697,7 +697,7 @@ export default class COBOLQuickParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLineException("Cobolquickparse relaxedParseLineByLine line error: ", e);
+                logException("Cobolquickparse relaxedParseLineByLine line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1069,7 +1069,7 @@ export default class COBOLQuickParse {
                 }
             }
             catch (e) {
-                logCOBOLChannelLineException("Cobolquickparse line error: ", e);
+                logException("Cobolquickparse line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1108,7 +1108,7 @@ export default class COBOLQuickParse {
             }
         }
         catch (e) {
-            logCOBOLChannelLineException("Cobolquickparse/processInsideTokens line error: ", e);
+            logException("Cobolquickparse/processInsideTokens line error: ", e);
         }
     }
 

@@ -1,6 +1,6 @@
 import ISourceHandler from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logCOBOLChannelLine, logCOBOLChannelLineException } from './extension';
+import { logMessage, logException, logTimedMessage } from './extension';
 import { performance } from 'perf_hooks';
 
 // var detab = require('detab');
@@ -31,13 +31,12 @@ export class FileSourceHandler implements ISourceHandler {
             while (line = liner.next()) {
                 this.lines.push(line.toString());
             }
-            logCOBOLChannelLine(' - File Load time-> ' + document + " " + (performance.now() - startTime).toFixed(2) + "ms");
+            logTimedMessage(performance.now() - startTime, ' - Loading File ' + document);
         }
         catch (e) {
-            logCOBOLChannelLineException("File failed! (" + document + ")", e);
+            logException("File failed! (" + document + ")", e);
         }
 
-        logCOBOLChannelLine(' - File Load time-> ' + document + " " + (performance.now() - startTime).toFixed(2) + "ms");
     }
 
     getLineCount(): number {

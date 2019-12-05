@@ -5,7 +5,7 @@ import COBOLQuickParse, { SourceReference, COBOLToken, SharedSourceReferences } 
 import { VSCOBOLConfiguration } from './configuration';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
-import { logCOBOLChannelLineException } from './extension';
+import { logException } from './extension';
 import { FileSourceHandler } from './FileSourceHandler';
 
 const wordRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
