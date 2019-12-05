@@ -16,9 +16,12 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         options: { includeDeclaration: boolean }, token: vscode.CancellationToken):
         Thenable<vscode.Location[] | null> {
 
-
+        this.currentVersion = 0;
         return this.processSearch(document, position);
     }
+
+    private current?: COBOLQuickParse;
+    private currentVersion?: number;
 
     private processSearch(
         document: vscode.TextDocument,
@@ -34,7 +37,19 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
         let file = new VSCodeSourceHandler(document, false);
         let sourceRefs: SharedSourceReferences = new SharedSourceReferences();
-        let qp = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
+        let qp: COBOLQuickParse;
+
+        // cache current document, interatives search to be faster
+        if (this.current === undefined || this.currentVersion !== document.version) {
+            qp = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
+        } else {
+            qp = this.current;
+        }
+
+        if (qp !== this.current) {
+            this.currentVersion = document.version;
+            this.current = qp;
+        }
 
         if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
             let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
