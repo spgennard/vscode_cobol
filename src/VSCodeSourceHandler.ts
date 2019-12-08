@@ -57,7 +57,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
             if (line.match(VSCodeSourceHandler.paraPrefixRegex1)) {
-                line = "       " + line.substr(6);
+                line = "      " + line.substr(6);
             } else {
                 if (line.length > 7 && line[6] === ' ') {
                     let possibleKeyword = line.substr(0, 6).trim();

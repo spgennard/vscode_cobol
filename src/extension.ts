@@ -23,6 +23,7 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
+import { CobolUsageProvider } from './cobolusageprovider';
 
 const util = require('util');
 
@@ -140,12 +141,12 @@ function activateLanguageServer(context: ExtensionContext) {
             language: 'COBOL',
         }],
         synchronize: {
-			// Synchronize the setting section 'coboleditor' to the server
+            // Synchronize the setting section 'coboleditor' to the server
             configurationSection: 'coboleditor',
-            
-			// Notify the server about file changes to '.clientrc files contain in the workspace
-			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
-		}
+
+            // Notify the server about file changes to '.clientrc files contain in the workspace
+            fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
+        }
     };
 
     const client = new LanguageClient('COBOL', 'Language Server for COBOL', serverOptions, clientOptions);
@@ -157,9 +158,11 @@ function activateLanguageServer(context: ExtensionContext) {
 export function activate(context: ExtensionContext) {
     currentContext = context;
     VSCOBOLConfiguration.init();
-    
+
+    const collection = languages.createDiagnosticCollection('cobolDiag');
+    const cobolusage = new CobolUsageProvider(collection);
     initExtensions();
-    
+
     // if (VSCOBOLConfiguration.get().experimential_features) {
     //     activateLanguageServer(context);
     // }
@@ -272,14 +275,14 @@ export function activate(context: ExtensionContext) {
         COBOLQuickParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
-    
-	const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
-		COBOLOutputChannel.appendLine('Configuration changed... Refreshing...');
+
+    const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
+        COBOLOutputChannel.appendLine('Configuration changed... Refreshing...');
         VSCOBOLConfiguration.init();
         initExtensions();
-		COBOLOutputChannel.appendLine('Refresh done!');
+        COBOLOutputChannel.appendLine('Refresh done!');
     });
-    
+
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -319,11 +322,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    let referenceDisposable: Disposable  = languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider());
-    // const completionItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
-    // const completionItemProviderDisposable = languages.registerCompletionItemProvider(allCobolSelectors, completionItemProvider);
-    // context.subscriptions.push(completionItemProviderDisposable);
-
+    context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
 
     const jclSelectors = [
         { scheme: 'file', language: 'JCL' }
@@ -362,6 +361,8 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(editor);
+        cobolusage.updateDiagnostics(editor.document);
+
     }, null, context.subscriptions);
 
     window.onDidChangeTextEditorSelection(event => {
@@ -369,6 +370,7 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(event.textEditor);
+        cobolusage.updateDiagnostics(event.textEditor.document);
     }, null, context.subscriptions);
 
     workspace.onDidChangeTextDocument(event => {
@@ -376,16 +378,20 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(window.activeTextEditor);
+        cobolusage.updateDiagnostics(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
     formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
     formatStatusBarItem.command = "cobolplugin.change_source_format";
     formatStatusBarItem.show();
 
-    updateDecorations(window.activeTextEditor);
+    if (window.activeTextEditor !== undefined) {
+        updateDecorations(window.activeTextEditor);
+        cobolusage.updateDiagnostics(window.activeTextEditor.document);
+    }
 
     activateLogChannel();
-    
+
     if (VSCOBOLConfiguration.isCachingSetToON()) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
@@ -426,20 +432,20 @@ export function logException(message: string, ex: Error) {
 let thresholdTime: number = 30;
 
 export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]) {
-    let fixedTimeTaken = " ("+timeTaken.toFixed(2)+"ms)";
+    let fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
     if (timeTaken < thresholdTime) {
         return;
     }
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        let m:string = util.format(message, parameters);
-        COBOLOutputChannel.appendLine(m.padEnd(60)+fixedTimeTaken);
+        let m: string = util.format(message, parameters);
+        COBOLOutputChannel.appendLine(m.padEnd(60) + fixedTimeTaken);
         //console.log(util.format(message, parameters) + "\n");
         return;
     }
 
-    COBOLOutputChannel.appendLine(message.padEnd(60)+fixedTimeTaken);
+    COBOLOutputChannel.appendLine(message.padEnd(60) + fixedTimeTaken);
     //console.log(message + "\n");
 }
 

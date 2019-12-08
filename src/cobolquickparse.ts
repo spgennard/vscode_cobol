@@ -989,7 +989,7 @@ export default class COBOLQuickParse {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         let beforeCurrent = line.substr(0, token.currentCol - 1).trim();
                         if (beforeCurrent.length === 0) {
-                            let c = token.currentToken.substr(0, token.currentToken.length - 1);
+                            let c = tcurrent;
                             if (c.length !== 0) {
                                 if (this.isParagraph(c)) {
                                     if (this.currentSection !== COBOLToken.Null) {
