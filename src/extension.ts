@@ -160,7 +160,7 @@ export function activate(context: ExtensionContext) {
     VSCOBOLConfiguration.init();
 
     const collection = languages.createDiagnosticCollection('cobolDiag');
-    const cobolusage = new CobolUsageProvider(collection);
+    const cobolusage = new CobolUsageProvider(collection, VSCOBOLConfiguration.get().experimential_features);
     initExtensions();
 
     // if (VSCOBOLConfiguration.get().experimential_features) {

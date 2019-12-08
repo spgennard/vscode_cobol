@@ -105,16 +105,17 @@ export class COBOLToken {
     public parentToken: COBOLToken | undefined;
     public endLine: number;
     public endColumn: number;
+    public inProcedureDivision: boolean;
 
     public childTokens: COBOLToken[] = [];
 
-    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined);
+    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined, false);
 
     public getEndDelimiterToken(): COBOLToken {
-        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken);
+        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken, this.inProcedureDivision);
     }
 
-    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined) {
+    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined, inProcedureDivision:boolean) {
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
@@ -124,6 +125,7 @@ export class COBOLToken {
         this.description = description;
         this.endLine = this.endColumn = 0;
         this.parentToken = parentToken;
+        this.inProcedureDivision = inProcedureDivision;
 
         if (this.tokenName.length !== 0) {
             /* ensure we don't have any odd start columns */
@@ -442,7 +444,7 @@ export default class COBOLQuickParse {
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
         description: string, parentToken: COBOLToken | undefined): COBOLToken {
-        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken);
+        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, this.inProcedureDivision);
         this.tokensInOrder.push(ctoken);
         return ctoken;
     }
