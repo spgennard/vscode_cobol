@@ -819,7 +819,7 @@ export default class COBOLQuickParse {
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
-                        prevTokenLower === "screen") {
+                        prevTokenLower === 'file' || prevTokenLower === "screen") {
                         this.pickFields = true;
                         this.inProcedureDivision = false;
                         sourceHandler.setDumpAreaA(false);

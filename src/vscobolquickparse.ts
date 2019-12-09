@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { workspace, TextDocument } from 'vscode';
-import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalFileCache } from "./cobolquickparse";
+import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalFileCache, SharedSourceReferences } from "./cobolquickparse";
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -34,6 +34,7 @@ export default class VSQuickCOBOLParse {
 
         return false;
     }
+
     public static getCachedObject(document: TextDocument | undefined, fileName: string): COBOLQuickParse | undefined {
         if (this.isFile(fileName) === false) {
             return undefined;
@@ -44,7 +45,7 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName)) {
             cachedObject = InMemoryCache.get(fileName);
         }
-
+        
         /* if the document is edited, drop the in cached object */
         if (document !== undefined && document.isDirty) {
             InMemoryCache.delete(fileName);
@@ -52,6 +53,7 @@ export default class VSQuickCOBOLParse {
             return new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
         }
 
+        
         /* does the cache object need to be updated? */
         if (cachedObject !== null && cachedObject !== undefined) {
             let stat: fs.Stats = fs.statSync(fileName);
