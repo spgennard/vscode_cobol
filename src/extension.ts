@@ -23,7 +23,7 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
-import { CobolUsageProvider } from './cobolusageprovider';
+import { CobolUsageProvider, CobolUsageActionFixer } from './cobolusageprovider';
 
 const util = require('util');
 
@@ -161,6 +161,7 @@ export function activate(context: ExtensionContext) {
 
     const collection = languages.createDiagnosticCollection('cobolDiag');
     const cobolusage = new CobolUsageProvider(collection, VSCOBOLConfiguration.get().experimential_features);
+    const cobolfixer = new CobolUsageActionFixer();
     initExtensions();
 
     // if (VSCOBOLConfiguration.get().experimential_features) {
@@ -304,6 +305,7 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(DocComment.register());
 
+
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
@@ -323,6 +325,7 @@ export function activate(context: ExtensionContext) {
     });
 
     context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
+    context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors,cobolfixer));
 
     const jclSelectors = [
         { scheme: 'file', language: 'JCL' }

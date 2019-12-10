@@ -1,9 +1,31 @@
 
 import * as vscode from 'vscode';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
-import COBOLQuickParse, { SourceReference, COBOLToken, SharedSourceReferences, InMemoryGlobalFileCache } from './cobolquickparse';
+import COBOLQuickParse, { SharedSourceReferences } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
-import VSQuickCOBOLParse from './vscobolquickparse';
+import { CodeActionProvider, CodeAction } from 'vscode';
+
+export class CobolUsageActionFixer implements CodeActionProvider {
+    provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
+        const codeActions: CodeAction[] = [];
+        for (const diagnostic of context.diagnostics) {
+            if (diagnostic.code !== undefined && diagnostic.code.toString().startsWith("noref") === false) {
+                continue;
+            }
+            codeActions.push({
+                title: `Comment out '${diagnostic.message}'`,
+                diagnostics: [diagnostic],
+                command: {
+                    title: 'Comment out',
+                    command: "editor.action.addCommentLine",
+                    arguments: [document.uri, document.offsetAt(diagnostic.range.start), diagnostic.code],
+                },
+                kind: vscode.CodeActionKind.QuickFix,
+            });
+        }
+        return codeActions;
+    }
+}
 
 export class CobolUsageProvider {
     private enabled: boolean = false;
@@ -42,6 +64,7 @@ export class CobolUsageProvider {
                 let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                 let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
+                d.code ="noref("+key+")";
 
                 if (diagRefs.has(token.filename)) {
                     let arr = diagRefs.get(token.filename);
@@ -63,6 +86,7 @@ export class CobolUsageProvider {
                     let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                     let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
+                    d.code ="noref("+key+")";
 
                     if (diagRefs.has(token.filename)) {
                         let arr = diagRefs.get(token.filename);
@@ -84,9 +108,6 @@ export class CobolUsageProvider {
             let u = vscode.Uri.file(f);
             this.collection.set(u, value);
         }
-
-
-
     }
 
     private current?: COBOLQuickParse;
