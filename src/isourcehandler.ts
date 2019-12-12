@@ -1,5 +1,9 @@
 import { Uri } from "vscode";
 
+export interface ICommentCallback {
+    processComment(commentLine: string) : void;
+}
+
 export default interface ISourceHandler {
     getUri(): Uri;
     getLineCount(): number;

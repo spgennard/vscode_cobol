@@ -1,4 +1,4 @@
-import ISourceHandler from './isourcehandler';
+import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, logException, logTimedMessage } from './extension';
 import { performance } from 'perf_hooks';
@@ -14,10 +14,12 @@ export class FileSourceHandler implements ISourceHandler {
     dumpAreaBOnwards: boolean;
     lines: string[];
     commentCount: number;
-
-    public constructor(document: string, dumpNumbersInAreaA: boolean) {
+    commentCallback?: ICommentCallback;
+   
+    public constructor(document: string, dumpNumbersInAreaA: boolean,  commentCallback?: ICommentCallback) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
+        this.commentCallback = commentCallback;
         this.dumpAreaBOnwards = false;
         this.lines = [];
         this.commentCount = 0;  
@@ -37,6 +39,12 @@ export class FileSourceHandler implements ISourceHandler {
             logException("File failed! (" + document + ")", e);
         }
 
+    }
+
+    private sendCommentCallback(line: string) {
+        if (this.commentCallback !== undefined) {
+            this.commentCallback.processComment(line);
+        }
     }
 
     getLineCount(): number {
@@ -68,18 +76,21 @@ export class FileSourceHandler implements ISourceHandler {
 
         let startComment = line.indexOf("*>");
         if (startComment !== -1) {
+            this.sendCommentCallback(line);
             line = line.substring(0, startComment);
             this.commentCount++;
         }
         // drop fixed format line
         if (line.length > 1 && line[0] === '*') {
             this.commentCount++;
+            this.sendCommentCallback(line);
             return "";
         }
 
         // drop fixed format line
         if (line.length > 7 && line[6] === '*') {
             this.commentCount++;
+            this.sendCommentCallback(line);
             return "";
         }
 
