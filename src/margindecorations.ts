@@ -159,13 +159,13 @@ function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
     return ESourceFormat.unknown;
 }
 
-enum TextLanguage {
+export enum TextLanguage {
     Unknown = 0,
     COBOL = 1,
     JCL = 2
 }
 
-function isSupportedLanguage(document: TextDocument): TextLanguage {
+export function isSupportedLanguage(document: TextDocument): TextLanguage {
 
     switch (document.languageId.toLowerCase()) {
         case "cobol":

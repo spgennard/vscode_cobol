@@ -16,7 +16,7 @@ export class FileSourceHandler implements ISourceHandler {
     commentCount: number;
     commentCallback?: ICommentCallback;
    
-    public constructor(document: string, dumpNumbersInAreaA: boolean,  commentCallback?: ICommentCallback) {
+    public constructor(document: string, dumpNumbersInAreaA: boolean,   commentCallback?: ICommentCallback) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.commentCallback = commentCallback;

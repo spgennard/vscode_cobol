@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -87,7 +87,6 @@ function activateLogChannel() {
     initExtensions();
     let thisExtension = extensions.getExtension("bitlang.cobol");
     logMessage("");
-    COBOLOutputChannel.clear();
     if (thisExtension !== undefined) {
         logMessage("Extension Information:");
         logMessage(" Extension path    : " + thisExtension.extensionPath);
@@ -163,11 +162,16 @@ export function activate(context: ExtensionContext) {
     const cobolusage = new CobolUsageProvider(collection, VSCOBOLConfiguration.get().experimential_features);
     const cobolfixer = new CobolUsageActionFixer();
     initExtensions();
+    activateLogChannel();
+
 
     // if (VSCOBOLConfiguration.get().experimential_features) {
     //     activateLanguageServer(context);
     // }
 
+    var insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code:string) {
+        cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
+    });
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
     });
@@ -305,6 +309,7 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(DocComment.register());
 
+    context.subscriptions.push(insertIgnoreCommentLineCommand);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
@@ -373,7 +378,7 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(event.textEditor);
-        cobolusage.updateDiagnostics(event.textEditor.document);
+        //cobolusage.updateDiagnostics(event.textEditor.document);
     }, null, context.subscriptions);
 
     workspace.onDidChangeTextDocument(event => {
@@ -392,8 +397,6 @@ export function activate(context: ExtensionContext) {
         updateDecorations(window.activeTextEditor);
         cobolusage.updateDiagnostics(window.activeTextEditor.document);
     }
-
-    activateLogChannel();
 
     if (VSCOBOLConfiguration.isCachingSetToON()) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();

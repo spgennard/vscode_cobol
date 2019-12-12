@@ -7,13 +7,14 @@ import * as process from 'process';
 import { getcopybookdirs } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
-
-
 export function isValidExtension(filename: string): boolean {
     switch (filename) {
         case "tags":
         case ".tag":
         case ".ctags":
+        case ".diff":
+        case ".c":
+        case ".h":
             return false;
     }
     const exts = VSCOBOLConfiguration.getExtentions();
