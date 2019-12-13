@@ -55,8 +55,6 @@ export class CobolUsageProvider implements ICommentCallback{
         this.diagCollect = vscode.DiagnosticSeverity.Information;
     }
 
-
-
     public updateDiagnostics(document: vscode.TextDocument, ): void {
         if (this.enabled === false) {
             return;
@@ -116,7 +114,7 @@ export class CobolUsageProvider implements ICommentCallback{
                     let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                     let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
-                    d.code ="noref("+key+")";
+                    d.code ="ignore "+key;
 
                     if (diagRefs.has(token.filename)) {
                         let arr = diagRefs.get(token.filename);
