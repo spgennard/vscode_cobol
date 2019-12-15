@@ -5,10 +5,9 @@ import COBOLQuickParse, { SharedSourceReferences } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
-import { logMessage } from './extension';
 import { ICommentCallback } from './isourcehandler';
 
-export class CobolUsageActionFixer implements CodeActionProvider {
+export class CobolLinterActionFixer implements CodeActionProvider {
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
         const codeActions: CodeAction[] = [];
         for (const diagnostic of context.diagnostics) {
@@ -43,7 +42,7 @@ export class CobolUsageActionFixer implements CodeActionProvider {
     }
 }
 
-export class CobolUsageProvider implements ICommentCallback{
+export class CobolLinterProvider implements ICommentCallback{
     private enabled: boolean = false;
 
     private collection: vscode.DiagnosticCollection;

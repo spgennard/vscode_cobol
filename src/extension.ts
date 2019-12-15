@@ -23,7 +23,7 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
-import { CobolUsageProvider, CobolUsageActionFixer } from './cobolusageprovider';
+import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 
 const util = require('util');
 
@@ -159,8 +159,8 @@ export function activate(context: ExtensionContext) {
     VSCOBOLConfiguration.init();
 
     const collection = languages.createDiagnosticCollection('cobolDiag');
-    const cobolusage = new CobolUsageProvider(collection, VSCOBOLConfiguration.get().experimential_features);
-    const cobolfixer = new CobolUsageActionFixer();
+    const cobolusage = new CobolLinterProvider(collection, VSCOBOLConfiguration.get().linter);
+    const cobolfixer = new CobolLinterActionFixer();
     initExtensions();
     activateLogChannel();
 

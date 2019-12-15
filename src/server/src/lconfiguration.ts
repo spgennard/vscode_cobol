@@ -1,6 +1,6 @@
 'use strict';
 
-import { ICOBOLSettings, COBOLSettings, outlineFlag } from '../..//iconfiguration';
+import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
 
 import * as path from 'path';
 import * as fs from 'fs';

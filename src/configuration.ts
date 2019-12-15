@@ -24,6 +24,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.pre_parse_line_limit = getPreParseLineLimit();
         VSCOBOLConfiguration.config.copybookexts = getCopybookExts();
         VSCOBOLConfiguration.config.tabstops = getTabStops();
+        VSCOBOLConfiguration.config.linter = geLinter();
     }
     
     public static get(): ICOBOLSettings {
@@ -131,6 +132,9 @@ function getCopybookNestedInSection(): boolean {
     return getBoolean('copybooks_nested', false);
 }
 
+function geLinter(): boolean {
+    return getBoolean('linter', false); 
+}
 
 function getFuzzyVariableSearch(): boolean {
     return getBoolean('fuzzy_variable_search', false);

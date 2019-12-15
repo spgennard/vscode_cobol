@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.8.17",
+    "version": "5.9.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -244,6 +244,11 @@
                     "title": "Set pre-parse line limit",
                     "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
                     "default": 25
+                },
+                "coboleditor.linter": {
+                    "type": "boolean",
+                    "title": "Enable basic linting (limited to sections/paragraph use)",
+                    "default": false
                 }
             }
         },
@@ -263,7 +268,7 @@
             },
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.autoIndent": false,
+                "editor.autoIndent": "none",
                 "editor.insertSpaces": true,
                 "editor.formatOnType": true,
                 "editor.rulers": [
@@ -277,7 +282,7 @@
             "[ACUCOBOL]": {
                 "editor.insertSpaces": true,
                 "files.autoGuessEncoding": false,
-                "editor.autoIndent": false,
+                "editor.autoIndent": "none",
                 "editor.formatOnType": false,
                 "editor.rulers": [
                     6,
@@ -291,7 +296,7 @@
                 "editor.insertSpaces": true,
                 "files.autoGuessEncoding": true,
                 "editor.formatOnType": false,
-                "editor.autoIndent": false,
+                "editor.autoIndent": "none",
                 "editor.rulers": [
                     6,
                     7,
@@ -303,7 +308,7 @@
             "[dir]": {
                 "editor.insertSpaces": true,
                 "files.autoGuessEncoding": false,
-                "editor.autoIndent": false,
+                "editor.autoIndent": "none",
                 "editor.formatOnType": false,
                 "editor.rulers": [],
                 "editor.detectIndentation": false,
@@ -313,7 +318,7 @@
                 "files.autoGuessEncoding": false,
                 "editor.detectIndentation": false,
                 "editor.formatOnType": false,
-                "editor.autoIndent": false,
+                "editor.autoIndent": "none",
                 "editor.rulers": [
                     71,
                     72,
