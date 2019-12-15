@@ -6,6 +6,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICommentCallback } from './isourcehandler';
+import { ICOBOLSettings } from './iconfiguration';
 
 export class CobolLinterActionFixer implements CodeActionProvider {
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
@@ -43,19 +44,20 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 }
 
 export class CobolLinterProvider implements ICommentCallback{
-    private enabled: boolean = false;
+    private settings: ICOBOLSettings;
 
     private collection: vscode.DiagnosticCollection;
     private diagCollect: vscode.DiagnosticSeverity;
 
-    constructor(collection: vscode.DiagnosticCollection, enabled: boolean) {
+    constructor(collection: vscode.DiagnosticCollection, settings: ICOBOLSettings) {
         this.collection = collection;
-        this.enabled = enabled;
+        this.settings = settings;
         this.diagCollect = vscode.DiagnosticSeverity.Information;
     }
 
     public updateDiagnostics(document: vscode.TextDocument, ): void {
-        if (this.enabled === false) {
+        if (this.settings.linter === false) {
+            this.collection.clear();
             return;
         }
 

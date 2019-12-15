@@ -159,7 +159,7 @@ export function activate(context: ExtensionContext) {
     VSCOBOLConfiguration.init();
 
     const collection = languages.createDiagnosticCollection('cobolDiag');
-    const cobolusage = new CobolLinterProvider(collection, VSCOBOLConfiguration.get().linter);
+    const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
     initExtensions();
     activateLogChannel();
@@ -369,7 +369,7 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(editor);
-        cobolusage.updateDiagnostics(editor.document);
+        linter.updateDiagnostics(editor.document);
 
     }, null, context.subscriptions);
 
@@ -386,7 +386,7 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(window.activeTextEditor);
-        cobolusage.updateDiagnostics(window.activeTextEditor.document);
+        linter.updateDiagnostics(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
     formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
@@ -395,7 +395,7 @@ export function activate(context: ExtensionContext) {
 
     if (window.activeTextEditor !== undefined) {
         updateDecorations(window.activeTextEditor);
-        cobolusage.updateDiagnostics(window.activeTextEditor.document);
+        linter.updateDiagnostics(window.activeTextEditor.document);
     }
 
     if (VSCOBOLConfiguration.isCachingSetToON()) {

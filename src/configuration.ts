@@ -9,10 +9,9 @@ import * as fs from 'fs';
 
 
 export class VSCOBOLConfiguration {
-    private static config : ICOBOLSettings;
+    private static config : ICOBOLSettings = new COBOLSettings();
 
     public static init() {
-        VSCOBOLConfiguration.config = new COBOLSettings();
         VSCOBOLConfiguration.config.experimential_features = getExperimentialFeatures();
         VSCOBOLConfiguration.config.enable_tabstop = isTabstopEnabled();
         VSCOBOLConfiguration.config.ignorecolumn_b_onwards = getColumBParsing();
