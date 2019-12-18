@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.9.1",
+    "version": "5.9.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -247,10 +247,26 @@
                 },
                 "coboleditor.linter": {
                     "type": "boolean",
-                    "title": "Enable basic linting (limited to sections/paragraph use)",
+                    "title": "Enable basic linting",
+                    "description": "Enable basic linting (limited to sections/paragraph use)",
                     "default": false
+                },
+                "coboleditor.sourceview": {
+                    "type": "boolean",
+                    "title": "Enable experimential explort source view",
+                    "description": "Enable experimential explort source view",
+                    "default": true                   
                 }
             }
+        },
+        "views": {
+            "explorer": [
+                {
+                    "id": "cobol-source-view",
+                    "name": "COBOL Source View",
+                    "when": "config.coboleditor.sourceview"
+                }
+            ]
         },
         "configurationDefaults": {
             "search.exclude": {

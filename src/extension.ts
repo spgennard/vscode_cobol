@@ -24,6 +24,7 @@ import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
+import { SourceViewTree } from './sourceViewTree';
 
 const util = require('util');
 
@@ -169,7 +170,7 @@ export function activate(context: ExtensionContext) {
     //     activateLanguageServer(context);
     // }
 
-    var insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code:string) {
+    var insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
     var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
@@ -288,6 +289,19 @@ export function activate(context: ExtensionContext) {
         COBOLOutputChannel.appendLine('Refresh done!');
     });
 
+    var treeView = new SourceViewTree();
+    const watcher = workspace.createFileSystemWatcher('**/*');
+
+    watcher.onDidCreate((uri) => {
+        treeView.checkFile(uri);
+    });
+
+    watcher.onDidDelete((uri) => {
+        treeView.clearFile(uri);
+    });
+
+    window.registerTreeDataProvider('cobol-source-view', treeView);
+
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -330,7 +344,7 @@ export function activate(context: ExtensionContext) {
     });
 
     context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
-    context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors,cobolfixer));
+    context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors, cobolfixer));
 
     const jclSelectors = [
         { scheme: 'file', language: 'JCL' }
