@@ -20,8 +20,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
         this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 
-        this.topLevelItem.push(this.copyBook);
-        this.topLevelItem.push(this.cobolItem);
 
         if (workspace.workspaceFolders) {
             workspace.findFiles("*")
@@ -30,30 +28,41 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                         var fileExtension = file.fsPath.split('.').pop();
                         var base = path.basename(file.fsPath);
                         switch (fileExtension?.toLowerCase()) {
-                            case "cbl": this.cobolItems.push(this.newSourceItem(base, file, 0)); break;
-                            case "cpy": this.copyBooks.push(this.newSourceItem(base, file, 0)); break;
+                            case "scbl":
+                            case "cob":
+                            case "pco":
+                            case "cbl": this.cobolItems.push(this.newSourceItem(base, file, 0));
+                                break;
+                            case "dds":
+                            case "ss":
+                            case "wks":
+                            case "scr":
+                            case "cpy": this.copyBooks.push(this.newSourceItem(base, file, 0));
+                                break;
                         }
                     });
                 });
         }
 
+        this.topLevelItem.push(this.copyBook);
+        this.topLevelItem.push(this.cobolItem);
     }
 
     private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
-        var location = new vscode.Range(new vscode.Position(0,0), new vscode.Position(0,0));
+        var location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
         return {
-          arguments: [
-            fileUri,
-            { selection: location },
-          ],
-          command: "vscode.open",
-          title: "Jump to Target",
+            arguments: [
+                fileUri,
+                { selection: location },
+            ],
+            command: "vscode.open",
+            title: "Jump to Target",
         };
-      }
+    }
 
 
-    private newSourceItem(label: string, file: vscode.Uri, lnum: number):SourceItem {
+    private newSourceItem(label: string, file: vscode.Uri, lnum: number): SourceItem {
         var item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
         return item;
