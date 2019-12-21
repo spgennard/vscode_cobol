@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.9.3",
+    "version": "5.9.4",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -262,8 +262,8 @@
         "views": {
             "explorer": [
                 {
-                    "id": "cobol-source-view",
-                    "name": "COBOL Source View",
+                    "id": "flat-source-view",
+                    "name": "Source View",
                     "when": "config.coboleditor.sourceview"
                 }
             ]

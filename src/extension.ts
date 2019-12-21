@@ -300,7 +300,7 @@ export function activate(context: ExtensionContext) {
         treeView.clearFile(uri);
     });
 
-    window.registerTreeDataProvider('cobol-source-view', treeView);
+    window.registerTreeDataProvider('flat-source-view', treeView);
 
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
