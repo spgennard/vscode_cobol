@@ -63,9 +63,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
 
-    private newSourceItem(label: string, file: vscode.Uri, lnum: number): SourceItem {
+    private newSourceItem(contextValue:string, label: string, file: vscode.Uri, lnum: number): SourceItem {
         var item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
+        item.contextValue = contextValue;
         return item;
     }
 
@@ -86,7 +87,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "pco":
             case "cbl":
                 if (this.cobolItems.find(e => e.uri === file) === undefined) {
-                    this.cobolItems.push(this.newSourceItem(base, file, 0));
+                    this.cobolItems.push(this.newSourceItem("cobol", base, file, 0));
                 }
                 break;
             case "dds":
@@ -95,7 +96,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "scr":
             case "cpy":
                 if (this.copyBooks.find(e => e.uri === file) === undefined) {
-                    this.copyBooks.push(this.newSourceItem(base, file, 0));
+                    this.copyBooks.push(this.newSourceItem("copybook", base, file, 0));
                 }
                 break;
             case "jcl":
@@ -104,7 +105,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "prc":
             case "proc":
                 if (this.jclItems.find(e => e.uri === file) === undefined) {
-                    this.jclItems.push(this.newSourceItem(base, file, 0));
+                    this.jclItems.push(this.newSourceItem("jcl", base, file, 0));
                 }
                 break;
             case "hlasm":
@@ -114,7 +115,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "mac":
             case "asmmac":
                 if (this.hlasmItems.find(e => e.uri === file) === undefined) {
-                    this.hlasmItems.push(this.newSourceItem(base, file, 0));
+                    this.hlasmItems.push(this.newSourceItem("hlasm", base, file, 0));
                 }
                 break;
 
@@ -126,7 +127,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "pcx":
             case "inc":
                 if (this.pliItems.find(e => e.uri === file) === undefined) {
-                    this.pliItems.push(this.newSourceItem(base, file, 0));
+                    this.pliItems.push(this.newSourceItem("pli", base, file, 0));
                 }
                 break;
         }

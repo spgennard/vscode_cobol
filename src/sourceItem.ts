@@ -28,7 +28,7 @@ export class SourceItem extends vscode.TreeItem {
     constructor(
         public readonly label: string,
         public readonly uri?: vscode.Uri,
-        public readonly line?: number,
+        public readonly line?: number
     ) {
         super(label, vscode.TreeItemCollapsibleState.None);
     }

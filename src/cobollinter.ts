@@ -34,7 +34,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         await vscode.window.showTextDocument(docUri);
         let w = vscode.window.activeTextEditor;
         
-        if (w !== undefined) {
+        if (w !== undefined && code !== undefined) {
             var pos = w.document.positionAt(offset);
             w.edit(edit => {
                 edit.insert(pos,"       *> cobol-lint "+code+"\n");

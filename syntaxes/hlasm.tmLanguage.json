@@ -1,0 +1,296 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "hlasm",
+  "fileTypes": [
+    "hlasm",
+    "asmpgm",
+    "asm",
+    "s",
+    "asmpgm",
+    "mac",
+    "asmmac"
+  ],
+  "scopeName": "source.hlasm",
+  "patterns": [
+    {
+      "name": "invalid.illegal.hlasm",
+      "match": "^.{81,}"
+    },
+    {
+      "include": "#lineComment"
+    },
+    {
+      "include": "#parseLine"
+    },
+    {
+      "include": "#asmArgumentLine"
+    },
+    {
+      "include": "#asmLineStart"
+    }
+  ],
+  "repository": {
+    "additionalAsmHighlight": {
+      "patterns": [
+        {
+          "match": "[*]",
+          "name": "support.function.hlasm"
+        },
+        {
+          "match": "(?<=[=(),*+\\s])=?\\d*(A|B|C|D|E|F|G|H|P|V|X|Z)(L\\d*)?(?=[=(),*\\s+]|$)",
+          "name": "support.type.hlasm"
+        },
+        {
+          "match": "[=(),+]",
+          "name": "keyword.operator.hlasm"
+        },
+        {
+          "match": "(?<=[=(),*\\s+])-?\\d*(?=[=(),*+\\s]|$)",
+          "name": "constant.numeric.hlasm"
+        }
+      ]
+    },
+    "lineComment": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.hlasm",
+          "match": "^(\\*.{70,70})(.*)",
+          "captures": {
+            "1": {
+              "name": "comment.line.double-slash.hlasm"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "match": "\\s(.{0,8})",
+                  "captures": {
+                    "1": {
+                      "patterns": [
+                        {
+                          "include": "#sequenceNumbers"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "match": "([^\\s])(.{0,8})",
+                  "captures": {
+                    "1": {
+                      "name": "invalid.illegal.hlasm"
+                    },
+                    "2": {
+                      "patterns": [
+                        {
+                          "include": "#sequenceNumbers"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "comment.line.double-slash.hlasm",
+          "match": "\\*.*"
+        }
+      ]
+    },
+    "parseLine": {
+      "patterns": [
+        {
+          "match": "^(.{71,71})([^\\s])(.{0,8})",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#asmArgumentLine"
+                },
+                {
+                  "include": "#asmLineStart"
+                }
+              ]
+            },
+            "2": {
+              "name": "keyword.other.hlasm"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#sequenceNumbers"
+                }
+              ]
+            },
+            "5": {
+              "patterns": [
+                {
+                  "match": "\\S.*",
+                  "name": "invalid.illegal"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "^(.{71,71})(\\s?)(.{0,8})$",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#asmArgumentLine"
+                },
+                {
+                  "include": "#asmLineStart"
+                }
+              ]
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#sequenceNumbers"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "asmLineStart": {
+      "patterns": [
+        {
+          "match": "^([^*]\\S*)?\\s+(.*)$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.hlasm"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#asmInstruction"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "asmInstruction": {
+      "patterns": [
+        {
+          "match": "(\\S+)\\s*(.*)",
+          "captures": {
+            "1": {
+              "name": "keyword.other.hlasm"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#asmArguments"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "asmArgumentLine": {
+      "patterns": [
+        {
+          "match": "^\\s+(\\S+=.*)$",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#asmArguments"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "asmArguments": {
+      "patterns": [
+        {
+          "include": "#stringType"
+        },
+        {
+          "match": "(\\S*?)([LKNT]')(.*)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.hlasm",
+              "patterns": [
+                {
+                  "include": "#additionalAsmHighlight"
+                }
+              ]
+            },
+            "2": {
+              "name": "support.type.hlasm"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#asmArguments"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "(\\S*)(.*)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.hlasm",
+              "patterns": [
+                {
+                  "include": "#additionalAsmHighlight"
+                }
+              ]
+            },
+            "2": {
+              "name": "comment.line.double-slash.hlasm"
+            }
+          }
+        },
+        {
+          "match": "\\s.*",
+          "name": "comment.line.double-slash.hlasm"
+        }
+      ]
+    },
+    "stringType": {
+      "patterns": [
+        {
+          "match": "(\\S*?)('.*?')(.*)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.hlasm",
+              "patterns": [
+                {
+                  "include": "#additionalAsmHighlight"
+                }
+              ]
+            },
+            "2": {
+              "name": "string.quoted.single.hlasm"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#asmArguments"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "sequenceNumbers": {
+      "name": "constant.numeric.hlasm",
+      "match": ".*"
+    }
+  }
+}

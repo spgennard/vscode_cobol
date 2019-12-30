@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "5.9.4",
+    "version": "5.9.6",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -15,7 +15,8 @@
         "gnucobol",
         "opencobol",
         "cobol-it",
-        "cobolit"
+        "cobolit",
+        "hlasm"
     ],
     "repository": {
         "type": "git",
@@ -40,6 +41,7 @@
         "onLanguage:OpenCOBOL",
         "onLanguage:GnuCOBOL",
         "onLanguage:JCL",
+        "onLanguage:hlasm",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
@@ -340,6 +342,17 @@
                     72,
                     80
                 ]
+            },
+            "[hlasm]": {
+                "files.autoGuessEncoding": false,
+                "editor.detectIndentation": false,
+                "editor.formatOnType": false,
+                "editor.autoIndent": "none",
+                "editor.rulers": [
+                    71,
+                    72,
+                    80
+                ]
             }
         },
         "languages": [
@@ -448,6 +461,18 @@
                     ".inc"
                 ],
                 "configuration": "./pli.configuration.json"
+            },
+            {
+                "id": "hlasm",
+                "extensions": [
+                    ".hlasm",
+                    ".asm",
+                    ".s",
+                    ".asmpgm",
+                    ".mac",
+                    ".asmmac"
+                ],
+                "configuration": "./hlasm.configuration.json"
             }
         ],
         "grammars": [
@@ -493,6 +518,11 @@
                 "language": "pli",
                 "scopeName": "source.pli",
                 "path": "./syntaxes/PLI.tmLanguage.json"
+            },
+            {
+                "language": "hlasm",
+                "scopeName": "source.hlasm",
+                "path": "./syntaxes/hlasm.tmLanguage.json"
             }
         ],
         "commands": [
@@ -568,7 +598,14 @@
                     "group": "cobolplugin",
                     "when": "editorTextFocus && editorLangId == COBOL"
                 }
+            ],
+            "view/item/context": [
+				{
+					"command": "cobolplugin.dumpMetaData",
+					"when": "view == flat-source-view && viewItem == cobol"
+                }
             ]
+            
         },
         "keybindings": [
             {
