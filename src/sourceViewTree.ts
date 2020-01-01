@@ -26,7 +26,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.hlasmItem = new SourceFolderItem("HLASM");
         this.pliItem = new SourceFolderItem("PL/I");
 
-
         if (workspace.workspaceFolders) {
             workspace.findFiles("*")
                 .then((allFiles) => {
