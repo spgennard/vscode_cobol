@@ -37,16 +37,11 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                         }
                     });
 
-                    this.refreshItemFlags();
+                    this.refreshItems();
 
                 });
         }
 
-        this.topLevelItem.push(this.copyBook);
-        this.topLevelItem.push(this.cobolItem);
-        this.topLevelItem.push(this.jclItem);
-        this.topLevelItem.push(this.pliItem);
-        this.topLevelItem.push(this.hlasmItem);
     }
 
     private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
@@ -62,7 +57,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         };
     }
 
-
     private newSourceItem(contextValue:string, label: string, file: vscode.Uri, lnum: number): SourceItem {
         var item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
@@ -72,7 +66,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     private _onDidChangeTreeData: vscode.EventEmitter<SourceItem | undefined> = new vscode.EventEmitter<SourceItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<SourceItem | undefined> = this._onDidChangeTreeData.event;
-
 
     public refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -133,46 +126,52 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         }
     }
 
-    private refreshItemFlags() {
-        if (this.cobolItems.length !== 0) {
-            this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-        } else {
-            this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
-
+    private refreshItems() {
+        this.topLevelItem = [];
+        
         if (this.copyBooks.length !== 0) {
             this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(this.copyBook);
         } else {
             this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
 
+        if (this.cobolItems.length !== 0) {
+            this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(this.cobolItem);
+        } else {
+            this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
+        }
+
         if (this.jclItems.length !== 0) {
             this.jclItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(this.jclItem);
         } else {
             this.jclItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
 
         if (this.hlasmItems.length !== 0) {
             this.hlasmItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(this.hlasmItem);
         } else {
             this.hlasmItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
 
         if (this.pliItems.length !== 0) {
             this.pliItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(this.pliItem);
         } else {
             this.pliItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
 
         this.refresh();
-
     }
 
     public async checkFile(vuri: vscode.Uri) {
         var fileExtension = vuri.fsPath.split('.').pop();
         if (fileExtension !== undefined) {
             this.addExtension(fileExtension, vuri);
-            this.refreshItemFlags();
+            this.refreshItems();
         }
     }
 
@@ -182,8 +181,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.jclItems = this.jclItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.hlasmItems = this.hlasmItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.pliItems = this.pliItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.refreshItemFlags();
-        this.refresh();
+        this.refreshItems();
     }
 
     public getChildren(element?: SourceItem): Thenable<SourceItem[]> {
