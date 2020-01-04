@@ -16,7 +16,9 @@
         "opencobol",
         "cobol-it",
         "cobolit",
-        "hlasm"
+        "hlasm",
+        "entcobol",
+        "bms"
     ],
     "repository": {
         "type": "git",
@@ -40,6 +42,7 @@
         "onLanguage:ACUCOBOL",
         "onLanguage:OpenCOBOL",
         "onLanguage:GnuCOBOL",
+        "onLanguage:entcobol",
         "onLanguage:JCL",
         "onLanguage:hlasm",
         "onCommand:cobolplugin.move2pd",
@@ -473,6 +476,22 @@
                     ".asmmac"
                 ],
                 "configuration": "./hlasm.configuration.json"
+            },
+            {
+                "id": "entcobol",
+                "aliases": [
+                    "Enterprise COBOL for z/OS",
+                    "enterprisecobol"
+                ],
+                "extensions": [],
+                "configuration": "./enterprisecobol.configuration.json"
+            },
+            {
+                "id": "bms",
+                "extensions": [
+                    ".bms"
+                ],
+                "aliases": []
             }
         ],
         "grammars": [
@@ -523,6 +542,16 @@
                 "language": "hlasm",
                 "scopeName": "source.hlasm",
                 "path": "./syntaxes/hlasm.tmLanguage.json"
+            },
+            {
+                "language": "entcobol",
+                "scopeName": "source.entcobol",
+                "path": "./syntaxes/enterprisecobol.tmLanguage.json"
+            },
+            {
+                "language": "bms",
+                "scopeName": "source.bms",
+                "path": "./syntaxes/bms.tmLanguage.json"
             }
         ],
         "commands": [
@@ -600,12 +629,11 @@
                 }
             ],
             "view/item/context": [
-				{
-					"command": "cobolplugin.dumpMetaData",
-					"when": "view == flat-source-view && viewItem == cobol"
+                {
+                    "command": "cobolplugin.dumpMetaData",
+                    "when": "view == flat-source-view && viewItem == cobol"
                 }
             ]
-            
         },
         "keybindings": [
             {

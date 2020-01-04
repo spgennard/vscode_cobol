@@ -1,0 +1,221 @@
+{
+	"tokenColors": [
+		{
+			"name": "Comment",
+			"scope": "comment",
+			"settings": {
+				"foreground": "#555555"
+			}
+		},
+		{
+  			"name": "String",
+			"scope": "string",
+			"settings": {
+				"foreground": "#eeed17"
+			}
+		},
+		{
+			"name": "Number",
+			"scope": "constant.numeric",
+			"settings": {
+				"foreground": "#7da2fa"
+			}
+		},
+		{
+			"name": "Built-in constant",
+			"scope": "constant.language",
+			"settings": {
+				"foreground": "#7da2fa"
+			}
+		},
+		{
+			"name": "Variable",
+			"scope": "variable",
+			"settings": {
+				"fontStyle": "italic"
+			}
+		},
+		{
+			"name": "Keyword",
+			"scope": "keyword",
+			"settings": {
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "Storage",
+			"scope": "storage",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#7da2fa"
+			}
+		},
+		{
+			"name": "Storage type",
+			"scope": "storage.type",
+			"settings": {
+				"fontStyle": "bold",
+				"foreground": "#df1190"
+			}
+		},
+		{
+			"name": "Intrinsic functions",
+			"scope": "keyword.intrinsicfunctions.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#27b9b1"
+			}
+		},
+		{
+			"name": "built-in variables",
+			"scope": "variable.language",
+			"settings": {
+				"fontStyle": "italic",
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "Variable",
+			"scope": "variable.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "Tag attribute",
+			"scope": "entity.other.attribute-name",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#27b9b1"
+			}
+		},
+		{
+			"name": "Compiler directing statements",
+			"scope": "keyword.listing.cobol keyword.compiler.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#27b9b1"
+			}
+		},
+		{
+			"name": "flow/control statements",
+			"scope": "keyword.control.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "statements",
+			"scope": "keyword.verb keyword.verbs",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "CICS API",
+			"scope": "keyword.verb.cics",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#0dac0d"
+			}
+		},
+		{
+			"name": "CICS invocation",
+			"scope": "meta.symbol.cobol.cics",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#95faab"
+			}
+		},		
+		{
+			"name": "Db/2 API",
+			"scope": "keyword.verb.db2",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#2411d1"
+			}
+		},
+		{
+			"name": "Db/2 invocation",
+			"scope": "meta.symbol.cobol.db2",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#6ac2f5"
+			}
+		},
+		{
+			"name": "remarks",
+			"scope": "keyword.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#000000"
+			}
+		},    
+		{
+			"name": "JSON-XML",
+			"scope": "keyword.json keyword.xml",
+			"settings": {
+				"fontStyle": "italic",
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "sort",
+			"scope": "keyword.cobol.sort",
+			"settings": {
+				"fontStyle": "bold",
+				"foreground": "#AE81FF"
+			}
+		},            
+		{
+			"name": "other statements",
+			"scope": "keyword.other.cobol keyword.otherverbs.cobol keyword.identifiers.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#AE81FF"
+			}
+		},
+		{
+			"name": "operators/brackets",
+			"scope": "keyword.operator.cobol keyword.bracket.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#F8F8F2A5"
+			}
+		},    
+		{
+			"name": "Invalid",
+			"scope": "invalid keyword.reserved.cobol",
+			"settings": {
+				"fontStyle": "",
+				"foreground": "#27b9b1"
+			}
+		},
+		{
+			"name": "Invalid deprecated",
+			"scope": "invalid.deprecated",
+			"settings": {
+				"foreground": "#27b9b1"
+			}
+		},
+		{
+			"name": "metasybmols",
+			"scope": "meta.symbol keyword.filler.cobol",
+			"settings": {
+				"foreground": "#eeed17"
+			}
+		}
+	],
+	"colors": {
+		"editor.background": "#000000",
+		"editorCursor.foreground": "#F8F8F0",
+		"editor.foreground": "#cfcfcf",
+		"editorWhitespace.foreground": "#3B3A32",
+		"editor.lineHighlightBackground": "#3E3D32",
+		"editor.selectionBackground": "#49483E"
+	},
+	"name": "entcob"
+}

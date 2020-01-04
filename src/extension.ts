@@ -329,8 +329,10 @@ export function activate(context: ExtensionContext) {
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
         { scheme: 'file', language: 'OpenCOBOL' },
-        { scheme: 'file', language: 'GnuCOBOL' }
+        { scheme: 'file', language: 'GnuCOBOL' },
+        { scheme: 'file', language: 'entcobol' }
     ];
+    
     languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return opencopybook.provideDefinition(doc, pos, ct);

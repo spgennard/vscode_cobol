@@ -20,6 +20,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private hlasmItems: SourceFolderItem[] = [];
 
     constructor() {
+
         this.copyBook = new SourceFolderItem("Cobol");
         this.cobolItem = new SourceFolderItem("Copybooks");
         this.jclItem = new SourceFolderItem("JCL");

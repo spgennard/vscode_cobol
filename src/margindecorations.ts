@@ -168,6 +168,7 @@ export enum TextLanguage {
 export function isSupportedLanguage(document: TextDocument): TextLanguage {
 
     switch (document.languageId.toLowerCase()) {
+        case "entcobol":
         case "cobol":
         case "opencobol":
         case "gnucobol" :
