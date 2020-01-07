@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.1",
+    "version": "6.0.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -258,8 +258,8 @@
                 },
                 "coboleditor.sourceview": {
                     "type": "boolean",
-                    "title": "Enable experimential explort source view",
-                    "description": "Enable experimential explort source view",
+                    "title": "Enable experimential explorer source view",
+                    "description": "Enable experimential explorer source view",
                     "default": true
                 }
             }
@@ -282,6 +282,8 @@
                 "**/*.acu": true,
                 "**/*.idy": true,
                 "**/*.pdb": true,
+                "**/*.jar": true,
+                "**/*.obj": true,
                 "**/.vscode_cobol": true
             },
             "files.exclude": {

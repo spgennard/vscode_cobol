@@ -20,9 +20,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private hlasmItems: SourceFolderItem[] = [];
 
     constructor() {
-
-        this.copyBook = new SourceFolderItem("Cobol");
-        this.cobolItem = new SourceFolderItem("Copybooks");
+        this.cobolItem = new SourceFolderItem("Cobol");
+        this.copyBook = new SourceFolderItem("Copybooks");
         this.jclItem = new SourceFolderItem("JCL");
         this.hlasmItem = new SourceFolderItem("HLASM");
         this.pliItem = new SourceFolderItem("PL/I");
@@ -129,18 +128,19 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private refreshItems() {
         this.topLevelItem = [];
         
-        if (this.copyBooks.length !== 0) {
-            this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(this.copyBook);
-        } else {
-            this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
 
         if (this.cobolItems.length !== 0) {
             this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
             this.topLevelItem.push(this.cobolItem);
         } else {
             this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
+        }
+
+        if (this.copyBooks.length !== 0) {
+            this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(this.copyBook);
+        } else {
+            this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
 
         if (this.jclItems.length !== 0) {
