@@ -18,3 +18,8 @@ github-release upload \
   --name=$PACKAGE_VERSION \
   --body="${COMMIT_LOG}" \
   cobol*.vsix
+
+
+npm-check-updates
+
+echo "use: ncu -u"
