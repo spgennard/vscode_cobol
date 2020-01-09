@@ -289,7 +289,7 @@ export function activate(context: ExtensionContext) {
         COBOLOutputChannel.appendLine('Refresh done!');
     });
 
-    var treeView = new SourceViewTree();
+    var treeView = new SourceViewTree(VSCOBOLConfiguration.get());
     const watcher = workspace.createFileSystemWatcher('**/*');
 
     watcher.onDidCreate((uri) => {

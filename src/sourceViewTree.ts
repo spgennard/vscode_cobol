@@ -3,6 +3,11 @@ import * as path from 'path';
 
 import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
+import { ICOBOLSettings } from './iconfiguration';
+import * as fs from 'fs';
+import { logMessage } from './extension';
+import { InMemoryGlobalFileCache } from './cobolquickparse';
+import { isValidExtension } from './opencopybook';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;
@@ -19,12 +24,15 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private pliItems: SourceFolderItem[] = [];
     private hlasmItems: SourceFolderItem[] = [];
 
-    constructor() {
+    private config: ICOBOLSettings;
+
+    constructor(config: ICOBOLSettings) {
         this.cobolItem = new SourceFolderItem("Cobol");
         this.copyBook = new SourceFolderItem("Copybooks");
         this.jclItem = new SourceFolderItem("JCL");
         this.hlasmItem = new SourceFolderItem("HLASM");
         this.pliItem = new SourceFolderItem("PL/I");
+        this.config = config;
 
         if (workspace.workspaceFolders) {
             workspace.findFiles("*")
@@ -40,7 +48,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
                 });
         }
-
     }
 
     private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
@@ -56,7 +63,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         };
     }
 
-    private newSourceItem(contextValue:string, label: string, file: vscode.Uri, lnum: number): SourceItem {
+    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number): SourceItem {
         var item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
         item.contextValue = contextValue;
@@ -127,7 +134,18 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     private refreshItems() {
         this.topLevelItem = [];
-        
+
+        if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
+            for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
+                var fileExtension = i.split('.').pop();
+                if (fileExtension) {
+                    if (isValidExtension(fileExtension)) {
+                        let vFile = vscode.Uri.file(i);
+                        this.addExtension(fileExtension, vFile);
+                    }
+                }
+            }
+        }
 
         if (this.cobolItems.length !== 0) {
             this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;

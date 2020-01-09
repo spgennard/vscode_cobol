@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.3",
+    "version": "6.0.4",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -56,7 +56,8 @@
         "onCommand:cobolplugin.change_lang_to_cobol",
         "onCommand:cobolplugin.change_lang_to_opencobol",
         "onCommand:cobolplugin.toggle_margin",
-        "onCommand:cobolplugin.change_source_format"
+        "onCommand:cobolplugin.change_source_format",
+        "view:flat-source-view"
     ],
     "main": "./out/extension",
     "license": "MIT",
