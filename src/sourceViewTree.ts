@@ -67,6 +67,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         var item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
         item.contextValue = contextValue;
+        item.tooltip = file.fsPath;
         return item;
     }
 
@@ -85,7 +86,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "cob":
             case "pco":
             case "cbl":
-                if (this.cobolItems.find(e => e.uri === file) === undefined) {
+                if (this.cobolItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.cobolItems.push(this.newSourceItem("cobol", base, file, 0));
                 }
                 break;
@@ -94,7 +95,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "wks":
             case "scr":
             case "cpy":
-                if (this.copyBooks.find(e => e.uri === file) === undefined) {
+                if (this.copyBooks.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.copyBooks.push(this.newSourceItem("copybook", base, file, 0));
                 }
                 break;
@@ -103,7 +104,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "cntl":
             case "prc":
             case "proc":
-                if (this.jclItems.find(e => e.uri === file) === undefined) {
+                if (this.jclItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.jclItems.push(this.newSourceItem("jcl", base, file, 0));
                 }
                 break;
@@ -113,7 +114,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "asmpgm":
             case "mac":
             case "asmmac":
-                if (this.hlasmItems.find(e => e.uri === file) === undefined) {
+                if (this.hlasmItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.hlasmItems.push(this.newSourceItem("hlasm", base, file, 0));
                 }
                 break;
@@ -125,7 +126,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "pci":
             case "pcx":
             case "inc":
-                if (this.pliItems.find(e => e.uri === file) === undefined) {
+                if (this.pliItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.pliItems.push(this.newSourceItem("pli", base, file, 0));
                 }
                 break;
