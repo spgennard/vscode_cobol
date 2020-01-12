@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri, tasks } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -282,6 +282,19 @@ export function activate(context: ExtensionContext) {
     });
 
 
+    var syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
+        tasks.fetchTasks().then((fetchedTasks) => {
+            for (const task of fetchedTasks) {
+                if (task.name.startsWith("cobol-syntax-check")) {
+                    tasks.executeTask(task);
+                }
+            }
+        }, (reason) => {
+            console.log('fetch task was rejected', reason);
+        });
+    });
+
+
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
         COBOLOutputChannel.appendLine('Configuration changed... Refreshing...');
         VSCOBOLConfiguration.init();
@@ -325,6 +338,8 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 
+    context.subscriptions.push(syntaxCheck);
+
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
@@ -332,7 +347,7 @@ export function activate(context: ExtensionContext) {
         { scheme: 'file', language: 'GnuCOBOL' },
         { scheme: 'file', language: 'entcobol' }
     ];
-    
+
     languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return opencopybook.provideDefinition(doc, pos, ct);

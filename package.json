@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.5",
+    "version": "6.0.6",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -603,7 +603,12 @@
             {
                 "command": "cobolplugin.dumpMetaData",
                 "title": "COBOL: Dump metadata for diagnostic"
+            },
+            {
+                "command": "cobolplugin.syntaxCheck",
+                "title": "Compile: Syntax Check"
             }
+            
         ],
         "menus": {
             "editor/context": [
@@ -635,7 +640,7 @@
             ],
             "view/item/context": [
                 {
-                    "command": "cobolplugin.dumpMetaData",
+                    "command": "cobolplugin.syntaxCheck",
                     "when": "view == flat-source-view && viewItem == cobol"
                 }
             ]
@@ -899,6 +904,14 @@
                 "message": 4
             },
             {
+                "name": "gnucobol3-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning):(.*)$",
+                "file": 1,
+                "line": 2,
+                "severity": 3,
+                "message": 4
+            },
+            {
                 "name": "cobolit-cobc",
                 "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning):(.*)$",
                 "file": 1,
@@ -947,6 +960,14 @@
                     "absolute"
                 ],
                 "pattern": "$gnucobol-cobc"
+            },
+            {
+                "name": "gnucobol3-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$gnucobol3-cobc"
             },
             {
                 "name": "opencobol-cobc",
