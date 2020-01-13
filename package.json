@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.6",
+    "version": "6.0.7",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -294,7 +294,7 @@
             },
             "[COBOL]": {
                 "files.autoGuessEncoding": true,
-                "editor.autoIndent": "none",
+                "editor.autoIndent": "full",
                 "editor.insertSpaces": true,
                 "editor.formatOnType": true,
                 "editor.rulers": [
@@ -308,7 +308,7 @@
             "[ACUCOBOL]": {
                 "editor.insertSpaces": true,
                 "files.autoGuessEncoding": false,
-                "editor.autoIndent": "none",
+                "editor.autoIndent": "full",
                 "editor.formatOnType": false,
                 "editor.rulers": [
                     6,
@@ -322,7 +322,7 @@
                 "editor.insertSpaces": true,
                 "files.autoGuessEncoding": true,
                 "editor.formatOnType": false,
-                "editor.autoIndent": "none",
+                "editor.autoIndent": "full",
                 "editor.rulers": [
                     6,
                     7,
@@ -355,7 +355,7 @@
                 "files.autoGuessEncoding": false,
                 "editor.detectIndentation": false,
                 "editor.formatOnType": false,
-                "editor.autoIndent": "none",
+                "editor.autoIndent": "full",
                 "editor.rulers": [
                     71,
                     72,
@@ -608,7 +608,6 @@
                 "command": "cobolplugin.syntaxCheck",
                 "title": "Compile: Syntax Check"
             }
-            
         ],
         "menus": {
             "editor/context": [
@@ -993,6 +992,9 @@
                 ],
                 "pattern": "$acucobol-ccbl"
             }
+        ],
+        "taskDefinitions": [
+            {}
         ]
     },
     "scripts": {
