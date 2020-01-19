@@ -296,10 +296,8 @@ export function activate(context: ExtensionContext) {
 
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
-        COBOLOutputChannel.appendLine('Configuration changed... Refreshing...');
         VSCOBOLConfiguration.init();
         initExtensions();
-        COBOLOutputChannel.appendLine('Refresh done!');
     });
 
     var treeView = new SourceViewTree(VSCOBOLConfiguration.get());

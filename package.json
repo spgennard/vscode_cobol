@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.7",
+    "version": "6.0.8",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -56,8 +56,12 @@
         "onCommand:cobolplugin.change_lang_to_acu",
         "onCommand:cobolplugin.change_lang_to_cobol",
         "onCommand:cobolplugin.change_lang_to_opencobol",
+        "onCommand:cobolplugin.change_lang_to_gnucobol",
         "onCommand:cobolplugin.toggle_margin",
         "onCommand:cobolplugin.change_source_format",
+        "onCommand:cobolplugin.dumpMetaData",
+        "onCommand:cobolplugin.syntaxCheck",
+        "onCommand:cobolplugin.processAllFilesInWorkspace",
         "view:flat-source-view"
     ],
     "main": "./out/extension",
@@ -992,9 +996,6 @@
                 ],
                 "pattern": "$acucobol-ccbl"
             }
-        ],
-        "taskDefinitions": [
-            {}
         ]
     },
     "scripts": {

@@ -15,6 +15,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private jclItem: SourceItem;
     private pliItem: SourceItem;
     private hlasmItem: SourceItem;
+    private documentItem: SourceItem;
 
     private topLevelItem: SourceItem[] = [];
 
@@ -23,6 +24,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private jclItems: SourceFolderItem[] = [];
     private pliItems: SourceFolderItem[] = [];
     private hlasmItems: SourceFolderItem[] = [];
+    private documentIems: SourceFolderItem[] = [];
 
     private config: ICOBOLSettings;
 
@@ -32,6 +34,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.jclItem = new SourceFolderItem("JCL");
         this.hlasmItem = new SourceFolderItem("HLASM");
         this.pliItem = new SourceFolderItem("PL/I");
+        this.documentItem = new SourceFolderItem("Documents");
+
         this.config = config;
 
         if (workspace.workspaceFolders) {
@@ -86,10 +90,12 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "cob":
             case "pco":
             case "cbl":
+            case "cobol":
                 if (this.cobolItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.cobolItems.push(this.newSourceItem("cobol", base, file, 0));
                 }
                 break;
+            case "ccp":
             case "dds":
             case "ss":
             case "wks":
@@ -130,6 +136,23 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                     this.pliItems.push(this.newSourceItem("pli", base, file, 0));
                 }
                 break;
+
+            case "md":
+            case "txt":
+            case "html":
+                if (this.documentIems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
+                    this.documentIems.push(this.newSourceItem("document", base, file, 0));
+                }
+                break;
+        }
+    }
+
+    private refreshItem(items: SourceFolderItem[], item: SourceItem) {
+        if (items.length !== 0) {
+            item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            this.topLevelItem.push(item);
+        } else {
+            item.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
     }
 
@@ -148,40 +171,12 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             }
         }
 
-        if (this.cobolItems.length !== 0) {
-            this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(this.cobolItem);
-        } else {
-            this.cobolItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
-
-        if (this.copyBooks.length !== 0) {
-            this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(this.copyBook);
-        } else {
-            this.copyBook.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
-
-        if (this.jclItems.length !== 0) {
-            this.jclItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(this.jclItem);
-        } else {
-            this.jclItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
-
-        if (this.hlasmItems.length !== 0) {
-            this.hlasmItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(this.hlasmItem);
-        } else {
-            this.hlasmItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
-
-        if (this.pliItems.length !== 0) {
-            this.pliItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(this.pliItem);
-        } else {
-            this.pliItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        }
+        this.refreshItem(this.cobolItems, this.cobolItem);
+        this.refreshItem(this.copyBooks, this.copyBook);
+        this.refreshItem(this.jclItems, this.jclItem);
+        this.refreshItem(this.hlasmItems, this.hlasmItem);
+        this.refreshItem(this.pliItems, this.pliItem);
+        this.refreshItem(this.documentIems, this.documentItem);
 
         this.refresh();
     }
@@ -200,6 +195,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.jclItems = this.jclItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.hlasmItems = this.hlasmItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.pliItems = this.pliItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
+        this.documentIems = this.documentIems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.refreshItems();
     }
 
@@ -231,6 +227,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
             if (element.label === "HLASM") {
                 rtn = this.hlasmItems;
+            }
+
+            if (element.label === "Documents") {
+                rtn = this.documentIems;
             }
 
             resolve(rtn);
