@@ -996,6 +996,24 @@
                 ],
                 "pattern": "$acucobol-ccbl"
             }
+        ],
+        "taskDefinitions": [
+            {
+                "type": "cobol",
+                "required": [
+                    "task"
+                ],
+                "properties": {
+                    "task": {
+                        "type": "string",
+                        "description": "The COBOL task to customize"
+                    },
+                    "file": {
+                        "type": "string",
+                        "description": "The COBOL file that provides the task. Can be omitted."
+                    }
+                }
+            }
         ]
     },
     "scripts": {
@@ -1007,13 +1025,11 @@
     "devDependencies": {
         "@types/mocha": "^5.2.7",
         "@types/node": "^13.1.8",
-        "tslint": "^5.20.1",
+        "tslint": "^6.0.0",
         "typescript": "^3.7.5",
         "vscode": "^1.1.36"
     },
     "dependencies": {
-        "vscode-languageclient": "^6.0.0",
-        "vscode-languageserver": "^6.0.0",
         "typescript-string-operations": "^1.3.1",
         "@types/fs-extra": "^8.0.1",
         "@types/minimatch": "^3.0.3",

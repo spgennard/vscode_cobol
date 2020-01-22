@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri, tasks } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri, tasks, Task, ShellExecution } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -19,12 +19,12 @@ import { getCallTarget } from './keywords/cobolCallTargets';
 import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
 import { isDirectPath } from './opencopybook';
 
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
+import { getCOBOLTasks, COBOLTaskDefinition } from './taskdefs';
 
 const util = require('util');
 
@@ -116,43 +116,6 @@ function activateLogChannel() {
 
 export function getCurrentContext(): ExtensionContext {
     return currentContext;
-}
-
-function activateLanguageServer(context: ExtensionContext) {
-    const serverModule = context.asAbsolutePath(path.join('out', 'server', 'src', 'server.js'));
-    const serverOptions: ServerOptions = {
-        run: {
-            module: serverModule,
-            transport: TransportKind.ipc,
-        },
-        debug: {
-            module: serverModule,
-            transport: TransportKind.ipc,
-            options: {
-                execArgv: ['--nolazy', '--inspect=6009'],
-            },
-        },
-    };
-
-    const clientOptions: LanguageClientOptions = {
-
-        documentSelector: [{
-            scheme: 'file',
-            language: 'COBOL',
-        }],
-        synchronize: {
-            // Synchronize the setting section 'coboleditor' to the server
-            configurationSection: 'coboleditor',
-
-            // Notify the server about file changes to '.clientrc files contain in the workspace
-            fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
-        }
-    };
-
-    const client = new LanguageClient('COBOL', 'Language Server for COBOL', serverOptions, clientOptions);
-    const disposable = client.start();
-
-    context.subscriptions.push(disposable);
 }
 
 export function activate(context: ExtensionContext) {
@@ -311,6 +274,19 @@ export function activate(context: ExtensionContext) {
         treeView.clearFile(uri);
     });
 
+    let cobolTaskPromise: Thenable<Task[]> | undefined = undefined;
+    const taskProvider = tasks.registerTaskProvider('COBOL', {
+        provideTasks: () => {
+          if (!cobolTaskPromise) {
+            cobolTaskPromise = getCOBOLTasks();
+          }
+          return cobolTaskPromise;
+        },
+        resolveTask(_task: Task): Task | undefined {
+          return undefined;
+        }
+        
+      });
     window.registerTreeDataProvider('flat-source-view', treeView);
 
     context.subscriptions.push(move2pdCommand);
