@@ -24,7 +24,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
-import { getCOBOLTasks, COBOLTaskDefinition } from './taskdefs';
+import { getCOBOLTasks, COBCTaskDefinition, getTaskForCOBC } from './taskdefs';
 
 const util = require('util');
 
@@ -275,14 +275,21 @@ export function activate(context: ExtensionContext) {
     });
 
     let cobolTaskPromise: Thenable<Task[]> | undefined = undefined;
-    const taskProvider = tasks.registerTaskProvider('COBOL', {
+    const taskProvider = tasks.registerTaskProvider('cobc', {
         provideTasks: () => {
           if (!cobolTaskPromise) {
             cobolTaskPromise = getCOBOLTasks();
           }
           return cobolTaskPromise;
         },
-        resolveTask(_task: Task): Task | undefined {
+        resolveTask(task: Task): Task | undefined {
+            if (task) {
+                const definition: COBCTaskDefinition = <any>task.definition;
+                if (definition.extraArguments) {
+                    return getTaskForCOBC(definition);
+                }
+                return task;
+            }
           return undefined;
         }
         
@@ -313,6 +320,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 
     context.subscriptions.push(syntaxCheck);
+
+    context.subscriptions.push(taskProvider);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },

@@ -999,18 +999,18 @@
         ],
         "taskDefinitions": [
             {
-                "type": "cobol",
+                "type": "cobc",
                 "required": [
-                    "task"
+                    "extraArguments", "label"
                 ],
                 "properties": {
-                    "task": {
+                    "extraArguments": {
                         "type": "string",
-                        "description": "The COBOL task to customize"
+                        "description": "Extra command line arguments"
                     },
-                    "file": {
+                    "label": {
                         "type": "string",
-                        "description": "The COBOL file that provides the task. Can be omitted."
+                        "description": "label for task"
                     }
                 }
             }
