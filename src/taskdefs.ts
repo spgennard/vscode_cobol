@@ -10,19 +10,25 @@ import { VSCOBOLConfiguration } from './configuration';
 export interface COBCTaskDefinition extends vscode.TaskDefinition {
 	extraArguments?: string;
 	label?: string;
+	syntaxCheck?: boolean;
 }
 
-export function getTaskForCOBC(definition: COBCTaskDefinition, label?: string) : vscode.Task {
+export function getTaskForCOBC(definition: COBCTaskDefinition, label?: string, syntaxCheck?: boolean): vscode.Task {
 	let workspaceFolder = vscode.workspace.rootPath;
 
 	if (label !== undefined) {
 		definition.label = label;
 	}
+
+	if (syntaxCheck !== undefined) {
+		definition.syntaxCheck = syntaxCheck;
+	}
+
 	let options: vscode.ShellExecutionOptions = { cwd: workspaceFolder };
 	let shellCmd: vscode.ShellExecution = new vscode.ShellExecution(
 		`cobc -fsyntax-only -std=mf -I${workspaceFolder}\\CopyBooks -I${workspaceFolder}\\CopyBooks\\Public ${definition.extraArguments} \\$\{file\}`, options);
-	
-	let task = new vscode.Task(definition, vscode.TaskScope.Workspace, "Compile using cobc", 'COBOL Utilities', shellCmd);
+
+	let task = new vscode.Task(definition, vscode.TaskScope.Workspace, "Syntax check using cobc", 'COBOL', shellCmd);
 	task.group = {
 		"kind": "build",
 		"isDefault": true
@@ -38,7 +44,7 @@ export function getTaskForCOBC(definition: COBCTaskDefinition, label?: string) :
 	return task;
 }
 
-export async function getCOBOLTasks(): Promise<vscode.Task[]> {
+export async function getCOBOLTasks_for_cobc(taskName: string, syntaxCheck: boolean): Promise<vscode.Task[]> {
 	let workspaceFolder = vscode.workspace.rootPath;
 	let emptyTasks: vscode.Task[] = [];
 	if (!workspaceFolder) {
@@ -46,7 +52,7 @@ export async function getCOBOLTasks(): Promise<vscode.Task[]> {
 	}
 
 	let x = VSCOBOLConfiguration.getCopybookdirs_defaults;
-	
+
 	let kind: COBCTaskDefinition = {
 		type: 'cobc',
 		label: '',
@@ -54,9 +60,8 @@ export async function getCOBOLTasks(): Promise<vscode.Task[]> {
 	};
 
 	let result: vscode.Task[] = [];
-	let taskName = 'compile-one-cobc';
 
-	let task = getTaskForCOBC(kind,taskName);
+	let task = getTaskForCOBC(kind, taskName, syntaxCheck);
 	result.push(task);
 	return result;
 

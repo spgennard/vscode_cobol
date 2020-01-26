@@ -24,9 +24,10 @@ import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
-import { getCOBOLTasks, COBCTaskDefinition, getTaskForCOBC } from './taskdefs';
+import { COBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc } from './taskdefs';
 
 const util = require('util');
+var which = require('which');
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -274,26 +275,36 @@ export function activate(context: ExtensionContext) {
         treeView.clearFile(uri);
     });
 
-    let cobolTaskPromise: Thenable<Task[]> | undefined = undefined;
-    const taskProvider = tasks.registerTaskProvider('cobc', {
-        provideTasks: () => {
-          if (!cobolTaskPromise) {
-            cobolTaskPromise = getCOBOLTasks();
-          }
-          return cobolTaskPromise;
-        },
-        resolveTask(task: Task): Task | undefined {
-            if (task) {
-                const definition: COBCTaskDefinition = <any>task.definition;
-                if (definition.extraArguments) {
-                    return getTaskForCOBC(definition);
+
+
+    let cobcLocation = which.sync('cobc', {nothrow: true});
+
+    if (cobcLocation !== null) {
+        let cobolTaskPromise4cobc: Thenable<Task[]> | undefined = undefined;
+
+        const taskProvider4cobc = tasks.registerTaskProvider('cobc', {
+            provideTasks: () => {
+                if (!cobolTaskPromise4cobc) {
+                    cobolTaskPromise4cobc = getCOBOLTasks_for_cobc("cobol_syntax_check_with_cobc", true);
                 }
-                return task;
+                return cobolTaskPromise4cobc;
+            },
+            resolveTask(task: Task): Task | undefined {
+                if (task) {
+                    const definition: COBCTaskDefinition = <any>task.definition;
+                    if (definition.extraArguments || definition.syntaxCheck) {
+                        return getTaskForCOBC(definition, definition.label, definition.syntaxCheck);
+                    }
+                    return task;
+                }
+                return undefined;
             }
-          return undefined;
-        }
-        
-      });
+
+        });
+
+        context.subscriptions.push(taskProvider4cobc);
+    }
+
     window.registerTreeDataProvider('flat-source-view', treeView);
 
     context.subscriptions.push(move2pdCommand);
@@ -321,7 +332,6 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(syntaxCheck);
 
-    context.subscriptions.push(taskProvider);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL' },
