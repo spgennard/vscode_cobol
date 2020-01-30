@@ -15,7 +15,7 @@
 
   "patterns": [
     {
-      "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])(D\\s.*$)",
+      "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])([dD]\\s.*$)",
       "name": "token.info-token.cobol"
     },
     {
@@ -34,10 +34,10 @@
       }
     },
     {
-      "match": "(^[0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s][0-9a-zA-Z\\s])(\\*.*$)",
+      "match": "(^[0-9a-zA-Z\\s\\$#%][0-9a-zA-Z\\s\\$#%][0-9a-zA-Z\\s\\$#%][0-9a-zA-Z\\s\\$#%][0-9a-zA-Z\\s\\$#%][0-9a-zA-Z\\s\\$#%])(\\*.*$)",
       "captures": {
         "1": {
-          "name": "constant.numeric.cobol,meta.symbol.cobol"
+          "name": "constant.cobol"
         },
         "2": {
           "name": "comment.line.cobol.fixed"
