@@ -52,7 +52,7 @@ const multipleSelectionUnTabPttrn = /^\s*/;
 function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
         var charpos =  sel.start.character;
-        if (charpos === 0) {     
+        if (charpos === 0) {
             var selline = d.getText(sel);
             if (selline !== null) {
                 var match = selline.match(multipleSelectionUnTabPttrn);
@@ -78,7 +78,7 @@ function tabSize(pos: number) {
         }
     }
     // outside range?
-    return 3 - ((pos - tabs[tabs.length - 1]) % 3);
+    return 4 - ((pos - tabs[tabs.length - 1]) % 4);
 }
 
 
@@ -87,10 +87,10 @@ function unTabSize(pos: number) {
 
     // outside range?
     if (pos > tabs[tabs.length - 1]) {
-        if ((pos - tabs[tabs.length - 1]) % 3 === 0) {
-            return 3;
+        if ((pos - tabs[tabs.length - 1]) % 4 === 0) {
+            return 4;
         }
-        return (pos - tabs[tabs.length - 1]) % 3;
+        return (pos - tabs[tabs.length - 1]) % 4;
     }
 
     for (var index = tabs.length - 1; index > -1; index--) {
