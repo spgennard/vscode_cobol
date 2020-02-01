@@ -1,9 +1,7 @@
 'use strict';
 
-import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, workspace } from 'vscode';
+import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from 'vscode';
 import { VSCOBOLConfiguration } from './configuration';
-
-
 
 function executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean) {
     editor.edit(edit => {
@@ -13,7 +11,7 @@ function executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], ins
                 if (inserting) {
                     singleSelectionTab(edit, doc, position);
                 } else {
-                    singleSelectionUnTab(edit, doc, position);
+                    singleSelectionUnTab(edit, doc, position);  
                 }
             } else {
                 if (inserting) {
@@ -37,6 +35,10 @@ function singleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, pos: Positi
     const txt = d.getText(range);
     if (txt === ' '.repeat(size)) {
         edit.delete(range);
+    } else {
+        for(let x=0; x<size; x++) {
+            commands.executeCommand("cursorMove", { to: "left" });
+        }
     }
 }
 

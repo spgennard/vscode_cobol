@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.10",
+    "version": "6.0.11",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -18,7 +18,7 @@
         "cobolit",
         "hlasm",
         "entcobol",
-	"mfcobol",
+        "mfcobol",
         "bms"
     ],
     "repository": {
@@ -414,7 +414,7 @@
                     ".src",
                     ".ss",
                     ".wks",
-		    ".bib",
+                    ".bib",
                     ".pco"
                 ],
                 "configuration": "./cobol.configuration.json"
@@ -1033,7 +1033,7 @@
     },
     "devDependencies": {
         "@types/mocha": "^7.0.1",
-        "@types/node": "^13.5.3",
+        "@types/node": "^13.7.0",
         "tslint": "^6.0.0",
         "typescript": "^3.7.5",
         "vscode": "^1.1.36"
@@ -1050,6 +1050,6 @@
         "trie-search": "^1.2.11",
         "typescript-collections": "^1.3.3",
         "typescript-map": "^0.0.7",
-        "vsce": "^1.71.0"
+        "vsce": "^1.72.0"
     }
 }
