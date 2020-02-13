@@ -24,7 +24,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
-import { COBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc } from './taskdefs';
+import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_cobol, getTaskForCOBOL } from './taskdefs';
 
 const util = require('util');
 var which = require('which');
@@ -291,9 +291,37 @@ export function activate(context: ExtensionContext) {
             },
             resolveTask(task: Task): Task | undefined {
                 if (task) {
-                    const definition: COBCTaskDefinition = <any>task.definition;
+                    const definition: GnuCOBCTaskDefinition = <any>task.definition;
                     if (definition.extraArguments || definition.syntaxCheck) {
                         return getTaskForCOBC(definition, definition.label, definition.syntaxCheck);
+                    }
+                    return task;
+                }
+                return undefined;
+            }
+
+        });
+
+        context.subscriptions.push(taskProvider4cobc);
+    }
+
+
+    let cobolLocation = which.sync('cobol.exe', {nothrow: true});
+    if (cobolLocation !== null) {
+        let cobolTaskPromise4cobol: Thenable<Task[]> | undefined = undefined;
+
+        const taskProvider4cobc = tasks.registerTaskProvider('cobc', {
+            provideTasks: () => {
+                if (!cobolTaskPromise4cobol) {
+                    cobolTaskPromise4cobol = getCOBOLTasks_for_cobol("cobol_syntax_check_with_mfcobol", true);
+                }
+                return cobolTaskPromise4cobol;
+            },
+            resolveTask(task: Task): Task | undefined {
+                if (task) {
+                    const definition: MFCOBOLTaskDefinition = <any>task.definition;
+                    if (definition.extraArguments || definition.syntaxCheck) {
+                        return getTaskForCOBOL(definition, definition.label, definition.syntaxCheck);
                     }
                     return task;
                 }

@@ -12,6 +12,8 @@
         "mvs",
         "mfcobol",
         "visualcobol",
+        "serverexpress",
+        "ocds",
         "gnucobol",
         "opencobol",
         "cobol-it",
@@ -299,7 +301,8 @@
                 "**/.vscode_cobol": true
             },
             "[COBOL]": {
-                "files.autoGuessEncoding": true,
+                "files.autoGuessEncoding": false,
+                "editor.renderIndentGuides": false,
                 "editor.autoIndent": "full",
                 "editor.insertSpaces": true,
                 "editor.formatOnType": true,
@@ -313,6 +316,7 @@
             },
             "[ACUCOBOL]": {
                 "editor.insertSpaces": true,
+                "editor.renderIndentGuides": false,
                 "files.autoGuessEncoding": false,
                 "editor.autoIndent": "full",
                 "editor.formatOnType": false,
@@ -326,7 +330,8 @@
             },
             "[OpenCOBOL]": {
                 "editor.insertSpaces": true,
-                "files.autoGuessEncoding": true,
+                "editor.renderIndentGuides": false,
+                "files.autoGuessEncoding": false,
                 "editor.formatOnType": false,
                 "editor.autoIndent": "full",
                 "editor.rulers": [
@@ -339,6 +344,7 @@
             },
             "[dir]": {
                 "editor.insertSpaces": true,
+                "editor.renderIndentGuides": false,
                 "files.autoGuessEncoding": false,
                 "editor.autoIndent": "none",
                 "editor.formatOnType": false,
@@ -348,9 +354,10 @@
             },
             "[JCL]": {
                 "files.autoGuessEncoding": false,
+                "editor.renderIndentGuides": false,
                 "editor.detectIndentation": false,
                 "editor.formatOnType": false,
-                "editor.autoIndent": "none",
+                "editor.autoIndent": "full",
                 "editor.rulers": [
                     71,
                     72,
@@ -359,6 +366,7 @@
             },
             "[hlasm]": {
                 "files.autoGuessEncoding": false,
+                "editor.renderIndentGuides": false,
                 "editor.detectIndentation": false,
                 "editor.formatOnType": false,
                 "editor.autoIndent": "full",
@@ -1003,6 +1011,28 @@
         "taskDefinitions": [
             {
                 "type": "cobc",
+                "required": [
+                    "extraArguments",
+                    "label",
+                    "syntaxCheck"
+                ],
+                "properties": {
+                    "extraArguments": {
+                        "type": "string",
+                        "description": "Extra command line arguments"
+                    },
+                    "syntaxCheck": {
+                        "type": "boolean",
+                        "description": "Syntax Check"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "label for task"
+                    }
+                }
+            },
+            {
+                "type": "mfcobol",
                 "required": [
                     "extraArguments",
                     "label",
