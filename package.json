@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.17",
+    "version": "6.0.19",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -65,7 +65,11 @@
         "onCommand:cobolplugin.dumpMetaData",
         "onCommand:cobolplugin.syntaxCheck",
         "onCommand:cobolplugin.processAllFilesInWorkspace",
-        "view:flat-source-view"
+        "view:flat-source-view",
+        "workspaceContains:**/.cbl",
+        "workspaceContains:**/.cpy",
+        "workspaceContains:**/.md",
+        "workspaceContains:**/.jcl"
     ],
     "main": "./out/extension",
     "license": "MIT",

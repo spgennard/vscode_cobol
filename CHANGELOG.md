@@ -1,8 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
-## Version - 6.0-6.0.16
+## Version - 6.0-6.0.19
  - More refinements
  - Adding the begins of "auto" task support
+ - Activate extension is workspace include cbl/cpy/md/jcl files to enable better source viewer startup
 
 ## Version - 5.3
  - Document experimental cobol editor feature
