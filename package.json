@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.12",
+    "version": "6.0.19",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -65,7 +65,11 @@
         "onCommand:cobolplugin.dumpMetaData",
         "onCommand:cobolplugin.syntaxCheck",
         "onCommand:cobolplugin.processAllFilesInWorkspace",
-        "view:flat-source-view"
+        "view:flat-source-view",
+        "workspaceContains:**/.cbl",
+        "workspaceContains:**/.cpy",
+        "workspaceContains:**/.md",
+        "workspaceContains:**/.jcl"
     ],
     "main": "./out/extension",
     "license": "MIT",
@@ -1063,15 +1067,15 @@
     },
     "devDependencies": {
         "@types/mocha": "^7.0.1",
-        "@types/node": "^13.7.1",
+        "@types/node": "^13.7.4",
         "tslint": "^6.0.0",
-        "typescript": "^3.7.5",
+        "typescript": "^3.8.2",
         "vscode": "^1.1.36"
     },
     "dependencies": {
         "which": "^2.0.2",
         "typescript-string-operations": "^1.3.2",
-        "@types/fs-extra": "^8.0.1",
+        "@types/fs-extra": "^8.1.0",
         "@types/minimatch": "^3.0.3",
         "detab": "^2.0.3",
         "lzjs": "1.3.0",
