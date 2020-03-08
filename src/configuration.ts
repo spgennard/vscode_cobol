@@ -55,7 +55,10 @@ export class VSCOBOLConfiguration {
     }
 
     public static getCachingSetting() : string {
-        return VSCOBOLConfiguration.config.cache_metadata;
+        if (workspace.workspaceFolders) {
+            return VSCOBOLConfiguration.config.cache_metadata;
+        }
+        return "off";
     }
 
     public static isCachingEnabled(): boolean {
