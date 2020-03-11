@@ -236,7 +236,7 @@
 		],
 		"description": "INSPECT CONVERTING",
 		"scope": "cobol,acucobol,opencobol,gnucobol"
-	},	
+	},
 	"inspect replacing": {
 		"prefix": "inspect",
 		"body": [
@@ -252,7 +252,7 @@
 		],
 		"description": "INSPECT REPLACING",
 		"scope": "cobol,acucobol,opencobol,gnucobol"
-	},	
+	},
 	"inspect tallying": {
 		"prefix": "inspect",
 		"body": [
@@ -358,7 +358,7 @@
 		],
 		"description": "MULTIPLY a BY y GIVING z",
 		"scope": "cobol,acucobol,opencobol,gnucobol"
-	},	
+	},
 	"perform": {
 		"prefix": "perform",
 		"body": [
@@ -374,7 +374,7 @@
 		],
 		"description": "PERFORM paragraph x TIMES",
 		"scope": "cobol,acucobol,opencobol,gnucobol"
-	},	
+	},
 	"perform-end-perform": {
 		"prefix": "perform",
 		"body": [
@@ -418,7 +418,7 @@
 		],
 		"description": "INLINE PERFORM VARYING",
 		"scope": "cobol,acucobol,opencobol,gnucobol"
-	},	
+	},
 	"IDENTIFICATION (CICS)": {
 		"prefix": "IDENTIFICATION",
 		"body": [
@@ -506,9 +506,9 @@
 			"       IDENTIFICATION DIVISION.",
 			"       PROGRAM-ID. ${1:${1:${TM_FILENAME/(.*)\\..+$/$1/}}}.",
 			"       AUTHOR. $2.",
-			"       INSTALLATION. ${3:where}.",
-			"       DATE-WRITTEN. ${4:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}.",
-			"       DATE-COMPILED.${5:$4}.",
+			"       INSTALLATION.  ${3:where}.",
+			"       DATE-WRITTEN.  ${4:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}.",
+			"       DATE-COMPILED. ${5:$4}.",
 			"       SECURITY.",
 			"       ENVIRONMENT DIVISION.",
 			"       CONFIGURATION SECTION.",
@@ -527,8 +527,7 @@
 			"        main-processing SECTION.",
 			"         mainline-paragraph.",
 			"             $0",
-			"             STOP RUN.",
-			"       END PROGRAM $1."
+			"             STOP RUN."
 		],
 		"description": "Template for mainframe",
 		"scope": "cobol"
@@ -600,7 +599,7 @@
 		],
 		"description": "SUBTRACT a FROM b GIVING c",
 		"scope": "cobol,acucobol,opencobol,gnucobol"
-	},	
+	},
 	"try": {
 		"prefix": "try",
 		"body": [
@@ -644,7 +643,7 @@
 		],
 		"description": "DISPLAY literal",
 		"scope": "cobol"
-	},	
+	},
 	"select-to-section": {
 		"prefix": "perform",
 		"body": [
@@ -832,7 +831,7 @@
 		],
 		"scope": "cobol"
 	},
-	
+
 	"local-storage section" :
 	{
 		"prefix" : "local-storage",
@@ -840,7 +839,7 @@
 			"local-storage section.",
 			"$0"
 		]
-	},	
+	},
 	"LINKAGE SECTION " :
 	{
 		"prefix" : "LINKAGE SECTION",
@@ -922,7 +921,7 @@
 		],
 		"scope": "cobol"
 	},
-	"<exception" : 
+	"<exception" :
 	{
 		"prefix" : "<exception",
 		"body" :[
