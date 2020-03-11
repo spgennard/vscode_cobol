@@ -1,3 +1,5 @@
+import { workspace } from "vscode";
+
 export enum outlineFlag {
     On = "on",
     Off = "off",
@@ -54,22 +56,28 @@ export class COBOLSettings implements ICOBOLSettings {
 
 export class COBOLSettingsHelper {
     public static isCachingEnabled(setting: ICOBOLSettings): boolean {
-        var cacheEnum = setting.cache_metadata;
-    
-        switch (cacheEnum) {
-            case "on": return true;
-            case "partial": return true;
-            case "off": return false;
+        if (workspace.workspaceFolders)
+        {
+            var cacheEnum = setting.cache_metadata;
+
+            switch (cacheEnum) {
+                case "on": return true;
+                case "partial": return true;
+                case "off": return false;
+            }
         }
         return false;
     }
-    
+
     public static isCachingSetToON(setting: ICOBOLSettings): boolean {
-        var cacheEnum = setting.cache_metadata;
-        switch (cacheEnum) {
-            case "on": return true;
-            case "partial": return false;
-            case "off": return false;
+        if (workspace.workspaceFolders)
+        {
+            var cacheEnum = setting.cache_metadata;
+            switch (cacheEnum) {
+                case "on": return true;
+                case "partial": return false;
+                case "off": return false;
+            }
         }
         return false;
     }

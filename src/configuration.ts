@@ -25,7 +25,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.tabstops = getTabStops();
         VSCOBOLConfiguration.config.linter = geLinter();
     }
-    
+
     public static get(): ICOBOLSettings {
         return VSCOBOLConfiguration.config;
     }
@@ -53,22 +53,27 @@ export class VSCOBOLConfiguration {
     public static getFuzzyVariableSearch() : boolean {
         return VSCOBOLConfiguration.config.fuzzy_variable_search;
     }
-    
+
     public static getCachingSetting() : string {
-        return VSCOBOLConfiguration.config.cache_metadata;
+        if (workspace.workspaceFolders) {
+            return VSCOBOLConfiguration.config.cache_metadata;
+        }
+        return "off";
     }
 
     public static isCachingEnabled(): boolean {
-        var cacheEnum = getCachingSetting();
-    
-        switch (cacheEnum) {
-            case "on": return true;
-            case "partial": return true;
-            case "off": return false;
+        if (workspace.workspaceFolders) {
+            var cacheEnum = getCachingSetting();
+
+            switch (cacheEnum) {
+                case "on": return true;
+                case "partial": return true;
+                case "off": return false;
+            }
         }
         return false;
     }
-    
+
     public static isCachingSetToON(): boolean {
         var cacheEnum = getCachingSetting();
         switch (cacheEnum) {
@@ -78,11 +83,11 @@ export class VSCOBOLConfiguration {
         }
         return false;
     }
-    
+
     public static isOutlineEnabled(): outlineFlag {
         return VSCOBOLConfiguration.config.outline;
     }
-    
+
     public static getCopybookdirs_defaults(): string[] {
         return VSCOBOLConfiguration.config.copybookdirs;
     }
@@ -102,7 +107,7 @@ function getBoolean(configSection: string, defaultValue: boolean) : boolean {
     if (expEnabled === undefined || expEnabled === null) {
         expEnabled = defaultValue;
     }
-    return expEnabled; 
+    return expEnabled;
 }
 
 function getExperimentialFeatures(): boolean {
@@ -132,7 +137,7 @@ function getCopybookNestedInSection(): boolean {
 }
 
 function geLinter(): boolean {
-    return getBoolean('linter', false); 
+    return getBoolean('linter', false);
 }
 
 function getFuzzyVariableSearch(): boolean {
@@ -226,4 +231,3 @@ function getTabStops(): number[] {
     }
     return tabStops;
 }
-

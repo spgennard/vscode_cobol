@@ -93,8 +93,8 @@ function activateLogChannel() {
         logMessage("Extension Information:");
         logMessage(" Extension path    : " + thisExtension.extensionPath);
         logMessage(" Version           : " + thisExtension.packageJSON.version);
-        logMessage(" Caching           : " + VSCOBOLConfiguration.getCachingSetting());
         if (VSCOBOLConfiguration.isCachingEnabled()) {
+            logMessage(" Caching           : " + VSCOBOLConfiguration.getCachingSetting());
             logMessage("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
         }
 
@@ -518,6 +518,3 @@ export function logMessage(message: string, ...parameters: any[]) {
     COBOLOutputChannel.appendLine(message);
     //console.log(message + "\n");
 }
-
-
-
