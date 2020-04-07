@@ -291,6 +291,11 @@ This can be activated by setting the flag coboleditor.experimential_features in 
 and looks like:
 
  ![hover](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/hover.png)
+
+## Online resources
+
+- [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
+
 ## Shortcuts
 
 
