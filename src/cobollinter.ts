@@ -33,11 +33,11 @@ export class CobolLinterActionFixer implements CodeActionProvider {
     public async insertIgnoreCommentLine(docUri: vscode.Uri, offset: number, code: string) {
         await vscode.window.showTextDocument(docUri);
         let w = vscode.window.activeTextEditor;
-        
+
         if (w !== undefined && code !== undefined) {
             var pos = w.document.positionAt(offset);
             w.edit(edit => {
-                edit.insert(pos,"       *> cobol-lint "+code+"\n");
+                edit.insert(pos,"      *> cobol-lint "+code+"\n");
             });
         }
     }
@@ -164,7 +164,7 @@ export class CobolLinterProvider implements ICommentCallback{
     }
 
     private cobolLintLiteral = "cobol-lint";
-    
+
     processComment(commentLine: string): void {
         let startOfComment:number=commentLine.indexOf("*>");
         if (startOfComment !== undefined && startOfComment !== -1) {
@@ -181,10 +181,10 @@ export class CobolLinterProvider implements ICommentCallback{
                         this.ignoreUnusedSymbol.set(symbol.toLocaleLowerCase(), symbol);
                     });
                 }
-                
+
 
             }
-            
+
         }
     }
 
