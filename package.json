@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.0.23",
+    "version": "6.1.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -241,6 +241,11 @@
                     "title": "Enable COBOL tab/detab key",
                     "default": true
                 },
+                "coboleditor.comment_line": {
+                    "type": "boolean",
+                    "title": "Enable COBOL comment key",
+                    "default": true
+                },
                 "coboleditor.outline": {
                     "markdownDescription": "Configure or disable outline for COBOL",
                     "type": "string",
@@ -274,6 +279,12 @@
                     "type": "boolean",
                     "title": "Enable experimential explorer source view",
                     "description": "Enable experimential explorer source view",
+                    "default": true
+                },
+                "coboleditor.line_comment": {
+                    "type": "boolean",
+                    "title": "Replace stanard comment in/out with COBOL specific",
+                    "description": "Replace stanard comment in/out with COBOL specific",
                     "default": true
                 }
             }
@@ -608,6 +619,10 @@
                 "title": "Remove a tab"
             },
             {
+                "command": "cobolplugin.commentline",
+                "title": "Comment line"
+            },
+            {
                 "command": "cobolplugin.change_lang_to_acu",
                 "title": "COBOL: Select ACUCOBOL-GT language"
             },
@@ -803,6 +818,21 @@
                 "key": "shift+tab",
                 "command": "cobolplugin.revtab",
                 "when": "editorLangId == OpenCOBOL && !inSnippetMode"
+            },
+            {
+                "key" : "ctrl+/",
+                "command": "cobolplugin.commentline",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key" : "ctrl+/",
+                "command": "cobolplugin.commentline",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key" : "ctrl+/",
+                "command": "cobolplugin.commentline",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
             },
             {
                 "key": "alt+shift+a",

@@ -24,6 +24,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.copybookexts = getCopybookExts();
         VSCOBOLConfiguration.config.tabstops = getTabStops();
         VSCOBOLConfiguration.config.linter = geLinter();
+        VSCOBOLConfiguration.config.line_comment = getline_comment();
     }
 
     public static get(): ICOBOLSettings {
@@ -36,6 +37,10 @@ export class VSCOBOLConfiguration {
 
     public static isTabstopEnabled(): boolean {
         return VSCOBOLConfiguration.config.enable_tabstop;
+    }
+
+    public static isLineCommentEnabled(): boolean {
+        return VSCOBOLConfiguration.config.line_comment;
     }
 
     public static getPreParseLineLimit() : number {
@@ -127,6 +132,9 @@ function getPreParseLineLimit(): number {
     return lineLimit;
 }
 
+function getline_comment() : boolean {
+    return getBoolean("line_comment", false);
+}
 
 function getColumBParsing(): boolean {
     return getBoolean('ignorecolumn_b_onwards', false);

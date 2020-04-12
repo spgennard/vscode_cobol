@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version - 6.1.0
+ - Add COBOL line comment, it should be better than the standard vscode line based commentor
+
 ## Version - 6.0-6.0.19
  - More refinements
  - Adding the begins of "auto" task support

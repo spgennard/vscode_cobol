@@ -21,6 +21,7 @@ export interface ICOBOLSettings {
     copybookexts: string[];
     tabstops: number[];
     linter: boolean;
+    line_comment: boolean;
 }
 
 
@@ -37,6 +38,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public outline: outlineFlag;
     public copybookdirs: string[];
     public linter: boolean;
+    public line_comment: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -51,6 +53,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.copybookexts = [];
         this.tabstops = [];
         this.linter = false;
+        this.line_comment = false;
     }
 }
 

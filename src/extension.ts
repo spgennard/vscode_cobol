@@ -1,9 +1,10 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri, tasks, Task, ShellExecution } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, DecorationOptions, Range, ExtensionContext, languages, TextDocument, TextEditor, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, Disposable, Uri, tasks, Task, ShellExecution, TextEditorSelectionChangeKind } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
+import * as commenter from './commenter';
 import { DocComment } from './formatting/DocComment';
 import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
@@ -25,6 +26,8 @@ import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_cobol, getTaskForCOBOL } from './taskdefs';
+import { configure } from 'vscode/lib/testrunner';
+import { cpus } from 'os';
 
 const util = require('util');
 var which = require('which');
@@ -163,7 +166,6 @@ export function activate(context: ExtensionContext) {
         } else {
             commands.executeCommand("tab");
         }
-
     });
 
     var unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
@@ -171,6 +173,14 @@ export function activate(context: ExtensionContext) {
             tabstopper.processTabKey(false);
         } else {
             commands.executeCommand("outdent");
+        }
+    });
+
+    var commentLine = commands.registerCommand('cobolplugin.commentline', function () {
+        if (VSCOBOLConfiguration.isLineCommentEnabled()) {
+            commenter.processCommentLine();
+        } else {
+            commands.executeCommand("editor.action.commentLine");
         }
     });
 
@@ -342,6 +352,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(move2anybackwardsCommand);
     context.subscriptions.push(tabCommand);
     context.subscriptions.push(unTabCommand);
+    context.subscriptions.push(commentLine);
+
     context.subscriptions.push(changeSourceFormat);
 
     context.subscriptions.push(changeLanguageToAcu);
