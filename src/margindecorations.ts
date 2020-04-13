@@ -90,7 +90,7 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
-function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
+export function getSourceFormat(doc: TextDocument): ESourceFormat {
 
     /* just use the extension for jcl */
     switch (doc.languageId.toLowerCase()) {
@@ -102,24 +102,19 @@ function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
             return ESourceFormat.jcl;
     }
 
-    let filesFilter = getFixedFilenameConfiguration();
-    if (filesFilter.length >= 1) {
-        let docFilename: string = doc.fileName;
-        for (let i = 0; i < filesFilter.length; i++) {
-            let filter: IEditorMarginFiles = filesFilter[i];
-
-            if (minimatch(docFilename, filter.pattern, { nocase: true })) {
-                return ESourceFormat[filter.sourceformat];
-            }
-        }
-    }
-
     let linesWithJustNumbers = 0;
     let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
+    let defFormat = ESourceFormat.unknown;
 
     for (let i = 0; i < maxLines; i++) {
         let lineText = doc.lineAt(i);
         let line = lineText.text.toLocaleLowerCase();
+
+        let newcommentPos = line.indexOf("*>");
+        if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown)
+        {
+            defFormat=ESourceFormat.variable;
+        }
 
         let pos4sourceformat_after = 0;
         for (let isf = 0; isf < inline_sourceformat.length; isf++) {
@@ -156,7 +151,20 @@ function isActivateForThisDocument(doc: TextDocument): ESourceFormat {
     if (linesWithJustNumbers > 7) {
         return ESourceFormat.free;
     }
-    return ESourceFormat.unknown;
+
+    let filesFilter = getFixedFilenameConfiguration();
+    if (filesFilter.length >= 1) {
+        let docFilename: string = doc.fileName;
+        for (let i = 0; i < filesFilter.length; i++) {
+            let filter: IEditorMarginFiles = filesFilter[i];
+
+            if (minimatch(docFilename, filter.pattern, { nocase: true })) {
+                return ESourceFormat[filter.sourceformat];
+            }
+        }
+    }
+
+    return defFormat;
 }
 
 export enum TextLanguage {
@@ -219,7 +227,7 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
 
     if (textLanguage === TextLanguage.COBOL) {
         /* does it include sourceformat"free"? */
-        let sourceformatStyle: ESourceFormat = isActivateForThisDocument(doc);
+        let sourceformatStyle: ESourceFormat = getSourceFormat(doc);
         enableMarginStatusBar(sourceformatStyle);
 
         if (enabledViaWorkspace4cobol) {
@@ -271,4 +279,3 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
     }
     activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
 }
-

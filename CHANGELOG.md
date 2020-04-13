@@ -1,7 +1,9 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
-## Version - 6.1.0
+## Version - 6.1.0-6.1.1
  - Add COBOL line comment, it should be better than the standard vscode line based commentor
+ - If "*>" is found in header of source mark it as sourceformat variable internally
+ - Change line comment to handle sourceformat variable better
 
 ## Version - 6.0-6.0.19
  - More refinements
