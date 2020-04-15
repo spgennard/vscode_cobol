@@ -108,16 +108,18 @@ export class COBOLToken {
     public endLine: number;
     public endColumn: number;
     public inProcedureDivision: boolean;
+    public extraInformation: string;
 
     public childTokens: COBOLToken[] = [];
 
-    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined, false);
+    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined, false, "");
 
     public getEndDelimiterToken(): COBOLToken {
-        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken, this.inProcedureDivision);
+        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken, this.inProcedureDivision,"");
     }
 
-    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string, parentToken: COBOLToken | undefined, inProcedureDivision:boolean) {
+    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string,
+                      parentToken: COBOLToken | undefined, inProcedureDivision:boolean, extraInformation:string) {
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
@@ -128,7 +130,7 @@ export class COBOLToken {
         this.endLine = this.endColumn = 0;
         this.parentToken = parentToken;
         this.inProcedureDivision = inProcedureDivision;
-
+        this.extraInformation = extraInformation;
         if (this.tokenName.length !== 0) {
             /* ensure we don't have any odd start columns */
             if (this.startColumn < 0) {
@@ -447,8 +449,9 @@ export default class COBOLQuickParse {
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
-        description: string, parentToken: COBOLToken | undefined): COBOLToken {
-        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, this.inProcedureDivision);
+        description: string, parentToken: COBOLToken | undefined,
+        extraInformation: string = ""): COBOLToken {
+        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, this.inProcedureDivision, extraInformation);
         this.tokensInOrder.push(ctoken);
         return ctoken;
     }
@@ -1051,7 +1054,7 @@ export default class COBOLQuickParse {
                     if ((prevTokenLower === "fd" || prevTokenLower === "sd") && !this.isValidKeyword(currentLower)) {
                         let trimToken = this.trimLiteral(current);
                         if (this.isValidLiteral(currentLower)) {
-                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision);
+                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision,prevTokenLower);
                             this.addVariableOrConstant(currentLower, variableToken);
                         }
                         continue;
