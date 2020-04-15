@@ -37,6 +37,8 @@ export enum COBOLTokenStyle {
     EndDelimiter = "EndDelimiter",
     Exec = "Exec",
     EndExec = "EndExec",
+    Declaratives = "Declaratives",
+    EndDeclaratives = "EndDeclaratives",
     Null = "Null"
 }
 
@@ -283,6 +285,7 @@ export default class COBOLQuickParse {
     public sourceFileId: number;
 
     inProcedureDivision: boolean;
+    inDeclaratives: boolean;
     pickFields: boolean;
 
     currentToken: COBOLToken;
@@ -314,6 +317,7 @@ export default class COBOLQuickParse {
         this.filename = path.normalize(filename);
         this.lastModifiedTime = stat.mtimeMs;
         this.inProcedureDivision = false;
+        this.inDeclaratives = false;
         this.pickFields = false;
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
@@ -796,6 +800,15 @@ export default class COBOLQuickParse {
                     continue;
                 }
 
+                if (prevTokenLower === "end" && currentLower === "declaratives") {
+                    this.currentToken = this.newCOBOLToken(COBOLTokenStyle.EndDeclaratives, lineNumber, line, prevToken, "", this.currentDivision);
+                    this.inDeclaratives = false;
+                    continue;
+                }
+
+                if (this.inDeclaratives) {
+                    continue;
+                }
                 // handle sections)
                 if (this.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
                     if (prevTokenLower === "declare") {
@@ -953,6 +966,13 @@ export default class COBOLQuickParse {
 
                     this.currentMethod = COBOLToken.Null;
                     this.pickFields = false;
+                    continue;
+                }
+
+
+                if (currentLower === "declaratives") {
+                    this.currentToken = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, prevToken, current, this.currentDivision);
+                    this.inDeclaratives = true;
                     continue;
                 }
 
@@ -1314,7 +1334,7 @@ export class COBOLSymbolTableHelper {
                 case COBOLTokenStyle.MethodId:
                     InMemoryGlobalCachesHelper.addMethodSymbol(st.fileName, token.tokenName, token.startLine);
                     break;
-            }
+                }
         }
         //logCOBOLChannelLine("- Creating symbol table for " + st.fileName + ", symbols found: " + qp.tokensInOrder.length + " -> " + (performance.now() - startTime).toFixed(2));
         return st;
