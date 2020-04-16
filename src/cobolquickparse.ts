@@ -1055,7 +1055,10 @@ export default class COBOLQuickParse {
                         if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
-                                const style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
+                                let style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
+                                if (nextTokenLower === 'constant') {
+                                    style = COBOLTokenStyle.Constant;
+                                }
                                 let constantToken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision);
                                 this.addVariableOrConstant(currentLower, constantToken);
                             }
