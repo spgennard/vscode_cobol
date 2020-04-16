@@ -129,6 +129,9 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                     if (includePara === false) {
                         break;
                     }
+                case COBOLTokenStyle.DeclarativesSection:
+                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                    break;
                 case COBOLTokenStyle.Section:
                     if (includeSections === false) {
                         break;

@@ -39,6 +39,7 @@ export enum COBOLTokenStyle {
     EndExec = "EndExec",
     Declaratives = "Declaratives",
     EndDeclaratives = "EndDeclaratives",
+    DeclarativesSection = "DeclarativesSection",
     Null = "Null"
 }
 
@@ -295,6 +296,7 @@ export default class COBOLQuickParse {
     currentDivision: COBOLToken;
     currentSection: COBOLToken;
     procedureDivision: COBOLToken;
+    declaratives: COBOLToken;
     parseColumnBOnwards: boolean; // = this.getColumBParsing();
 
     captureDivisions: boolean;
@@ -328,6 +330,7 @@ export default class COBOLQuickParse {
         this.currentClass = COBOLToken.Null;
         this.currentMethod = COBOLToken.Null;
         this.currentRegion = COBOLToken.Null;
+        this.declaratives = COBOLToken.Null;
         this.captureDivisions = true;
         this.numberTokensInHeader = 0;
         this.workingStorageRelatedTokens = 0;
@@ -804,12 +807,19 @@ export default class COBOLQuickParse {
                 }
 
                 if (prevTokenLower === "end" && currentLower === "declaratives") {
-                    this.currentToken = this.newCOBOLToken(COBOLTokenStyle.EndDeclaratives, lineNumber, line, prevToken, "", this.currentDivision);
+                    this.declaratives.endLine = lineNumber;
+                    this.declaratives.endColumn = line.indexOf(tcurrent);
+                    this.tokensInOrder.push(this.declaratives);
                     this.inDeclaratives = false;
+                    this.declaratives = COBOLToken.Null;
                     continue;
                 }
 
+                // only include sections in the declaratives area
                 if (this.inDeclaratives) {
+                    if (currentLower === 'section') {
+                        this.newCOBOLToken(COBOLTokenStyle.DeclarativesSection, lineNumber, line, prevToken, prevToken, this.currentDivision);
+                    }
                     continue;
                 }
                 // handle sections)
@@ -974,8 +984,10 @@ export default class COBOLQuickParse {
 
 
                 if (currentLower === "declaratives") {
-                    this.currentToken = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, prevToken, current, this.currentDivision);
+                    this.declaratives = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, prevToken, current, this.currentDivision);
                     this.inDeclaratives = true;
+                    this.currentDivision.childTokens.push(this.declaratives);
+                    this.tokensInOrder.pop();       /* only interested it at the end */
                     continue;
                 }
 
