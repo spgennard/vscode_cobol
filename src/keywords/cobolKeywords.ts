@@ -129,6 +129,7 @@ export const cobolKeywords: string[] = [
 	"end-compute",
 	"end-delete",
 	"end-divide",
+	"end-display",
 	"end-evaluate",
 	"end-exec",
 	"end-if",
@@ -498,6 +499,7 @@ export const cobolStorageKeywords: string[] = [
 	"end-chain",
 	"end-compute",
 	"end-delete",
+	"end-display",
 	"end-divide",
 	"end-evaluate",
 	"end-exec",
@@ -597,9 +599,8 @@ cobolStorageKeywords.forEach(function (value) {
 		tmpDict3.setValue(value,value);
 	});
 
-	
+
 
 export const cobolKeywordDictionary: Collections.Dictionary<string, string> = tmpDict;
 export const cobolProcedureKeywordDictionary: Collections.Dictionary<string, string> = tmpDict2;
 export const cobolStorageKeywordDictionary: Collections.Dictionary<string, string> = tmpDict3;
-
