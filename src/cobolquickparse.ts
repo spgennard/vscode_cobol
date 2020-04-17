@@ -298,7 +298,7 @@ export default class COBOLQuickParse {
     procedureDivision: COBOLToken;
     declaratives: COBOLToken;
     parseColumnBOnwards: boolean; // = this.getColumBParsing();
-
+    current01Group: COBOLToken;
     captureDivisions: boolean;
     currentClass: COBOLToken;
     currentMethod: COBOLToken;
@@ -331,6 +331,7 @@ export default class COBOLQuickParse {
         this.currentMethod = COBOLToken.Null;
         this.currentRegion = COBOLToken.Null;
         this.declaratives = COBOLToken.Null;
+        this.current01Group = COBOLToken.Null;
         this.captureDivisions = true;
         this.numberTokensInHeader = 0;
         this.workingStorageRelatedTokens = 0;
@@ -1059,8 +1060,29 @@ export default class COBOLQuickParse {
                                 if (nextTokenLower === 'constant') {
                                     style = COBOLTokenStyle.Constant;
                                 }
-                                let constantToken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision);
-                                this.addVariableOrConstant(currentLower, constantToken);
+                                let extraInfo = prevToken;
+                                if (prevToken === '01' || prevToken === '1') {
+                                    if (nextTokenLower.length === 0) {
+                                        extraInfo += "-GROUP";
+                                    } else {
+
+                                    }
+                                }
+                                let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision, extraInfo);
+                                this.addVariableOrConstant(currentLower, ctoken);
+                                if (prevToken === '01' || prevToken === '1') {
+                                    if (nextTokenLower.length === 0) {
+                                        this.current01Group = ctoken;
+                                    } else {
+                                        this.current01Group = COBOLToken.Null;
+                                    }
+                                }
+
+                                if (this.current01Group !== COBOLToken.Null) {
+                                    this.current01Group.endLine = ctoken.startLine;
+                                    this.current01Group.endColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                }
+
                             }
                         }
                         continue;

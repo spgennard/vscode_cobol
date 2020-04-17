@@ -159,7 +159,11 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                         symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
                     }
                     else {
-                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
+                        if (token.extraInformation === '01-GROUP' || token.extraInformation === '1-GROUP')  {
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
+                        } else {
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
+                        }
                     }
                     break;
                 case COBOLTokenStyle.Constant:
