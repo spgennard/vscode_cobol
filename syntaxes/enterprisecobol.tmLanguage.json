@@ -176,7 +176,7 @@
 			"name": "keyword.other.cobol"
 		},
 		{
-			"match": "(?<![-_])(?i:footing|next|of|input|output|i-o|reversed|extend|file|error|exception|overflow|off|on|proceed|procedures|procedure|through|eop|to|for|giving|into|by|remainder|also|numeric|depending|converting|replacing|test|after|before|all|default|leading|first|recursive|initialized|global|initial|common|reference|content|are|renames|volatile|values|omitted|bottom|top|value|ascending|descending|key|invalid|with|no|advancing|page|up|down|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|status|upon|lines|linage|position|in|at|end)(?=\\s|\\.|,)",
+			"match": "(?<![-_])(?i:footing|next|of|input|output|i-o|reversed|extend|file|error|exception|overflow|off|on|proceed|procedures|procedure|through|eop|to|for|giving|into|by|remainder|also|numeric|depending|converting|replacing|test|after|before|all|default|leading|first|recursive|initialized|global|initial|common|reference|content|are|renames|volatile|values|omitted|bottom|top|value|ascending|descending|key|invalid|with|no|advancing|page|up|down|lock|length|delimited|count|delimiter|redefines|from\\s+console|from\\s+day\\s+yyyyddd|from\\s+day|from\\s+time|from\\s+day-of-week|from\\s+day\\s+yyyyddd|from\\s+date\\s+yyyymmdd|from\\s+date|from|status|upon|lines|columns|linage|position|in|at|end)(?=\\s|\\.|,)",
 			"name": "keyword.identifers.cobol"
 		},
 		{

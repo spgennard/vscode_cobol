@@ -287,6 +287,8 @@ export default class COBOLQuickParse {
     public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
+    skipToDot:boolean = false;
+
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
     pickFields: boolean;
@@ -779,6 +781,17 @@ export default class COBOLQuickParse {
                     token.endsWithDot = false;
                 }
 
+                // if skiptodot and not the end of the statement.. swallow
+                if (this.skipToDot && endWithDot === false) {
+                    continue;
+                }
+
+                // reset
+                if (this.skipToDot && endWithDot === true) {
+                    this.skipToDot = false;
+                }
+
+
                 const current: string = tcurrent;
                 const currentLower: string = tcurrentLower;
                 const nextToken = token.nextToken;
@@ -843,6 +856,7 @@ export default class COBOLQuickParse {
 
                     this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.sections.set(prevTokenLower, this.currentSection);
+                    this.current01Group = COBOLToken.Null;
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
@@ -1064,14 +1078,17 @@ export default class COBOLQuickParse {
                                 if (prevToken === '01' || prevToken === '1') {
                                     if (nextTokenLower.length === 0) {
                                         extraInfo += "-GROUP";
-                                    } else {
-
+                                    }
+                                    else if (this.currentSection.tokenNameLower === 'report')
+                                    {
+                                        extraInfo += "-GROUP";
                                     }
                                 }
                                 let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision, extraInfo);
                                 this.addVariableOrConstant(currentLower, ctoken);
                                 if (prevToken === '01' || prevToken === '1') {
-                                    if (nextTokenLower.length === 0) {
+                                    if (nextTokenLower.length === 0 ||
+                                        (this.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
                                         this.current01Group = ctoken;
                                     } else {
                                         this.current01Group = COBOLToken.Null;
@@ -1088,11 +1105,18 @@ export default class COBOLQuickParse {
                         continue;
                     }
 
-                    if ((prevTokenLower === "fd" || prevTokenLower === "sd") && !this.isValidKeyword(currentLower)) {
+                    if ((prevTokenLower === "fd"
+                         || prevTokenLower === "sd"
+                         || prevTokenLower === "rd")
+                         && !this.isValidKeyword(currentLower)) {
                         let trimToken = this.trimLiteral(current);
                         if (this.isValidLiteral(currentLower)) {
                             let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision,prevTokenLower);
                             this.addVariableOrConstant(currentLower, variableToken);
+                        }
+
+                        if (prevTokenLower === "rd") {
+                            this.skipToDot = true;
                         }
                         continue;
                     }

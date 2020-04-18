@@ -1,11 +1,12 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
-## Version - 6.1.0-6.1.3
+## Version - 6.1.0-6.1.8
  - Add COBOL line comment, it should be better than the standard vscode line based commentor
  - If "*>" is found in header of source mark it as sourceformat variable internally
  - Change line comment to handle sourceformat variable better
  - add DECLARATIVES marker under proc div in outline view
  - mark sd/fd with the file icon in outline view
+ - add report writer section into outline view
 
 ## Version - 6.0-6.0.19
  - More refinements
