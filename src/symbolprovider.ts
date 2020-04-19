@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { COBOLTokenStyle, splitArgument, COBOLToken } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
-import { outlineFlag} from './iconfiguration';
+import { outlineFlag } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
@@ -101,86 +101,91 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
         }
 
         for (var i = 0; i < sf.tokensInOrder.length; i++) {
-            let token:COBOLToken = sf.tokensInOrder[i];
+            let token: COBOLToken = sf.tokensInOrder[i];
 
-            let srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                new vscode.Position(token.endLine, token.endColumn));
+            try {
+                let srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                    new vscode.Position(token.endLine, token.endColumn));
 
-            let lrange = new vscode.Location(ownerUri, srange);
+                let lrange = new vscode.Location(ownerUri, srange);
 
-            let container = token.parentToken !== undefined ? token.parentToken.description : "";
+                let container = token.parentToken !== undefined ? token.parentToken.description : "";
 
-            switch (token.tokenType) {
-                case COBOLTokenStyle.ClassId:
-                case COBOLTokenStyle.ProgramId:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Class, container, lrange));
-                    break;
-                case COBOLTokenStyle.CopyBook:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
-                    break;
-                case COBOLTokenStyle.Declaratives:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
-                    break;
-
-                case COBOLTokenStyle.Division:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
-                    break;
-                case COBOLTokenStyle.Paragraph:
-                    if (includePara === false) {
+                switch (token.tokenType) {
+                    case COBOLTokenStyle.ClassId:
+                    case COBOLTokenStyle.ProgramId:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Class, container, lrange));
                         break;
-                    }
-                case COBOLTokenStyle.DeclarativesSection:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
-                    break;
-                case COBOLTokenStyle.Section:
-                    if (includeSections === false) {
-                        break;
-                    }
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
-                    break;
-                case COBOLTokenStyle.EntryPoint:
-                case COBOLTokenStyle.FunctionId:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Function, container, lrange));
-                    break;
-                case COBOLTokenStyle.EnumId:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Enum, container, lrange));
-                    break;
-                case COBOLTokenStyle.InterfaceId:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Interface, container, lrange));
-                    break;
-                case COBOLTokenStyle.ValueTypeId:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
-                    break;
-                case COBOLTokenStyle.Variable:
-                    if (includeVars === false) {
-                        break;
-                    }
-                    if (token.extraInformation === 'fd' || token.extraInformation === 'sd' || token.extraInformation === 'rd')  {
+                    case COBOLTokenStyle.CopyBook:
                         symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
-                    }
-                    else {
-                        if (token.extraInformation === '01-GROUP' || token.extraInformation === '1-GROUP')  {
-                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
-                        } else {
-                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
-                        }
-                    }
-                    break;
-                case COBOLTokenStyle.Constant:
-                    if (includeVars === false) {
                         break;
-                    }
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constant, container, lrange));
-                    break;
-                case COBOLTokenStyle.MethodId:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
-                    break;
-                case COBOLTokenStyle.Property:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Property, container, lrange));
-                    break;
-                case COBOLTokenStyle.Constructor:
-                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
-                    break;
+                    case COBOLTokenStyle.Declaratives:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                        break;
+
+                    case COBOLTokenStyle.Division:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                        break;
+                    case COBOLTokenStyle.Paragraph:
+                        if (includePara === false) {
+                            break;
+                        }
+                    case COBOLTokenStyle.DeclarativesSection:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                        break;
+                    case COBOLTokenStyle.Section:
+                        if (includeSections === false) {
+                            break;
+                        }
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                        break;
+                    case COBOLTokenStyle.EntryPoint:
+                    case COBOLTokenStyle.FunctionId:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Function, container, lrange));
+                        break;
+                    case COBOLTokenStyle.EnumId:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Enum, container, lrange));
+                        break;
+                    case COBOLTokenStyle.InterfaceId:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Interface, container, lrange));
+                        break;
+                    case COBOLTokenStyle.ValueTypeId:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
+                        break;
+                    case COBOLTokenStyle.Variable:
+                        if (includeVars === false) {
+                            break;
+                        }
+                        if (token.extraInformation === 'fd' || token.extraInformation === 'sd' || token.extraInformation === 'rd') {
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
+                        }
+                        else {
+                            if (token.extraInformation === '01-GROUP' || token.extraInformation === '1-GROUP') {
+                                symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
+                            } else {
+                                symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
+                            }
+                        }
+                        break;
+                    case COBOLTokenStyle.Constant:
+                        if (includeVars === false) {
+                            break;
+                        }
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constant, container, lrange));
+                        break;
+                    case COBOLTokenStyle.MethodId:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                        break;
+                    case COBOLTokenStyle.Property:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Property, container, lrange));
+                        break;
+                    case COBOLTokenStyle.Constructor:
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
+                        break;
+                }
+            }
+            catch (e) {
+                console.log("Failed "+e+" on "+JSON.stringify(token));
             }
         }
         return symbols;
