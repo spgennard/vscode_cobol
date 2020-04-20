@@ -106,7 +106,7 @@ export class COBOLToken {
     public tokenName: string;
     public tokenNameLower: string;
     public description: string;
-    public parentToken: COBOLToken | undefined;
+    public parentToken: COBOLToken|undefined;
     public endLine: number;
     public endColumn: number;
     public inProcedureDivision: boolean;
@@ -121,7 +121,7 @@ export class COBOLToken {
     }
 
     public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string,
-        parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation: string) {
+        parentToken: COBOLToken|undefined, inProcedureDivision: boolean, extraInformation: string) {
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
@@ -371,7 +371,6 @@ export default class COBOLQuickParse {
         this.sourceReferences = sourceReferences;
         let prevToken: Token = Token.Blank;
 
-
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
 
         if (sourceReferences !== undefined) {
@@ -417,7 +416,7 @@ export default class COBOLQuickParse {
             /* if we have items that could be in a data division */
 
             if (this.procedureDivisionRelatedTokens !== 0 && this.procedureDivisionRelatedTokens > this.workingStorageRelatedTokens) {
-                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure", "Division", "Procedure Division (CopyBook)", this.currentDivision);
+                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.procedureDivision = fakeDivision;
                 this.pickFields = false;
@@ -425,7 +424,7 @@ export default class COBOLQuickParse {
                 this.sourceLooksLikeCOBOL = true;
             }
             else if ((this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0)) {
-                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data", "Division", "Data Division (CopyBook)", this.currentDivision);
+                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.pickFields = true;
                 this.inProcedureDivision = false;
@@ -930,7 +929,7 @@ export default class COBOLQuickParse {
                             prevTokenLower === 'screen' ||
                             prevTokenLower === 'linkage') {
 
-                            this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data", "Division", "Data Division (Optional)", this.currentDivision);
+                            this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data Division", "Data", "Data Division (Optional)", this.currentDivision);
                         }
                     }
 
@@ -952,7 +951,7 @@ export default class COBOLQuickParse {
 
                 // handle divisions
                 if (this.captureDivisions && prevTokenLower.length !== 0 && currentLower === "division") {
-                    this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, line, prevPlusCurrent, prevPlusCurrent, COBOLToken.Null);
+                    this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, line, prevToken, prevPlusCurrent, COBOLToken.Null);
 
                     if (prevTokenLower === "procedure") {
                         this.inProcedureDivision = true;
@@ -976,14 +975,14 @@ export default class COBOLQuickParse {
                 // handle program-id
                 if (prevTokenLower === "program-id" && current.length !== 0) {
                     let trimmedCurrent = this.trimLiteral(current);
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.programs.push(ctoken);
                     this.callTargets.set(trimmedCurrent, ctoken);
 
                     // So we don't have any division?
-                    if (this.currentDivision === COBOLToken.Null) {
-                        this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Identification", "Division", "Identification Division (Optional)", this.currentDivision);
-                    }
+                    // if (this.currentDivision === COBOLToken.Null) {
+                    //     this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Identification Division", "Identification","Identification Division (Optional)", this.currentDivision);
+                    // }
                     continue;
                 }
 
@@ -1096,6 +1095,8 @@ export default class COBOLQuickParse {
                         this.currentSection.endLine = lineNumber;
                         this.currentSection.endColumn = line.length;
                     }
+
+
                     this.currentDivision = COBOLToken.Null;
                     this.currentSection = COBOLToken.Null;
                     this.pickFields = false;

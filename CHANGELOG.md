@@ -7,6 +7,7 @@
  - add DECLARATIVES marker under proc div in outline view
  - mark sd/fd with the file icon in outline view
  - add report writer section into outline view
+ - rework the nesting supporting in the outline view
 
 ## Version - 6.0-6.0.19
  - More refinements
