@@ -10,6 +10,8 @@ import { TextAutocompleteCompletionItemProvider } from './textprovider';
 import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
+import { cobolKeywords } from "./keywords/cobolKeywords";
+
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 import * as path from 'path';
@@ -402,6 +404,10 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProvider = new TextAutocompleteCompletionItemProvider(jclStatements);
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
+
+    const completionCOBOLItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
+    const completionCOBOLItemProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, completionCOBOLItemProvider);
+    context.subscriptions.push(completionCOBOLItemProviderDisposible);
 
     if (VSCOBOLConfiguration.isOutlineEnabled()) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();

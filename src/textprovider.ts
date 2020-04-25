@@ -13,7 +13,7 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 		let i = 0;
 
 		/* in the future, this could be extended to add a pri rather than just use the position
-	     * the array 
+	     * the array
 		 */
 		this.words.addAll(keywords.map((value: string) => {
 			return {
@@ -42,8 +42,8 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 				key = tag.key.toUpperCase();
 			}
 
-			let completionItem = new CompletionItem(key, CompletionItemKind.Text);
-			
+			let completionItem = new CompletionItem(key, CompletionItemKind.Keyword);
+
 			// Set sortText to order the value when displaying them in the autocompletion menu
 			completionItem.sortText = this.stringPad(i.toString(), numberOfWordsInResults.toString().length, '0');
 			items.push(completionItem);
@@ -54,7 +54,7 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 
 		return items;
 	}
-	
+
 	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
 		let wordToComplete = '';
 		const range = document.getWordRangeAtPosition(position);
@@ -62,7 +62,7 @@ export class TextAutocompleteCompletionItemProvider implements CompletionItemPro
 			wordToComplete = document.getText(new Range(range.start, position));
 		}
 
-		return this.getKeywordsGivenPartialWord(wordToComplete, 10);
+		return this.getKeywordsGivenPartialWord(wordToComplete, 128);
 	}
 
 	private stringPad(input: string, padLength: number, padString: string): string {
