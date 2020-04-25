@@ -106,7 +106,7 @@ export class COBOLToken {
     public tokenName: string;
     public tokenNameLower: string;
     public description: string;
-    public parentToken: COBOLToken|undefined;
+    public parentToken: COBOLToken | undefined;
     public endLine: number;
     public endColumn: number;
     public inProcedureDivision: boolean;
@@ -121,7 +121,7 @@ export class COBOLToken {
     }
 
     public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string,
-        parentToken: COBOLToken|undefined, inProcedureDivision: boolean, extraInformation: string) {
+        parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation: string) {
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
@@ -257,6 +257,22 @@ class Token {
 
         this.tokenIndex++;
         this.setupToken();
+        return false;
+    }
+
+    public isTokenPresent(possibleToken: string): boolean {
+        let possibleTokenLower = possibleToken.toLocaleLowerCase();
+        let possibleTokenLowerDot = possibleTokenLower + ".";
+
+        for (let c = 0; c < this.lineLowerTokens.length; c++) {
+            if (this.lineLowerTokens[c] === possibleTokenLower) {
+                return true;
+            }
+            if (this.lineLowerTokens[c] === possibleTokenLowerDot) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
@@ -1200,9 +1216,6 @@ export default class COBOLQuickParse {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
                                 let style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
-                                if (nextTokenLower === 'constant') {
-                                    style = COBOLTokenStyle.Constant;
-                                }
                                 let extraInfo = prevToken;
                                 if (prevToken === '01' || prevToken === '1') {
                                     if (nextTokenLower.length === 0) {
@@ -1210,6 +1223,10 @@ export default class COBOLQuickParse {
                                     }
                                     else if (this.currentSection.tokenNameLower === 'report') {
                                         extraInfo += "-GROUP";
+                                    }
+
+                                    if (token.isTokenPresent("constant")) {
+                                        style = COBOLTokenStyle.Constant;
                                     }
                                 }
                                 let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision, extraInfo);
