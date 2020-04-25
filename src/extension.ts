@@ -28,8 +28,6 @@ import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_cobol, getTaskForCOBOL } from './taskdefs';
-import { configure } from 'vscode/lib/testrunner';
-import { cpus } from 'os';
 
 const util = require('util');
 var which = require('which');

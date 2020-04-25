@@ -1186,8 +1186,10 @@ export default class COBOLQuickParse {
                     }
                 }
 
-                if (this.currentSection.tokenNameLower === "input-output" && prevTokenLower === 'fd') {
-                    this.pickFields = true;
+                if (this.currentSection.tokenNameLower === 'input-output') {
+                    if (prevTokenLower === 'fd' || prevTokenLower === 'select') {
+                        this.pickFields = true;
+                    }
                 }
 
                 // are we in the working-storage section?
@@ -1233,15 +1235,17 @@ export default class COBOLQuickParse {
 
                     if ((prevTokenLower === "fd"
                         || prevTokenLower === "sd"
-                        || prevTokenLower === "rd")
+                        || prevTokenLower === "rd"
+                        || prevTokenLower === "select")
                         && !this.isValidKeyword(currentLower)) {
                         let trimToken = this.trimLiteral(current);
+
                         if (this.isValidLiteral(currentLower)) {
                             let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision, prevTokenLower);
                             this.addVariableOrConstant(currentLower, variableToken);
                         }
 
-                        if (prevTokenLower === "rd") {
+                        if (prevTokenLower === "rd" || prevTokenLower === 'select') {
                             this.skipToDot = true;
                         }
                         continue;
