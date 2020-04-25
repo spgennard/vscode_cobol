@@ -6,7 +6,7 @@ import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
 import { DocComment } from './formatting/DocComment';
-import { KeywordAutocompleteCompletionItemProvider } from './textprovider';
+import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
 import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
