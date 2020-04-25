@@ -6,7 +6,7 @@ interface TrieObject {
 	index: number;
 }
 
-export class TextAutocompleteCompletionItemProvider implements CompletionItemProvider {
+export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private words: TrieSearch = new TrieSearch('key');
 
 	public constructor(keywords: string[]) {

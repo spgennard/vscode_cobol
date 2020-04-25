@@ -6,7 +6,7 @@ import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
 import { DocComment } from './formatting/DocComment';
-import { TextAutocompleteCompletionItemProvider } from './textprovider';
+import { KeywordAutocompleteCompletionItemProvider } from './textprovider';
 import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
@@ -401,11 +401,11 @@ export function activate(context: ExtensionContext) {
     const jclSelectors = [
         { scheme: 'file', language: 'JCL' }
     ];
-    const completionJCLItemProvider = new TextAutocompleteCompletionItemProvider(jclStatements);
+    const completionJCLItemProvider = new KeywordAutocompleteCompletionItemProvider(jclStatements);
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    const completionCOBOLItemProvider = new TextAutocompleteCompletionItemProvider(cobolKeywords);
+    const completionCOBOLItemProvider = new KeywordAutocompleteCompletionItemProvider(cobolKeywords);
     const completionCOBOLItemProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, completionCOBOLItemProvider);
     context.subscriptions.push(completionCOBOLItemProviderDisposible);
 
