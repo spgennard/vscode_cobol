@@ -28,6 +28,7 @@ import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_cobol, getTaskForCOBOL } from './taskdefs';
+import { CobolSourceCompletionItemProvider } from './cobolprovider';
 
 const util = require('util');
 var which = require('which');
@@ -403,9 +404,15 @@ export function activate(context: ExtensionContext) {
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    const completionCOBOLItemProvider = new KeywordAutocompleteCompletionItemProvider(cobolKeywords);
-    const completionCOBOLItemProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, completionCOBOLItemProvider);
-    context.subscriptions.push(completionCOBOLItemProviderDisposible);
+    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(cobolKeywords);
+    const keywordProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, keywordProvider);
+    context.subscriptions.push(keywordProviderDisposible);
+
+    const cobolProvider = new CobolSourceCompletionItemProvider();
+    const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
+    context.subscriptions.push(cobolProviderDisposible);
+
+
 
     if (VSCOBOLConfiguration.isOutlineEnabled()) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();

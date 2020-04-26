@@ -23,7 +23,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		}));
 	}
 
-	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number) : CompletionItem[]  {
+	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number): CompletionItem[] {
 		const results = this.words.get(wordToComplete);
 		const isUpper = wordToComplete.toUpperCase() === wordToComplete;
 
@@ -57,10 +57,22 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 
 	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
 		let wordToComplete = '';
+		let lineBefore = '';
 		const range = document.getWordRangeAtPosition(position);
 		if (range) {
 			wordToComplete = document.getText(new Range(range.start, position));
+			lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
 		}
+		let lastSpace = lineBefore.lastIndexOf(" ");
+		if (lastSpace !== -1) {
+			lineBefore = lineBefore.substr(1 + lastSpace);
+		}
+		let prevWords = this.words.get(lineBefore);
+		if (prevWords.length !== 0) {
+			const items: CompletionItem[] = [];
+			return items;
+		}
+
 
 		return this.getKeywordsGivenPartialWord(wordToComplete, 128);
 	}
