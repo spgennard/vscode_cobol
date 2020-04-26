@@ -24,7 +24,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
     }
-    private getStuff(words: any, wordToComplete: string, limit: number): CompletionItem[] {
+
+    private getItemsFromTrie(words: any, wordToComplete: string, limit: number, kind: CompletionItemKind): CompletionItem[] {
         const results = words.getPrefix(wordToComplete);
         const isUpper = wordToComplete.toUpperCase() === wordToComplete;
 
@@ -38,11 +39,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 key = key.toUpperCase();
             }
 
-            let completionItem = new CompletionItem(key, CompletionItemKind.Method);
-            console.log(" Return " + key);
-
-            // Set sortText to order the value when displaying them in the autocompletion menu
-            //completionItem.sortText = this.stringPad(i.toString(), numberOfWordsInResults.toString().length, '0');
+            let completionItem = new CompletionItem(key, kind);
             items.push(completionItem);
             if (items.length >= limit) {
                 return items;
@@ -76,7 +73,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 if (lineBefore.toLocaleLowerCase().endsWith("perform")) {
                     const words = trie([]);
                     this.getPerformTargets(words, document);
-                    return this.getStuff(words, wordToComplete, 120);
+                    return this.getItemsFromTrie(words, wordToComplete, 120, CompletionItemKind.Method);
                 }
             }
         }
