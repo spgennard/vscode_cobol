@@ -288,7 +288,7 @@ export function activate(context: ExtensionContext) {
 
 
 
-    let cobcLocation = which.sync('cobc', {nothrow: true});
+    let cobcLocation = which.sync('cobc', { nothrow: true });
 
     if (cobcLocation !== null) {
         let cobolTaskPromise4cobc: Thenable<Task[]> | undefined = undefined;
@@ -317,7 +317,7 @@ export function activate(context: ExtensionContext) {
     }
 
 
-    let cobolLocation = which.sync('cobol.exe', {nothrow: true});
+    let cobolLocation = which.sync('cobol.exe', { nothrow: true });
     if (cobolLocation !== null) {
         let cobolTaskPromise4cobol: Thenable<Task[]> | undefined = undefined;
 
@@ -408,9 +408,6 @@ export function activate(context: ExtensionContext) {
     const keywordProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
-    const cobolProvider = new CobolSourceCompletionItemProvider();
-    const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
-    context.subscriptions.push(cobolProviderDisposible);
 
 
 
@@ -425,6 +422,10 @@ export function activate(context: ExtensionContext) {
 
     /* hover provider */
     if (VSCOBOLConfiguration.getExperimentialFeatures()) {
+        const cobolProvider = new CobolSourceCompletionItemProvider();
+        const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
+        context.subscriptions.push(cobolProviderDisposible);
+
         let disposable = languages.registerHoverProvider(allCobolSelectors, {
             provideHover(document, position, token) {
 

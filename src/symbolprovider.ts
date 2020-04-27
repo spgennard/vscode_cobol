@@ -161,12 +161,18 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
                         }
                         else {
-                            if (token.extraInformation === '01-GROUP' || token.extraInformation === '1-GROUP') {
+                            if (token.extraInformation.endsWith("-GROUP")) {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
                             } else {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
                             }
                         }
+                        break;
+                    case COBOLTokenStyle.ConditionName:
+                        if (includeVars === false) {
+                            break;
+                        }
+                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Number, container, lrange));
                         break;
                     case COBOLTokenStyle.Constant:
                         if (includeVars === false) {
@@ -186,7 +192,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                 }
             }
             catch (e) {
-                console.log("Failed "+e+" on "+JSON.stringify(token));
+                console.log("Failed " + e + " on " + JSON.stringify(token));
             }
         }
         return symbols;

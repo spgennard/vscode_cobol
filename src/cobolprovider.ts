@@ -25,6 +25,18 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         }
     }
 
+    private getConstantsOrVariables(words: any, document: TextDocument) {
+        let sf = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
+
+        if (sf !== undefined) {
+            for (let [key, token] of sf.constantsOrVariables) {
+                if (token.length >= 1) {
+                    words.addWord(token[0].tokenName);
+                }
+            }
+        }
+    }
+
     private getItemsFromTrie(words: any, wordToComplete: string, limit: number, kind: CompletionItemKind): CompletionItem[] {
         const results = words.getPrefix(wordToComplete);
         const isUpper = wordToComplete.toUpperCase() === wordToComplete;
@@ -50,13 +62,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     }
 
-    private stringPad(input: string, padLength: number, padString: string): string {
-        const count = Math.max(0, padLength - input.length);
-        const padMultiple = Math.ceil(count / padString.length);
-        const paddingString = padString.repeat(padMultiple).substr(0, count);
-        return paddingString + input;
-    }
-
     provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         const items: CompletionItem[] = [];
         let wordToComplete = '';
@@ -64,16 +69,44 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const range = document.getWordRangeAtPosition(position);
         if (range) {
             wordToComplete = document.getText(new Range(range.start, position));
+            const isUpper = wordToComplete.toUpperCase() === wordToComplete;
             lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
             let lastSpace = lineBefore.lastIndexOf(" ");
             if (lastSpace !== -1) {
-                lineBefore = lineBefore.substr(1+lastSpace);
+                let lineOrg = lineBefore;
+                lineBefore = lineBefore.substr(1 + lastSpace);
+                if (lineBefore === "to") {
+                    if (lineOrg.toLocaleLowerCase().indexOf("go") !== -1) {
+                        lineBefore = "goto";
+                    }
+                }
             }
             if (lineBefore.length !== 0) {
-                if (lineBefore.toLocaleLowerCase().endsWith("perform")) {
-                    const words = trie([]);
-                    this.getPerformTargets(words, document);
-                    return this.getItemsFromTrie(words, wordToComplete, 120, CompletionItemKind.Method);
+                const words = trie([]);
+                switch (lineBefore.toLocaleLowerCase()) {
+                    case "perform":
+                    case "goto":
+                        this.getPerformTargets(words, document);
+                        return this.getItemsFromTrie(words, wordToComplete, 120, CompletionItemKind.Method);
+                    case "move":
+                        if (isUpper) {
+                            words.addWord("SPACE");
+                            words.addWord("SPACES");
+                            words.addWord("LOW-VALUES");
+                            words.addWord("HIGH-VALUES");
+
+                        } else {
+                            words.addWord("space");
+                            words.addWord("spaces");
+                            words.addWord("low-values");
+                            words.addWord("high-values");
+                        }
+                    case "into":
+                    case "to":
+                    case "add":
+                    case "from":
+                        this.getConstantsOrVariables(words, document);
+                        return this.getItemsFromTrie(words, wordToComplete, 120, CompletionItemKind.Variable);
                 }
             }
         }

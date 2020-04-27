@@ -86,7 +86,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
             let token = sf.paragraphs.get(wordLower);
             if (token !== undefined) {
                 let srange = new vscode.Position(token.startLine, token.startColumn);
-                return new vscode.Location(uri,  new vscode.Range(srange, srange));
+                return new vscode.Location(uri, new vscode.Range(srange, srange));
             }
         }
     }
@@ -125,6 +125,12 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
                     break;
                 }
             case COBOLTokenStyle.Variable:
+                {
+                    let srange = new vscode.Position(token.startLine, token.startColumn);
+                    locations.push(new vscode.Location(uri, srange));
+                    break;
+                }
+            case COBOLTokenStyle.ConditionName:
                 {
                     let srange = new vscode.Position(token.startLine, token.startColumn);
                     locations.push(new vscode.Location(uri, srange));
@@ -222,7 +228,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            COBOLQuickParse.processOneFile(cacheDirectory,qcp);    /* ensure we have all the copybooks in the symbol cache */
+            COBOLQuickParse.processOneFile(cacheDirectory, qcp);    /* ensure we have all the copybooks in the symbol cache */
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
@@ -385,4 +391,3 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     return locations;
 
 }
-
