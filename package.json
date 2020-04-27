@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.0",
+    "version": "6.2.1",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1097,11 +1097,12 @@
     },
     "devDependencies": {
         "@types/mocha": "^7.0.2",
-        "@types/node": "^13.13.0",
+        "@types/node": "^13.13.4",
+        "@types/vscode": "^1.44.0",
         "@types/trie-prefix-tree": "^1.5.0",
-        "tslint": "^6.1.1",
+        "tslint": "^6.1.2",
         "typescript": "^3.8.3",
-        "vscode": "^1.1.36"
+        "vscode": "^1.1.37"
     },
     "dependencies": {
         "which": "^2.0.2",
