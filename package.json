@@ -1098,7 +1098,7 @@
     "devDependencies": {
         "@types/mocha": "^7.0.2",
         "@types/node": "^13.13.4",
-        "@types/vscode": "^1.44.0",
+        "@types/vscode": "^1.22.0",
         "@types/trie-prefix-tree": "^1.5.0",
         "tslint": "^6.1.2",
         "typescript": "^3.8.3",
