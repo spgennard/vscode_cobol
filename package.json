@@ -32,7 +32,7 @@
         "email": "stephen@gennard.net"
     },
     "engines": {
-        "vscode": "^1.31.1"
+        "vscode": "^1.22.0"
     },
     "icon": "images/cobol.png",
     "categories": [
