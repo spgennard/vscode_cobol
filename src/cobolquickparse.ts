@@ -41,7 +41,6 @@ export enum COBOLTokenStyle {
     Declaratives = "Declaratives",
     EndDeclaratives = "EndDeclaratives",
     DeclarativesSection = "DeclarativesSection",
-    ConditionName = "ConditionName",
     Null = "Null"
 }
 
@@ -1217,9 +1216,6 @@ export default class COBOLQuickParse {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
                                 let style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
-                                if (prevToken === "88") {
-                                    style = COBOLTokenStyle.ConditionName;
-                                }
                                 let extraInfo = prevToken;
                                 if (prevToken === '01' || prevToken === '1') {
                                     if (nextTokenLower.length === 0) {
@@ -1442,9 +1438,6 @@ export class COBOLSymbolTableHelper {
             let token = qp.tokensInOrder[i];
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
-                    st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    break;
-                case COBOLTokenStyle.ConditionName:
                     st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Variable:

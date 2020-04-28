@@ -130,12 +130,6 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
                     locations.push(new vscode.Location(uri, srange));
                     break;
                 }
-            case COBOLTokenStyle.ConditionName:
-                {
-                    let srange = new vscode.Position(token.startLine, token.startColumn);
-                    locations.push(new vscode.Location(uri, srange));
-                    break;
-                }
         }
     }
 

@@ -168,12 +168,6 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                             }
                         }
                         break;
-                    case COBOLTokenStyle.ConditionName:
-                        if (includeVars === false) {
-                            break;
-                        }
-                        symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Number, container, lrange));
-                        break;
                     case COBOLTokenStyle.Constant:
                         if (includeVars === false) {
                             break;
