@@ -1,11 +1,15 @@
 import trie from 'trie-prefix-tree';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import VSQuickCOBOLParse from './vscobolquickparse';
+import { ICOBOLSettings } from './iconfiguration';
 
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
-    public constructor() {
+    private iconfig: ICOBOLSettings;
+
+    public constructor(config: ICOBOLSettings) {
+        this.iconfig = config;
     }
 
     private getPerformTargets(words: any, document: TextDocument) {
@@ -14,12 +18,25 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (sf !== undefined) {
             for (let [key, token] of sf.sections) {
                 if (token.inProcedureDivision) {
-                    words.addWord(token.tokenName);
+                    if (token.tokenNameLower === token.tokenNameLower) {
+                        words.addWord(token.tokenName);
+                        words.addWord(token.tokenName.toUpperCase());
+                    } else {
+                        words.addWord(token.tokenName);
+                        words.addWord(token.tokenNameLower);
+                    }
                 }
             }
             for (let [key, token] of sf.paragraphs) {
                 if (token.inProcedureDivision) {
-                    words.addWord(token.tokenName);
+                    if (token.tokenNameLower === token.tokenNameLower) {
+                        words.addWord(token.tokenName);
+                        words.addWord(token.tokenName.toUpperCase());
+                    } else {
+                        words.addWord(token.tokenName);
+                        words.addWord(token.tokenNameLower);
+                    }
+
                 }
             }
         }
@@ -31,7 +48,14 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (sf !== undefined) {
             for (let [key, token] of sf.constantsOrVariables) {
                 if (token.length >= 1) {
-                    words.addWord(token[0].tokenName);
+                    if (token[0].tokenName === token[0].tokenNameLower) {
+                        words.addWord(token[0].tokenName);
+                        words.addWord(token[0].tokenName.toUpperCase());
+
+                    } else {
+                        words.addWord(token[0].tokenName);
+                        words.addWord(token[0].tokenNameLower);
+                    }
                 }
             }
         }
@@ -64,6 +88,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         const items: CompletionItem[] = [];
+
+        if (this.iconfig.experimential_features === false) {
+            return items;
+        }
+
         let wordToComplete = '';
         let lineBefore = "";
         const range = document.getWordRangeAtPosition(position);

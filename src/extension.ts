@@ -408,9 +408,6 @@ export function activate(context: ExtensionContext) {
     const keywordProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
-
-
-
     if (VSCOBOLConfiguration.isOutlineEnabled()) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
@@ -421,24 +418,23 @@ export function activate(context: ExtensionContext) {
     }
 
     /* hover provider */
-    if (VSCOBOLConfiguration.getExperimentialFeatures()) {
-        const cobolProvider = new CobolSourceCompletionItemProvider();
-        const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
-        context.subscriptions.push(cobolProviderDisposible);
+    const cobolProvider = new CobolSourceCompletionItemProvider(VSCOBOLConfiguration.get());
+    const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
+    context.subscriptions.push(cobolProviderDisposible);
 
-        let disposable = languages.registerHoverProvider(allCobolSelectors, {
-            provideHover(document, position, token) {
+    let disposable = languages.registerHoverProvider(allCobolSelectors, {
+        provideHover(document, position, token) {
 
-                // window.showInformationMessage(position.toString());
-                let txt = document.getText(document.getWordRangeAtPosition(position));
-                let txtTarger = getCallTarget(txt);
-                if (txtTarger !== null) {
-                    return new Hover("### " + txtTarger.api + "\n" + txtTarger.description + "\n\n#### [More information?](" + txtTarger.url + ")");
-                }
+            // window.showInformationMessage(position.toString());
+            let txt = document.getText(document.getWordRangeAtPosition(position));
+            let txtTarger = getCallTarget(txt);
+            if (txtTarger !== null) {
+                return new Hover("### " + txtTarger.api + "\n" + txtTarger.description + "\n\n#### [More information?](" + txtTarger.url + ")");
             }
-        });
-        context.subscriptions.push(disposable);
-    }
+        }
+    });
+    context.subscriptions.push(disposable);
+
 
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
