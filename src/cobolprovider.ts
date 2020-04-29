@@ -130,10 +130,12 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                             words.addWord("low-values");
                             words.addWord("high-values");
                         }
+                    case "set":
                     case "into":
                     case "to":
                     case "add":
                     case "from":
+                    case "giving":
                         this.getConstantsOrVariables(words, document);
                         return this.getItemsFromTrie(words, wordToComplete, 120, CompletionItemKind.Variable);
                 }

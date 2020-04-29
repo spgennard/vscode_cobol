@@ -163,6 +163,8 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                         else {
                             if (token.extraInformation.endsWith("-GROUP")) {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
+                            } else if (token.extraInformation.endsWith("88"))  {
+                                symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.EnumMember, container, lrange));
                             } else {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
                             }

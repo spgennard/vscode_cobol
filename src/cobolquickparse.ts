@@ -329,6 +329,7 @@ export default class COBOLQuickParse {
     declaratives: COBOLToken;
     parseColumnBOnwards: boolean; // = this.getColumBParsing();
     current01Group: COBOLToken;
+    currentLevel: COBOLToken;
     captureDivisions: boolean;
     programs: COBOLToken[];
     currentClass: COBOLToken;
@@ -364,6 +365,7 @@ export default class COBOLQuickParse {
         this.currentRegion = COBOLToken.Null;
         this.declaratives = COBOLToken.Null;
         this.current01Group = COBOLToken.Null;
+        this.currentLevel = COBOLToken.Null;
         this.currentFunctionId = COBOLToken.Null;
         this.programs = [];
         this.captureDivisions = true;
@@ -652,7 +654,7 @@ export default class COBOLQuickParse {
         }
     }
 
-    private static readonly literalRegex = /^[#a-zA-Z][a-zA-Z0-9-_]*$/g;
+    private static readonly literalRegex = /^[#a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
 
     private isValidLiteral(id: string): boolean {
 
@@ -952,6 +954,7 @@ export default class COBOLQuickParse {
                     this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.sections.set(prevTokenLower, this.currentSection);
                     this.current01Group = COBOLToken.Null;
+                    this.currentLevel = COBOLToken.Null;
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
@@ -1231,7 +1234,18 @@ export default class COBOLQuickParse {
                                 }
                                 let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision, extraInfo);
                                 this.addVariableOrConstant(currentLower, ctoken);
-                                if (prevToken === '01' || prevToken === '1') {
+
+                                // place the 88 under the 01 item
+                                if (this.currentLevel !== COBOLToken.Null && prevToken === '88') {
+                                    this.currentLevel.endLine = ctoken.startLine;
+                                    this.currentLevel.endColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                }
+
+                                if (prevToken !== '88') {
+                                    this.currentLevel = ctoken;
+                                }
+
+                                if (prevToken === '01' || prevToken === '1' || prevToken === '77') {
                                     if (nextTokenLower.length === 0 ||
                                         (this.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
                                         this.current01Group = ctoken;
