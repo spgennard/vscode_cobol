@@ -1258,7 +1258,7 @@ export default class COBOLQuickParse {
                                     this.current01Group.endLine = ctoken.startLine;
                                     this.current01Group.endColumn = ctoken.startColumn + ctoken.tokenName.length;
                                 }
-
+                                this.skipToDot = true;
                             }
                         }
                         continue;
