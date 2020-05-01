@@ -1245,7 +1245,8 @@ export default class COBOLQuickParse {
                                     this.currentLevel = ctoken;
                                 }
 
-                                if (prevToken === '01' || prevToken === '1' || prevToken === '77') {
+                                if (prevToken === '01' || prevToken === '1' ||
+                                    prevToken === '66' || prevToken === '77' || prevToken === '78') {
                                     if (nextTokenLower.length === 0 ||
                                         (this.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
                                         this.current01Group = ctoken;
