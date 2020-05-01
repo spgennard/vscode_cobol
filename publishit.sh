@@ -19,6 +19,7 @@ github-release upload \
   --body="${COMMIT_LOG}" \
   cobol*.vsix
 
+npx ovsx publish cobol*.vsix -p $(cat $HOME/.ovsx.token)
 
 npm-check-updates
 
