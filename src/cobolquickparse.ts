@@ -315,6 +315,9 @@ export default class COBOLQuickParse {
     public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
+    public cpPerformTargets: any|undefined;
+    public cpConstantsOrVars:any|undefined;
+
     skipToDot: boolean = false;
 
     inProcedureDivision: boolean;
@@ -387,6 +390,9 @@ export default class COBOLQuickParse {
         this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
         this.parseReferences = sourceHandler !== null;
         this.sourceReferences = sourceReferences;
+        this.cpPerformTargets = undefined;
+        this.cpConstantsOrVars = undefined;
+
         let prevToken: Token = Token.Blank;
 
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
