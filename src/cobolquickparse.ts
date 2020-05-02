@@ -1259,7 +1259,11 @@ export default class COBOLQuickParse {
                                     this.current01Group.endLine = ctoken.startLine;
                                     this.current01Group.endColumn = ctoken.startColumn + ctoken.tokenName.length;
                                 }
-                                this.skipToDot = true;
+
+                                /* if spans multiple lines, skip to dot */
+                                if (endWithDot === false) {
+                                    this.skipToDot = true;
+                                }
                             }
                         }
                         continue;
