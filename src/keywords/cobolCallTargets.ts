@@ -1,10 +1,10 @@
 import ile_datatime from './ile_datetime.json';
 import cbl_apis from './mf_cbl_apis.json';
 
-class CallTarget {
-	api: string;
-	url: string;
-	description: string;
+export class CallTarget {
+	public api: string;
+	public url: string;
+	public description: string;
 
 	constructor(_api: string, _url: string, _description: string) {
 		this.api = _api;
@@ -20,6 +20,7 @@ interface IDictionary {
 interface IAPIDictionary {
 	[index: string]: string;
 }
+
 interface CallTargetInterfaces {
 	url: string;
 	name: string;
@@ -41,6 +42,11 @@ addApis(cbl_apis);
 
 
 /* inline decl */
-export function getCallTarget(api: string) {
+export function getCallTarget(api: string):CallTarget|undefined {
+
+	if (typeof callTargets[api] === "undefined") {
+		return undefined;
+	}
+
 	return callTargets[api];
 }

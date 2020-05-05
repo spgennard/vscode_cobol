@@ -18,7 +18,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 import updateDecorations from './margindecorations';
-import { getCallTarget } from './keywords/cobolCallTargets';
+import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
 import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
 import { isDirectPath } from './opencopybook';
 
@@ -43,6 +43,44 @@ export function getcopybookdirs(): string[] {
     return fileSearchDirectory;
 }
 
+export function getLogicalCopybookdirs(prefix: string, suffix:string): string {
+    let copyBookLine: string = "";
+    var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
+
+    if (workspace.workspaceFolders) {
+        for (var folder of workspace.workspaceFolders) {
+            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+                try {
+                    var extdir = extsdir[extsdirpos];
+
+                    let sdir: string;
+                    if (isDirectPath(extdir)) {
+                        sdir = extdir;
+                        if (fs.existsSync(sdir)) {
+                            let f = fs.statSync(sdir);
+                            if (f.isDirectory()) {
+                                copyBookLine += prefix+sdir+suffix;
+                            }
+                        }
+                    } else {
+                        sdir = path.join(folder.uri.fsPath, extdir);
+                        if (fs.existsSync(sdir)) {
+                            let f = fs.statSync(sdir);
+                            if (f.isDirectory()) {
+                                copyBookLine += prefix+"${workspaceFolder}/"+extdir+suffix;
+                            }
+                        }
+                    }
+                }
+                catch (e) {
+                    logException("dir", e);
+                }
+            }
+        }
+    }
+
+    return copyBookLine;
+}
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -424,11 +462,9 @@ export function activate(context: ExtensionContext) {
 
     let disposable = languages.registerHoverProvider(allCobolSelectors, {
         provideHover(document, position, token) {
-
-            // window.showInformationMessage(position.toString());
             let txt = document.getText(document.getWordRangeAtPosition(position));
-            let txtTarger = getCallTarget(txt);
-            if (txtTarger !== null) {
+            let txtTarger:CallTarget|undefined = getCallTarget(txt);
+            if (txtTarger !== undefined) {
                 return new Hover("### " + txtTarger.api + "\n" + txtTarger.description + "\n\n#### [More information?](" + txtTarger.url + ")");
             }
         }
