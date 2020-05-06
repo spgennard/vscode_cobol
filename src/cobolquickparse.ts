@@ -50,11 +50,12 @@ export function splitArgument(input: string): string[] {
     let inQuoteSingle: boolean = false;
     let lineLength = input.length;
     let cArg: string = "";
+
     for (let i = 0; i < lineLength; i++) {
         let c = input.charAt(i);
 
         /* handle quotes */
-        if (c === '"') {
+        if (c === '\'' && !inQuote) {
             inQuoteSingle = !inQuoteSingle;
             cArg += c;
             if (inQuoteSingle === false) {
@@ -64,13 +65,18 @@ export function splitArgument(input: string): string[] {
             continue;
         }
 
-        if (c === "\"") {
+        if (c === "\"" && !inQuoteSingle) {
             inQuote = !inQuote;
             cArg += c;
             if (inQuote === false) {
                 ret.push(cArg);
                 cArg = "";
             }
+            continue;
+        }
+
+        if (inQuote || inQuoteSingle) {
+            cArg += c;
             continue;
         }
 
