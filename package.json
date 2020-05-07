@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.15",
+    "version": "6.2.16",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -463,10 +463,17 @@
             },
             {
                 "id": "JCL",
-                "aliases": [
-                    "JCL",
-                    "jcl"
+                "extensions": [
+                    ".jcl",
+                    ".job",
+                    ".cntl",
+                    ".prc",
+                    ".proc"
                 ],
+                "configuration": "./jcl.configuration.json"
+            },
+            {
+                "id": "jcl",
                 "extensions": [
                     ".jcl",
                     ".job",
@@ -560,6 +567,11 @@
             },
             {
                 "language": "JCL",
+                "scopeName": "source.jcl",
+                "path": "./syntaxes/jcl.tmLanguage.json"
+            },
+            {
+                "language": "jcl",
                 "scopeName": "source.jcl",
                 "path": "./syntaxes/jcl.tmLanguage.json"
             },
@@ -904,6 +916,10 @@
             },
             {
                 "language": "JCL",
+                "path": "./snippets/jcl.json"
+            },
+            {
+                "language": "jcl",
                 "path": "./snippets/jcl.json"
             }
         ],
