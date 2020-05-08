@@ -1,15 +1,16 @@
 'use strict';
 
-import {  workspace } from 'vscode';
+import { workspace } from 'vscode';
 
 import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
 
 import * as path from 'path';
 import * as fs from 'fs';
+import { isDirectory } from './extension';
 
 
 export class VSCOBOLConfiguration {
-    private static config : ICOBOLSettings = new COBOLSettings();
+    private static config: ICOBOLSettings = new COBOLSettings();
 
     public static init() {
         VSCOBOLConfiguration.config.experimential_features = getExperimentialFeatures();
@@ -43,23 +44,23 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration.config.line_comment;
     }
 
-    public static getPreParseLineLimit() : number {
+    public static getPreParseLineLimit(): number {
         return VSCOBOLConfiguration.config.pre_parse_line_limit;
     }
 
-    public static getColumBParsing() : boolean {
+    public static getColumBParsing(): boolean {
         return VSCOBOLConfiguration.config.ignorecolumn_b_onwards;
     }
 
-    public static getCopybookNestedInSection() : boolean {
+    public static getCopybookNestedInSection(): boolean {
         return VSCOBOLConfiguration.config.copybooks_nested;
     }
 
-    public static getFuzzyVariableSearch() : boolean {
+    public static getFuzzyVariableSearch(): boolean {
         return VSCOBOLConfiguration.config.fuzzy_variable_search;
     }
 
-    public static getCachingSetting() : string {
+    public static getCachingSetting(): string {
         if (workspace.workspaceFolders) {
             return VSCOBOLConfiguration.config.cache_metadata;
         }
@@ -101,7 +102,7 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration.config.invalid_copybookdirs;
     }
 
-    public static getExtentions() : string[] {
+    public static getExtentions(): string[] {
         return VSCOBOLConfiguration.config.copybookexts;
     }
 
@@ -110,7 +111,7 @@ export class VSCOBOLConfiguration {
     }
 }
 
-function getBoolean(configSection: string, defaultValue: boolean) : boolean {
+function getBoolean(configSection: string, defaultValue: boolean): boolean {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var expEnabled = editorConfig.get<boolean>(configSection);
     if (expEnabled === undefined || expEnabled === null) {
@@ -136,7 +137,7 @@ function getPreParseLineLimit(): number {
     return lineLimit;
 }
 
-function getline_comment() : boolean {
+function getline_comment(): boolean {
     return getBoolean("line_comment", false);
 }
 
@@ -187,7 +188,7 @@ function isOutlineEnabled(): outlineFlag {
 const DEFAULT_COPYBOOK_DIR = ["CopyBooks"];
 
 
-function getCopybookdirs_defaults(invalidSearchDirectory: string[] ): string[] {
+function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
     let editorConfig = workspace.getConfiguration('coboleditor');
     let dirs = editorConfig.get<string[]>('copybookdirs');
     if (!dirs || (dirs !== null && dirs.length === 0)) {
@@ -199,25 +200,38 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[] ): string[] {
     for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
         let dir = dirs[dirpos];
 
-        if (dir.startsWith("$")) {
-            var e = process.env[dir.substr(1)];
-            if (e !== undefined && e !== null) {
-                e.split(path.delimiter).forEach(function (item) {
-                    if (item !== undefined && item !== null && item.length > 0) {
-                        if (fs.existsSync(item)) {
-                            var itemStat = fs.statSync(item);
-                            if (itemStat.isDirectory()) {
+        /* remove ${workspaceFolder} */
+
+        if (dir.startsWith("${workspaceFolder}")) {
+            dir = dir.replace("${workspaceFolder}", "").trim();
+
+            // remove / or \ forward
+            if (dir.startsWith('/') || dir.startsWith('\\')) {
+                dir = dir.substr(1).trim();
+            }
+        }
+
+        // ignore empty elements
+        if (dir.length !== 0) {
+            if (dir.startsWith("$")) {
+                var e = process.env[dir.substr(1)];
+                if (e !== undefined && e !== null) {
+                    e.split(path.delimiter).forEach(function (item) {
+                        if (item !== undefined && item !== null && item.length > 0) {
+                            if (isDirectory(item)) {
                                 extraDirs.push(item);
+                            } else {
+                                invalidSearchDirectory.push(item);
                             }
                         }
-                    }
-                });
+                    });
+                } else {
+                    invalidSearchDirectory.push(dir);
+                }
             } else {
-                invalidSearchDirectory.push(dir);
-            }
-        } else {
-            if (dir !== ".") {
-                extraDirs.push(dir);
+                if (dir !== ".") {
+                    extraDirs.push(dir);
+                }
             }
         }
     }
@@ -225,7 +239,7 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[] ): string[] {
     return extraDirs;
 }
 
-const DEFAULT_COPYBOOK_EXTS = ["cpy","CPY"];
+const DEFAULT_COPYBOOK_EXTS = ["cpy", "CPY"];
 
 function getCopybookExts(): string[] {
     var editorConfig = workspace.getConfiguration('coboleditor');
@@ -238,10 +252,10 @@ function getCopybookExts(): string[] {
     return extensions;
 }
 
-const DEFAULT_RULER = [0, 7,  11,  15,  19,  23,  27,  31, 35, 39,  43,  47, 51,  55, 59,  63,  67,  71,  75,  79];
+const DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
 
 function getTabStops(): number[] {
-    let editorConfig =  workspace.getConfiguration('coboleditor');
+    let editorConfig = workspace.getConfiguration('coboleditor');
     let tabStops = editorConfig.get<number[]>('tabstops');
     if (!tabStops || (tabStops !== null && tabStops.length === 0)) {
         tabStops = DEFAULT_RULER;

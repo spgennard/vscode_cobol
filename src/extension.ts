@@ -43,7 +43,17 @@ export function getcopybookdirs(): string[] {
     return fileSearchDirectory;
 }
 
-export function getLogicalCopybookdirs(prefix: string, suffix:string): string {
+export function isDirectory(sdir: string): boolean {
+    if (fs.existsSync(sdir)) {
+        let f = fs.statSync(sdir);
+        if (f.isDirectory()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
     let copyBookLine: string = "";
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
 
@@ -56,19 +66,13 @@ export function getLogicalCopybookdirs(prefix: string, suffix:string): string {
                     let sdir: string;
                     if (isDirectPath(extdir)) {
                         sdir = extdir;
-                        if (fs.existsSync(sdir)) {
-                            let f = fs.statSync(sdir);
-                            if (f.isDirectory()) {
-                                copyBookLine += prefix+sdir+suffix;
-                            }
+                        if (isDirectory(sdir)) {
+                            copyBookLine += prefix + sdir + suffix;
                         }
                     } else {
                         sdir = path.join(folder.uri.fsPath, extdir);
-                        if (fs.existsSync(sdir)) {
-                            let f = fs.statSync(sdir);
-                            if (f.isDirectory()) {
-                                copyBookLine += prefix+"${workspaceFolder}/"+extdir+suffix;
-                            }
+                        if (isDirectory(sdir)) {
+                            copyBookLine += prefix + "${workspaceFolder}/" + extdir + suffix;
                         }
                     }
                 }
@@ -96,18 +100,15 @@ function initExtensions() {
                     var extdir = extsdir[extsdirpos];
 
                     let sdir: string;
+
                     if (isDirectPath(extdir)) {
                         sdir = extdir;
                     } else {
                         sdir = path.join(folder.uri.fsPath, extdir);
                     }
-                    if (fs.existsSync(sdir)) {
-                        let f = fs.statSync(sdir);
-                        if (f.isDirectory()) {
-                            fileSearchDirectory.push(sdir);
-                        } else {
-                            invalidSearchDirectory.push(sdir);
-                        }
+
+                    if (isDirectory(sdir)) {
+                        fileSearchDirectory.push(sdir);
                     } else {
                         invalidSearchDirectory.push(sdir);
                     }
@@ -463,7 +464,7 @@ export function activate(context: ExtensionContext) {
     let disposable = languages.registerHoverProvider(allCobolSelectors, {
         provideHover(document, position, token) {
             let txt = document.getText(document.getWordRangeAtPosition(position));
-            let txtTarger:CallTarget|undefined = getCallTarget(txt);
+            let txtTarger: CallTarget | undefined = getCallTarget(txt);
             if (txtTarger !== undefined) {
                 return new Hover("### " + txtTarger.api + "\n" + txtTarger.description + "\n\n#### [More information?](" + txtTarger.url + ")");
             }
