@@ -321,8 +321,8 @@ export default class COBOLQuickParse {
     public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
-    public cpPerformTargets: any|undefined;
-    public cpConstantsOrVars:any|undefined;
+    public cpPerformTargets: any | undefined;
+    public cpConstantsOrVars: any | undefined;
 
     skipToDot: boolean = false;
 
@@ -518,7 +518,7 @@ export default class COBOLQuickParse {
         this.addinMissingEndlings(sourceHandler);
 
         if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
-            COBOLQuickParse.processOneFile(cacheDirectory, this);
+            COBOLQuickParse.processOneFile(cacheDirectory, this, false);
         }
     }
 
@@ -571,7 +571,7 @@ export default class COBOLQuickParse {
         return ctoken;
     }
 
-    public static processOneFile(cacheDirectory: string, qcp: COBOLQuickParse) {
+    public static processOneFile(cacheDirectory: string, qcp: COBOLQuickParse, showError: boolean) {
 
         let filename = qcp.filename;
 
@@ -589,17 +589,17 @@ export default class COBOLQuickParse {
                     copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
                     if (copyBookfilename.length !== 0) {
                         if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                            logMessage("   CopyBook: " + key + " => " + copyBookfilename);
+                            //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
                             let filefs_vb = new FileSourceHandler(copyBookfilename, false);
                             let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, qcp.configHandler, cacheDirectory);
                             let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
                             COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-                        } else {
-                            // logCOBOLChannelLine("   CopyBook: " + key + " (no update required)");
                         }
                     } else {
-                        logMessage("   CopyBook: " + key + " (not found)");
+                        if (showError) {
+                            logMessage("   CopyBook: " + key + " (not found");
+                        }
                     }
                 }
                 catch (ex) {
