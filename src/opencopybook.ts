@@ -1,10 +1,11 @@
 'use strict';
 
 import { Range, TextDocument, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
+import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
-import { getcopybookdirs } from './extension';
+import { getcopybookdirs, logMessage } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 export function isValidExtension(filename: string): boolean {
@@ -112,6 +113,15 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
         return "";
     }
 
+    // // does the file exist?
+    // if (fs.existsSync(filename)) {
+    //     var itemStat = fs.statSync(filename);
+    //     if (itemStat.isDirectory() === false) {
+    //         return filename;
+    //     }
+    //     return "";
+    // }
+
     // searching in cwd does not make sense, as it can change
     if (filenameDir === '.') {
         return "";
@@ -135,7 +145,6 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
                 var ext = exts[extpos];
                 var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");
 
-                // logCOBOLChannelLine(" - Search : " + possibleFile);
                 if (fs.existsSync(possibleFile)) {
                     return possibleFile;
                 }
@@ -174,9 +183,18 @@ function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): 
 }
 
 export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string {
-    const fullPath = findFileInDirectoryOrWorkspace(filename, "");
+    let fullPath = findFileInDirectoryOrWorkspace(filename, "");
     if (fullPath.length !== 0) {
         return path.normalize(fullPath);
+    }
+
+    let lastDot = filename.lastIndexOf(".");
+    if (lastDot !== -1) {
+        let filenameNoExtension = filename.substr(0, lastDot);
+        fullPath = findFileInDirectoryOrWorkspace(filenameNoExtension, "");
+        if (fullPath.length !== 0) {
+            return path.normalize(fullPath);
+        }
     }
 
     return "";
@@ -184,17 +202,16 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string
 
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
 
-    const dirOfFilename = path.dirname(doc.fileName);
     const line = doc.lineAt(pos);
     const filename = extractCopyBoolFilename(line.text);
 
     if (filename !== null && filename.length !== 0) {
-        const fullPath = findFileInDirectoryOrWorkspace(filename.trim(), dirOfFilename);
+        const fullPath = expandLogicalCopyBookToFilenameOrEmpty(filename.trim());
         if (fullPath.length !== 0) {
-            return {
-                uri: Uri.file(fullPath),
-                range: new Range(new Position(0, 0), new Position(0, 0))
-            };
+            return new vscode.Location(
+                Uri.file(fullPath),
+                new Range(new Position(0, 0), new Position(0, 0))
+            );
         }
     }
 

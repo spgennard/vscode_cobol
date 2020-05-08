@@ -219,7 +219,7 @@ function getCopybookdirs_defaults(): string[] {
     return extraDirs;
 }
 
-const DEFAULT_COPYBOOK_EXTS = ["cpy"];
+const DEFAULT_COPYBOOK_EXTS = ["cpy","CPY"];
 
 function getCopybookExts(): string[] {
     var editorConfig = workspace.getConfiguration('coboleditor');
