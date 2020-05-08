@@ -19,7 +19,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.fuzzy_variable_search = getFuzzyVariableSearch();
         VSCOBOLConfiguration.config.cache_metadata = getCachingSetting();
         VSCOBOLConfiguration.config.outline = isOutlineEnabled();
-        VSCOBOLConfiguration.config.copybookdirs = getCopybookdirs_defaults();
+        VSCOBOLConfiguration.config.copybookdirs = getCopybookdirs_defaults(VSCOBOLConfiguration.config.invalid_copybookdirs);
         VSCOBOLConfiguration.config.pre_parse_line_limit = getPreParseLineLimit();
         VSCOBOLConfiguration.config.copybookexts = getCopybookExts();
         VSCOBOLConfiguration.config.tabstops = getTabStops();
@@ -95,6 +95,10 @@ export class VSCOBOLConfiguration {
 
     public static getCopybookdirs_defaults(): string[] {
         return VSCOBOLConfiguration.config.copybookdirs;
+    }
+
+    public static getInvalid_copybookdirs(): string[] {
+        return VSCOBOLConfiguration.config.invalid_copybookdirs;
     }
 
     public static getExtentions() : string[] {
@@ -183,7 +187,7 @@ function isOutlineEnabled(): outlineFlag {
 const DEFAULT_COPYBOOK_DIR = ["CopyBooks"];
 
 
-function getCopybookdirs_defaults(): string[] {
+function getCopybookdirs_defaults(invalidSearchDirectory: string[] ): string[] {
     let editorConfig = workspace.getConfiguration('coboleditor');
     let dirs = editorConfig.get<string[]>('copybookdirs');
     if (!dirs || (dirs !== null && dirs.length === 0)) {
@@ -208,6 +212,8 @@ function getCopybookdirs_defaults(): string[] {
                         }
                     }
                 });
+            } else {
+                invalidSearchDirectory.push(dir);
             }
         } else {
             if (dir !== ".") {

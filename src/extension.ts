@@ -83,7 +83,7 @@ export function getLogicalCopybookdirs(prefix: string, suffix:string): string {
 }
 
 let fileSearchDirectory: string[] = [];
-let invalidSearchDirectory: string[] = [];
+let invalidSearchDirectory: string[] = VSCOBOLConfiguration.getInvalid_copybookdirs();
 
 function initExtensions() {
     fileSearchDirectory = [];
