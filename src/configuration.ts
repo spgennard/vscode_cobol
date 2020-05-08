@@ -179,7 +179,8 @@ function isOutlineEnabled(): outlineFlag {
     }
     return outlineFlag.On;
 }
-const DEFAULT_COPYBOOK_DIR = ["."];
+
+const DEFAULT_COPYBOOK_DIR = ["CopyBooks"];
 
 
 function getCopybookdirs_defaults(): string[] {
@@ -209,7 +210,9 @@ function getCopybookdirs_defaults(): string[] {
                 });
             }
         } else {
-            extraDirs.push(dir);
+            if (dir !== ".") {
+                extraDirs.push(dir);
+            }
         }
     }
 

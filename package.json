@@ -155,7 +155,6 @@
                         }
                     },
                     "default": [
-                        ".",
                         "CopyBooks"
                     ],
                     "description": "COBOL CopyBook directories to search into"

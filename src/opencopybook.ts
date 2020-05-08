@@ -112,8 +112,9 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
         return "";
     }
 
+    // searching in cwd does not make sense, as it can change
     if (filenameDir === '.') {
-        filenameDir = "";
+        return "";
     }
 
     var fileExtension = filename.split('.').pop();
