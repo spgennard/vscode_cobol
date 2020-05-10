@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { stringify } from 'querystring';
 import { COBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
+import { getLogicalCopybookdirs } from './extension';
 
 
 export interface GnuCOBCTaskDefinition extends vscode.TaskDefinition {
@@ -89,12 +90,12 @@ export async function getCOBOLTasks_for_cobol(taskName: string, syntaxCheck: boo
 		return emptyTasks;
 	}
 
-	let x = VSCOBOLConfiguration.getCopybookdirs_defaults;
+	let copyBookArgs = "COPYPATH("+getLogicalCopybookdirs("", ";")+")";
 
 	let kind: MFCOBOLTaskDefinition = {
-		type: 'cobc',
+		type: 'cobol',
 		label: '',
-		extraArguments: ''
+		extraArguments: copyBookArgs
 	};
 
 	let result: vscode.Task[] = [];
@@ -111,12 +112,12 @@ export async function getCOBOLTasks_for_cobc(taskName: string, syntaxCheck: bool
 		return emptyTasks;
 	}
 
-	let x = VSCOBOLConfiguration.getCopybookdirs_defaults;
+	let copyBookArgs = getLogicalCopybookdirs("-I", " ");
 
 	let kind: GnuCOBCTaskDefinition = {
 		type: 'cobc',
 		label: '',
-		extraArguments: ''
+		extraArguments: copyBookArgs
 	};
 
 	let result: vscode.Task[] = [];

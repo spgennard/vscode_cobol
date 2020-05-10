@@ -57,6 +57,17 @@ export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
     let copyBookLine: string = "";
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
 
+    for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+        var extdir_direct = extsdir[extsdirpos];
+        if (isDirectPath(extdir_direct)) {
+            let sdir: string;
+            sdir = extdir_direct;
+            if (isDirectory(sdir)) {
+                copyBookLine += prefix + sdir + suffix;
+            }
+        }
+    }
+
     if (workspace.workspaceFolders) {
         for (var folder of workspace.workspaceFolders) {
             for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
@@ -64,12 +75,7 @@ export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
                     var extdir = extsdir[extsdirpos];
 
                     let sdir: string;
-                    if (isDirectPath(extdir)) {
-                        sdir = extdir;
-                        if (isDirectory(sdir)) {
-                            copyBookLine += prefix + sdir + suffix;
-                        }
-                    } else {
+                    if (isDirectPath(extdir) === false) {
                         sdir = path.join(folder.uri.fsPath, extdir);
                         if (isDirectory(sdir)) {
                             copyBookLine += prefix + "${workspaceFolder}/" + extdir + suffix;
@@ -87,11 +93,24 @@ export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
 }
 
 let fileSearchDirectory: string[] = [];
-let invalidSearchDirectory: string[] = VSCOBOLConfiguration.getInvalid_copybookdirs();
+let invalidSearchDirectory: string[] = [];
 
 function initExtensions() {
     fileSearchDirectory = [];
+
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
+    invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
+
+    for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+        var ddir = extsdir[extsdirpos];
+        if (isDirectPath(ddir)) {
+            if (isDirectory(ddir)) {
+                fileSearchDirectory.push(ddir);
+            } else {
+                invalidSearchDirectory.push(ddir);
+            }
+        }
+    }
 
     if (workspace.workspaceFolders) {
         for (var folder of workspace.workspaceFolders) {
@@ -101,16 +120,14 @@ function initExtensions() {
 
                     let sdir: string;
 
-                    if (isDirectPath(extdir)) {
-                        sdir = extdir;
-                    } else {
+                    if (isDirectPath(extdir) === false) {
                         sdir = path.join(folder.uri.fsPath, extdir);
-                    }
 
-                    if (isDirectory(sdir)) {
-                        fileSearchDirectory.push(sdir);
-                    } else {
-                        invalidSearchDirectory.push(sdir);
+                        if (isDirectory(sdir)) {
+                            fileSearchDirectory.push(sdir);
+                        } else {
+                            invalidSearchDirectory.push(sdir);
+                        }
                     }
                 }
                 catch (e) {
@@ -141,18 +158,34 @@ function activateLogChannel() {
             logMessage("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
         }
 
+        if (workspace.workspaceFolders) {
+            logMessage("  Workspace Folders");
+            for (var folder of workspace.workspaceFolders) {
+                logMessage("   => " + folder.uri.fsPath);
+            }
+        }
+
         var extsdir = fileSearchDirectory;
-        for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-            let sdir = extsdir[extsdirpos];
-            logMessage("  Search directory : " + sdir);
+        if (extsdir.length !== 0) {
+            logMessage("  CopyBook Search directories (" + extsdir.length + ")");
+            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+                let sdir = extsdir[extsdirpos];
+                logMessage("   => " + sdir);
+            }
+
+            let logicalDirs = getLogicalCopybookdirs("", " ");
+            logMessage("  CopyBook Search directories (logical)");
+            logMessage("   => " + logicalDirs);
         }
 
         extsdir = invalidSearchDirectory;
-        for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-            let sdir = extsdir[extsdirpos];
-            logMessage("  Invalid Search directory : " + sdir);
+        if (extsdir.length !== 0) {
+            logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
+            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+                let sdir = extsdir[extsdirpos];
+                logMessage("   => " + sdir);
+            }
         }
-
 
         logMessage("");
     }
@@ -311,7 +344,8 @@ export function activate(context: ExtensionContext) {
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
         VSCOBOLConfiguration.init();
-        initExtensions();
+        COBOLOutputChannel.clear();
+        activateLogChannel();
     });
 
     var treeView = new SourceViewTree(VSCOBOLConfiguration.get());
