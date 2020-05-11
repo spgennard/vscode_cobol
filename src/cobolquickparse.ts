@@ -325,7 +325,7 @@ export default class COBOLQuickParse {
     public cpConstantsOrVars: any | undefined;
 
     skipToDot: boolean = false;
-    scanForTOorIS: boolean = false;
+    addReferencesDuringSkipToTag: boolean = false;
 
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
@@ -345,7 +345,6 @@ export default class COBOLQuickParse {
     currentClass: COBOLToken;
     currentMethod: COBOLToken;
     currentFunctionId: COBOLToken;
-    lastSelect: COBOLToken;
 
     numberTokensInHeader: number;
     workingStorageRelatedTokens: number;
@@ -378,7 +377,6 @@ export default class COBOLQuickParse {
         this.current01Group = COBOLToken.Null;
         this.currentLevel = COBOLToken.Null;
         this.currentFunctionId = COBOLToken.Null;
-        this.lastSelect = COBOLToken.Null;
         this.programs = [];
         this.captureDivisions = true;
         this.numberTokensInHeader = 0;
@@ -895,18 +893,14 @@ export default class COBOLQuickParse {
 
                 // if skiptodot and not the end of the statement.. swallow
                 if (this.skipToDot && endWithDot === false) {
-                    if (this.scanForTOorIS) {
-                        let prevTokenLower = this.trimLiteral(token.prevTokenLower);
-                        let currentLower: string = tcurrentLower;
-                        if ((this.isValidKeyword(currentLower) === false) && (this.isValidLiteral(currentLower))) {
-                            if (prevTokenLower === 'is' || prevTokenLower === 'to') {
+                    if (this.addReferencesDuringSkipToTag) {
+                        if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
                                 let trimToken = this.trimLiteral(tcurrent);
-                                let ctoken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision, "");
-                                this.addVariableOrConstant(currentLower, ctoken);
-                                this.lastSelect.endLine = lineNumber;
-                                this.lastSelect.endColumn = ctoken.startColumn+trimToken.length;
+                                if (this.sourceReferences !== undefined) {
+                                    // no forward validation can be done, as this is a one pass scanner
+                                    this.addReference(this.sourceReferences.targetReferences, trimToken.toLocaleLowerCase(), lineNumber, token.currentCol);
+                                }
                             }
-                        }
                     }
                     continue;
                 }
@@ -914,8 +908,7 @@ export default class COBOLQuickParse {
                 // reset
                 if (this.skipToDot && endWithDot === true) {
                     this.skipToDot = false;
-                    this.scanForTOorIS = false;
-                    this.lastSelect = COBOLToken.Null;
+                    this.addReferencesDuringSkipToTag = false;
                 }
 
 
@@ -1309,14 +1302,11 @@ export default class COBOLQuickParse {
                         if (this.isValidLiteral(currentLower)) {
                             let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision, prevTokenLower);
                             this.addVariableOrConstant(currentLower, variableToken);
-                            if (prevTokenLower === 'select') {
-                                this.lastSelect = variableToken;
-                            }
                         }
 
                         if (prevTokenLower === "rd" || prevTokenLower === 'select') {
                             if (prevTokenLower === 'select') {
-                                this.scanForTOorIS = true;
+                                this.addReferencesDuringSkipToTag = true;
                             }
                             this.skipToDot = true;
                         }
