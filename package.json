@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.25",
+    "version": "6.2.26",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -982,7 +982,17 @@
                 "regexp": "^(.*),\\sline\\s(\\d+):\\s(.*)$",
                 "file": 1,
                 "line": 2,
-                "message": 3
+                "message": 3,
+                "loop": true
+            },
+            {
+                "name": "acucobol-warning-ccbl",
+                "regexp": "^(.*),\\sline\\s(\\d+):\\s(Warning|warning):\\s(.*)$",
+                "file": 1,
+                "line": 2,
+                "severity": 3,
+                "message": 4,
+                "loop": true
             }
         ],
         "problemMatchers": [
@@ -1050,6 +1060,14 @@
                     "absolute"
                 ],
                 "pattern": "$acucobol-ccbl"
+            },
+            {
+                "name": "acucobol-warning-ccbl",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$acucobol-warning-ccbl"
             }
         ],
         "taskDefinitions": [
