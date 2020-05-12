@@ -83,7 +83,7 @@ export function getTaskForCOBC(definition: GnuCOBCTaskDefinition, label?: string
 }
 
 
-export async function getCOBOLTasks_for_cobol(taskName: string, syntaxCheck: boolean): Promise<vscode.Task[]> {
+export async function getCOBOLTasks_for_mfcobol(taskName: string, syntaxCheck: boolean): Promise<vscode.Task[]> {
 	let workspaceFolder = vscode.workspace.rootPath;
 	let emptyTasks: vscode.Task[] = [];
 	if (!workspaceFolder) {
@@ -93,7 +93,7 @@ export async function getCOBOLTasks_for_cobol(taskName: string, syntaxCheck: boo
 	let copyBookArgs = "COPYPATH("+getLogicalCopybookdirs("", ";")+")";
 
 	let kind: MFCOBOLTaskDefinition = {
-		type: 'cobol',
+		type: 'mfcobol',
 		label: '',
 		extraArguments: copyBookArgs
 	};
@@ -127,7 +127,7 @@ export async function getCOBOLTasks_for_cobc(taskName: string, syntaxCheck: bool
 	return result;
 
 	/*
-	 "label": "cobol-syntax-check",
+	 "label": cobc-syntax-check",
             "type": "shell",
             "presentation": {
                 "echo": false,

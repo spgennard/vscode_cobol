@@ -27,7 +27,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
-import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_cobol, getTaskForCOBOL } from './taskdefs';
+import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 
 const util = require('util');
@@ -394,10 +394,10 @@ export function activate(context: ExtensionContext) {
     if (cobolLocation !== null) {
         let cobolTaskPromise4cobol: Thenable<Task[]> | undefined = undefined;
 
-        const taskProvider4cobc = tasks.registerTaskProvider('cobc', {
+        const taskProvider4cobc = tasks.registerTaskProvider('mfcobol', {
             provideTasks: () => {
                 if (!cobolTaskPromise4cobol) {
-                    cobolTaskPromise4cobol = getCOBOLTasks_for_cobol("cobol_syntax_check_with_mfcobol", true);
+                    cobolTaskPromise4cobol = getCOBOLTasks_for_mfcobol("cobol_syntax_check_with_mfcobol", true);
                 }
                 return cobolTaskPromise4cobol;
             },
