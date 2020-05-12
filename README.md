@@ -205,7 +205,7 @@ The example below shows you how you can create a single task to compile one prog
                     }
                 }
             },
-            "problemMatcher" : "$acucobol-ccbl"           
+            "problemMatcher" : [ "$acucobol-warning-ccbl", "$acucobol-ccbl" ]          
         }
     ]
 }
