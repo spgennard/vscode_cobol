@@ -9,10 +9,7 @@
     "typescript.tsc.autoDetect": "off",
     "coboleditor.ignorecolumn_b_onwards": false,
     "cSpell.enabled": false,
-    "coboleditor.copybookdirs": [
-        "CopyBooks",
-        "Shared"
-    ],
+    "coboleditor.copybookdirs": [    ],
     "coboleditor.copybookexts": [
         "cpy",
         "scr",

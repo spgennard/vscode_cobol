@@ -185,7 +185,7 @@ function isOutlineEnabled(): outlineFlag {
     return outlineFlag.On;
 }
 
-const DEFAULT_COPYBOOK_DIR = ["CopyBooks"];
+const DEFAULT_COPYBOOK_DIR:string[] = [];
 
 function expandEnvVars(startEnv: string) : string {
     let complete: boolean = false;

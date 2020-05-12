@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.27",
+    "version": "6.2.28",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -154,9 +154,7 @@
                             }
                         }
                     },
-                    "default": [
-                        "CopyBooks"
-                    ],
+                    "default": [],
                     "description": "COBOL CopyBook directories to search into"
                 },
                 "coboleditor.ignorecolumn_b_onwards": {

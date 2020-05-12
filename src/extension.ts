@@ -100,6 +100,7 @@ function initExtensions() {
 
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
     invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
+    invalidSearchDirectory.length = 0;
 
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var ddir = extsdir[extsdirpos];
