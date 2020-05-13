@@ -336,7 +336,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
      * for variables
      */
     if (VSCOBOLConfiguration.isCachingEnabled()) {
-        COBOLQuickParse.processOneFile(cacheDirectory, qcp, true);    /* ensure we have all the copybooks in the symbol cache */
+        COBOLQuickParse.processOneFile(cacheDirectory, qcp, false);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';

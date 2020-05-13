@@ -599,7 +599,7 @@ export default class COBOLQuickParse {
                         }
                     } else {
                         if (showError) {
-                            logMessage("   CopyBook: " + key + " (not found");
+                            logMessage("   CopyBook: " + key + " (not found)");
                         }
                     }
                 }
