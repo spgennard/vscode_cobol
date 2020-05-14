@@ -1114,7 +1114,7 @@
         "trie-prefix-tree": "^1.5.1",
         "vsce": "^1.75.0"
     },
-    "bundleDependencies": [
+    "extensionDependencies": [
         "bitlang.cobol-plus-pack",
         "broadcommfd.hlasm-language-support"
     ]
