@@ -1117,9 +1117,5 @@
     "bundleDependencies": [
         "bitlang.cobol-plus-pack",
         "broadcommfd.hlasm-language-support"
-
-    ],
-    "extensionDependencies": [
-        "bitlang.cobol-plus-pack"
     ]
 }
