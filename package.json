@@ -1113,5 +1113,11 @@
         "typescript-map": "^0.0.7",
         "trie-prefix-tree": "^1.5.1",
         "vsce": "^1.75.0"
-    }
+    },
+    "bundleDependencies": [
+        "bitlang.cobol-plus-pack"
+    ],
+    "extensionDependencies": [
+        "bitlang.cobol-plus-pack"
+    ]
 }
