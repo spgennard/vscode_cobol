@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "eg2.tslint"
+        "bitlang.cobol-plus-pack",
+        "broadcommfd.hlasm-language-support"
     ]
 }
