@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.33",
+    "version": "6.2.34",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1115,7 +1115,9 @@
         "vsce": "^1.75.0"
     },
     "bundleDependencies": [
-        "bitlang.cobol-plus-pack"
+        "bitlang.cobol-plus-pack",
+        "broadcommfd.hlasm-language-support"
+
     ],
     "extensionDependencies": [
         "bitlang.cobol-plus-pack"
