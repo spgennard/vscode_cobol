@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.29",
+    "version": "6.2.30",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -18,7 +18,6 @@
         "opencobol",
         "cobol-it",
         "cobolit",
-        "hlasm",
         "entcobol",
         "mfcobol",
         "bms"
@@ -47,7 +46,6 @@
         "onLanguage:GnuCOBOL",
         "onLanguage:entcobol",
         "onLanguage:JCL",
-        "onLanguage:hlasm",
         "onLanguage:bms",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
@@ -370,18 +368,6 @@
                     72,
                     80
                 ]
-            },
-            "[hlasm]": {
-                "files.autoGuessEncoding": false,
-                "editor.renderIndentGuides": false,
-                "editor.detectIndentation": false,
-                "editor.formatOnType": false,
-                "editor.autoIndent": "full",
-                "editor.rulers": [
-                    71,
-                    72,
-                    80
-                ]
             }
         },
         "languages": [
@@ -500,18 +486,6 @@
                 "configuration": "./pli.configuration.json"
             },
             {
-                "id": "hlasm",
-                "extensions": [
-                    ".hlasm",
-                    ".asm",
-                    ".s",
-                    ".asmpgm",
-                    ".mac",
-                    ".asmmac"
-                ],
-                "configuration": "./hlasm.configuration.json"
-            },
-            {
                 "id": "entcobol",
                 "aliases": [
                     "Enterprise COBOL for z/OS",
@@ -576,11 +550,6 @@
                 "language": "pli",
                 "scopeName": "source.pli",
                 "path": "./syntaxes/PLI.tmLanguage.json"
-            },
-            {
-                "language": "hlasm",
-                "scopeName": "source.hlasm",
-                "path": "./syntaxes/hlasm.tmLanguage.json"
             },
             {
                 "language": "entcobol",
@@ -1144,5 +1113,9 @@
         "typescript-map": "^0.0.7",
         "trie-prefix-tree": "^1.5.1",
         "vsce": "^1.75.0"
-    }
+    },
+    "extensionDependencies": [
+        "kelosky.ibm-assembler"
+    ]
+
 }
