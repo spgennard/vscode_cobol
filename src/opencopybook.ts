@@ -50,16 +50,19 @@ function extractCopyBoolFilename(str: string) {
         let copyRegs: RegExp[] = [
             new RegExp(".*copy\\s*[\"'](.*)[\"'].*$", "i"),
             new RegExp(".*copy\\s*[\"'](.*)[\"']$", "i"),
-            new RegExp(".*copy\\s*(.*)\\.$", "i"),
-            new RegExp(".*copy\\s*(.*)\\s.*$", "i"),
+            new RegExp(".*copy\\s*[\"'](.*)[\"']\\replacing.*$", "i"),
+            new RegExp(".*copy\\s*(.*)\\sreplacing.*$", "i"),
             new RegExp(".*copy\\s*(.*)$", "i"),
+            new RegExp(".*copy\\s*(.*)\\s.*$", "i"),
+            new RegExp(".*copy\\s*(.*)\\.$", "i")
         ];
 
         for (let regPos = 0; regPos < copyRegs.length; regPos++) {
             try {
                 result = getFirstMatchOrDefault(str, copyRegs[regPos]);
                 if (result !== null && result.length > 0) {
-                    //console.log("Found ["+result+"] test "+regPos+"["+strl+"]");
+                    let a= "Found ["+result+"] test "+regPos+"["+copyRegs+"]";
+                    console.log(a);
                     return result;
                 }
             } catch (e) {
