@@ -1019,7 +1019,9 @@ export default class COBOLQuickParse {
                     let trimmedCurrent = this.trimLiteral(current);
                     let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
                     this.programs.push(ctoken);
-                    this.callTargets.set(trimmedCurrent, ctoken);
+                    if (trimmedCurrent.indexOf(" ") !== -1 && token.isTokenPresent("external") === false) {
+                        this.callTargets.set(trimmedCurrent, ctoken);
+                    }
 
                     // So we don't have any division?
                     // if (this.currentDivision === COBOLToken.Null) {
