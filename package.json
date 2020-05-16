@@ -505,7 +505,9 @@
                 "id": "hlasm",
                 "extensions": [
                     ".hlasm",
-                    ".asm"
+                    ".asm",
+                    ".mac",
+                    ".mlc"
                 ],
                 "aliases": []
             }

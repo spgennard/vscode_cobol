@@ -3,7 +3,9 @@
   "name": "hlasm",
   "fileTypes": [
     "hlasm",
-    "asm"
+    "asm",
+    "mac",
+    "mlc"
   ],
   "patterns": [
     {
@@ -14,6 +16,9 @@
     },
     {
       "include": "#double.strings"
+    },
+    {
+      "include" : "#single.strings"
     },
     {
       "include": "#label"
@@ -65,7 +70,7 @@
       "name": "string.quoted.double.hlasm"
     },
     "directive.single.strings": {
-      "match": "(^.*(?i:title\\s+))('.*')",
+      "match": "(?i:title\\s+)('.*')",
       "captures": {
         "0": {
           "name": "keyword.other.hlasm"
@@ -75,6 +80,22 @@
         }
       }
     },
+    "single.strings": {
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.hlasm"
+        }
+      },
+      "end": "('|$)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.hlasm"
+        }
+      },
+      "name": "string.quoted.single.hlasm"
+    },
+
     "label": {
       "patterns": [
         {

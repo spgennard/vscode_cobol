@@ -119,6 +119,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "s":
             case "asmpgm":
             case "mac":
+            case "mlc":
             case "asmmac":
                 if (this.hlasmItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.hlasmItems.push(this.newSourceItem("hlasm", base, file, 0));
