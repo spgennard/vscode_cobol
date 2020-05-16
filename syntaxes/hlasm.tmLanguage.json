@@ -82,7 +82,7 @@
     "general_instructions": {
       "patterns": [
         {
-          "match": "(^|\\b)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
+          "match": "(^|\\b)(?i:a|ahi|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|chi|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lhi|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
           "name": "keyword"
         }
       ]
@@ -224,7 +224,7 @@
               ]
             },
             "2": {
-              "name": "comment.line"
+              "name": "comment.line.identification.sequence.field"
             }
           }
         }

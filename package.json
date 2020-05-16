@@ -47,6 +47,7 @@
         "onLanguage:entcobol",
         "onLanguage:JCL",
         "onLanguage:bms",
+        "onLanguage:hlasm",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
