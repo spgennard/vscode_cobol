@@ -504,7 +504,8 @@
             {
                 "id": "hlasm",
                 "extensions": [
-                    ".hlasm"
+                    ".hlasm",
+                    ".asm"
                 ],
                 "aliases": []
             }

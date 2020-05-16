@@ -2,26 +2,33 @@
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "hlasm",
   "fileTypes": [
-    "hlasm"
+    "hlasm",
+    "asm"
   ],
   "patterns": [
-    {
-      "include": "#comment35plus"
-    },
     {
       "include": "#comment"
     },
     {
-      "include": "#double.strings"
+      "include": "#directive.single.strings"
     },
     {
-      "include": "#directive.single.strings"
+      "include": "#double.strings"
     },
     {
       "include": "#label"
     },
     {
       "include": "#instructions"
+    },
+    {
+      "include": "#branch_instructions"
+    },
+    {
+      "include": "#directives"
+    },
+    {
+      "include": "#registers"
     }
   ],
   "repository": {
@@ -49,7 +56,7 @@
       "name": "string.quoted.double.cobol"
     },
     "directive.single.strings": {
-      "match": "(?i:title\\s+)('.*')",
+      "match": "(^.*(?i:title\\s+))('.*')",
       "captures": {
         "0": {
           "name": "keyword.other.hlasm"
@@ -75,6 +82,30 @@
         }
       ]
     },
+    "registers" : {
+      "patterns": [
+        {
+        "match" : "\\b(?i:r0|r1|r2|r3|r4|r5|r6|r7|r8|r9|r10|r11|r12|r13|r14|r15)(\\b|,)",
+        "name": "keyword.hlasm"
+        }
+      ]
+    },
+    "branch_instructions": {
+      "patterns": [
+        {
+          "match": "\\b(?i:b|bct|be|ber|bh|bhr|bl|blr|bm|bmr|bne|bner|bnh|bnhr|bnl|bnlr|bnm|bnmr|bno|bnor|bnp|bnpr|bnz|bnzr|bo|bor|bor|bp|bpr|br|bz|bz|bzr|nop|nopr)\\b",
+          "name": "keyword.control.hlasm"
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "match": "\\b(?i:amode|com|copy|csect|dc|ds|drop|dsect|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)\\b",
+          "name": "keyword.other.hlasm"
+        }
+      ]
+    },
     "comment35plus": {
       "patterns": [
         {
@@ -84,6 +115,9 @@
               "patterns": [
                 {
                   "include": "#label"
+                },
+                {
+                  "include": "#instructions"
                 }
               ]
             },
