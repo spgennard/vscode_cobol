@@ -18,6 +18,12 @@
       "include": "#directive.single.strings"
     },
     {
+      "include": "#hex.strings"
+    },
+    {
+      "include": "#hex.strings.invalid"
+    },
+    {
       "include": "#double.strings"
     },
     {
@@ -79,12 +85,20 @@
           "name": "keyword.other.hlasm"
         },
         "1": {
-          "name": "string.hlasm"
+          "name": "string.directive.hlasm"
         }
       }
     },
+    "hex.strings": {
+      "match": "([nN][xX]|[hHxX])'\\h*'",
+      "name": "constant.numeric.integer.hexadecimal.hlasm"
+    },
+    "hex.strings.invalid": {
+      "match": "([nN][xX]|[hHxX])'.*'",
+      "name": "invalid.illegal.hexadecimal.hlasm"
+    },
     "single.strings": {
-      "match": "('.*')",
+      "match": "\\s('.*')",
       "name": "string.hlasm"
     },
     "label": {
