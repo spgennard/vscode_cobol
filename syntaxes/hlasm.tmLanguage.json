@@ -9,6 +9,9 @@
   ],
   "patterns": [
     {
+      "include": "#label_directive_comment"
+    },
+    {
       "include": "#todo"
     },
     {
@@ -18,34 +21,10 @@
       "include": "#directive.single.strings"
     },
     {
-      "include": "#char.strings"
-    },
-    {
-      "include": "#char.ln.strings"
-    },
-    {
-      "include": "#hex.strings"
-    },
-    {
-      "include": "#hex.strings.invalid"
-    },
-    {
-      "include": "#double.strings"
-    },
-    {
-      "include": "#single.strings"
-    },
-    {
-      "include": "#label"
-    },
-    {
       "include": "#instructions"
     },
     {
       "include": "#branch_instructions"
-    },
-    {
-      "include": "#directives"
     },
     {
       "include": "#parameters"
@@ -104,7 +83,11 @@
       "name": "string.character.hlasm"
     },
     "hex.strings": {
-      "match": "([xX])'\\h*'",
+      "match": "(([xX]|[fF]))'\\h*'",
+      "name": "constant.numeric.integer.hexadecimal.hlasm"
+    },
+    "hex.ln.strings": {
+      "match": "(([xX]|[xX][lL]))([0-9]*)'\\h*'",
       "name": "constant.numeric.integer.hexadecimal.hlasm"
     },
     "hex.strings.invalid": {
@@ -119,7 +102,7 @@
       "patterns": [
         {
           "match": "(^[0-9a-z@A-Z$#_]+)",
-          "name": "entity.name.section.hlasm"
+          "name": "entity.name.function"
         }
       ]
     },
@@ -150,8 +133,8 @@
     "directives": {
       "patterns": [
         {
-          "match": "\\b(?i:amode|com|copy|csect|dc|ds|drop|dsect|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)\\b",
-          "name": "keyword.other.hlasm"
+          "match": "\\b(?i:amode|com|copy|csect|dc|dsect|ds|drop|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)",
+          "name": "keyword.other.directives"
         }
       ]
     },
@@ -159,7 +142,7 @@
       "patterns": [
         {
           "match": "\\b(?i:blksize|dcb|ddname|dsorg|eodad|gen|id|lrecl|lv|macrf|nogen|pdata|recfm|record|ru|storage)\\b",
-          "name": "variable.parameter.hlasm"
+          "name": "variable.parameter"
         }
       ]
     },
@@ -167,15 +150,15 @@
       "patterns": [
         {
           "match": "\\b(?i:and:eq:ge:gt:le:lt:ne:not:or)\\b",
-          "name": "keyword.operator.hlasm"
+          "name": "keyword.operator"
         }
       ]
     },
     "macros": {
       "patterns": [
         {
-          "match": "^(\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)",
-          "name": "entity.name.function.hlasm"
+          "match": "^(\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)\\b",
+          "name": "entity.name.function"
         }
       ]
     },
@@ -185,37 +168,53 @@
           "match": "(^\\*)(:(?i:todo):)(.{,63})",
           "captures": {
             "1": {
-              "name": "comment.line.todo.hlasm"
+              "name": "comment.line.todo"
             },
             "2": {
-              "name": "token.warning.hlasm"
+              "name": "token.warning"
             },
             "3": {
-              "name": "comment.line.hlasm"
+              "name": "comment.line"
             }
           }
         }
       ]
     },
-    "comment35plus": {
+    "constants": {
       "patterns": [
         {
-          "match": "(^.{34,34}?)(.{37,37})",
-          "captures": {
-            "1": {
-              "patterns": [
-                {
-                  "include": "#label"
-                },
-                {
-                  "include": "#instructions"
-                }
-              ]
-            },
-            "2": {
-              "name": "comment.hlasm"
-            }
-          }
+          "include": "#char.strings"
+        },
+        {
+          "include": "#char.ln.strings"
+        },
+        {
+          "include": "#hex.strings"
+        },
+        {
+          "include": "#hex.ln.strings"
+        },
+        {
+          "include": "#hex.strings.invalid"
+        },
+        {
+          "include": "#double.strings"
+        },
+        {
+          "include": "#single.strings"
+        }
+      ]
+    },
+    "label_directive_comment": {
+      "patterns": [
+        {
+          "include": "#label"
+        },
+        {
+          "include": "#directives"
+        },
+        {
+          "include": "#constants"
         }
       ]
     }
