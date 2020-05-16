@@ -7,6 +7,12 @@
   "patterns": [
     {
       "include": "#comment"
+    },
+    {
+      "include": "#double.strings"
+    },
+    {
+      "include": "#directive.single.strings"
     }
   ],
   "repository": {
@@ -15,6 +21,41 @@
         {
           "match": "^(\\*.{,71})|(\\.\\*.{,70})",
           "name": "comment.hlasm"
+        }
+      ]
+    },
+    "double.strings": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.hlasm"
+        }
+      },
+      "end": "(\"|$)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.hlasm"
+        }
+      },
+      "name": "string.quoted.double.cobol"
+    },
+    "directive.single.strings": {
+      "match": "(?i:title\\s+)('.*')",
+      "captures": {
+        "0": {
+          "name": "keyword.other.hlasm"
+        },
+        "1" : {
+          "name" : "string.hlasm"
+        }
+      }
+
+    },
+    "instructions": {
+      "patterns": [
+        {
+          "match": "x",
+          "name": "x"
         }
       ]
     }
