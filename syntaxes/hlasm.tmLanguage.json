@@ -13,6 +13,9 @@
     },
     {
       "include": "#directive.single.strings"
+    },
+    {
+      "include": "#label"
     }
   ],
   "repository": {
@@ -45,11 +48,18 @@
         "0": {
           "name": "keyword.other.hlasm"
         },
-        "1" : {
-          "name" : "string.hlasm"
+        "1": {
+          "name": "string.hlasm"
         }
       }
-
+    },
+    "label": {
+      "patterns": [
+        {
+          "match": "(^[0-9a-z@A-Z$#_]+)",
+          "name": "entity.name.section.hlasm"
+        }
+      ]
     },
     "instructions": {
       "patterns": [
