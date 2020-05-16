@@ -500,6 +500,13 @@
                     ".bms"
                 ],
                 "aliases": []
+            },
+            {
+                "id": "hlasm",
+                "extensions": [
+                    ".hlasm"
+                ],
+                "aliases": []
             }
         ],
         "grammars": [
@@ -560,6 +567,11 @@
                 "language": "bms",
                 "scopeName": "source.bms",
                 "path": "./syntaxes/bms.tmLanguage.json"
+            },
+            {
+                "language": "hlasm",
+                "scopeName": "source.hlasm",
+                "path": "./syntaxes/hlasm.tmLanguage.json"
             }
         ],
         "commands": [
