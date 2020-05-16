@@ -18,6 +18,9 @@
       "include": "#directive.single.strings"
     },
     {
+      "include": "#char.strings"
+    },
+    {
       "include": "#hex.strings"
     },
     {
@@ -89,12 +92,16 @@
         }
       }
     },
+    "char.strings": {
+      "match": "([cC]|([cC][aA])|([cC][uU]))'[a-zA-Z0-9\\s]*'",
+      "name": "string.value.hlasm"
+    },
     "hex.strings": {
-      "match": "([nN][xX]|[hHxX])'\\h*'",
+      "match": "([xX])'\\h*'",
       "name": "constant.numeric.integer.hexadecimal.hlasm"
     },
     "hex.strings.invalid": {
-      "match": "([nN][xX]|[hHxX])'.*'",
+      "match": "([xX])'.*'",
       "name": "invalid.illegal.hexadecimal.hlasm"
     },
     "single.strings": {
@@ -112,7 +119,7 @@
     "instructions": {
       "patterns": [
         {
-          "match": "^(\\b|\\s+)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
+          "match": "^(\\s+)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
           "name": "keyword.hlasm"
         }
       ]
