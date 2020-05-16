@@ -21,6 +21,9 @@
       "include": "#char.strings"
     },
     {
+      "include": "#char.ln.strings"
+    },
+    {
       "include": "#hex.strings"
     },
     {
@@ -93,8 +96,12 @@
       }
     },
     "char.strings": {
-      "match": "([cC]|([cC][aA])|([cC][uU]))'[a-zA-Z0-9\\s]*'",
-      "name": "string.value.hlasm"
+      "match": "(([cC])|([cC][uU]))'.*'",
+      "name": "string.character.hlasm"
+    },
+    "char.ln.strings": {
+      "match": "(([cC][lL])|([cC][uU][lL]))([0-9]*)'.*'",
+      "name": "string.character.hlasm"
     },
     "hex.strings": {
       "match": "([xX])'\\h*'",
