@@ -28,7 +28,16 @@
       "include": "#directives"
     },
     {
+      "include": "#parameters"
+    },
+    {
       "include": "#registers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#macros"
     }
   ],
   "repository": {
@@ -53,7 +62,7 @@
           "name": "punctuation.definition.string.end.hlasm"
         }
       },
-      "name": "string.quoted.double.cobol"
+      "name": "string.quoted.double.hlasm"
     },
     "directive.single.strings": {
       "match": "(^.*(?i:title\\s+))('.*')",
@@ -77,7 +86,7 @@
     "instructions": {
       "patterns": [
         {
-          "match": "\\b(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
+          "match": "^(\\b|\\s+)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
           "name": "keyword.hlasm"
         }
       ]
@@ -93,7 +102,7 @@
     "branch_instructions": {
       "patterns": [
         {
-          "match": "\\b(?i:b|bct|be|ber|bh|bhr|bl|blr|bm|bmr|bne|bner|bnh|bnhr|bnl|bnlr|bnm|bnmr|bno|bnor|bnp|bnpr|bnz|bnzr|bo|bor|bor|bp|bpr|br|bz|bz|bzr|nop|nopr)\\b",
+          "match": "^(\\b|\\s+)(?i:b|bct|be|ber|bh|bhr|bl|blr|bm|bmr|bne|bner|bnh|bnhr|bnl|bnlr|bnm|bnmr|bno|bnor|bnp|bnpr|bnz|bnzr|bo|bor|bor|bp|bpr|br|bz|bz|bzr|nop|nopr)\\b",
           "name": "keyword.control.hlasm"
         }
       ]
@@ -103,6 +112,30 @@
         {
           "match": "\\b(?i:amode|com|copy|csect|dc|ds|drop|dsect|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)\\b",
           "name": "keyword.other.hlasm"
+        }
+      ]
+    },
+    "parameters" : {
+      "patterns": [
+        {
+          "match": "\\b(?i:blksize|dcb|ddname|dsorg|eodad|gen|id|lrecl|lv|macrf|nogen|pdata|recfm|record|ru|storage)\\b",
+          "name" : "variable.parameter.hlasm"
+        }
+      ]
+    },
+    "operators" : {
+      "patterns": [
+        {
+          "match" : "\\b(?i:and:eq:ge:gt:le:lt:ne:not:or)\\b",
+          "name" : "keyword.operator.hlasm"
+        }
+      ]
+    },
+    "macros" : {
+      "patterns": [
+        {
+          "match": "^(\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)",
+          "name" : "entity.name.function.hlasm"
         }
       ]
     },
