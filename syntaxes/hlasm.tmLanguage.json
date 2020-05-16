@@ -1,13 +1,23 @@
 {
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "hlasm",
   "fileTypes": [
     "hlasm"
   ],
   "patterns": [
-      {
-      "match": "^(\\*.{,71})|(\\.\\*.{,70})",
-      "name": "comment.hlasm"
+    {
+      "include": "#comment"
     }
   ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "match": "^(\\*.{,71})|(\\.\\*.{,70})",
+          "name": "comment.hlasm"
+        }
+      ]
+    }
+  },
   "scopeName": "source.hlasm"
 }
