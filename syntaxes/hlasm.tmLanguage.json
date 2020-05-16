@@ -1,0 +1,13 @@
+{
+  "name": "hlasm",
+  "fileTypes": [
+    "hlasm"
+  ],
+  "patterns": [
+      {
+      "match": "^(\\*.{,71})|(\\.\\*.{,70})",
+      "name": "comment.hlasm"
+    }
+  ],
+  "scopeName": "source.hlasm"
+}
