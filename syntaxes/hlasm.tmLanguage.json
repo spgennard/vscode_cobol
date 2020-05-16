@@ -9,34 +9,7 @@
   ],
   "patterns": [
     {
-      "include": "#label_directive_comment"
-    },
-    {
-      "include": "#todo"
-    },
-    {
-      "include": "#comment"
-    },
-    {
-      "include": "#directive.single.strings"
-    },
-    {
-      "include": "#instructions"
-    },
-    {
-      "include": "#branch_instructions"
-    },
-    {
-      "include": "#parameters"
-    },
-    {
-      "include": "#registers"
-    },
-    {
-      "include": "#operators"
-    },
-    {
-      "include": "#macros"
+      "include": "#line"
     }
   ],
   "repository": {
@@ -106,18 +79,10 @@
         }
       ]
     },
-    "instructions": {
+    "general_instructions": {
       "patterns": [
         {
-          "match": "^(\\s+)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
-          "name": "keyword.hlasm"
-        }
-      ]
-    },
-    "registers": {
-      "patterns": [
-        {
-          "match": "\\b(?i:r0|r1|r2|r3|r4|r5|r6|r7|r8|r9|r10|r11|r12|r13|r14|r15)(\\b|,)",
+          "match": "^(\\b|\\s+)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
           "name": "keyword.hlasm"
         }
       ]
@@ -133,7 +98,7 @@
     "directives": {
       "patterns": [
         {
-          "match": "\\b(?i:amode|com|copy|csect|dc|dsect|ds|drop|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)",
+          "match": "\\b(?i:amode|com|copy|csect|dc|dsect|ds|drop|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)\\b",
           "name": "keyword.other.directives"
         }
       ]
@@ -180,6 +145,16 @@
         }
       ]
     },
+    "instructions": {
+      "patterns": [
+        {
+          "include": "#general_instructions"
+        },
+        {
+          "include": "#branch_instructions"
+        }
+      ]
+    },
     "constants": {
       "patterns": [
         {
@@ -215,6 +190,43 @@
         },
         {
           "include": "#constants"
+        }
+      ]
+    },
+    "line": {
+      "patterns": [
+        {
+          "match": "^(.{,72})([0-9]*$)",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#comment"
+                },
+                {
+                  "include": "#label_directive_comment"
+                },
+                {
+                  "include": "#instructions"
+                },
+                {
+                  "include": "#directive.single.strings"
+                },
+                {
+                  "include": "#operators"
+                },
+                {
+                  "include": "#macros"
+                },
+                {
+                  "include": "#parameters"
+                }
+              ]
+            },
+            "2": {
+              "name": "comment.line"
+            }
+          }
         }
       ]
     }
