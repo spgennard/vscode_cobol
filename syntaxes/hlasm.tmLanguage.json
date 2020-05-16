@@ -17,7 +17,7 @@
       "patterns": [
         {
           "match": "^(\\*.{,71})|(^\\.\\*.{,70})",
-          "name": "comment.hlasm"
+          "name": "comment"
         }
       ]
     },
@@ -25,51 +25,51 @@
       "begin": "\"",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.definition.string.begin.hlasm"
+          "name": "punctuation.definition.string.begin"
         }
       },
       "end": "(\"|$)",
       "endCaptures": {
         "0": {
-          "name": "punctuation.definition.string.end.hlasm"
+          "name": "punctuation.definition.string.end"
         }
       },
-      "name": "string.quoted.double.hlasm"
+      "name": "string.quoted.double"
     },
     "directive.single.strings": {
       "match": "(?i:title\\s+)('.*')",
       "captures": {
         "0": {
-          "name": "keyword.other.hlasm"
+          "name": "keyword.other"
         },
         "1": {
-          "name": "string.directive.hlasm"
+          "name": "string.directive"
         }
       }
     },
     "char.strings": {
       "match": "(([cC])|([cC][uU]))'.*'",
-      "name": "string.character.hlasm"
+      "name": "string.character"
     },
     "char.ln.strings": {
       "match": "(([cC][lL])|([cC][uU][lL]))([0-9]*)'.*'",
-      "name": "string.character.hlasm"
+      "name": "string.character"
     },
     "hex.strings": {
       "match": "(([xX]|[fF]))'\\h*'",
-      "name": "constant.numeric.integer.hexadecimal.hlasm"
+      "name": "constant.numeric.integer.hexadecimal"
     },
     "hex.ln.strings": {
       "match": "(([xX]|[xX][lL]))([0-9]*)'\\h*'",
-      "name": "constant.numeric.integer.hexadecimal.hlasm"
+      "name": "constant.numeric.integer.hexadecimal"
     },
     "hex.strings.invalid": {
       "match": "([xX])'.*'",
-      "name": "invalid.illegal.hexadecimal.hlasm"
+      "name": "invalid.illegal.hexadecimal"
     },
     "single.strings": {
       "match": "\\s('.*')",
-      "name": "string.hlasm"
+      "name": "string"
     },
     "label": {
       "patterns": [
@@ -82,16 +82,16 @@
     "general_instructions": {
       "patterns": [
         {
-          "match": "^(\\b|\\s+)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
-          "name": "keyword.hlasm"
+          "match": "(^|\\b)(?i:a|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
+          "name": "keyword"
         }
       ]
     },
     "branch_instructions": {
       "patterns": [
         {
-          "match": "^(\\b|\\s+)(?i:b|bct|be|ber|bh|bhr|bl|blr|bm|bmr|bne|bner|bnh|bnhr|bnl|bnlr|bnm|bnmr|bno|bnor|bnp|bnpr|bnz|bnzr|bo|bor|bor|bp|bpr|br|bz|bz|bzr|nop|nopr)\\b",
-          "name": "keyword.control.hlasm"
+          "match": "(^|\\b)(?i:b|bct|be|ber|bh|bhr|bl|blr|bm|bmr|bne|bner|bnh|bnhr|bnl|bnlr|bnm|bnmr|bno|bnor|bnp|bnpr|bnz|bnzr|bo|bor|bor|bp|bpr|br|bz|bz|bzr|nop|nopr)\\b",
+          "name": "keyword.control"
         }
       ]
     },
@@ -122,7 +122,7 @@
     "macros": {
       "patterns": [
         {
-          "match": "^(\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)\\b",
+          "match": "(^|\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)\\b",
           "name": "entity.name.function"
         }
       ]
