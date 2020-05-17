@@ -13,6 +13,9 @@
     },
     {
       "include": "#line"
+    },
+    {
+      "include": "#the_line"
     }
   ],
   "repository": {
@@ -82,7 +85,7 @@
     "general_instructions": {
       "patterns": [
         {
-          "match": "(^|\\b)(?i:a|ahi|ah|al|alr|ap|ar|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|chi|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lhi|lh|lm|lnr|lpr|lr|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
+          "match": "(^|\\b)(?i:a|ahi|ah|al|alr|ap|ar|axr|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|chi|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|cxr|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lhi|lh|lm|lnr|lpr|lr|lx|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
           "name": "keyword"
         }
       ]
@@ -94,6 +97,49 @@
           "name": "keyword.control"
         }
       ]
+    },
+    "start_with_label": {
+      "match": "^([0-9a-z@A-Z$#_\\$]+)\\s+(\\w+)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#label"
+            }
+          ]
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#instructions"
+            },
+            {
+              "include": "#directives"
+            },
+            {
+              "include": "#macros"
+            }
+          ]
+        }
+      }
+    },
+    "start_with_no_label": {
+      "match": "^\\s+(\\w+)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#instructions"
+            },
+            {
+              "include": "#directives"
+            },
+            {
+              "include": "#macros"
+            }
+          ]
+        }
+      }
     },
     "directives": {
       "patterns": [
@@ -124,24 +170,6 @@
         {
           "match": "(^|\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)\\b",
           "name": "entity.name.function"
-        }
-      ]
-    },
-    "todo": {
-      "patterns": [
-        {
-          "match": "(^\\*)(:(?i:todo):)(.{,63})",
-          "captures": {
-            "1": {
-              "name": "comment.line.todo"
-            },
-            "2": {
-              "name": "token.warning"
-            },
-            "3": {
-              "name": "comment.line"
-            }
-          }
         }
       ]
     },
@@ -180,13 +208,22 @@
         }
       ]
     },
-    "label_directive_comment": {
+    "the_line" : {
       "patterns": [
         {
-          "include": "#label"
+          "include": "#comment"
         },
         {
-          "include": "#directives"
+          "include": "#start_with_label"
+        },
+        {
+          "include": "#start_with_no_label"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#parameters"
         },
         {
           "include": "#constants"
@@ -196,27 +233,12 @@
     "line": {
       "patterns": [
         {
-          "match": "^(.{,71})[ xX]([0-9]*$)",
+          "match": "^(.{71,71})[ xX]([0-9]*$)",
           "captures": {
             "1": {
               "patterns": [
                 {
-                  "include": "#comment"
-                },
-                {
-                  "include": "#label_directive_comment"
-                },
-                {
-                  "include": "#instructions"
-                },
-                {
-                  "include": "#operators"
-                },
-                {
-                  "include": "#macros"
-                },
-                {
-                  "include": "#parameters"
+                  "include": "#the_line"
                 }
               ]
             },
