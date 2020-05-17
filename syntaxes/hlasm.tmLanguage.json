@@ -9,14 +9,25 @@
   ],
   "patterns": [
     {
+      "include": "#comment.full"
+    },
+    {
       "include": "#line"
     }
   ],
   "repository": {
+    "comment.full": {
+      "patterns": [
+        {
+          "match": "^(\\*.*$)|(^\\.\\*.*$)",
+          "name": "comment"
+        }
+      ]
+    },
     "comment": {
       "patterns": [
         {
-          "match": "^(\\*.{,71})|(^\\.\\*.{,70})",
+          "match": "^(\\*.{,70})|(^\\.\\*.{,69})",
           "name": "comment"
         }
       ]
@@ -36,17 +47,6 @@
       },
       "name": "string.quoted.double"
     },
-    "directive.single.strings": {
-      "match": "(?i:title\\s+)('.*')",
-      "captures": {
-        "0": {
-          "name": "keyword.other"
-        },
-        "1": {
-          "name": "string.directive"
-        }
-      }
-    },
     "char.strings": {
       "match": "(([cC])|([cC][uU]))'.*'",
       "name": "string.character"
@@ -56,11 +56,11 @@
       "name": "string.character"
     },
     "hex.strings": {
-      "match": "(([xX]|[fF]))'\\h*'",
+      "match": "([0-9]*([xX]|[fF]))'\\h*'",
       "name": "constant.numeric.integer.hexadecimal"
     },
     "hex.ln.strings": {
-      "match": "(([xX]|[xX][lL]))([0-9]*)'\\h*'",
+      "match": "([0-9]*([xX]|[xX][lL]))([0-9]*)'\\h*'",
       "name": "constant.numeric.integer.hexadecimal"
     },
     "hex.strings.invalid": {
@@ -74,7 +74,7 @@
     "label": {
       "patterns": [
         {
-          "match": "(^[0-9a-z@A-Z$#_]+)",
+          "match": "(^[0-9a-z@A-Z$#_\\$]+)",
           "name": "entity.name.function"
         }
       ]
@@ -106,7 +106,7 @@
     "parameters": {
       "patterns": [
         {
-          "match": "\\b(?i:blksize|dcb|ddname|dsorg|eodad|gen|id|lrecl|lv|macrf|nogen|pdata|recfm|record|ru|storage)\\b",
+          "match": "\\b(?i:blksize|dcb|ddname|dsorg|eodad|gen|id|lrecl|lv|macrf|nogen|pdata|recfm|record|ru|storage|synad)\\b",
           "name": "variable.parameter"
         }
       ]
@@ -196,7 +196,7 @@
     "line": {
       "patterns": [
         {
-          "match": "^(.{,72})([0-9]*$)",
+          "match": "^(.{,71})[ xX]([0-9]*$)",
           "captures": {
             "1": {
               "patterns": [
@@ -208,9 +208,6 @@
                 },
                 {
                   "include": "#instructions"
-                },
-                {
-                  "include": "#directive.single.strings"
                 },
                 {
                   "include": "#operators"
