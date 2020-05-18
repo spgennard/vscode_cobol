@@ -55,7 +55,11 @@
       "name": "string.character"
     },
     "char.ln.strings": {
-      "match": "(([cC][lL])|([cC][uU][lL]))([0-9]*)'.*'",
+      "match": "(([0-9]*)([cC][lL])|([cC][uU][lL]))([0-9]*)'.*'",
+      "name": "string.character"
+    },
+    "char.def.strings": {
+      "match": "(([cC][lL]([0-9]+))|([cC]([0-9]+))|([cC][uU])([0-9]+))",
       "name": "string.character"
     },
     "hex.strings": {
@@ -190,6 +194,9 @@
         },
         {
           "include": "#char.ln.strings"
+        },
+        {
+          "include": "#char.def.strings"
         },
         {
           "include": "#hex.strings"
