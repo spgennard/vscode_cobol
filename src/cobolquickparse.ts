@@ -1017,7 +1017,7 @@ export default class COBOLQuickParse {
                 // handle program-id
                 if (prevTokenLower === "program-id" && current.length !== 0) {
                     let trimmedCurrent = this.trimLiteral(current);
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
                     this.programs.push(ctoken);
                     if (trimmedCurrent.indexOf(" ") !== -1 && token.isTokenPresent("external") === false) {
                         this.callTargets.set(trimmedCurrent, ctoken);

@@ -63,8 +63,8 @@ function extractCopyBoolFilename(str: string) {
             try {
                 result = getFirstMatchOrDefault(str, copyRegs[regPos]);
                 if (result !== null && result.length > 0) {
-                    let a= "Found ["+result+"] test "+regPos+"["+copyRegs+"]";
-                    console.log(a);
+                    // let a= "Found ["+result+"] test "+regPos+"["+copyRegs+"]";
+                    // console.log(a);
                     return result;
                 }
             } catch (e) {
