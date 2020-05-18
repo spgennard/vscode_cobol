@@ -50,8 +50,10 @@ function extractCopyBoolFilename(str: string) {
         let copyRegs: RegExp[] = [
             new RegExp(".*copy\\s*[\"'](.*)[\"'].*$", "i"),
             new RegExp(".*copy\\s*[\"'](.*)[\"']$", "i"),
-            new RegExp(".*copy\\s*[\"'](.*)[\"']\\replacing.*$", "i"),
-            new RegExp(".*copy\\s*(.*)\\sreplacing.*$", "i"),
+            new RegExp(".*copy\\s*[\"'](.*)[\"']\\s+suppress.*$", "i"),
+            new RegExp(".*copy\\s*(.*)\\s+suppress.*$", "i"),
+            new RegExp(".*copy\\s*[\"'](.*)[\"']\\s+replacing.*$", "i"),
+            new RegExp(".*copy\\s*(.*)\\s+replacing.*$", "i"),
             new RegExp(".*copy\\s*(.*)$", "i"),
             new RegExp(".*copy\\s*(.*)\\s.*$", "i"),
             new RegExp(".*copy\\s*(.*)\\.$", "i")
