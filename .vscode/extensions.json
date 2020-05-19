@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "bitlang.cobol-plus-pack",
-        "broadcommfd.hlasm-language-support"
+        "bitlang.cobol-plus-pack"
     ]
 }

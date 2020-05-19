@@ -20,6 +20,7 @@ var lzjs = require('lzjs');
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
     ProgramId = "Program-Id",
+    ImplicitProgramId = "ImplicitProgramId-Id",
     FunctionId = "Function-Id",
     EndFunctionId = "EndFunctionId",
     Constructor = "Constructor",
@@ -324,6 +325,8 @@ export default class COBOLQuickParse {
     public cpPerformTargets: any | undefined;
     public cpConstantsOrVars: any | undefined;
 
+    public ImplicitProgramId: string = "";
+
     skipToDot: boolean = false;
     addReferencesDuringSkipToTag: boolean = false;
 
@@ -362,6 +365,7 @@ export default class COBOLQuickParse {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
+        this.ImplicitProgramId = path.basename(filename, path.extname(filename));
         this.lastModifiedTime = stat.mtimeMs;
         this.inProcedureDivision = false;
         this.inDeclaratives = false;
@@ -518,8 +522,14 @@ export default class COBOLQuickParse {
 
         this.addinMissingEndlings(sourceHandler);
 
+        if (this.ImplicitProgramId.length !== 0) {
+            let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId,0,"",this.ImplicitProgramId,this.ImplicitProgramId,undefined);
+            this.callTargets.set(this.ImplicitProgramId, ctoken);
+        }
+
         if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
             COBOLQuickParse.processOneFile(cacheDirectory, this, false);
+
         }
     }
 
@@ -1022,6 +1032,7 @@ export default class COBOLQuickParse {
                     if (trimmedCurrent.indexOf(" ") !== -1 && token.isTokenPresent("external") === false) {
                         this.callTargets.set(trimmedCurrent, ctoken);
                     }
+                    this.ImplicitProgramId = "";        /* don't need it */
 
                     // So we don't have any division?
                     // if (this.currentDivision === COBOLToken.Null) {
@@ -1495,6 +1506,9 @@ export class COBOLSymbolTableHelper {
                     break;
                 case COBOLTokenStyle.Section:
                     st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    break;
+                case COBOLTokenStyle.ImplicitProgramId:
+                    InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenNameLower, token.startLine);
                     break;
                 case COBOLTokenStyle.ProgramId:
                     InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenNameLower, token.startLine);
