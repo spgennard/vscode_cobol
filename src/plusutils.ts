@@ -12,7 +12,7 @@ export class COBOLUtils {
     }
 
     public getMFUnitAnsiColorConfig(): boolean {
-        var editorConfig = workspace.getConfiguration('cobolplus');
+        var editorConfig = workspace.getConfiguration('coboleditor');
         var expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;

@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.44",
+    "version": "6.2.46",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -49,11 +49,11 @@
         "onLanguage:bms",
         "onLanguage:hlasm",
         "onLanguage:mfu",
-        "onCommand:cobolplus.mfurunMenu",
-        "onCommand:cobolplus.removeAllComments",
-        "onCommand:cobolplus.removeIdentificationArea",
-        "onCommand:cobolplus.removeColumnNumbers",
-        "onCommand:cobolplus.resequenceColumnNumbers",
+        "onCommand:coboleditor.mfurunMenu",
+        "onCommand:coboleditor.removeAllComments",
+        "onCommand:coboleditor.removeIdentificationArea",
+        "onCommand:coboleditor.removeColumnNumbers",
+        "onCommand:coboleditor.resequenceColumnNumbers",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
@@ -282,6 +282,11 @@
                     "type": "boolean",
                     "title": "Replace stanard comment in/out with COBOL specific",
                     "description": "Replace stanard comment in/out with COBOL specific",
+                    "default": true
+                },
+                "coboleditor.mfunit.diagnostic.color": {
+                    "type": "boolean",
+                    "title": "Enable ANSI color",
                     "default": true
                 }
             }
@@ -668,23 +673,23 @@
                 "title": "Compile: Syntax Check"
             },
             {
-                "command": "cobolplus.mfurunMenu",
+                "command": "coboleditor.mfurunMenu",
                 "title": "COBOL: Run UnitTest"
             },
             {
-                "command": "cobolplus.removeAllComments",
+                "command": "coboleditor.removeAllComments",
                 "title": "COBOL: Remove COBOL Comments"
             },
             {
-                "command": "cobolplus.removeIdentificationArea",
+                "command": "coboleditor.removeIdentificationArea",
                 "title": "COBOL: Remove COBOL Identification Area"
             },
             {
-                "command": "cobolplus.removeColumnNumbers",
+                "command": "coboleditor.removeColumnNumbers",
                 "title": "COBOL: Remove Column Numbers"
             },
             {
-                "command": "cobolplus.resequenceColumnNumbers",
+                "command": "coboleditor.resequenceColumnNumbers",
                 "title": "COBOL: Re-sequence Column Numbers"
             }
         ],
@@ -724,12 +729,11 @@
             ],
             "explorer/context": [
                 {
-                    "command": "cobolplus.mfurunMenu",
+                    "command": "coboleditor.mfurunMenu",
                     "group": "navigation",
                     "when": "filesExplorerFocus && resourceExtname == .mfu"
                 }
             ]
-
         },
         "keybindings": [
             {

@@ -550,7 +550,7 @@ export function activate(context: ExtensionContext) {
     }
 
     // Open context menu on current file
-    let disposable = vscode.commands.registerCommand('cobolplus.mfurunMenu', function (fileUri) {
+    let disposable = vscode.commands.registerCommand('coboleditor.mfurunMenu', function (fileUri) {
 
         if (unitTestTerminal === undefined) {
             unitTestTerminal = vscode.window.createTerminal(terminalName);
@@ -568,7 +568,7 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(disposable);
 
-    let removeAllCommentsCommand = vscode.commands.registerCommand('cobolplus.removeAllComments', () => {
+    let removeAllCommentsCommand = vscode.commands.registerCommand('coboleditor.removeAllComments', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;
 
@@ -579,7 +579,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    let removeIdentificationAreaCommand = vscode.commands.registerCommand('cobolplus.removeIdentificationArea', () => {
+    let removeIdentificationAreaCommand = vscode.commands.registerCommand('coboleditor.removeIdentificationArea', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;
 
@@ -590,7 +590,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    let removeColumnNumbers = vscode.commands.registerCommand('cobolplus.removeColumnNumbers', () => {
+    let removeColumnNumbers = vscode.commands.registerCommand('coboleditor.removeColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;
 
@@ -601,7 +601,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    let resequenceColumnNumbers = vscode.commands.registerCommand('cobolplus.resequenceColumnNumbers', () => {
+    let resequenceColumnNumbers = vscode.commands.registerCommand('coboleditor.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;
 
