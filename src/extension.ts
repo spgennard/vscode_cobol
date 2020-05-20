@@ -16,6 +16,7 @@ import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbol
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as vscode from "vscode";
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
@@ -29,6 +30,9 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
+import { COBOLUtils } from './plusutils';
+
+const propertiesReader = require('properties-reader');
 
 const util = require('util');
 var which = require('which');
@@ -94,6 +98,9 @@ export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
+let unitTestTerminal: vscode.Terminal|undefined = undefined;
+let terminalName = "UnitTest";
+
 
 function initExtensions() {
     fileSearchDirectory = [];
@@ -496,7 +503,7 @@ export function activate(context: ExtensionContext) {
     const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 
-    let disposable = languages.registerHoverProvider(allCobolSelectors, {
+    let disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
         provideHover(document, position, token) {
             let txt = document.getText(document.getWordRangeAtPosition(position));
             let txtTarger: CallTarget | undefined = getCallTarget(txt);
@@ -505,7 +512,7 @@ export function activate(context: ExtensionContext) {
             }
         }
     });
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable4hover_more_info);
 
 
     window.onDidChangeActiveTextEditor(editor => {
@@ -541,6 +548,95 @@ export function activate(context: ExtensionContext) {
         updateDecorations(window.activeTextEditor);
         linter.updateDiagnostics(window.activeTextEditor.document);
     }
+
+    // Open context menu on current file
+    let disposable = vscode.commands.registerCommand('cobolplus.mfurunMenu', function (fileUri) {
+
+        if (unitTestTerminal === undefined) {
+            unitTestTerminal = vscode.window.createTerminal(terminalName);
+        }
+
+        unitTestTerminal.show(true);
+        let utils: COBOLUtils = new COBOLUtils();
+        let enableAnsiColor = utils.getMFUnitAnsiColorConfig();
+
+        let properties = propertiesReader(fileUri.fsPath);
+        let prefRunner = properties.get('global.preferred-runner');
+        unitTestTerminal.sendText(prefRunner + " -show-progress " +
+                (enableAnsiColor ? " -dc:ansi " : " ") +
+                fileUri.fsPath);
+    });
+    context.subscriptions.push(disposable);
+
+    let removeAllCommentsCommand = vscode.commands.registerCommand('cobolplus.removeAllComments', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.RemoveComments(vscode.window.activeTextEditor);
+            }
+        }
+    });
+
+    let removeIdentificationAreaCommand = vscode.commands.registerCommand('cobolplus.removeIdentificationArea', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.RemoveIdentificationArea(vscode.window.activeTextEditor);
+            }
+        }
+    });
+
+    let removeColumnNumbers = vscode.commands.registerCommand('cobolplus.removeColumnNumbers', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.removeColumnNumbers(vscode.window.activeTextEditor);
+            }
+        }
+    });
+
+    let resequenceColumnNumbers = vscode.commands.registerCommand('cobolplus.resequenceColumnNumbers', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+
+                let value = vscode.window.showInputBox({
+                    prompt: 'Enter start line number and increment',
+                    validateInput: (text: string): string | undefined => {
+                        if (!text || text.indexOf(' ') === -1) {
+                            return 'You must enter two numbers';
+                        } else {
+                            return undefined;
+                        }
+                    }
+                }).then(value => {
+                    // leave early
+                    if (value === undefined) {
+                        return;
+                    }
+                    console.log(value);
+                    let values: string[] = value.split(" ");
+                    let startValue: number = Number.parseInt(values[0]);
+                    let incrementValue: number = Number.parseInt(values[1]);
+                    if (startValue >= 0 && incrementValue >= 1) {
+                        let utils: COBOLUtils = new COBOLUtils();
+                        utils.resequenceColumnNumbers(vscode.window.activeTextEditor, startValue, incrementValue);
+                    } else {
+                        vscode.window.showErrorMessage("Sorry invalid re-sequence given");
+                    }
+                });
+
+
+            }
+        }
+    });
 
     if (VSCOBOLConfiguration.isCachingSetToON()) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();

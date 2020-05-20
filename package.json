@@ -48,6 +48,12 @@
         "onLanguage:JCL",
         "onLanguage:bms",
         "onLanguage:hlasm",
+        "onLanguage:mfu",
+        "onCommand:cobolplus.mfurunMenu",
+        "onCommand:cobolplus.removeAllComments",
+        "onCommand:cobolplus.removeIdentificationArea",
+        "onCommand:cobolplus.removeColumnNumbers",
+        "onCommand:cobolplus.resequenceColumnNumbers",
         "onCommand:cobolplugin.move2pd",
         "onCommand:cobolplugin.move2ws",
         "onCommand:cobolplugin.move2dd",
@@ -511,6 +517,26 @@
                     ".mlc"
                 ],
                 "aliases": []
+            },
+            {
+                "id": "mfu",
+                "aliases": [
+                    "mfunit"
+                ],
+                "extensions": [
+                    "mfu"
+                ],
+                "configuration": "./mfu-configuration.json"
+            },
+            {
+                "id": "utreport",
+                "aliases": [
+                    "Unit Test Report"
+                ],
+                "filenamePatterns": [
+                    "*-report.txt"
+                ],
+                "configuration": "./language-configuration.json"
             }
         ],
         "grammars": [
@@ -576,6 +602,16 @@
                 "language": "hlasm",
                 "scopeName": "source.hlasm",
                 "path": "./syntaxes/hlasm.tmLanguage.json"
+            },
+            {
+                "language": "mfu",
+                "scopeName": "source.mfu",
+                "path": "./syntaxes/mfu.tmLanguage.json"
+            },
+            {
+                "language": "utreport",
+                "scopeName": "source.utreport",
+                "path": "./syntaxes/utreport.tmLanguage.json"
             }
         ],
         "commands": [
@@ -630,6 +666,26 @@
             {
                 "command": "cobolplugin.syntaxCheck",
                 "title": "Compile: Syntax Check"
+            },
+            {
+                "command": "cobolplus.mfurunMenu",
+                "title": "COBOL: Run UnitTest"
+            },
+            {
+                "command": "cobolplus.removeAllComments",
+                "title": "COBOL: Remove COBOL Comments"
+            },
+            {
+                "command": "cobolplus.removeIdentificationArea",
+                "title": "COBOL: Remove COBOL Identification Area"
+            },
+            {
+                "command": "cobolplus.removeColumnNumbers",
+                "title": "COBOL: Remove Column Numbers"
+            },
+            {
+                "command": "cobolplus.resequenceColumnNumbers",
+                "title": "COBOL: Re-sequence Column Numbers"
             }
         ],
         "menus": {
@@ -665,9 +721,32 @@
                     "command": "cobolplugin.syntaxCheck",
                     "when": "view == flat-source-view && viewItem == cobol"
                 }
+            ],
+            "explorer/context": [
+                {
+                    "command": "cobolplus.mfurunMenu",
+                    "group": "navigation",
+                    "when": "filesExplorerFocus && resourceExtname == .mfu"
+                }
             ]
+
         },
         "keybindings": [
+            {
+                "key": "ctrl+k ctrl+j",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "ctrl+k ctrl+j",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+k ctrl+j",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == OpenCOBOL"
+            },
             {
                 "key": "ctrl+alt+p",
                 "command": "cobolplugin.move2pd",
@@ -1116,6 +1195,7 @@
     },
     "dependencies": {
         "which": "^2.0.2",
+        "properties-reader": "^2.0.0",
         "minimist": ">=1.2.5",
         "typescript-string-operations": "^1.3.2",
         "@types/fs-extra": "^9.0.0",
@@ -1130,7 +1210,5 @@
         "trie-prefix-tree": "^1.5.1",
         "vsce": "^1.75.0"
     },
-    "extensionDependencies": [
-        "bitlang.cobol-plus-pack"
-    ]
+    "extensionDependencies": []
 }
