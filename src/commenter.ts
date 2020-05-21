@@ -21,6 +21,31 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
     let line = d.lineAt(l);
     let lineContents = line.text;
 
+    if (format === ESourceFormat.terminal) {
+        let firstInlineIndex = lineContents.indexOf("| ");
+        if (firstInlineIndex !== -1) {
+            let r = new Range(new Position(l, firstInlineIndex), new Position(l, 2 + firstInlineIndex));
+            editor.delete(r);
+            return;
+        }
+        let defpos = -1;
+        for (let w = 0; w < lineContents.length; w++) {
+            if (lineContents[w] === ' ') {
+                defpos++;
+            }
+            else {
+                break;
+            }
+        }
+
+        if (defpos !== -1) {
+            editor.insert(new Position(l, 1 + defpos), "| ");
+            return;
+        }
+
+        return;
+    }
+
     if (format !== ESourceFormat.fixed) {
         let firstInlineIndex = lineContents.indexOf("*> ");
         if (firstInlineIndex !== -1) {
@@ -36,20 +61,18 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
             return;
         }
 
-        let defpos=-1;
-        for(let w=0; w<lineContents.length; w++) {
+        let defpos = -1;
+        for (let w = 0; w < lineContents.length; w++) {
             if (lineContents[w] === ' ') {
                 defpos++;
             }
-            else
-            {
+            else {
                 break;
             }
         }
 
-        if (defpos !== -1)
-        {
-            editor.insert(new Position(l, 1+defpos), "*> ");
+        if (defpos !== -1) {
+            editor.insert(new Position(l, 1 + defpos), "*> ");
             return;
         }
         else if (lineContents.length > 6 &&

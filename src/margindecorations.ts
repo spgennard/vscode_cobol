@@ -60,6 +60,7 @@ export enum ESourceFormat {
     unknown = 'unknown',
     fixed = 'fixed',
     free = 'free',
+    terminal = 'terminal',
     variable = 'variable',
     jcl = 'jcl'
 }
@@ -90,10 +91,11 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
-export function getSourceFormat(doc: TextDocument): ESourceFormat {
+export function     getSourceFormat(doc: TextDocument): ESourceFormat {
+    let langid = doc.languageId.toLowerCase();
 
     /* just use the extension for jcl */
-    switch (doc.languageId.toLowerCase()) {
+    switch (langid) {
         case "jcl":
         case "job":
         case "cntl":
@@ -105,10 +107,18 @@ export function getSourceFormat(doc: TextDocument): ESourceFormat {
     let linesWithJustNumbers = 0;
     let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
     let defFormat = ESourceFormat.unknown;
+    let checkForTerminalFormat : boolean = langid === 'acucobol' ? true : false;
 
     for (let i = 0; i < maxLines; i++) {
         let lineText = doc.lineAt(i);
         let line = lineText.text.toLocaleLowerCase();
+
+        if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
+            if (line.startsWith("*") || line.startsWith("|") || line.startsWith("\\D"))
+            {
+                defFormat = ESourceFormat.terminal;
+            }
+        }
 
         let newcommentPos = line.indexOf("*>");
         if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown)

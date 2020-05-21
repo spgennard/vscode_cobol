@@ -98,7 +98,7 @@ export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
-let unitTestTerminal: vscode.Terminal|undefined = undefined;
+let unitTestTerminal: vscode.Terminal | undefined = undefined;
 let terminalName = "UnitTest";
 
 
@@ -258,11 +258,20 @@ export function activate(context: ExtensionContext) {
     });
 
     var commentLine = commands.registerCommand('cobolplugin.commentline', function () {
-        if (VSCOBOLConfiguration.isLineCommentEnabled()) {
-            commenter.processCommentLine();
-        } else {
-            commands.executeCommand("editor.action.commentLine");
+        if (window.activeTextEditor !== undefined) {
+            let langid = window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                if (VSCOBOLConfiguration.isLineCommentEnabled()) {
+                    commenter.processCommentLine();
+                } else {
+                    commands.executeCommand("editor.action.commentLine");
+                }
+            }
+            return;
         }
+
+        commands.executeCommand("editor.action.commentLine");
     });
 
     var changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function () {
@@ -563,8 +572,8 @@ export function activate(context: ExtensionContext) {
         let properties = propertiesReader(fileUri.fsPath);
         let prefRunner = properties.get('global.preferred-runner');
         unitTestTerminal.sendText(prefRunner + " -show-progress " +
-                (enableAnsiColor ? " -dc:ansi " : " ") +
-                fileUri.fsPath);
+            (enableAnsiColor ? " -dc:ansi " : " ") +
+            fileUri.fsPath);
     });
     context.subscriptions.push(disposable);
 

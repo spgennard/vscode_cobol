@@ -20,7 +20,8 @@
         "cobolit",
         "entcobol",
         "mfcobol",
-        "bms"
+        "bms",
+        "mfu"
     ],
     "repository": {
         "type": "git",
@@ -216,18 +217,15 @@
                                 "enum": [
                                     "free",
                                     "fixed",
-                                    "variable"
+                                    "variable",
+                                    "terminal"
                                 ]
                             }
                         }
                     },
                     "default": [
                         {
-                            "pattern": "**/*.cbl",
-                            "sourceformat": "fixed"
-                        },
-                        {
-                            "pattern": "**/*.cob",
+                            "pattern": "**/FIXED*.cbl",
                             "sourceformat": "fixed"
                         }
                     ],
