@@ -354,7 +354,7 @@ export function activate(context: ExtensionContext) {
                 }
             }
         }, (reason) => {
-            console.log('fetch task was rejected', reason);
+            // console.log('fetch task was rejected', reason);
         });
     });
 
@@ -630,7 +630,6 @@ export function activate(context: ExtensionContext) {
                     if (value === undefined) {
                         return;
                     }
-                    console.log(value);
                     let values: string[] = value.split(" ");
                     let startValue: number = Number.parseInt(values[0]);
                     let incrementValue: number = Number.parseInt(values[1]);
