@@ -91,7 +91,7 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
-export function     getSourceFormat(doc: TextDocument): ESourceFormat {
+export function getSourceFormat(doc: TextDocument): ESourceFormat {
     let langid = doc.languageId.toLowerCase();
 
     /* just use the extension for jcl */
@@ -107,23 +107,25 @@ export function     getSourceFormat(doc: TextDocument): ESourceFormat {
     let linesWithJustNumbers = 0;
     let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
     let defFormat = ESourceFormat.unknown;
-    let checkForTerminalFormat : boolean = langid === 'acucobol' ? true : false;
+    let checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
 
     for (let i = 0; i < maxLines; i++) {
         let lineText = doc.lineAt(i);
         let line = lineText.text.toLocaleLowerCase();
 
+        // acu
         if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
-            if (line.startsWith("*") || line.startsWith("|") || line.startsWith("\\D"))
-            {
+            if (line.startsWith("*") || line.startsWith("|") || line.startsWith("\\D")) {
                 defFormat = ESourceFormat.terminal;
             }
         }
 
-        let newcommentPos = line.indexOf("*>");
-        if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown)
-        {
-            defFormat=ESourceFormat.variable;
+        // non-acu
+        if (defFormat === ESourceFormat.unknown && !checkForTerminalFormat) {
+            let newcommentPos = line.indexOf("*>");
+            if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown) {
+                defFormat = ESourceFormat.variable;
+            }
         }
 
         let pos4sourceformat_after = 0;
@@ -135,6 +137,7 @@ export function     getSourceFormat(doc: TextDocument): ESourceFormat {
             }
         }
 
+        // does it contain a inline comments? no
         if (pos4sourceformat_after === 0) {
             if (line.length > 72) {
                 let rightMargin = line.substr(72).trim();
@@ -143,23 +146,25 @@ export function     getSourceFormat(doc: TextDocument): ESourceFormat {
                 }
             }
             continue;
-        }
-        let line2right = line.substr(pos4sourceformat_after);
+        } else {
+            // got a inline comment,yes
+            let line2right = line.substr(pos4sourceformat_after);
 
-        if (line2right.indexOf("fixed") !== -1) {
-            return ESourceFormat.fixed;
-        }
-        if (line2right.indexOf("variable") !== -1) {
-            return ESourceFormat.variable;
-        }
-        if (line2right.indexOf("free") !== -1) {
-            return ESourceFormat.free;
+            if (line2right.indexOf("fixed") !== -1) {
+                return ESourceFormat.fixed;
+            }
+            if (line2right.indexOf("variable") !== -1) {
+                return ESourceFormat.variable;
+            }
+            if (line2right.indexOf("free") !== -1) {
+                return ESourceFormat.free;
+            }
         }
     }
 
     //it might well be...
     if (linesWithJustNumbers > 7) {
-        return ESourceFormat.free;
+        return ESourceFormat.fixed;
     }
 
     let filesFilter = getFixedFilenameConfiguration();
@@ -189,7 +194,7 @@ export function isSupportedLanguage(document: TextDocument): TextLanguage {
         case "entcobol":
         case "cobol":
         case "opencobol":
-        case "gnucobol" :
+        case "gnucobol":
         case "acucobol":
             return TextLanguage.COBOL;
         case "jcl":
