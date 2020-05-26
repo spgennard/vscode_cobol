@@ -4,6 +4,8 @@ import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, Tex
 import { getCurrentContext, enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
 import minimatch = require('minimatch');
+import { ICOBOLSettings } from './iconfiguration';
+import { VSCOBOLConfiguration } from './configuration';
 
 var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -55,7 +57,6 @@ function isEnabledViaWorkspace4jcl(): boolean {
     return isMarginEnabled('jcleditor');
 }
 
-
 export enum ESourceFormat {
     unknown = 'unknown',
     fixed = 'fixed',
@@ -91,7 +92,7 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
-export function getSourceFormat(doc: TextDocument): ESourceFormat {
+export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESourceFormat {
     let langid = doc.languageId.toLowerCase();
 
     /* just use the extension for jcl */
@@ -102,6 +103,10 @@ export function getSourceFormat(doc: TextDocument): ESourceFormat {
         case "prc":
         case "proc":
             return ESourceFormat.jcl;
+    }
+
+    if (config.fileformat_strategy === "always_fixed") {
+        return ESourceFormat.fixed;
     }
 
     let linesWithJustNumbers = 0;
@@ -242,7 +247,7 @@ export default function updateDecorations(activeTextEditor: TextEditor | undefin
 
     if (textLanguage === TextLanguage.COBOL) {
         /* does it include sourceformat"free"? */
-        let sourceformatStyle: ESourceFormat = getSourceFormat(doc);
+        let sourceformatStyle: ESourceFormat = getSourceFormat(doc, VSCOBOLConfiguration.get());
         enableMarginStatusBar(sourceformatStyle);
 
         if (enabledViaWorkspace4cobol) {

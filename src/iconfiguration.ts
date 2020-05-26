@@ -23,6 +23,7 @@ export interface ICOBOLSettings {
     tabstops: number[];
     linter: boolean;
     line_comment: boolean;
+    fileformat_strategy: string;
 }
 
 
@@ -41,6 +42,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter: boolean;
     public line_comment: boolean;
     public invalid_copybookdirs: string[];
+    public fileformat_strategy: string;
 
     constructor() {
         this.experimential_features = false;
@@ -50,6 +52,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.copybooks_nested = false;
         this.fuzzy_variable_search = false;
         this.cache_metadata = "off";
+        this.fileformat_strategy = "normal";
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];
         this.copybookexts = [];

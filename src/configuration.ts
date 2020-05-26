@@ -26,6 +26,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.tabstops = getTabStops();
         VSCOBOLConfiguration.config.linter = geLinter();
         VSCOBOLConfiguration.config.line_comment = getline_comment();
+        VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
     }
 
     public static get(): ICOBOLSettings {
@@ -166,6 +167,17 @@ function getCachingSetting(): string {
     }
 
     return cacheEnum;
+}
+
+function getFileformatStrategy(): string {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var fileStrat = editorConfig.get<string>('fileformat_strategy');
+
+    if (fileStrat === undefined || fileStrat === null) {
+        return "normal";
+    }
+
+    return fileStrat;
 }
 
 

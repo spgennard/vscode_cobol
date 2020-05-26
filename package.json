@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.2.49",
+    "version": "6.3.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -200,6 +200,15 @@
                     "title": "apply margin shading",
                     "default": true
                 },
+                "coboleditor.fileformat_strategy": {
+                    "enum": [
+                        "always_fixed",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "markdownDescription": "File format strategy",
+                    "title": "always_fixed or normal"
+                },
                 "coboleditor.fileformat": {
                     "type": "array",
                     "markdownDescription": "Default configuration for file format. [Read more...](https://github.com/spgennard/vscode_cobol#coboleditorfileformat)",
@@ -220,6 +229,7 @@
                                     "variable",
                                     "terminal"
                                 ]
+
                             }
                         }
                     },
@@ -278,8 +288,8 @@
                 },
                 "coboleditor.line_comment": {
                     "type": "boolean",
-                    "title": "Replace stanard comment in/out with COBOL specific",
-                    "description": "Replace stanard comment in/out with COBOL specific",
+                    "title": "Replace standard comment in/out with COBOL specific",
+                    "description": "Replace standard comment in/out with COBOL specific",
                     "default": true
                 },
                 "coboleditor.mfunit.diagnostic.color": {
@@ -318,7 +328,7 @@
             "[COBOL]": {
                 "files.autoGuessEncoding": false,
                 "editor.renderIndentGuides": false,
-                "editor.autoIndent": "full",
+                "editor.autoIndent": "advanced",
                 "editor.insertSpaces": true,
                 "editor.formatOnType": true,
                 "editor.rulers": [
@@ -361,7 +371,7 @@
                 "editor.insertSpaces": true,
                 "editor.renderIndentGuides": false,
                 "files.autoGuessEncoding": false,
-                "editor.autoIndent": "none",
+                "editor.autoIndent": "keep",
                 "editor.formatOnType": false,
                 "editor.rulers": [],
                 "editor.detectIndentation": false,

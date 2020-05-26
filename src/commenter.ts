@@ -3,6 +3,7 @@
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from 'vscode';
 import { VSCOBOLConfiguration } from './configuration';
 import { getSourceFormat, ESourceFormat } from './margindecorations';
+import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 
 function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
     editor.edit(edit => {
@@ -114,7 +115,7 @@ export function processCommentLine() {
     if (editor) {
         const doc = editor.document;
         const sel = editor.selections;
-        const format: ESourceFormat = getSourceFormat(doc);
+        const format: ESourceFormat = getSourceFormat(doc, VSCOBOLConfiguration.get());
         commentLine(editor, doc, sel, format);
     }
 }
