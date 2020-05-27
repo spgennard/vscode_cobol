@@ -295,6 +295,7 @@ and looks like:
 ## Online resources
 
 - [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
+- [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
 
 ## Shortcuts
 
