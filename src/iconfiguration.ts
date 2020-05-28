@@ -24,6 +24,7 @@ export interface ICOBOLSettings {
     linter: boolean;
     line_comment: boolean;
     fileformat_strategy: string;
+    parser_hint_directory: string;
 }
 
 
@@ -43,6 +44,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public line_comment: boolean;
     public invalid_copybookdirs: string[];
     public fileformat_strategy: string;
+    public parser_hint_directory: string;
 
     constructor() {
         this.experimential_features = false;
@@ -60,6 +62,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.tabstops = [];
         this.linter = false;
         this.line_comment = false;
+        this.parser_hint_directory = "";
     }
 }
 

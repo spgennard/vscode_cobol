@@ -361,6 +361,13 @@ export default class COBOLQuickParse {
 
     configHandler: ICOBOLSettings;
 
+    parserHintDirectory: string;
+
+    parseHint_OnOpenFiles: string[] = [];
+    parseHint_WorkingStorageFiles: string[] = [];
+    parseHint_LocalStorageFiles: string[] = [];
+    parseHint_ScreenSectionFiles: string[] = [];
+
     public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
@@ -403,6 +410,7 @@ export default class COBOLQuickParse {
         this.sourceReferences = sourceReferences;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
+        this.parserHintDirectory = configHandler.parser_hint_directory;
 
         let prevToken: Token = Token.Blank;
 
@@ -480,6 +488,9 @@ export default class COBOLQuickParse {
             return;
         }
 
+        // prepare parser hint information
+        this.setupParserHint();
+
         prevToken = Token.Blank;
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
@@ -523,7 +534,7 @@ export default class COBOLQuickParse {
         this.addinMissingEndlings(sourceHandler);
 
         if (this.ImplicitProgramId.length !== 0) {
-            let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId,0,"",this.ImplicitProgramId,this.ImplicitProgramId,undefined);
+            let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
             this.callTargets.set(this.ImplicitProgramId, ctoken);
         }
 
@@ -580,6 +591,47 @@ export default class COBOLQuickParse {
 
         this.tokensInOrder.push(ctoken);
         return ctoken;
+    }
+
+    private setupParserHint() {
+        if (fs.existsSync(this.parserHintDirectory) === false) {
+            this.parserHintDirectory = "";
+        } else {
+            try {
+                let stat = fs.statSync(this.parserHintDirectory);
+                if (stat.isDirectory() === false) {
+                    this.parserHintDirectory = "";
+                }
+
+                let combinedFile = path.join(this.parserHintDirectory, path.basename(this.filename) + ".json");
+                if (fs.existsSync(combinedFile)) {
+                    let statJFile = fs.statSync(combinedFile);
+                    if (statJFile.isFile()) {
+                        logMessage("INFO: found  " + combinedFile);
+                        let jfileContents = fs.readFileSync(combinedFile);
+                        let json = JSON.parse(jfileContents.toString());
+                        logMessage("json is " + json);
+                        logMessage("from : " + jfileContents.toString());
+
+                        if (json.WorkingStorage !== undefined) {
+                            this.parseHint_WorkingStorageFiles = json.WorkingStorage;
+                        }
+                        if (json.LocalStorage !== undefined) {
+                            this.parseHint_LocalStorageFiles = json.LocalStorage;
+                        }
+                        if (json.ScreenSection !== undefined) {
+                            this.parseHint_ScreenSectionFiles = json.ScreenSection;
+                        }
+                        if (json.OnOpen !== undefined) {
+                            this.parseHint_OnOpenFiles = json.OnOpen;
+                        }
+                    }
+                }
+            }
+            catch (e) {
+                logException("Exception during parserHint", e);
+            }
+        }
     }
 
     public static processOneFile(cacheDirectory: string, qcp: COBOLQuickParse, showError: boolean) {
@@ -905,12 +957,12 @@ export default class COBOLQuickParse {
                 if (this.skipToDot && endWithDot === false) {
                     if (this.addReferencesDuringSkipToTag) {
                         if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
-                                let trimToken = this.trimLiteral(tcurrent);
-                                if (this.sourceReferences !== undefined) {
-                                    // no forward validation can be done, as this is a one pass scanner
-                                    this.addReference(this.sourceReferences.targetReferences, trimToken.toLocaleLowerCase(), lineNumber, token.currentCol);
-                                }
+                            let trimToken = this.trimLiteral(tcurrent);
+                            if (this.sourceReferences !== undefined) {
+                                // no forward validation can be done, as this is a one pass scanner
+                                this.addReference(this.sourceReferences.targetReferences, trimToken.toLocaleLowerCase(), lineNumber, token.currentCol);
                             }
+                        }
                     }
                     continue;
                 }

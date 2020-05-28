@@ -229,7 +229,6 @@
                                     "variable",
                                     "terminal"
                                 ]
-
                             }
                         }
                     },
@@ -291,6 +290,11 @@
                     "title": "Replace standard comment in/out with COBOL specific",
                     "description": "Replace standard comment in/out with COBOL specific",
                     "default": true
+                },
+                "coboleditor.parser_hint_directory" : {
+                    "type" : "string",
+                    "title" : "A directory that contains json files to be used a hints",
+                    "default": ""
                 },
                 "coboleditor.mfunit.diagnostic.color": {
                     "type": "boolean",

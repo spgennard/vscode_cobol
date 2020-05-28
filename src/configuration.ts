@@ -27,6 +27,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.linter = geLinter();
         VSCOBOLConfiguration.config.line_comment = getline_comment();
         VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
+        VSCOBOLConfiguration.config.parser_hint_directory = getparser_hint_directory();
     }
 
     public static get(): ICOBOLSettings {
@@ -138,6 +139,17 @@ function getPreParseLineLimit(): number {
     return lineLimit;
 }
 
+function getparser_hint_directory(): string {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var parserhints = editorConfig.get<string>('parser_hint_directory');
+
+    if (parserhints === undefined || parserhints === null) {
+        return "";
+    }
+
+    return parserhints;
+
+}
 function getline_comment(): boolean {
     return getBoolean("line_comment", false);
 }
