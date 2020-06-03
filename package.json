@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.0",
+    "version": "6.3.1",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -179,6 +179,12 @@
                     "markdownDescription": "fuzzy variable search (legacy compatibility)",
                     "title": "fuzzy variable search",
                     "default": false
+                },
+                "coboleditor.enable_data_provider": {
+                    "type": "boolean",
+                    "markdownDescription": "Enabled data/field completion provider",
+                    "title": "Enabled data/field completion provider",
+                    "default": true
                 },
                 "coboleditor.cache_metadata": {
                     "enum": [

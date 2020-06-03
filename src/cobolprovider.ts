@@ -113,7 +113,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         const items: CompletionItem[] = [];
 
-        if (this.iconfig.experimential_features === false) {
+        if (this.iconfig.enable_data_provider === false) {
             return items;
         }
 

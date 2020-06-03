@@ -25,6 +25,7 @@ export interface ICOBOLSettings {
     line_comment: boolean;
     fileformat_strategy: string;
     parser_hint_directory: string;
+    enable_data_provider:boolean;
 }
 
 
@@ -45,6 +46,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public invalid_copybookdirs: string[];
     public fileformat_strategy: string;
     public parser_hint_directory: string;
+    public enable_data_provider: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -63,6 +65,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter = false;
         this.line_comment = false;
         this.parser_hint_directory = "";
+        this.enable_data_provider = true;
     }
 }
 

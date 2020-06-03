@@ -28,6 +28,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.line_comment = getline_comment();
         VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
         VSCOBOLConfiguration.config.parser_hint_directory = getparser_hint_directory();
+        VSCOBOLConfiguration.config.enable_data_provider = getEnable_data_provider();
     }
 
     public static get(): ICOBOLSettings {
@@ -170,6 +171,9 @@ function getFuzzyVariableSearch(): boolean {
     return getBoolean('fuzzy_variable_search', false);
 }
 
+function getEnable_data_provider() : boolean {
+    return getBoolean('enable_data_provider', true);
+}
 function getCachingSetting(): string {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var cacheEnum = editorConfig.get<string>('cache_metadata');
