@@ -78,8 +78,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<SourceItem | undefined> = new vscode.EventEmitter<SourceItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<SourceItem | undefined> = this._onDidChangeTreeData.event;
 
-    public refresh(): void {
-        this._onDidChangeTreeData.fire();
+    private refreshAll(): void {
+        this._onDidChangeTreeData.fire(this.cobolItem);
+        this._onDidChangeTreeData.fire(this.copyBook);
+        this._onDidChangeTreeData.fire(this.jclItem);
+        this._onDidChangeTreeData.fire(this.pliItem);
+        this._onDidChangeTreeData.fire(this.hlasmItem);
+        this._onDidChangeTreeData.fire(this.documentItem);
     }
 
     private addExtension(ext: string, file: vscode.Uri) {
@@ -179,7 +184,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.refreshItem(this.pliItems, this.pliItem);
         this.refreshItem(this.documentIems, this.documentItem);
 
-        this.refresh();
+        this.refreshAll();
     }
 
     public async checkFile(vuri: vscode.Uri) {
