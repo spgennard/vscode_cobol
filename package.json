@@ -1211,7 +1211,6 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "@types/mocha": "^7.0.2",
         "@types/node": "^14.0.9",
         "@types/trie-prefix-tree": "^1.5.0",
         "tslint": "^6.1.2",
