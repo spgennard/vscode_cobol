@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.3",
+    "version": "6.3.4",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -188,6 +188,12 @@
                     "markdownDescription": "Enabled data/field completion provider",
                     "title": "Enabled data/field completion provider",
                     "default": true
+                },
+                "coboleditor.enable_auto_tasks": {
+                    "type": "boolean",
+                    "markdownDescription": "Enabled experimential COBOL task support",
+                    "title": "Enabled experimential COBOL task support",
+                    "default": false
                 },
                 "coboleditor.cache_metadata": {
                     "enum": [

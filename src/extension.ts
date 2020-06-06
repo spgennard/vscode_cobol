@@ -213,11 +213,6 @@ export function activate(context: ExtensionContext) {
     initExtensions();
     activateLogChannel();
 
-
-    // if (VSCOBOLConfiguration.get().experimential_features) {
-    //     activateLanguageServer(context);
-    // }
-
     var insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
@@ -377,61 +372,62 @@ export function activate(context: ExtensionContext) {
     });
 
 
+    if (VSCOBOLConfiguration.getEnable_auto_tasks()) {
+        let cobcLocation = which.sync('cobc', { nothrow: true });
 
-    let cobcLocation = which.sync('cobc', { nothrow: true });
+        if (cobcLocation !== null) {
+            let cobolTaskPromise4cobc: Thenable<Task[]> | undefined = undefined;
 
-    if (cobcLocation !== null) {
-        let cobolTaskPromise4cobc: Thenable<Task[]> | undefined = undefined;
-
-        const taskProvider4cobc = tasks.registerTaskProvider('cobc', {
-            provideTasks: () => {
-                if (!cobolTaskPromise4cobc) {
-                    cobolTaskPromise4cobc = getCOBOLTasks_for_cobc("cobol_syntax_check_with_cobc", true);
-                }
-                return cobolTaskPromise4cobc;
-            },
-            resolveTask(task: Task): Task | undefined {
-                if (task) {
-                    const definition: GnuCOBCTaskDefinition = <any>task.definition;
-                    if (definition.extraArguments || definition.syntaxCheck) {
-                        return getTaskForCOBC(definition, definition.label, definition.syntaxCheck);
+            const taskProvider4cobc = tasks.registerTaskProvider('cobc', {
+                provideTasks: () => {
+                    if (!cobolTaskPromise4cobc) {
+                        cobolTaskPromise4cobc = getCOBOLTasks_for_cobc("cobol_syntax_check_with_cobc", true);
                     }
-                    return task;
-                }
-                return undefined;
-            }
-
-        });
-
-        context.subscriptions.push(taskProvider4cobc);
-    }
-
-
-    let cobolLocation = which.sync('cobol.exe', { nothrow: true });
-    if (cobolLocation !== null) {
-        let cobolTaskPromise4cobol: Thenable<Task[]> | undefined = undefined;
-
-        const taskProvider4cobc = tasks.registerTaskProvider('mfcobol', {
-            provideTasks: () => {
-                if (!cobolTaskPromise4cobol) {
-                    cobolTaskPromise4cobol = getCOBOLTasks_for_mfcobol("cobol_syntax_check_with_mfcobol", true);
-                }
-                return cobolTaskPromise4cobol;
-            },
-            resolveTask(task: Task): Task | undefined {
-                if (task) {
-                    const definition: MFCOBOLTaskDefinition = <any>task.definition;
-                    if (definition.extraArguments || definition.syntaxCheck) {
-                        return getTaskForCOBOL(definition, definition.label, definition.syntaxCheck);
+                    return cobolTaskPromise4cobc;
+                },
+                resolveTask(task: Task): Task | undefined {
+                    if (task) {
+                        const definition: GnuCOBCTaskDefinition = <any>task.definition;
+                        if (definition.extraArguments || definition.syntaxCheck) {
+                            return getTaskForCOBC(definition, definition.label, definition.syntaxCheck);
+                        }
+                        return task;
                     }
-                    return task;
+                    return undefined;
                 }
-                return undefined;
-            }
 
-        });
+            });
 
-        context.subscriptions.push(taskProvider4cobc);
+            context.subscriptions.push(taskProvider4cobc);
+        }
+
+
+        let cobolLocation = which.sync('cobol.exe', { nothrow: true });
+        if (cobolLocation !== null) {
+            let cobolTaskPromise4cobol: Thenable<Task[]> | undefined = undefined;
+
+            const taskProvider4cobc = tasks.registerTaskProvider('mfcobol', {
+                provideTasks: () => {
+                    if (!cobolTaskPromise4cobol) {
+                        cobolTaskPromise4cobol = getCOBOLTasks_for_mfcobol("cobol_syntax_check_with_mfcobol", true);
+                    }
+                    return cobolTaskPromise4cobol;
+                },
+                resolveTask(task: Task): Task | undefined {
+                    if (task) {
+                        const definition: MFCOBOLTaskDefinition = <any>task.definition;
+                        if (definition.extraArguments || definition.syntaxCheck) {
+                            return getTaskForCOBOL(definition, definition.label, definition.syntaxCheck);
+                        }
+                        return task;
+                    }
+                    return undefined;
+                }
+
+            });
+
+            context.subscriptions.push(taskProvider4cobc);
+        }
     }
 
     window.registerTreeDataProvider('flat-source-view', treeView);

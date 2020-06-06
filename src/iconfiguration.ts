@@ -26,6 +26,7 @@ export interface ICOBOLSettings {
     fileformat_strategy: string;
     parser_hint_directory: string;
     enable_data_provider:boolean;
+    enable_auto_tasks: boolean;
 }
 
 
@@ -47,6 +48,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public fileformat_strategy: string;
     public parser_hint_directory: string;
     public enable_data_provider: boolean;
+    public enable_auto_tasks: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -66,6 +68,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.line_comment = false;
         this.parser_hint_directory = "";
         this.enable_data_provider = true;
+        this.enable_auto_tasks = false;
     }
 }
 

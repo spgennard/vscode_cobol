@@ -29,10 +29,16 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
         VSCOBOLConfiguration.config.parser_hint_directory = getparser_hint_directory();
         VSCOBOLConfiguration.config.enable_data_provider = getEnable_data_provider();
+        VSCOBOLConfiguration.config.enable_auto_tasks = getEnable_auto_tasks();
     }
 
     public static get(): ICOBOLSettings {
         return VSCOBOLConfiguration.config;
+    }
+
+    public static getEnable_auto_tasks() : boolean
+    {
+        return VSCOBOLConfiguration.config.enable_auto_tasks;
     }
 
     public static getExperimentialFeatures(): boolean {
@@ -174,6 +180,11 @@ function getFuzzyVariableSearch(): boolean {
 function getEnable_data_provider() : boolean {
     return getBoolean('enable_data_provider', true);
 }
+
+function getEnable_auto_tasks() : boolean {
+    return getBoolean('enable_auto_tasks', false);
+}
+
 function getCachingSetting(): string {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var cacheEnum = editorConfig.get<string>('cache_metadata');
