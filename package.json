@@ -1076,7 +1076,7 @@
             },
             {
                 "name": "opencobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "regexp": "^(.*):\\s(\\d+):.*(error|warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1084,7 +1084,7 @@
             },
             {
                 "name": "gnucobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "regexp": "^(.*):\\s(\\d+):.*(error|warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1092,7 +1092,7 @@
             },
             {
                 "name": "gnucobol3-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1100,7 +1100,7 @@
             },
             {
                 "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,

@@ -35,7 +35,7 @@ export function getTaskForCOBOL(definition: MFCOBOLTaskDefinition, label?: strin
 	let shellCmd: vscode.ShellExecution = new vscode.ShellExecution(
 		`cobol.exe \\$\{file\} NOINT NOGNT COPYPATH(${workspaceFolder}/CopyBooks;${workspaceFolder}\\CopyBooks\\Public) ${definition.extraArguments} `, options);
 
-	let task = new vscode.Task(definition, vscode.TaskScope.Workspace, "Syntax check using cobc", 'COBOL', shellCmd);
+	let task = new vscode.Task(definition, vscode.TaskScope.Workspace, "Syntax check using COBOL.EXE", 'COBOL', shellCmd);
 	task.group = {
 		"kind": "build",
 		"isDefault": true
