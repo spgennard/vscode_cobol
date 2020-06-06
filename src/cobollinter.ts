@@ -20,21 +20,20 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                 continue;
             }
 
-            if (diagnostic.code.toString().startsWith("COB_NOT_REFERENCED") === false) {
-                continue;
+            // is it ours?
+            if (diagnostic.code.toString().startsWith("COB_NOT_REFERENCED") === true) {
+                var startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
+                codeActions.push({
+                    title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
+                    diagnostics: [diagnostic],
+                    command: {
+                        title: 'Add COBOL lint comment to ignore the warning',
+                        command: "cobolplugin.insertIgnoreCommentLine",
+                        arguments: [document.uri, startOfline, diagnostic.code],
+                    },
+                    kind: vscode.CodeActionKind.QuickFix,
+                });
             }
-
-            var startOfline= document.offsetAt(new vscode.Position(diagnostic.range.start.line,0));
-            codeActions.push({
-                title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
-                diagnostics: [diagnostic],
-                command: {
-                    title: 'Add COBOL lint comment to ignore the warning',
-                    command: "cobolplugin.insertIgnoreCommentLine",
-                    arguments: [document.uri, startOfline, diagnostic.code],
-                },
-                kind: vscode.CodeActionKind.QuickFix,
-            });
         }
         return codeActions;
     }
@@ -46,13 +45,13 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         if (w !== undefined && code !== undefined) {
             var pos = w.document.positionAt(offset);
             w.edit(edit => {
-                edit.insert(pos,"      *> cobol-lint "+code+"\n");
+                edit.insert(pos, "      *> cobol-lint " + code + "\n");
             });
         }
     }
 }
 
-export class CobolLinterProvider implements ICommentCallback{
+export class CobolLinterProvider implements ICommentCallback {
     private settings: ICOBOLSettings;
 
     private collection: vscode.DiagnosticCollection;
@@ -99,7 +98,7 @@ export class CobolLinterProvider implements ICommentCallback{
                 let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                 let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
-                d.code ="COB_NOT_REFERENCED "+key;
+                d.code = "COB_NOT_REFERENCED " + key;
 
                 if (diagRefs.has(token.filename)) {
                     let arr = diagRefs.get(token.filename);
@@ -124,7 +123,7 @@ export class CobolLinterProvider implements ICommentCallback{
                     let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                     let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
-                    d.code ="ignore "+key;
+                    d.code = "ignore " + key;
 
                     if (diagRefs.has(token.filename)) {
                         let arr = diagRefs.get(token.filename);
@@ -151,10 +150,10 @@ export class CobolLinterProvider implements ICommentCallback{
     private current?: COBOLQuickParse;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
-    private ignoreUnusedSymbol: Map<string,string> = new Map<string,string>();
+    private ignoreUnusedSymbol: Map<string, string> = new Map<string, string>();
 
 
-    private setupCOBOLQuickParse(document: vscode.TextDocument):boolean {
+    private setupCOBOLQuickParse(document: vscode.TextDocument): boolean {
         if (this.current !== undefined && this.current.filename !== document.fileName) {
             this.current = undefined;
         }
@@ -175,12 +174,12 @@ export class CobolLinterProvider implements ICommentCallback{
     private cobolLintLiteral = "cobol-lint";
 
     processComment(commentLine: string): void {
-        let startOfComment:number=commentLine.indexOf("*>");
+        let startOfComment: number = commentLine.indexOf("*>");
         if (startOfComment !== undefined && startOfComment !== -1) {
-            var comment = commentLine.substring(2+startOfComment).trim();
+            var comment = commentLine.substring(2 + startOfComment).trim();
             if (comment.startsWith(this.cobolLintLiteral)) {
-                let startOfCOBOLint:number=comment.indexOf(this.cobolLintLiteral);
-                var commentCommandArgs= comment.substring(this.cobolLintLiteral.length+startOfCOBOLint).trim();
+                let startOfCOBOLint: number = comment.indexOf(this.cobolLintLiteral);
+                var commentCommandArgs = comment.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
                 var args = commentCommandArgs.split(" ");
                 var command = args[0];
                 args = args.slice(1);
