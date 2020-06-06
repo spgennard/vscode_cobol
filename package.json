@@ -1014,7 +1014,6 @@
                 "severity": 4,
                 "message": 5
             },
-
             {
                 "name": "mfcobol-errformat2-old",
                 "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\)$",
@@ -1062,13 +1061,12 @@
             },
             {
                 "name": "mfcobol-errformat3-basefn",
-                "regexp": "^[\\.\/].*[\/](\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
+                "regexp": "^[\\./].*[/](\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
                 "severity": 4,
                 "message": 5
-
             },
             {
                 "name": "opencobol-cobc",

@@ -15,6 +15,15 @@ export class CobolLinterActionFixer implements CodeActionProvider {
             if (diagnostic.code !== undefined && diagnostic.code.toString().startsWith("ignore") === false) {
                 continue;
             }
+
+            if (diagnostic.code === undefined) {
+                continue;
+            }
+
+            if (diagnostic.code.toString().startsWith("COB_NOT_REFERENCED") === false) {
+                continue;
+            }
+
             var startOfline= document.offsetAt(new vscode.Position(diagnostic.range.start.line,0));
             codeActions.push({
                 title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
@@ -90,7 +99,7 @@ export class CobolLinterProvider implements ICommentCallback{
                 let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                 let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
-                d.code ="ignore "+key;
+                d.code ="COB_NOT_REFERENCED "+key;
 
                 if (diagRefs.has(token.filename)) {
                     let arr = diagRefs.get(token.filename);
