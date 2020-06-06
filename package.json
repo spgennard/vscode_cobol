@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.2",
+    "version": "6.3.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1014,9 +1014,28 @@
                 "severity": 4,
                 "message": 5
             },
+
+            {
+                "name": "mfcobol-errformat2-old",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\)$",
+                "severity": 1,
+                "message": 2,
+                "file": 3,
+                "line": 4,
+                "column": 5
+            },
             {
                 "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+)(\\d+),.*\\)$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+([\\w\\-. /\\:]*)\\((\\d+),(\\d+),.*\\)$",
+                "severity": 1,
+                "message": 2,
+                "file": 3,
+                "line": 4,
+                "column": 5
+            },
+            {
+                "name": "mfcobol-errformat2-copybook",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+.*,([\\w\\-. /\\:]*)\\((\\d+),(\\d+),.*\\)$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
@@ -1025,7 +1044,7 @@
             },
             {
                 "name": "mfcobol-errformat2-basefn",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+),.*\\)$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\)$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
@@ -1126,6 +1145,22 @@
                     "${workspaceFolder}"
                 ],
                 "pattern": "$mfcobol-errformat3-basefn"
+            },
+            {
+                "name": "mfcobol-errformat2-old",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$mfcobol-errformat2-old"
+            },
+            {
+                "name": "mfcobol-errformat2-copybook",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$mfcobol-errformat2-copybook"
             },
             {
                 "name": "mfcobol-errformat2",
