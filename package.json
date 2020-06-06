@@ -1015,6 +1015,24 @@
                 "message": 5
             },
             {
+                "name": "mfcobol-errformat2",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+)(\\d+),.*\\)$",
+                "severity": 1,
+                "message": 2,
+                "file": 3,
+                "line": 4,
+                "column": 5
+            },
+            {
+                "name": "mfcobol-errformat2-basefn",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+),.*\\)$",
+                "severity": 1,
+                "message": 2,
+                "file": 3,
+                "line": 4,
+                "column": 5
+            },
+            {
                 "name": "mfcobol-errformat3",
                 "regexp": "^(\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
                 "file": 1,
@@ -1024,13 +1042,14 @@
                 "message": 5
             },
             {
-                "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+),.*\\)$",
-                "severity": 1,
-                "message": 2,
-                "file": 3,
-                "line": 4,
-                "column": 5
+                "name": "mfcobol-errformat3-basefn",
+                "regexp": "^[\\.\/].*[\/](\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "severity": 4,
+                "message": 5
+
             },
             {
                 "name": "opencobol-cobc",
@@ -1100,13 +1119,30 @@
                 "pattern": "$mfcobol-errformat3"
             },
             {
-                "name": "mfcobol-errformat2",
+                "name": "mfcobol-errformat3-basefn",
                 "owner": "cobol",
                 "fileLocation": [
                     "relative",
                     "${workspaceFolder}"
                 ],
+                "pattern": "$mfcobol-errformat3-basefn"
+            },
+            {
+                "name": "mfcobol-errformat2",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
                 "pattern": "$mfcobol-errformat2"
+            },
+            {
+                "name": "mfcobol-errformat2-basefn",
+                "owner": "cobol",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": "$mfcobol-errformat2-basefn"
             },
             {
                 "name": "gnucobol-cobc",
