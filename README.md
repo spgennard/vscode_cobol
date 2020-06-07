@@ -20,7 +20,7 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
 ## IntelliSense example:
 ![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/perform_add.gif)
- 
+
 ## Breadcrumb support:
 ![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/breadcrumb.png)
 
@@ -126,6 +126,9 @@ The example below shows you how you can create a single task to compile one prog
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
+For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" problem matcher as although the directive ERRFORMAT"2" is used, the compiler output error format is slightly different.
+
+
 ```json
 {
     "label": "mf cobol (single file)",
@@ -153,7 +156,7 @@ The example below shows you how you can create a single task to compile one prog
         "focus": true,
         "panel": "dedicated"
     },
-    "problemMatcher": "$mfcobol-errformat2"
+    "problemMatcher": [ "$mfcobol-errformat2", "$mfcobol-errformat2-copybook" ]
 }
 ```
 
@@ -205,7 +208,7 @@ The example below shows you how you can create a single task to compile one prog
                     }
                 }
             },
-            "problemMatcher" : [ "$acucobol-warning-ccbl", "$acucobol-ccbl" ]          
+            "problemMatcher" : [ "$acucobol-warning-ccbl", "$acucobol-ccbl" ]
         }
     ]
 }
@@ -231,7 +234,7 @@ Although this extension does not understand comments in COBOL source files, it c
         "NOTE"
     ],
     "todo-tree.filterCaseSensitive": true,
-    
+
     "todo-tree.iconColours": {
         "FIXME" : "#A188FF",
         "!FIXME" : "red",

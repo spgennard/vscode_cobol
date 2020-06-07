@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.6",
+    "version": "6.3.7",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1021,7 +1021,7 @@
                 "message": 5
             },
             {
-                "name": "mfcobol-errformat2-old",
+                "name": "mfcobol-errformat2-netx-sx",
                 "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\)$",
                 "severity": 1,
                 "message": 2,
@@ -1151,12 +1151,12 @@
                 "pattern": "$mfcobol-errformat3-basefn"
             },
             {
-                "name": "mfcobol-errformat2-old",
+                "name": "mfcobol-errformat2-netx-sx",
                 "owner": "cobol",
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$mfcobol-errformat2-old"
+                "pattern": "$mfcobol-errformat2-netx-sx"
             },
             {
                 "name": "mfcobol-errformat2-copybook",
