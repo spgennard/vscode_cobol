@@ -1083,8 +1083,22 @@
                 "message": 4
             },
             {
+                "name": "opencobol-error-cobc",
+                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
+                "name": "opencobol-warning-cobc",
+                "regexp": "^(.*):\\s(\\d+):.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
                 "name": "gnucobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
+                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[wW]arning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1092,7 +1106,7 @@
             },
             {
                 "name": "gnucobol3-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1100,10 +1114,24 @@
             },
             {
                 "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*(error|warning|Error|Warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
+                "message": 4
+            },
+            {
+                "name": "cobolit-error-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
+                "name": "cobolit-warning-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "file": 1,
+                "line": 2,
                 "message": 4
             },
             {
@@ -1208,12 +1236,48 @@
                 "pattern": "$opencobol-cobc"
             },
             {
+                "name": "opencobol-warning-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$opencobol-warning-cobc",
+                "severity": "warning"
+            },
+            {
+                "name": "opencobol-error-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$opencobol-error-cobc",
+                "severity": "error"
+            },
+            {
                 "name": "cobolit-cobc",
                 "owner": "cobol",
                 "fileLocation": [
                     "absolute"
                 ],
                 "pattern": "$cobolit-cobc"
+            },
+            {
+                "name": "cobolit-warning-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-cobc",
+                "severity": "warning"
+            },
+            {
+                "name": "cobolit-error-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-cobc",
+                "severity": "error"
             },
             {
                 "name": "acucobol-ccbl",
