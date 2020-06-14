@@ -856,7 +856,7 @@
             {
                 "key": "ctrl+alt+.",
                 "command": "cobolplugin.move2anyforward",
-                "when": "editorTextFocus && editorLangId == GnuOBOL"
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
             },
             {
                 "key": "ctrl+alt+,",
@@ -1076,7 +1076,7 @@
             },
             {
                 "name": "opencobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
+                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[wW]arning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
