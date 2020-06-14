@@ -35,16 +35,16 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
 ## Keybinds
 
-| Keys   | Description           |
-|--------|:---------------------:|
-| ctrl+alt+p  | Goto procedure division |
-| ctrl+alt+w  | Goto working-storage section |
-| ctrl+alt+d  | Goto data division (or working-storage section if not present) |
-| ctrl+alt+,  | Go backwards to next section/division |
-| ctrl+alt+.  | Go forward to next next section/division |
-| f12 or ctrl+click | Move to copybook/file |
-| ctrl+hover over copybook | Peek head of copybook |
-| right mouse/peek | Peek copybook without opening the file) |
+| Keys                     |                          Description                           |
+|--------------------------|:--------------------------------------------------------------:|
+| ctrl+alt+p               |                    Goto procedure division                     |
+| ctrl+alt+w               |                  Goto working-storage section                  |
+| ctrl+alt+d               | Goto data division (or working-storage section if not present) |
+| ctrl+alt+,               |             Go backwards to next section/division              |
+| ctrl+alt+.               |            Go forward to next next section/division            |
+| f12 or ctrl+click        |                     Move to copybook/file                      |
+| ctrl+hover over copybook |                     Peek head of copybook                      |
+| right mouse/peek         |            Peek copybook without opening the file)             |
 
 ## Settings
 
@@ -164,6 +164,9 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" p
 
 The example below shows you how you can create a single task to compile one program using the `cobc` command.
 
+This example is for GnuCOBOL 1-2.x, for GnuCOBOL use $gnucobol3-cob
+
+
 ```json
 {
     "version": "2.0.0",
@@ -213,6 +216,25 @@ The example below shows you how you can create a single task to compile one prog
     ]
 }
 ```
+
+### Task: Breakdown of problem matchers
+
+| Product and Version                           | Tools                                                        | Problem matcher(s)                          |
+|-----------------------------------------------|--------------------------------------------------------------|---------------------------------------------|
+| COBOL-IT                                      | cobc                                                         | $cobolit-cobc                               |
+| COBOL-IT                                      | cobc                                                         | $cobolit-warning-cobc + $cobolit-error-cobc |
+| open-cobol 1-1.5                              | cobc                                                         | $opencobol-cobc                             |
+| ACU-COBOLGT                                   | ccbl                                                         | $acucobol-ccbl + $acucobol-warning-ccbl     |
+| GnuCOBOL 1-2                                  | cobc                                                         | $gnucobol-cobc                              |
+| GnuCOBOL 3                                    | cobc                                                         | $gnucobol3-cobc                             |
+| Micro Focus COBOL Net Express/Server Express  | cob or cobol.exe                                             | $mfcobol-errformat2-netx-sx                 |
+| Micro Focus Visual COBOL/Enterprise Developer | msbuild                                                      | $mfcobol-msbuild                            |
+|                                               | cob or cobol.exe + ERRFORMAT"3"                              | $mfcobol-errformat3                         |
+|                                               | cob or cobol.exe + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                  |
+|                                               | cob or cobol.exe + ERRFORMAT"2" | $$mfcobol-errformat2               |
+|                                               | cob or cobol.exe + ERRFORMAT"2" for errors in copybooks       | $$mfcobol-errformat2-copybook               |
+
+
 ## Complementary extensions
 
 ### [ToDo tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree) by Gruntfuggly
