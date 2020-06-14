@@ -328,22 +328,6 @@
             ]
         },
         "configurationDefaults": {
-            "search.exclude": {
-                "**/*.int": true,
-                "**/*.gnt": true,
-                "**/*.dll": true,
-                "**/*.lbr": true,
-                "**/*.so": true,
-                "**/*.acu": true,
-                "**/*.idy": true,
-                "**/*.pdb": true,
-                "**/*.jar": true,
-                "**/*.obj": true,
-                "**/.vscode_cobol": true
-            },
-            "files.exclude": {
-                "**/.vscode_cobol": true
-            },
             "[COBOL]": {
                 "files.autoGuessEncoding": false,
                 "editor.renderIndentGuides": false,
@@ -856,7 +840,7 @@
             {
                 "key": "ctrl+alt+.",
                 "command": "cobolplugin.move2anyforward",
-                "when": "editorTextFocus && editorLangId == GnuOBOL"
+                "when": "editorTextFocus && editorLangId == GnuCOBOL"
             },
             {
                 "key": "ctrl+alt+,",
@@ -896,7 +880,7 @@
             {
                 "key": "tab",
                 "command": "cobolplugin.tab",
-                "when": "editorLangId == GnuOBOL && !inSnippetMode"
+                "when": "editorLangId == GnuCOBOL && !inSnippetMode"
             },
             {
                 "key": "shift+tab",
