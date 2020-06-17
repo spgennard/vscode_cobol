@@ -539,7 +539,52 @@ export default class COBOLQuickParse {
         }
 
         if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
-            COBOLQuickParse.processOneFile(cacheDirectory, this, false);
+            this.processAllCopyBooksInSourceFile(cacheDirectory, false);
+        }
+    }
+
+    public processAllCopyBooksInSourceFile(cacheDirectory: string,  showError: boolean) {
+
+        let filename = this.filename;
+
+        if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
+            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
+
+            COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+        }
+
+        /* iterater through all the known copybook references */
+        for (let [key, value] of this.getcopyBooksUsed()) {
+            try {
+                let copyBookfilename: string = "";
+                try {
+                    copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
+                    if (copyBookfilename.length !== 0) {
+                        if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
+                            //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
+                            let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                            let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
+                            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+
+                            COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                        }
+                    } else {
+                        if (showError) {
+                            logMessage("   CopyBook: " + key + " (not found)");
+                        }
+                    }
+                }
+                catch (ex) {
+                    if (copyBookfilename !== null) {
+                        logException("processOneFile:" + copyBookfilename, ex);
+                    } else {
+                        logException("processOneFile:", ex);
+                    }
+                }
+            }
+            catch (fe) {
+                logException("processOneFile", fe);
+            }
 
         }
     }
@@ -634,51 +679,6 @@ export default class COBOLQuickParse {
         }
     }
 
-    public static processOneFile(cacheDirectory: string, qcp: COBOLQuickParse, showError: boolean) {
-
-        let filename = qcp.filename;
-
-        if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp);
-
-            COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-        }
-
-        /* iterater through all the known copybook references */
-        for (let [key, value] of qcp.getcopyBooksUsed()) {
-            try {
-                let copyBookfilename: string = "";
-                try {
-                    copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
-                    if (copyBookfilename.length !== 0) {
-                        if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                            //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
-                            let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                            let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, qcp.configHandler, cacheDirectory);
-                            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
-
-                            COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-                        }
-                    } else {
-                        if (showError) {
-                            logMessage("   CopyBook: " + key + " (not found)");
-                        }
-                    }
-                }
-                catch (ex) {
-                    if (copyBookfilename !== null) {
-                        logException("processOneFile:" + copyBookfilename, ex);
-                    } else {
-                        logException("processOneFile:", ex);
-                    }
-                }
-            }
-            catch (fe) {
-                logException("processOneFile", fe);
-            }
-
-        }
-    }
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string) {
         if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {

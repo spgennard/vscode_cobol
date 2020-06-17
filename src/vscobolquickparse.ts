@@ -4,7 +4,6 @@ import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper, CO
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 
 import { logMessage, logException, showLogChannel, logTimedMessage } from "./extension";
 import { performance } from "perf_hooks";
@@ -45,7 +44,7 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName)) {
             cachedObject = InMemoryCache.get(fileName);
         }
-        
+
         /* if the document is edited, drop the in cached object */
         if (document !== undefined && document.isDirty) {
             InMemoryCache.delete(fileName);
@@ -53,7 +52,7 @@ export default class VSQuickCOBOLParse {
             return new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
         }
 
-        
+
         /* does the cache object need to be updated? */
         if (cachedObject !== null && cachedObject !== undefined) {
             let stat: fs.Stats = fs.statSync(fileName);

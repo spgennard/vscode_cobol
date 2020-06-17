@@ -222,7 +222,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            COBOLQuickParse.processOneFile(cacheDirectory, qcp, false);    /* ensure we have all the copybooks in the symbol cache */
+            qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
 
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
@@ -303,7 +303,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            COBOLQuickParse.processOneFile(cacheDirectory, qcp, false);    /* ensure we have all the copybooks in the symbol cache */
+            qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
@@ -336,7 +336,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
      * for variables
      */
     if (VSCOBOLConfiguration.isCachingEnabled()) {
-        COBOLQuickParse.processOneFile(cacheDirectory, qcp, false);    /* ensure we have all the copybooks in the symbol cache */
+        qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';
