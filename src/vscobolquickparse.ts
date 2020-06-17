@@ -133,7 +133,7 @@ export default class VSQuickCOBOLParse {
         }
     }
 
-    private static processFileInDirectory(cacheDirectory:string, filename: string, filterOnExtension: boolean) {
+    private static processFileInDirectory(cacheDirectory: string, filename: string, filterOnExtension: boolean) {
         if (fs.existsSync(filename) === false) {
             return false;
         }
@@ -154,26 +154,7 @@ export default class VSQuickCOBOLParse {
                             /* iterater through all the known copybook references */
                             for (let [key, value] of qcp.getcopyBooksUsed()) {
                                 try {
-                                    let copyBookfilename: string = "";
-                                    try {
-                                        copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
-                                        if (copyBookfilename.length !== 0) {
-                                            if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                                                let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                                                let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, VSCOBOLConfiguration.get(),  cacheDirectory);
-                                                let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
-
-                                                COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-                                            }
-                                        }
-                                    }
-                                    catch (ex) {
-                                        if (copyBookfilename !== null) {
-                                            logException("processFileInDirectory/1: " + copyBookfilename, ex);
-                                        } else {
-                                            logException("processFileInDirectory/1", ex);
-                                        }
-                                    }
+                                    qcp.processExternalCopybook(cacheDirectory, false, key);
                                 }
                                 catch (fe) {
                                     logException("processFileInDirectory/2", fe);

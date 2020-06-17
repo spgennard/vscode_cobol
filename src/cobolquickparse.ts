@@ -543,6 +543,29 @@ export default class COBOLQuickParse {
         }
     }
 
+    public processExternalCopybook(cacheDirectory: string,  showError: boolean, sourceCopybook: string) {
+        try {
+            let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook);
+            if (copyBookfilename.length !== 0) {
+                if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
+                    //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
+                    let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                    let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
+                    let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+
+                    COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                }
+            } else {
+                if (showError) {
+                    logMessage("   CopyBook: " + sourceCopybook + " (not found)");
+                }
+            }
+        }
+        catch (ex) {
+            logException("processAllCopyBooksInSourceFile:", ex);
+        }
+    }
+
     public processAllCopyBooksInSourceFile(cacheDirectory: string,  showError: boolean) {
 
         let filename = this.filename;
@@ -556,31 +579,7 @@ export default class COBOLQuickParse {
         /* iterater through all the known copybook references */
         for (let [key, value] of this.getcopyBooksUsed()) {
             try {
-                let copyBookfilename: string = "";
-                try {
-                    copyBookfilename = expandLogicalCopyBookToFilenameOrEmpty(key);
-                    if (copyBookfilename.length !== 0) {
-                        if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                            //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
-                            let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                            let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
-                            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
-
-                            COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-                        }
-                    } else {
-                        if (showError) {
-                            logMessage("   CopyBook: " + key + " (not found)");
-                        }
-                    }
-                }
-                catch (ex) {
-                    if (copyBookfilename !== null) {
-                        logException("processOneFile:" + copyBookfilename, ex);
-                    } else {
-                        logException("processOneFile:", ex);
-                    }
-                }
+                this.processExternalCopybook(cacheDirectory, showError, key);
             }
             catch (fe) {
                 logException("processOneFile", fe);

@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
-import { getcopybookdirs, logMessage } from './extension';
+import { getcopybookdirs, logMessage, logException } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 export function isValidExtension(filename: string): boolean {
@@ -188,18 +188,25 @@ function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): 
 }
 
 export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string {
-    let fullPath = findFileInDirectoryOrWorkspace(filename, "");
-    if (fullPath.length !== 0) {
-        return path.normalize(fullPath);
-    }
+    let fullPath = "";
 
-    let lastDot = filename.lastIndexOf(".");
-    if (lastDot !== -1) {
-        let filenameNoExtension = filename.substr(0, lastDot);
-        fullPath = findFileInDirectoryOrWorkspace(filenameNoExtension, "");
+    try {
+        fullPath = findFileInDirectoryOrWorkspace(filename, "");
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }
+
+        let lastDot = filename.lastIndexOf(".");
+        if (lastDot !== -1) {
+            let filenameNoExtension = filename.substr(0, lastDot);
+            fullPath = findFileInDirectoryOrWorkspace(filenameNoExtension, "");
+            if (fullPath.length !== 0) {
+                return path.normalize(fullPath);
+            }
+        }
+    }
+    catch (ex) {
+        logException("expandLogicalCopyBookToFilenameOrEmpty", ex);
     }
 
     return "";
