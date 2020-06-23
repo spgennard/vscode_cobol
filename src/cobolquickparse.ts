@@ -292,6 +292,7 @@ export class SharedSourceReferences {
     public sharedConstantsOrVariables: Map<string, COBOLToken[]>;
     public sharedSections: Map<string, COBOLToken>;
     public sharedParagraphs: Map<string, COBOLToken>;
+    public processingMap: Map<string, string>;
 
     constructor() {
         this.filenames = [];
@@ -300,6 +301,7 @@ export class SharedSourceReferences {
         this.sharedConstantsOrVariables = new Map<string, COBOLToken[]>();
         this.sharedSections = new Map<string, COBOLToken>();
         this.sharedParagraphs = new Map<string, COBOLToken>();
+        this.processingMap = new Map<string, string>();
     }
 }
 
@@ -368,6 +370,8 @@ export default class COBOLQuickParse {
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
+    private processingMap: Map<string, string>;
+
     public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
@@ -422,9 +426,14 @@ export default class COBOLQuickParse {
             this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
             this.paragraphs = sourceReferences.sharedParagraphs;
             this.sections = sourceReferences.sharedSections;
+            this.processingMap = sourceReferences.processingMap;
         } else {
             this.sourceFileId = 0;
+            this.processingMap = new Map<string, string>();
         }
+
+        /* mark this has been processed (to help copy of self) */
+        this.processingMap.set(this.filename, this.filename);
 
         /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
         let lineLimit = configHandler.pre_parse_line_limit;
@@ -543,17 +552,25 @@ export default class COBOLQuickParse {
         }
     }
 
-    public processExternalCopybook(cacheDirectory: string,  showError: boolean, sourceCopybook: string) {
+
+
+
+    public processExternalCopybook(cacheDirectory: string, showError: boolean, sourceCopybook: string) {
         try {
             let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook);
             if (copyBookfilename.length !== 0) {
-                if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                    //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
-                    let filefs_vb = new FileSourceHandler(copyBookfilename, false);
-                    let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
-                    let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
+                if (this.processingMap.has(copyBookfilename) === false) {
+                    this.processingMap.set(copyBookfilename, copyBookfilename);
+                    if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
+                        //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
+                        let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                        let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
+                        let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
-                    COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                        COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                    }
+                } else {
+                    logMessage("   CopyBook: " + sourceCopybook + " (alredy processed)");
                 }
             } else {
                 if (showError) {
@@ -566,7 +583,7 @@ export default class COBOLQuickParse {
         }
     }
 
-    public processAllCopyBooksInSourceFile(cacheDirectory: string,  showError: boolean) {
+    public processAllCopyBooksInSourceFile(cacheDirectory: string, showError: boolean) {
 
         let filename = this.filename;
 
