@@ -340,6 +340,7 @@ export default class COBOLQuickParse {
     currentRegion: COBOLToken;
     currentDivision: COBOLToken;
     currentSection: COBOLToken;
+    currentParagraph: COBOLToken;
     procedureDivision: COBOLToken;
     declaratives: COBOLToken;
     parseColumnBOnwards: boolean; // = this.getColumBParsing();
@@ -384,6 +385,7 @@ export default class COBOLQuickParse {
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;
+        this.currentParagraph = COBOLToken.Null;
         this.currentToken = COBOLToken.Null;
         this.currentClass = COBOLToken.Null;
         this.currentMethod = COBOLToken.Null;
@@ -540,6 +542,11 @@ export default class COBOLQuickParse {
             this.currentSection.endColumn = line.length;
         }
 
+        if (this.currentParagraph !== COBOLToken.Null) {
+            this.currentParagraph.endLine = sourceHandler.getLineCount();
+            this.currentParagraph.endColumn = line.length;
+        }
+
         this.addinMissingEndlings(sourceHandler);
 
         if (this.ImplicitProgramId.length !== 0) {
@@ -611,8 +618,18 @@ export default class COBOLQuickParse {
 
         let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, this.inProcedureDivision, extraInformation);
 
+        /* if we are in a paragraph update */
+        if (this.currentParagraph !== COBOLToken.Null) {
+            this.currentParagraph.endLine = startLine;
+            if (ctoken.startColumn !== 0) {
+                this.currentParagraph.endColumn = ctoken.startColumn - 1;
+            }
+        }
+
         // new divison
         if (tokenType === COBOLTokenStyle.Division && this.currentDivision !== COBOLToken.Null) {
+            this.currentParagraph = COBOLToken.Null;
+
             this.currentDivision.endLine = startLine;
             if (ctoken.startColumn !== 0) {
                 this.currentDivision.endColumn = ctoken.startColumn - 1;
@@ -625,29 +642,40 @@ export default class COBOLQuickParse {
                 }
                 this.currentSection = COBOLToken.Null;
             }
+            this.tokensInOrder.push(ctoken);
+            return ctoken;
         }
 
         // new section
         if (tokenType === COBOLTokenStyle.Section && this.currentSection !== COBOLToken.Null) {
+            this.currentParagraph = COBOLToken.Null;
             this.currentSection.endLine = startLine;
             if (ctoken.startColumn !== 0) {
                 this.currentSection.endColumn = ctoken.startColumn - 1;
             }
+            this.tokensInOrder.push(ctoken);
+            return ctoken;
         }
 
+        // new paragraph
         if (tokenType === COBOLTokenStyle.Paragraph) {
+            this.currentParagraph = ctoken;
+
             if (this.currentSection !== COBOLToken.Null) {
                 this.currentSection.endLine = startLine;
                 if (ctoken.startColumn !== 0) {
                     this.currentSection.endColumn = ctoken.startColumn - 1;
                 }
             }
+
             if (this.currentDivision !== COBOLToken.Null) {
                 this.currentDivision.endLine = startLine;
                 if (ctoken.startColumn !== 0) {
                     this.currentDivision.endColumn = ctoken.startColumn - 1;
                 }
             }
+            this.tokensInOrder.push(ctoken);
+            return ctoken;
         }
 
         this.tokensInOrder.push(ctoken);
@@ -1219,9 +1247,14 @@ export default class COBOLQuickParse {
                         this.currentSection.endColumn = line.length;
                     }
 
+                    if (this.currentParagraph !== COBOLToken.Null) {
+                        this.currentParagraph.endLine = lineNumber;
+                        this.currentParagraph.endColumn = line.length;
+                    }
 
                     this.currentDivision = COBOLToken.Null;
                     this.currentSection = COBOLToken.Null;
+                    this.currentParagraph = COBOLToken.Null;
                     this.pickFields = false;
                     continue;
                 }
@@ -1246,6 +1279,7 @@ export default class COBOLQuickParse {
                     }
                     this.currentDivision = COBOLToken.Null;
                     this.currentSection = COBOLToken.Null;
+                    this.currentParagraph = COBOLToken.Null;
                     this.procedureDivision = COBOLToken.Null;
                     continue;
                 }
