@@ -1336,7 +1336,7 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "@types/node": "^14.0.13",
+        "@types/node": "^14.0.14",
         "@types/trie-prefix-tree": "^1.5.0",
         "tslint": "^6.1.2",
         "typescript": "^3.9.5",
