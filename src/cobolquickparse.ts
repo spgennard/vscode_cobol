@@ -470,6 +470,8 @@ export default class COBOLQuickParse {
             /* if we have items that could be in a data division */
 
             if (this.procedureDivisionRelatedTokens !== 0 && this.procedureDivisionRelatedTokens > this.workingStorageRelatedTokens) {
+                this.ImplicitProgramId = "";
+
                 let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.procedureDivision = fakeDivision;
@@ -483,6 +485,7 @@ export default class COBOLQuickParse {
                 this.pickFields = true;
                 this.inProcedureDivision = false;
                 this.sourceLooksLikeCOBOL = true;
+                this.ImplicitProgramId = "";
             }
         }
 
@@ -657,14 +660,14 @@ export default class COBOLQuickParse {
 
         // new paragraph
         if (tokenType === COBOLTokenStyle.Paragraph) {
-            this.currentParagraph = ctoken;
-
             if (this.currentSection !== COBOLToken.Null) {
                 this.currentSection.endLine = startLine;
                 if (ctoken.startColumn !== 0) {
                     this.currentSection.endColumn = ctoken.startColumn - 1;
                 }
             }
+
+            this.currentParagraph = ctoken;
 
             if (this.currentDivision !== COBOLToken.Null) {
                 this.currentDivision.endLine = startLine;
@@ -900,7 +903,12 @@ export default class COBOLQuickParse {
                 switch (tcurrentLower) {
                     case "section":
                         if (token.prevToken.length !== 0) {
-                            this.sectionsInToken++;
+                            switch(token.prevTokenLower) {
+                                case "working-storage" : this.sectionsInToken++;
+                                case "file" : this.sectionsInToken++;
+                                case "linkage" : this.sectionsInToken++;
+                                case "screen" : this.sectionsInToken++;
+                            }
                         }
                         break;
                     case "division":
