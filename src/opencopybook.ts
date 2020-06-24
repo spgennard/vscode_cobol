@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
-import { getcopybookdirs, logMessage, logException } from './extension';
+import { getcopybookdirs, logMessage, logException, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 export function isValidExtension(filename: string): boolean {
@@ -150,12 +150,12 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
                 var ext = exts[extpos];
                 var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");
 
-                if (fs.existsSync(possibleFile)) {
+                if (isFile(possibleFile)) {
                     return possibleFile;
                 }
             }
         } else {
-            if (fs.existsSync(basefullPath)) {
+            if (isFile(basefullPath)) {
                 return basefullPath;
             }
         }

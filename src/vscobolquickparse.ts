@@ -5,7 +5,7 @@ import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper, CO
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, showLogChannel, logTimedMessage } from "./extension";
+import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory } from "./extension";
 import { performance } from "perf_hooks";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
@@ -16,18 +16,13 @@ const util = require('util');
 export default class VSQuickCOBOLParse {
 
     public static isFile(fileName: string): boolean {
-
-        if (fs.existsSync(fileName) === false) {
-            return false;
-        }
-
         try {
             let stat: fs.Stats = fs.statSync(fileName);
             if (stat.isFile() && !stat.isDirectory()) {
                 return true;
             }
 
-        } catch (err) {
+        } catch {
 
         }
 
@@ -134,7 +129,7 @@ export default class VSQuickCOBOLParse {
     }
 
     private static processFileInDirectory(cacheDirectory: string, filename: string, filterOnExtension: boolean) {
-        if (fs.existsSync(filename) === false) {
+        if (this.isFile(filename) === false) {
             return false;
         }
 
@@ -174,7 +169,7 @@ export default class VSQuickCOBOLParse {
 
             for (var folder of workspace.workspaceFolders) {
                 let cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
-                if (fs.existsSync(cacheDir2)) {
+                if (isDirectory(cacheDir2)) {
                     return cacheDir2;
                 }
                 if (firstCacheDir === "") {
@@ -186,8 +181,13 @@ export default class VSQuickCOBOLParse {
                 return "";
             }
 
-            if (fs.existsSync(firstCacheDir) === false) {
-                fs.mkdirSync(firstCacheDir);
+            if (isDirectory(firstCacheDir) === false) {
+                try {
+                    fs.mkdirSync(firstCacheDir);
+                }
+                catch {
+                    return "";
+                }
             }
 
             return firstCacheDir;

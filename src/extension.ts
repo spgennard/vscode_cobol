@@ -48,11 +48,27 @@ export function getcopybookdirs(): string[] {
 }
 
 export function isDirectory(sdir: string): boolean {
-    if (fs.existsSync(sdir)) {
+    try {
         let f = fs.statSync(sdir);
         if (f.isDirectory()) {
             return true;
         }
+    }
+    catch {
+
+    }
+    return false;
+}
+
+export function isFile(sdir: string ): boolean {
+    try {
+        let f = fs.statSync(sdir);
+        if (f.isFile()) {
+            return true;
+        }
+    }
+    catch {
+
     }
     return false;
 }

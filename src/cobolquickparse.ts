@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logMessage, logException } from "./extension";
+import { logMessage, logException, isDirectory, isFile } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
@@ -683,7 +683,7 @@ export default class COBOLQuickParse {
     }
 
     private setupParserHint() {
-        if (fs.existsSync(this.parserHintDirectory) === false) {
+        if (isDirectory(this.parserHintDirectory) === false) {
             this.parserHintDirectory = "";
         } else {
             try {
@@ -693,7 +693,7 @@ export default class COBOLQuickParse {
                 }
 
                 let combinedFile = path.join(this.parserHintDirectory, path.basename(this.filename) + ".json");
-                if (fs.existsSync(combinedFile)) {
+                if (isFile(combinedFile)) {
                     let statJFile = fs.statSync(combinedFile);
                     if (statJFile.isFile()) {
                         logMessage("INFO: found  " + combinedFile);
@@ -1667,7 +1667,7 @@ export class COBOLSymbolTableHelper {
         }
 
         let fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        if (fs.existsSync(fn)) {
+        if (isFile(fn)) {
             let stat4cache: fs.Stats = fs.statSync(fn);
             let stat4src = fs.statSync(filename);
             if (stat4cache.mtimeMs < stat4src.mtimeMs) {
@@ -1695,7 +1695,7 @@ export class COBOLSymbolTableHelper {
         }
 
         let fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        if (fs.existsSync(fn)) {
+        if (isFile(fn)) {
             let stat4cache: fs.Stats = fs.statSync(fn);
             let stat4src = fs.statSync(filename);
             if (stat4cache.mtimeMs < stat4src.mtimeMs) {
@@ -1723,7 +1723,7 @@ export class InMemoryGlobalCachesHelper {
     public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string) {
         //let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
         let fn: string = path.join(cacheDirectory, globalSymbolFilename);
-        if (fs.existsSync(fn)) {
+        if (isFile(fn)) {
             let stat4cache: fs.Stats = fs.statSync(fn);
             if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
                 try {
@@ -1747,7 +1747,7 @@ export class InMemoryGlobalCachesHelper {
     public static loadInMemoryGlobalFileCache(cacheDirectory: string) {
         let fn: string = path.join(cacheDirectory, fileSymbolFilename);
 
-        if (fs.existsSync(fn)) {
+        if (isFile(fn)) {
             let stat4cache: fs.Stats = fs.statSync(fn);
             if (stat4cache.mtimeMs !== InMemoryGlobalFileCache.lastModifiedTime) {
                 try {
