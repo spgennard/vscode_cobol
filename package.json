@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.11",
+    "version": "6.3.12",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -75,6 +75,8 @@
         "onCommand:cobolplugin.removeColumnNumbers",
         "onCommand:cobolplugin.resequenceColumnNumbers",
         "view:flat-source-view",
+        "workspaceContains:**/.cobol",
+        "workspaceContains:**/.cob",
         "workspaceContains:**/.cbl",
         "workspaceContains:**/.cpy",
         "workspaceContains:**/.md",

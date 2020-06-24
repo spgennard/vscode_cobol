@@ -576,8 +576,6 @@ export default class COBOLQuickParse {
 
                         COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
                     }
-                } else {
-                    logMessage("   CopyBook: " + sourceCopybook + " (alredy processed)");
                 }
             } else {
                 if (showError) {
