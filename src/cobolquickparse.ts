@@ -106,6 +106,7 @@ export function splitArgument(input: string): string[] {
 }
 
 export class COBOLToken {
+    public ignoreInOutlineView: boolean;
     public filename: string;
     public tokenType: COBOLTokenStyle;
     public startLine: number;
@@ -129,6 +130,7 @@ export class COBOLToken {
 
     public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string,
         parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation: string) {
+        this.ignoreInOutlineView = false;
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
@@ -478,6 +480,7 @@ export default class COBOLQuickParse {
                 this.pickFields = false;
                 this.inProcedureDivision = true;
                 this.sourceLooksLikeCOBOL = true;
+                fakeDivision.ignoreInOutlineView = true;
             }
             else if ((this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0)) {
                 let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", this.currentDivision);
@@ -486,6 +489,7 @@ export default class COBOLQuickParse {
                 this.inProcedureDivision = false;
                 this.sourceLooksLikeCOBOL = true;
                 this.ImplicitProgramId = "";
+                fakeDivision.ignoreInOutlineView = true;
             }
         }
 
