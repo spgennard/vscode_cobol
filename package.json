@@ -317,6 +317,11 @@
                     "type": "boolean",
                     "title": "Enable ANSI color",
                     "default": true
+                },
+                "coboleditor.disable_unc_copybooks_directories" : {
+                    "type": "boolean",
+                    "title": "Disable UNC Copybooks",
+                    "default": false
                 }
             }
         },

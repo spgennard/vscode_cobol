@@ -1,6 +1,6 @@
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage, logException, logTimedMessage } from './extension';
+import { logException, logTimedMessage } from './extension';
 import { performance } from 'perf_hooks';
 
 // var detab = require('detab');
@@ -15,14 +15,14 @@ export class FileSourceHandler implements ISourceHandler {
     lines: string[];
     commentCount: number;
     commentCallback?: ICommentCallback;
-   
+
     public constructor(document: string, dumpNumbersInAreaA: boolean,   commentCallback?: ICommentCallback) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.commentCallback = commentCallback;
         this.dumpAreaBOnwards = false;
         this.lines = [];
-        this.commentCount = 0;  
+        this.commentCount = 0;
 
         let docstat = fs.statSync(document);
         let docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;

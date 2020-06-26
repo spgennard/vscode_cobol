@@ -27,6 +27,7 @@ export interface ICOBOLSettings {
     parser_hint_directory: string;
     enable_data_provider:boolean;
     enable_auto_tasks: boolean;
+    disable_unc_copybooks_directories: boolean;
 }
 
 
@@ -49,6 +50,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public parser_hint_directory: string;
     public enable_data_provider: boolean;
     public enable_auto_tasks: boolean;
+    public disable_unc_copybooks_directories: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -69,6 +71,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.parser_hint_directory = "";
         this.enable_data_provider = true;
         this.enable_auto_tasks = false;
+        this.disable_unc_copybooks_directories = false;
     }
 }
 

@@ -30,6 +30,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.parser_hint_directory = getparser_hint_directory();
         VSCOBOLConfiguration.config.enable_data_provider = getEnable_data_provider();
         VSCOBOLConfiguration.config.enable_auto_tasks = getEnable_auto_tasks();
+        VSCOBOLConfiguration.config.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
     }
 
     public static get(): ICOBOLSettings {
@@ -67,6 +68,10 @@ export class VSCOBOLConfiguration {
 
     public static getFuzzyVariableSearch(): boolean {
         return VSCOBOLConfiguration.config.fuzzy_variable_search;
+    }
+
+    public static getDisable_unc_copybooks(): boolean {
+        return VSCOBOLConfiguration.config.disable_unc_copybooks_directories;
     }
 
     public static getCachingSetting(): string {
@@ -185,6 +190,10 @@ function getEnable_auto_tasks() : boolean {
     return getBoolean('enable_auto_tasks', false);
 }
 
+function getDisable_unc_copybooks_directories(): boolean {
+    return getBoolean('disable_unc_copybooks_directories', false);
+
+}
 function getCachingSetting(): string {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var cacheEnum = editorConfig.get<string>('cache_metadata');

@@ -87,6 +87,24 @@ function extractCopyBoolFilename(str: string) {
     return "";
 }
 
+// only handle unc filenames
+export function isNetworkPath(dir: string) {
+    var isWin = process.platform === "win32";
+
+    if (dir === undefined && dir === null) {
+        return false;
+    }
+
+    if (isWin) {
+        if (dir.length > 1 && dir[0] === '\\') {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
 export function isDirectPath(dir: string) {
     var isWin = process.platform === "win32";
 

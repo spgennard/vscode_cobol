@@ -21,7 +21,7 @@ import * as vscode from "vscode";
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
 import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
-import { isDirectPath } from './opencopybook';
+import { isDirectPath, isNetworkPath } from './opencopybook';
 
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
@@ -31,6 +31,8 @@ import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils } from './plusutils';
+import { ICOBOLSettings } from './iconfiguration';
+import { performance } from 'perf_hooks';
 
 const propertiesReader = require('properties-reader');
 
@@ -118,7 +120,7 @@ let unitTestTerminal: vscode.Terminal | undefined = undefined;
 let terminalName = "UnitTest";
 
 
-function initExtensions() {
+function initExtensions(config: ICOBOLSettings) {
     fileSearchDirectory = [];
 
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
@@ -127,9 +129,20 @@ function initExtensions() {
 
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var ddir = extsdir[extsdirpos];
-        if (isDirectPath(ddir)) {
+        if (config.disable_unc_copybooks_directories && isNetworkPath(ddir)) {
+            logMessage(" Copybook directory "+ddir+" has been marked as invalid, as it is a unc filename");
+            invalidSearchDirectory.push(ddir);
+        }
+        else if (isDirectPath(ddir)) {
+            let startTime = performance.now();
             if (isDirectory(ddir)) {
-                fileSearchDirectory.push(ddir);
+                let totalTimeInMS = performance.now() - startTime;
+                let timeTaken = totalTimeInMS.toFixed(2);
+                if (totalTimeInMS <= 2000) {
+                    fileSearchDirectory.push(ddir);
+                } else {
+                    logMessage(" Slow copybook directory dropped "+ddir+" as it took "+timeTaken+"ms");
+                }
             } else {
                 invalidSearchDirectory.push(ddir);
             }
@@ -170,7 +183,7 @@ export function showLogChannel() {
 }
 
 function activateLogChannel() {
-    initExtensions();
+
     let thisExtension = extensions.getExtension("bitlang.cobol");
     logMessage("");
     if (thisExtension !== undefined) {
@@ -178,10 +191,15 @@ function activateLogChannel() {
         logMessage(" Extension path    : " + thisExtension.extensionPath);
         logMessage(" Version           : " + thisExtension.packageJSON.version);
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            logMessage(" Caching           : " + VSCOBOLConfiguration.getCachingSetting());
-            logMessage("  Cache directory  : " + VSQuickCOBOLParse.getCacheDirectory());
+            logMessage(" Caching             : " + VSCOBOLConfiguration.getCachingSetting());
+            logMessage("  Cache directory    : " + VSQuickCOBOLParse.getCacheDirectory());
+            logMessage("  UNC paths disabled : " + VSCOBOLConfiguration.getDisable_unc_copybooks());
         }
+    }
 
+    initExtensions(VSCOBOLConfiguration.get());
+
+    if (thisExtension !== undefined) {
         if (workspace.workspaceFolders) {
             logMessage("  Workspace Folders");
             for (var folder of workspace.workspaceFolders) {
@@ -226,7 +244,7 @@ export function activate(context: ExtensionContext) {
     const collection = languages.createDiagnosticCollection('cobolDiag');
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
-    initExtensions();
+    initExtensions(VSCOBOLConfiguration.get());
     activateLogChannel();
 
     var insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
