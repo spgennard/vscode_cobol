@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.15",
+    "version": "6.3.16",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -318,7 +318,7 @@
                     "title": "Enable ANSI color",
                     "default": true
                 },
-                "coboleditor.disable_unc_copybooks_directories" : {
+                "coboleditor.disable_unc_copybooks_directories": {
                     "type": "boolean",
                     "title": "Disable UNC Copybooks",
                     "default": false

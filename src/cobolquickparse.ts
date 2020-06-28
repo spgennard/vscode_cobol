@@ -561,8 +561,10 @@ export default class COBOLQuickParse {
             this.callTargets.set(this.ImplicitProgramId, ctoken);
         }
 
-        if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
-            this.processAllCopyBooksInSourceFile(cacheDirectory, false);
+        if (sourceHandler.isCacheBelow()) {
+            if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
+                this.processAllCopyBooksInSourceFile(cacheDirectory, false);
+            }
         }
     }
 
@@ -907,11 +909,11 @@ export default class COBOLQuickParse {
                 switch (tcurrentLower) {
                     case "section":
                         if (token.prevToken.length !== 0) {
-                            switch(token.prevTokenLower) {
-                                case "working-storage" : this.sectionsInToken++;
-                                case "file" : this.sectionsInToken++;
-                                case "linkage" : this.sectionsInToken++;
-                                case "screen" : this.sectionsInToken++;
+                            switch (token.prevTokenLower) {
+                                case "working-storage": this.sectionsInToken++;
+                                case "file": this.sectionsInToken++;
+                                case "linkage": this.sectionsInToken++;
+                                case "screen": this.sectionsInToken++;
                             }
                         }
                         break;

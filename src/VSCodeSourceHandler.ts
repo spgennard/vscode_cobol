@@ -8,7 +8,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
     commentCallback?: ICommentCallback;
-    
+
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
@@ -16,7 +16,11 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCount = 0;
         this.commentCallback = commentCallback;
     }
-    
+
+    isCacheBelow(): boolean {
+        return false;
+    }
+
     getLineCount(): number {
         return this.document.lineCount;
     }
@@ -65,7 +69,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
             this.sendCommentCallback(line);
             return "";
         }
-        
+
         // todo - this is a bit messy and should be revised
         if (this.dumpNumbersInAreaA) {
             if (line.match(VSCodeSourceHandler.paraPrefixRegex1)) {
@@ -82,7 +86,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         if (this.dumpAreaBOnwards && line.length >= 73) {
             line = line.substr(0, 72);
         }
-        
+
         return line;
     }
 

@@ -12,4 +12,5 @@ export default interface ISourceHandler {
     getRawLine(lineNumber: number): string;
     setDumpAreaA(flag: boolean): void;
     setDumpAreaBOnwards(flag: boolean): void;
+    isCacheBelow(): boolean;
 }

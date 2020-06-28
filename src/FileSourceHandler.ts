@@ -47,6 +47,10 @@ export class FileSourceHandler implements ISourceHandler {
         }
     }
 
+    isCacheBelow(): boolean {
+        return true;
+    }
+
     getLineCount(): number {
         return this.lines.length;
     }
