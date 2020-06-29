@@ -326,8 +326,8 @@ export default class COBOLQuickParse {
     public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
-    public cpPerformTargets: any | undefined;
-    public cpConstantsOrVars: any | undefined;
+    public cpPerformTargets: COBOLToken[];
+    public cpConstantsOrVars: COBOLToken[];
 
     public ImplicitProgramId: string = "";
 
@@ -416,8 +416,8 @@ export default class COBOLQuickParse {
         this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
         this.parseReferences = sourceHandler !== null;
         this.sourceReferences = sourceReferences;
-        this.cpPerformTargets = undefined;
-        this.cpConstantsOrVars = undefined;
+        this.cpPerformTargets = [];
+        this.cpConstantsOrVars = [];
         this.parserHintDirectory = configHandler.parser_hint_directory;
 
         let prevToken: Token = Token.Blank;
@@ -1344,10 +1344,10 @@ export default class COBOLQuickParse {
                                 if (this.isParagraph(c)) {
                                     if (this.currentSection !== COBOLToken.Null) {
                                         let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentSection);
-                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
+                                        this.paragraphs.set(newToken.tokenName, newToken);
                                     } else {
                                         let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision);
-                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
+                                        this.paragraphs.set(newToken.tokenName, newToken);
                                     }
                                 }
                             }

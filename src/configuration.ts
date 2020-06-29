@@ -31,6 +31,11 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.enable_data_provider = getEnable_data_provider();
         VSCOBOLConfiguration.config.enable_auto_tasks = getEnable_auto_tasks();
         VSCOBOLConfiguration.config.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
+        VSCOBOLConfiguration.config.intellisense_include_unchanged = getIntellisense_include_unchanged();
+        VSCOBOLConfiguration.config.intellisense_include_camalcase = getIntellisense_include_camalcase();
+        VSCOBOLConfiguration.config.intellisense_include_uppercase = getIntellisense_include_uppercase();
+        VSCOBOLConfiguration.config.intellisense_include_lowercase = getIntellisense_include_lowercase();
+        VSCOBOLConfiguration.config.intellisense_item_limit = getIntellisense_item_limit();
     }
 
     public static get(): ICOBOLSettings {
@@ -194,6 +199,32 @@ function getDisable_unc_copybooks_directories(): boolean {
     return getBoolean('disable_unc_copybooks_directories', false);
 
 }
+
+function getIntellisense_include_unchanged():boolean {
+    return getBoolean("intellisense_include_unchanged", true);
+}
+
+function getIntellisense_include_camalcase(): boolean {
+    return getBoolean("intellisense_include_camalcase",false);
+}
+function getIntellisense_include_uppercase(): boolean {
+    return getBoolean("intellisense_include_uppercase", false);
+}
+
+function getIntellisense_include_lowercase(): boolean {
+    return getBoolean("intellisense_include_lowercase",false);
+}
+
+function getIntellisense_item_limit(): number {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var itemLimit = editorConfig.get<number>('intellisense_item_limit');
+    if (itemLimit === undefined || itemLimit === null) {
+        itemLimit = 0;
+    }
+    return itemLimit;
+
+}
+
 function getCachingSetting(): string {
     var editorConfig = workspace.getConfiguration('coboleditor');
     var cacheEnum = editorConfig.get<string>('cache_metadata');

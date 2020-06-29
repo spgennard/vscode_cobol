@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.16",
+    "version": "6.3.17",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -316,12 +316,44 @@
                 "coboleditor.mfunit.diagnostic.color": {
                     "type": "boolean",
                     "title": "Enable ANSI color",
+                    "description": "Enable ANSI color when using mfunit in terminal",
                     "default": true
                 },
                 "coboleditor.disable_unc_copybooks_directories": {
                     "type": "boolean",
                     "title": "Disable UNC Copybooks",
+                    "description": "Disable UNC Copybooks (default false)",
                     "default": false
+                },
+                "coboleditor.intellisense_include_unchanged": {
+                    "type": "boolean",
+                    "title": "Include result unchanged in intellisense results",
+                    "description": "Include result unchanged in intellisense results (default true)",
+                    "default": true
+                },
+                "coboleditor.intellisense_include_camalcase": {
+                    "type": "boolean",
+                    "title": "Include camalcase in intellisense results",
+                    "description": "Include camalcase in intellisense results (default false)",
+                    "default": false
+                },
+                "coboleditor.intellisense_include_uppercase": {
+                    "type": "boolean",
+                    "title": "Include uppercase results in intellisense results",
+                    "description": "Include uppercase results in intellisense results (default false)",
+                    "default": false
+                },
+                "coboleditor.intellisense_include_lowercase": {
+                    "type": "boolean",
+                    "title": "Include lowercase results in intellisense results",
+                    "description": "Include lowercase results in intellisense results (default false)",
+                    "default": false
+                },
+                "coboleditor.intellisense_item_limit": {
+                    "type": "number",
+                    "title": "Max number of items to return",
+                    "description": "Max number of items to return (default 120)",
+                    "default": 120
                 }
             }
         },

@@ -1,9 +1,10 @@
-import trie from 'trie-prefix-tree';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import VSQuickCOBOLParse from './vscobolquickparse';
-import { ICOBOLSettings } from './iconfiguration';
-import COBOLQuickParse from './cobolquickparse';
+import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
+import COBOLQuickParse, { COBOLToken } from './cobolquickparse';
 import { logMessage } from './extension';
+import { isEnabledViaWorkspace4cobol } from './margindecorations';
+import { VSCOBOLConfiguration } from './configuration';
 
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
@@ -14,35 +15,23 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         this.iconfig = config;
     }
 
-    private getPerformTargets(document: TextDocument): any {
+    private getPerformTargets(document: TextDocument): COBOLToken[] {
         let sf: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
 
         if (sf !== undefined) {
-            if (sf.cpPerformTargets === undefined) {
-                sf.cpPerformTargets = trie([]);
-                let words = sf.cpPerformTargets;
+            if (sf.cpPerformTargets.length === 0) {
+                let words: COBOLToken[] = sf.cpPerformTargets;
 
                 for (let [key, token] of sf.sections) {
                     if (token.inProcedureDivision) {
-                        if (token.tokenNameLower === token.tokenNameLower) {
-                            words.addWord(token.tokenName);
-                            words.addWord(token.tokenName.toUpperCase());
-                        } else {
-                            words.addWord(token.tokenName);
-                            words.addWord(token.tokenNameLower);
-                        }
+                        words.push(token);
+                        logMessage("SPG: Add Section: " + token.tokenName + " -> " + sf.lastModifiedTime);
                     }
                 }
                 for (let [key, token] of sf.paragraphs) {
                     if (token.inProcedureDivision) {
-                        if (token.tokenNameLower === token.tokenNameLower) {
-                            words.addWord(token.tokenName);
-                            words.addWord(token.tokenName.toUpperCase());
-                        } else {
-                            words.addWord(token.tokenName);
-                            words.addWord(token.tokenNameLower);
-                        }
-
+                        words.push(token);
+                        logMessage("SPG: Add Paragraph: " + token.tokenName + " -> " + sf.lastModifiedTime);
                     }
                 }
                 return words;
@@ -51,24 +40,21 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 return sf.cpPerformTargets;
             }
         }
+
+        return [];
     }
 
-    private getConstantsOrVariables(document: TextDocument): any {
+    private getConstantsOrVariables(document: TextDocument):  COBOLToken[] {
         let sf = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
 
         if (sf !== undefined) {
-            if (sf.cpConstantsOrVars === undefined) {
-                sf.cpConstantsOrVars = trie([]);
-                let words = sf.cpConstantsOrVars;
-                for (let [key, token] of sf.constantsOrVariables) {
-                    if (token.length >= 1) {
-                        if (token[0].tokenName === token[0].tokenNameLower) {
-                            words.addWord(token[0].tokenName);
-                            words.addWord(token[0].tokenName.toUpperCase());
-
-                        } else {
-                            words.addWord(token[0].tokenName);
-                            words.addWord(token[0].tokenNameLower);
+            if (sf.cpConstantsOrVars.length === 0) {
+                let words: COBOLToken[] = sf.cpConstantsOrVars;
+                for (let key of sf.constantsOrVariables.keys()) {
+                    let tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
+                    if (tokens !== undefined) {
+                        for (let token of tokens) {
+                            words.push(token);
                         }
                     }
                 }
@@ -77,30 +63,68 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 return sf.cpConstantsOrVars;
             }
         }
+
+        return [];
     }
 
-    private getItemsFromTrie(isUpper: boolean, words: any, wordToComplete: string, limit: number, kind: CompletionItemKind): CompletionItem[] {
-        let results = words.getPrefix(wordToComplete);
+    private camelize(text: string): string {
+        let ret="";
+        let uppercaseNext: boolean = true;
+        for(let c=0; c<text.length; c++) {
+            let ch = text[c];
+            if (uppercaseNext) {
+                ret += ch.toUpperCase();
+                uppercaseNext = false;
+            } else {
+                if (ch === '-' || ch === '_') {
+                    uppercaseNext = true;
+                }
 
-        let numberOfWordsInResults = results.length;
-        if (numberOfWordsInResults === 0) {
-            results = words.getWords();
-            numberOfWordsInResults = results.length;
+                ret += ch.toLocaleLowerCase();
+            }
         }
+
+        return ret;
+    }
+
+    private getItemsFromList(words: COBOLToken[], wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
+        let  iconfig:COBOLSettings = VSCOBOLConfiguration.get();
+
+        let includeUpper: boolean = iconfig.intellisense_include_uppercase;
+        let includeLower: boolean = iconfig.intellisense_include_lowercase;
+        let includeAsIS:boolean = iconfig.intellisense_include_unchanged;
+        let includeCamelCase: boolean = iconfig.intellisense_include_camalcase;
+        let limit: number = iconfig.intellisense_item_limit;
+
+        let numberOfWordsInResults = words.length;
 
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
             //if the text is uppercase, the present the items as uppercase
-            let key = results[c];
-            if (isUpper) {
-                key = key.toUpperCase();
+            let key: COBOLToken = words[c];
+
+            if (includeAsIS) {
+                let completionItem = new CompletionItem(key.tokenName, kind);
+                items.push(completionItem);
             }
 
-            let completionItem = new CompletionItem(key, kind);
-            items.push(completionItem);
+            if (includeLower && key.tokenName !== key.tokenNameLower) {
+                let completionItem = new CompletionItem(key.tokenNameLower, kind);
+                items.push(completionItem);
+            }
+
+            if (includeUpper && key.tokenName !== key.tokenName.toUpperCase()) {
+                let completionItem = new CompletionItem(key.tokenName.toUpperCase(), kind);
+                items.push(completionItem);
+            }
+
+            if (includeCamelCase) {
+                let completionItem = new CompletionItem(this.camelize(key.tokenName), kind);
+                items.push(completionItem);
+            }
+
             if (items.length >= limit) {
-                // logMessage("Search for [" + wordToComplete + "] gives " + items.length + " words");
                 return items;
             }
         }
@@ -119,11 +143,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         let wordToComplete = '';
         let lineBefore = "";
-        let isUpper: boolean | undefined = undefined;
         const range = document.getWordRangeAtPosition(position);
         if (range) {
             wordToComplete = document.getText(new Range(range.start, position));
-            isUpper = wordToComplete.toUpperCase() === wordToComplete;
             lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
             let lastSpace = lineBefore.lastIndexOf(" ");
             if (lastSpace !== -1) {
@@ -141,10 +163,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             if (lastSpace === -1) {
                 lineBefore = currentLine;
             } else {
-                lineBefore = currentLine.substr(1+lastSpace);
+                lineBefore = currentLine.substr(1 + lastSpace);
             }
-
-            isUpper = lineBefore.toUpperCase() === lineBefore;
         }
 
         if (lineBefore.length !== 0) {
@@ -152,31 +172,31 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 case "perform":
                 case "goto": {
                     const words = this.getPerformTargets(document);
-                    return this.getItemsFromTrie(isUpper, words, wordToComplete, 120, CompletionItemKind.Method);
+                    return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
                 }
                 case "move":
                     {
                         const words = this.getConstantsOrVariables(document);
-                        if (isUpper !== undefined) {
-                            if (isUpper) {
-                                if (words.hasWord("SPACE") === false) {
-                                    words.addWord("SPACE");
-                                    words.addWord("SPACES");
-                                    words.addWord("LOW-VALUES");
-                                    words.addWord("HIGH-VALUES");
-                                }
 
-                            } else {
-                                if (words.hasWord("space") === false) {
-                                    words.addWord("space");
-                                    words.addWord("spaces");
-                                    words.addWord("low-values");
-                                    words.addWord("high-values");
-                                }
-                            }
-                        }
-                        return this.getItemsFromTrie(isUpper, words, wordToComplete, 120, CompletionItemKind.Variable);
+                        // TODO:
+                        //
+                        // if (words.push("SPACE") === false) {
+                        //     words.addWord("SPACE");
+                        //     words.addWord("SPACES");
+                        //     words.addWord("LOW-VALUES");
+                        //     words.addWord("HIGH-VALUES");
+                        // }
+
+                        // if (words.hasWord("space") === false) {
+                        //     words.addWord("space");
+                        //     words.addWord("spaces");
+                        //     words.addWord("low-values");
+                        //     words.addWord("high-values");
+                        // }
+
+                        return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
                     }
+
                 case "initialize":
                 case "set":
                 case "into":
@@ -189,7 +209,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 case "compute":
                 case "giving":
                     const words = this.getConstantsOrVariables(document);
-                    return this.getItemsFromTrie(isUpper, words, wordToComplete, 120, CompletionItemKind.Variable);
+                    return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
             }
         }
 

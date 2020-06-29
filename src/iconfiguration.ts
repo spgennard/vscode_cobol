@@ -28,6 +28,11 @@ export interface ICOBOLSettings {
     enable_data_provider:boolean;
     enable_auto_tasks: boolean;
     disable_unc_copybooks_directories: boolean;
+    intellisense_include_unchanged: boolean;
+    intellisense_include_camalcase:boolean;
+    intellisense_include_uppercase: boolean;
+    intellisense_include_lowercase:boolean;
+    intellisense_item_limit:number;
 }
 
 
@@ -51,6 +56,11 @@ export class COBOLSettings implements ICOBOLSettings {
     public enable_data_provider: boolean;
     public enable_auto_tasks: boolean;
     public disable_unc_copybooks_directories: boolean;
+    public intellisense_include_unchanged:boolean;
+    public intellisense_include_camalcase:boolean;
+    public intellisense_include_uppercase:boolean;
+    public intellisense_include_lowercase:boolean;
+    public intellisense_item_limit:number;
 
     constructor() {
         this.experimential_features = false;
@@ -72,6 +82,11 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_data_provider = true;
         this.enable_auto_tasks = false;
         this.disable_unc_copybooks_directories = false;
+        this.intellisense_include_unchanged = true;
+        this.intellisense_include_camalcase = false;
+        this.intellisense_include_uppercase = false;
+        this.intellisense_include_lowercase = false;
+        this.intellisense_item_limit = 0;
     }
 }
 
