@@ -2,9 +2,8 @@ import { CompletionItemProvider, TextDocument, Position, CancellationToken, Comp
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLQuickParse, { COBOLToken } from './cobolquickparse';
-import { logMessage } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
-
+import TrieSearch from 'trie-search';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -14,23 +13,22 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         this.iconfig = config;
     }
 
-    private getPerformTargets(document: TextDocument): COBOLToken[] {
+    private getPerformTargets(document: TextDocument): TrieSearch {
         let sf: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
 
         if (sf !== undefined) {
-            if (sf.cpPerformTargets.length === 0) {
-                let words: COBOLToken[] = sf.cpPerformTargets;
+            if (sf.cpPerformTargets === undefined) {
+                sf.cpPerformTargets = new TrieSearch("tokenName");
+                var words = sf.cpPerformTargets;
 
                 for (let [key, token] of sf.sections) {
                     if (token.inProcedureDivision) {
-                        words.push(token);
-                        logMessage("SPG: Add Section: " + token.tokenName + " -> " + sf.lastModifiedTime);
+                        words.add(token);
                     }
                 }
                 for (let [key, token] of sf.paragraphs) {
                     if (token.inProcedureDivision) {
-                        words.push(token);
-                        logMessage("SPG: Add Paragraph: " + token.tokenName + " -> " + sf.lastModifiedTime);
+                        words.add(token);
                     }
                 }
                 return words;
@@ -40,20 +38,22 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
-        return [];
+        return new TrieSearch('tokenName');
     }
 
-    private getConstantsOrVariables(document: TextDocument):  COBOLToken[] {
+    private getConstantsOrVariables(document: TextDocument): TrieSearch  {
         let sf = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
 
         if (sf !== undefined) {
-            if (sf.cpConstantsOrVars.length === 0) {
-                let words: COBOLToken[] = sf.cpConstantsOrVars;
+            if (sf.cpConstantsOrVars === undefined) {
+                sf.cpPerformTargets = new TrieSearch('tokenName');
+                let words: TrieSearch = sf.cpPerformTargets;
+
                 for (let key of sf.constantsOrVariables.keys()) {
                     let tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
                     if (tokens !== undefined) {
                         for (let token of tokens) {
-                            words.push(token);
+                            words.add(token);
                         }
                     }
                 }
@@ -63,7 +63,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
-        return [];
+        return new TrieSearch('tokenName');
     }
 
     private camelize(text: string): string {
@@ -86,7 +86,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         return ret;
     }
 
-    private getItemsFromList(words: COBOLToken[], wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
+    private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
         let  iconfig:COBOLSettings = VSCOBOLConfiguration.get();
 
         let includeUpper: boolean = iconfig.intellisense_include_uppercase;
@@ -95,6 +95,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         let includeCamelCase: boolean = iconfig.intellisense_include_camalcase;
         let limit: number = iconfig.intellisense_item_limit;
 
+        let words: COBOLToken[] = tsearch.get(wordToComplete);
         let numberOfWordsInResults = words.length;
 
         const items: CompletionItem[] = [];
@@ -170,7 +171,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             switch (lineBefore.toLocaleLowerCase()) {
                 case "perform":
                 case "goto": {
-                    const words = this.getPerformTargets(document);
+                    const words = this. getPerformTargets(document);
                     return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
                 }
                 case "move":

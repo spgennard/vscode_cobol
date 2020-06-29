@@ -4,6 +4,8 @@ import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKe
 import { FileSourceHandler } from "./FileSourceHandler";
 import { String } from 'typescript-string-operations';
 
+import TrieSearch from 'trie-search';
+
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
@@ -326,8 +328,9 @@ export default class COBOLQuickParse {
     public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
-    public cpPerformTargets: COBOLToken[];
-    public cpConstantsOrVars: COBOLToken[];
+    public cpPerformTargets: any|undefined = undefined;
+
+    public cpConstantsOrVars: any|undefined = undefined;
 
     public ImplicitProgramId: string = "";
 
@@ -416,8 +419,8 @@ export default class COBOLQuickParse {
         this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
         this.parseReferences = sourceHandler !== null;
         this.sourceReferences = sourceReferences;
-        this.cpPerformTargets = [];
-        this.cpConstantsOrVars = [];
+        this.cpPerformTargets = undefined;
+        this.cpConstantsOrVars = undefined;
         this.parserHintDirectory = configHandler.parser_hint_directory;
 
         let prevToken: Token = Token.Blank;
