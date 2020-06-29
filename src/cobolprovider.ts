@@ -3,7 +3,6 @@ import VSQuickCOBOLParse from './vscobolquickparse';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLQuickParse, { COBOLToken } from './cobolquickparse';
 import { logMessage } from './extension';
-import { isEnabledViaWorkspace4cobol } from './margindecorations';
 import { VSCOBOLConfiguration } from './configuration';
 
 
@@ -180,11 +179,12 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
                         // TODO:
                         //
-                        // if (words.push("SPACE") === false) {
-                        //     words.addWord("SPACE");
-                        //     words.addWord("SPACES");
-                        //     words.addWord("LOW-VALUES");
-                        //     words.addWord("HIGH-VALUES");
+                        // if (this.iconfig.intellisense_include_uppercase &&
+                        //     words.indexOf("SPACE") === -1) {
+                        //     words.push("SPACE");
+                        //     words.push("SPACES");
+                        //     words.push("LOW-VALUES");
+                        //     words.push("HIGH-VALUES");
                         // }
 
                         // if (words.hasWord("space") === false) {
