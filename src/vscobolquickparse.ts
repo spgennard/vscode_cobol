@@ -147,7 +147,7 @@ export default class VSQuickCOBOLParse {
                             logMessage(" - Processing file : " + filename);
 
                             /* iterater through all the known copybook references */
-                            for (let [key, value] of qcp.getcopyBooksUsed()) {
+                            for (let [key, value] of qcp.copyBooksUsed) {
                                 try {
                                     qcp.processExternalCopybook(cacheDirectory, false, key);
                                 }

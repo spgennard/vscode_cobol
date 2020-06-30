@@ -21,6 +21,7 @@ var lzjs = require('lzjs');
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
+    CopyBookIn = "CopybookIn",
     ProgramId = "Program-Id",
     ImplicitProgramId = "ImplicitProgramId-Id",
     FunctionId = "Function-Id",
@@ -322,15 +323,15 @@ export default class COBOLQuickParse {
     public classes: Map<string, COBOLToken>;
     public methods: Map<string, COBOLToken>;
     public isCached: boolean;
-    public copyBooksUsed: Map<string, string>;
+    public copyBooksUsed: Map<string, COBOLToken>;
 
     public parseReferences: boolean;
     public sourceReferences?: SharedSourceReferences;
     public sourceFileId: number;
 
-    public cpPerformTargets: any|undefined = undefined;
+    public cpPerformTargets: any | undefined = undefined;
 
-    public cpConstantsOrVars: any|undefined = undefined;
+    public cpConstantsOrVars: any | undefined = undefined;
 
     public ImplicitProgramId: string = "";
 
@@ -407,7 +408,7 @@ export default class COBOLQuickParse {
         this.sectionsInToken = 0;
         this.divisionsInToken = 0;
         this.copybookNestedInSection = configHandler.copybooks_nested;
-        this.copyBooksUsed = new Map();
+        this.copyBooksUsed = new Map<string, COBOLToken>();
         this.isCached = false;
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
@@ -571,9 +572,6 @@ export default class COBOLQuickParse {
         }
     }
 
-
-
-
     public processExternalCopybook(cacheDirectory: string, showError: boolean, sourceCopybook: string) {
         try {
             let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook);
@@ -611,7 +609,7 @@ export default class COBOLQuickParse {
         }
 
         /* iterater through all the known copybook references */
-        for (let [key, value] of this.getcopyBooksUsed()) {
+        for (let [key, value] of this.copyBooksUsed) {
             try {
                 this.processExternalCopybook(cacheDirectory, showError, key);
             }
@@ -1311,28 +1309,44 @@ export default class COBOLQuickParse {
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     let trimmedCopyBook = this.trimLiteral(current);
                     let newCopybook: boolean = false;
-                    if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
-                        this.copyBooksUsed.set(trimmedCopyBook, current);
-                        newCopybook = true;
-                    }
 
-                    if (this.copybookNestedInSection) {
-                        if (this.currentSection !== COBOLToken.Null) {
-                            this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentSection);
+
+                    let copyToken: COBOLToken = COBOLToken.Null;
+                    if (nextTokenLower === 'in' && nextPlusOneToken.length !== 0) {
+                        let desc: string = prevPlusCurrent+" in "+nextPlusOneToken;
+                        if (this.copybookNestedInSection) {
+                            if (this.currentSection !== COBOLToken.Null) {
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentSection, nextPlusOneToken);
+                            } else {
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
+                            }
                         } else {
-                            this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                            copyToken= this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
                         }
-                    } else {
-                        this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                    }
+                    else {
+                        if (this.copybookNestedInSection) {
+                            if (this.currentSection !== COBOLToken.Null) {
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentSection);
+                            } else {
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                            }
+                        } else {
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                        }
+                    }
+                    if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
+                        this.copyBooksUsed.set(trimmedCopyBook, copyToken);
+                        // newCopybook = true;
                     }
 
-                    if (this.sourceReferences !== undefined && newCopybook) {
-                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook);
-                        if (fileName.length > 0) {
-                            let qfile = new FileSourceHandler(fileName, false);
-                            let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
-                        }
-                    }
+                    // if (this.sourceReferences !== undefined && newCopybook) {
+                    //     let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook);
+                    //     if (fileName.length > 0) {
+                    //         let qfile = new FileSourceHandler(fileName, false);
+                    //         let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                    //     }
+                    // }
                     continue;
                 }
 
@@ -1483,10 +1497,6 @@ export default class COBOLQuickParse {
         while (token.moveToNextToken() === false);
 
         return token;
-    }
-
-    public getcopyBooksUsed(): Map<string, string> {
-        return this.copyBooksUsed;
     }
 
     private addinMissingEndlings(sourceHandler: ISourceHandler) {
