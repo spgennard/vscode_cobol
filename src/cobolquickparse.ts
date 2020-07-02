@@ -1369,10 +1369,10 @@ export default class COBOLQuickParse {
                                 if (this.isParagraph(c)) {
                                     if (this.currentSection !== COBOLToken.Null) {
                                         let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentSection);
-                                        this.paragraphs.set(newToken.tokenName, newToken);
+                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
                                     } else {
                                         let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision);
-                                        this.paragraphs.set(newToken.tokenName, newToken);
+                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
                                     }
                                 }
                             }
