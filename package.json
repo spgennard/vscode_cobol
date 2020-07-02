@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.19",
+    "version": "6.3.20",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -72,6 +72,8 @@
         "onCommand:cobolplugin.mfurunMenu",
         "onCommand:cobolplugin.removeAllComments",
         "onCommand:cobolplugin.removeIdentificationArea",
+        "onCommand:cobolplugin.makeKeywordsLowercase",
+        "onCommand:cobolplugin.makeKeywordsUppercase",
         "onCommand:cobolplugin.removeColumnNumbers",
         "onCommand:cobolplugin.resequenceColumnNumbers",
         "view:flat-source-view",
@@ -741,6 +743,22 @@
             {
                 "command": "cobolplugin.resequenceColumnNumbers",
                 "title": "COBOL: Re-sequence Column Numbers"
+            },
+            {
+                "command": "cobolplugin.makeKeywordsLowercase",
+                "title": "COBOL: Make keywords lowercase"
+            },
+            {
+                "command": "cobolplugin.makeKeywordsUppercase",
+                "title": "COBOL: Make keywords uppercasse"
+            },
+            {
+                "command": "cobolplugin.makeFieldsLowercase",
+                "title": "COBOL: Make fields lowercase"
+            },
+            {
+                "command": "cobolplugin.makeFieldsUppercase",
+                "title": "COBOL: Make fields uppercase"
             }
         ],
         "menus": {

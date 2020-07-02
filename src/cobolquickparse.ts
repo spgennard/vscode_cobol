@@ -1089,7 +1089,16 @@ export default class COBOLQuickParse {
                             prevTokenLower === 'screen' ||
                             prevTokenLower === 'linkage') {
 
+                            if (this.ImplicitProgramId.length !== 0) {
+                                let trimmedCurrent = this.trimLiteral(this.ImplicitProgramId);
+                                let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, "program-id. "+this.ImplicitProgramId, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                                this.programs.push(ctoken);
+                                ctoken.ignoreInOutlineView = true;
+                                this.ImplicitProgramId = "";        /* don't need it */
+                            }
+
                             this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data Division", "Data", "Data Division (Optional)", this.currentDivision);
+                            this.currentDivision.ignoreInOutlineView = true;
                         }
                     }
 
@@ -1308,8 +1317,7 @@ export default class COBOLQuickParse {
                 // copybook handling
                 if (prevTokenLower === "copy" && current.length !== 0) {
                     let trimmedCopyBook = this.trimLiteral(current);
-                    let newCopybook: boolean = false;
-
+                    // let newCopybook: boolean = false;
 
                     let copyToken: COBOLToken = COBOLToken.Null;
                     if (nextTokenLower === 'in' && nextPlusOneToken.length !== 0) {

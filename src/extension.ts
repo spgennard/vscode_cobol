@@ -365,9 +365,11 @@ export function activate(context: ExtensionContext) {
         updateDecorations(act);
     });
 
-
-    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', function () {
-        VSQuickCOBOLParse.processAllFilesInWorkspaces();
+    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', (editor)  => {
+        return new Promise(resolve => {
+            VSQuickCOBOLParse.processAllFilesInWorkspaces();
+            resolve("Complete");
+        });
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
@@ -617,6 +619,7 @@ export function activate(context: ExtensionContext) {
             }
         }
     });
+    context.subscriptions.push(removeAllCommentsCommand);
 
     let removeIdentificationAreaCommand = vscode.commands.registerCommand('cobolplugin.removeIdentificationArea', () => {
         if (vscode.window.activeTextEditor) {
@@ -628,8 +631,9 @@ export function activate(context: ExtensionContext) {
             }
         }
     });
+    context.subscriptions.push(removeIdentificationAreaCommand);
 
-    let removeColumnNumbers = vscode.commands.registerCommand('cobolplugin.removeColumnNumbers', () => {
+    let removeColumnNumbersCommand = vscode.commands.registerCommand('cobolplugin.removeColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;
 
@@ -639,8 +643,58 @@ export function activate(context: ExtensionContext) {
             }
         }
     });
+    context.subscriptions.push(removeColumnNumbersCommand);
 
-    let resequenceColumnNumbers = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
+
+    let makeKeywordsLowercaseCommands = vscode.commands.registerCommand('cobolplugin.makeKeywordsLowercase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.makeKeywordsCased(vscode.window.activeTextEditor,true);
+            }
+        }
+    });
+    context.subscriptions.push(makeKeywordsLowercaseCommands);
+
+    let makeKeywordsUppercaseCommands = vscode.commands.registerCommand('cobolplugin.makeKeywordsUppercase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.makeKeywordsCased(vscode.window.activeTextEditor,false);
+            }
+        }
+    });
+    context.subscriptions.push(makeKeywordsUppercaseCommands);
+
+    let makeFieldsLowercaseCommand = vscode.commands.registerCommand('cobolplugin.makeFieldsLowercase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.makeFieldsCased(vscode.window.activeTextEditor,true);
+            }
+        }
+    });
+    context.subscriptions.push(makeFieldsLowercaseCommand);
+
+    let makeFieldsUppercaseCommand = vscode.commands.registerCommand('cobolplugin.makeFieldsUppercase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.makeFieldsCased(vscode.window.activeTextEditor,false);
+            }
+        }
+    });
+    context.subscriptions.push(makeFieldsUppercaseCommand);
+
+    let resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;
 
@@ -670,11 +724,11 @@ export function activate(context: ExtensionContext) {
                         vscode.window.showErrorMessage("Sorry invalid re-sequence given");
                     }
                 });
-
-
             }
         }
     });
+    context.subscriptions.push(resequenceColumnNumbersCommands);
+
 
     if (VSCOBOLConfiguration.isCachingSetToON()) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
