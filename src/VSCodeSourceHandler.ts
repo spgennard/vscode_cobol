@@ -105,4 +105,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
     getUri() : vscode.Uri {
         return this.document.uri;
     }
+
+    getFilename(): string {
+        return this.document.fileName;
+    }
 }

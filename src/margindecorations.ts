@@ -6,6 +6,7 @@ import { getCurrentContext, enableMarginStatusBar, hideMarginStatusBar } from '.
 import minimatch = require('minimatch');
 import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
+import ISourceHandler from './isourcehandler';
 
 var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -92,6 +93,95 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
+export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings) : ESourceFormat {
+    let langid = "";
+    if (window.activeTextEditor !== undefined) {
+        langid = window.activeTextEditor.document.languageId.toLowerCase();
+    }
+
+    if (config.fileformat_strategy === "always_fixed") {
+        return ESourceFormat.fixed;
+    }
+
+    let linesWithJustNumbers = 0;
+    let maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
+    let defFormat = ESourceFormat.unknown;
+
+    let checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
+
+    for (let i = 0; i < maxLines; i++) {
+        let lineText = doc.getLine(i);
+        let line = lineText.toLocaleLowerCase();
+
+        // acu
+        if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
+            if (line.startsWith("*") || line.startsWith("|") || line.startsWith("\\D")) {
+                defFormat = ESourceFormat.terminal;
+            }
+        }
+
+        // non-acu
+        if (defFormat === ESourceFormat.unknown && !checkForTerminalFormat) {
+            let newcommentPos = line.indexOf("*>");
+            if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown) {
+                defFormat = ESourceFormat.variable;
+            }
+        }
+
+        let pos4sourceformat_after = 0;
+        for (let isf = 0; isf < inline_sourceformat.length; isf++) {
+            let pos4sourceformat = line.indexOf(inline_sourceformat[isf]);
+            if (pos4sourceformat !== -1) {
+                pos4sourceformat_after = pos4sourceformat + inline_sourceformat[isf].length + 1;
+                break;
+            }
+        }
+
+        // does it contain a inline comments? no
+        if (pos4sourceformat_after === 0) {
+            if (line.length > 72) {
+                let rightMargin = line.substr(72).trim();
+                if (isNumber(rightMargin)) {
+                    linesWithJustNumbers++;
+                }
+            }
+            continue;
+        } else {
+            // got a inline comment,yes
+            let line2right = line.substr(pos4sourceformat_after);
+
+            if (line2right.indexOf("fixed") !== -1) {
+                return ESourceFormat.fixed;
+            }
+            if (line2right.indexOf("variable") !== -1) {
+                return ESourceFormat.variable;
+            }
+            if (line2right.indexOf("free") !== -1) {
+                return ESourceFormat.free;
+            }
+        }
+    }
+
+    //it might well be...
+    if (linesWithJustNumbers > 7) {
+        return ESourceFormat.fixed;
+    }
+
+    let filesFilter = getFixedFilenameConfiguration();
+    if (filesFilter.length >= 1) {
+        let docFilename: string = doc.getFilename();
+        for (let i = 0; i < filesFilter.length; i++) {
+            let filter: IEditorMarginFiles = filesFilter[i];
+
+            if (minimatch(docFilename, filter.pattern, { nocase: true })) {
+                return ESourceFormat[filter.sourceformat];
+            }
+        }
+    }
+
+    return defFormat;
+
+}
 export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESourceFormat {
     let langid = doc.languageId.toLowerCase();
 

@@ -13,4 +13,5 @@ export default interface ISourceHandler {
     setDumpAreaA(flag: boolean): void;
     setDumpAreaBOnwards(flag: boolean): void;
     isCacheBelow(): boolean;
+    getFilename(): string;
 }

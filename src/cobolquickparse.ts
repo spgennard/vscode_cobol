@@ -16,6 +16,7 @@ import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
 import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
 import { Uri } from "vscode";
+import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 
 var lzjs = require('lzjs');
 
@@ -48,7 +49,28 @@ export enum COBOLTokenStyle {
     Null = "Null"
 }
 
-export function splitArgument(input: string): string[] {
+
+export function camelize(text: string): string {
+    let ret = "";
+    let uppercaseNext: boolean = true;
+    for (let c = 0; c < text.length; c++) {
+        let ch = text[c];
+        if (uppercaseNext) {
+            ret += ch.toUpperCase();
+            uppercaseNext = false;
+        } else {
+            if (ch === '-' || ch === '_') {
+                uppercaseNext = true;
+            }
+
+            ret += ch.toLocaleLowerCase();
+        }
+    }
+
+    return ret;
+}
+
+export function splitArgument(input: string, splitBrackets: boolean): string[] {
     let ret: string[] = [];
     let inQuote: boolean = false;
     let inQuoteSingle: boolean = false;
@@ -98,6 +120,16 @@ export function splitArgument(input: string): string[] {
             continue;
         }
 
+        if (splitBrackets) {
+            if (c === '(' || c === ')') {
+                ret.push(cArg);
+                cArg = "" + c;
+                ret.push(cArg);
+                cArg = "";
+                continue;
+            }
+
+        }
         cArg += c;
     }
 
@@ -219,10 +251,11 @@ class Token {
     public static Blank = new Token("", undefined);
 
     private setupLine() {
-        this.lineTokens = splitArgument(this.line);
+        this.lineTokens = splitArgument(this.line, false);
         this.lineLowerTokens = [];
         for (let c = 0; c < this.lineTokens.length; c++) {
             this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
+            logMessage("Token: " + this.lineTokens[c]);
         }
         this.tokenIndex = 0;
         this.setupToken();
@@ -334,6 +367,8 @@ export default class COBOLQuickParse {
     public cpConstantsOrVars: any | undefined = undefined;
 
     public ImplicitProgramId: string = "";
+
+    public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
     skipToDot: boolean = false;
     addReferencesDuringSkipToTag: boolean = false;
@@ -508,6 +543,19 @@ export default class COBOLQuickParse {
         /* leave early */
         if (this.sourceLooksLikeCOBOL === false) {
             return;
+        }
+
+        this.sourceFormat = getCOBOLSourceFormat(sourceHandler, configHandler);
+        switch (this.sourceFormat) {
+            case ESourceFormat.free: sourceHandler.setDumpAreaBOnwards(false);
+                this.parseColumnBOnwards = false;
+                break;
+            case ESourceFormat.variable: sourceHandler.setDumpAreaBOnwards(false);
+                this.parseColumnBOnwards = false;
+                break;
+            case ESourceFormat.fixed: sourceHandler.setDumpAreaBOnwards(true);
+                this.parseColumnBOnwards = true;
+                break;
         }
 
         // prepare parser hint information
@@ -1091,7 +1139,7 @@ export default class COBOLQuickParse {
 
                             if (this.ImplicitProgramId.length !== 0) {
                                 let trimmedCurrent = this.trimLiteral(this.ImplicitProgramId);
-                                let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, "program-id. "+this.ImplicitProgramId, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                                let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, "program-id. " + this.ImplicitProgramId, trimmedCurrent, prevPlusCurrent, this.currentDivision);
                                 this.programs.push(ctoken);
                                 ctoken.ignoreInOutlineView = true;
                                 this.ImplicitProgramId = "";        /* don't need it */
@@ -1112,8 +1160,8 @@ export default class COBOLQuickParse {
                         prevTokenLower === 'file' || prevTokenLower === "screen") {
                         this.pickFields = true;
                         this.inProcedureDivision = false;
-                        sourceHandler.setDumpAreaA(false);
-                        sourceHandler.setDumpAreaBOnwards(!this.parseColumnBOnwards);
+                        // sourceHandler.setDumpAreaA(false);
+                        // sourceHandler.setDumpAreaBOnwards(false);
                     }
 
                     continue;
@@ -1321,7 +1369,7 @@ export default class COBOLQuickParse {
 
                     let copyToken: COBOLToken = COBOLToken.Null;
                     if (nextTokenLower === 'in' && nextPlusOneToken.length !== 0) {
-                        let desc: string = prevPlusCurrent+" in "+nextPlusOneToken;
+                        let desc: string = prevPlusCurrent + " in " + nextPlusOneToken;
                         if (this.copybookNestedInSection) {
                             if (this.currentSection !== COBOLToken.Null) {
                                 copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentSection, nextPlusOneToken);
@@ -1329,7 +1377,7 @@ export default class COBOLQuickParse {
                                 copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
                             }
                         } else {
-                            copyToken= this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
                         }
                     }
                     else {
@@ -1436,8 +1484,10 @@ export default class COBOLQuickParse {
                                 }
 
                                 /* if spans multiple lines, skip to dot */
-                                if (endWithDot === false) {
-                                    this.skipToDot = true;
+                                if (this.sourceFormat !== ESourceFormat.fixed) {
+                                    if (endWithDot === false) {
+                                        this.skipToDot = true;
+                                    }
                                 }
                             }
                         }

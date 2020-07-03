@@ -133,4 +133,7 @@ export class FileSourceHandler implements ISourceHandler {
     getUri() : Uri {
         return Uri.file(this.document);
     }
+    getFilename(): string {
+        return this.document;
+    }
 }

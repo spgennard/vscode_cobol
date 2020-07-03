@@ -30,7 +30,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
-import { COBOLUtils } from './plusutils';
+import { COBOLUtils, FoldStyle } from './plusutils';
 import { ICOBOLSettings } from './iconfiguration';
 import { performance } from 'perf_hooks';
 
@@ -676,7 +676,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeFieldsCased(vscode.window.activeTextEditor,true);
+                utils.makeFieldsCased(vscode.window.activeTextEditor, FoldStyle.UpperCase);
             }
         }
     });
@@ -688,11 +688,23 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeFieldsCased(vscode.window.activeTextEditor,false);
+                utils.makeFieldsCased(vscode.window.activeTextEditor,FoldStyle.UpperCase);
             }
         }
     });
     context.subscriptions.push(makeFieldsUppercaseCommand);
+
+    let makeFieldsCamelCaseCommand = vscode.commands.registerCommand('cobolplugin.makeFieldsCamelCase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.makeFieldsCased(vscode.window.activeTextEditor,FoldStyle.CamelCase);
+            }
+        }
+    });
+    context.subscriptions.push(makeFieldsCamelCaseCommand);
 
     let resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {

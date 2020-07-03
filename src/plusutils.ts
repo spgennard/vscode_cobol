@@ -1,11 +1,17 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import COBOLQuickParse, { splitArgument, SharedSourceReferences, COBOLToken } from './cobolquickparse';
+import COBOLQuickParse, { splitArgument, SharedSourceReferences, COBOLToken, camelize } from './cobolquickparse';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { logException, logMessage } from './extension';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { VSCOBOLConfiguration } from './configuration';
 import { FileSourceHandler } from './FileSourceHandler';
+
+export enum FoldStyle {
+    LowerCase = 1,
+    UpperCase = 2,
+    CamelCase = 3
+}
 
 export class COBOLUtils {
     private pad(num: number, size: number): string {
@@ -145,8 +151,11 @@ export class COBOLUtils {
         for (var l = 0; l < activeEditor.document.lineCount; l++) {
             let lineAt = activeEditor.document.lineAt(l);
             let text = lineAt.text;
-
-            let args: string[] = splitArgument(text);
+            let newtext = text;
+            let args: string[] = splitArgument(text,true);
+            if (args.length === 0) {
+                continue;
+            }
             let textLower = text.toLowerCase();
             let lastpos = 0;
             for (let ic = 0; ic < args.length; ic++) {
@@ -155,14 +164,12 @@ export class COBOLUtils {
                     arg = arg.substr(0, arg.length - 1);
                 }
                 if (this.isValidKeyword(arg)) {
+                    let ipos = textLower.indexOf(arg.toLowerCase(), lastpos);
                     if (lowercase) {
                         if (arg !== arg.toLowerCase()) {
                             try {
-                                let ipos = textLower.indexOf(arg.toLowerCase(), lastpos);
-                                let startPos = new vscode.Position(l, ipos);
-                                let endPos = new vscode.Position(l, ipos + arg.length);
-                                let range = new vscode.Range(startPos, endPos);
-                                edits.replace(uri, range, arg.toLowerCase());
+                                let tmpline = newtext.substr(0, ipos) + arg.toLowerCase() + newtext.substr(ipos + arg.length);
+                                newtext = tmpline;
                                 lastpos += arg.length;
                             }
                             catch (e) {
@@ -172,11 +179,8 @@ export class COBOLUtils {
                     } else {
                         if (arg !== arg.toUpperCase()) {
                             try {
-                                let ipos = textLower.indexOf(arg.toLowerCase(), lastpos);
-                                let startPos = new vscode.Position(l, ipos);
-                                let endPos = new vscode.Position(l, ipos + arg.length);
-                                let range = new vscode.Range(startPos, endPos);
-                                edits.replace(uri, range, arg.toUpperCase());
+                                let tmpline = newtext.substr(0, ipos) + arg.toUpperCase() + newtext.substr(ipos + arg.length);
+                                newtext = tmpline;
                                 lastpos += arg.length;
                             }
                             catch (e) {
@@ -187,29 +191,33 @@ export class COBOLUtils {
                     }
                 }
             }
+
+            // one edit per line to avoid the odd overlapping error
+            if (newtext !== text) {
+                let startPos = new vscode.Position(l, 0);
+                let endPos = new vscode.Position(l, newtext.length);
+                let range = new vscode.Range(startPos, endPos);
+                edits.replace(uri, range,newtext);
+            }
         }
         vscode.workspace.applyEdit(edits);
     }
 
-    public makeFieldsCased(activeEditor: vscode.TextEditor, toLowerCase: boolean) {
+    public makeFieldsCased(activeEditor: vscode.TextEditor, foldstyle: FoldStyle) {
         let uri = activeEditor.document.uri;
 
         let file = new VSCodeSourceHandler(activeEditor.document, false);
         let sourceRefs: SharedSourceReferences = new SharedSourceReferences();
         let current: COBOLQuickParse = new COBOLQuickParse(file, activeEditor.document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
-        // for (let key of current.constantsOrVariables.keys()) {
-        //     let tokens: COBOLToken[] | undefined = current.constantsOrVariables.get(key);
-        //     if (tokens !== undefined) {
-        //     }
-        // }
 
         let edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (var l = 0; l < activeEditor.document.lineCount; l++) {
             let lineAt = activeEditor.document.lineAt(l);
             let text = lineAt.text;
+            let newtext = text;
 
-            let args: string[] = splitArgument(text);
+            let args: string[] = splitArgument(text,true);
             let textLower = text.toLowerCase();
             let lastPos = 0;
             for (let ic = 0; ic < args.length; ic++) {
@@ -219,41 +227,55 @@ export class COBOLUtils {
                 }
 
                 let argLower = arg.toLowerCase();
-                let argUpper = arg.toUpperCase();
-                if (toLowerCase) {
-                    if (argLower !== arg) {
-                        if (current.constantsOrVariables.has(argLower)) {
-                            try {
-                                let ipos = textLower.indexOf(argLower, lastPos);
-                                let startPos = new vscode.Position(l, ipos);
-                                let endPos = new vscode.Position(l, ipos + arg.length);
-                                let range = new vscode.Range(startPos, endPos);
-                                edits.replace(uri, range, argLower);
-                                lastPos += arg.length;
-                            }
-                            catch (e) {
-                                logException("makeFieldsLowercase", e);
+                let ipos = textLower.indexOf(argLower, lastPos);
+                switch(foldstyle) {
+                    case FoldStyle.LowerCase :
+                        {
+                            if (argLower !== arg) {
+                                if (current.constantsOrVariables.has(argLower)) {
+                                    let tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
+                                    newtext = tmpline;
+                                    lastPos += arg.length;
+                                }
                             }
                         }
-                    }
-                } else {
-                    if (argUpper !== arg) {
-                        if (current.constantsOrVariables.has(argLower)) {
-                            try {
-                                let ipos = textLower.indexOf(argLower, lastPos);
-                                let startPos = new vscode.Position(l, ipos);
-                                let endPos = new vscode.Position(l, ipos + arg.length);
-                                let range = new vscode.Range(startPos, endPos);
-                                edits.replace(uri, range, argUpper);
-                                lastPos += arg.length;
-                            }
-                            catch (e) {
-                                logException("makeFieldsLowercase", e);
+                        break;
+                    case FoldStyle.UpperCase:
+                        {
+                            let argUpper = arg.toUpperCase();
+                            if (argUpper !== arg) {
+                                if (current.constantsOrVariables.has(argLower)) {
+                                    let tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
+                                    newtext = tmpline;
+                                    lastPos += arg.length;
+                                }
                             }
                         }
-                    }
+                        break;
+                    case FoldStyle.CamelCase:
+                        {
+                            let camelArg = camelize(arg);
+                            if (camelArg !== arg) {
+                                if (current.constantsOrVariables.has(argLower)) {
+                                    let tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
+                                    newtext = tmpline;
+                                    lastPos += arg.length;
+                                }
+                            }
+
+                        }
+                        break;
 
                 }
+
+            }
+
+            // one edit per line to avoid the odd overlapping error
+            if (newtext !== text) {
+                let startPos = new vscode.Position(l, 0);
+                let endPos = new vscode.Position(l, newtext.length);
+                let range = new vscode.Range(startPos, endPos);
+                edits.replace(uri, range,newtext);
             }
         }
         vscode.workspace.applyEdit(edits);

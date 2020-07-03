@@ -1,7 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
-import COBOLQuickParse, { COBOLToken } from './cobolquickparse';
+import COBOLQuickParse, { COBOLToken, camelize } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 
@@ -66,25 +66,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         return new TrieSearch('tokenName');
     }
 
-    private camelize(text: string): string {
-        let ret="";
-        let uppercaseNext: boolean = true;
-        for(let c=0; c<text.length; c++) {
-            let ch = text[c];
-            if (uppercaseNext) {
-                ret += ch.toUpperCase();
-                uppercaseNext = false;
-            } else {
-                if (ch === '-' || ch === '_') {
-                    uppercaseNext = true;
-                }
-
-                ret += ch.toLocaleLowerCase();
-            }
-        }
-
-        return ret;
-    }
 
     private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
         let  iconfig:COBOLSettings = VSCOBOLConfiguration.get();
@@ -120,7 +101,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
 
             if (includeCamelCase) {
-                let completionItem = new CompletionItem(this.camelize(key.tokenName), kind);
+                let completionItem = new CompletionItem(camelize(key.tokenName), kind);
                 items.push(completionItem);
             }
 
