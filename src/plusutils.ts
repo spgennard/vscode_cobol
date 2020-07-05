@@ -182,14 +182,14 @@ export class COBOLUtils {
                             }
                             break;
 
-                            case FoldStyle.CamelCase:
-                                let camalArg = camelize(arg);
-                                if (arg !== camalArg) {
-                                    let tmpline = newtext.substr(0, ipos) + camalArg + newtext.substr(ipos + camalArg.length);
-                                    newtext = tmpline;
-                                    lastpos += camalArg.length;
-                                }
-                                break;
+                        case FoldStyle.CamelCase:
+                            let camalArg = camelize(arg);
+                            if (arg !== camalArg) {
+                                let tmpline = newtext.substr(0, ipos) + camalArg + newtext.substr(ipos + camalArg.length);
+                                newtext = tmpline;
+                                lastpos += camalArg.length;
+                            }
+                            break;
                     }
                 }
             }
@@ -230,45 +230,39 @@ export class COBOLUtils {
 
                 let argLower = arg.toLowerCase();
                 let ipos = textLower.indexOf(argLower, lastPos);
-                switch (foldstyle) {
-                    case FoldStyle.LowerCase:
-                        {
-                            if (argLower !== arg) {
-                                if (current.constantsOrVariables.has(argLower)) {
+                if (current.constantsOrVariables.has(argLower)) {
+                    switch (foldstyle) {
+                        case FoldStyle.LowerCase:
+                            {
+                                if (argLower !== arg) {
                                     let tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
                             }
-                        }
-                        break;
-                    case FoldStyle.UpperCase:
-                        {
-                            let argUpper = arg.toUpperCase();
-                            if (argUpper !== arg) {
-                                if (current.constantsOrVariables.has(argLower)) {
+                            break;
+                        case FoldStyle.UpperCase:
+                            {
+                                let argUpper = arg.toUpperCase();
+                                if (argUpper !== arg) {
                                     let tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
                             }
-                        }
-                        break;
-                    case FoldStyle.CamelCase:
-                        {
-                            let camelArg = camelize(arg);
-                            if (camelArg !== arg) {
-                                if (current.constantsOrVariables.has(argLower)) {
+                            break;
+                        case FoldStyle.CamelCase:
+                            {
+                                let camelArg = camelize(arg);
+                                if (camelArg !== arg) {
                                     let tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
                             }
-
-                        }
-                        break;
+                            break;
+                    }
                 }
-
             }
 
             // one edit per line to avoid the odd overlapping error
@@ -307,45 +301,44 @@ export class COBOLUtils {
 
                 let argLower = arg.toLowerCase();
                 let ipos = textLower.indexOf(argLower, lastPos);
-                switch (foldstyle) {
-                    case FoldStyle.LowerCase:
-                        {
-                            if (argLower !== arg) {
-                                if (current.constantsOrVariables.has(argLower)) {
+                let actionIt = current.sections.has(argLower);
+                if (actionIt === false) {
+                    actionIt = current.paragraphs.has(argLower);
+                }
+
+                if (actionIt) {
+                    switch (foldstyle) {
+                        case FoldStyle.LowerCase:
+                            {
+                                if (argLower !== arg) {
                                     let tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
                             }
-                        }
-                        break;
-                    case FoldStyle.UpperCase:
-                        {
-                            let argUpper = arg.toUpperCase();
-                            if (argUpper !== arg) {
-                                if (current.constantsOrVariables.has(argLower)) {
+                            break;
+                        case FoldStyle.UpperCase:
+                            {
+                                let argUpper = arg.toUpperCase();
+                                if (argUpper !== arg) {
                                     let tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
                             }
-                        }
-                        break;
-                    case FoldStyle.CamelCase:
-                        {
-                            let camelArg = camelize(arg);
-                            if (camelArg !== arg) {
-                                if (current.constantsOrVariables.has(argLower)) {
+                            break;
+                        case FoldStyle.CamelCase:
+                            {
+                                let camelArg = camelize(arg);
+                                if (camelArg !== arg) {
                                     let tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
                             }
-
-                        }
-                        break;
+                            break;
+                    }
                 }
-
             }
 
             // one edit per line to avoid the odd overlapping error

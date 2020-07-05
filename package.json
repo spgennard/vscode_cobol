@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.22",
+    "version": "6.3.23",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -753,7 +753,7 @@
             },
             {
                 "command": "cobolplugin.makeKeywordsUppercase",
-                "title": "COBOL: Make keywords uppercasse"
+                "title": "COBOL: Make keywords uppercase"
             },
             {
                 "command": "cobolplugin.makeFieldsLowercase",
@@ -766,6 +766,10 @@
             {
                 "command": "cobolplugin.makeFieldsCamelCase",
                 "title": "COBOL: Make fields camelcase"
+            },
+            {
+                "command": "cobolplugin.makePerformTargetsCamelCase",
+                "title": "COBOL: Make perform targets camelcase"
             }
         ],
         "menus": {

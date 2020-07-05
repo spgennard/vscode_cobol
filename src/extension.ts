@@ -706,6 +706,18 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(makeFieldsCamelCaseCommand);
 
+    let makePerformTargetsCamelCaseCommand = vscode.commands.registerCommand('cobolplugin.makePerformTargetsCamelCase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.makePerformTargetsCased(vscode.window.activeTextEditor,FoldStyle.CamelCase);
+            }
+        }
+    });
+    context.subscriptions.push(makePerformTargetsCamelCaseCommand);
+
     let resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;

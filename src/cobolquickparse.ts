@@ -255,7 +255,6 @@ class Token {
         this.lineLowerTokens = [];
         for (let c = 0; c < this.lineTokens.length; c++) {
             this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
-            logMessage("Token: " + this.lineTokens[c]);
         }
         this.tokenIndex = 0;
         this.setupToken();
