@@ -767,7 +767,6 @@
                 "command": "cobolplugin.makeFieldsCamelCase",
                 "title": "COBOL: Make fields camelcase"
             }
-
         ],
         "menus": {
             "editor/context": [

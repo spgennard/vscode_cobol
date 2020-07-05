@@ -363,7 +363,6 @@ export default class COBOLQuickParse {
     public sourceFileId: number;
 
     public cpPerformTargets: any | undefined = undefined;
-
     public cpConstantsOrVars: any | undefined = undefined;
 
     public ImplicitProgramId: string = "";

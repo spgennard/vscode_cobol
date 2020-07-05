@@ -652,7 +652,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeKeywordsCased(vscode.window.activeTextEditor,true);
+                utils.makeKeywordsCased(vscode.window.activeTextEditor,FoldStyle.LowerCase);
             }
         }
     });
@@ -664,7 +664,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeKeywordsCased(vscode.window.activeTextEditor,false);
+                utils.makeKeywordsCased(vscode.window.activeTextEditor,FoldStyle.UpperCase);
             }
         }
     });
