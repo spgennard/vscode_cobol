@@ -30,7 +30,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
-import { COBOLUtils, FoldStyle } from './plusutils';
+import { COBOLUtils, FoldStyle, FoldAction } from './plusutils';
 import { ICOBOLSettings } from './iconfiguration';
 import { performance } from 'perf_hooks';
 
@@ -652,7 +652,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeKeywordsCased(vscode.window.activeTextEditor,FoldStyle.LowerCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase);
             }
         }
     });
@@ -664,11 +664,23 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeKeywordsCased(vscode.window.activeTextEditor,FoldStyle.UpperCase);
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.Keywords,FoldStyle.UpperCase);
             }
         }
     });
     context.subscriptions.push(makeKeywordsUppercaseCommands);
+
+    let makeKeywordsCamelCaseCommands = vscode.commands.registerCommand('cobolplugin.makeKeywordsCamelCase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.Keywords,FoldStyle.CamelCase);
+            }
+        }
+    });
+    context.subscriptions.push(makeKeywordsCamelCaseCommands);
 
     let makeFieldsLowercaseCommand = vscode.commands.registerCommand('cobolplugin.makeFieldsLowercase', () => {
         if (vscode.window.activeTextEditor) {
@@ -676,7 +688,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeFieldsCased(vscode.window.activeTextEditor, FoldStyle.UpperCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase);
             }
         }
     });
@@ -688,7 +700,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeFieldsCased(vscode.window.activeTextEditor,FoldStyle.UpperCase);
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.ConstantsOrVariables,FoldStyle.UpperCase);
             }
         }
     });
@@ -700,11 +712,35 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makeFieldsCased(vscode.window.activeTextEditor,FoldStyle.CamelCase);
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.ConstantsOrVariables,FoldStyle.CamelCase);
             }
         }
     });
     context.subscriptions.push(makeFieldsCamelCaseCommand);
+
+    let makePerformTargetsLowerCaseCommand = vscode.commands.registerCommand('cobolplugin.makePerformTargetsLowerCase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.PerformTargets, FoldStyle.LowerCase);
+            }
+        }
+    });
+    context.subscriptions.push(makePerformTargetsLowerCaseCommand);
+
+    let makePerformTargetsUpperCaseCommand = vscode.commands.registerCommand('cobolplugin.makePerformTargetsUpperCase', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.PerformTargets, FoldStyle.UpperCase);
+            }
+        }
+    });
+    context.subscriptions.push(makePerformTargetsUpperCaseCommand);
 
     let makePerformTargetsCamelCaseCommand = vscode.commands.registerCommand('cobolplugin.makePerformTargetsCamelCase', () => {
         if (vscode.window.activeTextEditor) {
@@ -712,7 +748,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.makePerformTargetsCased(vscode.window.activeTextEditor,FoldStyle.CamelCase);
+                utils.foldToken(vscode.window.activeTextEditor,FoldAction.PerformTargets, FoldStyle.CamelCase);
             }
         }
     });

@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.3.23",
+    "version": "6.3.24",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -74,11 +74,15 @@
         "onCommand:cobolplugin.removeIdentificationArea",
         "onCommand:cobolplugin.makeKeywordsLowercase",
         "onCommand:cobolplugin.makeKeywordsUppercase",
-        "onCommand:cobolplugin.removeColumnNumbers",
-        "onCommand:cobolplugin.resequenceColumnNumbers",
+        "onCommand:cobolplugin.makeKeywordsCamelCase",
         "onCommand:cobolplugin.makeFieldsLowercase",
         "onCommand:cobolplugin.makeFieldsUppercase",
         "onCommand:cobolplugin.makeFieldsCamelCase",
+        "onCommand:cobolplugin.removeColumnNumbers",
+        "onCommand:cobolplugin.makePerformTargetsLowerCase",
+        "onCommand:cobolplugin.makePerformTargetsUpperCase",
+        "onCommand:cobolplugin.makePerformTargetsCamelCase",
+        "onCommand:cobolplugin.resequenceColumnNumbers",
         "view:flat-source-view",
         "workspaceContains:**/.cobol",
         "workspaceContains:**/.cob",
@@ -756,6 +760,10 @@
                 "title": "COBOL: Make keywords uppercase"
             },
             {
+                "command": "cobolplugin.makeKeywordsCamelCase",
+                "title": "COBOL: Make keywords camelcase"
+            },
+            {
                 "command": "cobolplugin.makeFieldsLowercase",
                 "title": "COBOL: Make fields lowercase"
             },
@@ -766,6 +774,14 @@
             {
                 "command": "cobolplugin.makeFieldsCamelCase",
                 "title": "COBOL: Make fields camelcase"
+            },
+            {
+                "command": "cobolplugin.makePerformTargetsLowerCase",
+                "title": "COBOL: Make perform targets lowercase"
+            },
+            {
+                "command": "cobolplugin.makePerformTargetsUpperCase",
+                "title": "COBOL: Make perform targets uppercase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsCamelCase",

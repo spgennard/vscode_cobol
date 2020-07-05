@@ -13,6 +13,12 @@ export enum FoldStyle {
     CamelCase = 3
 }
 
+export enum FoldAction {
+    PerformTargets = 1,
+    ConstantsOrVariables = 2,
+    Keywords = 3
+}
+
 export class COBOLUtils {
     private pad(num: number, size: number): string {
         let s = num + "";
@@ -143,69 +149,7 @@ export class COBOLUtils {
         return cobolKeywordDictionary.containsKey(keyword.toLowerCase());
     }
 
-    public makeKeywordsCased(activeEditor: vscode.TextEditor, foldstyle: FoldStyle): any {
-        let edits = new vscode.WorkspaceEdit();
-        let uri = activeEditor.document.uri;
-
-        // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
-            let lineAt = activeEditor.document.lineAt(l);
-            let text = lineAt.text;
-            let newtext = text;
-            let args: string[] = splitArgument(text, true);
-            if (args.length === 0) {
-                continue;
-            }
-            let textLower = text.toLowerCase();
-            let lastpos = 0;
-            for (let ic = 0; ic < args.length; ic++) {
-                let arg = args[ic];
-                if (arg.endsWith(".")) {
-                    arg = arg.substr(0, arg.length - 1);
-                }
-                if (this.isValidKeyword(arg)) {
-                    let ipos = textLower.indexOf(arg.toLowerCase(), lastpos);
-                    switch (foldstyle) {
-                        case FoldStyle.LowerCase:
-                            if (arg !== arg.toLowerCase()) {
-                                let tmpline = newtext.substr(0, ipos) + arg.toLowerCase() + newtext.substr(ipos + arg.length);
-                                newtext = tmpline;
-                                lastpos += arg.length;
-                            }
-                            break;
-
-                        case FoldStyle.UpperCase:
-                            if (arg !== arg.toUpperCase()) {
-                                let tmpline = newtext.substr(0, ipos) + arg.toUpperCase() + newtext.substr(ipos + arg.length);
-                                newtext = tmpline;
-                                lastpos += arg.length;
-                            }
-                            break;
-
-                        case FoldStyle.CamelCase:
-                            let camalArg = camelize(arg);
-                            if (arg !== camalArg) {
-                                let tmpline = newtext.substr(0, ipos) + camalArg + newtext.substr(ipos + camalArg.length);
-                                newtext = tmpline;
-                                lastpos += camalArg.length;
-                            }
-                            break;
-                    }
-                }
-            }
-
-            // one edit per line to avoid the odd overlapping error
-            if (newtext !== text) {
-                let startPos = new vscode.Position(l, 0);
-                let endPos = new vscode.Position(l, newtext.length);
-                let range = new vscode.Range(startPos, endPos);
-                edits.replace(uri, range, newtext);
-            }
-        }
-        vscode.workspace.applyEdit(edits);
-    }
-
-    public makeFieldsCased(activeEditor: vscode.TextEditor, foldstyle: FoldStyle) {
+    public foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle) {
         let uri = activeEditor.document.uri;
 
         let file = new VSCodeSourceHandler(activeEditor.document, false);
@@ -230,80 +174,23 @@ export class COBOLUtils {
 
                 let argLower = arg.toLowerCase();
                 let ipos = textLower.indexOf(argLower, lastPos);
-                if (current.constantsOrVariables.has(argLower)) {
-                    switch (foldstyle) {
-                        case FoldStyle.LowerCase:
-                            {
-                                if (argLower !== arg) {
-                                    let tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
-                                    newtext = tmpline;
-                                    lastPos += arg.length;
-                                }
-                            }
-                            break;
-                        case FoldStyle.UpperCase:
-                            {
-                                let argUpper = arg.toUpperCase();
-                                if (argUpper !== arg) {
-                                    let tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
-                                    newtext = tmpline;
-                                    lastPos += arg.length;
-                                }
-                            }
-                            break;
-                        case FoldStyle.CamelCase:
-                            {
-                                let camelArg = camelize(arg);
-                                if (camelArg !== arg) {
-                                    let tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
-                                    newtext = tmpline;
-                                    lastPos += arg.length;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
+                let actionIt = false;
 
-            // one edit per line to avoid the odd overlapping error
-            if (newtext !== text) {
-                let startPos = new vscode.Position(l, 0);
-                let endPos = new vscode.Position(l, newtext.length);
-                let range = new vscode.Range(startPos, endPos);
-                edits.replace(uri, range, newtext);
-            }
-        }
-        vscode.workspace.applyEdit(edits);
-    }
+                switch (action) {
+                    case FoldAction.PerformTargets:
+                        current.sections.has(argLower);
+                        if (actionIt === false) {
+                            actionIt = current.paragraphs.has(argLower);
+                        }
+                        break;
 
-    public makePerformTargetsCased(activeEditor: vscode.TextEditor, foldstyle: FoldStyle) {
-        let uri = activeEditor.document.uri;
+                    case FoldAction.ConstantsOrVariables:
+                        actionIt = current.constantsOrVariables.has(argLower);
+                        break;
 
-        let file = new VSCodeSourceHandler(activeEditor.document, false);
-        let sourceRefs: SharedSourceReferences = new SharedSourceReferences();
-        let current: COBOLQuickParse = new COBOLQuickParse(file, activeEditor.document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
-
-        let edits = new vscode.WorkspaceEdit();
-        // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
-            let lineAt = activeEditor.document.lineAt(l);
-            let text = lineAt.text;
-            let newtext = text;
-
-            let args: string[] = splitArgument(text, true);
-            let textLower = text.toLowerCase();
-            let lastPos = 0;
-            for (let ic = 0; ic < args.length; ic++) {
-                let arg = args[ic];
-                if (arg.endsWith(".")) {
-                    arg = arg.substr(0, arg.length - 1);
-                }
-
-                let argLower = arg.toLowerCase();
-                let ipos = textLower.indexOf(argLower, lastPos);
-                let actionIt = current.sections.has(argLower);
-                if (actionIt === false) {
-                    actionIt = current.paragraphs.has(argLower);
+                    case FoldAction.Keywords:
+                        actionIt = this.isValidKeyword(argLower);
+                        break;
                 }
 
                 if (actionIt) {
