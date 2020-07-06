@@ -1365,15 +1365,16 @@ export default class COBOLQuickParse {
 
                     let copyToken: COBOLToken = COBOLToken.Null;
                     if (nextTokenLower === 'in' && nextPlusOneToken.length !== 0) {
-                        let desc: string = prevPlusCurrent + " in " + nextPlusOneToken;
+                        let nextPlusOneTokenTrimmed = this.trimLiteral(nextPlusOneToken);
+                        let desc: string = prevPlusCurrent + " in " + nextPlusOneTokenTrimmed;
                         if (this.copybookNestedInSection) {
                             if (this.currentSection !== COBOLToken.Null) {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentSection, nextPlusOneToken);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentSection, nextPlusOneTokenTrimmed);
                             } else {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneTokenTrimmed);
                             }
                         } else {
-                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneToken);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneTokenTrimmed);
                         }
                     }
                     else {
