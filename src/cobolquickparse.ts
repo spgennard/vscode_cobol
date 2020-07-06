@@ -618,7 +618,7 @@ export default class COBOLQuickParse {
 
     public processExternalCopybook(cacheDirectory: string, showError: boolean, sourceCopybook: string) {
         try {
-            let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook);
+            let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook, "");
             if (copyBookfilename.length !== 0) {
                 if (this.processingMap.has(copyBookfilename) === false) {
                     this.processingMap.set(copyBookfilename, copyBookfilename);
@@ -1669,7 +1669,7 @@ export class COBOLSymbolTableHelper {
         st.lastModifiedTime = qp.lastModifiedTime;
 
         for (let [key, value] of qp.copyBooksUsed) {
-            let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
+            let fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
             InMemoryGlobalCachesHelper.addCopyBookFilename(fileName);
         }
 

@@ -232,7 +232,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 /* iterater through all the known copybook references */
                 for (let [key, value] of qcp.copyBooksUsed) {
                     try {
-                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
+                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
                         if (fileName.length > 0) {
                             let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
@@ -347,7 +347,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             for (let [key, value] of qcp.copyBooksUsed) {
                 try {
 
-                    let fileName = expandLogicalCopyBookToFilenameOrEmpty(key);
+                    let fileName = expandLogicalCopyBookToFilenameOrEmpty(key,value.extraInformation);
                     if (fileName.length > 0) {
                         let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                         if (symboleTable !== undefined) {

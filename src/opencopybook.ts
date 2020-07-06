@@ -43,6 +43,10 @@ function extractCopyBoolFilename(str: string) {
             return match ? match[1] : null;
         };
 
+    let inPos = str.toLowerCase().indexOf(" in ");
+    if (inPos !== -1) {
+        str = str.substr(0, inPos);
+    }
     //const strl = str.toLowerCase();
     let result: string | null;
     if (/copy/i.test(str)) {
@@ -151,7 +155,8 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
     }
 
     var fileExtension = filename.split('.').pop();
-    var extsdir = getcopybookdirs();
+    var baseextsdir = getcopybookdirs();
+    var extsdir = [...baseextsdir];
     extsdir.push(filenameDir);
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var extdir = extsdir[extsdirpos];
@@ -187,7 +192,12 @@ function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): 
         return "";
     }
 
-    if (filenameDir.length !== 0) {
+    let isDirectPath:boolean = false;
+    if (filenameDir.startsWith("/") || filenameDir.startsWith("\\")) {
+        isDirectPath = true;
+    }
+
+    if (isDirectPath && filenameDir.length !== 0) {
         var foundFile = findFileInDirectory(filename, filenameDir);
         if (foundFile.length !== 0) {
             return foundFile;
@@ -200,16 +210,24 @@ function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): 
             if (foundFile.length !== 0) {
                 return foundFile;
             }
+
+            if (isDirectPath === false && filenameDir.length !== 0) {
+                let foundFile = findFileInDirectory(filename, path.join(folder.uri.fsPath, filenameDir));
+                if (foundFile.length !== 0) {
+                    return foundFile;
+                }
+
+            }
         }
     }
     return "";
 }
 
-export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string {
+export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string): string {
     let fullPath = "";
 
     try {
-        fullPath = findFileInDirectoryOrWorkspace(filename, "");
+        fullPath = findFileInDirectoryOrWorkspace(filename, inDirectory);
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }
@@ -217,7 +235,7 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string
         let lastDot = filename.lastIndexOf(".");
         if (lastDot !== -1) {
             let filenameNoExtension = filename.substr(0, lastDot);
-            fullPath = findFileInDirectoryOrWorkspace(filenameNoExtension, "");
+            fullPath = findFileInDirectoryOrWorkspace(filenameNoExtension, inDirectory);
             if (fullPath.length !== 0) {
                 return path.normalize(fullPath);
             }
@@ -233,10 +251,32 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string): string
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
 
     const line = doc.lineAt(pos);
-    const filename = extractCopyBoolFilename(line.text);
+    const text = line.text;
+    const filename = extractCopyBoolFilename(text);
+    const inPos = text.toLowerCase().indexOf("in");
+
+    let inDirectory = inPos !== -1 ? text.substr(2+inPos) : "";
+
+    if (inDirectory.length !== 0) {
+        let inDirItems = inDirectory.trim();
+
+        if (inDirItems.endsWith(".")) {
+            inDirItems = inDirItems.substr(0, inDirItems.length-1);
+        }
+
+        if (inDirItems.endsWith("\"") && inDirItems.startsWith("\"")) {
+            inDirItems = inDirItems.substr(1, inDirItems.length-2);
+        }
+
+        if (inDirItems.endsWith("'") && inDirItems.startsWith("'")) {
+            inDirItems = inDirItems.substr(1, inDirItems.length-2);
+        }
+
+        inDirectory = inDirItems;
+    }
 
     if (filename !== null && filename.length !== 0) {
-        const fullPath = expandLogicalCopyBookToFilenameOrEmpty(filename.trim());
+        const fullPath = expandLogicalCopyBookToFilenameOrEmpty(filename.trim(), inDirectory);
         if (fullPath.length !== 0) {
             return new vscode.Location(
                 Uri.file(fullPath),
