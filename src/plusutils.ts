@@ -158,9 +158,9 @@ export class COBOLUtils {
 
         let edits = new vscode.WorkspaceEdit();
         // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
-            let lineAt = activeEditor.document.lineAt(l);
-            let text = lineAt.text;
+        for (var l = 0; l < file.getLineCount(); l++) {
+            let lineAt = file.getLine(l);
+            let text = lineAt;
             let newtext = text;
 
             let args: string[] = splitArgument(text, true);
@@ -178,7 +178,7 @@ export class COBOLUtils {
 
                 switch (action) {
                     case FoldAction.PerformTargets:
-                        current.sections.has(argLower);
+                        actionIt =current.sections.has(argLower);
                         if (actionIt === false) {
                             actionIt = current.paragraphs.has(argLower);
                         }

@@ -4,8 +4,6 @@ import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKe
 import { FileSourceHandler } from "./FileSourceHandler";
 import { String } from 'typescript-string-operations';
 
-import TrieSearch from 'trie-search';
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
