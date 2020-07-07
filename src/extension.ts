@@ -20,7 +20,8 @@ import * as vscode from "vscode";
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
-import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper } from './cobolquickparse';
+import COBOLQuickParse, { COBOLSymbolTableHelper } from './cobolquickparse';
+import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
 import VSQuickCOBOLParse from './vscobolquickparse';

@@ -1,6 +1,7 @@
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
 import { workspace, TextDocument } from 'vscode';
-import COBOLQuickParse, { InMemoryGlobalCachesHelper, COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalFileCache, SharedSourceReferences } from "./cobolquickparse";
+import COBOLQuickParse, { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalFileCache, SharedSourceReferences } from "./cobolquickparse";
+import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -8,10 +9,10 @@ import * as path from 'path';
 import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory } from "./extension";
 import { performance } from "perf_hooks";
 import { FileSourceHandler } from "./FileSourceHandler";
-import { expandLogicalCopyBookToFilenameOrEmpty, isValidExtension } from "./opencopybook";
+import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
 
-const util = require('util');
+const InMemoryCache: Map<string, any> = new Map<string, any>();
 
 export default class VSQuickCOBOLParse {
 
@@ -96,7 +97,7 @@ export default class VSQuickCOBOLParse {
             var start = performance.now();
 
             for (var folder of workspace.workspaceFolders) {
-                try {
+                try {)
                     VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                 }
                 catch (re) {
@@ -197,5 +198,3 @@ export default class VSQuickCOBOLParse {
 
     }
 }
-
-const InMemoryCache: Map<string, any> = new Map<string, any>();
