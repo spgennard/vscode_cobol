@@ -1,5 +1,8 @@
 # COBOL,.DIR, PL/I & jCL Change Log
 
+## Version 6.4.0-
+ - Add new utils to help make the code easier on the eye (lowercase/uppercase/camelcase) for section/fields/keywords
+
 ## Version - 6.1.0-6.1.8
  - Add COBOL line comment, it should be better than the standard vscode line based commentor
  - If "*>" is found in header of source mark it as sourceformat variable internally

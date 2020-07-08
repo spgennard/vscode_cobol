@@ -221,7 +221,7 @@
                         "No metadata caching",
                         "In memory cache only",
                         "Save as much metadata as possible in .vscode_cobol directory"
-                      ]
+                    ]
                 },
                 "coboleditor.margin": {
                     "type": "boolean",
@@ -313,7 +313,7 @@
                         "Scans everything expect paragraphs",
                         "Scans very little but might be enough for basic navigation",
                         "No source scanning is done"
-                      ],
+                    ],
                     "default": "on"
                 },
                 "coboleditor.pre_parse_line_limit": {
