@@ -87,7 +87,7 @@ export default class VSQuickCOBOLParse {
     public static processAllFilesInWorkspaces() {
         showLogChannel();
 
-        if (VSCOBOLConfiguration.isCachingSetToON() === false) {
+        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
             logMessage("Metadata cache is off, no action taken");
             return;
         }
@@ -97,7 +97,7 @@ export default class VSQuickCOBOLParse {
             var start = performance.now();
 
             for (var folder of workspace.workspaceFolders) {
-                try {)
+                try {
                     VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                 }
                 catch (re) {
@@ -165,7 +165,7 @@ export default class VSQuickCOBOLParse {
 
     public static getCacheDirectory(): string {
 
-        if (workspace.workspaceFolders && VSCOBOLConfiguration.isCachingSetToON() === true) {
+        if (workspace.workspaceFolders && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
             let firstCacheDir = "";
 
             for (var folder of workspace.workspaceFolders) {

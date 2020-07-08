@@ -33,6 +33,7 @@ export interface ICOBOLSettings {
     intellisense_include_uppercase: boolean;
     intellisense_include_lowercase:boolean;
     intellisense_item_limit:number;
+    process_metadata_cache_on_start:boolean;
 }
 
 
@@ -61,6 +62,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public intellisense_include_uppercase:boolean;
     public intellisense_include_lowercase:boolean;
     public intellisense_item_limit:number;
+    public process_metadata_cache_on_start:boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -87,6 +89,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_include_uppercase = false;
         this.intellisense_include_lowercase = false;
         this.intellisense_item_limit = 0;
+        this.process_metadata_cache_on_start = false;
     }
 }
 
@@ -105,7 +108,7 @@ export class COBOLSettingsHelper {
         return false;
     }
 
-    public static isCachingSetToON(setting: ICOBOLSettings): boolean {
+    public static isOnDiskCachingEnabled(setting: ICOBOLSettings): boolean {
         if (workspace.workspaceFolders)
         {
             var cacheEnum = setting.cache_metadata;

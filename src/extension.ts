@@ -396,6 +396,26 @@ export function activate(context: ExtensionContext) {
         COBOLOutputChannel.clear();
         activateLogChannel();
     });
+    context.subscriptions.push(onDidChangeConfiguration);
+
+
+    // handle Micro Focus .lst files!
+    const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument((doc) => {
+        if (doc.languageId === 'plaintext') {
+            let lcount = doc.lineCount;
+            if (lcount >= 3) {
+                let firstLine = doc.lineAt((0)).text;
+                let secondLine = doc.lineAt(1).text;
+
+                if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ") ) {
+                    vscode.languages.setTextDocumentLanguage(doc, "COBOL");
+                    return;
+                }
+            }
+        }
+    });
+    context.subscriptions.push(onDidOpenTextDocumentHandler);
+
 
     var treeView = new SourceViewTree(VSCOBOLConfiguration.get());
     const watcher = workspace.createFileSystemWatcher('**/*');
@@ -791,7 +811,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(resequenceColumnNumbersCommands);
 
 
-    if (VSCOBOLConfiguration.isCachingSetToON()) {
+    if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
         InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);

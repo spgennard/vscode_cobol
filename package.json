@@ -44,6 +44,7 @@
         "Other"
     ],
     "activationEvents": [
+        "onFileSystem:file",
         "onLanguage:COBOL",
         "onLanguage:ACUCOBOL",
         "onLanguage:OpenCOBOL",
@@ -192,6 +193,7 @@
                     "type": "boolean",
                     "markdownDescription": "fuzzy variable search (legacy compatibility)",
                     "title": "fuzzy variable search",
+                    "deprecationMessage": "Deprecated: functionality may be removed",
                     "default": false
                 },
                 "coboleditor.enable_data_provider": {
@@ -214,7 +216,12 @@
                     ],
                     "default": "off",
                     "markdownDescription": "Enable metadata cache",
-                    "title": "search inside copybook references and more"
+                    "title": "search inside copybook references and more",
+                    "enumDescriptions": [
+                        "No metadata caching",
+                        "In memory cache only",
+                        "Save as much metadata as possible in .vscode_cobol directory"
+                      ]
                 },
                 "coboleditor.margin": {
                     "type": "boolean",
@@ -233,7 +240,11 @@
                     ],
                     "default": "normal",
                     "markdownDescription": "File format strategy",
-                    "title": "always_fixed or normal"
+                    "title": "always_fixed or normal",
+                    "enumDescriptions": [
+                        "Assume source code if fixed format",
+                        "Determine source code format or configure it"
+                    ]
                 },
                 "coboleditor.fileformat": {
                     "type": "array",
@@ -254,6 +265,12 @@
                                     "fixed",
                                     "variable",
                                     "terminal"
+                                ],
+                                "enumDescriptions": [
+                                    "source code format free (no margins",
+                                    "source code format fixed (classic COBOL margins)",
+                                    "source code format variable (no right margin)",
+                                    "source code format terminal (ACU COBOL/RM)"
                                 ]
                             }
                         }
@@ -291,13 +308,21 @@
                         "skeleton",
                         "off"
                     ],
+                    "enumDescriptions": [
+                        "Scans everything in the source (can be costly)",
+                        "Scans everything expect paragraphs",
+                        "Scans very little but might be enough for basic navigation",
+                        "No source scanning is done"
+                      ],
                     "default": "on"
                 },
                 "coboleditor.pre_parse_line_limit": {
                     "type": "number",
                     "title": "Set pre-parse line limit",
                     "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
-                    "default": 25
+                    "default": 25,
+                    "minimum": 5,
+                    "maximum": 255
                 },
                 "coboleditor.linter": {
                     "type": "boolean",
@@ -362,7 +387,14 @@
                     "type": "number",
                     "title": "Max number of items to return",
                     "description": "Max number of items to return (default 120)",
-                    "default": 120
+                    "default": 120,
+                    "minItems": 30
+                },
+                "coboleditor.process_metadata_cache_on_start": {
+                    "type": "boolean",
+                    "title": "Disable UNC Copybooks",
+                    "description": "Process metadata cache on extension load (default false)",
+                    "default": false
                 }
             }
         },

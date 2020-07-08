@@ -36,6 +36,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.intellisense_include_uppercase = getIntellisense_include_uppercase();
         VSCOBOLConfiguration.config.intellisense_include_lowercase = getIntellisense_include_lowercase();
         VSCOBOLConfiguration.config.intellisense_item_limit = getIntellisense_item_limit();
+        VSCOBOLConfiguration.config.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
     }
 
     public static get(): ICOBOLSettings {
@@ -99,7 +100,7 @@ export class VSCOBOLConfiguration {
         return false;
     }
 
-    public static isCachingSetToON(): boolean {
+    public static isOnDiskCachingEnabled(): boolean {
         var cacheEnum = getCachingSetting();
         switch (cacheEnum) {
             case "on": return true;
@@ -209,6 +210,10 @@ function getIntellisense_include_camalcase(): boolean {
 }
 function getIntellisense_include_uppercase(): boolean {
     return getBoolean("intellisense_include_uppercase", false);
+}
+
+function getProcess_metadata_cache_on_start(): boolean {
+    return getBoolean("process_metadata_cache_on_start", false);
 }
 
 function getIntellisense_include_lowercase(): boolean {
