@@ -1,7 +1,8 @@
 import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
-import { workspace, TextDocument } from 'vscode';
+import { workspace, TextDocument, window } from 'vscode';
 import COBOLQuickParse, { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalFileCache, SharedSourceReferences } from "./cobolquickparse";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
+import { ExtensionContext, StatusBarAlignment, StatusBarItem, Selection, TextEditor, commands, ProgressLocation } from 'vscode';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -11,6 +12,7 @@ import { performance } from "perf_hooks";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
+import { resolve } from "path";
 
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 
@@ -96,28 +98,69 @@ export default class VSQuickCOBOLParse {
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             var start = performance.now();
 
-            for (var folder of workspace.workspaceFolders) {
-                try {
-                    VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
-                }
-                catch (re) {
-                    logException("processAllFilesInWorkspaces/1", re);
-                }
-            }
+            const itemsInProgress: number = workspace.workspaceFolders.length + InMemoryGlobalFileCache.copybookFileSymbols.size;
 
-            if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-                for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                    try {
-                        VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
+            window.withProgress({
+                location: ProgressLocation.Notification,
+                title: "Please waiting processing workspace..",
+                cancellable: true
+            }, async (progress) => {
+                await new Promise((resolve, reject) => {
+                    let currentValue = 1;
+                    let progressValue = (currentValue / itemsInProgress) * 100;
+
+                    progress.report({ increment: 1 });
+
+                    if (workspace.workspaceFolders) {
+                        for (var folder of workspace.workspaceFolders) {
+                            try {
+                                progress.report({ increment: progressValue, message: "Processing folder "+folder.name});
+                                VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
+                                progressValue = (++currentValue / itemsInProgress) * 100;
+                            }
+                            catch (re) {
+                                logException("processAllFilesInWorkspaces/1", re);
+                            }
+                        }
                     }
-                    catch (re) {
-                        logException("processAllFilesInWorkspaces/2 => " + i, re);
+
+                    if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
+                        for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
+                            progress.report({ increment: progressValue, message: "Processing copybook "+i});
+
+                            try {
+                                VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
+                                progressValue = (++currentValue / itemsInProgress) * 100;
+                            }
+                            catch (re) {
+                                logException("processAllFilesInWorkspaces/2 => " + i, re);
+                            }
+                        }
                     }
-                }
-            }
-            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
-            var end = performance.now() - start;
-            logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
+                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
+                    var end = performance.now() - start;
+                    progress.report({ increment: 100, message: "Completed scanning all COBOL files in workspace" });
+                    logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
+
+                    resolve();
+                });
+            });
+
+
+
+            // (progress, token) => {
+            //     token.onCancellationRequested(() => {
+            //         logMessage("User canceled the long running operation");
+            //     });
+
+            //     progress.report({ increment: 0 });
+
+            //     return new Promise(resolve());
+            // });
+
+
+
+
         }
 
     }
