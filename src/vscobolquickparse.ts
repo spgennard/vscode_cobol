@@ -98,71 +98,32 @@ export default class VSQuickCOBOLParse {
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             var start = performance.now();
 
-            const itemsInProgress: number = workspace.workspaceFolders.length + InMemoryGlobalFileCache.copybookFileSymbols.size;
-
-            window.withProgress({
-                location: ProgressLocation.Notification,
-                title: "Please waiting processing workspace..",
-                cancellable: true
-            }, async (progress) => {
-                await new Promise((resolve, reject) => {
-                    let currentValue = 1;
-                    let progressValue = (currentValue / itemsInProgress) * 100;
-
-                    progress.report({ increment: 1 });
-
-                    if (workspace.workspaceFolders) {
-                        for (var folder of workspace.workspaceFolders) {
-                            try {
-                                progress.report({ increment: progressValue, message: "Processing folder "+folder.name});
-                                VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
-                                progressValue = (++currentValue / itemsInProgress) * 100;
-                            }
-                            catch (re) {
-                                logException("processAllFilesInWorkspaces/1", re);
-                            }
-                        }
+            if (workspace.workspaceFolders) {
+                for (var folder of workspace.workspaceFolders) {
+                    try {
+                        VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                     }
-
-                    if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-                        for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                            progress.report({ increment: progressValue, message: "Processing copybook "+i});
-
-                            try {
-                                VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
-                                progressValue = (++currentValue / itemsInProgress) * 100;
-                            }
-                            catch (re) {
-                                logException("processAllFilesInWorkspaces/2 => " + i, re);
-                            }
-                        }
+                    catch (re) {
+                        logException("processAllFilesInWorkspaces/1", re);
                     }
-                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
-                    var end = performance.now() - start;
-                    progress.report({ increment: 100, message: "Completed scanning all COBOL files in workspace" });
-                    logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
+                }
+            }
 
-                    resolve();
-                });
-            });
+            if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
+                for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
 
-
-
-            // (progress, token) => {
-            //     token.onCancellationRequested(() => {
-            //         logMessage("User canceled the long running operation");
-            //     });
-
-            //     progress.report({ increment: 0 });
-
-            //     return new Promise(resolve());
-            // });
-
-
-
-
+                    try {
+                        VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
+                    }
+                    catch (re) {
+                        logException("processAllFilesInWorkspaces/2 => " + i, re);
+                    }
+                }
+            }
+            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
+            var end = performance.now() - start;
+            logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
         }
-
     }
 
 
