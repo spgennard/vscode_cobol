@@ -238,6 +238,21 @@ export function getCurrentContext(): ExtensionContext {
     return currentContext;
 }
 
+function flip_plaintext(doc: TextDocument) {
+    if (doc.languageId === 'plaintext') {
+        let lcount = doc.lineCount;
+        if (lcount >= 3) {
+            let firstLine = doc.lineAt((0)).text;
+            let secondLine = doc.lineAt(1).text;
+
+            if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ") ) {
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL_LISTFILE");
+                return;
+            }
+        }
+    }
+}
+
 export function activate(context: ExtensionContext) {
     currentContext = context;
     VSCOBOLConfiguration.init();
@@ -398,24 +413,16 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
-
     // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument((doc) => {
-        if (doc.languageId === 'plaintext') {
-            let lcount = doc.lineCount;
-            if (lcount >= 3) {
-                let firstLine = doc.lineAt((0)).text;
-                let secondLine = doc.lineAt(1).text;
-
-                if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ") ) {
-                    vscode.languages.setTextDocumentLanguage(doc, "COBOL");
-                    return;
-                }
-            }
-        }
+        flip_plaintext(doc);
     });
     context.subscriptions.push(onDidOpenTextDocumentHandler);
 
+    /* flip any already opened docs */
+    for(let docid=0; docid < workspace.textDocuments.length; docid++) {
+        flip_plaintext(workspace.textDocuments[docid]);
+    }
 
     var treeView = new SourceViewTree(VSCOBOLConfiguration.get());
     const watcher = workspace.createFileSystemWatcher('**/*');

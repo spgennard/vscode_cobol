@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.4.4",
+    "version": "6.4.5",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -45,6 +45,7 @@
     ],
     "activationEvents": [
         "onFileSystem:file",
+        "onLanguage:plaintext",
         "onLanguage:COBOL",
         "onLanguage:ACUCOBOL",
         "onLanguage:OpenCOBOL",
@@ -524,6 +525,11 @@
                 "configuration": "./cobol.configuration.json"
             },
             {
+                "id": "COBOL_LISTFILE",
+                "extensions": [],
+                "configuration": "./cobol.configuration.json"
+            },
+            {
                 "id": "OpenCOBOL",
                 "aliases": [
                     "OpenCOBOL",
@@ -640,6 +646,15 @@
                 "language": "COBOL",
                 "scopeName": "source.cobol",
                 "path": "./syntaxes/COBOL.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.sql": "sql",
+                    "meta.embedded.block.html": "html"
+                }
+            },
+            {
+                "language": "COBOL_LISTFILE",
+                "scopeName": "source.cobol_listfile",
+                "path": "./syntaxes/COBOL_listfile.tmLanguage.json",
                 "embeddedLanguages": {
                     "meta.embedded.block.sql": "sql",
                     "meta.embedded.block.html": "html"
