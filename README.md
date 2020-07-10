@@ -1,36 +1,40 @@
-# COBOL Source colouriser for Visual Studio Code
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![chat-img](https://img.shields.io/badge/Gitter-Join_the_vscode_cobol_chat-brightgreen.svg)](https://gitter.im/vscode_cobol/community)
---------------
 
-## What is this?
-Syntax highlighting for COBOL, JCL, PL/I and MF directive files.
+# COBOL Source colouriser for Visual Studio Code
 
-## What is this not?
-An Integrated Development Environment for COBOL.
+This extension was originally aimed at providing syntax highlighting for COBOL but overtime is has been extended to provide syntax highlighting for other related languages/file formats such JCL, PL/I and MF directive files.
 
-## What is it useful for?
-Quick viewing of COBOL source and edit.
+## What can I expect from this extension
+
+This extension is certainly not an Integrated Development Environment for COBOL.   It does provide enough functionality for the causual developer to view, edit and compile source code (via tasks & problem matchers).
 
 ## What platform can it be used on?
+
 Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
 ## Code colourisation for COBOL, PL/I and JCL:
+
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/screenshot_three.png)
 
 ## IntelliSense example:
+
 ![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/perform_add.gif)
 
 ## Breadcrumb support:
+
 ![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/breadcrumb.png)
 
 ## Outline support:
+
 ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/outline.png)
 
 ## Goto definition:
+
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/gotodef.gif)
 
 ## Peek definition:
+
 ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/peekdef.gif)
 
 ## Keybinds
@@ -128,7 +132,6 @@ The example below shows you how you can create a single task to compile one prog
 
 For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" problem matcher as although the directive ERRFORMAT"2" is used, the compiler output error format is slightly different.
 
-
 ```json
 {
     "label": "mf cobol (single file)",
@@ -166,7 +169,6 @@ The example below shows you how you can create a single task to compile one prog
 
 This example is for GnuCOBOL 1-2.x, for GnuCOBOL use $gnucobol3-cob
 
-
 ```json
 {
     "version": "2.0.0",
@@ -187,10 +189,10 @@ This example is for GnuCOBOL 1-2.x, for GnuCOBOL use $gnucobol3-cob
 }
 ```
 
-
 ### Task: Single file compile using ACUCOBOL-GT
 
 The example below shows you how you can create a single task to compile one program using the `ccbl32` command.
+
 ```json
 {
     "version": "2.0.0",
@@ -234,6 +236,74 @@ The example below shows you how you can create a single task to compile one prog
 |                                               | cob or cobol.exe + ERRFORMAT"2" | $$mfcobol-errformat2               |
 |                                               | cob or cobol.exe + ERRFORMAT"2" for errors in copybooks       | $$mfcobol-errformat2-copybook               |
 
+## Remote development using containers
+
+If your main development is Micro Focus Visual COBOL/Enterprise Developer you may have access to base images that provide the compiler and its tools.
+
+If you do, all that is required is another image that contains extra tools and a devcontainer.json to configure its use.
+
+The following ```Dockerfile``` is an example on how you can extend your existing base image with java configured, ant, git and lsb tools.
+
+This example uses the SLES 15.1 base images using Visual COBOL 5.0.
+
+You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different commant eg: yum, microdnf etc..).
+
+Dockerfile:
+
+```Dockerfile
+FROM microfocus/vcdevhub:sles15_5.1_x64_login
+
+USER root
+
+ENV JAVA_HOME=/usr/java/default
+ENV PATH=${JAVA_HOME}/bin:${PATH}
+
+ENV COBDIR=${MFPRODBASE}
+
+ENV PATH=${COBDIR}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${COBDIR}/lib:${LD_LIBRARY_PATH}
+
+ENV ANT_HOME=/opt/microfocus/VisualCOBOL/remotedev/ant/apache-ant-1.9.9
+ENV PATH=${ANT_HOME}/bin:${PATH}
+
+RUN zypper --non-interactive install  --no-recommends lsb-release git
+```
+
+devcontainer.json:
+
+```json
+{
+	// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+	"name": "Visual COBOL",
+
+	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+	"dockerFile": "Dockerfile",
+
+	// The optional 'runArgs' property can be used to specify additional runtime arguments.
+	"runArgs": [
+		//  Uncomment the next line if you want to use Docker from the container. See the docker-in-docker definition for details.
+		// "-v","/var/run/docker.sock:/var/run/docker.sock",
+
+		// Uncomment the next two lines if you will use a ptrace-based debugger like C++, Go, and Rust
+		"--cap-add=SYS_PTRACE",
+		"--security-opt", "seccomp=unconfined"
+	],
+
+	// Uncomment the next line if you want to publish any ports.
+	// "appPort": [],
+
+	// Uncomment the next line if you want to add in default container specific settings.json values
+	// "settings":  { "workbench.colorTheme": "Quiet Light" },
+
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "uname -a",
+
+	// Add the IDs of any extensions you want installed in the array below.
+	"extensions": [
+		"bitlang.cobol"
+	]
+}
+```
 
 ## Complementary extensions
 
