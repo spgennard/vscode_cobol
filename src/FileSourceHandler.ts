@@ -1,7 +1,7 @@
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logException, logTimedMessage } from './extension';
-import { performance } from 'perf_hooks';
+import { logException, logTimedMessage, performance_now } from './extension';
+
 
 // var detab = require('detab');
 const lineByLine = require('n-readlines');
@@ -27,13 +27,13 @@ export class FileSourceHandler implements ISourceHandler {
         let docstat = fs.statSync(document);
         let docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
-        var startTime = performance.now();
+        var startTime = performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
             while (line = liner.next()) {
                 this.lines.push(line.toString());
             }
-            logTimedMessage(performance.now() - startTime, ' - Loading File ' + document);
+            logTimedMessage(performance_now() - startTime, ' - Loading File ' + document);
         }
         catch (e) {
             logException("File failed! (" + document + ")", e);

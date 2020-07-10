@@ -3,7 +3,7 @@
 import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, ExtensionContext } from 'vscode';
 import { getCurrentContext, enableMarginStatusBar, hideMarginStatusBar } from './extension';
 
-import minimatch = require('minimatch');
+import minimatch from 'minimatch';
 import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
 import ISourceHandler from './isourcehandler';

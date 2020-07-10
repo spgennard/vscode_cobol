@@ -33,7 +33,6 @@ import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLT
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './plusutils';
 import { ICOBOLSettings } from './iconfiguration';
-import { performance } from 'perf_hooks';
 
 const propertiesReader = require('properties-reader');
 
@@ -135,9 +134,9 @@ function initExtensions(config: ICOBOLSettings) {
             invalidSearchDirectory.push(ddir);
         }
         else if (isDirectPath(ddir)) {
-            let startTime = performance.now();
+            let startTime = performance_now();
             if (isDirectory(ddir)) {
-                let totalTimeInMS = performance.now() - startTime;
+                let totalTimeInMS = performance_now() - startTime;
                 let timeTaken = totalTimeInMS.toFixed(2);
                 if (totalTimeInMS <= 2000) {
                     fileSearchDirectory.push(ddir);
@@ -885,4 +884,16 @@ export function logMessage(message: string, ...parameters: any[]) {
 
     COBOLOutputChannel.appendLine(message);
     //console.log(message + "\n");
+}
+
+
+export function performance_now():number {
+    if(!process.env.BROWSER) {
+        try {
+            return require('performance-now').performance.now;
+        }
+        catch {}
+    }
+
+    return Date.now();
 }

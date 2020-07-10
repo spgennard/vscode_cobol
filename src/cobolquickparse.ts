@@ -1713,7 +1713,7 @@ export class COBOLSymbolTableHelper {
                     break;
             }
         }
-        //logCOBOLChannelLine("- Creating symbol table for " + st.fileName + ", symbols found: " + qp.tokensInOrder.length + " -> " + (performance.now() - startTime).toFixed(2));
+        //logCOBOLChannelLine("- Creating symbol table for " + st.fileName + ", symbols found: " + qp.tokensInOrder.length + " -> " + (performance_now() - startTime).toFixed(2));
         return st;
     }
 

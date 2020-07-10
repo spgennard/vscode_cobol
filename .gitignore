@@ -1,5 +1,7 @@
 out
 node_modules
+dist/
+.vscode_cobol/
 .vscode-test/
 *.vsix
 package-lock.json

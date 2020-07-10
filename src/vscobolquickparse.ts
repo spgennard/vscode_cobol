@@ -7,8 +7,7 @@ import { ExtensionContext, StatusBarAlignment, StatusBarItem, Selection, TextEdi
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory } from "./extension";
-import { performance } from "perf_hooks";
+import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now } from "./extension";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
@@ -66,10 +65,10 @@ export default class VSQuickCOBOLParse {
 
                 let file = new FileSourceHandler(fileName, false);
 
-                var startTime = performance.now();
+                var startTime = performance_now();
                 let qcpd = new COBOLQuickParse(file, fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
-                logTimedMessage(performance.now() - startTime, " - Parsing " + fileName);
+                logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
                 if (InMemoryCache.size > 20) {
                     let firstKey = InMemoryCache.keys().next().value;
@@ -96,7 +95,7 @@ export default class VSQuickCOBOLParse {
 
         if (workspace.workspaceFolders) {
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-            var start = performance.now();
+            var start = performance_now();
 
             if (workspace.workspaceFolders) {
                 for (var folder of workspace.workspaceFolders) {
@@ -121,7 +120,7 @@ export default class VSQuickCOBOLParse {
                 }
             }
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
-            var end = performance.now() - start;
+            var end = performance_now() - start;
             logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
         }
     }
