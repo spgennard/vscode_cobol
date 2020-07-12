@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.5.2",
+    "version": "6.5.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -222,6 +222,19 @@
                         "No metadata caching",
                         "In memory cache only",
                         "Save as much metadata as possible in .vscode_cobol directory"
+                    ]
+                },
+                "coboleditor.cache_directory_strategy" : {
+                    "enum" : [
+                        "workspace",
+                        "storagepath"
+                    ],
+                    "default": "workspace",
+                    "markdownDescription": "Cache directory location",
+                    "title": "Cache directory location",
+                    "enumDescriptions": [
+                        "Cache directory in workspace",
+                        "Use extension storage path"
                     ]
                 },
                 "coboleditor.margin": {

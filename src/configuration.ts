@@ -37,6 +37,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.intellisense_include_lowercase = getIntellisense_include_lowercase();
         VSCOBOLConfiguration.config.intellisense_item_limit = getIntellisense_item_limit();
         VSCOBOLConfiguration.config.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
+        VSCOBOLConfiguration.config.cache_directory_strategy = getCache_directory_strategy();
     }
 
     public static get(): ICOBOLSettings {
@@ -129,6 +130,10 @@ export class VSCOBOLConfiguration {
     public static getTabStops(): number[] {
         return VSCOBOLConfiguration.config.tabstops;
     }
+
+    public static getCache_directory_strategy() : string {
+        return VSCOBOLConfiguration.config.cache_directory_strategy;
+    }
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {
@@ -218,6 +223,17 @@ function getProcess_metadata_cache_on_start(): boolean {
 
 function getIntellisense_include_lowercase(): boolean {
     return getBoolean("intellisense_include_lowercase",false);
+}
+
+function getCache_directory_strategy(): string {
+    var editorConfig = workspace.getConfiguration('coboleditor');
+    var cacheDirStrategy = editorConfig.get<string>('cache_directory_strategy');
+
+    if (cacheDirStrategy === undefined || cacheDirStrategy === null) {
+        return "workspace";
+    }
+
+    return cacheDirStrategy;
 }
 
 function getIntellisense_item_limit(): number {

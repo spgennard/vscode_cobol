@@ -7,7 +7,7 @@ import { ExtensionContext, StatusBarAlignment, StatusBarItem, Selection, TextEdi
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now } from "./extension";
+import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now, getCurrentContext } from "./extension";
 import { FileSourceHandler } from "./FileSourceHandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
@@ -169,6 +169,31 @@ export default class VSQuickCOBOLParse {
     public static getCacheDirectory(): string {
 
         if (workspace.workspaceFolders && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
+
+            if (VSCOBOLConfiguration.getCache_directory_strategy() === "storagepath") {
+                let storageDirectory:string|undefined = getCurrentContext().storagePath;
+                if (storageDirectory !== undefined && !isDirectory(storageDirectory)) {
+                    try {
+                    fs.mkdirSync(storageDirectory);
+                    }
+                    catch {
+                        // swallow
+                    }
+                }
+
+                /* no storage directory */
+                if (storageDirectory === undefined) {
+                    return "";
+                }
+
+                /* not a directory, so ignore */
+                if (!isDirectory(storageDirectory)) {
+                    return "";
+                }
+
+                return storageDirectory;
+            }
+
             let firstCacheDir = "";
 
             for (var folder of workspace.workspaceFolders) {

@@ -34,6 +34,7 @@ export interface ICOBOLSettings {
     intellisense_include_lowercase:boolean;
     intellisense_item_limit:number;
     process_metadata_cache_on_start:boolean;
+    cache_directory_strategy: string;
 }
 
 
@@ -63,6 +64,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public intellisense_include_lowercase:boolean;
     public intellisense_item_limit:number;
     public process_metadata_cache_on_start:boolean;
+    public cache_directory_strategy:string;
 
     constructor() {
         this.experimential_features = false;
@@ -90,6 +92,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_include_lowercase = false;
         this.intellisense_item_limit = 0;
         this.process_metadata_cache_on_start = false;
+        this.cache_directory_strategy = "workspace";
     }
 }
 
