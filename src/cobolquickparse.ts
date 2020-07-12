@@ -1436,20 +1436,24 @@ export default class COBOLQuickParse {
                 if (this.pickFields) {
                     /* only interesting in things that are after a number */
                     if (this.isNumber(prevToken) && !this.isNumber(current)) {
-                        if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
+                        if (currentLower === "filler" || !this.isValidKeyword(currentLower)) {
                             let trimToken = this.trimLiteral(current);
                             if (this.isValidLiteral(currentLower)) {
                                 let style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
                                 let extraInfo = prevToken;
                                 if (prevToken === '01' || prevToken === '1') {
-                                    if (nextTokenLower.length === 0) {
+                                    if (nextTokenLower === 'redefines') {
                                         extraInfo += "-GROUP";
-                                    }
-                                    else if (this.currentSection.tokenNameLower === 'report') {
+                                    } else if (nextTokenLower.length === 0) {
+                                        extraInfo += "-GROUP";
+                                    } else if (this.currentSection.tokenNameLower === 'report') {
                                         extraInfo += "-GROUP";
                                     }
 
                                     if (token.isTokenPresent("constant")) {
+                                        style = COBOLTokenStyle.Constant;
+                                    }
+                                    if (token.isTokenPresent("redefines")) {
                                         style = COBOLTokenStyle.Constant;
                                     }
                                 }
@@ -1469,6 +1473,7 @@ export default class COBOLQuickParse {
                                 if (prevToken === '01' || prevToken === '1' ||
                                     prevToken === '66' || prevToken === '77' || prevToken === '78') {
                                     if (nextTokenLower.length === 0 ||
+                                        nextTokenLower === 'redefines' ||
                                         (this.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
                                         this.current01Group = ctoken;
                                     } else {

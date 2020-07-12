@@ -1460,8 +1460,8 @@
     },
     "scripts": {
         "vscode:prepublish": "cd src && npm run compile && cd .. && webpack --mode production",
-        "webpack": "webpack --mode development",
-        "webpack-dev": "webpack --mode development --watch",
+        "webpack": "cd src && npm run compile && cd .. && webpack --mode development",
+        "webpack-dev-not-used": "webpack --mode development --watch",
         "compile": "tsc -b",
         "test-compile": "tsc -p ./",
         "watch": "tsc -b -w"
