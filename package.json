@@ -32,7 +32,7 @@
         "email": "stephen@gennard.net"
     },
     "engines": {
-        "vscode": "^1.46.1"
+        "vscode": "^1.47.0"
     },
     "extensionKind": [
         "workspace"
@@ -1480,10 +1480,10 @@
         "watch": "tsc -b -w"
     },
     "devDependencies": {
-        "@types/node": "^14.0.22",
+        "@types/node": "^14.0.23",
         "tslint": "^6.1.2",
         "typescript": "^3.9.6",
-        "@types/vscode": "^1.46.0",
+        "@types/vscode": "^1.47.0",
         "ts-loader": "^8.0.0",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.12"
