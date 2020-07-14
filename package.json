@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.5.3",
+    "version": "6.5.4",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -224,8 +224,8 @@
                         "Save as much metadata as possible in .vscode_cobol directory"
                     ]
                 },
-                "coboleditor.cache_directory_strategy" : {
-                    "enum" : [
+                "coboleditor.cache_directory_strategy": {
+                    "enum": [
                         "workspace",
                         "storagepath"
                     ],
@@ -1141,7 +1141,7 @@
         "problemPatterns": [
             {
                 "name": "mfcobol-msbuild",
-                "regexp": "^(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
+                "regexp": "^.*(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
@@ -1150,7 +1150,7 @@
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\)$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\).*$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
@@ -1159,7 +1159,7 @@
             },
             {
                 "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+([\\w\\-. /\\:]*)\\((\\d+),(\\d+),.*\\)$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+([^\\(]*)\\((\\d+),(\\d+).*\\).*$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
@@ -1168,7 +1168,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+.*,([\\w\\-. /\\:]*)\\((\\d+),(\\d+),.*\\)$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+.*,([\\w\\-. /\\:]*)\\((\\d+),(\\d+),.*\\).*$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
@@ -1177,7 +1177,7 @@
             },
             {
                 "name": "mfcobol-errformat2-basefn",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\)$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
@@ -1186,7 +1186,7 @@
             },
             {
                 "name": "mfcobol-errformat3",
-                "regexp": "^(\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
+                "regexp": "^(\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
@@ -1195,7 +1195,7 @@
             },
             {
                 "name": "mfcobol-errformat3-basefn",
-                "regexp": "^[\\./].*[/](\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*)$",
+                "regexp": "^[\\./].*[/](\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
