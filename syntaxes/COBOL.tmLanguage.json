@@ -211,7 +211,7 @@
       "name": "string.quoted.cobol.cics",
       "patterns": [
         {
-					"match": "(?i:abend|acquire|add|allocate|asktime|assign|bif|build|cancel|change|check|connect|converse|converttime|define|delay|delete|deleteq|deq|document|dump|endbr|endbrowse|enq|enter|extract|fetch|force|formattime|free|freemain|freemain64|gds|get|getmain|getmain64|getnext|get64|handle|ignore|inquire|invoke|issue|journal|link|load|monitor|move|point|pop|post|purge|push|put|put64|query|read|readnext|readprev|readq|receive|release|remove|reset|resetbr|resume|retrieve|return|rewind|rewrite|route|run|send|signal|signoff|signon|soapfault|spoolclose|spoolopen|spoolread|spoolwrite|start|startbr|startbrowse|nosuspend|suspend|syncpoint|test|transform|unlock|update|verify|wait|waitcics|web|write|writeq|wsacontext|wsaepr|xctl)(\\w+|\\s+|\\.|$)",
+					"match": "(\\s+)(?i:abend|acquire|add|allocate|asktime|assign|bif|build|cancel|change|check|connect|converse|converttime|define|delay|delete|deleteq|deq|document|dump|endbr|endbrowse|enq|enter|extract|fetch|force|formattime|free|freemain|freemain64|gds|get|getmain|getmain64|getnext|get64|handle|ignore|inquire|invoke|issue|journal|link|load|monitor|move|point|pop|post|purge|push|put|put64|query|read|readnext|readprev|readq|receive|release|remove|reset|resetbr|resume|retrieve|return|rewind|rewrite|route|run|send|signal|signoff|signon|soapfault|spoolclose|spoolopen|spoolread|spoolwrite|start|startbr|startbrowse|nosuspend|suspend|syncpoint|test|transform|unlock|update|verify|wait|waitcics|web|write|writeq|wsacontext|wsaepr|xctl)(\\w+|\\s+|\\.|$)",
 					"name": "keyword.verb.cics"
 				},
         {
