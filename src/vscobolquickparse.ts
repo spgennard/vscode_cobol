@@ -12,6 +12,7 @@ import { FileSourceHandler } from "./FileSourceHandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
 import { resolve } from "path";
+import { findSourceMap } from "module";
 
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 
@@ -31,48 +32,36 @@ export default class VSQuickCOBOLParse {
         return false;
     }
 
-    public static getCachedObject(document: TextDocument | undefined, fileName: string): COBOLQuickParse | undefined {
-        if (this.isFile(fileName) === false) {
+    public static getCachedObject(document: TextDocument | undefined): COBOLQuickParse | undefined {
+
+        /* we can't do anything */
+        if (document === undefined) {
             return undefined;
         }
 
-        let cachedObject: COBOLQuickParse | undefined = undefined;
-
-        if (InMemoryCache.has(fileName)) {
-            cachedObject = InMemoryCache.get(fileName);
-        }
-
+        let fileName: string  = document.fileName;
+        let cachedObject: COBOLQuickParse | undefined = InMemoryCache.get(fileName);
         /* if the document is edited, drop the in cached object */
-        if (document !== undefined && document.isDirty) {
+        if (document.isDirty) {
             InMemoryCache.delete(fileName);
-            let file = new VSCodeSourceHandler(document, false);
-            return new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
-        }
-
-
-        /* does the cache object need to be updated? */
-        if (cachedObject !== null && cachedObject !== undefined) {
-            let stat: fs.Stats = fs.statSync(fileName);
-            if (cachedObject.lastModifiedTime !== stat.mtimeMs) {
-                InMemoryCache.delete(fileName);
-                cachedObject = undefined;
-            }
+            cachedObject = undefined;
         }
 
         /* grab, the file parse it can cache it */
         if (cachedObject === null || cachedObject === undefined) {
             try {
-
-                let file = new FileSourceHandler(fileName, false);
-
                 var startTime = performance_now();
-                let qcpd = new COBOLQuickParse(file, fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+                let qcpd = new COBOLQuickParse(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
                 if (InMemoryCache.size > 20) {
-                    let firstKey = InMemoryCache.keys().next().value;
-                    InMemoryCache.delete(firstKey);
+                    let memKeys = InMemoryCache.keys();
+                    let dropKey = memKeys.next().value;
+                    if (dropKey === qcpd) {
+                        dropKey = memKeys.next().value;
+                    }
+                    InMemoryCache.delete(dropKey);
                 }
                 return qcpd;
             }

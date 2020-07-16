@@ -4,6 +4,7 @@ import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLQuickParse, { COBOLToken, camelize } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
+import { performance_now, logMessage } from './extension';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -14,7 +15,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        let sf: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
+        let sf: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
@@ -116,12 +117,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
-        const items: CompletionItem[] = [];
+        let items: CompletionItem[] = [];
 
         if (this.iconfig.enable_data_provider === false) {
             return items;
         }
 
+        let startTime = performance_now();
         let wordToComplete = '';
         let lineBefore = "";
         const range = document.getWordRangeAtPosition(position);
@@ -153,7 +155,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 case "perform":
                 case "goto": {
                     const words = this. getPerformTargets(document);
-                    return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
+                    items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
                 }
                 case "move":
                     {
@@ -176,7 +178,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         //     words.addWord("high-values");
                         // }
 
-                        return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                        items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
                     }
 
                 case "initialize":
@@ -191,10 +193,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 case "compute":
                 case "giving":
                     const words = this.getConstantsOrVariables(document);
-                    return this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                    items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
             }
         }
 
+        let totalTimeInMS = performance_now() - startTime;
+        let timeTaken = totalTimeInMS.toFixed(2);
+        logMessage(" - CobolSourceCompletionItemProvider took "+timeTaken+" ms");
         return items;
     }
 

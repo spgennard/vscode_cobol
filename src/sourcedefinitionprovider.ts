@@ -5,6 +5,7 @@ import COBOLQuickParse, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, C
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
+import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
 const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -97,8 +98,11 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
     return undefined;
 }
 
+function isValidKeyword(keyword: string): boolean {
+    return cobolKeywordDictionary.containsKey(keyword);
+}
 
-function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, sf: COBOLQuickParse, position: vscode.Position): boolean {
+function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -106,12 +110,17 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
     }
 
     let tokenLower: string = word.toLowerCase();
-    if (sf.constantsOrVariables.has(tokenLower) === false) {
+    if (isValidKeyword(tokenLower)) {
+        return false;
+    }
+
+    let sf: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+    if (sf === undefined) {
         return false;
     }
 
     let tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(tokenLower);
-    if (tokens === undefined) {
+    if (tokens === undefined || tokens.length === 0) {
         return false;
     }
 
@@ -207,14 +216,15 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     let locations: vscode.Location[] = [];
     let loc;
-    let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
-    let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-    if (qcp === undefined) {
-        return locations;
-    }
 
     let theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
+        let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        if (qcp === undefined) {
+            return locations;
+        }
+
         loc = getSectionOrParaLocation(document, document.uri, qcp, position);
         if (loc) {
             locations.push(loc);
@@ -257,6 +267,11 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(new\s*|type).*$/i)) {
+        let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        if (qcp === undefined) {
+            return locations;
+        }
+
         loc = getClassTarget(document, qcp, position);
         if (loc !== undefined) {
             locations.push(loc);
@@ -265,6 +280,10 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
+        let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        if (qcp === undefined) {
+            return locations;
+        }
         loc = getMethodTarget(document, qcp, position);
         if (loc !== undefined) {
             locations.push(loc);
@@ -290,12 +309,17 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
+                let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
                 InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
     }
 
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
+        let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        if (qcp === undefined) {
+            return locations;
+        }
         loc = getCallTarget(document, qcp, position);
         if (loc !== undefined) {
             locations.push(loc);
@@ -304,6 +328,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
+            let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
@@ -329,7 +354,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     /* is it a known variable? */
-    if (getVariableInCurrentDocument(locations, document, document.uri, qcp, position)) {
+    if (getVariableInCurrentDocument(locations, document, document.uri, position)) {
         return locations;
     }
 
@@ -337,6 +362,12 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
      * for variables
      */
     if (VSCOBOLConfiguration.isCachingEnabled()) {
+        let qcp: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        if (qcp === undefined) {
+            return locations;
+        }
+
+        let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
