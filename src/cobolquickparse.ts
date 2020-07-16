@@ -329,6 +329,8 @@ export class SharedSourceReferences {
     public sharedSections: Map<string, COBOLToken>;
     public sharedParagraphs: Map<string, COBOLToken>;
     public processingMap: Map<string, string>;
+    public state: ParseState;
+    public tokensInOrder: COBOLToken[];
 
     constructor() {
         this.filenames = [];
@@ -338,11 +340,56 @@ export class SharedSourceReferences {
         this.sharedSections = new Map<string, COBOLToken>();
         this.sharedParagraphs = new Map<string, COBOLToken>();
         this.processingMap = new Map<string, string>();
+        this.state = new ParseState();
+        this.tokensInOrder = [];
     }
 }
 
 class ParseState {
+    currentToken: COBOLToken;
+    currentRegion: COBOLToken;
+    currentDivision: COBOLToken;
+    currentSection: COBOLToken;
+    currentParagraph: COBOLToken;
+    currentClass: COBOLToken;
+    currentMethod: COBOLToken;
+    currentFunctionId: COBOLToken;
+    current01Group: COBOLToken;
+    currentLevel: COBOLToken;
+    processingMap: Map<string, string>;
 
+    procedureDivision: COBOLToken;
+    declaratives: COBOLToken;
+    captureDivisions: boolean;
+    programs: COBOLToken[];
+    pickFields: boolean;
+
+    inProcedureDivision: boolean;
+    inDeclaratives: boolean;
+
+    ignoreInOutlineView:boolean;
+
+    constructor() {
+        this.currentDivision = COBOLToken.Null;
+        this.procedureDivision = COBOLToken.Null;
+        this.currentSection = COBOLToken.Null;
+        this.currentParagraph = COBOLToken.Null;
+        this.currentToken = COBOLToken.Null;
+        this.currentClass = COBOLToken.Null;
+        this.currentMethod = COBOLToken.Null;
+        this.currentRegion = COBOLToken.Null;
+        this.declaratives = COBOLToken.Null;
+        this.current01Group = COBOLToken.Null;
+        this.currentLevel = COBOLToken.Null;
+        this.currentFunctionId = COBOLToken.Null;
+        this.programs = [];
+        this.captureDivisions = true;
+        this.processingMap = new Map<string, string>();
+        this.pickFields = false;
+        this.inProcedureDivision = false;
+        this.inDeclaratives = false;
+        this.ignoreInOutlineView = false;
+    }
 }
 
 class PreParseState {
@@ -387,34 +434,16 @@ export default class COBOLQuickParse {
 
     public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
+    private state: ParseState = new ParseState();
+
     skipToDot: boolean = false;
     addReferencesDuringSkipToTag: boolean = false;
 
-    inProcedureDivision: boolean;
-    inDeclaratives: boolean;
-    pickFields: boolean;
-
-    currentToken: COBOLToken;
-    currentRegion: COBOLToken;
-    currentDivision: COBOLToken;
-    currentSection: COBOLToken;
-    currentParagraph: COBOLToken;
-    currentClass: COBOLToken;
-    currentMethod: COBOLToken;
-    currentFunctionId: COBOLToken;
-    current01Group: COBOLToken;
-    currentLevel: COBOLToken;
-
-    procedureDivision: COBOLToken;
-    declaratives: COBOLToken;
-    captureDivisions: boolean;
-    programs: COBOLToken[];
-
-    copybookNestedInSection: boolean;
+    readonly copybookNestedInSection: boolean;
 
     sourceLooksLikeCOBOL: boolean;
 
-    configHandler: ICOBOLSettings;
+    readonly configHandler: ICOBOLSettings;
 
     parserHintDirectory: string;
 
@@ -423,7 +452,6 @@ export default class COBOLQuickParse {
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    private processingMap: Map<string, string>;
 
     public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
         let stat: fs.Stats = fs.statSync(filename);
@@ -431,23 +459,6 @@ export default class COBOLQuickParse {
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
         this.lastModifiedTime = stat.mtimeMs;
-        this.inProcedureDivision = false;
-        this.inDeclaratives = false;
-        this.pickFields = false;
-        this.currentDivision = COBOLToken.Null;
-        this.procedureDivision = COBOLToken.Null;
-        this.currentSection = COBOLToken.Null;
-        this.currentParagraph = COBOLToken.Null;
-        this.currentToken = COBOLToken.Null;
-        this.currentClass = COBOLToken.Null;
-        this.currentMethod = COBOLToken.Null;
-        this.currentRegion = COBOLToken.Null;
-        this.declaratives = COBOLToken.Null;
-        this.current01Group = COBOLToken.Null;
-        this.currentLevel = COBOLToken.Null;
-        this.currentFunctionId = COBOLToken.Null;
-        this.programs = [];
-        this.captureDivisions = true;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map<string, COBOLToken>();
@@ -469,20 +480,27 @@ export default class COBOLQuickParse {
 
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
 
+        if (sourceReferences === undefined) {
+            this.sourceReferences = new SharedSourceReferences();
+            sourceReferences = this.sourceReferences;
+        }
+
+        this.sourceFileId = 0;
+
         if (sourceReferences !== undefined) {
             this.sourceFileId = sourceReferences.filenames.length;
             sourceReferences.filenames.push(sourceHandler.getUri());
             this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
             this.paragraphs = sourceReferences.sharedParagraphs;
             this.sections = sourceReferences.sharedSections;
-            this.processingMap = sourceReferences.processingMap;
-        } else {
-            this.sourceFileId = 0;
-            this.processingMap = new Map<string, string>();
+            this.state = sourceReferences.state;
+            this.tokensInOrder = sourceReferences.tokensInOrder;
         }
 
+        let state: ParseState = this.state;
+
         /* mark this has been processed (to help copy of self) */
-        this.processingMap.set(this.filename, this.filename);
+        state.processingMap.set(this.filename, this.filename);
 
         /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
         let lineLimit = configHandler.pre_parse_line_limit;
@@ -520,19 +538,19 @@ export default class COBOLQuickParse {
             if (preParseState.procedureDivisionRelatedTokens !== 0 && preParseState.procedureDivisionRelatedTokens > preParseState.workingStorageRelatedTokens) {
                 this.ImplicitProgramId = "";
 
-                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", this.currentDivision);
-                this.currentDivision = fakeDivision;
-                this.procedureDivision = fakeDivision;
-                this.pickFields = false;
-                this.inProcedureDivision = true;
+                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", state.currentDivision);
+                state.currentDivision = fakeDivision;
+                state.procedureDivision = fakeDivision;
+                state.pickFields = false;
+                state.inProcedureDivision = true;
                 this.sourceLooksLikeCOBOL = true;
                 fakeDivision.ignoreInOutlineView = true;
             }
             else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
-                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", this.currentDivision);
-                this.currentDivision = fakeDivision;
-                this.pickFields = true;
-                this.inProcedureDivision = false;
+                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", state.currentDivision);
+                state.currentDivision = fakeDivision;
+                state.pickFields = true;
+                state.inProcedureDivision = false;
                 this.sourceLooksLikeCOBOL = true;
                 this.ImplicitProgramId = "";
                 fakeDivision.ignoreInOutlineView = true;
@@ -585,9 +603,9 @@ export default class COBOLQuickParse {
             }
         }
 
-        if (this.programs.length !== 0) {
-            for (let cp = 0; cp < this.programs.length; cp++) {
-                let currentProgram = this.programs.pop();
+        if (state.programs.length !== 0) {
+            for (let cp = 0; cp < state.programs.length; cp++) {
+                let currentProgram = state.programs.pop();
                 if (currentProgram !== undefined) {
                     currentProgram.endLine = sourceHandler.getLineCount();
                     currentProgram.endColumn = line.length;
@@ -595,19 +613,19 @@ export default class COBOLQuickParse {
             }
         }
 
-        if (this.currentDivision !== COBOLToken.Null) {
-            this.currentDivision.endLine = sourceHandler.getLineCount();
-            this.currentDivision.endColumn = line.length;
+        if (state.currentDivision !== COBOLToken.Null) {
+            state.currentDivision.endLine = sourceHandler.getLineCount();
+            state.currentDivision.endColumn = line.length;
         }
 
-        if (this.currentSection !== COBOLToken.Null) {
-            this.currentSection.endLine = sourceHandler.getLineCount();
-            this.currentSection.endColumn = line.length;
+        if (state.currentSection !== COBOLToken.Null) {
+            state.currentSection.endLine = sourceHandler.getLineCount();
+            state.currentSection.endColumn = line.length;
         }
 
-        if (this.currentParagraph !== COBOLToken.Null) {
-            this.currentParagraph.endLine = sourceHandler.getLineCount();
-            this.currentParagraph.endColumn = line.length;
+        if (state.currentParagraph !== COBOLToken.Null) {
+            state.currentParagraph.endLine = sourceHandler.getLineCount();
+            state.currentParagraph.endColumn = line.length;
         }
 
         this.addinMissingEndlings(sourceHandler);
@@ -627,9 +645,11 @@ export default class COBOLQuickParse {
     public processExternalCopybook(cacheDirectory: string, showError: boolean, sourceCopybook: string) {
         try {
             let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook, "");
+            let state: ParseState = this.state;
+
             if (copyBookfilename.length !== 0) {
-                if (this.processingMap.has(copyBookfilename) === false) {
-                    this.processingMap.set(copyBookfilename, copyBookfilename);
+                if (state.processingMap.has(copyBookfilename) === false) {
+                    state.processingMap.set(copyBookfilename, copyBookfilename);
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                         //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
                         let filefs_vb = new FileSourceHandler(copyBookfilename, false);
@@ -676,42 +696,44 @@ export default class COBOLQuickParse {
         description: string, parentToken: COBOLToken | undefined,
         extraInformation: string = ""): COBOLToken {
 
-        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, this.inProcedureDivision, extraInformation);
+        let state: ParseState = this.state;
+        let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, state.inProcedureDivision, extraInformation);
+        ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
 
         /* if we are in a paragraph update */
-        if (this.currentParagraph !== COBOLToken.Null) {
-            this.currentParagraph.endLine = startLine;
+        if (state.currentParagraph !== COBOLToken.Null) {
+            state.currentParagraph.endLine = startLine;
             if (ctoken.startColumn !== 0) {
-                this.currentParagraph.endColumn = ctoken.startColumn - 1;
+                state.currentParagraph.endColumn = ctoken.startColumn - 1;
             }
         }
 
         // new divison
-        if (tokenType === COBOLTokenStyle.Division && this.currentDivision !== COBOLToken.Null) {
-            this.currentParagraph = COBOLToken.Null;
+        if (tokenType === COBOLTokenStyle.Division && state.currentDivision !== COBOLToken.Null) {
+            state.currentParagraph = COBOLToken.Null;
 
-            this.currentDivision.endLine = startLine;
+            state.currentDivision.endLine = startLine;
             if (ctoken.startColumn !== 0) {
-                this.currentDivision.endColumn = ctoken.startColumn - 1;
+                state.currentDivision.endColumn = ctoken.startColumn - 1;
             }
 
-            if (this.currentSection !== COBOLToken.Null) {
-                this.currentSection.endLine = startLine;
+            if (state.currentSection !== COBOLToken.Null) {
+                state.currentSection.endLine = startLine;
                 if (ctoken.startColumn !== 0) {
-                    this.currentSection.endColumn = ctoken.startColumn - 1;
+                    state.currentSection.endColumn = ctoken.startColumn - 1;
                 }
-                this.currentSection = COBOLToken.Null;
+                state.currentSection = COBOLToken.Null;
             }
             this.tokensInOrder.push(ctoken);
             return ctoken;
         }
 
         // new section
-        if (tokenType === COBOLTokenStyle.Section && this.currentSection !== COBOLToken.Null) {
-            this.currentParagraph = COBOLToken.Null;
-            this.currentSection.endLine = startLine;
+        if (tokenType === COBOLTokenStyle.Section && state.currentSection !== COBOLToken.Null) {
+            state.currentParagraph = COBOLToken.Null;
+            state.currentSection.endLine = startLine;
             if (ctoken.startColumn !== 0) {
-                this.currentSection.endColumn = ctoken.startColumn - 1;
+                state.currentSection.endColumn = ctoken.startColumn - 1;
             }
             this.tokensInOrder.push(ctoken);
             return ctoken;
@@ -719,19 +741,19 @@ export default class COBOLQuickParse {
 
         // new paragraph
         if (tokenType === COBOLTokenStyle.Paragraph) {
-            if (this.currentSection !== COBOLToken.Null) {
-                this.currentSection.endLine = startLine;
+            if (state.currentSection !== COBOLToken.Null) {
+                state.currentSection.endLine = startLine;
                 if (ctoken.startColumn !== 0) {
-                    this.currentSection.endColumn = ctoken.startColumn - 1;
+                    state.currentSection.endColumn = ctoken.startColumn - 1;
                 }
             }
 
-            this.currentParagraph = ctoken;
+            state.currentParagraph = ctoken;
 
-            if (this.currentDivision !== COBOLToken.Null) {
-                this.currentDivision.endLine = startLine;
+            if (state.currentDivision !== COBOLToken.Null) {
+                state.currentDivision.endLine = startLine;
                 if (ctoken.startColumn !== 0) {
-                    this.currentDivision.endColumn = ctoken.startColumn - 1;
+                    state.currentDivision.endColumn = ctoken.startColumn - 1;
                 }
             }
             this.tokensInOrder.push(ctoken);
@@ -1032,6 +1054,8 @@ export default class COBOLQuickParse {
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
         let token = new Token(line, prevToken);
 
+        let state: ParseState = this.state;
+
         do {
             try {
                 let endWithDot = false;
@@ -1094,47 +1118,47 @@ export default class COBOLQuickParse {
                 const prevPlusCurrent = token.prevToken + " " + current;
 
                 if (currentLower === "exec") {
-                    this.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, prevToken, "", this.currentDivision);
+                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, prevToken, "", state.currentDivision);
                     continue;
                 }
 
                 /* finish processing end-exec */
                 if (currentLower === "end-exec") {
-                    this.currentToken = COBOLToken.Null;
+                    state.currentToken = COBOLToken.Null;
                     endWithDot = true;
                     token.endsWithDot = endWithDot;
                     continue;
                 }
 
                 /* skip everything in between exec .. end-exec */
-                if (this.currentToken.tokenType === COBOLTokenStyle.Exec) {
+                if (state.currentToken.tokenType === COBOLTokenStyle.Exec) {
                     continue;
                 }
 
                 if (prevTokenLower === "end" && currentLower === "declaratives") {
-                    this.declaratives.endLine = lineNumber;
-                    this.declaratives.endColumn = line.indexOf(tcurrent);
-                    this.tokensInOrder.push(this.declaratives);
-                    this.inDeclaratives = false;
-                    this.declaratives = COBOLToken.Null;
+                    state.declaratives.endLine = lineNumber;
+                    state.declaratives.endColumn = line.indexOf(tcurrent);
+                    this.tokensInOrder.push(state.declaratives);
+                    state.inDeclaratives = false;
+                    state.declaratives = COBOLToken.Null;
                     continue;
                 }
 
                 // only include sections in the declaratives area
-                if (this.inDeclaratives) {
+                if (state.inDeclaratives) {
                     if (currentLower === 'section') {
-                        this.newCOBOLToken(COBOLTokenStyle.DeclarativesSection, lineNumber, line, prevToken, prevToken, this.currentDivision);
+                        this.newCOBOLToken(COBOLTokenStyle.DeclarativesSection, lineNumber, line, prevToken, prevToken, state.currentDivision);
                     }
                     continue;
                 }
                 // handle sections)
-                if (this.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
+                if (state.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
                     if (prevTokenLower === "declare") {
                         continue;
                     }
 
                     // So we need to insert a fake data division?
-                    if (this.currentDivision === COBOLToken.Null) {
+                    if (state.currentDivision === COBOLToken.Null) {
                         if (prevTokenLower === 'file' ||
                             prevTokenLower === 'working-storage' ||
                             prevTokenLower === 'local-storage' ||
@@ -1143,27 +1167,27 @@ export default class COBOLQuickParse {
 
                             if (this.ImplicitProgramId.length !== 0) {
                                 let trimmedCurrent = this.trimLiteral(this.ImplicitProgramId);
-                                let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, "program-id. " + this.ImplicitProgramId, trimmedCurrent, prevPlusCurrent, this.currentDivision);
-                                this.programs.push(ctoken);
+                                let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, "program-id. " + this.ImplicitProgramId, trimmedCurrent, prevPlusCurrent, state.currentDivision);
+                                state.programs.push(ctoken);
                                 ctoken.ignoreInOutlineView = true;
                                 this.ImplicitProgramId = "";        /* don't need it */
                             }
 
-                            this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data Division", "Data", "Data Division (Optional)", this.currentDivision);
-                            this.currentDivision.ignoreInOutlineView = true;
+                            state.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data Division", "Data", "Data Division (Optional)", state.currentDivision);
+                            state.currentDivision.ignoreInOutlineView = true;
                         }
                     }
 
-                    this.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, this.currentDivision);
-                    this.sections.set(prevTokenLower, this.currentSection);
-                    this.current01Group = COBOLToken.Null;
-                    this.currentLevel = COBOLToken.Null;
+                    state.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, state.currentDivision);
+                    this.sections.set(prevTokenLower, state.currentSection);
+                    state.current01Group = COBOLToken.Null;
+                    state.currentLevel = COBOLToken.Null;
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
                         prevTokenLower === 'file' || prevTokenLower === "screen") {
-                        this.pickFields = true;
-                        this.inProcedureDivision = false;
+                        state.pickFields = true;
+                        state.inProcedureDivision = false;
                         // sourceHandler.setDumpAreaA(false);
                         // sourceHandler.setDumpAreaBOnwards(false);
                     }
@@ -1172,13 +1196,13 @@ export default class COBOLQuickParse {
                 }
 
                 // handle divisions
-                if (this.captureDivisions && prevTokenLower.length !== 0 && currentLower === "division") {
-                    this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, line, prevToken, prevPlusCurrent, COBOLToken.Null);
+                if (state.captureDivisions && prevTokenLower.length !== 0 && currentLower === "division") {
+                    state.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, line, prevToken, prevPlusCurrent, COBOLToken.Null);
 
                     if (prevTokenLower === "procedure") {
-                        this.inProcedureDivision = true;
-                        this.pickFields = false;
-                        this.procedureDivision = this.currentDivision;
+                        state.inProcedureDivision = true;
+                        state.pickFields = false;
+                        state.procedureDivision = state.currentDivision;
                         sourceHandler.setDumpAreaA(true);
                         sourceHandler.setDumpAreaBOnwards(false);
                     }
@@ -1189,7 +1213,7 @@ export default class COBOLQuickParse {
                 // handle entries
                 if (prevTokenLower === "entry" && current.length !== 0) {
                     let trimmedCurrent = this.trimLiteral(current);
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
                     this.callTargets.set(trimmedCurrent, ctoken);
                     continue;
                 }
@@ -1197,8 +1221,8 @@ export default class COBOLQuickParse {
                 // handle program-id
                 if (prevTokenLower === "program-id" && current.length !== 0) {
                     let trimmedCurrent = this.trimLiteral(current);
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
-                    this.programs.push(ctoken);
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
+                    state.programs.push(ctoken);
                     if (trimmedCurrent.indexOf(" ") !== -1 && token.isTokenPresent("external") === false) {
                         this.callTargets.set(trimmedCurrent, ctoken);
                     }
@@ -1214,63 +1238,63 @@ export default class COBOLQuickParse {
                 // handle class-id
                 if (prevTokenLower === "class-id" && current.length !== 0) {
                     let trimmedCurrent = this.trimLiteral(current);
-                    this.currentClass = this.newCOBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
-                    this.captureDivisions = false;
-                    this.currentMethod = COBOLToken.Null;
-                    this.pickFields = true;
-                    this.classes.set(trimmedCurrent, this.currentClass);
+                    state.currentClass = this.newCOBOLToken(COBOLTokenStyle.ClassId, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
+                    state.captureDivisions = false;
+                    state.currentMethod = COBOLToken.Null;
+                    state.pickFields = true;
+                    this.classes.set(trimmedCurrent, state.currentClass);
 
                     continue;
                 }
 
                 // handle "end class, enum, valuetype"
-                if (this.currentClass !== COBOLToken.Null && prevTokenLower === "end" &&
+                if (state.currentClass !== COBOLToken.Null && prevTokenLower === "end" &&
                     (currentLower === "class" || currentLower === "enum" || currentLower === "valuetype")) {
-                    this.currentClass.endLine = lineNumber;
-                    this.currentClass.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentClass.endLine = lineNumber;
+                    state.currentClass.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
 
-                    this.currentClass = COBOLToken.Null;
-                    this.captureDivisions = true;
-                    this.currentMethod = COBOLToken.Null;
-                    this.pickFields = false;
+                    state.currentClass = COBOLToken.Null;
+                    state.captureDivisions = true;
+                    state.currentMethod = COBOLToken.Null;
+                    state.pickFields = false;
                     continue;
                 }
 
                 // handle enum-id
                 if (prevTokenLower === "enum-id" && current.length !== 0) {
-                    this.currentClass = this.newCOBOLToken(COBOLTokenStyle.EnumId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, COBOLToken.Null);
+                    state.currentClass = this.newCOBOLToken(COBOLTokenStyle.EnumId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, COBOLToken.Null);
 
-                    this.captureDivisions = false;
-                    this.currentMethod = COBOLToken.Null;
-                    this.pickFields = true;
+                    state.captureDivisions = false;
+                    state.currentMethod = COBOLToken.Null;
+                    state.pickFields = true;
                     continue;
                 }
 
                 // handle interface-id
                 if (prevTokenLower === "interface-id" && current.length !== 0) {
-                    this.currentClass = this.newCOBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                    state.currentClass = this.newCOBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
 
-                    this.pickFields = true;
-                    this.captureDivisions = false;
-                    this.currentMethod = COBOLToken.Null;
+                    state.pickFields = true;
+                    state.captureDivisions = false;
+                    state.currentMethod = COBOLToken.Null;
                     continue;
                 }
 
                 // handle valuetype-id
                 if (prevTokenLower === "valuetype-id" && current.length !== 0) {
-                    this.currentClass = this.newCOBOLToken(COBOLTokenStyle.ValueTypeId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
+                    state.currentClass = this.newCOBOLToken(COBOLTokenStyle.ValueTypeId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
 
-                    this.pickFields = true;
-                    this.captureDivisions = false;
-                    this.currentMethod = COBOLToken.Null;
+                    state.pickFields = true;
+                    state.captureDivisions = false;
+                    state.currentMethod = COBOLToken.Null;
                     continue;
                 }
 
                 // handle function-id
                 if (prevTokenLower === "function-id" && current.length !== 0) {
-                    this.currentFunctionId = this.newCOBOLToken(COBOLTokenStyle.FunctionId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, this.currentDivision);
-                    this.captureDivisions =
-                        this.pickFields = true;
+                    state.currentFunctionId = this.newCOBOLToken(COBOLTokenStyle.FunctionId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
+                    state.captureDivisions = false;
+                    state.pickFields = true;
                     continue;
                 }
 
@@ -1281,87 +1305,87 @@ export default class COBOLQuickParse {
 
                     if (nextTokenLower === "property") {
                         let trimmedProperty = this.trimLiteral(nextPlusOneToken);
-                        this.currentMethod = this.newCOBOLToken(COBOLTokenStyle.Property, lineNumber, line, trimmedProperty, nextToken + " " + nextPlusOneToken, this.currentDivision);
-                        this.methods.set(trimmedProperty, this.currentMethod);
+                        state.currentMethod = this.newCOBOLToken(COBOLTokenStyle.Property, lineNumber, line, trimmedProperty, nextToken + " " + nextPlusOneToken, state.currentDivision);
+                        this.methods.set(trimmedProperty, state.currentMethod);
                     } else {
                         let trimmedCurrent = this.trimLiteral(current);
-                        this.currentMethod = this.newCOBOLToken(style, lineNumber, line, trimmedCurrent, prevPlusCurrent, this.currentDivision);
-                        this.methods.set(trimmedCurrent, this.currentMethod);
+                        state.currentMethod = this.newCOBOLToken(style, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
+                        this.methods.set(trimmedCurrent, state.currentMethod);
                     }
 
-                    this.pickFields = true;
-                    this.captureDivisions = false;
+                    state.pickFields = true;
+                    state.captureDivisions = false;
                     continue;
                 }
 
                 // handle "end method"
-                if (this.currentMethod !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "method") {
-                    this.currentMethod.endLine = lineNumber;
-                    this.currentMethod.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
+                if (state.currentMethod !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "method") {
+                    state.currentMethod.endLine = lineNumber;
+                    state.currentMethod.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
 
-                    this.currentMethod = COBOLToken.Null;
-                    this.pickFields = false;
+                    state.currentMethod = COBOLToken.Null;
+                    state.pickFields = false;
                     continue;
                 }
 
-                if (this.programs.length !== 0 && prevTokenLower === "end" && currentLower === "program") {
-                    let currentProgram: COBOLToken | undefined = this.programs.pop();
+                if (state.programs.length !== 0 && prevTokenLower === "end" && currentLower === "program") {
+                    let currentProgram: COBOLToken | undefined = state.programs.pop();
                     if (currentProgram !== undefined) {
                         currentProgram.endLine = lineNumber;
                         currentProgram.endColumn = line.length;
                     }
 
-                    if (this.currentDivision !== COBOLToken.Null) {
-                        this.currentDivision.endLine = lineNumber;
-                        this.currentDivision.endColumn = line.length;
+                    if (state.currentDivision !== COBOLToken.Null) {
+                        state.currentDivision.endLine = lineNumber;
+                        state.currentDivision.endColumn = line.length;
                     }
 
-                    if (this.currentSection !== COBOLToken.Null) {
-                        this.currentSection.endLine = lineNumber;
-                        this.currentSection.endColumn = line.length;
+                    if (state.currentSection !== COBOLToken.Null) {
+                        state.currentSection.endLine = lineNumber;
+                        state.currentSection.endColumn = line.length;
                     }
 
-                    if (this.currentParagraph !== COBOLToken.Null) {
-                        this.currentParagraph.endLine = lineNumber;
-                        this.currentParagraph.endColumn = line.length;
+                    if (state.currentParagraph !== COBOLToken.Null) {
+                        state.currentParagraph.endLine = lineNumber;
+                        state.currentParagraph.endColumn = line.length;
                     }
 
-                    this.currentDivision = COBOLToken.Null;
-                    this.currentSection = COBOLToken.Null;
-                    this.currentParagraph = COBOLToken.Null;
-                    this.pickFields = false;
+                    state.currentDivision = COBOLToken.Null;
+                    state.currentSection = COBOLToken.Null;
+                    state.currentParagraph = COBOLToken.Null;
+                    state.pickFields = false;
                     continue;
                 }
 
                 // handle "end function"
-                if (this.currentFunctionId !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "function") {
-                    this.currentFunctionId.endLine = lineNumber;
-                    this.currentFunctionId.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
-                    this.newCOBOLToken(COBOLTokenStyle.EndFunctionId, lineNumber, line, prevToken, current, this.currentDivision);
+                if (state.currentFunctionId !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "function") {
+                    state.currentFunctionId.endLine = lineNumber;
+                    state.currentFunctionId.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
+                    this.newCOBOLToken(COBOLTokenStyle.EndFunctionId, lineNumber, line, prevToken, current, state.currentDivision);
 
-                    this.pickFields = false;
-                    this.inProcedureDivision = false;
+                    state.pickFields = false;
+                    state.inProcedureDivision = false;
 
-                    if (this.currentDivision !== COBOLToken.Null) {
-                        this.currentDivision.endLine = lineNumber;
-                        this.currentDivision.endColumn = 0;
+                    if (state.currentDivision !== COBOLToken.Null) {
+                        state.currentDivision.endLine = lineNumber;
+                        state.currentDivision.endColumn = 0;
                     }
 
-                    if (this.currentSection !== COBOLToken.Null) {
-                        this.currentSection.endLine = lineNumber;
-                        this.currentSection.endColumn = 0;
+                    if (state.currentSection !== COBOLToken.Null) {
+                        state.currentSection.endLine = lineNumber;
+                        state.currentSection.endColumn = 0;
                     }
-                    this.currentDivision = COBOLToken.Null;
-                    this.currentSection = COBOLToken.Null;
-                    this.currentParagraph = COBOLToken.Null;
-                    this.procedureDivision = COBOLToken.Null;
+                    state.currentDivision = COBOLToken.Null;
+                    state.currentSection = COBOLToken.Null;
+                    state.currentParagraph = COBOLToken.Null;
+                    state.procedureDivision = COBOLToken.Null;
                     continue;
                 }
 
 
                 if (currentLower === "declaratives") {
-                    this.declaratives = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, prevToken, current, this.currentDivision);
-                    this.inDeclaratives = true;
+                    state.declaratives = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, prevToken, current, state.currentDivision);
+                    state.inDeclaratives = true;
                     this.tokensInOrder.pop();       /* only interested it at the end */
                     continue;
                 }
@@ -1376,55 +1400,57 @@ export default class COBOLQuickParse {
                         let nextPlusOneTokenTrimmed = this.trimLiteral(nextPlusOneToken);
                         let desc: string = prevPlusCurrent + " in " + nextPlusOneTokenTrimmed;
                         if (this.copybookNestedInSection) {
-                            if (this.currentSection !== COBOLToken.Null) {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentSection, nextPlusOneTokenTrimmed);
+                            if (state.currentSection !== COBOLToken.Null) {
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, state.currentSection, nextPlusOneTokenTrimmed);
                             } else {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneTokenTrimmed);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
                             }
                         } else {
-                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, this.currentDivision, nextPlusOneTokenTrimmed);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
                         }
                     }
                     else {
                         if (this.copybookNestedInSection) {
-                            if (this.currentSection !== COBOLToken.Null) {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentSection);
+                            if (state.currentSection !== COBOLToken.Null) {
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentSection);
                             } else {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
                             }
                         } else {
-                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, this.currentDivision);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
                         }
                     }
                     if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                         this.copyBooksUsed.set(trimmedCopyBook, copyToken);
-                        // newCopybook = true;
                     }
 
-                    // if (this.sourceReferences !== undefined && newCopybook) {
-                    //     let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook);
-                    //     if (fileName.length > 0) {
-                    //         let qfile = new FileSourceHandler(fileName, false);
-                    //         let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
-                    //     }
-                    // }
+                    if (this.sourceReferences !== undefined) {
+                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
+                        if (fileName.length > 0) {
+                            let qfile = new FileSourceHandler(fileName, false);
+                            let currentIgnoreInOutlineView:boolean = state.ignoreInOutlineView;
+                            state.ignoreInOutlineView = true;
+                            let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                            state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                        }
+                    }
                     continue;
                 }
 
                 // we are in the procedure division
-                if (this.captureDivisions && this.currentDivision !== COBOLToken.Null &&
-                    this.currentDivision === this.procedureDivision && endWithDot) {
+                if (state.captureDivisions && state.currentDivision !== COBOLToken.Null &&
+                    state.currentDivision === state.procedureDivision && endWithDot) {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         let beforeCurrent = line.substr(0, token.currentCol - 1).trim();
                         if (beforeCurrent.length === 0) {
                             let c = tcurrent;
                             if (c.length !== 0) {
                                 if (this.isParagraph(c)) {
-                                    if (this.currentSection !== COBOLToken.Null) {
-                                        let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentSection);
+                                    if (state.currentSection !== COBOLToken.Null) {
+                                        let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentSection);
                                         this.paragraphs.set(newToken.tokenNameLower, newToken);
                                     } else {
-                                        let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, this.currentDivision);
+                                        let newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentDivision);
                                         this.paragraphs.set(newToken.tokenNameLower, newToken);
                                     }
                                 }
@@ -1433,14 +1459,14 @@ export default class COBOLQuickParse {
                     }
                 }
 
-                if (this.currentSection.tokenNameLower === 'input-output') {
+                if (state.currentSection.tokenNameLower === 'input-output') {
                     if (prevTokenLower === 'fd' || prevTokenLower === 'select') {
-                        this.pickFields = true;
+                        state.pickFields = true;
                     }
                 }
 
                 // are we in the working-storage section?
-                if (this.pickFields) {
+                if (state.pickFields) {
                     /* only interesting in things that are after a number */
                     if (this.isNumber(prevToken) && !this.isNumber(current)) {
                         if (currentLower === "filler" || !this.isValidKeyword(currentLower)) {
@@ -1453,7 +1479,7 @@ export default class COBOLQuickParse {
                                         extraInfo += "-GROUP";
                                     } else if (nextTokenLower.length === 0) {
                                         extraInfo += "-GROUP";
-                                    } else if (this.currentSection.tokenNameLower === 'report') {
+                                    } else if (state.currentSection.tokenNameLower === 'report') {
                                         extraInfo += "-GROUP";
                                     }
 
@@ -1464,33 +1490,33 @@ export default class COBOLQuickParse {
                                         style = COBOLTokenStyle.Constant;
                                     }
                                 }
-                                let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, this.currentDivision, extraInfo);
+                                let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, state.currentDivision, extraInfo);
                                 this.addVariableOrConstant(currentLower, ctoken);
 
                                 // place the 88 under the 01 item
-                                if (this.currentLevel !== COBOLToken.Null && prevToken === '88') {
-                                    this.currentLevel.endLine = ctoken.startLine;
-                                    this.currentLevel.endColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                if (state.currentLevel !== COBOLToken.Null && prevToken === '88') {
+                                    state.currentLevel.endLine = ctoken.startLine;
+                                    state.currentLevel.endColumn = ctoken.startColumn + ctoken.tokenName.length;
                                 }
 
                                 if (prevToken !== '88') {
-                                    this.currentLevel = ctoken;
+                                    state.currentLevel = ctoken;
                                 }
 
                                 if (prevToken === '01' || prevToken === '1' ||
                                     prevToken === '66' || prevToken === '77' || prevToken === '78') {
                                     if (nextTokenLower.length === 0 ||
                                         nextTokenLower === 'redefines' ||
-                                        (this.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
-                                        this.current01Group = ctoken;
+                                        (state.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
+                                            state.current01Group = ctoken;
                                     } else {
-                                        this.current01Group = COBOLToken.Null;
+                                        state.current01Group = COBOLToken.Null;
                                     }
                                 }
 
-                                if (this.current01Group !== COBOLToken.Null) {
-                                    this.current01Group.endLine = ctoken.startLine;
-                                    this.current01Group.endColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                if (state.current01Group !== COBOLToken.Null) {
+                                    state.current01Group.endLine = ctoken.startLine;
+                                    state.current01Group.endColumn = ctoken.startColumn + ctoken.tokenName.length;
                                 }
 
                                 /* if spans multiple lines, skip to dot */
@@ -1512,7 +1538,7 @@ export default class COBOLQuickParse {
                         let trimToken = this.trimLiteral(current);
 
                         if (this.isValidLiteral(currentLower)) {
-                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, this.currentDivision, prevTokenLower);
+                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, prevTokenLower);
                             this.addVariableOrConstant(currentLower, variableToken);
                         }
 
@@ -1528,7 +1554,7 @@ export default class COBOLQuickParse {
                     if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0) {
                         if (this.isValidKeyword(nextTokenLower) === false) {
                             let trimmedNextToken = this.trimLiteral(nextToken);
-                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, this.currentDivision);
+                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, state.currentDivision);
                             this.addVariableOrConstant(trimmedNextToken.toLowerCase(), variableToken);
                         }
                     }
@@ -1536,7 +1562,7 @@ export default class COBOLQuickParse {
 
                 /* add reference when perform is used */
                 if (this.parseReferences && this.sourceReferences !== undefined) {
-                    if (this.inProcedureDivision) {
+                    if (state.inProcedureDivision) {
                         let trimmedCurrentLower = this.trimLiteral(currentLower);
                         if (this.isNumber(trimmedCurrentLower) === true) {
                             continue;

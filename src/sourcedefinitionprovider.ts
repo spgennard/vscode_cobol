@@ -102,7 +102,7 @@ function isValidKeyword(keyword: string): boolean {
     return cobolKeywordDictionary.containsKey(keyword);
 }
 
-function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, uri: vscode.Uri, position: vscode.Position): boolean {
+function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position): boolean {
     let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -131,12 +131,14 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
             case COBOLTokenStyle.Constant:
                 {
                     let srange = new vscode.Position(token.startLine, token.startColumn);
+                    let uri = vscode.Uri.file(token.filename);
                     locations.push(new vscode.Location(uri, srange));
                     break;
                 }
             case COBOLTokenStyle.Variable:
                 {
                     let srange = new vscode.Position(token.startLine, token.startColumn);
+                    let uri = vscode.Uri.file(token.filename);
                     locations.push(new vscode.Location(uri, srange));
                     break;
                 }
@@ -354,7 +356,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     /* is it a known variable? */
-    if (getVariableInCurrentDocument(locations, document, document.uri, position)) {
+    if (getVariableInCurrentDocument(locations, document, position)) {
         return locations;
     }
 
