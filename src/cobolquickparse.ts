@@ -407,7 +407,6 @@ export default class COBOLQuickParse {
 
     procedureDivision: COBOLToken;
     declaratives: COBOLToken;
-    parseColumnBOnwards: boolean; // = this.getColumBParsing();
     captureDivisions: boolean;
     programs: COBOLToken[];
 
@@ -460,7 +459,6 @@ export default class COBOLQuickParse {
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.sourceLooksLikeCOBOL = false;
-        this.parseColumnBOnwards = configHandler.ignorecolumn_b_onwards;
         this.parseReferences = sourceHandler !== null;
         this.sourceReferences = sourceReferences;
         this.cpPerformTargets = undefined;
@@ -557,13 +555,10 @@ export default class COBOLQuickParse {
         this.sourceFormat = getCOBOLSourceFormat(sourceHandler, configHandler);
         switch (this.sourceFormat) {
             case ESourceFormat.free: sourceHandler.setDumpAreaBOnwards(false);
-                this.parseColumnBOnwards = false;
                 break;
             case ESourceFormat.variable: sourceHandler.setDumpAreaBOnwards(false);
-                this.parseColumnBOnwards = false;
                 break;
             case ESourceFormat.fixed: sourceHandler.setDumpAreaBOnwards(true);
-                this.parseColumnBOnwards = true;
                 break;
         }
 
