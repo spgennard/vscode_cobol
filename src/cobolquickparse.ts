@@ -652,7 +652,7 @@ export default class COBOLQuickParse {
                     state.processingMap.set(copyBookfilename, copyBookfilename);
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                         //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
-                        let filefs_vb = new FileSourceHandler(copyBookfilename, false);
+                        let filefs_vb = new FileSourceHandler(copyBookfilename, false, true);
                         let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
                         let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
@@ -1427,7 +1427,7 @@ export default class COBOLQuickParse {
                     if (this.sourceReferences !== undefined) {
                         let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
                         if (fileName.length > 0) {
-                            let qfile = new FileSourceHandler(fileName, false);
+                            let qfile = new FileSourceHandler(fileName, false, false);
                             let currentIgnoreInOutlineView:boolean = state.ignoreInOutlineView;
                             state.ignoreInOutlineView = true;
                             let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
