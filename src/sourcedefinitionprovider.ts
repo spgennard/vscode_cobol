@@ -59,7 +59,7 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
 }
 
 
-function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri, sf: COBOLQuickParse, position: vscode.Position): vscode.Location | undefined {
+function getSectionOrParaLocation(document: vscode.TextDocument, sf: COBOLQuickParse, position: vscode.Position): vscode.Location | undefined {
     let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
     let word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
@@ -74,6 +74,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
             let token = sf.sections.get(wordLower);
             if (token !== undefined) {
                 let srange = new vscode.Position(token.startLine, token.startColumn);
+                let uri = vscode.Uri.file(token.filename);
                 return new vscode.Location(uri, new vscode.Range(srange, srange));
             }
         }
@@ -88,6 +89,7 @@ function getSectionOrParaLocation(document: vscode.TextDocument, uri: vscode.Uri
             let token = sf.paragraphs.get(wordLower);
             if (token !== undefined) {
                 let srange = new vscode.Position(token.startLine, token.startColumn);
+                let uri = vscode.Uri.file(token.filename);
                 return new vscode.Location(uri, new vscode.Range(srange, srange));
             }
         }
@@ -163,7 +165,8 @@ function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>,
         let token: COBOLToken | undefined = tokenMap.get(workLower);
         if (token !== undefined) {
             let srange = new vscode.Position(token.startLine, token.startColumn);
-            return new vscode.Location(document.uri, srange);
+            let uri = vscode.Uri.file(token.filename);
+            return new vscode.Location(uri, srange);
         }
     }
     return undefined;
@@ -227,7 +230,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             return locations;
         }
 
-        loc = getSectionOrParaLocation(document, document.uri, qcp, position);
+        loc = getSectionOrParaLocation(document, qcp, position);
         if (loc) {
             locations.push(loc);
             return locations;
