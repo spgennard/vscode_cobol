@@ -43,7 +43,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getConstantsOrVariables(document: TextDocument): TrieSearch  {
-        let sf = VSQuickCOBOLParse.getCachedObject(document, document.fileName);
+        let sf = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpConstantsOrVars === undefined) {
