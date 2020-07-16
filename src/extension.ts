@@ -191,11 +191,12 @@ function activateLogChannel() {
         logMessage(" Extension path    : " + thisExtension.extensionPath);
         logMessage(" Version           : " + thisExtension.packageJSON.version);
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            logMessage(" Caching             : " + VSCOBOLConfiguration.getCachingSetting());
-            logMessage("  Cache Strategy     : " + VSCOBOLConfiguration.getCache_directory_strategy());
-            logMessage("  Cache directory    : " + VSQuickCOBOLParse.getCacheDirectory());
-            logMessage("  UNC paths disabled : " + VSCOBOLConfiguration.getDisable_unc_copybooks());
+            logMessage(" Caching                       : " + VSCOBOLConfiguration.getCachingSetting());
+            logMessage("  Cache Strategy               : " + VSCOBOLConfiguration.getCache_directory_strategy());
+            logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
+            logMessage("  UNC paths disabled           : " + VSCOBOLConfiguration.getDisable_unc_copybooks());
         }
+        logMessage(" Parse copybook for references : "+VSCOBOLConfiguration.getParse_copybooks_for_references());
     }
 
     initExtensions(VSCOBOLConfiguration.get());

@@ -238,8 +238,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
-
             let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             let wordLower = word.toLocaleLowerCase();
@@ -334,7 +332,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-            qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
             let wordRange = document.getWordRangeAtPosition(position, callRegEx);
             let word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
@@ -373,7 +370,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
 
         let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-        qcp.processAllCopyBooksInSourceFile(cacheDirectory, false);    /* ensure we have all the copybooks in the symbol cache */
 
         let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
         let word = wordRange ? document.getText(wordRange) : '';

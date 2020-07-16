@@ -406,10 +406,17 @@
                 },
                 "coboleditor.process_metadata_cache_on_start": {
                     "type": "boolean",
-                    "title": "Disable UNC Copybooks",
+                    "title": "Process metadata cache on startup",
                     "description": "Process metadata cache on extension load (default false)",
                     "default": false
+                },
+                "coboleditor.parse_copybooks_for_references": {
+                    "type": "boolean",
+                    "title": "Parse copybook for reference",
+                    "description": "Parse copybook for reference [WARNING: use with care] (default false)",
+                    "default": false
                 }
+
             }
         },
         "views": {

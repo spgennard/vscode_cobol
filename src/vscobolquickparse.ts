@@ -134,7 +134,7 @@ export default class VSQuickCOBOLParse {
                 if (VSQuickCOBOLParse.isFile(filename) === true) {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
 
-                        let filefs = new FileSourceHandler(filename, false);
+                        let filefs = new FileSourceHandler(filename, false, false);
                         let qcp = new COBOLQuickParse(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
                         if (qcp.sourceLooksLikeCOBOL) {
                             logMessage(" - Processing file : " + filename);

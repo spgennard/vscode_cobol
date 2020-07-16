@@ -38,6 +38,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.intellisense_item_limit = getIntellisense_item_limit();
         VSCOBOLConfiguration.config.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
         VSCOBOLConfiguration.config.cache_directory_strategy = getCache_directory_strategy();
+        VSCOBOLConfiguration.config.parse_copybooks_for_references = getParse_copybooks_for_references();
     }
 
     public static get(): ICOBOLSettings {
@@ -134,6 +135,9 @@ export class VSCOBOLConfiguration {
     public static getCache_directory_strategy() : string {
         return VSCOBOLConfiguration.config.cache_directory_strategy;
     }
+    public static getParse_copybooks_for_references(): boolean {
+        return VSCOBOLConfiguration.config.parse_copybooks_for_references;
+    }
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {
@@ -221,6 +225,9 @@ function getProcess_metadata_cache_on_start(): boolean {
     return getBoolean("process_metadata_cache_on_start", false);
 }
 
+function getParse_copybooks_for_references(): boolean {
+    return getBoolean("parse_copybooks_for_references", false);
+}
 function getIntellisense_include_lowercase(): boolean {
     return getBoolean("intellisense_include_lowercase",false);
 }

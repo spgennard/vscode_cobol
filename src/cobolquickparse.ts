@@ -634,12 +634,6 @@ export default class COBOLQuickParse {
             let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
             this.callTargets.set(this.ImplicitProgramId, ctoken);
         }
-
-        if (sourceHandler.isCacheBelow()) {
-            if (COBOLSettingsHelper.isCachingEnabled(configHandler) && this.sourceLooksLikeCOBOL === true && cacheDirectory.length > 0) {
-                this.processAllCopyBooksInSourceFile(cacheDirectory, false);
-            }
-        }
     }
 
     public processExternalCopybook(cacheDirectory: string, showError: boolean, sourceCopybook: string) {
@@ -652,7 +646,7 @@ export default class COBOLQuickParse {
                     state.processingMap.set(copyBookfilename, copyBookfilename);
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
                         //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
-                        let filefs_vb = new FileSourceHandler(copyBookfilename, false, true);
+                        let filefs_vb = new FileSourceHandler(copyBookfilename, false, false);
                         let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
                         let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
 
@@ -667,28 +661,6 @@ export default class COBOLQuickParse {
         }
         catch (ex) {
             logException("processAllCopyBooksInSourceFile:", ex);
-        }
-    }
-
-    public processAllCopyBooksInSourceFile(cacheDirectory: string, showError: boolean) {
-
-        let filename = this.filename;
-
-        if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-            let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
-
-            COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-        }
-
-        /* iterater through all the known copybook references */
-        for (let [key, value] of this.copyBooksUsed) {
-            try {
-                this.processExternalCopybook(cacheDirectory, showError, key);
-            }
-            catch (fe) {
-                logException("processOneFile", fe);
-            }
-
         }
     }
 
@@ -1424,7 +1396,7 @@ export default class COBOLQuickParse {
                         this.copyBooksUsed.set(trimmedCopyBook, copyToken);
                     }
 
-                    if (this.sourceReferences !== undefined) {
+                    if (this.sourceReferences !== undefined && this.configHandler.parse_copybooks_for_references) {
                         let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
                         if (fileName.length > 0) {
                             let qfile = new FileSourceHandler(fileName, false, false);

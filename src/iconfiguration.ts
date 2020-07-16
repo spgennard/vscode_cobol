@@ -35,6 +35,7 @@ export interface ICOBOLSettings {
     intellisense_item_limit:number;
     process_metadata_cache_on_start:boolean;
     cache_directory_strategy: string;
+    parse_copybooks_for_references: boolean;
 }
 
 
@@ -65,6 +66,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public intellisense_item_limit:number;
     public process_metadata_cache_on_start:boolean;
     public cache_directory_strategy:string;
+    public parse_copybooks_for_references: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -93,6 +95,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_item_limit = 0;
         this.process_metadata_cache_on_start = false;
         this.cache_directory_strategy = "workspace";
+        this.parse_copybooks_for_references = false;
     }
 }
 
