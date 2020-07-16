@@ -341,6 +341,26 @@ export class SharedSourceReferences {
     }
 }
 
+class ParseState {
+
+}
+
+class PreParseState {
+    numberTokensInHeader: number;
+    workingStorageRelatedTokens: number;
+    procedureDivisionRelatedTokens: number;
+    sectionsInToken: number;
+    divisionsInToken: number;
+
+    constructor() {
+        this.numberTokensInHeader = 0;
+        this.workingStorageRelatedTokens = 0;
+        this.procedureDivisionRelatedTokens = 0;
+        this.sectionsInToken = 0;
+        this.divisionsInToken = 0;
+    }
+}
+
 export default class COBOLQuickParse {
     public filename: string;
     public lastModifiedTime: number;
@@ -379,22 +399,17 @@ export default class COBOLQuickParse {
     currentDivision: COBOLToken;
     currentSection: COBOLToken;
     currentParagraph: COBOLToken;
-    procedureDivision: COBOLToken;
-    declaratives: COBOLToken;
-    parseColumnBOnwards: boolean; // = this.getColumBParsing();
-    current01Group: COBOLToken;
-    currentLevel: COBOLToken;
-    captureDivisions: boolean;
-    programs: COBOLToken[];
     currentClass: COBOLToken;
     currentMethod: COBOLToken;
     currentFunctionId: COBOLToken;
+    current01Group: COBOLToken;
+    currentLevel: COBOLToken;
 
-    numberTokensInHeader: number;
-    workingStorageRelatedTokens: number;
-    procedureDivisionRelatedTokens: number;
-    sectionsInToken: number;
-    divisionsInToken: number;
+    procedureDivision: COBOLToken;
+    declaratives: COBOLToken;
+    parseColumnBOnwards: boolean; // = this.getColumBParsing();
+    captureDivisions: boolean;
+    programs: COBOLToken[];
 
     copybookNestedInSection: boolean;
 
@@ -434,11 +449,7 @@ export default class COBOLQuickParse {
         this.currentFunctionId = COBOLToken.Null;
         this.programs = [];
         this.captureDivisions = true;
-        this.numberTokensInHeader = 0;
-        this.workingStorageRelatedTokens = 0;
-        this.procedureDivisionRelatedTokens = 0;
-        this.sectionsInToken = 0;
-        this.divisionsInToken = 0;
+
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map<string, COBOLToken>();
         this.isCached = false;
@@ -483,6 +494,7 @@ export default class COBOLQuickParse {
         }
 
         let line = "";
+        let preParseState: PreParseState = new PreParseState();
         for (let l = 0; l < maxLines; l++) {
             try {
                 line = sourceHandler.getLine(l).trimRight();
@@ -490,10 +502,10 @@ export default class COBOLQuickParse {
                 // don't parse a empty line
                 if (line.length > 0) {
                     if (prevToken.endsWithDot === false) {
-                        prevToken = this.relaxedParseLineByLine(sourceHandler, l, prevToken, line);
+                        prevToken = this.relaxedParseLineByLine(sourceHandler, l, prevToken, line, preParseState);
                     }
                     else {
-                        prevToken = this.relaxedParseLineByLine(sourceHandler, l, Token.Blank, line);
+                        prevToken = this.relaxedParseLineByLine(sourceHandler, l, Token.Blank, line, preParseState);
                     }
                 }
 
@@ -504,10 +516,10 @@ export default class COBOLQuickParse {
         }
 
         // Do we have some sections?
-        if (this.sectionsInToken === 0 && this.divisionsInToken === 0) {
+        if (preParseState.sectionsInToken === 0 && preParseState.divisionsInToken === 0) {
             /* if we have items that could be in a data division */
 
-            if (this.procedureDivisionRelatedTokens !== 0 && this.procedureDivisionRelatedTokens > this.workingStorageRelatedTokens) {
+            if (preParseState.procedureDivisionRelatedTokens !== 0 && preParseState.procedureDivisionRelatedTokens > preParseState.workingStorageRelatedTokens) {
                 this.ImplicitProgramId = "";
 
                 let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", this.currentDivision);
@@ -518,7 +530,7 @@ export default class COBOLQuickParse {
                 this.sourceLooksLikeCOBOL = true;
                 fakeDivision.ignoreInOutlineView = true;
             }
-            else if ((this.workingStorageRelatedTokens !== 0 && this.numberTokensInHeader !== 0)) {
+            else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
                 let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", this.currentDivision);
                 this.currentDivision = fakeDivision;
                 this.pickFields = true;
@@ -533,7 +545,7 @@ export default class COBOLQuickParse {
         if (hasCOBOLExtension) {
             this.sourceLooksLikeCOBOL = true;
             /* otherwise, does it look like COBOL? */
-        } else if (this.sectionsInToken !== 0 || this.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
+        } else if (preParseState.sectionsInToken !== 0 || preParseState.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
             this.sourceLooksLikeCOBOL = true;
         }
 
@@ -925,7 +937,7 @@ export default class COBOLQuickParse {
         return literalTrimmed;
     }
 
-    private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
+    private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string, state: PreParseState): Token {
         let token = new Token(line, prevToken);
         let tokenCountPerLine = 0;
         do {
@@ -948,7 +960,7 @@ export default class COBOLQuickParse {
                 if (tokenCountPerLine === 1) {
                     let tokenAsNumber = Number.parseInt(tcurrent);
                     if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
-                        this.numberTokensInHeader++;
+                        state.numberTokensInHeader++;
                         continue;
                     }
                 }
@@ -956,26 +968,26 @@ export default class COBOLQuickParse {
                     case "section":
                         if (token.prevToken.length !== 0) {
                             switch (token.prevTokenLower) {
-                                case "working-storage": this.sectionsInToken++;
-                                case "file": this.sectionsInToken++;
-                                case "linkage": this.sectionsInToken++;
-                                case "screen": this.sectionsInToken++;
+                                case "working-storage": state.sectionsInToken++;
+                                case "file": state.sectionsInToken++;
+                                case "linkage": state.sectionsInToken++;
+                                case "screen": state.sectionsInToken++;
                             }
                         }
                         break;
                     case "division":
                         switch (token.prevTokenLower) {
-                            case "identification": this.divisionsInToken++; break;
-                            case "procedure": this.divisionsInToken++; break;
+                            case "identification": state.divisionsInToken++; break;
+                            case "procedure": state.divisionsInToken++; break;
                         }
                         break;
                     default:
                         if (this.isValidProcedureKeyword(tcurrentLower)) {
-                            this.procedureDivisionRelatedTokens++;
+                            state.procedureDivisionRelatedTokens++;
                         }
 
                         if (this.isValidStorageKeyword(tcurrentLower)) {
-                            this.workingStorageRelatedTokens++;
+                            state.workingStorageRelatedTokens++;
                         }
 
                         break;
