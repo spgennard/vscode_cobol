@@ -393,6 +393,10 @@ export function activate(context: ExtensionContext) {
         COBOLQuickParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
+    var clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
+        COBOLQuickParse.clearMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+    });
+
 
     var syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
         tasks.fetchTasks().then((fetchedTasks) => {
@@ -517,6 +521,7 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(processAllFilesInWorkspace);
     context.subscriptions.push(dumpMetadata);
+    context.subscriptions.push(clearMetaData);
 
     context.subscriptions.push(DocComment.register());
 

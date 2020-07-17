@@ -13,7 +13,7 @@ import { logMessage, logException, isDirectory, isFile } from "./extension";
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
 import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
-import { Uri } from "vscode";
+import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
@@ -765,8 +765,26 @@ export default class COBOLQuickParse {
         }
     }
 
+    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string) {
+        window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
+            if (data === 'Yes') {
+                InMemoryGlobalSymbolCache.callableSymbols.clear();
+                InMemoryGlobalSymbolCache.classSymbols.clear();
+                InMemoryGlobalSymbolCache.isDirty = false;
+                InMemoryGlobalFileCache.copybookFileSymbols.clear();
+                for (var file of fs.readdirSync(cacheDirectory)) {
+                    if (file.endsWith(".sym")) {
+                        let fileName = path.join(cacheDirectory, file);
+                        fs.unlinkSync(fileName);
+                    }
+                }
+                logMessage("Metadata cache cleared");
+            }
+        });
+    }
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string) {
+
         if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {
             logMessage("Metadata is not enabled");
             return;
