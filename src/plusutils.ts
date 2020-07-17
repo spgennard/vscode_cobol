@@ -6,6 +6,7 @@ import { logException, logMessage } from './extension';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { VSCOBOLConfiguration } from './configuration';
 import { FileSourceHandler } from './FileSourceHandler';
+import VSQuickCOBOLParse from './vscobolquickparse';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -153,9 +154,7 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         let file = new VSCodeSourceHandler(activeEditor.document, false);
-        let sourceRefs: SharedSourceReferences = new SharedSourceReferences();
-        let current: COBOLQuickParse = new COBOLQuickParse(file, activeEditor.document.fileName, VSCOBOLConfiguration.get(), "", sourceRefs);
-
+        let current: COBOLQuickParse = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
         let edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (var l = 0; l < file.getLineCount(); l++) {

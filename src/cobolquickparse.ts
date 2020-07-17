@@ -332,7 +332,9 @@ export class SharedSourceReferences {
     public state: ParseState;
     public tokensInOrder: COBOLToken[];
 
-    constructor() {
+    public topLevel: boolean;
+
+    constructor(topLevel: boolean) {
         this.filenames = [];
         this.targetReferences = new Map<string, SourceReference[]>();
         this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
@@ -342,6 +344,7 @@ export class SharedSourceReferences {
         this.processingMap = new Map<string, string>();
         this.state = new ParseState();
         this.tokensInOrder = [];
+        this.topLevel = topLevel;
     }
 }
 
@@ -367,7 +370,7 @@ class ParseState {
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
 
-    ignoreInOutlineView:boolean;
+    ignoreInOutlineView: boolean;
 
     constructor() {
         this.currentDivision = COBOLToken.Null;
@@ -424,7 +427,7 @@ export default class COBOLQuickParse {
     public copyBooksUsed: Map<string, COBOLToken>;
 
     public parseReferences: boolean;
-    public sourceReferences?: SharedSourceReferences;
+    public sourceReferences: SharedSourceReferences;
     public sourceFileId: number;
 
     public cpPerformTargets: any | undefined = undefined;
@@ -452,7 +455,6 @@ export default class COBOLQuickParse {
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-
     public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
         let stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
@@ -469,9 +471,8 @@ export default class COBOLQuickParse {
         this.callTargets = new Map<string, COBOLToken>();
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
-        this.sourceLooksLikeCOBOL = false;
         this.parseReferences = sourceHandler !== null;
-        this.sourceReferences = sourceReferences;
+        this.sourceLooksLikeCOBOL = false;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
         this.parserHintDirectory = configHandler.parser_hint_directory;
@@ -481,8 +482,10 @@ export default class COBOLQuickParse {
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
 
         if (sourceReferences === undefined) {
-            this.sourceReferences = new SharedSourceReferences();
+            this.sourceReferences = new SharedSourceReferences(true);
             sourceReferences = this.sourceReferences;
+        } else {
+            this.sourceReferences = sourceReferences;
         }
 
         this.sourceFileId = 0;
@@ -502,72 +505,77 @@ export default class COBOLQuickParse {
         /* mark this has been processed (to help copy of self) */
         state.processingMap.set(this.filename, this.filename);
 
-        /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
-        let lineLimit = configHandler.pre_parse_line_limit;
-        let maxLines = sourceHandler.getLineCount();
-        if (maxLines > lineLimit) {
-            maxLines = lineLimit;
-        }
+        if (this.sourceReferences.topLevel) {
+            /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
+            let lineLimit = configHandler.pre_parse_line_limit;
+            let maxLines = sourceHandler.getLineCount();
+            if (maxLines > lineLimit) {
+                maxLines = lineLimit;
+            }
 
-        let line = "";
-        let preParseState: PreParseState = new PreParseState();
-        for (let l = 0; l < maxLines; l++) {
-            try {
-                line = sourceHandler.getLine(l).trimRight();
+            let line = "";
+            let preParseState: PreParseState = new PreParseState();
+            for (let l = 0; l < maxLines; l++) {
+                try {
+                    line = sourceHandler.getLine(l).trimRight();
 
-                // don't parse a empty line
-                if (line.length > 0) {
-                    if (prevToken.endsWithDot === false) {
-                        prevToken = this.relaxedParseLineByLine(sourceHandler, l, prevToken, line, preParseState);
+                    // don't parse a empty line
+                    if (line.length > 0) {
+                        if (prevToken.endsWithDot === false) {
+                            prevToken = this.relaxedParseLineByLine(sourceHandler, l, prevToken, line, preParseState);
+                        }
+                        else {
+                            prevToken = this.relaxedParseLineByLine(sourceHandler, l, Token.Blank, line, preParseState);
+                        }
                     }
-                    else {
-                        prevToken = this.relaxedParseLineByLine(sourceHandler, l, Token.Blank, line, preParseState);
-                    }
+
                 }
-
+                catch (e) {
+                    logException("CobolQuickParse - Parse error : " + e, e);
+                }
             }
-            catch (e) {
-                logException("CobolQuickParse - Parse error : " + e, e);
+
+            // Do we have some sections?
+            if (preParseState.sectionsInToken === 0 && preParseState.divisionsInToken === 0) {
+                /* if we have items that could be in a data division */
+
+                if (preParseState.procedureDivisionRelatedTokens !== 0 && preParseState.procedureDivisionRelatedTokens > preParseState.workingStorageRelatedTokens) {
+                    this.ImplicitProgramId = "";
+
+                    let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", state.currentDivision);
+                    state.currentDivision = fakeDivision;
+                    state.procedureDivision = fakeDivision;
+                    state.pickFields = false;
+                    state.inProcedureDivision = true;
+                    this.sourceLooksLikeCOBOL = true;
+                    fakeDivision.ignoreInOutlineView = true;
+                }
+                else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
+                    let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", state.currentDivision);
+                    state.currentDivision = fakeDivision;
+                    state.pickFields = true;
+                    state.inProcedureDivision = false;
+                    this.sourceLooksLikeCOBOL = true;
+                    this.ImplicitProgramId = "";
+                    fakeDivision.ignoreInOutlineView = true;
+                }
             }
-        }
 
-        // Do we have some sections?
-        if (preParseState.sectionsInToken === 0 && preParseState.divisionsInToken === 0) {
-            /* if we have items that could be in a data division */
-
-            if (preParseState.procedureDivisionRelatedTokens !== 0 && preParseState.procedureDivisionRelatedTokens > preParseState.workingStorageRelatedTokens) {
-                this.ImplicitProgramId = "";
-
-                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", "Procedure", "Procedure Division (CopyBook)", state.currentDivision);
-                state.currentDivision = fakeDivision;
-                state.procedureDivision = fakeDivision;
-                state.pickFields = false;
-                state.inProcedureDivision = true;
+            /* if the source has an extension, then continue on reguardless */
+            if (hasCOBOLExtension) {
                 this.sourceLooksLikeCOBOL = true;
-                fakeDivision.ignoreInOutlineView = true;
-            }
-            else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
-                let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", state.currentDivision);
-                state.currentDivision = fakeDivision;
-                state.pickFields = true;
-                state.inProcedureDivision = false;
+                /* otherwise, does it look like COBOL? */
+            } else if (preParseState.sectionsInToken !== 0 || preParseState.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
                 this.sourceLooksLikeCOBOL = true;
-                this.ImplicitProgramId = "";
-                fakeDivision.ignoreInOutlineView = true;
             }
-        }
 
-        /* if the source has an extension, then continue on reguardless */
-        if (hasCOBOLExtension) {
-            this.sourceLooksLikeCOBOL = true;
-            /* otherwise, does it look like COBOL? */
-        } else if (preParseState.sectionsInToken !== 0 || preParseState.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
-            this.sourceLooksLikeCOBOL = true;
-        }
+            /* leave early */
+            if (this.sourceLooksLikeCOBOL === false) {
+                return;
+            }
 
-        /* leave early */
-        if (this.sourceLooksLikeCOBOL === false) {
-            return;
+        } else {
+            this.sourceLooksLikeCOBOL = true;
         }
 
         this.sourceFormat = getCOBOLSourceFormat(sourceHandler, configHandler);
@@ -581,8 +589,9 @@ export default class COBOLQuickParse {
         }
 
         // prepare parser hint information
-        this.setupParserHint();
+        //this.setupParserHint();
 
+        let line = "";
         prevToken = Token.Blank;
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
@@ -634,33 +643,12 @@ export default class COBOLQuickParse {
             let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
             this.callTargets.set(this.ImplicitProgramId, ctoken);
         }
-    }
 
-    public processExternalCopybook(cacheDirectory: string, showError: boolean, sourceCopybook: string) {
-        try {
-            let copyBookfilename: string = expandLogicalCopyBookToFilenameOrEmpty(sourceCopybook, "");
-            let state: ParseState = this.state;
-
-            if (copyBookfilename.length !== 0) {
-                if (state.processingMap.has(copyBookfilename) === false) {
-                    state.processingMap.set(copyBookfilename, copyBookfilename);
-                    if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, copyBookfilename)) {
-                        //logMessage("   CopyBook: " + key + " => " + copyBookfilename);
-                        let filefs_vb = new FileSourceHandler(copyBookfilename, false, false);
-                        let qcp_vb = new COBOLQuickParse(filefs_vb, copyBookfilename, this.configHandler, cacheDirectory);
-                        let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(qcp_vb);
-
-                        COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-                    }
-                }
-            } else {
-                if (showError) {
-                    logMessage("   CopyBook: " + sourceCopybook + " (not found)");
-                }
+        if (cacheDirectory !== null && cacheDirectory.length > 0) {
+            if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
+                let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
+                COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
             }
-        }
-        catch (ex) {
-            logException("processAllCopyBooksInSourceFile:", ex);
         }
     }
 
@@ -1400,9 +1388,11 @@ export default class COBOLQuickParse {
                         let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
                         if (fileName.length > 0) {
                             let qfile = new FileSourceHandler(fileName, false, false);
-                            let currentIgnoreInOutlineView:boolean = state.ignoreInOutlineView;
+                            let currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                             state.ignoreInOutlineView = true;
+                            this.sourceReferences.topLevel = false;
                             let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                            this.sourceReferences.topLevel = true;
                             state.ignoreInOutlineView = currentIgnoreInOutlineView;
                         }
                     }
@@ -1480,7 +1470,7 @@ export default class COBOLQuickParse {
                                     if (nextTokenLower.length === 0 ||
                                         nextTokenLower === 'redefines' ||
                                         (state.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
-                                            state.current01Group = ctoken;
+                                        state.current01Group = ctoken;
                                     } else {
                                         state.current01Group = COBOLToken.Null;
                                     }

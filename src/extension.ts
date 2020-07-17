@@ -818,11 +818,14 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(resequenceColumnNumbersCommands);
 
-
-    if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
-        let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+    /* load the cache if we can */
+    let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+    if (cacheDirectory !== null && cacheDirectory.length > 0) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
         InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
+    }
+
+    if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         commands.executeCommand("cobolplugin.processAllFilesInWorkspace");
     }
 }

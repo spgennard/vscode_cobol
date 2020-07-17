@@ -7,6 +7,7 @@ import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICommentCallback } from './isourcehandler';
 import { ICOBOLSettings } from './iconfiguration';
+import VSQuickCOBOLParse from './vscobolquickparse';
 
 export class CobolLinterActionFixer implements CodeActionProvider {
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
@@ -161,9 +162,8 @@ export class CobolLinterProvider implements ICommentCallback {
         // cache current document, interatives search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
             this.ignoreUnusedSymbol.clear();
-            let file = new VSCodeSourceHandler(document, false, this);
-            this.sourceRefs = new SharedSourceReferences();
-            this.current = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", this.sourceRefs);
+            this.current = VSQuickCOBOLParse.getCachedObject(document);
+            this.sourceRefs = this.current?.sourceReferences;
             this.currentVersion = document.version;
             return true;
         }

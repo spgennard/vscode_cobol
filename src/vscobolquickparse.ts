@@ -32,23 +32,15 @@ export default class VSQuickCOBOLParse {
         return false;
     }
 
-    public static getCachedObject(document: TextDocument | undefined): COBOLQuickParse | undefined {
-
-        /* we can't do anything */
-        if (document === undefined) {
-            return undefined;
-        }
-
+    public static getCachedObject(document: TextDocument): COBOLQuickParse {
         let fileName: string  = document.fileName;
-        let cachedObject: COBOLQuickParse | undefined = InMemoryCache.get(fileName);
         /* if the document is edited, drop the in cached object */
         if (document.isDirty) {
             InMemoryCache.delete(fileName);
-            cachedObject = undefined;
         }
 
         /* grab, the file parse it can cache it */
-        if (cachedObject === null || cachedObject === undefined) {
+        if (InMemoryCache.has(fileName) === false) {
             try {
                 var startTime = performance_now();
                 let qcpd = new COBOLQuickParse(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
@@ -70,7 +62,7 @@ export default class VSQuickCOBOLParse {
             }
         }
 
-        return cachedObject;
+        return InMemoryCache.get(fileName);
     }
 
 
@@ -137,17 +129,7 @@ export default class VSQuickCOBOLParse {
                         let filefs = new FileSourceHandler(filename, false, false);
                         let qcp = new COBOLQuickParse(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
                         if (qcp.sourceLooksLikeCOBOL) {
-                            logMessage(" - Processing file : " + filename);
-
-                            /* iterater through all the known copybook references */
-                            for (let [key, value] of qcp.copyBooksUsed) {
-                                try {
-                                    qcp.processExternalCopybook(cacheDirectory, false, key);
-                                }
-                                catch (fe) {
-                                    logException("processFileInDirectory/2", fe);
-                                }
-                            }
+                            logMessage(" - Processed file : " + filename);
                         }
                     }
                 }

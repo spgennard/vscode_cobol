@@ -199,7 +199,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         let totalTimeInMS = performance_now() - startTime;
         let timeTaken = totalTimeInMS.toFixed(2);
-        logMessage(" - CobolSourceCompletionItemProvider took "+timeTaken+" ms");
+        if (totalTimeInMS > 500) {
+            logMessage(" - CobolSourceCompletionItemProvider took "+timeTaken+" ms for "+wordToComplete);
+        }
         return items;
     }
 

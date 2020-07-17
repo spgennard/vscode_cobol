@@ -197,12 +197,13 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 
     // just do it quickly
     if (enableUrlOpenBodge === false) {
-        let startPos = new vscode.Position(linnumber, 0);
-        locations.push(new vscode.Location(uri, new vscode.Range(startPos, startPos)));
+        let loc =  new vscode.Location(
+            uri,
+            new vscode.Position(linnumber, 0)
+        );
+        locations.push(loc);
         return false;
-    }
-
-    if (enableUrlOpenBodge && filename.indexOf(".") === -1) {
+    } else {
         let l = linnumber;
         vscode.workspace
             .openTextDocument(uri)
@@ -213,9 +214,8 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
                     a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
                 }
             });
+        return true;
     }
-
-    return true;
 }
 
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
@@ -337,6 +337,10 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             if (word !== "") {
                 let img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
                 let wordLower = word.toLocaleLowerCase();
+                if (img.callableSymbols.has(wordLower) === false) {
+                    InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
+                    InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
+                }
                 if (img.callableSymbols.has(wordLower)) {
                     let symbols = img.callableSymbols.get(wordLower);
                     if (symbols !== undefined) {
@@ -380,7 +384,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             for (let [key, value] of qcp.copyBooksUsed) {
                 try {
 
-                    let fileName = expandLogicalCopyBookToFilenameOrEmpty(key,value.extraInformation);
+                    let fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
                     if (fileName.length > 0) {
                         let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                         if (symboleTable !== undefined) {

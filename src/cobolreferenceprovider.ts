@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import COBOLQuickParse, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
+import VSQuickCOBOLParse from './vscobolquickparse';
 
 const wordRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
 
@@ -23,11 +24,10 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
     private setupCOBOLQuickParse(document: vscode.TextDocument) {
         // cache current document, interatives search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            let file = new VSCodeSourceHandler(document, false);
-            this.sourceRefs = new SharedSourceReferences();
-            this.current = new COBOLQuickParse(file, document.fileName, VSCOBOLConfiguration.get(), "", this.sourceRefs);
+            this.current = VSQuickCOBOLParse.getCachedObject(document);
+            this.sourceRefs = this.current.sourceReferences;
             this.currentVersion = document.version;
-        } 
+        }
     }
 
     private processSearch(
