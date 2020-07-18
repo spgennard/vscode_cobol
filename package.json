@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.5.12",
+    "version": "6.5.13",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -860,11 +860,11 @@
             },
             {
                 "command": "cobolplugin.extractSelectionToParagraph",
-                "title": "COBOL: Extract to paragraph"
+                "title": "Extract selection to paragraph"
             },
             {
                 "command": "cobolplugin.extractSelectionToSection",
-                "title": "COBOL: Extract to section"
+                "title": "Extract selection to section"
             }
         ],
         "menus": {
