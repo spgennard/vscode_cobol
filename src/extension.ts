@@ -788,6 +788,30 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(makePerformTargetsCamelCaseCommand);
 
+    let extractSelectionToParagraphCommand = vscode.commands.registerCommand('cobolplugin.extractSelectionToParagraph', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.extractSelectionTo(vscode.window.activeTextEditor, true);
+            }
+        }
+    });
+    context.subscriptions.push(extractSelectionToParagraphCommand);
+
+    let extractSelectionToSectionCommand = vscode.commands.registerCommand('cobolplugin.extractSelectionToSection', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.extractSelectionTo(vscode.window.activeTextEditor, false);
+            }
+        }
+    });
+    context.subscriptions.push(extractSelectionToSectionCommand);
+    
     let resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;

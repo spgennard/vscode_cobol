@@ -21,6 +21,35 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+    public extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean) {
+        let sel = activeTextEditor.selection;
+
+        let ran = new vscode.Range(sel.start, sel.end);
+        let text = activeTextEditor.document.getText(ran);
+        logMessage("CopyPara: [" + text + "]");
+
+        let value = vscode.window.showInputBox({
+            prompt: para ? 'New paragrah name?' : 'New section name?',
+            validateInput: (text: string): string | undefined => {
+                if (!text || text.indexOf(' ') !== -1) {
+                    return 'Invalid paragraph or section';
+                } else {
+                    return undefined;
+                }
+            }
+        }).then(value => {
+            activeTextEditor.edit(edit => {
+                edit.replace(ran, "           perform "
+                    + value + "\n\n       "
+                    + value
+                    + (para ? ".\n" : " section.\n")
+                    + text
+                    + "\n           .\n");
+            });
+        });
+
+    }
+
     private pad(num: number, size: number): string {
         let s = num + "";
         while (s.length < size) {
@@ -177,7 +206,7 @@ export class COBOLUtils {
 
                 switch (action) {
                     case FoldAction.PerformTargets:
-                        actionIt =current.sections.has(argLower);
+                        actionIt = current.sections.has(argLower);
                         if (actionIt === false) {
                             actionIt = current.paragraphs.has(argLower);
                         }
