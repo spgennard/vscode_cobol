@@ -811,7 +811,20 @@ export function activate(context: ExtensionContext) {
         }
     });
     context.subscriptions.push(extractSelectionToSectionCommand);
-    
+
+
+    let extractSelectionToCopybookCommand = vscode.commands.registerCommand('cobolplugin.extractSelectionToCopybook', () => {
+        if (vscode.window.activeTextEditor) {
+            let langid = vscode.window.activeTextEditor.document.languageId;
+
+            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+                let utils: COBOLUtils = new COBOLUtils();
+                utils.extractSelectionToCopybook(vscode.window.activeTextEditor);
+            }
+        }
+    });
+    context.subscriptions.push(extractSelectionToCopybookCommand);
+
     let resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             let langid = vscode.window.activeTextEditor.document.languageId;

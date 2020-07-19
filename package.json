@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.5.14",
+    "version": "6.5.15",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -865,6 +865,10 @@
             {
                 "command": "cobolplugin.extractSelectionToSection",
                 "title": "Extract selection to section"
+            },
+            {
+                "command": "cobolplugin.extractSelectionToCopybook",
+                "title" : "Extract selection to copybook"
             }
         ],
         "menus": {
@@ -901,6 +905,11 @@
                 },
                 {
                     "command": "cobolplugin.extractSelectionToSection",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+                },
+                {
+                    "command": "cobolplugin.extractSelectionToCopybook",
                     "group": "cobolplugin",
                     "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
                 }

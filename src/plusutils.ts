@@ -2,11 +2,13 @@ import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLQuickParse, { splitArgument, SharedSourceReferences, COBOLToken, camelize } from './cobolquickparse';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logException, logMessage } from './extension';
+import { logException, logMessage, isFile } from './extension';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import { VSCOBOLConfiguration } from './configuration';
 import { FileSourceHandler } from './FileSourceHandler';
 import VSQuickCOBOLParse from './vscobolquickparse';
+import { writeFileSync, fstat } from 'fs';
+import path from 'path';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -21,12 +23,41 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+
+    extractSelectionToCopybook(activeTextEditor: vscode.TextEditor) {
+        let sel = activeTextEditor.selection;
+
+        let ran = new vscode.Range(sel.start, sel.end);
+        let text = activeTextEditor.document.getText(ran);
+        let dir = path.dirname(activeTextEditor.document.fileName);
+
+        let value = vscode.window.showInputBox({
+            prompt:'Copybook name?',
+            validateInput: (copybook_filename: string): string | undefined => {
+                if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
+                     copybook_filename.indexOf(".") !== -1 ||
+                     isFile(path.join(dir,copybook_filename+".cpy"))) {
+                    return 'Invalid copybook';
+                } else {
+                    return undefined;
+                }
+            }
+        }).then(copybook_filename => {
+            let filename = path.join(dir, copybook_filename+".cpy" );
+            writeFileSync(filename, text);
+
+            activeTextEditor.edit(edit => {
+                edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
+            });
+        });
+
+    }
+
     public extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean) {
         let sel = activeTextEditor.selection;
 
         let ran = new vscode.Range(sel.start, sel.end);
         let text = activeTextEditor.document.getText(ran);
-        logMessage("CopyPara: [" + text + "]");
 
         let value = vscode.window.showInputBox({
             prompt: para ? 'New paragrah name?' : 'New section name?',
