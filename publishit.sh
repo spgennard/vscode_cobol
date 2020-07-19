@@ -36,8 +36,8 @@ Changelog for {{ownerName}} {{repoName}}.
  {{/issues}}
 {{/tags}}
 " >CHANGELOG.md
-git commit CHANGELOG.md "Update CHANGELOG.md"
-giut push CHNAGELOG.md
+git commit -m "Update CHANGELOG.md" CHANGELOG.md
+git push
 git tag $PACKAGE_VERSION
 git push --tags
 git clean -fdx
