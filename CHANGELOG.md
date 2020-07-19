@@ -6,6 +6,16 @@ Changelog for spgennard vscode_cobol.
 ## Unreleased
 ### No issue
 
+**bump**
+
+
+[c9bfa1a0a6cd496](https://github.com/spgennard/vscode_cobol/commit/c9bfa1a0a6cd496) Stephgen Gennard *2020-07-19 23:54:01*
+
+**Update CHANGELOG.md**
+
+
+[7dd3f90d3e2e4dc](https://github.com/spgennard/vscode_cobol/commit/7dd3f90d3e2e4dc) Stephgen Gennard *2020-07-19 23:53:12*
+
 **continue auto changelog changes**
 
 
