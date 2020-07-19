@@ -2,12 +2,10 @@ import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLQuickParse, { splitArgument, SharedSourceReferences, COBOLToken, camelize } from './cobolquickparse';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logException, logMessage, isFile } from './extension';
+import { isFile } from './extension';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
-import { VSCOBOLConfiguration } from './configuration';
-import { FileSourceHandler } from './FileSourceHandler';
 import VSQuickCOBOLParse from './vscobolquickparse';
-import { writeFileSync, fstat } from 'fs';
+import { writeFileSync } from 'fs';
 import path from 'path';
 
 export enum FoldStyle {

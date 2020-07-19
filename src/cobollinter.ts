@@ -1,8 +1,6 @@
 
 import * as vscode from 'vscode';
-import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import COBOLQuickParse, { SharedSourceReferences } from './cobolquickparse';
-import { VSCOBOLConfiguration } from './configuration';
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICommentCallback } from './isourcehandler';

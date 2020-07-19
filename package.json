@@ -868,7 +868,7 @@
             },
             {
                 "command": "cobolplugin.extractSelectionToCopybook",
-                "title" : "Extract selection to copybook"
+                "title": "Extract selection to copybook"
             }
         ],
         "menus": {

@@ -1,11 +1,8 @@
 'use strict';
 
 import { workspace } from 'vscode';
-
 import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
-
 import * as path from 'path';
-import * as fs from 'fs';
 import { isDirectory } from './extension';
 
 

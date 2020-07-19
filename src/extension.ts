@@ -36,7 +36,7 @@ import { ICOBOLSettings } from './iconfiguration';
 
 const propertiesReader = require('properties-reader');
 
-const util = require('util');
+import util from 'util';
 var which = require('which');
 
 let formatStatusBarItem: StatusBarItem;

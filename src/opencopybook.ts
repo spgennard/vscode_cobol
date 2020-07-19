@@ -2,10 +2,9 @@
 
 import { Range, TextDocument, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
-import { getcopybookdirs, logMessage, logException, isFile } from './extension';
+import { getcopybookdirs, logException, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 export function isValidExtension(filename: string): boolean {
