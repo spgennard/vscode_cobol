@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.5.13",
+    "version": "6.5.14",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -872,27 +872,27 @@
                 {
                     "command": "cobolplugin.move2dd",
                     "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
+                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 },
                 {
                     "command": "cobolplugin.move2ws",
                     "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
+                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 },
                 {
                     "command": "cobolplugin.move2pd",
                     "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
+                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 },
                 {
                     "command": "cobolplugin.move2anyforward",
                     "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
+                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 },
                 {
                     "command": "cobolplugin.move2anybackwards",
                     "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL"
+                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 },
                 {
                     "command": "cobolplugin.extractSelectionToParagraph",
