@@ -2,7 +2,7 @@
 set -e
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
-npx git-changelog-command-line -std -tec "
+npx git-changelog-command-line --ignore-commits-without-issue -std -tec "
 # Changelog
 
 Changelog for {{ownerName}} {{repoName}}.
