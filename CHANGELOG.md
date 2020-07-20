@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.5.17
 ### GitHub [#153](https://github.com/spgennard/vscode_cobol/issues/153) Performance issues with metadata cache and go to definition for copybook using network drives  
 
 **Performance issues with metadata cache and go to definition for copybook using network drives Fix #153**
