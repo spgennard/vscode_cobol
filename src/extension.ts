@@ -37,6 +37,7 @@ import { ICOBOLSettings } from './iconfiguration';
 const propertiesReader = require('properties-reader');
 
 import util from 'util';
+import { dir } from 'console';
 var which = require('which');
 
 let formatStatusBarItem: StatusBarItem;
@@ -62,7 +63,7 @@ export function isDirectory(sdir: string): boolean {
     return false;
 }
 
-export function isFile(sdir: string ): boolean {
+export function isFile(sdir: string): boolean {
     try {
         let f = fs.statSync(sdir);
         if (f.isFile()) {
@@ -120,20 +121,53 @@ let unitTestTerminal: vscode.Terminal | undefined = undefined;
 let terminalName = "UnitTest";
 
 
+function isPathInWorkspace(ddir: string): boolean {
+    if (workspace === undefined || workspace.workspaceFolders === undefined) {
+        return false;
+    }
+
+    let fullPath = path.normalize(ddir);
+    for (var folder of workspace.workspaceFolders) {
+        if (folder.uri.fsPath === fullPath) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function initExtensions(config: ICOBOLSettings) {
     fileSearchDirectory = [];
 
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
     invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
     invalidSearchDirectory.length = 0;
-
+    let updateCopybookdirs: boolean = false;
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var ddir = extsdir[extsdirpos];
         if (config.disable_unc_copybooks_directories && isNetworkPath(ddir)) {
-            logMessage(" Copybook directory "+ddir+" has been marked as invalid, as it is a unc filename");
+            logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
             invalidSearchDirectory.push(ddir);
         }
         else if (isDirectPath(ddir)) {
+            if (workspace !== undefined && workspace.workspaceFolders !== undefined) {
+                if (isPathInWorkspace(ddir) === false) {
+                    if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
+                        logMessage(" Adding " + ddir + " to workspace");
+                        let uriToFolder = vscode.Uri.file(path.normalize(ddir));
+                        vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                        updateCopybookdirs=true;
+                        continue;
+                    }
+
+                    if (isNetworkPath(ddir)) {
+                        logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                    }
+
+                    continue;
+                }
+            }
+
             let startTime = performance_now();
             if (isDirectory(ddir)) {
                 let totalTimeInMS = performance_now() - startTime;
@@ -141,7 +175,7 @@ function initExtensions(config: ICOBOLSettings) {
                 if (totalTimeInMS <= 2000) {
                     fileSearchDirectory.push(ddir);
                 } else {
-                    logMessage(" Slow copybook directory dropped "+ddir+" as it took "+timeTaken+"ms");
+                    logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
                 }
             } else {
                 invalidSearchDirectory.push(ddir);
@@ -161,6 +195,22 @@ function initExtensions(config: ICOBOLSettings) {
                         sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
+                            if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
+                                if (isPathInWorkspace(sdir) === false) {
+                                    logMessage(" Adding " + sdir + " to workspace");
+                                    let uriToFolder = vscode.Uri.file(path.normalize(sdir));
+                                    vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                                    updateCopybookdirs = true;
+                                    continue;
+                                }
+
+                                if (isNetworkPath(sdir)) {
+                                    logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                                }
+
+                                continue;
+                            }
+
                             fileSearchDirectory.push(sdir);
                         } else {
                             invalidSearchDirectory.push(sdir);
@@ -172,6 +222,12 @@ function initExtensions(config: ICOBOLSettings) {
                 }
             }
         }
+    }
+
+    // update copybookdirs with optiomized version
+    if (updateCopybookdirs) {
+        var editorConfig = workspace.getConfiguration('coboleditor');
+        editorConfig.update('copybookdirs',fileSearchDirectory);
     }
 
     fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
@@ -196,7 +252,7 @@ function activateLogChannel() {
             logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
             logMessage("  UNC paths disabled           : " + VSCOBOLConfiguration.getDisable_unc_copybooks());
         }
-        logMessage(" Parse copybook for references : "+VSCOBOLConfiguration.getParse_copybooks_for_references());
+        logMessage(" Parse copybook for references : " + VSCOBOLConfiguration.getParse_copybooks_for_references());
     }
 
     initExtensions(VSCOBOLConfiguration.get());
@@ -246,7 +302,7 @@ function flip_plaintext(doc: TextDocument) {
             let firstLine = doc.lineAt((0)).text;
             let secondLine = doc.lineAt(1).text;
 
-            if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ") ) {
+            if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ")) {
                 vscode.languages.setTextDocumentLanguage(doc, "COBOL_LISTFILE");
                 return;
             }
@@ -382,7 +438,7 @@ export function activate(context: ExtensionContext) {
         updateDecorations(act);
     });
 
-    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', (editor)  => {
+    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', (editor) => {
         return new Promise(resolve => {
             VSQuickCOBOLParse.processAllFilesInWorkspaces();
             resolve("Complete");
@@ -425,7 +481,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(onDidOpenTextDocumentHandler);
 
     /* flip any already opened docs */
-    for(let docid=0; docid < workspace.textDocuments.length; docid++) {
+    for (let docid = 0; docid < workspace.textDocuments.length; docid++) {
         flip_plaintext(workspace.textDocuments[docid]);
     }
 
@@ -698,7 +754,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.Keywords,FoldStyle.UpperCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.UpperCase);
             }
         }
     });
@@ -710,7 +766,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.Keywords,FoldStyle.CamelCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase);
             }
         }
     });
@@ -734,7 +790,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.ConstantsOrVariables,FoldStyle.UpperCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase);
             }
         }
     });
@@ -746,7 +802,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.ConstantsOrVariables,FoldStyle.CamelCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.CamelCase);
             }
         }
     });
@@ -758,7 +814,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.PerformTargets, FoldStyle.LowerCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.LowerCase);
             }
         }
     });
@@ -770,7 +826,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.PerformTargets, FoldStyle.UpperCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.UpperCase);
             }
         }
     });
@@ -782,7 +838,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
                 let utils: COBOLUtils = new COBOLUtils();
-                utils.foldToken(vscode.window.activeTextEditor,FoldAction.PerformTargets, FoldStyle.CamelCase);
+                utils.foldToken(vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.CamelCase);
             }
         }
     });
@@ -934,12 +990,12 @@ export function logMessage(message: string, ...parameters: any[]) {
 }
 
 
-export function performance_now():number {
-    if(!process.env.BROWSER) {
+export function performance_now(): number {
+    if (!process.env.BROWSER) {
         try {
             return require('performance-now').performance.now;
         }
-        catch {}
+        catch { }
     }
 
     return Date.now();
