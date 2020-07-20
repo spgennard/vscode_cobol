@@ -36,7 +36,7 @@ Changelog for {{ownerName}} {{repoName}}.
  {{/issues}}
 {{/tags}}
 " >CHANGELOG.md
-git commit -m "Update CHANGELOG.md" CHANGELOG.md
+git commit -m "Update CHANGELOG.md" CHANGELOG.md && true
 git push
 git tag $PACKAGE_VERSION
 git push --tags
