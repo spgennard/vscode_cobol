@@ -1,6 +1,7 @@
 out
 node_modules
 dist/
+.okhttpcache/
 .vscode_cobol/
 .vscode-test/
 *.vsix
