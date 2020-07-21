@@ -163,8 +163,6 @@ function initExtensions(config: ICOBOLSettings) {
 
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
-
-                    continue;
                 }
             }
 
@@ -207,8 +205,6 @@ function initExtensions(config: ICOBOLSettings) {
 
                                     logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                                 }
-
-                                continue;
                             }
 
                             fileSearchDirectory.push(sdir);
