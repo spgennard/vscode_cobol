@@ -38,7 +38,7 @@ export class COBOLUtils {
                         if (isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
                             let uriToFolder = vscode.Uri.file(path.normalize(ddir));
-                            vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                            vscode.workspace.updateWorkspaceFolders(workspace.workspaceFolders.length, 0, { uri: uriToFolder });
                             updateCopybookdirs = true;
                         }
                     }
@@ -62,7 +62,7 @@ export class COBOLUtils {
                                     if (isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
                                         let uriToFolder = vscode.Uri.file(path.normalize(sdir));
-                                        vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                                        vscode.workspace.updateWorkspaceFolders(workspace.workspaceFolders.length, 0, { uri: uriToFolder });
                                         updateCopybookdirs = true;
                                     } else {
                                         fileSearchDirectory.push(sdir);

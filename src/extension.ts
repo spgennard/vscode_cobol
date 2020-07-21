@@ -854,14 +854,8 @@ export function activate(context: ExtensionContext) {
 
 
     let migrateCopybooksToWorkspaceCommand = vscode.commands.registerCommand('cobolplugin.migrateCopybooksToWorkspace', () => {
-        if (vscode.window.activeTextEditor) {
-            let langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
-                let utils: COBOLUtils = new COBOLUtils();
-                utils.migrateCopybooksToWorkspace();
-            }
-        }
+        let utils: COBOLUtils = new COBOLUtils();
+        utils.migrateCopybooksToWorkspace();
     });
     context.subscriptions.push(migrateCopybooksToWorkspaceCommand);
 
