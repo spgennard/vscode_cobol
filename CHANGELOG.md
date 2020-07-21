@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#168](https://github.com/spgennard/vscode_cobol/issues/168) coboleditor.copybookdirs is auto-unset  
+
+**coboleditor.copybookdirs is auto-unset Fix #168**
+
+
+[5566fa2f5bb4ded](https://github.com/spgennard/vscode_cobol/commit/5566fa2f5bb4ded) Stephen Gennard *2020-07-21 07:43:05*
+
+
 ## 6.5.17
 ### GitHub [#153](https://github.com/spgennard/vscode_cobol/issues/153) Performance issues with metadata cache and go to definition for copybook using network drives  
 
