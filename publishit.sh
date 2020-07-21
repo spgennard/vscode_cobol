@@ -29,7 +29,7 @@ Changelog for {{ownerName}} {{repoName}}.
  * {{.}} 
 {{/messageBodyItems}}
 
-[{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}) {{authorName}} *{{commitTime}}*
+[{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}) *{{commitTime}}*
 
   {{/commits}}
 
