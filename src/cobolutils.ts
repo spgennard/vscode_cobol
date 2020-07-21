@@ -23,6 +23,7 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+
     public migrateCopybooksToWorkspace() {
         let fileSearchDirectory = [];
 
@@ -39,10 +40,6 @@ export class COBOLUtils {
                             let uriToFolder = vscode.Uri.file(path.normalize(ddir));
                             vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
                             updateCopybookdirs = true;
-                            continue;
-
-
-                            logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                         }
                     }
                 }
@@ -67,13 +64,14 @@ export class COBOLUtils {
                                         let uriToFolder = vscode.Uri.file(path.normalize(sdir));
                                         vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
                                         updateCopybookdirs = true;
+                                    } else {
+                                        fileSearchDirectory.push(sdir);
                                     }
 
                                     logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                                } else {
+                                    fileSearchDirectory.push(sdir);
                                 }
-
-
-                                fileSearchDirectory.push(sdir);
                             }
                         }
                     }
@@ -88,6 +86,9 @@ export class COBOLUtils {
         if (updateCopybookdirs) {
             var editorConfig = workspace.getConfiguration('coboleditor');
             editorConfig.update('copybookdirs', fileSearchDirectory);
+            logMessage("Copybook settings and workspace has been updated.");
+        } else {
+            logMessage("No copybook directories have been migrated");
         }
 
     }

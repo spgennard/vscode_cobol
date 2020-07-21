@@ -869,6 +869,10 @@
             {
                 "command": "cobolplugin.extractSelectionToCopybook",
                 "title": "Extract selection to copybook"
+            },
+            {
+                "command": "cobolplugin.migrateCopybooksToWorkspace",
+                "title": "COBOL: Migrate copybook settings to workspace (for performance)"
             }
         ],
         "menus": {
