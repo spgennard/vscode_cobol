@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.5.19
 ### GitHub [#168](https://github.com/spgennard/vscode_cobol/issues/168) coboleditor.copybookdirs is auto-unset  
 
 **coboleditor.copybookdirs is auto-unset Fix #168**
