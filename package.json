@@ -416,6 +416,20 @@
                     "title": "Parse copybook for reference",
                     "description": "Parse copybook for reference [WARNING: use with care] (default false)",
                     "default": false
+                },
+                "coboleditor.copybookdirs_order": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "copybooks",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "copybook"
+                            }
+                        }
+                    },
+                    "default": []
                 }
             }
         },

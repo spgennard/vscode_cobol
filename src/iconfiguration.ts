@@ -37,6 +37,7 @@ export interface ICOBOLSettings {
     process_metadata_cache_on_start:boolean;
     cache_directory_strategy: string;
     parse_copybooks_for_references: boolean;
+    copybookdirs_order: string[];
 }
 
 
@@ -68,6 +69,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public process_metadata_cache_on_start:boolean;
     public cache_directory_strategy:string;
     public parse_copybooks_for_references: boolean;
+    public copybookdirs_order: string[];
 
     constructor() {
         this.experimential_features = false;
@@ -97,6 +99,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.process_metadata_cache_on_start = false;
         this.cache_directory_strategy = "workspace";
         this.parse_copybooks_for_references = false;
+        this.copybookdirs_order = [];
     }
 }
 

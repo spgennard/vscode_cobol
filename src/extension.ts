@@ -237,7 +237,7 @@ function activateLogChannel() {
         if (ws !== undefined) {
             logMessage("  Workspace Folders");
             for (var folder of ws) {
-                logMessage("   => " + folder.uri.fsPath);
+                logMessage("   => " + folder.name+" @ "+folder.uri.fsPath);
             }
         }
 

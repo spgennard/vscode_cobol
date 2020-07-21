@@ -37,6 +37,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
         VSCOBOLConfiguration.config.cache_directory_strategy = getCache_directory_strategy();
         VSCOBOLConfiguration.config.parse_copybooks_for_references = getParse_copybooks_for_references();
+        VSCOBOLConfiguration.config.copybookdirs_order = getCopybookdirs_order();
     }
 
     public static get(): ICOBOLSettings {
@@ -392,4 +393,13 @@ function getTabStops(): number[] {
         tabStops = DEFAULT_RULER;
     }
     return tabStops;
+}
+
+function getCopybookdirs_order():string[] {
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let dirs = editorConfig.get<string[]>('copybookdirs_order');
+    if (!dirs || (dirs !== null && dirs.length === 0)) {
+        dirs = [];
+    }
+    return dirs;
 }
