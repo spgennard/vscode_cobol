@@ -152,15 +152,15 @@ function initExtensions(config: ICOBOLSettings) {
         else if (isDirectPath(ddir)) {
             if (workspace !== undefined && workspace.workspaceFolders !== undefined) {
                 if (isPathInWorkspace(ddir) === false) {
-                    if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
-                        logMessage(" Adding " + ddir + " to workspace");
-                        let uriToFolder = vscode.Uri.file(path.normalize(ddir));
-                        vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
-                        updateCopybookdirs=true;
-                        continue;
-                    }
-
                     if (isNetworkPath(ddir)) {
+                        if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
+                            logMessage(" Adding " + ddir + " to workspace");
+                            let uriToFolder = vscode.Uri.file(path.normalize(ddir));
+                            vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                            updateCopybookdirs = true;
+                            continue;
+                        }
+
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
 
@@ -196,15 +196,15 @@ function initExtensions(config: ICOBOLSettings) {
 
                         if (isDirectory(sdir)) {
                             if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
-                                if (isPathInWorkspace(sdir) === false) {
-                                    logMessage(" Adding " + sdir + " to workspace");
-                                    let uriToFolder = vscode.Uri.file(path.normalize(sdir));
-                                    vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
-                                    updateCopybookdirs = true;
-                                    continue;
-                                }
-
                                 if (isNetworkPath(sdir)) {
+                                    if (isPathInWorkspace(sdir) === false) {
+                                        logMessage(" Adding " + sdir + " to workspace");
+                                        let uriToFolder = vscode.Uri.file(path.normalize(sdir));
+                                        vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                                        updateCopybookdirs = true;
+                                        continue;
+                                    }
+
                                     logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                                 }
 
@@ -227,7 +227,7 @@ function initExtensions(config: ICOBOLSettings) {
     // update copybookdirs with optiomized version
     if (updateCopybookdirs) {
         var editorConfig = workspace.getConfiguration('coboleditor');
-        editorConfig.update('copybookdirs',fileSearchDirectory);
+        editorConfig.update('copybookdirs', fileSearchDirectory);
     }
 
     fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);

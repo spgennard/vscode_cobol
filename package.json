@@ -417,10 +417,10 @@
                     "description": "Parse copybook for reference [WARNING: use with care] (default false)",
                     "default": false
                 },
-                "coboleditor.migrate_copybooks_directories_to_workspace": {
+                "coboleditor.migrate_network_copybooks_directories_to_workspace": {
                     "type": "boolean",
-                    "title": "Include all copybooks directories in workspace",
-                    "description": "Include all copybooks directories in workspace",
+                    "title": "Migrate network copybooks directories in workspace",
+                    "description": "Migrate network copybooks directories in workspac",
                     "default": true
                 }
             }
