@@ -20,7 +20,7 @@ import * as vscode from "vscode";
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
-import COBOLQuickParse, { COBOLSymbolTableHelper } from './cobolquickparse';
+import COBOLQuickParse from './cobolquickparse';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
@@ -37,6 +37,7 @@ import { ICOBOLSettings } from './iconfiguration';
 const propertiesReader = require('properties-reader');
 
 import util from 'util';
+import { getWorkspaceFolders } from './cobolfolders';
 var which = require('which');
 
 let formatStatusBarItem: StatusBarItem;
@@ -90,8 +91,9 @@ export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
         }
     }
 
-    if (workspace.workspaceFolders) {
-        for (var folder of workspace.workspaceFolders) {
+    let ws = getWorkspaceFolders();
+    if (ws !== undefined) {
+        for (var folder of ws) {
             for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
                 try {
                     var extdir = extsdir[extsdirpos];
@@ -121,12 +123,13 @@ let terminalName = "UnitTest";
 
 
 export function isPathInWorkspace(ddir: string): boolean {
-    if (workspace === undefined || workspace.workspaceFolders === undefined) {
+    let ws = getWorkspaceFolders();
+    if (workspace === undefined || ws === undefined) {
         return false;
     }
 
     let fullPath = path.normalize(ddir);
-    for (var folder of workspace.workspaceFolders) {
+    for (var folder of ws) {
         if (folder.uri.fsPath === fullPath) {
             return true;
         }
@@ -149,7 +152,7 @@ function initExtensions(config: ICOBOLSettings) {
             invalidSearchDirectory.push(ddir);
         }
         else if (isDirectPath(ddir)) {
-            if (workspace !== undefined && workspace.workspaceFolders !== undefined) {
+            if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
                 if (isPathInWorkspace(ddir) === false) {
                     if (isNetworkPath(ddir)) {
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
@@ -172,8 +175,9 @@ function initExtensions(config: ICOBOLSettings) {
         }
     }
 
-    if (workspace.workspaceFolders) {
-        for (var folder of workspace.workspaceFolders) {
+    let ws = getWorkspaceFolders();
+    if (ws !== undefined) {
+        for (var folder of ws) {
             for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
                 try {
                     var extdir = extsdir[extsdirpos];
@@ -229,9 +233,10 @@ function activateLogChannel() {
     initExtensions(VSCOBOLConfiguration.get());
 
     if (thisExtension !== undefined) {
-        if (workspace.workspaceFolders) {
+        let ws = getWorkspaceFolders();
+        if (ws !== undefined) {
             logMessage("  Workspace Folders");
-            for (var folder of workspace.workspaceFolders) {
+            for (var folder of ws) {
                 logMessage("   => " + folder.uri.fsPath);
             }
         }

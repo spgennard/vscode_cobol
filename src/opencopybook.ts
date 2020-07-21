@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as process from 'process';
 import { getcopybookdirs, logException, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
+import { getWorkspaceFolders } from './cobolfolders';
 
 export function isValidExtension(filename: string): boolean {
     switch (filename) {
@@ -190,8 +191,9 @@ function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): 
         }
     }
 
-    if (workspace.workspaceFolders) {
-        for (var folder of workspace.workspaceFolders) {
+    let ws = getWorkspaceFolders();
+    if (ws !== undefined) {
+        for (var folder of ws) {
             let foundFile = findFileInDirectory(filename, folder.uri.fsPath);
             if (foundFile.length !== 0) {
                 return foundFile;

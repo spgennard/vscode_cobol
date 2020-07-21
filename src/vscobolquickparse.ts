@@ -13,6 +13,7 @@ import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
 import { resolve } from "path";
 import { findSourceMap } from "module";
+import { getWorkspaceFolders } from "./cobolfolders";
 
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 
@@ -33,7 +34,7 @@ export default class VSQuickCOBOLParse {
     }
 
     public static getCachedObject(document: TextDocument): COBOLQuickParse {
-        let fileName: string  = document.fileName;
+        let fileName: string = document.fileName;
         /* if the document is edited, drop the in cached object */
         if (document.isDirty) {
             InMemoryCache.delete(fileName);
@@ -74,12 +75,13 @@ export default class VSQuickCOBOLParse {
             return;
         }
 
-        if (workspace.workspaceFolders) {
+        if (getWorkspaceFolders()) {
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             var start = performance_now();
 
-            if (workspace.workspaceFolders) {
-                for (var folder of workspace.workspaceFolders) {
+            let ws = getWorkspaceFolders();
+            if (ws !== undefined) {
+                for (var folder of ws) {
                     try {
                         VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                     }
@@ -139,13 +141,13 @@ export default class VSQuickCOBOLParse {
 
     public static getCacheDirectory(): string {
 
-        if (workspace.workspaceFolders && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
+        if (getWorkspaceFolders() && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
 
             if (VSCOBOLConfiguration.getCache_directory_strategy() === "storagepath") {
-                let storageDirectory:string|undefined = getCurrentContext().storagePath;
+                let storageDirectory: string | undefined = getCurrentContext().storagePath;
                 if (storageDirectory !== undefined && !isDirectory(storageDirectory)) {
                     try {
-                    fs.mkdirSync(storageDirectory);
+                        fs.mkdirSync(storageDirectory);
                     }
                     catch {
                         // swallow
@@ -167,13 +169,16 @@ export default class VSQuickCOBOLParse {
 
             let firstCacheDir = "";
 
-            for (var folder of workspace.workspaceFolders) {
-                let cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
-                if (isDirectory(cacheDir2)) {
-                    return cacheDir2;
-                }
-                if (firstCacheDir === "") {
-                    firstCacheDir = cacheDir2;
+            let ws = getWorkspaceFolders();
+            if (ws !== undefined) {
+                for (var folder of ws) {
+                    let cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
+                    if (isDirectory(cacheDir2)) {
+                        return cacheDir2;
+                    }
+                    if (firstCacheDir === "") {
+                        firstCacheDir = cacheDir2;
+                    }
                 }
             }
 

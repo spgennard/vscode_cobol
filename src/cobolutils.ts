@@ -1,14 +1,15 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import COBOLQuickParse, { splitArgument, SharedSourceReferences, COBOLToken, camelize } from './cobolquickparse';
+import COBOLQuickParse, { splitArgument, camelize } from './cobolquickparse';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { isFile, logMessage, isDirectory, performance_now, logException, isPathInWorkspace } from './extension';
+import { isFile, logMessage, isDirectory,  logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { isNetworkPath, isDirectPath } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
+import { getWorkspaceFolders } from './cobolfolders';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -33,12 +34,13 @@ export class COBOLUtils {
             var ddir = extsdir[extsdirpos];
 
             if (isDirectPath(ddir)) {
-                if (workspace !== undefined && workspace.workspaceFolders !== undefined) {
+                let ws = getWorkspaceFolders();
+                if (workspace !== undefined && ws !== undefined) {
                     if (isPathInWorkspace(ddir) === false) {
                         if (isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
                             let uriToFolder = vscode.Uri.file(path.normalize(ddir));
-                            vscode.workspace.updateWorkspaceFolders(workspace.workspaceFolders.length, 0, { uri: uriToFolder });
+                            vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
                             updateCopybookdirs = true;
                         }
                     }
@@ -46,8 +48,9 @@ export class COBOLUtils {
             }
         }
 
-        if (workspace.workspaceFolders) {
-            for (var folder of workspace.workspaceFolders) {
+        let ws = getWorkspaceFolders();
+        if (ws !== undefined) {
+            for (var folder of ws) {
                 for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
                     try {
                         var extdir = extsdir[extsdirpos];
@@ -62,7 +65,7 @@ export class COBOLUtils {
                                     if (isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
                                         let uriToFolder = vscode.Uri.file(path.normalize(sdir));
-                                        vscode.workspace.updateWorkspaceFolders(workspace.workspaceFolders.length, 0, { uri: uriToFolder });
+                                        vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
                                         updateCopybookdirs = true;
                                     } else {
                                         fileSearchDirectory.push(sdir);

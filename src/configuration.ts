@@ -4,6 +4,7 @@ import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
 import * as path from 'path';
 import { isDirectory } from './extension';
+import { getWorkspaceFolders } from './cobolfolders';
 
 
 export class VSCOBOLConfiguration {
@@ -80,14 +81,14 @@ export class VSCOBOLConfiguration {
     }
 
     public static getCachingSetting(): string {
-        if (workspace.workspaceFolders) {
+        if (getWorkspaceFolders()) {
             return VSCOBOLConfiguration.config.cache_metadata;
         }
         return "off";
     }
 
     public static isCachingEnabled(): boolean {
-        if (workspace.workspaceFolders) {
+        if (getWorkspaceFolders()) {
             var cacheEnum = getCachingSetting();
 
             switch (cacheEnum) {

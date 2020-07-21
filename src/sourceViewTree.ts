@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import { logMessage } from './extension';
 import { InMemoryGlobalFileCache } from './cobolquickparse';
 import { isValidExtension } from './opencopybook';
+import { getWorkspaceFolders } from './cobolfolders';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;
@@ -38,7 +39,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
         this.config = config;
 
-        if (workspace.workspaceFolders) {
+        if (getWorkspaceFolders()) {
             workspace.findFiles("*")
                 .then((allFiles) => {
                     allFiles.forEach((file) => {
