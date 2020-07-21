@@ -94,7 +94,7 @@
         "workspaceContains:**/.md",
         "workspaceContains:**/.jcl"
     ],
-    "main": "./out/extension",
+    "main": "./dist/extension",
     "license": "MIT",
     "homepage": "https://github.com/spgennard/vscode_cobol",
     "author": {
@@ -1516,8 +1516,8 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "cd src && npm run compile && cd .. && webpack --mode production",
-        "webpack": "cd src && npm run compile && cd .. && webpack --mode development",
+        "vscode:prepublish": "npm run compile && webpack --mode production",
+        "webpack": "npm run compile && webpack --mode development",
         "webpack-dev-not-used": "webpack --mode development --watch",
         "compile": "tsc -b",
         "test-compile": "tsc -p ./",
