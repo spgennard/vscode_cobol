@@ -92,13 +92,11 @@ function extractCopyBoolFilename(str: string) {
 
 // only handle unc filenames
 export function isNetworkPath(dir: string) {
-    var isWin = process.platform === "win32";
-
     if (dir === undefined && dir === null) {
         return false;
     }
 
-    if (isWin) {
+    if (process.platform === "win32") {
         if (dir.length > 1 && dir[0] === '\\') {
             return true;
         }
@@ -109,13 +107,11 @@ export function isNetworkPath(dir: string) {
 }
 
 export function isDirectPath(dir: string) {
-    var isWin = process.platform === "win32";
-
     if (dir === undefined && dir === null) {
         return false;
     }
 
-    if (isWin) {
+    if (process.platform === "win32") {
         if (dir.length > 2 && dir[1] === ':') {
             return true;
         }
@@ -138,15 +134,6 @@ function findFileInDirectory(filename: string, filenameDir: string): string {
     if (!filename) {
         return "";
     }
-
-    // // does the file exist?
-    // if (fs.existsSync(filename)) {
-    //     var itemStat = fs.statSync(filename);
-    //     if (itemStat.isDirectory() === false) {
-    //         return filename;
-    //     }
-    //     return "";
-    // }
 
     // searching in cwd does not make sense, as it can change
     if (filenameDir === '.') {

@@ -2,11 +2,13 @@ import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLQuickParse, { splitArgument, SharedSourceReferences, COBOLToken, camelize } from './cobolquickparse';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { isFile } from './extension';
+import { isFile, logMessage, isDirectory, performance_now, logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './VSCodeSourceHandler';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { writeFileSync } from 'fs';
 import path from 'path';
+import { isNetworkPath, isDirectPath } from './opencopybook';
+import { VSCOBOLConfiguration } from './configuration';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -21,8 +23,76 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+    public migrateCopybooksToWorkspace() {
+        let fileSearchDirectory = [];
 
-    extractSelectionToCopybook(activeTextEditor: vscode.TextEditor) {
+        var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
+        let updateCopybookdirs: boolean = false;
+        for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+            var ddir = extsdir[extsdirpos];
+
+            if (isDirectPath(ddir)) {
+                if (workspace !== undefined && workspace.workspaceFolders !== undefined) {
+                    if (isPathInWorkspace(ddir) === false) {
+                        if (isNetworkPath(ddir)) {
+                            logMessage(" Adding " + ddir + " to workspace");
+                            let uriToFolder = vscode.Uri.file(path.normalize(ddir));
+                            vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                            updateCopybookdirs = true;
+                            continue;
+
+
+                            logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                        }
+                    }
+                }
+            }
+        }
+
+        if (workspace.workspaceFolders) {
+            for (var folder of workspace.workspaceFolders) {
+                for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+                    try {
+                        var extdir = extsdir[extsdirpos];
+
+                        let sdir: string;
+
+                        if (isDirectPath(extdir) === false) {
+                            sdir = path.join(folder.uri.fsPath, extdir);
+
+                            if (isDirectory(sdir)) {
+                                if (isNetworkPath(sdir)) {
+                                    if (isPathInWorkspace(sdir) === false) {
+                                        logMessage(" Adding " + sdir + " to workspace");
+                                        let uriToFolder = vscode.Uri.file(path.normalize(sdir));
+                                        vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
+                                        updateCopybookdirs = true;
+                                    }
+
+                                    logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                                }
+
+
+                                fileSearchDirectory.push(sdir);
+                            }
+                        }
+                    }
+                    catch (e) {
+                        logException("dir", e);
+                    }
+                }
+            }
+        }
+
+        // update copybookdirs with optiomized version
+        if (updateCopybookdirs) {
+            var editorConfig = workspace.getConfiguration('coboleditor');
+            editorConfig.update('copybookdirs', fileSearchDirectory);
+        }
+
+    }
+
+    public extractSelectionToCopybook(activeTextEditor: vscode.TextEditor) {
         let sel = activeTextEditor.selection;
 
         let ran = new vscode.Range(sel.start, sel.end);
@@ -30,18 +100,18 @@ export class COBOLUtils {
         let dir = path.dirname(activeTextEditor.document.fileName);
 
         let value = vscode.window.showInputBox({
-            prompt:'Copybook name?',
+            prompt: 'Copybook name?',
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
-                     copybook_filename.indexOf(".") !== -1 ||
-                     isFile(path.join(dir,copybook_filename+".cpy"))) {
+                    copybook_filename.indexOf(".") !== -1 ||
+                    isFile(path.join(dir, copybook_filename + ".cpy"))) {
                     return 'Invalid copybook';
                 } else {
                     return undefined;
                 }
             }
         }).then(copybook_filename => {
-            let filename = path.join(dir, copybook_filename+".cpy" );
+            let filename = path.join(dir, copybook_filename + ".cpy");
             writeFileSync(filename, text);
 
             activeTextEditor.edit(edit => {

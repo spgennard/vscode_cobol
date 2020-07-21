@@ -31,13 +31,12 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceViewTree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
-import { COBOLUtils, FoldStyle, FoldAction } from './plusutils';
+import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
 import { ICOBOLSettings } from './iconfiguration';
 
 const propertiesReader = require('properties-reader');
 
 import util from 'util';
-import { dir } from 'console';
 var which = require('which');
 
 let formatStatusBarItem: StatusBarItem;
@@ -121,7 +120,7 @@ let unitTestTerminal: vscode.Terminal | undefined = undefined;
 let terminalName = "UnitTest";
 
 
-function isPathInWorkspace(ddir: string): boolean {
+export function isPathInWorkspace(ddir: string): boolean {
     if (workspace === undefined || workspace.workspaceFolders === undefined) {
         return false;
     }
@@ -142,7 +141,7 @@ function initExtensions(config: ICOBOLSettings) {
     var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
     invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
     invalidSearchDirectory.length = 0;
-    let updateCopybookdirs: boolean = false;
+
     for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
         var ddir = extsdir[extsdirpos];
         if (config.disable_unc_copybooks_directories && isNetworkPath(ddir)) {
@@ -153,14 +152,6 @@ function initExtensions(config: ICOBOLSettings) {
             if (workspace !== undefined && workspace.workspaceFolders !== undefined) {
                 if (isPathInWorkspace(ddir) === false) {
                     if (isNetworkPath(ddir)) {
-                        if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
-                            logMessage(" Adding " + ddir + " to workspace");
-                            let uriToFolder = vscode.Uri.file(path.normalize(ddir));
-                            vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
-                            updateCopybookdirs = true;
-                            continue;
-                        }
-
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
                 }
@@ -193,18 +184,8 @@ function initExtensions(config: ICOBOLSettings) {
                         sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
-                            if (VSCOBOLConfiguration.getMigrate_copybooks_directories_to_workspace()) {
-                                if (isNetworkPath(sdir)) {
-                                    if (isPathInWorkspace(sdir) === false) {
-                                        logMessage(" Adding " + sdir + " to workspace");
-                                        let uriToFolder = vscode.Uri.file(path.normalize(sdir));
-                                        vscode.workspace.updateWorkspaceFolders(0, 0, { uri: uriToFolder });
-                                        updateCopybookdirs = true;
-                                        continue;
-                                    }
-
-                                    logMessage(" The directory " + sdir + " for performance should be part of the workspace");
-                                }
+                            if (isNetworkPath(sdir) && isPathInWorkspace(sdir) === false) {
+                                logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
 
                             fileSearchDirectory.push(sdir);
@@ -218,12 +199,6 @@ function initExtensions(config: ICOBOLSettings) {
                 }
             }
         }
-    }
-
-    // update copybookdirs with optiomized version
-    if (updateCopybookdirs) {
-        var editorConfig = workspace.getConfiguration('coboleditor');
-        editorConfig.update('copybookdirs', fileSearchDirectory);
     }
 
     fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);

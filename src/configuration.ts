@@ -36,7 +36,6 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
         VSCOBOLConfiguration.config.cache_directory_strategy = getCache_directory_strategy();
         VSCOBOLConfiguration.config.parse_copybooks_for_references = getParse_copybooks_for_references();
-        VSCOBOLConfiguration.config.migrate_network_copybooks_directories_to_workspace = getMigrate_copybooks_directories_to_workspace();
     }
 
     public static get(): ICOBOLSettings {
@@ -136,10 +135,6 @@ export class VSCOBOLConfiguration {
 
     public static getParse_copybooks_for_references(): boolean {
         return VSCOBOLConfiguration.config.parse_copybooks_for_references;
-    }
-
-    public static getMigrate_copybooks_directories_to_workspace():boolean {
-        return VSCOBOLConfiguration.config.migrate_network_copybooks_directories_to_workspace;
     }
 }
 

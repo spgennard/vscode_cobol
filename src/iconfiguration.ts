@@ -36,7 +36,6 @@ export interface ICOBOLSettings {
     process_metadata_cache_on_start:boolean;
     cache_directory_strategy: string;
     parse_copybooks_for_references: boolean;
-    migrate_network_copybooks_directories_to_workspace: boolean;
 }
 
 
@@ -68,7 +67,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public process_metadata_cache_on_start:boolean;
     public cache_directory_strategy:string;
     public parse_copybooks_for_references: boolean;
-    public migrate_network_copybooks_directories_to_workspace: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -98,7 +96,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.process_metadata_cache_on_start = false;
         this.cache_directory_strategy = "workspace";
         this.parse_copybooks_for_references = false;
-        this.migrate_network_copybooks_directories_to_workspace = true;
     }
 }
 
