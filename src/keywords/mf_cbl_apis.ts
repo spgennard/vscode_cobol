@@ -1,4 +1,4 @@
-{
+export default {
     "url": "https://documentation.microfocus.com/help/topic/GUID-0E0191D8-C39A-44D1-BA4C-D67107BAF784/HRCLRHCALL18.html?cp=6_7_5_6_0",
     "name": "Micro Focus CBL library routines",
     "apis": {

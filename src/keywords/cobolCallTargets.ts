@@ -1,5 +1,5 @@
-import ile_datatime from './ile_datetime.json';
-import cbl_apis from './mf_cbl_apis.json';
+import ile_datatime from './ile_datetime';
+import cbl_apis from './mf_cbl_apis';
 
 export class CallTarget {
 	public api: string;
