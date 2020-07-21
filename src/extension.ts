@@ -28,7 +28,7 @@ import VSQuickCOBOLParse from './vscobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
-import { SourceViewTree } from './sourceViewTree';
+import { SourceViewTree } from './sourceviewtree';
 import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';

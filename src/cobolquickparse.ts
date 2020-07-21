@@ -1,7 +1,7 @@
 import ISourceHandler from "./isourcehandler";
 import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
-import { FileSourceHandler } from "./FileSourceHandler";
+import { FileSourceHandler } from "./filesourcehandler";
 import { String } from 'typescript-string-operations';
 
 import * as fs from 'fs';

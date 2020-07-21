@@ -3,7 +3,7 @@ import { workspace } from 'vscode';
 import COBOLQuickParse, { splitArgument, camelize } from './cobolquickparse';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { isFile, logMessage, isDirectory,  logException, isPathInWorkspace } from './extension';
-import { VSCodeSourceHandler } from './VSCodeSourceHandler';
+import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { writeFileSync } from 'fs';
 import path from 'path';

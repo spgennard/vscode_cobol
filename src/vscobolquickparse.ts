@@ -1,18 +1,15 @@
-import { VSCodeSourceHandler } from "./VSCodeSourceHandler";
-import { workspace, TextDocument, window } from 'vscode';
-import COBOLQuickParse, { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalFileCache, SharedSourceReferences } from "./cobolquickparse";
+import { VSCodeSourceHandler } from "./vscodesourcehandler";
+import { TextDocument } from 'vscode';
+import COBOLQuickParse, { COBOLSymbolTableHelper, InMemoryGlobalFileCache } from "./cobolquickparse";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
-import { ExtensionContext, StatusBarAlignment, StatusBarItem, Selection, TextEditor, commands, ProgressLocation } from 'vscode';
 
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now, getCurrentContext } from "./extension";
-import { FileSourceHandler } from "./FileSourceHandler";
+import { FileSourceHandler } from "./filesourcehandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
-import { resolve } from "path";
-import { findSourceMap } from "module";
 import { getWorkspaceFolders } from "./cobolfolders";
 
 const InMemoryCache: Map<string, any> = new Map<string, any>();
