@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#171](https://github.com/spgennard/vscode_cobol/issues/171) Outline error with parse_copybooks_for_references and copybook first line is comment  
+
+**Outline error with parse_copybooks_for_references and copybook first line is comment Fix #171**
+
+
+[e6369db8821afb7](https://github.com/spgennard/vscode_cobol/commit/e6369db8821afb7) *2020-07-22 00:25:03*
+
+
 ## 6.5.19
 ### GitHub [#168](https://github.com/spgennard/vscode_cobol/issues/168) coboleditor.copybookdirs is auto-unset  
 
