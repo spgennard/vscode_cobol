@@ -660,6 +660,11 @@ export default class COBOLQuickParse {
         let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, state.inProcedureDivision, extraInformation);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
 
+        if (ctoken.ignoreInOutlineView) {
+            this.tokensInOrder.push(ctoken);
+            return ctoken;
+        }
+
         /* if we are in a paragraph update */
         if (state.currentParagraph !== COBOLToken.Null) {
             state.currentParagraph.endLine = startLine;

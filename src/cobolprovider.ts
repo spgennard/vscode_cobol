@@ -5,6 +5,7 @@ import COBOLQuickParse, { COBOLToken, camelize } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage } from './extension';
+import { PRIORITY_BELOW_NORMAL } from 'constants';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -42,7 +43,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         return new TrieSearch('tokenName');
     }
 
-    private getConstantsOrVariables(document: TextDocument): TrieSearch  {
+    private getConstantsOrVariables(document: TextDocument): TrieSearch {
         let sf = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
@@ -69,11 +70,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
 
     private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
-        let  iconfig:COBOLSettings = VSCOBOLConfiguration.get();
+        let iconfig: COBOLSettings = VSCOBOLConfiguration.get();
 
         let includeUpper: boolean = iconfig.intellisense_include_uppercase;
         let includeLower: boolean = iconfig.intellisense_include_lowercase;
-        let includeAsIS:boolean = iconfig.intellisense_include_unchanged;
+        let includeAsIS: boolean = iconfig.intellisense_include_unchanged;
         let includeCamelCase: boolean = iconfig.intellisense_include_camalcase;
         let limit: number = iconfig.intellisense_item_limit;
 
@@ -153,10 +154,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (lineBefore.length !== 0) {
             switch (lineBefore.toLocaleLowerCase()) {
                 case "perform":
-                case "goto": {
-                    const words = this. getPerformTargets(document);
-                    items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
-                }
+                case "goto":
+                    {
+                        const words = this.getPerformTargets(document);
+                        items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
+                        break;
+                    }
+
                 case "move":
                     {
                         const words = this.getConstantsOrVariables(document);
@@ -179,7 +183,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         // }
 
                         items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                        break;
                     }
+
 
                 case "initialize":
                 case "set":
@@ -192,14 +198,17 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 case "divide":
                 case "compute":
                 case "giving":
-                    const words = this.getConstantsOrVariables(document);
-                    items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                    {
+                        const words = this.getConstantsOrVariables(document);
+                        items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                        break;
+                    }
             }
         }
 
         let totalTimeInMS = performance_now() - startTime;
         let timeTaken = totalTimeInMS.toFixed(2);
-        logMessage(" - CobolSourceCompletionItemProvider took "+timeTaken+" ms");
+        logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         return items;
     }
 
