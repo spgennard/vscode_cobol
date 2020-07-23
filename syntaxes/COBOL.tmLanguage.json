@@ -106,7 +106,18 @@
       "name": "meta.preprocessor"
     },
     {
-      "match": "(?:^|\\s+)>>(?i:if|else|elif|end-if)(?:$|\\s.*$)",
+      "match": "(>>(\\s*)(?i:if|else|elif|end-if|define|evaluate|when|end-evaluate|display|call-convention).*)(\\*>.*)$",
+      "captures": {
+        "1": {
+          "name": "meta.preprocessor.iso2002"
+        },
+        "2": {
+          "name": "comment.line.meta.cobol"
+        }
+      }
+    },
+    {
+      "match": ">>\\s*(?i:if|else|end-if|define|evaluate|when|end-evaluate|display|call-convention).*$",
       "name": "meta.preprocessor.iso2002"
     },
     {
