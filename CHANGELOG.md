@@ -4,6 +4,15 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#172](https://github.com/spgennard/vscode_cobol/issues/172) ISO2002: Conditional Compilation - Directive syntax highlighting  
+
+**ISO2002: Conditional Compilation - Directive syntax highlighting Fix #172**
+
+
+[ccd76717575f4bd](https://github.com/spgennard/vscode_cobol/commit/ccd76717575f4bd) *2020-07-23 22:21:04*
+
+
+## 6.5.22
 ### GitHub [#171](https://github.com/spgennard/vscode_cobol/issues/171) Outline error with parse_copybooks_for_references and copybook first line is comment  
 
 **Outline error with parse_copybooks_for_references and copybook first line is comment Fix #171**
