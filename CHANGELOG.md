@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.5.24
 ### GitHub [#172](https://github.com/spgennard/vscode_cobol/issues/172) ISO2002: Conditional Compilation - Directive syntax highlighting  
 
 **ISO2002: Conditional Compilation - Directive syntax highlighting Fix #172**
