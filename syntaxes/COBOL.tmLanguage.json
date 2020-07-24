@@ -12,7 +12,6 @@
     "pco"
   ],
   "name": "COBOL",
-
   "patterns": [
     {
       "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])([dD]\\s.*$)",
@@ -104,6 +103,10 @@
     {
       "match": "\\$(?i:if|else|then|display|xfd|end-region|end)(.*$)",
       "name": "meta.preprocessor"
+    },
+    {
+      "match": ">>\\s*(?i:turn|page|listing|leap-seconds|d)\\s+.*$",
+      "name": "invalid.illegal.meta.preprocessor.gnucobol"
     },
     {
       "match": "(>>(\\s*)(?i:if|else|elif|end-if|define|evaluate|when|end-evaluate|display|call-convention).*)(\\*>.*)$",
@@ -222,25 +225,25 @@
       "name": "string.quoted.cobol.cics",
       "patterns": [
         {
-					"match": "(\\s+)(?i:abend|acquire|add|allocate|asktime|assign|bif|build|cancel|change|check|connect|converse|converttime|define|delay|delete|deleteq|deq|document|dump|endbr|endbrowse|enq|enter|extract|fetch|force|formattime|free|freemain|freemain64|gds|get|getmain|getmain64|getnext|get64|handle|ignore|inquire|invoke|issue|journal|link|load|monitor|move|point|pop|post|purge|push|put|put64|query|read|readnext|readprev|readq|receive|release|remove|reset|resetbr|resume|retrieve|return|rewind|rewrite|route|run|send|signal|signoff|signon|soapfault|spoolclose|spoolopen|spoolread|spoolwrite|start|startbr|startbrowse|nosuspend|suspend|syncpoint|test|transform|unlock|update|verify|wait|waitcics|web|write|writeq|wsacontext|wsaepr|xctl)(\\w+|\\s+|\\.|$)",
-					"name": "keyword.verb.cics"
-				},
+          "match": "(\\s+)(?i:abend|acquire|add|allocate|asktime|assign|bif|build|cancel|change|check|connect|converse|converttime|define|delay|delete|deleteq|deq|document|dump|endbr|endbrowse|enq|enter|extract|fetch|force|formattime|free|freemain|freemain64|gds|get|getmain|getmain64|getnext|get64|handle|ignore|inquire|invoke|issue|journal|link|load|monitor|move|point|pop|post|purge|push|put|put64|query|read|readnext|readprev|readq|receive|release|remove|reset|resetbr|resume|retrieve|return|rewind|rewrite|route|run|send|signal|signoff|signon|soapfault|spoolclose|spoolopen|spoolread|spoolwrite|start|startbr|startbrowse|nosuspend|suspend|syncpoint|test|transform|unlock|update|verify|wait|waitcics|web|write|writeq|wsacontext|wsaepr|xctl)(\\w+|\\s+|\\.|$)",
+          "name": "keyword.verb.cics"
+        },
         {
           "match": "(\\w+\\s*)?(\\()([0-9a-zA-Z\\-\\s\"']+)?(\\))?",
-            "captures": {
-              "1": {
-                "name": "meta.symbol.cobol.cics"
-              },
-              "2": {
-                "name": "keyword.bracket.cobol"
-              },
-              "3": {
-                "name": "variable.cobol"
-              },
-              "4": {
-                "name": "keyword.bracket.cobol"
-              }
+          "captures": {
+            "1": {
+              "name": "meta.symbol.cobol.cics"
+            },
+            "2": {
+              "name": "keyword.bracket.cobol"
+            },
+            "3": {
+              "name": "variable.cobol"
+            },
+            "4": {
+              "name": "keyword.bracket.cobol"
             }
+          }
         }
       ],
       "end": "(?i:end\\-exec)"
