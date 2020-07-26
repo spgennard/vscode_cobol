@@ -455,8 +455,6 @@ export default class COBOLQuickParse implements ICommentCallback {
 
     readonly configHandler: ICOBOLSettings;
 
-    parserHintDirectory: string;
-
     parseHint_OnOpenFiles: string[] = [];
     parseHint_WorkingStorageFiles: string[] = [];
     parseHint_LocalStorageFiles: string[] = [];
@@ -482,7 +480,6 @@ export default class COBOLQuickParse implements ICommentCallback {
         this.sourceLooksLikeCOBOL = false;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
-        this.parserHintDirectory = configHandler.parser_hint_directory;
 
         let prevToken: Token = Token.Blank;
 
@@ -601,7 +598,7 @@ export default class COBOLQuickParse implements ICommentCallback {
         }
 
         // prepare parser hint information
-        //this.setupParserHint();
+        //this.setupint();
 
         let line = "";
         prevToken = Token.Blank;
@@ -740,47 +737,6 @@ export default class COBOLQuickParse implements ICommentCallback {
 
         this.tokensInOrder.push(ctoken);
         return ctoken;
-    }
-
-    private setupParserHint() {
-        if (isDirectory(this.parserHintDirectory) === false) {
-            this.parserHintDirectory = "";
-        } else {
-            try {
-                let stat = fs.statSync(this.parserHintDirectory);
-                if (stat.isDirectory() === false) {
-                    this.parserHintDirectory = "";
-                }
-
-                let combinedFile = path.join(this.parserHintDirectory, path.basename(this.filename) + ".json");
-                if (isFile(combinedFile)) {
-                    let statJFile = fs.statSync(combinedFile);
-                    if (statJFile.isFile()) {
-                        logMessage("INFO: found  " + combinedFile);
-                        let jfileContents = fs.readFileSync(combinedFile);
-                        let json = JSON.parse(jfileContents.toString());
-                        logMessage("json is " + json);
-                        logMessage("from : " + jfileContents.toString());
-
-                        if (json.WorkingStorage !== undefined) {
-                            this.parseHint_WorkingStorageFiles = json.WorkingStorage;
-                        }
-                        if (json.LocalStorage !== undefined) {
-                            this.parseHint_LocalStorageFiles = json.LocalStorage;
-                        }
-                        if (json.ScreenSection !== undefined) {
-                            this.parseHint_ScreenSectionFiles = json.ScreenSection;
-                        }
-                        if (json.OnOpen !== undefined) {
-                            this.parseHint_OnOpenFiles = json.OnOpen;
-                        }
-                    }
-                }
-            }
-            catch (e) {
-                logException("Exception during parserHint", e);
-            }
-        }
     }
 
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string) {

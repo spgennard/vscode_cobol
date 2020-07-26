@@ -25,7 +25,6 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.linter = getLinter();
         VSCOBOLConfiguration.config.line_comment = getline_comment();
         VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
-        VSCOBOLConfiguration.config.parser_hint_directory = getparser_hint_directory();
         VSCOBOLConfiguration.config.enable_data_provider = getEnable_data_provider();
         VSCOBOLConfiguration.config.enable_auto_tasks = getEnable_auto_tasks();
         VSCOBOLConfiguration.config.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
@@ -167,17 +166,6 @@ function getPreParseLineLimit(): number {
     return lineLimit;
 }
 
-function getparser_hint_directory(): string {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var parserhints = editorConfig.get<string>('parser_hint_directory');
-
-    if (parserhints === undefined || parserhints === null) {
-        return "";
-    }
-
-    return parserhints;
-
-}
 function getline_comment(): boolean {
     return getBoolean("line_comment", false);
 }

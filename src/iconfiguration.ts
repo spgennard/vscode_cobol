@@ -25,7 +25,6 @@ export interface ICOBOLSettings {
     linter: boolean;
     line_comment: boolean;
     fileformat_strategy: string;
-    parser_hint_directory: string;
     enable_data_provider:boolean;
     enable_auto_tasks: boolean;
     disable_unc_copybooks_directories: boolean;
@@ -58,7 +57,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public line_comment: boolean;
     public invalid_copybookdirs: string[];
     public fileformat_strategy: string;
-    public parser_hint_directory: string;
     public enable_data_provider: boolean;
     public enable_auto_tasks: boolean;
     public disable_unc_copybooks_directories: boolean;
@@ -89,7 +87,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.tabstops = [];
         this.linter = false;
         this.line_comment = false;
-        this.parser_hint_directory = "";
         this.enable_data_provider = true;
         this.enable_auto_tasks = false;
         this.disable_unc_copybooks_directories = false;
