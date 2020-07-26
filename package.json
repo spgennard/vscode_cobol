@@ -1543,14 +1543,14 @@
     },
     "devDependencies": {
         "@types/minimatch": "^3.0.3",
-        "@types/node": "^14.0.24",
+        "@types/node": "^14.0.26",
         "@types/vscode": "^1.47.0",
         "ncu": "^0.2.1",
         "ts-loader": "^8.0.1",
         "tslint": "^6.1.2",
         "typescript": "^3.9.7",
         "vsce": "^1.77.0",
-        "webpack": "^4.43.0",
+        "webpack": "^4.44.0",
         "webpack-cli": "^3.3.12"
     },
     "dependencies": {
