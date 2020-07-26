@@ -157,6 +157,7 @@ export class COBOLToken {
     public extraInformation: string;
     public skipToEnd: boolean;
     public endOfSkip: boolean;
+    public inSection: COBOLToken;
 
     static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined, false, "");
 
@@ -178,6 +179,7 @@ export class COBOLToken {
         this.parentToken = parentToken;
         this.inProcedureDivision = inProcedureDivision;
         this.extraInformation = extraInformation;
+        this.inSection = COBOLToken.Null;
 
         this.skipToEnd = false;
         this.endOfSkip = false;
@@ -669,6 +671,7 @@ export default class COBOLQuickParse implements ICommentCallback {
         let state: ParseState = this.state;
         let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, state.inProcedureDivision, extraInformation);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
+        ctoken.inSection = this.state.currentSection;
 
         if (ctoken.ignoreInOutlineView) {
             this.tokensInOrder.push(ctoken);

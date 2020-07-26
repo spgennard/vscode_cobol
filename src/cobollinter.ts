@@ -5,6 +5,7 @@ import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
+import { logMessage } from './extension';
 
 export class CobolLinterActionFixer implements CodeActionProvider {
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
@@ -52,6 +53,10 @@ export class CobolLinterProvider {
     private collection: vscode.DiagnosticCollection;
     private diagCollect: vscode.DiagnosticSeverity;
 
+    private current?: COBOLQuickParse;
+    private currentVersion?: number;
+    private sourceRefs?: SharedSourceReferences;
+
     constructor(collection: vscode.DiagnosticCollection, settings: ICOBOLSettings) {
         this.collection = collection;
         this.settings = settings;
@@ -89,17 +94,77 @@ export class CobolLinterProvider {
         this.collection.clear();
 
         if (qp.configHandler.linter_unused_paragraphs_or_sections) {
-            for (let [key, token] of qp.paragraphs) {
-                let workLower = key.toLowerCase();
-                if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
-                    continue;
+            this.processParsedDocumentForUnusedSymbols(qp, diagRefs);
+        }
+
+        // this.processParsedDocumentForStandards(qp,diagRefs);
+
+        for (let [f, value] of diagRefs) {
+            let u = vscode.Uri.file(f);
+            this.collection.set(u, value);
+        }
+    }
+    private processParsedDocumentForStandards(qp: COBOLQuickParse,  diagRefs: Map<string, vscode.Diagnostic[]>) {
+
+        if (this.sourceRefs === undefined) {
+            return;
+        }
+
+        let sourceRefs: SharedSourceReferences = this.sourceRefs;
+        for (let [key, tokens] of qp.constantsOrVariables) {
+            for(let token of tokens) {
+                logMessage(token.tokenName+" => "+token.inSection.tokenName);
+            }
+        }
+    }
+
+    private processParsedDocumentForUnusedSymbols(qp: COBOLQuickParse,  diagRefs: Map<string, vscode.Diagnostic[]>) {
+
+        if (this.sourceRefs === undefined) {
+            return;
+        }
+
+        let sourceRefs: SharedSourceReferences = this.sourceRefs;
+
+        for (let [key, token] of qp.paragraphs) {
+            let workLower = key.toLowerCase();
+            if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
+                continue;
+            }
+            if (sourceRefs.targetReferences.has(workLower) === false) {
+                let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                    new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
+                let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
+                d.tags = [vscode.DiagnosticTag.Unnecessary];
+                d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
+
+                if (diagRefs.has(token.filename)) {
+                    let arr = diagRefs.get(token.filename);
+                    if (arr !== undefined) {
+                        arr.push(d);
+                    }
+                } else {
+                    let arr: vscode.Diagnostic[] = [];
+                    arr.push(d);
+                    diagRefs.set(token.filename, arr);
                 }
+            }
+        }
+
+        for (let [key, token] of qp.sections) {
+            let workLower = key.toLowerCase();
+
+            if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
+                continue;
+            }
+
+            if (token.inProcedureDivision) {
                 if (sourceRefs.targetReferences.has(workLower) === false) {
                     let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                    let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
-                    d.tags = [vscode.DiagnosticTag.Unnecessary];
+                    let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
                     d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
+                    d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                     if (diagRefs.has(token.filename)) {
                         let arr = diagRefs.get(token.filename);
@@ -113,44 +178,8 @@ export class CobolLinterProvider {
                     }
                 }
             }
-
-            for (let [key, token] of qp.sections) {
-                let workLower = key.toLowerCase();
-                if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
-                    continue;
-                }
-                if (token.inProcedureDivision) {
-                    if (sourceRefs.targetReferences.has(workLower) === false) {
-                        let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                            new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                        let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
-                        d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
-                        d.tags = [vscode.DiagnosticTag.Unnecessary];
-
-                        if (diagRefs.has(token.filename)) {
-                            let arr = diagRefs.get(token.filename);
-                            if (arr !== undefined) {
-                                arr.push(d);
-                            }
-                        } else {
-                            let arr: vscode.Diagnostic[] = [];
-                            arr.push(d);
-                            diagRefs.set(token.filename, arr);
-                        }
-                    }
-                }
-            }
-        }
-
-        for (let [f, value] of diagRefs) {
-            let u = vscode.Uri.file(f);
-            this.collection.set(u, value);
         }
     }
-
-    private current?: COBOLQuickParse;
-    private currentVersion?: number;
-    private sourceRefs?: SharedSourceReferences;
 
     private setupCOBOLQuickParse(document: vscode.TextDocument): boolean {
         if (this.current !== undefined && this.current.filename !== document.fileName) {
