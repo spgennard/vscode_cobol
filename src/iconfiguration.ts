@@ -38,6 +38,7 @@ export interface ICOBOLSettings {
     cache_directory_strategy: string;
     parse_copybooks_for_references: boolean;
     copybookdirs_order: string[];
+    linter_unused_paragraphs_or_sections: boolean;
 }
 
 
@@ -70,6 +71,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public cache_directory_strategy:string;
     public parse_copybooks_for_references: boolean;
     public copybookdirs_order: string[];
+    public linter_unused_paragraphs_or_sections: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -100,6 +102,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.cache_directory_strategy = "workspace";
         this.parse_copybooks_for_references = false;
         this.copybookdirs_order = [];
+        this.linter_unused_paragraphs_or_sections = this.linter;
     }
 }
 

@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 import COBOLQuickParse, { SharedSourceReferences } from './cobolquickparse';
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
-import { ICommentCallback } from './isourcehandler';
 import { ICOBOLSettings } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
 
@@ -11,24 +10,21 @@ export class CobolLinterActionFixer implements CodeActionProvider {
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
         const codeActions: CodeAction[] = [];
         for (const diagnostic of context.diagnostics) {
-            if (diagnostic.code !== undefined && diagnostic.code.toString().startsWith("ignore") === false) {
-                continue;
-            }
-
             if (diagnostic.code === undefined) {
                 continue;
             }
 
             // is it ours?
-            if (diagnostic.code.toString().startsWith("COB_NOT_REFERENCED") === true) {
-                var startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
+            if (diagnostic.code.toString().startsWith(CobolLinterProvider.NotReferencedMarker_internal) === true) {
+                let startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
+                let insertCode = diagnostic.code.toString().replace(CobolLinterProvider.NotReferencedMarker_internal, CobolLinterProvider.NotReferencedMarker_external);
                 codeActions.push({
                     title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
                     diagnostics: [diagnostic],
                     command: {
                         title: 'Add COBOL lint comment to ignore the warning',
                         command: "cobolplugin.insertIgnoreCommentLine",
-                        arguments: [document.uri, startOfline, diagnostic.code],
+                        arguments: [document.uri, startOfline, insertCode],
                     },
                     kind: vscode.CodeActionKind.QuickFix,
                 });
@@ -50,7 +46,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
     }
 }
 
-export class CobolLinterProvider implements ICommentCallback {
+export class CobolLinterProvider {
     private settings: ICOBOLSettings;
 
     private collection: vscode.DiagnosticCollection;
@@ -62,7 +58,11 @@ export class CobolLinterProvider implements ICommentCallback {
         this.diagCollect = vscode.DiagnosticSeverity.Information;
     }
 
-    public updateDiagnostics(document: vscode.TextDocument, ): void {
+    public static NotReferencedMarker_internal: string = "COBOL_NOT_REF";
+    public static NotReferencedMarker_external: string = "ignore";
+
+    public updateLinter(document: vscode.TextDocument,): void {
+
         if (this.settings.linter === false) {
             this.collection.clear();
             return;
@@ -88,41 +88,18 @@ export class CobolLinterProvider implements ICommentCallback {
         let diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
 
-        for (let [key, token] of qp.paragraphs) {
-            let workLower = key.toLowerCase();
-            if (this.ignoreUnusedSymbol.has(workLower)) {
-                continue;
-            }
-            if (sourceRefs.targetReferences.has(workLower) === false) {
-                let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                    new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
-                d.code = "COB_NOT_REFERENCED " + key;
-
-                if (diagRefs.has(token.filename)) {
-                    let arr = diagRefs.get(token.filename);
-                    if (arr !== undefined) {
-                        arr.push(d);
-                    }
-                } else {
-                    let arr: vscode.Diagnostic[] = [];
-                    arr.push(d);
-                    diagRefs.set(token.filename, arr);
+        if (qp.configHandler.linter_unused_paragraphs_or_sections) {
+            for (let [key, token] of qp.paragraphs) {
+                let workLower = key.toLowerCase();
+                if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
+                    continue;
                 }
-            }
-        }
-
-        for (let [key, token] of qp.sections) {
-            let workLower = key.toLowerCase();
-            if (this.ignoreUnusedSymbol.has(workLower)) {
-                continue;
-            }
-            if (token.inProcedureDivision) {
                 if (sourceRefs.targetReferences.has(workLower) === false) {
                     let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                    let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
-                    d.code = "ignore " + key;
+                    let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
+                    d.tags = [vscode.DiagnosticTag.Unnecessary];
+                    d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
 
                     if (diagRefs.has(token.filename)) {
                         let arr = diagRefs.get(token.filename);
@@ -137,8 +114,33 @@ export class CobolLinterProvider implements ICommentCallback {
                 }
             }
 
-        }
+            for (let [key, token] of qp.sections) {
+                let workLower = key.toLowerCase();
+                if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
+                    continue;
+                }
+                if (token.inProcedureDivision) {
+                    if (sourceRefs.targetReferences.has(workLower) === false) {
+                        let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                            new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
+                        let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
+                        d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
+                        d.tags = [vscode.DiagnosticTag.Unnecessary];
 
+                        if (diagRefs.has(token.filename)) {
+                            let arr = diagRefs.get(token.filename);
+                            if (arr !== undefined) {
+                                arr.push(d);
+                            }
+                        } else {
+                            let arr: vscode.Diagnostic[] = [];
+                            arr.push(d);
+                            diagRefs.set(token.filename, arr);
+                        }
+                    }
+                }
+            }
+        }
 
         for (let [f, value] of diagRefs) {
             let u = vscode.Uri.file(f);
@@ -149,8 +151,6 @@ export class CobolLinterProvider implements ICommentCallback {
     private current?: COBOLQuickParse;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
-    private ignoreUnusedSymbol: Map<string, string> = new Map<string, string>();
-
 
     private setupCOBOLQuickParse(document: vscode.TextDocument): boolean {
         if (this.current !== undefined && this.current.filename !== document.fileName) {
@@ -159,7 +159,6 @@ export class CobolLinterProvider implements ICommentCallback {
 
         // cache current document, interatives search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.ignoreUnusedSymbol.clear();
             this.current = VSQuickCOBOLParse.getCachedObject(document);
             this.sourceRefs = this.current?.sourceReferences;
             this.currentVersion = document.version;
@@ -169,29 +168,5 @@ export class CobolLinterProvider implements ICommentCallback {
         return false;
     }
 
-    private cobolLintLiteral = "cobol-lint";
-
-    processComment(commentLine: string): void {
-        let startOfComment: number = commentLine.indexOf("*>");
-        if (startOfComment !== undefined && startOfComment !== -1) {
-            var comment = commentLine.substring(2 + startOfComment).trim();
-            if (comment.startsWith(this.cobolLintLiteral)) {
-                let startOfCOBOLint: number = comment.indexOf(this.cobolLintLiteral);
-                var commentCommandArgs = comment.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
-                var args = commentCommandArgs.split(" ");
-                var command = args[0];
-                args = args.slice(1);
-                var commandTrimmed = command !== undefined ? command.trim() : undefined;
-                if (commandTrimmed !== undefined && commandTrimmed.toLocaleLowerCase() === "ignore") {
-                    args.forEach((symbol) => {
-                        this.ignoreUnusedSymbol.set(symbol.toLocaleLowerCase(), symbol);
-                    });
-                }
-
-
-            }
-
-        }
-    }
 
 }

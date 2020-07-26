@@ -1,4 +1,4 @@
-import ISourceHandler from "./isourcehandler";
+import ISourceHandler, { ICommentCallback } from "./isourcehandler";
 import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
@@ -16,6 +16,8 @@ import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
 import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
+import { config } from "process";
+import { CobolLinterProvider } from "./cobollinter";
 
 var lzjs = require('lzjs');
 
@@ -332,6 +334,8 @@ export class SharedSourceReferences {
     public state: ParseState;
     public tokensInOrder: COBOLToken[];
 
+    public ignoreUnusedSymbol: Map<string, string>;
+
     public topLevel: boolean;
 
     constructor(topLevel: boolean) {
@@ -345,6 +349,7 @@ export class SharedSourceReferences {
         this.state = new ParseState();
         this.tokensInOrder = [];
         this.topLevel = topLevel;
+        this.ignoreUnusedSymbol = new Map<string, string>();
     }
 }
 
@@ -411,7 +416,7 @@ class PreParseState {
     }
 }
 
-export default class COBOLQuickParse {
+export default class COBOLQuickParse implements ICommentCallback {
     public filename: string;
     public lastModifiedTime: number;
 
@@ -490,7 +495,7 @@ export default class COBOLQuickParse {
 
         this.sourceFileId = 0;
 
-        if (sourceReferences !== undefined) {
+        if (this.sourceReferences.topLevel === false) {
             this.sourceFileId = sourceReferences.filenames.length;
             sourceReferences.filenames.push(sourceHandler.getUri());
             this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
@@ -498,6 +503,11 @@ export default class COBOLQuickParse {
             this.sections = sourceReferences.sharedSections;
             this.state = sourceReferences.state;
             this.tokensInOrder = sourceReferences.tokensInOrder;
+        }
+
+        // set the source handler for the comment callback to parse the lint comments
+        if (configHandler.linter) {
+            sourceHandler.setCommentCallback(this);
         }
 
         let state: ParseState = this.state;
@@ -1588,6 +1598,32 @@ export default class COBOLQuickParse {
             }
         }
     }
+
+    private cobolLintLiteral = "cobol-lint";
+
+    public processComment(commentLine: string): void {
+        let startOfComment: number = commentLine.indexOf("*>");
+        if (startOfComment !== undefined && startOfComment !== -1) {
+            var comment = commentLine.substring(2 + startOfComment).trim();
+            if (comment.startsWith(this.cobolLintLiteral)) {
+                let startOfCOBOLint: number = comment.indexOf(this.cobolLintLiteral);
+                var commentCommandArgs = comment.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
+                var args = commentCommandArgs.split(" ");
+                var command = args[0];
+                args = args.slice(1);
+                var commandTrimmed = command !== undefined ? command.trim() : undefined;
+                if (commandTrimmed !== undefined) {
+                    if (commandTrimmed === CobolLinterProvider.NotReferencedMarker_external) {
+                        for (let offset in args) {
+                            this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLocaleLowerCase(), args[offset]);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
 }
 
 export class COBOLFileSymbol {

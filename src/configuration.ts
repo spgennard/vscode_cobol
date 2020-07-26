@@ -22,7 +22,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.pre_parse_line_limit = getPreParseLineLimit();
         VSCOBOLConfiguration.config.copybookexts = getCopybookExts();
         VSCOBOLConfiguration.config.tabstops = getTabStops();
-        VSCOBOLConfiguration.config.linter = geLinter();
+        VSCOBOLConfiguration.config.linter = getLinter();
         VSCOBOLConfiguration.config.line_comment = getline_comment();
         VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
         VSCOBOLConfiguration.config.parser_hint_directory = getparser_hint_directory();
@@ -38,6 +38,7 @@ export class VSCOBOLConfiguration {
         VSCOBOLConfiguration.config.cache_directory_strategy = getCache_directory_strategy();
         VSCOBOLConfiguration.config.parse_copybooks_for_references = getParse_copybooks_for_references();
         VSCOBOLConfiguration.config.copybookdirs_order = getCopybookdirs_order();
+        VSCOBOLConfiguration.config.linter_unused_paragraphs_or_sections = getLinter_unused_paragraphs_or_sections();
     }
 
     public static get(): ICOBOLSettings {
@@ -189,10 +190,13 @@ function getCopybookNestedInSection(): boolean {
     return getBoolean('copybooks_nested', false);
 }
 
-function geLinter(): boolean {
+function getLinter(): boolean {
     return getBoolean('linter', false);
 }
 
+function getLinter_unused_paragraphs_or_sections(): boolean {
+    return getBoolean("linter_unused_paragraphs_or_sections", true);
+}
 function getFuzzyVariableSearch(): boolean {
     return getBoolean('fuzzy_variable_search', false);
 }

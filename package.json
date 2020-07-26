@@ -345,6 +345,12 @@
                     "description": "Enable basic linting (limited to sections/paragraph use)",
                     "default": false
                 },
+                "coboleditor.linter_unused_paragraphs_or_sections": {
+                    "type": "boolean",
+                    "title": "Enable basic linting",
+                    "description": "Enable basic linting (limited to sections/paragraph use)",
+                    "default": true
+                },
                 "coboleditor.sourceview": {
                     "type": "boolean",
                     "title": "Enable experimential explorer source view",

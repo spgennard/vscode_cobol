@@ -109,4 +109,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
     getFilename(): string {
         return this.document.fileName;
     }
+
+    setCommentCallback(commentCallback: ICommentCallback):void {
+        this.commentCallback = commentCallback;
+    }
 }

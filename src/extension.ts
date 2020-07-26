@@ -627,7 +627,7 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(editor);
-        linter.updateDiagnostics(editor.document);
+        linter.updateLinter(editor.document);
 
     }, null, context.subscriptions);
 
@@ -644,7 +644,7 @@ export function activate(context: ExtensionContext) {
             return;
         }
         updateDecorations(window.activeTextEditor);
-        linter.updateDiagnostics(window.activeTextEditor.document);
+        linter.updateLinter(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
     formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
@@ -653,7 +653,7 @@ export function activate(context: ExtensionContext) {
 
     if (window.activeTextEditor !== undefined) {
         updateDecorations(window.activeTextEditor);
-        linter.updateDiagnostics(window.activeTextEditor.document);
+        linter.updateLinter(window.activeTextEditor.document);
     }
 
     // Open context menu on current file

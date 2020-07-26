@@ -14,4 +14,5 @@ export default interface ISourceHandler {
     setDumpAreaBOnwards(flag: boolean): void;
     isCacheBelow(): boolean;
     getFilename(): string;
+    setCommentCallback(commentCallback: ICommentCallback):void;
 }
