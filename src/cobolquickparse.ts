@@ -1547,7 +1547,7 @@ export default class COBOLQuickParse implements ICommentCallback {
         return token;
     }
 
-    private addinMissingEndlings(sourceHandler: ISourceHandler) {
+     private addinMissingEndlings(sourceHandler: ISourceHandler) {
         for (let i = 0; i < this.tokensInOrder.length; i++) {
             let token = this.tokensInOrder[i];
 
@@ -1559,18 +1559,21 @@ export default class COBOLQuickParse implements ICommentCallback {
     }
 
     private cobolLintLiteral = "cobol-lint";
+    private cobolPreProcCopybook = "cobol-include-copybook";
 
     public processComment(commentLine: string): void {
         let startOfComment: number = commentLine.indexOf("*>");
+
         if (startOfComment !== undefined && startOfComment !== -1) {
             var comment = commentLine.substring(2 + startOfComment).trim();
+
             if (comment.startsWith(this.cobolLintLiteral)) {
                 let startOfCOBOLint: number = comment.indexOf(this.cobolLintLiteral);
-                var commentCommandArgs = comment.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
-                var args = commentCommandArgs.split(" ");
-                var command = args[0];
+                let commentCommandArgs = comment.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
+                let args = commentCommandArgs.split(" ");
+                let command = args[0];
                 args = args.slice(1);
-                var commandTrimmed = command !== undefined ? command.trim() : undefined;
+                let commandTrimmed = command !== undefined ? command.trim() : undefined;
                 if (commandTrimmed !== undefined) {
                     if (commandTrimmed === CobolLinterProvider.NotReferencedMarker_external) {
                         for (let offset in args) {
@@ -1580,6 +1583,31 @@ export default class COBOLQuickParse implements ICommentCallback {
                 }
             }
 
+            if (comment.startsWith(this.cobolPreProcCopybook)) {
+                let startOfCOBOLPreCopyBook: number = comment.indexOf(this.cobolPreProcCopybook);
+                let commentCommandArgs = comment.substring(this.cobolPreProcCopybook.length + startOfCOBOLPreCopyBook).trim();
+                let args = commentCommandArgs.split(" ");
+                let command = args[0];
+                args = args.slice(1);
+                let commandTrimmed = command !== undefined ? command.trim() : undefined;
+                if (commandTrimmed !== undefined) {
+                    for (let offset in args) {
+                        let filename = args[offset].trim();
+                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(filename, "");
+                        if (fileName.length > 0) {
+                            let qfile = new FileSourceHandler(fileName, false, false);
+                            let currentIgnoreInOutlineView: boolean = this.state.ignoreInOutlineView;
+                            this.state.ignoreInOutlineView = true;
+                            this.sourceReferences.topLevel = false;
+                            let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                            this.sourceReferences.topLevel = true;
+                            this.state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                        } else {
+                            logMessage(" WARNING: "+this.cobolPreProcCopybook+" unable to locate "+filename);
+                        }
+                    }
+                }
+            }
         }
     }
 
