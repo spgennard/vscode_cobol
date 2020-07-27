@@ -431,6 +431,29 @@
                         }
                     },
                     "default": []
+                },
+                "coboleditor.linter_house_standards": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "Data division section rules",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "rule"
+                            }
+                        }
+                    },
+                    "default": [
+                        "file=*",
+                        "working-storage=*",
+                        "object-storage=*",
+                        "local-storage=*",
+                        "linkage=*",
+                        "communication=*",
+                        "report=*",
+                        "screen=*"
+                    ]
                 }
             }
         },

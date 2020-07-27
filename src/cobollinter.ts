@@ -7,6 +7,11 @@ import { ICOBOLSettings } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { logMessage } from './extension';
 
+function regexToWildcard(wildcard: string): RegExp {
+    let w = wildcard.replace(/[.+^${}()|[\]\\]/g, '\\$&'); // regexp escape
+    return new RegExp(`^${w.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
+}
+
 export class CobolLinterActionFixer implements CodeActionProvider {
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
         const codeActions: CodeAction[] = [];
