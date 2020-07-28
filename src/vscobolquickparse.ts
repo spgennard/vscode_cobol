@@ -83,7 +83,7 @@ export default class VSQuickCOBOLParse {
                         VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                     }
                     catch (re) {
-                        logException("processAllFilesInWorkspaces/1", re);
+                        logMessage(`Processing ${folder.uri.fsPath} aborted early due to ${re.name}`);
                     }
                 }
             }
@@ -95,7 +95,7 @@ export default class VSQuickCOBOLParse {
                         VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
                     }
                     catch (re) {
-                        logException("processAllFilesInWorkspaces/2 => " + i, re);
+                        logMessage(`Processing ${i} aborted early due to ${re.name}`);
                     }
                 }
             }
