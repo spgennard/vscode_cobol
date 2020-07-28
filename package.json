@@ -345,6 +345,12 @@
                     "description": "Enable basic linting (limited to sections/paragraph use)",
                     "default": false
                 },
+                "coboleditor.linter_mark_as_information": {
+                    "type": "boolean",
+                    "title": "Mark all linter problems as information",
+                    "description": "Mark all linter problems as information (false is hint)",
+                    "default": true
+                },
                 "coboleditor.linter_unused_paragraphs_or_sections": {
                     "type": "boolean",
                     "title": "Enable basic linting",
@@ -432,7 +438,13 @@
                     },
                     "default": []
                 },
-                "coboleditor.linter_house_standards": {
+                "coboleditor.linter_house_standards" : {
+                    "type" : "boolean",
+                    "title" : "Enable house standard rules",
+                    "description" : "Enable house standard rules",
+                    "default" : false
+                },
+                "coboleditor.linter_house_standards_rules": {
                     "type": "array",
                     "items": {
                         "type": "string",
@@ -440,19 +452,19 @@
                         "properties": {
                             "copybook": {
                                 "type": "string",
-                                "description": "rule"
+                                "description": "rule (regex)"
                             }
                         }
                     },
                     "default": [
-                        "file=*",
-                        "working-storage=*",
-                        "object-storage=*",
-                        "local-storage=*",
-                        "linkage=*",
-                        "communication=*",
-                        "report=*",
-                        "screen=*"
+                        "file=.*",
+                        "working-storage=.*",
+                        "object-storage=.*",
+                        "local-storage=.*",
+                        "linkage=.*",
+                        "communication=.*",
+                        "report=.*",
+                        "screen=.*"
                     ]
                 }
             }

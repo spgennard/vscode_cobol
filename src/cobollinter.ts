@@ -7,9 +7,8 @@ import { ICOBOLSettings } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { logMessage } from './extension';
 
-function regexToWildcard(wildcard: string): RegExp {
-    let w = wildcard.replace(/[.+^${}()|[\]\\]/g, '\\$&'); // regexp escape
-    return new RegExp(`^${w.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
+function makeRegex(partialRegEx: string): RegExp {
+    return new RegExp("^"+partialRegEx+"$","i");
 }
 
 export class CobolLinterActionFixer implements CodeActionProvider {
@@ -56,7 +55,7 @@ export class CobolLinterProvider {
     private settings: ICOBOLSettings;
 
     private collection: vscode.DiagnosticCollection;
-    private diagCollect: vscode.DiagnosticSeverity;
+    private linterSev: vscode.DiagnosticSeverity;
 
     private current?: COBOLQuickParse;
     private currentVersion?: number;
@@ -65,7 +64,7 @@ export class CobolLinterProvider {
     constructor(collection: vscode.DiagnosticCollection, settings: ICOBOLSettings) {
         this.collection = collection;
         this.settings = settings;
-        this.diagCollect = vscode.DiagnosticSeverity.Information;
+        this.linterSev = settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
     }
 
     public static NotReferencedMarker_internal: string = "COBOL_NOT_REF";
@@ -98,32 +97,77 @@ export class CobolLinterProvider {
         let diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
 
+        this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
+
         if (qp.configHandler.linter_unused_paragraphs_or_sections) {
             this.processParsedDocumentForUnusedSymbols(qp, diagRefs);
         }
 
-        // this.processParsedDocumentForStandards(qp,diagRefs);
+        if (qp.configHandler.linter_house_standards_rules) {
+            this.processParsedDocumentForStandards(qp, diagRefs);
+        }
 
         for (let [f, value] of diagRefs) {
             let u = vscode.Uri.file(f);
             this.collection.set(u, value);
         }
     }
-    private processParsedDocumentForStandards(qp: COBOLQuickParse,  diagRefs: Map<string, vscode.Diagnostic[]>) {
+
+    private processParsedDocumentForStandards(qp: COBOLQuickParse, diagRefs: Map<string, vscode.Diagnostic[]>) {
 
         if (this.sourceRefs === undefined) {
             return;
         }
 
+        let standards: string[] = qp.configHandler.linter_house_standards_rules;
+        let standardsMap = new Map<string, string>();
+        let ruleRegexMap = new Map<string, RegExp>();
+
+        for (let standard of standards) {
+            let sectionStandard = standard.split("=", 2);
+            standardsMap.set(sectionStandard[0].toLocaleLowerCase(), sectionStandard[1]);
+        }
+
         let sourceRefs: SharedSourceReferences = this.sourceRefs;
         for (let [key, tokens] of qp.constantsOrVariables) {
-            for(let token of tokens) {
-                logMessage(token.tokenName+" => "+token.inSection.tokenName);
+            for (let token of tokens) {
+                if (token.tokenNameLower === "filler") {
+                    continue;
+                }
+
+                let rule = standardsMap.get(token.inSection.tokenNameLower);
+                if (rule !== undefined) {
+                    let regexForRule = ruleRegexMap.get(token.inSection.tokenNameLower);
+                    if (regexForRule === undefined) {
+                        regexForRule = makeRegex(rule);
+                        ruleRegexMap.set(token.inSection.tokenNameLower, regexForRule);
+                    }
+                    if (regexForRule.test(token.tokenName) === false) {
+                        let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                            new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
+
+                        let d = new vscode.Diagnostic(r, key + ' breaks house standard rule for '+token.inSection.tokenNameLower+" section", this.linterSev);
+                        d.tags = [vscode.DiagnosticTag.Unnecessary];
+
+                        if (diagRefs.has(token.filename)) {
+                            let arr = diagRefs.get(token.filename);
+                            if (arr !== undefined) {
+                                arr.push(d);
+                            }
+                        } else {
+                            let arr: vscode.Diagnostic[] = [];
+                            arr.push(d);
+                            diagRefs.set(token.filename, arr);
+                        }
+
+                    }
+
+                }
             }
         }
     }
 
-    private processParsedDocumentForUnusedSymbols(qp: COBOLQuickParse,  diagRefs: Map<string, vscode.Diagnostic[]>) {
+    private processParsedDocumentForUnusedSymbols(qp: COBOLQuickParse, diagRefs: Map<string, vscode.Diagnostic[]>) {
 
         if (this.sourceRefs === undefined) {
             return;
@@ -139,7 +183,7 @@ export class CobolLinterProvider {
             if (sourceRefs.targetReferences.has(workLower) === false) {
                 let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.diagCollect);
+                let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.linterSev);
                 d.tags = [vscode.DiagnosticTag.Unnecessary];
                 d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
 
@@ -167,7 +211,7 @@ export class CobolLinterProvider {
                 if (sourceRefs.targetReferences.has(workLower) === false) {
                     let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                    let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.diagCollect);
+                    let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
                     d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
                     d.tags = [vscode.DiagnosticTag.Unnecessary];
 

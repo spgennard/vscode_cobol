@@ -37,7 +37,11 @@ export interface ICOBOLSettings {
     cache_directory_strategy: string;
     parse_copybooks_for_references: boolean;
     copybookdirs_order: string[];
+    linter_mark_as_information: boolean;
     linter_unused_paragraphs_or_sections: boolean;
+    linter_house_standards: boolean;
+    linter_house_standards_rules: string[];
+
 }
 
 
@@ -69,7 +73,10 @@ export class COBOLSettings implements ICOBOLSettings {
     public cache_directory_strategy:string;
     public parse_copybooks_for_references: boolean;
     public copybookdirs_order: string[];
+    public linter_mark_as_information: boolean;
     public linter_unused_paragraphs_or_sections: boolean;
+    public linter_house_standards: boolean;
+    public linter_house_standards_rules: string[];
 
     constructor() {
         this.experimential_features = false;
@@ -99,7 +106,10 @@ export class COBOLSettings implements ICOBOLSettings {
         this.cache_directory_strategy = "workspace";
         this.parse_copybooks_for_references = false;
         this.copybookdirs_order = [];
-        this.linter_unused_paragraphs_or_sections = this.linter;
+        this.linter_mark_as_information = false;
+        this.linter_unused_paragraphs_or_sections = true;
+        this.linter_house_standards = true;
+        this.linter_house_standards_rules = [];
     }
 }
 

@@ -11,33 +11,38 @@ export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
 
     public static init() {
-        VSCOBOLConfiguration.config.experimential_features = getExperimentialFeatures();
-        VSCOBOLConfiguration.config.enable_tabstop = isTabstopEnabled();
-        VSCOBOLConfiguration.config.ignorecolumn_b_onwards = getColumBParsing();
-        VSCOBOLConfiguration.config.copybooks_nested = getCopybookNestedInSection();
-        VSCOBOLConfiguration.config.fuzzy_variable_search = getFuzzyVariableSearch();
-        VSCOBOLConfiguration.config.cache_metadata = getCachingSetting();
-        VSCOBOLConfiguration.config.outline = isOutlineEnabled();
-        VSCOBOLConfiguration.config.copybookdirs = getCopybookdirs_defaults(VSCOBOLConfiguration.config.invalid_copybookdirs);
-        VSCOBOLConfiguration.config.pre_parse_line_limit = getPreParseLineLimit();
-        VSCOBOLConfiguration.config.copybookexts = getCopybookExts();
-        VSCOBOLConfiguration.config.tabstops = getTabStops();
-        VSCOBOLConfiguration.config.linter = getLinter();
-        VSCOBOLConfiguration.config.line_comment = getline_comment();
-        VSCOBOLConfiguration.config.fileformat_strategy = getFileformatStrategy();
-        VSCOBOLConfiguration.config.enable_data_provider = getEnable_data_provider();
-        VSCOBOLConfiguration.config.enable_auto_tasks = getEnable_auto_tasks();
-        VSCOBOLConfiguration.config.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
-        VSCOBOLConfiguration.config.intellisense_include_unchanged = getIntellisense_include_unchanged();
-        VSCOBOLConfiguration.config.intellisense_include_camalcase = getIntellisense_include_camalcase();
-        VSCOBOLConfiguration.config.intellisense_include_uppercase = getIntellisense_include_uppercase();
-        VSCOBOLConfiguration.config.intellisense_include_lowercase = getIntellisense_include_lowercase();
-        VSCOBOLConfiguration.config.intellisense_item_limit = getIntellisense_item_limit();
-        VSCOBOLConfiguration.config.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
-        VSCOBOLConfiguration.config.cache_directory_strategy = getCache_directory_strategy();
-        VSCOBOLConfiguration.config.parse_copybooks_for_references = getParse_copybooks_for_references();
-        VSCOBOLConfiguration.config.copybookdirs_order = getCopybookdirs_order();
-        VSCOBOLConfiguration.config.linter_unused_paragraphs_or_sections = getLinter_unused_paragraphs_or_sections();
+        let vsconfig = VSCOBOLConfiguration.config;
+
+        vsconfig.experimential_features = getExperimentialFeatures();
+        vsconfig.enable_tabstop = isTabstopEnabled();
+        vsconfig.ignorecolumn_b_onwards = getColumBParsing();
+        vsconfig.copybooks_nested = getCopybookNestedInSection();
+        vsconfig.fuzzy_variable_search = getFuzzyVariableSearch();
+        vsconfig.cache_metadata = getCachingSetting();
+        vsconfig.outline = isOutlineEnabled();
+        vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
+        vsconfig.pre_parse_line_limit = getPreParseLineLimit();
+        vsconfig.copybookexts = getCopybookExts();
+        vsconfig.tabstops = getTabStops();
+        vsconfig.linter = getLinter();
+        vsconfig.line_comment = getline_comment();
+        vsconfig.fileformat_strategy = getFileformatStrategy();
+        vsconfig.enable_data_provider = getEnable_data_provider();
+        vsconfig.enable_auto_tasks = getEnable_auto_tasks();
+        vsconfig.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
+        vsconfig.intellisense_include_unchanged = getIntellisense_include_unchanged();
+        vsconfig.intellisense_include_camalcase = getIntellisense_include_camalcase();
+        vsconfig.intellisense_include_uppercase = getIntellisense_include_uppercase();
+        vsconfig.intellisense_include_lowercase = getIntellisense_include_lowercase();
+        vsconfig.intellisense_item_limit = getIntellisense_item_limit();
+        vsconfig.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
+        vsconfig.cache_directory_strategy = getCache_directory_strategy();
+        vsconfig.parse_copybooks_for_references = getParse_copybooks_for_references();
+        vsconfig.copybookdirs_order = getCopybookdirs_order();
+        vsconfig.linter_unused_paragraphs_or_sections = getLinter_unused_paragraphs_or_sections();
+        vsconfig.linter_house_standards = getLinter_house_standards();
+        vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
+        vsconfig.linter_mark_as_information = getLinter_mark_as_information();
     }
 
     public static get(): ICOBOLSettings {
@@ -185,6 +190,11 @@ function getLinter(): boolean {
 function getLinter_unused_paragraphs_or_sections(): boolean {
     return getBoolean("linter_unused_paragraphs_or_sections", true);
 }
+
+function getlinter_mark_as_information(): boolean {
+    return getBoolean("linter_mark_as_information", true);
+}
+
 function getFuzzyVariableSearch(): boolean {
     return getBoolean('fuzzy_variable_search', false);
 }
@@ -227,6 +237,14 @@ function getIntellisense_include_lowercase(): boolean {
 
 function getMigrate_copybooks_directories_to_workspace(): boolean {
     return getBoolean("migrate_network_copybooks_directories_to_workspace", true);
+}
+
+function getLinter_house_standards(): boolean {
+    return getBoolean("linter_house_standards", true);
+}
+
+function getLinter_mark_as_information(): boolean {
+    return getBoolean("linter_mark_as_information", true);
 }
 
 function getCache_directory_strategy(): string {
@@ -394,4 +412,14 @@ function getCopybookdirs_order():string[] {
         dirs = [];
     }
     return dirs;
+}
+
+
+function getlinter_house_standards_rules(): string[] {
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let standards = editorConfig.get<string[]>('linter_house_standards_rules');
+    if (!standards || (standards !== null && standards.length === 0)) {
+        standards = [];
+    }
+    return standards;
 }
