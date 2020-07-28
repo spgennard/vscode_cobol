@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#169](https://github.com/spgennard/vscode_cobol/issues/169) parsing metadata should catch ENOENT  
+
+**parsing metadata should catch ENOENT Fix #169**
+
+
+[c43bfa11a406ee3](https://github.com/spgennard/vscode_cobol/commit/c43bfa11a406ee3) *2020-07-28 20:47:50*
+
+
 ## 6.5.24
 ### GitHub [#172](https://github.com/spgennard/vscode_cobol/issues/172) ISO2002: Conditional Compilation - Directive syntax highlighting  
 
