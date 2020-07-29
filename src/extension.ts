@@ -210,7 +210,7 @@ function initExtensions(config: ICOBOLSettings) {
 }
 
 export function showLogChannel() {
-    COBOLOutputChannel.show();
+    COBOLOutputChannel.show(true);
 }
 
 function activateLogChannel() {
