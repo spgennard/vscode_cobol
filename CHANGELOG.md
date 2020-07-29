@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.5.27
 ### GitHub [#169](https://github.com/spgennard/vscode_cobol/issues/169) parsing metadata should catch ENOENT  
 
 **parsing metadata should catch ENOENT Fix #169**
