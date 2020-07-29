@@ -75,7 +75,7 @@ export default class VSQuickCOBOLParse {
         }
 
         if (getWorkspaceFolders()) {
-            logMessage(" Starting to process metadata from workspace folders");
+            logMessage("Starting to process metadata from workspace folders");
             showLogChannel(onStartup ? false : true);
 
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
@@ -92,7 +92,7 @@ export default class VSQuickCOBOLParse {
 
             if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
                 for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                    let p =VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false)
+                    let p =VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
                     promises.push(p);
                 }
             }
@@ -130,9 +130,6 @@ export default class VSQuickCOBOLParse {
 
                         let filefs = new FileSourceHandler(filename, false, false);
                         let qcp = new COBOLQuickParse(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
-                        if (qcp.sourceLooksLikeCOBOL) {
-                            logMessage(" - Processed file : " + filename);
-                        }
                     }
                 }
             }

@@ -808,7 +808,10 @@ export function activate(context: ExtensionContext) {
     }
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
-        VSQuickCOBOLParse.processAllFilesInWorkspaces(false);
+        const pm_cache_promise = async () => {
+            VSQuickCOBOLParse.processAllFilesInWorkspaces(false);
+            };
+            pm_cache_promise();
     }
 }
 
