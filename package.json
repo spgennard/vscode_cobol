@@ -452,6 +452,7 @@
                     },
                     "default": [
                         "file=.*",
+                        "thread-local=.*",
                         "working-storage=.*",
                         "object-storage=.*",
                         "local-storage=.*",
