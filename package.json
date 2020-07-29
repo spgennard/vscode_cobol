@@ -1567,7 +1567,7 @@
     },
     "devDependencies": {
         "@types/minimatch": "^3.0.3",
-        "@types/node": "^14.0.26",
+        "@types/node": "^14.0.27",
         "@types/vscode": "^1.47.0",
         "ncu": "^0.2.1",
         "ts-loader": "^8.0.1",
