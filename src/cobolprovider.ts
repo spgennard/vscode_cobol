@@ -75,7 +75,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         let includeUpper: boolean = iconfig.intellisense_include_uppercase;
         let includeLower: boolean = iconfig.intellisense_include_lowercase;
         let includeAsIS: boolean = iconfig.intellisense_include_unchanged;
-        let includeCamelCase: boolean = iconfig.intellisense_include_camalcase;
+        let includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
         let limit: number = iconfig.intellisense_item_limit;
 
         let words: COBOLToken[] = tsearch.get(wordToComplete);

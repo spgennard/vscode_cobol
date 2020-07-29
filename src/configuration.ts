@@ -30,7 +30,7 @@ export class VSCOBOLConfiguration {
         vsconfig.enable_data_provider = getEnable_data_provider();
         vsconfig.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
         vsconfig.intellisense_include_unchanged = getIntellisense_include_unchanged();
-        vsconfig.intellisense_include_camalcase = getIntellisense_include_camalcase();
+        vsconfig.intellisense_include_camelcase = getintellisense_include_camelcase();
         vsconfig.intellisense_include_uppercase = getIntellisense_include_uppercase();
         vsconfig.intellisense_include_lowercase = getIntellisense_include_lowercase();
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
@@ -205,8 +205,8 @@ function getIntellisense_include_unchanged():boolean {
     return getBoolean("intellisense_include_unchanged", true);
 }
 
-function getIntellisense_include_camalcase(): boolean {
-    return getBoolean("intellisense_include_camalcase",false);
+function getintellisense_include_camelcase(): boolean {
+    return getBoolean("intellisense_include_camelcase",false);
 }
 function getIntellisense_include_uppercase(): boolean {
     return getBoolean("intellisense_include_uppercase", false);

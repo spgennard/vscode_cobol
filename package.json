@@ -381,10 +381,10 @@
                     "description": "Include result unchanged in intellisense results (default true)",
                     "default": true
                 },
-                "coboleditor.intellisense_include_camalcase": {
+                "coboleditor.intellisense_include_camelcase": {
                     "type": "boolean",
-                    "title": "Include camalcase in intellisense results",
-                    "description": "Include camalcase in intellisense results (default false)",
+                    "title": "Include camelcase in intellisense results",
+                    "description": "Include camelcase in intellisense results (default false)",
                     "default": false
                 },
                 "coboleditor.intellisense_include_uppercase": {
