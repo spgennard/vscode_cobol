@@ -16,7 +16,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        let sf: COBOLQuickParse | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        let sf: COBOLQuickParse|undefined = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
@@ -117,7 +117,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     }
 
-    provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
+    public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         let items: CompletionItem[] = [];
 
         if (this.iconfig.enable_data_provider === false) {

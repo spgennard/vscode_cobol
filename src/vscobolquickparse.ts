@@ -30,8 +30,9 @@ export default class VSQuickCOBOLParse {
         return false;
     }
 
-    public static getCachedObject(document: TextDocument): COBOLQuickParse {
+    public static getCachedObject(document: TextDocument): COBOLQuickParse|undefined {
         let fileName: string = document.fileName;
+
         /* if the document is edited, drop the in cached object */
         if (document.isDirty) {
             InMemoryCache.delete(fileName);
@@ -64,55 +65,57 @@ export default class VSQuickCOBOLParse {
     }
 
 
-    public static processAllFilesInWorkspaces() {
-        showLogChannel();
+    public static async  processAllFilesInWorkspaces(onStartup:boolean) {
+        showLogChannel(false);
 
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
             logMessage("Metadata cache is off, no action taken");
+            showLogChannel(false);
             return;
         }
 
         if (getWorkspaceFolders()) {
+            logMessage(" Starting to process metadata from workspace folders");
+            showLogChannel(onStartup ? false : true);
+
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+            let promises: Promise<boolean>[] = [];
             var start = performance_now();
 
             let ws = getWorkspaceFolders();
             if (ws !== undefined) {
                 for (var folder of ws) {
-                    try {
-                        VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
-                    }
-                    catch (re) {
-                        logMessage(`Processing ${folder.uri.fsPath} aborted early due to ${re.name}`);
-                    }
+                    let p = VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
+                    promises.push(p);
                 }
             }
 
             if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
                 for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-
-                    try {
-                        VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
-                    }
-                    catch (re) {
-                        logMessage(`Processing ${i} aborted early due to ${re.name}`);
-                    }
+                    let p =VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false)
+                    promises.push(p);
                 }
             }
+            await Promise.all(promises);
+
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
             var end = performance_now() - start;
             logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
+        } else {
+            logMessage(" No workspaces folders present, no metadata processed.");
         }
     }
 
 
-    private static processAllFilesDirectory(cacheDirectory: string, dir: string) {
+    private static async processAllFilesDirectory(cacheDirectory: string, dir: string):Promise<boolean> {
         for (var file of fs.readdirSync(dir)) {
             VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, path.join(dir, file), true);
         }
+
+        return true;
     }
 
-    private static processFileInDirectory(cacheDirectory: string, filename: string, filterOnExtension: boolean) {
+    private static async processFileInDirectory(cacheDirectory: string, filename: string, filterOnExtension: boolean): Promise<boolean> {
         if (this.isFile(filename) === false) {
             return false;
         }
@@ -134,6 +137,7 @@ export default class VSQuickCOBOLParse {
                 }
             }
         }
+        return true;
     }
 
     public static getCacheDirectory(): string {

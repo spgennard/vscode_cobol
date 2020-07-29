@@ -16,7 +16,6 @@ import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
 import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
-import { config } from "process";
 import { CobolLinterProvider } from "./cobollinter";
 
 var lzjs = require('lzjs');
@@ -1374,18 +1373,18 @@ export default class COBOLQuickParse implements ICommentCallback {
                     }
                     if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                         this.copyBooksUsed.set(trimmedCopyBook, copyToken);
-                    }
 
-                    if (this.sourceReferences !== undefined && this.configHandler.parse_copybooks_for_references) {
-                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
-                        if (fileName.length > 0) {
-                            let qfile = new FileSourceHandler(fileName, false, false);
-                            let currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
-                            state.ignoreInOutlineView = true;
-                            this.sourceReferences.topLevel = false;
-                            let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
-                            this.sourceReferences.topLevel = true;
-                            state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                        if (this.sourceReferences !== undefined && this.configHandler.parse_copybooks_for_references) {
+                            let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
+                            if (fileName.length > 0) {
+                                let qfile = new FileSourceHandler(fileName, false, false);
+                                let currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
+                                state.ignoreInOutlineView = true;
+                                this.sourceReferences.topLevel = false;
+                                let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                                this.sourceReferences.topLevel = true;
+                                state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                            }
                         }
                     }
                     continue;
@@ -1547,7 +1546,7 @@ export default class COBOLQuickParse implements ICommentCallback {
         return token;
     }
 
-     private addinMissingEndlings(sourceHandler: ISourceHandler) {
+    private addinMissingEndlings(sourceHandler: ISourceHandler) {
         for (let i = 0; i < this.tokensInOrder.length; i++) {
             let token = this.tokensInOrder[i];
 
@@ -1595,15 +1594,19 @@ export default class COBOLQuickParse implements ICommentCallback {
                         let filename = args[offset].trim();
                         let fileName = expandLogicalCopyBookToFilenameOrEmpty(filename, "");
                         if (fileName.length > 0) {
-                            let qfile = new FileSourceHandler(fileName, false, false);
-                            let currentIgnoreInOutlineView: boolean = this.state.ignoreInOutlineView;
-                            this.state.ignoreInOutlineView = true;
-                            this.sourceReferences.topLevel = false;
-                            let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
-                            this.sourceReferences.topLevel = true;
-                            this.state.ignoreInOutlineView = currentIgnoreInOutlineView;
-                        } else {
-                            logMessage(" WARNING: "+this.cobolPreProcCopybook+" unable to locate "+filename);
+                            if (this.copyBooksUsed.has(fileName) === false) {
+                                this.copyBooksUsed.set(fileName, COBOLToken.Null);
+
+                                let qfile = new FileSourceHandler(fileName, false, false);
+                                let currentIgnoreInOutlineView: boolean = this.state.ignoreInOutlineView;
+                                this.state.ignoreInOutlineView = true;
+                                this.sourceReferences.topLevel = false;
+                                let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                                this.sourceReferences.topLevel = true;
+                                this.state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                            } else {
+                                logMessage(" WARNING: " + this.cobolPreProcCopybook + " unable to locate " + filename);
+                            }
                         }
                     }
                 }

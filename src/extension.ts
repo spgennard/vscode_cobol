@@ -29,7 +29,6 @@ import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceviewtree';
-import { GnuCOBCTaskDefinition, getTaskForCOBC, getCOBOLTasks_for_cobc, MFCOBOLTaskDefinition, getCOBOLTasks_for_mfcobol, getTaskForCOBOL } from './taskdefs';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
 import { ICOBOLSettings } from './iconfiguration';
@@ -38,7 +37,6 @@ const propertiesReader = require('properties-reader');
 
 import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
-var which = require('which');
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -46,7 +44,7 @@ var currentContext: ExtensionContext;
 const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 
 
-export function getcopybookdirs(): string[] {
+export function getCombinedCopyBookSearchPath(): string[] {
     return fileSearchDirectory;
 }
 
@@ -74,46 +72,6 @@ export function isFile(sdir: string): boolean {
 
     }
     return false;
-}
-
-export function getLogicalCopybookdirs(prefix: string, suffix: string): string {
-    let copyBookLine: string = "";
-    var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
-
-    for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-        var extdir_direct = extsdir[extsdirpos];
-        if (isDirectPath(extdir_direct)) {
-            let sdir: string;
-            sdir = extdir_direct;
-            if (isDirectory(sdir)) {
-                copyBookLine += prefix + sdir + suffix;
-            }
-        }
-    }
-
-    let ws = getWorkspaceFolders();
-    if (ws !== undefined) {
-        for (var folder of ws) {
-            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-                try {
-                    var extdir = extsdir[extsdirpos];
-
-                    let sdir: string;
-                    if (isDirectPath(extdir) === false) {
-                        sdir = path.join(folder.uri.fsPath, extdir);
-                        if (isDirectory(sdir)) {
-                            copyBookLine += prefix + "${workspaceFolder}/" + extdir + suffix;
-                        }
-                    }
-                }
-                catch (e) {
-                    logException("dir", e);
-                }
-            }
-        }
-    }
-
-    return copyBookLine;
 }
 
 let fileSearchDirectory: string[] = [];
@@ -145,13 +103,14 @@ function initExtensions(config: ICOBOLSettings) {
     invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
     invalidSearchDirectory.length = 0;
 
-    for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-        var ddir = extsdir[extsdirpos];
+    // step 1 look through the copybook default dirs for "direct" paths and include them in search path
+    for (let ddir in extsdir) {
         if (config.disable_unc_copybooks_directories && isNetworkPath(ddir)) {
             logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
             invalidSearchDirectory.push(ddir);
         }
         else if (isDirectPath(ddir)) {
+            logMessage(` Warning: non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
                 if (isPathInWorkspace(ddir) === false) {
                     if (isNetworkPath(ddir)) {
@@ -168,6 +127,7 @@ function initExtensions(config: ICOBOLSettings) {
                     fileSearchDirectory.push(ddir);
                 } else {
                     logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
+                    invalidSearchDirectory.push(ddir);
                 }
             } else {
                 invalidSearchDirectory.push(ddir);
@@ -175,17 +135,19 @@ function initExtensions(config: ICOBOLSettings) {
         }
     }
 
+    // step 2
     let ws = getWorkspaceFolders();
     if (ws !== undefined) {
         for (var folder of ws) {
-            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
+            // place the workspace folder in the copybook path
+
+            fileSearchDirectory.push(folder.uri.fsPath);
+
+            /* now add any extra directories that are below this workspace folder */
+            for (let extdir of extsdir) {
                 try {
-                    var extdir = extsdir[extsdirpos];
-
-                    let sdir: string;
-
                     if (isDirectPath(extdir) === false) {
-                        sdir = path.join(folder.uri.fsPath, extdir);
+                        let sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
                             if (isNetworkPath(sdir) && isPathInWorkspace(sdir) === false) {
@@ -209,8 +171,8 @@ function initExtensions(config: ICOBOLSettings) {
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
-export function showLogChannel() {
-    COBOLOutputChannel.show();
+export function showLogChannel(preservefocus:boolean) {
+    COBOLOutputChannel.show(preservefocus);
 }
 
 function activateLogChannel() {
@@ -235,30 +197,24 @@ function activateLogChannel() {
     if (thisExtension !== undefined) {
         let ws = getWorkspaceFolders();
         if (ws !== undefined) {
-            logMessage("  Workspace Folders");
+            logMessage("  Workspace Folders:");
             for (var folder of ws) {
                 logMessage("   => " + folder.name+" @ "+folder.uri.fsPath);
             }
         }
 
-        var extsdir = fileSearchDirectory;
+        var extsdir = getCombinedCopyBookSearchPath();
         if (extsdir.length !== 0) {
-            logMessage("  CopyBook Search directories (" + extsdir.length + ")");
-            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-                let sdir = extsdir[extsdirpos];
+            logMessage("  Combined Workspace and CopyBook Folders to search:");
+            for(let sdir of extsdir){
                 logMessage("   => " + sdir);
             }
-
-            let logicalDirs = getLogicalCopybookdirs("", " ");
-            logMessage("  CopyBook Search directories (logical)");
-            logMessage("   => " + logicalDirs);
         }
 
         extsdir = invalidSearchDirectory;
         if (extsdir.length !== 0) {
             logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
-            for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-                let sdir = extsdir[extsdirpos];
+            for(let sdir of extsdir){
                 logMessage("   => " + sdir);
             }
         }
@@ -414,11 +370,8 @@ export function activate(context: ExtensionContext) {
         updateDecorations(act);
     });
 
-    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', (editor) => {
-        return new Promise(resolve => {
-            VSQuickCOBOLParse.processAllFilesInWorkspaces();
-            resolve("Complete");
-        });
+    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace',  async () => {
+            VSQuickCOBOLParse.processAllFilesInWorkspaces(true);
     });
 
     var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
@@ -450,6 +403,13 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
+    const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
+        VSCOBOLConfiguration.init();
+        COBOLOutputChannel.clear();
+        activateLogChannel();
+    });
+    context.subscriptions.push(onDidChangeWorkspaceFolders);
+
     // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument((doc) => {
         flip_plaintext(doc);
@@ -471,65 +431,6 @@ export function activate(context: ExtensionContext) {
     watcher.onDidDelete((uri) => {
         treeView.clearFile(uri);
     });
-
-
-    if (VSCOBOLConfiguration.getEnable_auto_tasks()) {
-        let cobcLocation = which.sync('cobc', { nothrow: true });
-
-        if (cobcLocation !== null) {
-            let cobolTaskPromise4cobc: Thenable<Task[]> | undefined = undefined;
-
-            const taskProvider4cobc = tasks.registerTaskProvider('cobc', {
-                provideTasks: () => {
-                    if (!cobolTaskPromise4cobc) {
-                        cobolTaskPromise4cobc = getCOBOLTasks_for_cobc("cobol_syntax_check_with_cobc", true);
-                    }
-                    return cobolTaskPromise4cobc;
-                },
-                resolveTask(task: Task): Task | undefined {
-                    if (task) {
-                        const definition: GnuCOBCTaskDefinition = <any>task.definition;
-                        if (definition.extraArguments || definition.syntaxCheck) {
-                            return getTaskForCOBC(definition, definition.label, definition.syntaxCheck);
-                        }
-                        return task;
-                    }
-                    return undefined;
-                }
-
-            });
-
-            context.subscriptions.push(taskProvider4cobc);
-        }
-
-
-        let cobolLocation = which.sync('cobol.exe', { nothrow: true });
-        if (cobolLocation !== null) {
-            let cobolTaskPromise4cobol: Thenable<Task[]> | undefined = undefined;
-
-            const taskProvider4cobc = tasks.registerTaskProvider('mfcobol', {
-                provideTasks: () => {
-                    if (!cobolTaskPromise4cobol) {
-                        cobolTaskPromise4cobol = getCOBOLTasks_for_mfcobol("cobol_syntax_check_with_mfcobol", true);
-                    }
-                    return cobolTaskPromise4cobol;
-                },
-                resolveTask(task: Task): Task | undefined {
-                    if (task) {
-                        const definition: MFCOBOLTaskDefinition = <any>task.definition;
-                        if (definition.extraArguments || definition.syntaxCheck) {
-                            return getTaskForCOBOL(definition, definition.label, definition.syntaxCheck);
-                        }
-                        return task;
-                    }
-                    return undefined;
-                }
-
-            });
-
-            context.subscriptions.push(taskProvider4cobc);
-        }
-    }
 
     window.registerTreeDataProvider('flat-source-view', treeView);
 
@@ -907,7 +808,7 @@ export function activate(context: ExtensionContext) {
     }
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
-        commands.executeCommand("cobolplugin.processAllFilesInWorkspace");
+        VSQuickCOBOLParse.processAllFilesInWorkspaces(false);
     }
 }
 
@@ -952,24 +853,18 @@ export function logTimedMessage(timeTaken: number, message: string, ...parameter
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         let m: string = util.format(message, parameters);
         COBOLOutputChannel.appendLine(m.padEnd(60) + fixedTimeTaken);
-        //console.log(util.format(message, parameters) + "\n");
-        return;
+    } else {
+        COBOLOutputChannel.appendLine(message.padEnd(60) + fixedTimeTaken);
     }
-
-    COBOLOutputChannel.appendLine(message.padEnd(60) + fixedTimeTaken);
-    //console.log(message + "\n");
 }
 
 
 export function logMessage(message: string, ...parameters: any[]) {
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
-        //console.log(util.format(message, parameters) + "\n");
-        return;
+    } else {
+        COBOLOutputChannel.appendLine(message);
     }
-
-    COBOLOutputChannel.appendLine(message);
-    //console.log(message + "\n");
 }
 
 

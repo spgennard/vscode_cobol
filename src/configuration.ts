@@ -28,7 +28,6 @@ export class VSCOBOLConfiguration {
         vsconfig.line_comment = getline_comment();
         vsconfig.fileformat_strategy = getFileformatStrategy();
         vsconfig.enable_data_provider = getEnable_data_provider();
-        vsconfig.enable_auto_tasks = getEnable_auto_tasks();
         vsconfig.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
         vsconfig.intellisense_include_unchanged = getIntellisense_include_unchanged();
         vsconfig.intellisense_include_camalcase = getIntellisense_include_camalcase();
@@ -47,11 +46,6 @@ export class VSCOBOLConfiguration {
 
     public static get(): ICOBOLSettings {
         return VSCOBOLConfiguration.config;
-    }
-
-    public static getEnable_auto_tasks() : boolean
-    {
-        return VSCOBOLConfiguration.config.enable_auto_tasks;
     }
 
     public static getExperimentialFeatures(): boolean {
@@ -202,11 +196,6 @@ function getFuzzyVariableSearch(): boolean {
 function getEnable_data_provider() : boolean {
     return getBoolean('enable_data_provider', true);
 }
-
-function getEnable_auto_tasks() : boolean {
-    return getBoolean('enable_auto_tasks', false);
-}
-
 function getDisable_unc_copybooks_directories(): boolean {
     return getBoolean('disable_unc_copybooks_directories', false);
 

@@ -286,7 +286,12 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         let file = new VSCodeSourceHandler(activeEditor.document, false);
-        let current: COBOLQuickParse = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
+        let current: COBOLQuickParse|undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
+        if (current === undefined) {
+            logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
+            return;
+        }
+
         let edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (var l = 0; l < file.getLineCount(); l++) {

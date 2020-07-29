@@ -299,7 +299,7 @@ export function isSupportedLanguage(document: TextDocument): TextLanguage {
     return TextLanguage.Unknown;
 }
 
-export default function updateDecorations(activeTextEditor: TextEditor | undefined) {
+export default async function updateDecorations(activeTextEditor: TextEditor | undefined) {
     if (!activeTextEditor) {
         hideMarginStatusBar();
         return;

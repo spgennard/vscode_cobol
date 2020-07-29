@@ -19,15 +19,6 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
-    private setupCOBOLQuickParse(document: vscode.TextDocument) {
-        // cache current document, interatives search to be faster
-        if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSQuickCOBOLParse.getCachedObject(document);
-            this.sourceRefs = this.current.sourceReferences;
-            this.currentVersion = document.version;
-        }
-    }
-
     private processSearch(
         document: vscode.TextDocument,
         position: vscode.Position): Thenable<vscode.Location[] | null> {
@@ -40,7 +31,15 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
         let workLower = word.toLocaleLowerCase();
 
-        this.setupCOBOLQuickParse(document);
+        // cache current document, interatives search to be faster
+        if (this.current === undefined || this.currentVersion !== document.version) {
+            this.current = VSQuickCOBOLParse.getCachedObject(document);
+            if (this.current !== undefined) {
+                this.sourceRefs = this.current.sourceReferences;
+                this.currentVersion = document.version;
+            }
+        }
+
         if (this.current === undefined || this.sourceRefs === undefined) {
             return Promise.resolve(null);
         }

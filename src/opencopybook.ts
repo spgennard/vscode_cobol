@@ -4,9 +4,10 @@ import { Range, TextDocument, workspace, Definition, Position, CancellationToken
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getcopybookdirs, logException, isFile } from './extension';
+import { getCombinedCopyBookSearchPath, logException, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
+import { fstat } from 'fs';
 
 export function isValidExtension(filename: string): boolean {
     switch (filename) {
@@ -101,6 +102,7 @@ export function isNetworkPath(dir: string) {
         if (dir.length > 1 && dir[0] === '\\') {
             return true;
         }
+        path.win32.toNamespacedPath
     }
 
     return false;
@@ -131,109 +133,89 @@ export function isDirectPath(dir: string) {
     return false;
 }
 
-function findFileInDirectory(filename: string, filenameDir: string): string {
+function findCopyBook(filename: string): string {
     if (!filename) {
         return "";
     }
 
-    // searching in cwd does not make sense, as it can change
-    if (filenameDir === '.') {
-        return "";
-    }
+    let hasDot = filename.indexOf(".");
 
-    var fileExtension = filename.split('.').pop();
-    var baseextsdir = getcopybookdirs();
-    var extsdir = [...baseextsdir];
-    extsdir.push(filenameDir);
-    for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-        var extdir = extsdir[extsdirpos];
+    for (let copybookdir of getCombinedCopyBookSearchPath()) {
+        /* check for the file as is.. */
+        let firstPossibleFile = path.join(copybookdir, filename);
+        if (isFile(firstPossibleFile)) {
+            return firstPossibleFile;
+        }
 
-        const basefullPath = isDirectPath(extdir) ?
-            path.join(extdir, filename) :
-            path.join(filenameDir, extdir + path.sep + filename);
-
-        //No extension?
-        if (filename === fileExtension) {
+        /* no extension? */
+        if (hasDot === -1) {
             // search through the possible extensions
-            const exts = VSCOBOLConfiguration.getExtentions();
-            for (let extpos = 0; extpos < exts.length; extpos++) {
-                var ext = exts[extpos];
-                var possibleFile = basefullPath + (ext.length !== 0 ? "." + ext : "");
+            for (let ext in VSCOBOLConfiguration.getExtentions()) {
+                let possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
                     return possibleFile;
                 }
             }
-        } else {
-            if (isFile(basefullPath)) {
-                return basefullPath;
-            }
         }
+
     }
 
     return "";
 }
 
-function findFileInDirectoryOrWorkspace(filename: string, filenameDir: string): string {
+
+function findCopyBookInDirectory(filename: string,inDirectory: string): string {
     if (!filename) {
         return "";
     }
 
-    let isDirectPath:boolean = false;
-    if (filenameDir.startsWith("/") || filenameDir.startsWith("\\")) {
-        isDirectPath = true;
-    }
+    let hasDot = filename.indexOf(".");
 
-    if (isDirectPath && filenameDir.length !== 0) {
-        var foundFile = findFileInDirectory(filename, filenameDir);
-        if (foundFile.length !== 0) {
-            return foundFile;
+    for (let baseCopybookdir of getCombinedCopyBookSearchPath()) {
+        let copybookdir = path.join(baseCopybookdir, inDirectory);
+
+        /* check for the file as is.. */
+        let firstPossibleFile = path.join(copybookdir, filename);
+        if (isFile(firstPossibleFile)) {
+            return firstPossibleFile;
         }
-    }
 
-    let ws = getWorkspaceFolders();
-    if (ws !== undefined) {
-        for (var folder of ws) {
-            let foundFile = findFileInDirectory(filename, folder.uri.fsPath);
-            if (foundFile.length !== 0) {
-                return foundFile;
-            }
+        /* no extension? */
+        if (hasDot === -1) {
+            // search through the possible extensions
+            for (let ext in VSCOBOLConfiguration.getExtentions()) {
+                let possibleFile = path.join(copybookdir, filename + "." + ext);
 
-            if (isDirectPath === false && filenameDir.length !== 0) {
-                let foundFile = findFileInDirectory(filename, path.join(folder.uri.fsPath, filenameDir));
-                if (foundFile.length !== 0) {
-                    return foundFile;
+                if (isFile(possibleFile)) {
+                    return possibleFile;
                 }
-
             }
         }
+
     }
+
     return "";
 }
 
-export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string): string {
-    let fullPath = "";
 
-    try {
-        fullPath = findFileInDirectoryOrWorkspace(filename, inDirectory);
+export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string): string {
+
+    if (inDirectory === null || inDirectory.length === 0) {
+        let fullPath = findCopyBook(filename);
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }
 
-        let lastDot = filename.lastIndexOf(".");
-        if (lastDot !== -1) {
-            let filenameNoExtension = filename.substr(0, lastDot);
-            fullPath = findFileInDirectoryOrWorkspace(filenameNoExtension, inDirectory);
-            if (fullPath.length !== 0) {
-                return path.normalize(fullPath);
-            }
-        }
-    }
-    catch (ex) {
-        logException("expandLogicalCopyBookToFilenameOrEmpty", ex);
+        return fullPath;
     }
 
-    return "";
+    let fullPath = findCopyBookInDirectory(filename, inDirectory);
+    if (fullPath.length !== 0) {
+        return path.normalize(fullPath);
+    }
+
+    return fullPath;
 }
 
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
@@ -243,21 +225,21 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
     const filename = extractCopyBoolFilename(text);
     const inPos = text.toLowerCase().indexOf("in");
 
-    let inDirectory = inPos !== -1 ? text.substr(2+inPos) : "";
+    let inDirectory = inPos !== -1 ? text.substr(2 + inPos) : "";
 
     if (inDirectory.length !== 0) {
         let inDirItems = inDirectory.trim();
 
         if (inDirItems.endsWith(".")) {
-            inDirItems = inDirItems.substr(0, inDirItems.length-1);
+            inDirItems = inDirItems.substr(0, inDirItems.length - 1);
         }
 
         if (inDirItems.endsWith("\"") && inDirItems.startsWith("\"")) {
-            inDirItems = inDirItems.substr(1, inDirItems.length-2);
+            inDirItems = inDirItems.substr(1, inDirItems.length - 2);
         }
 
         if (inDirItems.endsWith("'") && inDirItems.startsWith("'")) {
-            inDirItems = inDirItems.substr(1, inDirItems.length-2);
+            inDirItems = inDirItems.substr(1, inDirItems.length - 2);
         }
 
         inDirectory = inDirItems;

@@ -70,7 +70,7 @@ export class CobolLinterProvider {
     public static NotReferencedMarker_internal: string = "COBOL_NOT_REF";
     public static NotReferencedMarker_external: string = "ignore";
 
-    public updateLinter(document: vscode.TextDocument,): void {
+    public async updateLinter(document: vscode.TextDocument) {
 
         if (this.settings.linter === false) {
             this.collection.clear();

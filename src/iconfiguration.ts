@@ -26,7 +26,6 @@ export interface ICOBOLSettings {
     line_comment: boolean;
     fileformat_strategy: string;
     enable_data_provider:boolean;
-    enable_auto_tasks: boolean;
     disable_unc_copybooks_directories: boolean;
     intellisense_include_unchanged: boolean;
     intellisense_include_camalcase:boolean;
@@ -41,9 +40,7 @@ export interface ICOBOLSettings {
     linter_unused_paragraphs_or_sections: boolean;
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
-
 }
-
 
 export class COBOLSettings implements ICOBOLSettings {
     public tabstops: number[];
@@ -62,7 +59,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public invalid_copybookdirs: string[];
     public fileformat_strategy: string;
     public enable_data_provider: boolean;
-    public enable_auto_tasks: boolean;
     public disable_unc_copybooks_directories: boolean;
     public intellisense_include_unchanged:boolean;
     public intellisense_include_camalcase:boolean;
@@ -95,7 +91,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter = false;
         this.line_comment = false;
         this.enable_data_provider = true;
-        this.enable_auto_tasks = false;
         this.disable_unc_copybooks_directories = false;
         this.intellisense_include_unchanged = true;
         this.intellisense_include_camalcase = false;
