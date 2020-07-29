@@ -12,6 +12,14 @@ Changelog for spgennard vscode_cobol.
 [c43bfa11a406ee3](https://github.com/spgennard/vscode_cobol/commit/c43bfa11a406ee3) *2020-07-28 20:47:50*
 
 
+### GitHub [#176](https://github.com/spgennard/vscode_cobol/issues/176) typo-bug in setting coboleditor.intellisense_include_camalcase  
+
+**typo-bug in setting coboleditor.intellisense_include_camalcase Fix #176**
+
+
+[2b0ac1db78cccfb](https://github.com/spgennard/vscode_cobol/commit/2b0ac1db78cccfb) *2020-07-29 18:56:56*
+
+
 ## 6.5.24
 ### GitHub [#172](https://github.com/spgennard/vscode_cobol/issues/172) ISO2002: Conditional Compilation - Directive syntax highlighting  
 
