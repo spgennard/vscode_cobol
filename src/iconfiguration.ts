@@ -1,4 +1,3 @@
-import { workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 
 export enum outlineFlag {
@@ -112,7 +111,7 @@ export class COBOLSettingsHelper {
     public static isCachingEnabled(setting: ICOBOLSettings): boolean {
         if (getWorkspaceFolders())
         {
-            var cacheEnum = setting.cache_metadata;
+            let cacheEnum = setting.cache_metadata;
 
             switch (cacheEnum) {
                 case "on": return true;
@@ -126,7 +125,7 @@ export class COBOLSettingsHelper {
     public static isOnDiskCachingEnabled(setting: ICOBOLSettings): boolean {
         if (getWorkspaceFolders())
         {
-            var cacheEnum = setting.cache_metadata;
+            let cacheEnum = setting.cache_metadata;
             switch (cacheEnum) {
                 case "on": return true;
                 case "partial": return false;

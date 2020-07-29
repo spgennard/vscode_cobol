@@ -89,7 +89,7 @@ export class VSCOBOLConfiguration {
 
     public static isCachingEnabled(): boolean {
         if (getWorkspaceFolders()) {
-            var cacheEnum = getCachingSetting();
+            let cacheEnum = getCachingSetting();
 
             switch (cacheEnum) {
                 case "on": return true;
@@ -101,7 +101,7 @@ export class VSCOBOLConfiguration {
     }
 
     public static isOnDiskCachingEnabled(): boolean {
-        var cacheEnum = getCachingSetting();
+        let cacheEnum = getCachingSetting();
         switch (cacheEnum) {
             case "on": return true;
             case "partial": return false;
@@ -140,8 +140,8 @@ export class VSCOBOLConfiguration {
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var expEnabled = editorConfig.get<boolean>(configSection);
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let expEnabled = editorConfig.get<boolean>(configSection);
     if (expEnabled === undefined || expEnabled === null) {
         expEnabled = defaultValue;
     }
@@ -157,8 +157,8 @@ function isTabstopEnabled(): boolean {
 }
 
 function getPreParseLineLimit(): number {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var lineLimit = editorConfig.get<number>('pre_parse_line_limit');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let lineLimit = editorConfig.get<number>('pre_parse_line_limit');
     if (lineLimit === undefined || lineLimit === null) {
         lineLimit = 25;
     }
@@ -237,8 +237,8 @@ function getLinter_mark_as_information(): boolean {
 }
 
 function getCache_directory_strategy(): string {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var cacheDirStrategy = editorConfig.get<string>('cache_directory_strategy');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let cacheDirStrategy = editorConfig.get<string>('cache_directory_strategy');
 
     if (cacheDirStrategy === undefined || cacheDirStrategy === null) {
         return "workspace";
@@ -248,8 +248,8 @@ function getCache_directory_strategy(): string {
 }
 
 function getIntellisense_item_limit(): number {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var itemLimit = editorConfig.get<number>('intellisense_item_limit');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let itemLimit = editorConfig.get<number>('intellisense_item_limit');
     if (itemLimit === undefined || itemLimit === null) {
         itemLimit = 0;
     }
@@ -258,8 +258,8 @@ function getIntellisense_item_limit(): number {
 }
 
 function getCachingSetting(): string {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var cacheEnum = editorConfig.get<string>('cache_metadata');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let cacheEnum = editorConfig.get<string>('cache_metadata');
 
     if (cacheEnum === undefined || cacheEnum === null) {
         return "";
@@ -269,8 +269,8 @@ function getCachingSetting(): string {
 }
 
 function getFileformatStrategy(): string {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var fileStrat = editorConfig.get<string>('fileformat_strategy');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let fileStrat = editorConfig.get<string>('fileformat_strategy');
 
     if (fileStrat === undefined || fileStrat === null) {
         return "normal";
@@ -281,8 +281,8 @@ function getFileformatStrategy(): string {
 
 
 function isOutlineEnabled(): outlineFlag {
-    var editorConfig = workspace.getConfiguration('coboleditor');
-    var outlineEnabled = editorConfig.get('outline');
+    let editorConfig = workspace.getConfiguration('coboleditor');
+    let outlineEnabled = editorConfig.get('outline');
     if (outlineEnabled === undefined || outlineEnabled === null) {
         return outlineFlag.On;
     }
@@ -345,7 +345,7 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
         // ignore empty elements
         if (dir.length !== 0) {
             if (dir.startsWith("$")) {
-                var e = process.env[dir.substr(1)];
+                let e = process.env[dir.substr(1)];
                 if (e !== undefined && e !== null) {
                     e.split(path.delimiter).forEach(function (item) {
                         if (item !== undefined && item !== null && item.length > 0) {
@@ -373,9 +373,9 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
 const DEFAULT_COPYBOOK_EXTS = ["cpy", "CPY"];
 
 function getCopybookExts(): string[] {
-    var editorConfig = workspace.getConfiguration('coboleditor');
+    let editorConfig = workspace.getConfiguration('coboleditor');
     editorConfig = editorConfig;
-    var extensions = editorConfig.get<string[]>('copybookexts');
+    let extensions = editorConfig.get<string[]>('copybookexts');
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_COPYBOOK_EXTS;
     }

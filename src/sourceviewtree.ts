@@ -5,7 +5,6 @@ import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
 import * as fs from 'fs';
-import { logMessage } from './extension';
 import { InMemoryGlobalFileCache } from './cobolquickparse';
 import { isValidExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
@@ -43,7 +42,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             workspace.findFiles("*")
                 .then((allFiles) => {
                     allFiles.forEach((file) => {
-                        var fileExtension = file.fsPath.split('.').pop();
+                        let fileExtension = file.fsPath.split('.').pop();
                         if (fileExtension) {
                             this.addExtension(fileExtension, file);
                         }
@@ -56,7 +55,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
-        var location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
+        let location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
         return {
             arguments: [
@@ -69,7 +68,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number): SourceItem {
-        var item = new SourceItem(label, file, lnum);
+        let item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
         item.contextValue = contextValue;
         item.tooltip = file.fsPath;
@@ -89,7 +88,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private addExtension(ext: string, file: vscode.Uri) {
-        var base = path.basename(file.fsPath);
+        let base = path.basename(file.fsPath);
 
         switch (ext?.toLowerCase()) {
             case "scbl":
@@ -168,7 +167,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
             for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                var fileExtension = i.split('.').pop();
+                let fileExtension = i.split('.').pop();
                 if (fileExtension) {
                     if (isValidExtension(fileExtension)) {
                         let vFile = vscode.Uri.file(i);
@@ -189,7 +188,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     public async checkFile(vuri: vscode.Uri) {
-        var fileExtension = vuri.fsPath.split('.').pop();
+        let fileExtension = vuri.fsPath.split('.').pop();
         if (fileExtension !== undefined) {
             this.addExtension(fileExtension, vuri);
             this.refreshItems();

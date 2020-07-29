@@ -3,7 +3,7 @@
 import { Range, Selection, TextEditorRevealType, window } from 'vscode';
 
 export function move2pd() {
-    var line = findProcedureDivision();
+    let line = findProcedureDivision();
     if (line > 0) {
         goToLine(line);
     } else {
@@ -87,7 +87,7 @@ function findAnyMatch(mats: RegExp[], counter: number) {
 }
 
 function findAnyNext(counter: number) {
-    var mats = [
+    let mats = [
         /.*\s*division/i,
         /entry\s*"/i,
         /.*\s*section\./i,

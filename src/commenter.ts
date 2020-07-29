@@ -1,14 +1,14 @@
 'use strict';
 
-import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from 'vscode';
+import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window } from 'vscode';
 import { VSCOBOLConfiguration } from './configuration';
 import { getSourceFormat, ESourceFormat } from './margindecorations';
 
 function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
     editor.edit(edit => {
-        for (var x = 0; x < sel.length; x++) {
+        for (let x = 0; x < sel.length; x++) {
             if (sel[x].start.line === sel[x].end.line) {
-                var position = sel[x].start;
+                let position = sel[x].start;
                 toggleLine(edit, doc, position.line, format);
             } else {
                 multipleSelectionTab(edit, doc, sel[x], format);

@@ -41,7 +41,7 @@ export default class VSQuickCOBOLParse {
         /* grab, the file parse it can cache it */
         if (InMemoryCache.has(fileName) === false) {
             try {
-                var startTime = performance_now();
+                let startTime = performance_now();
                 let qcpd = new COBOLQuickParse(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
@@ -80,11 +80,11 @@ export default class VSQuickCOBOLParse {
 
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             let promises: Promise<boolean>[] = [];
-            var start = performance_now();
+            let start = performance_now();
 
             let ws = getWorkspaceFolders();
             if (ws !== undefined) {
-                for (var folder of ws) {
+                for (let folder of ws) {
                     let p = VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath);
                     promises.push(p);
                 }
@@ -99,7 +99,7 @@ export default class VSQuickCOBOLParse {
             await Promise.all(promises);
 
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
-            var end = performance_now() - start;
+            let end = performance_now() - start;
             logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
         } else {
             logMessage(" No workspaces folders present, no metadata processed.");
@@ -108,7 +108,7 @@ export default class VSQuickCOBOLParse {
 
 
     private static async processAllFilesDirectory(cacheDirectory: string, dir: string):Promise<boolean> {
-        for (var file of fs.readdirSync(dir)) {
+        for (let file of fs.readdirSync(dir)) {
             VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, path.join(dir, file), true);
         }
 
@@ -172,7 +172,7 @@ export default class VSQuickCOBOLParse {
 
             let ws = getWorkspaceFolders();
             if (ws !== undefined) {
-                for (var folder of ws) {
+                for (let folder of ws) {
                     let cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
                     if (isDirectory(cacheDir2)) {
                         return cacheDir2;

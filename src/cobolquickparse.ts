@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logMessage, logException, isDirectory, isFile } from "./extension";
+import { logMessage, logException, isFile } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
@@ -18,7 +18,7 @@ import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
 
-var lzjs = require('lzjs');
+let lzjs = require('lzjs');
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -745,7 +745,7 @@ export default class COBOLQuickParse implements ICommentCallback {
                 InMemoryGlobalSymbolCache.classSymbols.clear();
                 InMemoryGlobalSymbolCache.isDirty = false;
                 InMemoryGlobalFileCache.copybookFileSymbols.clear();
-                for (var file of fs.readdirSync(cacheDirectory)) {
+                for (let file of fs.readdirSync(cacheDirectory)) {
                     if (file.endsWith(".sym")) {
                         let fileName = path.join(cacheDirectory, file);
                         fs.unlinkSync(fileName);
@@ -786,7 +786,7 @@ export default class COBOLQuickParse implements ICommentCallback {
         logMessage("");
         logMessage("File symbols    :");
 
-        for (var file of fs.readdirSync(cacheDirectory)) {
+        for (let file of fs.readdirSync(cacheDirectory)) {
             if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
                 let symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
                 if (symTable !== undefined) {
@@ -1564,7 +1564,7 @@ export default class COBOLQuickParse implements ICommentCallback {
         let startOfComment: number = commentLine.indexOf("*>");
 
         if (startOfComment !== undefined && startOfComment !== -1) {
-            var comment = commentLine.substring(2 + startOfComment).trim();
+            let comment = commentLine.substring(2 + startOfComment).trim();
 
             if (comment.startsWith(this.cobolLintLiteral)) {
                 let startOfCOBOLint: number = comment.indexOf(this.cobolLintLiteral);

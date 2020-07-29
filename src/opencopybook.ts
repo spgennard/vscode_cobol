@@ -1,13 +1,12 @@
 'use strict';
 
-import { Range, TextDocument, workspace, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
+import { Range, TextDocument, Definition, Position, CancellationToken, ProviderResult, Uri } from 'vscode';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, logException, isFile } from './extension';
+import { getCombinedCopyBookSearchPath, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
-import { getWorkspaceFolders } from './cobolfolders';
-import { fstat } from 'fs';
+
 
 export function isValidExtension(filename: string): boolean {
     switch (filename) {

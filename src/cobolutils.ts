@@ -28,10 +28,10 @@ export class COBOLUtils {
     public migrateCopybooksToWorkspace() {
         let fileSearchDirectory = [];
 
-        var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
+        let extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
         let updateCopybookdirs: boolean = false;
         for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-            var ddir = extsdir[extsdirpos];
+            let ddir = extsdir[extsdirpos];
 
             if (isDirectPath(ddir)) {
                 let ws = getWorkspaceFolders();
@@ -50,10 +50,10 @@ export class COBOLUtils {
 
         let ws = getWorkspaceFolders();
         if (ws !== undefined) {
-            for (var folder of ws) {
+            for (let folder of ws) {
                 for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
                     try {
-                        var extdir = extsdir[extsdirpos];
+                        let extdir = extsdir[extsdirpos];
 
                         let sdir: string;
 
@@ -87,7 +87,7 @@ export class COBOLUtils {
 
         // update copybookdirs with optiomized version
         if (updateCopybookdirs) {
-            var editorConfig = workspace.getConfiguration('coboleditor');
+            let editorConfig = workspace.getConfiguration('coboleditor');
             editorConfig.update('copybookdirs', fileSearchDirectory);
             logMessage("Copybook settings and workspace has been updated.");
         } else {
@@ -162,8 +162,8 @@ export class COBOLUtils {
     }
 
     public getMFUnitAnsiColorConfig(): boolean {
-        var editorConfig = workspace.getConfiguration('coboleditor');
-        var expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
+        let editorConfig = workspace.getConfiguration('coboleditor');
+        let expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;
         }
@@ -179,7 +179,7 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
+        for (let l = 0; l < activeEditor.document.lineCount; l++) {
             let lineAt = activeEditor.document.lineAt(l);
             let text = lineAt.text;
 
@@ -200,7 +200,7 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
+        for (let l = 0; l < activeEditor.document.lineCount; l++) {
             let lineAt = activeEditor.document.lineAt(l);
             let text = lineAt.text;
 
@@ -219,7 +219,7 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
+        for (let l = 0; l < activeEditor.document.lineCount; l++) {
             let lineAt = activeEditor.document.lineAt(l);
             let text = lineAt.text;
 
@@ -245,10 +245,10 @@ export class COBOLUtils {
         removeRanges.push(false);
 
         // traverse all the lines
-        for (var l = 0; l < activeEditor.document.lineCount; l++) {
+        for (let l = 0; l < activeEditor.document.lineCount; l++) {
             let line = activeEditor.document.lineAt(l);
             let matched = false;
-            for (var i = 0; i < delimiters.length; i++) {
+            for (let i = 0; i < delimiters.length; i++) {
                 if (!matched) {
                     let expression = delimiters[i].replace(/\//ig, "\\/");
                     let removeRange = removeRanges[i];
@@ -294,7 +294,7 @@ export class COBOLUtils {
 
         let edits = new vscode.WorkspaceEdit();
         // traverse all the lines
-        for (var l = 0; l < file.getLineCount(); l++) {
+        for (let l = 0; l < file.getLineCount(); l++) {
             let lineAt = file.getLine(l);
             let text = lineAt;
             let newtext = text;

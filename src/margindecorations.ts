@@ -7,7 +7,7 @@ import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
 import ISourceHandler from './isourcehandler';
 
-var trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
+let trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)",

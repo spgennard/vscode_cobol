@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { isFile } from "./extension";
-var lzjs = require('lzjs');
+let lzjs = require('lzjs');
 import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer, COBOLFileSymbol } from "./cobolquickparse";
 
 export class InMemoryGlobalCachesHelper {

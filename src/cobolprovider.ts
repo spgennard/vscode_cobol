@@ -4,8 +4,7 @@ import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLQuickParse, { COBOLToken, camelize } from './cobolquickparse';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
-import { performance_now, logMessage } from './extension';
-import { PRIORITY_BELOW_NORMAL } from 'constants';
+import { performance_now, logMessage, logTimeThreshold } from './extension';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -21,7 +20,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
                 sf.cpPerformTargets = new TrieSearch("tokenName");
-                var words = sf.cpPerformTargets;
+                let words = sf.cpPerformTargets;
 
                 for (let [key, token] of sf.sections) {
                     if (token.inProcedureDivision) {
@@ -208,7 +207,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         let totalTimeInMS = performance_now() - startTime;
         let timeTaken = totalTimeInMS.toFixed(2);
-        logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
+        if (totalTimeInMS > logTimeThreshold) {
+            logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
+        }
         return items;
     }
 

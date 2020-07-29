@@ -14,12 +14,12 @@ export function getWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefine
 
     // make a map of the folders
     let folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();
-    for (var folder of ws) {
+    for (let folder of ws) {
         folderMap.set(folder.name, folder);
     }
 
     let rwFolder: WorkspaceFolder[] = [];
-    for (var forder of folders_order) {
+    for (let forder of folders_order) {
         let f = folderMap.get(forder);
         if (f !== undefined) {
             rwFolder.push(f);

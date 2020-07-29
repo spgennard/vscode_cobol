@@ -3,7 +3,7 @@ import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { logException, logTimedMessage, performance_now } from './extension';
 
 
-// var detab = require('detab');
+// let detab = require('detab');
 const lineByLine = require('n-readlines');
 import fs from 'fs';
 import { Uri } from 'vscode';
@@ -29,7 +29,7 @@ export class FileSourceHandler implements ISourceHandler {
         let docstat = fs.statSync(document);
         let docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
-        var startTime = performance_now();
+        let startTime = performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
             while (line = liner.next()) {

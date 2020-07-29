@@ -126,7 +126,7 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
         return false;
     }
 
-    for (var i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
         let token: COBOLToken = tokens[i];
 
         switch (token.tokenType) {

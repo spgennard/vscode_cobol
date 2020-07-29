@@ -100,7 +100,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
             includePara = false;
         }
 
-        for (var i = 0; i < sf.tokensInOrder.length; i++) {
+        for (let i = 0; i < sf.tokensInOrder.length; i++) {
             let token: COBOLToken = sf.tokensInOrder[i];
 
             try {

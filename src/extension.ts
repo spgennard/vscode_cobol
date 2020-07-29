@@ -40,7 +40,7 @@ import { getWorkspaceFolders } from './cobolfolders';
 
 let formatStatusBarItem: StatusBarItem;
 
-var currentContext: ExtensionContext;
+let currentContext: ExtensionContext;
 const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 
 
@@ -87,7 +87,7 @@ export function isPathInWorkspace(ddir: string): boolean {
     }
 
     let fullPath = path.normalize(ddir);
-    for (var folder of ws) {
+    for (let folder of ws) {
         if (folder.uri.fsPath === fullPath) {
             return true;
         }
@@ -99,7 +99,7 @@ export function isPathInWorkspace(ddir: string): boolean {
 function initExtensions(config: ICOBOLSettings) {
     fileSearchDirectory = [];
 
-    var extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
+    let extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
     invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
     invalidSearchDirectory.length = 0;
 
@@ -138,7 +138,7 @@ function initExtensions(config: ICOBOLSettings) {
     // step 2
     let ws = getWorkspaceFolders();
     if (ws !== undefined) {
-        for (var folder of ws) {
+        for (let folder of ws) {
             // place the workspace folder in the copybook path
 
             fileSearchDirectory.push(folder.uri.fsPath);
@@ -198,12 +198,12 @@ function activateLogChannel() {
         let ws = getWorkspaceFolders();
         if (ws !== undefined) {
             logMessage("  Workspace Folders:");
-            for (var folder of ws) {
+            for (let folder of ws) {
                 logMessage("   => " + folder.name+" @ "+folder.uri.fsPath);
             }
         }
 
-        var extsdir = getCombinedCopyBookSearchPath();
+        let extsdir = getCombinedCopyBookSearchPath();
         if (extsdir.length !== 0) {
             logMessage("  Combined Workspace and CopyBook Folders to search:");
             for(let sdir of extsdir){
@@ -252,30 +252,30 @@ export function activate(context: ExtensionContext) {
     initExtensions(VSCOBOLConfiguration.get());
     activateLogChannel();
 
-    var insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
+    let insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
-    var move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
+    let move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
     });
 
-    var move2ddCommand = commands.registerCommand('cobolplugin.move2dd', function () {
+    let move2ddCommand = commands.registerCommand('cobolplugin.move2dd', function () {
         cobolProgram.move2dd();
     });
 
-    var move2wsCommand = commands.registerCommand('cobolplugin.move2ws', function () {
+    let move2wsCommand = commands.registerCommand('cobolplugin.move2ws', function () {
         cobolProgram.move2ws();
     });
 
-    var move2anyforwardCommand = commands.registerCommand('cobolplugin.move2anyforward', function () {
+    let move2anyforwardCommand = commands.registerCommand('cobolplugin.move2anyforward', function () {
         cobolProgram.move2anyforward();
     });
 
-    var move2anybackwardsCommand = commands.registerCommand('cobolplugin.move2anybackwards', function () {
+    let move2anybackwardsCommand = commands.registerCommand('cobolplugin.move2anybackwards', function () {
         cobolProgram.move2anybackwards();
     });
 
-    var tabCommand = commands.registerCommand('cobolplugin.tab', function () {
+    let tabCommand = commands.registerCommand('cobolplugin.tab', function () {
         if (VSCOBOLConfiguration.isTabstopEnabled()) {
             tabstopper.processTabKey(true);
         } else {
@@ -283,7 +283,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    var unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
+    let unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
         if (VSCOBOLConfiguration.isTabstopEnabled()) {
             tabstopper.processTabKey(false);
         } else {
@@ -291,7 +291,7 @@ export function activate(context: ExtensionContext) {
         }
     });
 
-    var commentLine = commands.registerCommand('cobolplugin.commentline', function () {
+    let commentLine = commands.registerCommand('cobolplugin.commentline', function () {
         if (window.activeTextEditor !== undefined) {
             let langid = window.activeTextEditor.document.languageId;
 
@@ -308,7 +308,7 @@ export function activate(context: ExtensionContext) {
         commands.executeCommand("editor.action.commentLine");
     });
 
-    var changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function () {
+    let changeSourceFormat = commands.registerCommand('cobolplugin.change_source_format', function () {
         // margindecorations.changeSourceFormat();
         const action = 'Open Settings';
         window.showWarningMessage("Change coboleditor setting?", action).then((selection) => {
@@ -324,7 +324,7 @@ export function activate(context: ExtensionContext) {
         });
     });
 
-    var changeLanguageToAcu = commands.registerCommand('cobolplugin.change_lang_to_acu', function () {
+    let changeLanguageToAcu = commands.registerCommand('cobolplugin.change_lang_to_acu', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -333,7 +333,7 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document, "ACUCOBOL");
     });
 
-    var changeLanguageToCOBOL = commands.registerCommand('cobolplugin.change_lang_to_cobol', function () {
+    let changeLanguageToCOBOL = commands.registerCommand('cobolplugin.change_lang_to_cobol', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -342,7 +342,7 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document, "COBOL");
     });
 
-    var changeLanguageToOpenCOBOL = commands.registerCommand('cobolplugin.change_lang_to_opencobol', function () {
+    let changeLanguageToOpenCOBOL = commands.registerCommand('cobolplugin.change_lang_to_opencobol', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -351,7 +351,7 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document, "OpenCOBOL");
     });
 
-    var changeLanguageToGnuCOBOL = commands.registerCommand('cobolplugin.change_lang_to_gnucobol', function () {
+    let changeLanguageToGnuCOBOL = commands.registerCommand('cobolplugin.change_lang_to_gnucobol', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -360,7 +360,7 @@ export function activate(context: ExtensionContext) {
         languages.setTextDocumentLanguage(act.document, "GnuCOBOL");
     });
 
-    var toggleCOBOLMargin = commands.registerCommand('cobolplugin.toggle_margin', function () {
+    let toggleCOBOLMargin = commands.registerCommand('cobolplugin.toggle_margin', function () {
         let act = window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -370,20 +370,20 @@ export function activate(context: ExtensionContext) {
         updateDecorations(act);
     });
 
-    var processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace',  async () => {
+    let processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace',  async () => {
             VSQuickCOBOLParse.processAllFilesInWorkspaces(true);
     });
 
-    var dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
+    let dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
         COBOLQuickParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
-    var clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
+    let clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
         COBOLQuickParse.clearMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
 
-    var syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
+    let syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
         tasks.fetchTasks().then((fetchedTasks) => {
             for (const task of fetchedTasks) {
                 if (task.name.startsWith("cobol-syntax-check")) {
@@ -421,7 +421,7 @@ export function activate(context: ExtensionContext) {
         flip_plaintext(workspace.textDocuments[docid]);
     }
 
-    var treeView = new SourceViewTree(VSCOBOLConfiguration.get());
+    let treeView = new SourceViewTree(VSCOBOLConfiguration.get());
     const watcher = workspace.createFileSystemWatcher('**/*');
 
     watcher.onDidCreate((uri) => {
@@ -841,12 +841,12 @@ export function logException(message: string, ex: Error) {
     }
 }
 
-let thresholdTime: number = 30;
+export let logTimeThreshold: number = 500;
 
 export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]) {
     let fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
-    if (timeTaken < thresholdTime) {
+    if (timeTaken < logTimeThreshold) {
         return;
     }
 

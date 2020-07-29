@@ -5,13 +5,13 @@ import { VSCOBOLConfiguration } from './configuration';
 
 function executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean) {
     editor.edit(edit => {
-        for (var x = 0; x < sel.length; x++) {
+        for (let x = 0; x < sel.length; x++) {
             if (sel[x].start.line === sel[x].end.line) {
-                var position = sel[x].start;
+                let position = sel[x].start;
                 if (inserting) {
                     singleSelectionTab(edit, doc, position);
                 } else {
-                    singleSelectionUnTab(edit, doc, position);  
+                    singleSelectionUnTab(edit, doc, position);
                 }
             } else {
                 if (inserting) {
@@ -53,11 +53,11 @@ const multipleSelectionUnTabPttrn = /^\s*/;
 
 function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
-        var charpos =  sel.start.character;
+        let charpos =  sel.start.character;
         if (charpos === 0) {
-            var selline = d.getText(sel);
+            let selline = d.getText(sel);
             if (selline !== null) {
-                var match = selline.match(multipleSelectionUnTabPttrn);
+                let match = selline.match(multipleSelectionUnTabPttrn);
                 if (match !== null) {
                     charpos = match[0].length;
                 }
@@ -70,9 +70,9 @@ function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Sele
 }
 
 function tabSize(pos: number) {
-    var tabs = VSCOBOLConfiguration.getTabStops();
-    var tab = 0;
-    for (var index = 0; index < tabs.length; index++) {
+    let tabs = VSCOBOLConfiguration.getTabStops();
+    let tab = 0;
+    for (let index = 0; index < tabs.length; index++) {
         tab = tabs[index];
 
         if(tab > pos) {
@@ -85,7 +85,7 @@ function tabSize(pos: number) {
 
 
 function unTabSize(pos: number) {
-    var tabs = VSCOBOLConfiguration.getTabStops();
+    let tabs = VSCOBOLConfiguration.getTabStops();
 
     // outside range?
     if (pos > tabs[tabs.length - 1]) {
@@ -95,8 +95,8 @@ function unTabSize(pos: number) {
         return (pos - tabs[tabs.length - 1]) % 4;
     }
 
-    for (var index = tabs.length - 1; index > -1; index--) {
-        var tab = tabs[index];
+    for (let index = tabs.length - 1; index > -1; index--) {
+        let tab = tabs[index];
         if (tab < pos) {
             return pos - tab;
         }

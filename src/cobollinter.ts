@@ -5,7 +5,6 @@ import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolquickparse';
-import { logMessage } from './extension';
 
 function makeRegex(partialRegEx: string): RegExp {
     return new RegExp("^"+partialRegEx+"$","i");
@@ -43,7 +42,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         let w = vscode.window.activeTextEditor;
 
         if (w !== undefined && code !== undefined) {
-            var pos = w.document.positionAt(offset);
+            let pos = w.document.positionAt(offset);
             w.edit(edit => {
                 edit.insert(pos, "      *> cobol-lint " + code + "\n");
             });
