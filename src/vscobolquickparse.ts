@@ -6,7 +6,7 @@ import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now, getCurrentContext } from "./extension";
+import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now, getCurrentContext, logTimeThreshold } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
@@ -100,7 +100,11 @@ export default class VSQuickCOBOLParse {
 
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
             let end = performance_now() - start;
-            logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
+            if (end < logTimeThreshold) {
+                logMessage('Completed scanning all COBOL files in workspace');
+            } else {
+                logTimedMessage(end, 'Completed scanning all COBOL files in workspace');
+            }
         } else {
             logMessage(" No workspaces folders present, no metadata processed.");
         }

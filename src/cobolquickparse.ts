@@ -492,10 +492,10 @@ export default class COBOLQuickParse implements ICommentCallback {
         }
 
         this.sourceFileId = 0;
+        this.sourceFileId = sourceReferences.filenames.length;
+        sourceReferences.filenames.push(sourceHandler.getUri());
 
         if (this.sourceReferences.topLevel === false) {
-            this.sourceFileId = sourceReferences.filenames.length;
-            sourceReferences.filenames.push(sourceHandler.getUri());
             this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
             this.paragraphs = sourceReferences.sharedParagraphs;
             this.sections = sourceReferences.sharedSections;
