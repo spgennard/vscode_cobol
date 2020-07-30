@@ -1255,7 +1255,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+.*,([\\w\\-. /\\:]*)\\((\\d+),(\\d+),.*\\).*$",
+                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
                 "severity": 1,
                 "message": 2,
                 "file": 3,
