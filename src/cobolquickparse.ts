@@ -1040,12 +1040,16 @@ export default class COBOLQuickParse implements ICommentCallback {
                 // if skiptodot and not the end of the statement.. swallow
                 if (this.skipToDot && endWithDot === false) {
                     if (this.addReferencesDuringSkipToTag) {
+                        let trimToken = this.trimLiteral(tcurrentLower);
                         if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
-                            let trimToken = this.trimLiteral(tcurrent);
                             if (this.sourceReferences !== undefined) {
                                 // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.targetReferences, trimToken.toLocaleLowerCase(), lineNumber, token.currentCol);
+                                this.addReference(this.sourceReferences.targetReferences, trimToken, lineNumber, token.currentCol);
                             }
+                        }
+                        if (token.prevTokenLower === 'to' && this.isValidKeyword(tcurrentLower) === false) {
+                            let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, token.prevToken);
+                            this.addVariableOrConstant(trimToken,variableToken);
                         }
                     }
                     continue;

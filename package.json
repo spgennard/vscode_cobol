@@ -434,8 +434,8 @@
                 },
                 "coboleditor.linter_house_standards": {
                     "type": "boolean",
-                    "title": "Enable house standard rules",
-                    "description": "Enable house standard rules",
+                    "title": "Enable house standards rules",
+                    "description": "Enable house standards rules",
                     "default": false
                 },
                 "coboleditor.linter_house_standards_rules": {

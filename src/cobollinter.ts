@@ -145,7 +145,7 @@ export class CobolLinterProvider {
                         let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
 
-                        let d = new vscode.Diagnostic(r, key + ' breaks house standard rule for '+token.inSection.tokenNameLower+" section", this.linterSev);
+                        let d = new vscode.Diagnostic(r, key + ' breaks house standards rule for '+token.inSection.tokenNameLower+" section", this.linterSev);
                         d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                         if (diagRefs.has(token.filename)) {

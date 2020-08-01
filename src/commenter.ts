@@ -11,11 +11,13 @@ function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], fo
                 let position = sel[x].start;
                 toggleLine(edit, doc, position.line, format);
             } else {
-                multipleSelectionTab(edit, doc, sel[x], format);
+                multipleToggleLine(edit, doc, sel[x], format);
             }
         }
     });
 }
+
+let var_free_insert_at_comment_column : boolean = true;
 
 function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: ESourceFormat) {
     let line = d.lineAt(l);
@@ -48,7 +50,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 
     if (format !== ESourceFormat.fixed) {
         let firstInlineIndex = lineContents.indexOf("*> ");
-        if (firstInlineIndex !== -1) {
+        if (firstInlineIndex !== -1 && firstInlineIndex !== 6) {
             let r = new Range(new Position(l, firstInlineIndex), new Position(l, 3 + firstInlineIndex));
             editor.delete(r);
             return;
@@ -72,16 +74,36 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
         }
 
         if (defpos !== -1) {
-            editor.insert(new Position(l, 1 + defpos), "*> ");
+            // if we have a fixed column comment, convert it..
+            if (defpos === 5 && lineContents[6] === '*') {
+                editor.insert(new Position(l, 7), "> ");
+                return;
+            }
+
+            // we can use the comment column
+            if (defpos === 6) {   // defpos started at -1....
+                editor.insert(new Position(l, 6), "*>" );
+                return;
+            }
+
+            if (var_free_insert_at_comment_column && defpos > 6) {
+                if (lineContents[6] === ' ' && lineContents[7] === ' ' && lineContents[8] === ' ') {
+                    editor.insert(new Position(l, 6), "*>" );
+                    return;
+                }
+            }
+
+            editor.insert(new Position(l, 1 + defpos), "*> " );
             return;
         }
-        else if (lineContents.length > 6 &&
-            lineContents[6] === ' ' &&
-            lineContents[7] === ' ') {
+
+        if (lineContents.length > 6 && lineContents[6] === ' ' &&  lineContents[7] === ' ') {
             let r = new Range(new Position(l, 6), new Position(l, 8));
             editor.replace(r, "*>");
             return;
         }
+
+        return;
     }
 
     /* remove * from column 6 */
@@ -101,7 +123,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 }
 
 
-function multipleSelectionTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, format: ESourceFormat) {
+function multipleToggleLine(edit: TextEditorEdit, d: TextDocument, sel: Selection, format: ESourceFormat) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
         if (sel.start.character === 0) {
             toggleLine(edit, d, line, format);
