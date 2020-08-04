@@ -131,6 +131,10 @@ export class COBOLUtils {
         let ran = new vscode.Range(sel.start, sel.end);
         let text = activeTextEditor.document.getText(ran);
 
+
+        // TODO - Should put something in place to search forward of current line
+        //        to find the best position..
+
         let value = vscode.window.showInputBox({
             prompt: para ? 'New paragrah name?' : 'New section name?',
             validateInput: (text: string): string | undefined => {
