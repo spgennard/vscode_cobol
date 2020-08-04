@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#178](https://github.com/spgennard/vscode_cobol/issues/178) Duplicate IntelliSense present when other extensions are loaded  
+
+**Duplicate IntelliSense present when other extensions are loaded Fix #178**
+
+
+[50a062e46da76e7](https://github.com/spgennard/vscode_cobol/commit/50a062e46da76e7) *2020-08-04 23:11:51*
+
+
 ## 6.5.27
 ### GitHub [#169](https://github.com/spgennard/vscode_cobol/issues/169) parsing metadata should catch ENOENT  
 
