@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.2
 ### GitHub [#179](https://github.com/spgennard/vscode_cobol/issues/179) Regression: Go to Definition for copybook without extension not working  
 
 **Regression: Go to Definition for copybook without extension not working Fix #179**
