@@ -168,7 +168,7 @@ function initExtensions(config: ICOBOLSettings) {
     invalidSearchDirectory.length = 0;
 
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
-    for (let ddir in extsdir) {
+    for (let ddir of extsdir) {
         if (config.disable_unc_copybooks_directories && isNetworkPath(ddir)) {
             logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
             invalidSearchDirectory.push(ddir);

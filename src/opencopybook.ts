@@ -149,7 +149,7 @@ function findCopyBook(filename: string): string {
         /* no extension? */
         if (hasDot === -1) {
             // search through the possible extensions
-            for (let ext in VSCOBOLConfiguration.getExtentions()) {
+            for (let ext of VSCOBOLConfiguration.getExtentions()) {
                 let possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
@@ -164,7 +164,7 @@ function findCopyBook(filename: string): string {
 }
 
 
-function findCopyBookInDirectory(filename: string,inDirectory: string): string {
+function findCopyBookInDirectory(filename: string, inDirectory: string): string {
     if (!filename) {
         return "";
     }
@@ -183,7 +183,7 @@ function findCopyBookInDirectory(filename: string,inDirectory: string): string {
         /* no extension? */
         if (hasDot === -1) {
             // search through the possible extensions
-            for (let ext in VSCOBOLConfiguration.getExtentions()) {
+            for (let ext of VSCOBOLConfiguration.getExtentions()) {
                 let possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
