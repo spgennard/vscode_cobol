@@ -3,6 +3,24 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#179](https://github.com/spgennard/vscode_cobol/issues/179) Regression: Go to Definition for copybook without extension not working  
+
+**Regression: Go to Definition for copybook without extension not working Fix #179**
+
+
+[887585cc9c7e3d5](https://github.com/spgennard/vscode_cobol/commit/887585cc9c7e3d5) *2020-08-05 16:43:09*
+
+
+### GitHub [#180](https://github.com/spgennard/vscode_cobol/issues/180) Output panel still pulling focus with cache_on_start  
+
+**Output panel still pulling focus with cache_on_start Fix #180**
+
+ * - remove use of channel.show 
+
+[128d7d2b017e746](https://github.com/spgennard/vscode_cobol/commit/128d7d2b017e746) *2020-08-05 17:09:27*
+
+
 ## 6.6.0
 ### GitHub [#178](https://github.com/spgennard/vscode_cobol/issues/178) Duplicate IntelliSense present when other extensions are loaded  
 
