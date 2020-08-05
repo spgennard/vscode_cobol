@@ -235,7 +235,13 @@ function initExtensions(config: ICOBOLSettings) {
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
-function activateLogChannel() {
+function activateLogChannel(hide: boolean) {
+    if (hide) {
+        COBOLOutputChannel.hide();
+    } else {
+        logChannelSetPreserveFocus(true);
+    }
+    COBOLOutputChannel.clear();
 
     let thisExtension = extensions.getExtension("bitlang.cobol");
     logMessage("");
@@ -314,8 +320,7 @@ export function activate(context: ExtensionContext) {
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
         VSCOBOLConfiguration.init();
-        COBOLOutputChannel.clear();
-        activateLogChannel();
+        activateLogChannel(true);
     });
     context.subscriptions.push(onExtChange);
 
@@ -325,7 +330,7 @@ export function activate(context: ExtensionContext) {
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
     initExtensions(VSCOBOLConfiguration.get());
-    activateLogChannel();
+    activateLogChannel(true);
 
     let insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
@@ -473,15 +478,13 @@ export function activate(context: ExtensionContext) {
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
         VSCOBOLConfiguration.init();
-        COBOLOutputChannel.clear();
-        activateLogChannel();
+        activateLogChannel(true);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
         VSCOBOLConfiguration.init();
-        COBOLOutputChannel.clear();
-        activateLogChannel();
+        activateLogChannel(false);
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 
@@ -945,6 +948,13 @@ export function logMessage(message: string, ...parameters: any[]) {
     }
 }
 
+export function logChannelSetPreserveFocus(preserveFocus: boolean) {
+    COBOLOutputChannel.show(preserveFocus);
+}
+
+export function logChannelHide() {
+    COBOLOutputChannel.hide();
+}
 
 export function performance_now(): number {
     if (!process.env.BROWSER) {

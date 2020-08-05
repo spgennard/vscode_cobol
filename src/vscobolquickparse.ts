@@ -6,7 +6,7 @@ import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logTimeThreshold } from "./extension";
+import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logTimeThreshold, logChannelSetPreserveFocus, logChannelHide } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
@@ -72,6 +72,11 @@ export default class VSQuickCOBOLParse {
             return;
         }
 
+        if (!viaCommand) {
+            logChannelHide();
+        } else {
+            logChannelSetPreserveFocus(!viaCommand);
+        }
         if (getWorkspaceFolders()) {
             logMessage("Starting to process metadata from workspace folders ("+(viaCommand ?  "on demand": "startup")+")");
 
@@ -104,6 +109,10 @@ export default class VSQuickCOBOLParse {
             }
         } else {
             logMessage(" No workspaces folders present, no metadata processed.");
+        }
+
+        if (viaCommand) {
+            logChannelSetPreserveFocus(true);
         }
     }
 
