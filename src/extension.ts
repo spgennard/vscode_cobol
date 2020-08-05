@@ -235,10 +235,6 @@ function initExtensions(config: ICOBOLSettings) {
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
-export function showLogChannel(preservefocus: boolean) {
-    COBOLOutputChannel.show(preservefocus);
-}
-
 function activateLogChannel() {
 
     let thisExtension = extensions.getExtension("bitlang.cobol");

@@ -6,7 +6,7 @@ import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, showLogChannel, logTimedMessage, isDirectory, performance_now, getCurrentContext, logTimeThreshold } from "./extension";
+import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logTimeThreshold } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
 import { isValidExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
@@ -65,18 +65,15 @@ export default class VSQuickCOBOLParse {
     }
 
 
-    public static async  processAllFilesInWorkspaces(onStartup:boolean) {
-        showLogChannel(false);
+    public static async  processAllFilesInWorkspaces(viaCommand:boolean) {
 
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
             logMessage("Metadata cache is off, no action taken");
-            showLogChannel(false);
             return;
         }
 
         if (getWorkspaceFolders()) {
-            logMessage("Starting to process metadata from workspace folders");
-            showLogChannel(onStartup ? false : true);
+            logMessage("Starting to process metadata from workspace folders ("+(viaCommand ?  "on demand": "startup")+")");
 
             let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             let promises: Promise<boolean>[] = [];
