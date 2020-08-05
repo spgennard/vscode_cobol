@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.0
 ### GitHub [#178](https://github.com/spgennard/vscode_cobol/issues/178) Duplicate IntelliSense present when other extensions are loaded  
 
 **Duplicate IntelliSense present when other extensions are loaded Fix #178**
