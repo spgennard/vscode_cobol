@@ -136,13 +136,14 @@ function safeToInstall(): string {
     for (let dupe of dupfuncextra) {
         let dupexe = extensions.getExtension(dupe);
         if (dupexe !== undefined) {
-            if (dupExtensionMessage.length === 0) {
-                dupExtensionMessage = "(" + dupexe.id;
-            } else {
-                dupExtensionMessage += "," + dupexe.id;
+            if (dupexe.isActive) {
+                if (dupExtensionMessage.length === 0) {
+                    dupExtensionMessage = "(" + dupexe.id;
+                } else {
+                    dupExtensionMessage += "," + dupexe.id;
+                }
             }
         }
-
     }
 
     if (dupExtensionMessage.length !== 0) {
