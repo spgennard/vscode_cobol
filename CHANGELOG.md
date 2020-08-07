@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.4
 ### GitHub [#182](https://github.com/spgennard/vscode_cobol/issues/182) Copybook not longer working (quoted works)  
 
 **Copybook not longer working (quoted works) #182**
