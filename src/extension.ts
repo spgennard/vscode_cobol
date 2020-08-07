@@ -77,7 +77,7 @@ export function isFile(sdir: string): boolean {
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
-let terminalName = "UnitTest";
+const terminalName = "UnitTest";
 
 
 export function isPathInWorkspace(ddir: string): boolean {
@@ -123,24 +123,25 @@ function resetLanguage() {
 
 }
 
+const extension_id_of_duplicate_conflicting_extensions: string[] = [
+    "broadcommfd.code4z-extension-pack",
+    "broadcommfd.cobol-language-support",
+    "ibm.zopeneditor",
+    "stfcv.cobolstf",
+    "rechinformatica.rech-editor-cobol"
+];
 
-function safeToInstall(): string {
+function checkForExtensionConflicts(): string {
     let dupExtensionMessage = "";
-    let dupfuncextra: string[] = [
-        "broadcommfd.code4z-extension-pack",
-        "broadcommfd.cobol-language-support",
-        "ibm.zopeneditor",
-        "stfcv.cobolstf"
-    ];
 
-    for (let dupe of dupfuncextra) {
-        let dupexe = extensions.getExtension(dupe);
-        if (dupexe !== undefined) {
-            if (dupexe.isActive) {
+    for (let eiof_extention of extension_id_of_duplicate_conflicting_extensions) {
+        let ext_info = extensions.getExtension(eiof_extention);
+        if (ext_info !== undefined) {
+            if (ext_info.isActive) {
                 if (dupExtensionMessage.length === 0) {
-                    dupExtensionMessage = "(" + dupexe.id;
+                    dupExtensionMessage = "(" + ext_info.id;
                 } else {
-                    dupExtensionMessage += "," + dupexe.id;
+                    dupExtensionMessage += "," + ext_info.id;
                 }
             }
         }
@@ -153,15 +154,15 @@ function safeToInstall(): string {
     return dupExtensionMessage;
 }
 
-function initExtensions(config: ICOBOLSettings) {
+function initExtensionSearchPaths(config: ICOBOLSettings) {
 
-    let mesg = safeToInstall();
+    let mesg = checkForExtensionConflicts();
     if (mesg.length !== 0) {
         window.showErrorMessage("COBOL Extension is not active due to other extensions providing overlapping functionality\n" + mesg);
         throw new Error("Aborted to avoid further complications");
     }
 
-    fileSearchDirectory = [];
+    fileSearchDirectory.length = 0;
 
     let extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
     invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
@@ -235,7 +236,7 @@ function initExtensions(config: ICOBOLSettings) {
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
-function activateLogChannel(hide: boolean) {
+function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
     if (hide) {
         COBOLOutputChannel.hide();
     } else {
@@ -246,6 +247,7 @@ function activateLogChannel(hide: boolean) {
     let thisExtension = extensions.getExtension("bitlang.cobol");
     logMessage("");
     if (thisExtension !== undefined) {
+        logMessage("VSCode version : "+vscode.version);
         logMessage("Extension Information:");
         logMessage(" Extension path    : " + thisExtension.extensionPath);
         logMessage(" Version           : " + thisExtension.packageJSON.version);
@@ -258,7 +260,7 @@ function activateLogChannel(hide: boolean) {
         logMessage(" Parse copybook for references : " + VSCOBOLConfiguration.getParse_copybooks_for_references());
     }
 
-    initExtensions(VSCOBOLConfiguration.get());
+    initExtensionSearchPaths(settings);
 
     if (thisExtension !== undefined) {
         let ws = getWorkspaceFolders();
@@ -319,18 +321,18 @@ export function activate(context: ExtensionContext) {
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
-        VSCOBOLConfiguration.init();
-        activateLogChannel(true);
+        let settings:ICOBOLSettings = VSCOBOLConfiguration.init();
+        activateLogChannelAndPaths(true,settings);
     });
     context.subscriptions.push(onExtChange);
 
-    VSCOBOLConfiguration.init();
+    let settings:ICOBOLSettings =VSCOBOLConfiguration.init();
 
     const collection = languages.createDiagnosticCollection('cobolDiag');
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
-    initExtensions(VSCOBOLConfiguration.get());
-    activateLogChannel(true);
+    initExtensionSearchPaths(settings);
+    activateLogChannelAndPaths(true, settings);
 
     let insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
@@ -477,14 +479,14 @@ export function activate(context: ExtensionContext) {
 
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
-        VSCOBOLConfiguration.init();
-        activateLogChannel(true);
+        let settings:ICOBOLSettings = VSCOBOLConfiguration.init();
+        activateLogChannelAndPaths(true, settings);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
-        VSCOBOLConfiguration.init();
-        activateLogChannel(false);
+        let settings:ICOBOLSettings = VSCOBOLConfiguration.init();
+        activateLogChannelAndPaths(false, settings);
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 

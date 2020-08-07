@@ -10,7 +10,7 @@ import { getWorkspaceFolders } from './cobolfolders';
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
 
-    public static init() {
+    public static init(): ICOBOLSettings {
         let vsconfig = VSCOBOLConfiguration.config;
 
         vsconfig.experimential_features = getExperimentialFeatures();
@@ -42,6 +42,8 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_house_standards = getLinter_house_standards();
         vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
         vsconfig.linter_mark_as_information = getLinter_mark_as_information();
+
+        return vsconfig;
     }
 
     public static get(): ICOBOLSettings {
