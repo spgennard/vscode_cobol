@@ -245,7 +245,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
     COBOLOutputChannel.clear();
 
     let thisExtension = extensions.getExtension("bitlang.cobol");
-    logMessage("");
     if (thisExtension !== undefined) {
         logMessage("VSCode version : "+vscode.version);
         logMessage("Extension Information:");

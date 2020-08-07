@@ -4,7 +4,7 @@ import { Range, TextDocument, Definition, Position, CancellationToken, ProviderR
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, isFile } from './extension';
+import { getCombinedCopyBookSearchPath, isFile, logMessage } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 
@@ -43,41 +43,35 @@ function extractCopyBoolFilename(str: string) {
             return match ? match[1] : null;
         };
 
-    let inPos = str.toLowerCase().indexOf(" in ");
-    if (inPos !== -1) {
-        str = str.substr(0, inPos);
-    }
-    //const strl = str.toLowerCase();
-    let result: string | null;
-    if (/copy/i.test(str)) {
-
-        let copyRegs: RegExp[] = [
-            new RegExp(".*copy\\s*[\"'](.*)[\"'].*$", "i"),
-            new RegExp(".*copy\\s*[\"'](.*)[\"']$", "i"),
-            new RegExp(".*copy\\s*[\"'](.*)[\"']\\s+suppress.*$", "i"),
-            new RegExp(".*copy\\s*(.*)\\s+suppress.*$", "i"),
-            new RegExp(".*copy\\s*[\"'](.*)[\"']\\s+replacing.*$", "i"),
-            new RegExp(".*copy\\s*(.*)\\s+replacing.*$", "i"),
-            new RegExp(".*copy\\s*(.*)$", "i"),
-            new RegExp(".*copy\\s*(.*)\\s.*$", "i"),
-            new RegExp(".*copy\\s*(.*)\\.$", "i")
-        ];
-
-        for (let regPos = 0; regPos < copyRegs.length; regPos++) {
-            try {
-                result = getFirstMatchOrDefault(str, copyRegs[regPos]);
-                if (result !== null && result.length > 0) {
-                    // let a= "Found ["+result+"] test "+regPos+"["+copyRegs+"]";
-                    // console.log(a);
-                    return result;
-                }
-            } catch (e) {
-                /* continue */
-                console.log(e);
-                console.log(e.stacktrace);
-            }
+    let copyPos = str.toLowerCase().indexOf("copy");
+    if (copyPos !== -1) {
+        let noCopyStr = str.substr(4+copyPos).trimLeft();
+        let spacePos = noCopyStr.indexOf(" ");
+        let justCopyArg = noCopyStr;
+        if (spacePos !== -1) {
+            justCopyArg = justCopyArg.substr(0,spacePos).trim();
         }
 
+        // remove trailing .
+        if (justCopyArg.endsWith(".")) {
+            justCopyArg = justCopyArg.substr(0, justCopyArg.length-1);
+            justCopyArg = justCopyArg.trim();
+        }
+
+        // remove double quote
+        if (justCopyArg.startsWith('"') && justCopyArg.endsWith('"')) {
+            justCopyArg = justCopyArg.substr(1,justCopyArg.length-2);
+            justCopyArg = justCopyArg.trim();
+            return justCopyArg;
+        }
+
+        // remove single quote
+        if (justCopyArg.startsWith('\'') && justCopyArg.endsWith('\'')) {
+            justCopyArg = justCopyArg.substr(1,justCopyArg.length-2);
+            justCopyArg = justCopyArg.trim();
+        }
+
+        return justCopyArg;
     }
 
     //FIXME this could be better
