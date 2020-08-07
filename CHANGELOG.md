@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#182](https://github.com/spgennard/vscode_cobol/issues/182) Copybook not longer working (quoted works)  
+
+**Copybook not longer working (quoted works) #182**
+
+
+[6b9d8774204e022](https://github.com/spgennard/vscode_cobol/commit/6b9d8774204e022) *2020-08-07 16:31:16*
+
+
 ## 6.6.2
 ### GitHub [#179](https://github.com/spgennard/vscode_cobol/issues/179) Regression: Go to Definition for copybook without extension not working  
 
