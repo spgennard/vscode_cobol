@@ -142,7 +142,7 @@ function checkForExtensionConflicts(): string {
         let ext_info = extensions.getExtension(eiof_extention);
         if (ext_info !== undefined) {
             if (dupExtensionMessage.length === 0) {
-                logMessage("COBOL Extension fromn bitlag is disabled\n");
+                logMessage("COBOL Extension fromn bitlang is disabled\n");
                 logChannelSetPreserveFocus(false);
                 dupExtensionMessage = "(" + ext_info.id;
             } else {
