@@ -112,6 +112,11 @@ function resetLanguage() {
         ]
     });
 
+    /* flip any already opened docs */
+    for (let docid = 0; docid < workspace.textDocuments.length; docid++) {
+        switch_to_plaintext(workspace.textDocuments[docid]);
+    }
+
     if (!window.activeTextEditor) {
         return;
     }
@@ -120,7 +125,6 @@ function resetLanguage() {
     if (window.activeTextEditor.document !== undefined) {
         switch_to_plaintext(window.activeTextEditor.document);
     }
-
 }
 
 const extension_id_of_duplicate_conflicting_extensions: string[] = [
@@ -137,13 +141,14 @@ function checkForExtensionConflicts(): string {
     for (let eiof_extention of extension_id_of_duplicate_conflicting_extensions) {
         let ext_info = extensions.getExtension(eiof_extention);
         if (ext_info !== undefined) {
-            if (ext_info.isActive) {
-                if (dupExtensionMessage.length === 0) {
-                    dupExtensionMessage = "(" + ext_info.id;
-                } else {
-                    dupExtensionMessage += "," + ext_info.id;
-                }
+            if (dupExtensionMessage.length === 0) {
+                logMessage("COBOL Extension fromn bitlag is disabled\n");
+                logChannelSetPreserveFocus(false);
+                dupExtensionMessage = "(" + ext_info.id;
+            } else {
+                dupExtensionMessage += "," + ext_info.id;
             }
+            logMessage(`The extension ${ext_info.packageJSON.name} from ${ext_info.packageJSON.publisher} has conflicting functionality`);
         }
     }
 
@@ -154,10 +159,20 @@ function checkForExtensionConflicts(): string {
     return dupExtensionMessage;
 }
 
+let activeCOBOL_To_PlaintextHandler: boolean = false;
+
 function initExtensionSearchPaths(config: ICOBOLSettings) {
 
     let mesg = checkForExtensionConflicts();
     if (mesg.length !== 0) {
+        if (activeCOBOL_To_PlaintextHandler === false) {
+            // handle Micro Focus .lst files!
+            const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument((doc) => {
+                switch_to_plaintext(doc);
+            });
+            currentContext.subscriptions.push(onDidOpenTextDocumentHandler);
+            activeCOBOL_To_PlaintextHandler = true;
+        }
         window.showErrorMessage("COBOL Extension is not active due to other extensions providing overlapping functionality\n" + mesg);
         throw new Error("Aborted to avoid further complications");
     }
@@ -246,7 +261,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
 
     let thisExtension = extensions.getExtension("bitlang.cobol");
     if (thisExtension !== undefined) {
-        logMessage("VSCode version : "+vscode.version);
+        logMessage("VSCode version : " + vscode.version);
         logMessage("Extension Information:");
         logMessage(" Extension path    : " + thisExtension.extensionPath);
         logMessage(" Version           : " + thisExtension.packageJSON.version);
@@ -320,12 +335,12 @@ export function activate(context: ExtensionContext) {
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
-        let settings:ICOBOLSettings = VSCOBOLConfiguration.init();
-        activateLogChannelAndPaths(true,settings);
+        let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+        activateLogChannelAndPaths(true, settings);
     });
     context.subscriptions.push(onExtChange);
 
-    let settings:ICOBOLSettings =VSCOBOLConfiguration.init();
+    let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
 
     const collection = languages.createDiagnosticCollection('cobolDiag');
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
@@ -478,13 +493,13 @@ export function activate(context: ExtensionContext) {
 
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
-        let settings:ICOBOLSettings = VSCOBOLConfiguration.init();
+        let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         activateLogChannelAndPaths(true, settings);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
-        let settings:ICOBOLSettings = VSCOBOLConfiguration.init();
+        let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         activateLogChannelAndPaths(false, settings);
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
