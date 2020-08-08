@@ -591,9 +591,6 @@ export default class COBOLQuickParse implements ICommentCallback {
                 break;
         }
 
-        // prepare parser hint information
-        //this.setupint();
-
         let line = "";
         prevToken = Token.Blank;
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
