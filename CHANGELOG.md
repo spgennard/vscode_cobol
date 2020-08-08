@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.7
 ### GitHub [#183](https://github.com/spgennard/vscode_cobol/issues/183) Support for Recursive COPY files  
 
 **Support for Recursive COPY files Fix #183**
