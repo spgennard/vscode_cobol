@@ -132,7 +132,8 @@ const extension_id_of_duplicate_conflicting_extensions: string[] = [
     "broadcommfd.cobol-language-support",
     "ibm.zopeneditor",
     "stfcv.cobolstf",
-    "rechinformatica.rech-editor-cobol"
+    "rechinformatica.rech-editor-cobol",
+    "zio069.enterprise-cobol-for-z-os"
 ];
 
 function checkForExtensionConflicts(): string {
@@ -142,13 +143,29 @@ function checkForExtensionConflicts(): string {
         let ext_info = extensions.getExtension(eiof_extention);
         if (ext_info !== undefined) {
             if (dupExtensionMessage.length === 0) {
-                logMessage("COBOL Extension fromn bitlang is disabled\n");
+                logMessage("COBOL Extension from bitlang is now disabled until the conflicting extension(s) are removed or this extension is removed\n");
                 logChannelSetPreserveFocus(false);
                 dupExtensionMessage = "(" + ext_info.id;
             } else {
                 dupExtensionMessage += "," + ext_info.id;
             }
             logMessage(`The extension ${ext_info.packageJSON.name} from ${ext_info.packageJSON.publisher} has conflicting functionality`);
+            if (ext_info.packageJSON.description !== undefined) {
+                logMessage(` Description   : ${ext_info.packageJSON.description}`);
+            }
+            if (ext_info.packageJSON.version !== undefined) {
+                logMessage(` Version       : ${ext_info.packageJSON.version}`);
+            }
+
+            if (ext_info.packageJSON.repository !== undefined && ext_info.packageJSON.repository.url !== undefined) {
+                logMessage(` Repository    : ${ext_info.packageJSON.repository.url}`);
+            }
+            if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.url !== undefined) {
+                logMessage(` Bug Reporting : ${ext_info.packageJSON.bugs.url}`);
+            }
+            if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.email !== undefined) {
+                logMessage(` Bug Email     : ${ext_info.packageJSON.bugs.email}`);
+            }
         }
     }
 
