@@ -265,7 +265,6 @@ export class COBOLUtils {
                             let range = new vscode.Range(startPos, endPos);
                             edits.delete(uri, range);
                             let n = activeEditor.document.getText(range);
-                            console.log("Removing : " + n);
                         } else {
                             let startPos = new vscode.Position(l, match.index);
                             let endPos = new vscode.Position(l + 1, 0);

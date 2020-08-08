@@ -443,8 +443,6 @@ export default class COBOLQuickParse implements ICommentCallback {
 
     public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
-    private state: ParseState = new ParseState();
-
     skipToDot: boolean = false;
     addReferencesDuringSkipToTag: boolean = false;
 
@@ -495,20 +493,17 @@ export default class COBOLQuickParse implements ICommentCallback {
         this.sourceFileId = sourceReferences.filenames.length;
         sourceReferences.filenames.push(sourceHandler.getUri());
 
-        if (this.sourceReferences.topLevel === false) {
-            this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
-            this.paragraphs = sourceReferences.sharedParagraphs;
-            this.sections = sourceReferences.sharedSections;
-            this.state = sourceReferences.state;
-            this.tokensInOrder = sourceReferences.tokensInOrder;
-        }
+        this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
+        this.paragraphs = sourceReferences.sharedParagraphs;
+        this.sections = sourceReferences.sharedSections;
+        this.tokensInOrder = sourceReferences.tokensInOrder;
 
         // set the source handler for the comment callback to parse the lint comments
         if (configHandler.linter) {
             sourceHandler.setCommentCallback(this);
         }
 
-        let state: ParseState = this.state;
+        let state: ParseState = this.sourceReferences.state;
 
         /* mark this has been processed (to help copy of self) */
         state.processingMap.set(this.filename, this.filename);
@@ -620,42 +615,44 @@ export default class COBOLQuickParse implements ICommentCallback {
             }
         }
 
-        if (state.programs.length !== 0) {
-            for (let cp = 0; cp < state.programs.length; cp++) {
-                let currentProgram = state.programs.pop();
-                if (currentProgram !== undefined) {
-                    currentProgram.endLine = sourceHandler.getLineCount();
-                    currentProgram.endColumn = line.length;
+        if (this.sourceReferences.topLevel) {
+            if (state.programs.length !== 0) {
+                for (let cp = 0; cp < state.programs.length; cp++) {
+                    let currentProgram = state.programs.pop();
+                    if (currentProgram !== undefined) {
+                        currentProgram.endLine = sourceHandler.getLineCount();
+                        currentProgram.endColumn = line.length;
+                    }
                 }
             }
-        }
 
-        if (state.currentDivision !== COBOLToken.Null) {
-            state.currentDivision.endLine = sourceHandler.getLineCount();
-            state.currentDivision.endColumn = line.length;
-        }
+            if (state.currentDivision !== COBOLToken.Null) {
+                state.currentDivision.endLine = sourceHandler.getLineCount();
+                state.currentDivision.endColumn = line.length;
+            }
 
-        if (state.currentSection !== COBOLToken.Null) {
-            state.currentSection.endLine = sourceHandler.getLineCount();
-            state.currentSection.endColumn = line.length;
-        }
+            if (state.currentSection !== COBOLToken.Null) {
+                state.currentSection.endLine = sourceHandler.getLineCount();
+                state.currentSection.endColumn = line.length;
+            }
 
-        if (state.currentParagraph !== COBOLToken.Null) {
-            state.currentParagraph.endLine = sourceHandler.getLineCount();
-            state.currentParagraph.endColumn = line.length;
-        }
+            if (state.currentParagraph !== COBOLToken.Null) {
+                state.currentParagraph.endLine = sourceHandler.getLineCount();
+                state.currentParagraph.endColumn = line.length;
+            }
 
-        this.addinMissingEndlings(sourceHandler);
+            this.addinMissingEndlings(sourceHandler);
 
-        if (this.ImplicitProgramId.length !== 0) {
-            let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
-            this.callTargets.set(this.ImplicitProgramId, ctoken);
-        }
+            if (this.ImplicitProgramId.length !== 0) {
+                let ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
+                this.callTargets.set(this.ImplicitProgramId, ctoken);
+            }
 
-        if (cacheDirectory !== null && cacheDirectory.length > 0) {
-            if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-                let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
-                COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+            if (cacheDirectory !== null && cacheDirectory.length > 0) {
+                if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
+                    let qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
+                    COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                }
             }
         }
     }
@@ -664,10 +661,10 @@ export default class COBOLQuickParse implements ICommentCallback {
         description: string, parentToken: COBOLToken | undefined,
         extraInformation: string = ""): COBOLToken {
 
-        let state: ParseState = this.state;
+        let state: ParseState = this.sourceReferences.state;
         let ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, state.inProcedureDivision, extraInformation);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
-        ctoken.inSection = this.state.currentSection;
+        ctoken.inSection = this.sourceReferences.state.currentSection;
 
         if (ctoken.ignoreInOutlineView) {
             this.tokensInOrder.push(ctoken);
@@ -1005,7 +1002,7 @@ export default class COBOLQuickParse implements ICommentCallback {
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
         let token = new Token(line, prevToken);
 
-        let state: ParseState = this.state;
+        let state: ParseState = this.sourceReferences.state;
 
         do {
             try {
@@ -1049,7 +1046,7 @@ export default class COBOLQuickParse implements ICommentCallback {
                         }
                         if (token.prevTokenLower === 'to' && this.isValidKeyword(tcurrentLower) === false) {
                             let variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, token.prevToken);
-                            this.addVariableOrConstant(trimToken,variableToken);
+                            this.addVariableOrConstant(trimToken, variableToken);
                         }
                     }
                     continue;
@@ -1382,11 +1379,12 @@ export default class COBOLQuickParse implements ICommentCallback {
                             let fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
                             if (fileName.length > 0) {
                                 let qfile = new FileSourceHandler(fileName, false, false);
+                                let currentTopLevel = this.sourceReferences.topLevel;
                                 let currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                                 state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;
                                 let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
-                                this.sourceReferences.topLevel = true;
+                                this.sourceReferences.topLevel = currentTopLevel;
                                 state.ignoreInOutlineView = currentIgnoreInOutlineView;
                             }
                         }
@@ -1602,12 +1600,12 @@ export default class COBOLQuickParse implements ICommentCallback {
                                 this.copyBooksUsed.set(fileName, COBOLToken.Null);
 
                                 let qfile = new FileSourceHandler(fileName, false, false);
-                                let currentIgnoreInOutlineView: boolean = this.state.ignoreInOutlineView;
-                                this.state.ignoreInOutlineView = true;
+                                let currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
+                                // this.sourceReferences.state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;
                                 let qps = new COBOLQuickParse(qfile, fileName, this.configHandler, "", this.sourceReferences);
                                 this.sourceReferences.topLevel = true;
-                                this.state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                                this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                             } else {
                                 logMessage(" WARNING: " + this.cobolPreProcCopybook + " unable to locate " + filename);
                             }
