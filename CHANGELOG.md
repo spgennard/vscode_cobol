@@ -3,6 +3,17 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#183](https://github.com/spgennard/vscode_cobol/issues/183) Support for Recursive COPY files  
+
+**Support for Recursive COPY files Fix #183**
+
+ * - when parse_copybooks_for_references is enabled ensure shared 
+ * references are passed downloads correctly 
+
+[56977179f2aae46](https://github.com/spgennard/vscode_cobol/commit/56977179f2aae46) *2020-08-08 20:12:42*
+
+
 ## 6.6.4
 ### GitHub [#182](https://github.com/spgennard/vscode_cobol/issues/182) Copybook not longer working (quoted works)  
 
