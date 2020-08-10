@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import COBOLQuickParse, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolquickparse';
+import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolsourcescanner';
 import VSQuickCOBOLParse from './vscobolquickparse';
 
 const wordRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -15,7 +15,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         return this.processSearch(document, position);
     }
 
-    private current?: COBOLQuickParse;
+    private current?: COBOLSourceScanner;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -44,7 +44,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             return Promise.resolve(null);
         }
 
-        let qp: COBOLQuickParse = this.current;
+        let qp: COBOLSourceScanner = this.current;
         let sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {

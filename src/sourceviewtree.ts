@@ -5,7 +5,7 @@ import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
 import * as fs from 'fs';
-import { InMemoryGlobalFileCache } from './cobolquickparse';
+import { InMemoryGlobalFileCache } from './cobolsourcescanner';
 import { isValidExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
 

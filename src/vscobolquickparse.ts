@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { TextDocument } from 'vscode';
-import COBOLQuickParse, { COBOLSymbolTableHelper, InMemoryGlobalFileCache } from "./cobolquickparse";
+import COBOLSourceScanner, { COBOLSymbolTableHelper, InMemoryGlobalFileCache } from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
 import * as fs from 'fs';
@@ -30,7 +30,7 @@ export default class VSQuickCOBOLParse {
         return false;
     }
 
-    public static getCachedObject(document: TextDocument): COBOLQuickParse|undefined {
+    public static getCachedObject(document: TextDocument): COBOLSourceScanner|undefined {
         let fileName: string = document.fileName;
 
         /* if the document is edited, drop the in cached object */
@@ -42,7 +42,7 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 let startTime = performance_now();
-                let qcpd = new COBOLQuickParse(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+                let qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
@@ -139,7 +139,7 @@ export default class VSQuickCOBOLParse {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
 
                         let filefs = new FileSourceHandler(filename, false, false);
-                        let qcp = new COBOLQuickParse(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
+                        let qcp = new COBOLSourceScanner(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
                     }
                 }
             }

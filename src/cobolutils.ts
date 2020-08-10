@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import COBOLQuickParse, { splitArgument, camelize } from './cobolquickparse';
+import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { isFile, logMessage, isDirectory,  logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
@@ -289,7 +289,7 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         let file = new VSCodeSourceHandler(activeEditor.document, false);
-        let current: COBOLQuickParse|undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
+        let current: COBOLSourceScanner|undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
         if (current === undefined) {
             logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
             return;

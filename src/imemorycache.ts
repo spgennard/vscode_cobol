@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { isFile } from "./extension";
 let lzjs = require('lzjs');
-import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer, COBOLFileSymbol } from "./cobolquickparse";
+import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer, COBOLFileSymbol } from "./cobolsourcescanner";
 
 export class InMemoryGlobalCachesHelper {
     public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string) {

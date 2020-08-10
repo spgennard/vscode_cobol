@@ -20,7 +20,7 @@ import * as vscode from "vscode";
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
-import COBOLQuickParse from './cobolquickparse';
+import COBOLSourceScanner from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
@@ -488,11 +488,11 @@ export function activate(context: ExtensionContext) {
     });
 
     let dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        COBOLQuickParse.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+        COBOLSourceScanner.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
     let clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
-        COBOLQuickParse.clearMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+        COBOLSourceScanner.clearMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
     });
 
 

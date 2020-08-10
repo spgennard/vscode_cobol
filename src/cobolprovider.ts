@@ -1,7 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import VSQuickCOBOLParse from './vscobolquickparse';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
-import COBOLQuickParse, { COBOLToken, camelize } from './cobolquickparse';
+import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage, logTimeThreshold } from './extension';
@@ -15,7 +15,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        let sf: COBOLQuickParse|undefined = VSQuickCOBOLParse.getCachedObject(document);
+        let sf: COBOLSourceScanner|undefined = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {

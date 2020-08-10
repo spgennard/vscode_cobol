@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import COBOLQuickParse, { SharedSourceReferences } from './cobolquickparse';
+import COBOLSourceScanner, { SharedSourceReferences } from './cobolsourcescanner';
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
@@ -56,7 +56,7 @@ export class CobolLinterProvider {
     private collection: vscode.DiagnosticCollection;
     private linterSev: vscode.DiagnosticSeverity;
 
-    private current?: COBOLQuickParse;
+    private current?: COBOLSourceScanner;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -90,7 +90,7 @@ export class CobolLinterProvider {
             return;
         }
 
-        let qp: COBOLQuickParse = this.current;
+        let qp: COBOLSourceScanner = this.current;
         let sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         let diagRefs = new Map<string, vscode.Diagnostic[]>();
@@ -112,7 +112,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processParsedDocumentForStandards(qp: COBOLQuickParse, diagRefs: Map<string, vscode.Diagnostic[]>) {
+    private processParsedDocumentForStandards(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>) {
 
         if (this.sourceRefs === undefined) {
             return;
@@ -166,7 +166,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processParsedDocumentForUnusedSymbols(qp: COBOLQuickParse, diagRefs: Map<string, vscode.Diagnostic[]>) {
+    private processParsedDocumentForUnusedSymbols(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>) {
 
         if (this.sourceRefs === undefined) {
             return;
