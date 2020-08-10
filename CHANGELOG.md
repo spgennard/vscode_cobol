@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#184](https://github.com/spgennard/vscode_cobol/issues/184) Outline view: 01 field with no-name not being picked up  
+
+**Outline view: 01 field with no-name not being picked up Fix #184**
+
+
+[28326205afbe0e6](https://github.com/spgennard/vscode_cobol/commit/28326205afbe0e6) *2020-08-10 18:10:34*
+
+
 ## 6.6.7
 ### GitHub [#183](https://github.com/spgennard/vscode_cobol/issues/183) Support for Recursive COPY files  
 
