@@ -4,7 +4,7 @@ import COBOLSourceScanner, { SharedSourceReferences } from './cobolsourcescanner
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
-import VSQuickCOBOLParse from './vscobolquickparse';
+import VSQuickCOBOLParse from './vscobolscanner';
 
 function makeRegex(partialRegEx: string): RegExp {
     return new RegExp("^"+partialRegEx+"$","i");

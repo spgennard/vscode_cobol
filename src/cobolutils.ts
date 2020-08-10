@@ -4,7 +4,7 @@ import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanne
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { isFile, logMessage, isDirectory,  logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
-import VSQuickCOBOLParse from './vscobolquickparse';
+import VSQuickCOBOLParse from './vscobolscanner';
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { isNetworkPath, isDirectPath } from './opencopybook';

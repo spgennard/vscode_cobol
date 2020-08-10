@@ -1,5 +1,5 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
-import VSQuickCOBOLParse from './vscobolquickparse';
+import VSQuickCOBOLParse from './vscobolscanner';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';

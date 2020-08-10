@@ -24,7 +24,7 @@ import COBOLSourceScanner from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
-import VSQuickCOBOLParse from './vscobolquickparse';
+import VSQuickCOBOLParse from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { COBOLTokenStyle, splitArgument, COBOLToken } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { outlineFlag } from './iconfiguration';
-import VSQuickCOBOLParse from './vscobolquickparse';
+import VSQuickCOBOLParse from './vscobolscanner';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {

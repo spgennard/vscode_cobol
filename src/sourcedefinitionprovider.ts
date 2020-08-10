@@ -3,7 +3,7 @@ import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 import { logMessage } from './extension';
 import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken, COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, COBOLGlobalSymbolTable } from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
-import VSQuickCOBOLParse from './vscobolquickparse';
+import VSQuickCOBOLParse from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
