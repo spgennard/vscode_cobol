@@ -1418,11 +1418,31 @@ export default class COBOLQuickParse implements ICommentCallback {
                 }
 
                 // are we in the working-storage section?
-                if (state.pickFields) {
+                if (state.pickFields && prevToken.length > 0) {
+
                     /* only interesting in things that are after a number */
                     if (this.isNumber(prevToken) && !this.isNumber(current)) {
-                        if (currentLower === "filler" || !this.isValidKeyword(currentLower)) {
-                            let trimToken = this.trimLiteral(current);
+                        let isFiller: boolean = (currentLower === 'filler');
+                        let pickUpThisField: boolean = isFiller;
+                        let trimToken = this.trimLiteral(current);
+                        //
+                        // what other reasons do we need to pickup this line as a field?
+                        if (!pickUpThisField) {
+                            // not a complete inclusive list but should cover the normal cases
+                            if (currentLower.startsWith("pic") || currentLower.startsWith("comp-") || currentLower.startsWith("binary-")) {
+                                // fake up the line
+                                line = prevToken+" filler ";
+                                trimToken = "filler";
+                                pickUpThisField = true;
+                            } else {
+                                // okay, current item looks like it could be a field
+                                if (!this.isValidKeyword(currentLower)) {
+                                    pickUpThisField = true;
+                                }
+                            }
+                        }
+
+                        if (pickUpThisField) {
                             if (this.isValidLiteral(currentLower)) {
                                 let style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
                                 let extraInfo = prevToken;
@@ -1442,8 +1462,11 @@ export default class COBOLQuickParse implements ICommentCallback {
                                         style = COBOLTokenStyle.Constant;
                                     }
                                 }
+
                                 let ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, state.currentDivision, extraInfo);
-                                this.addVariableOrConstant(currentLower, ctoken);
+                                if (!isFiller) {
+                                    this.addVariableOrConstant(currentLower, ctoken);
+                                }
 
                                 // place the 88 under the 01 item
                                 if (state.currentLevel !== COBOLToken.Null && prevToken === '88') {
