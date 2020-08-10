@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.10
 ### GitHub [#184](https://github.com/spgennard/vscode_cobol/issues/184) Outline view: 01 field with no-name not being picked up  
 
 **Outline view: 01 field with no-name not being picked up Fix #184**
