@@ -5,7 +5,7 @@ import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
-import { DocComment } from './formatting/DocComment';
+import { DocComment } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
 import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
