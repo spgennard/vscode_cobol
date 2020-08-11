@@ -136,14 +136,21 @@ const extension_id_of_duplicate_conflicting_extensions: string[] = [
     "zio069.enterprise-cobol-for-z-os"
 ];
 
-function checkForExtensionConflicts(): string {
+function checkForExtensionConflicts(settings: ICOBOLSettings): string {
     let dupExtensionMessage = "";
+    if (settings.ignore_unsafe_extensions) {
+        return dupExtensionMessage;
+    }
 
     for (let eiof_extention of extension_id_of_duplicate_conflicting_extensions) {
         let ext_info = extensions.getExtension(eiof_extention);
         if (ext_info !== undefined) {
             if (dupExtensionMessage.length === 0) {
-                logMessage("COBOL Extension from bitlang is now disabled until the conflicting extension(s) are removed or this extension is removed\n");
+                logMessage("COBOL Extension from bitlang is now disabled until:");
+                logMessage(" - the conflicting extension(s) are removed or ");
+                logMessage(" - or this extension is removed");
+                logMessage(" - or this warning is disabled by setting coboleditor.ignore_unsafe_extensions to true (restart is required)\n");
+
                 logChannelSetPreserveFocus(false);
                 dupExtensionMessage = "(" + ext_info.id;
             } else {
@@ -180,7 +187,7 @@ let activeCOBOL_To_PlaintextHandler: boolean = false;
 
 function initExtensionSearchPaths(config: ICOBOLSettings) {
 
-    let mesg = checkForExtensionConflicts();
+    let mesg = checkForExtensionConflicts(config);
     if (mesg.length !== 0) {
         if (activeCOBOL_To_PlaintextHandler === false) {
             // handle Micro Focus .lst files!
@@ -282,6 +289,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage("Extension Information:");
         logMessage(" Extension path    : " + thisExtension.extensionPath);
         logMessage(" Version           : " + thisExtension.packageJSON.version);
+
         if (VSCOBOLConfiguration.isCachingEnabled()) {
             logMessage(" Caching                       : " + VSCOBOLConfiguration.getCachingSetting());
             logMessage("  Cache Strategy               : " + VSCOBOLConfiguration.getCache_directory_strategy());
@@ -347,6 +355,7 @@ function flip_plaintext(doc: TextDocument) {
     }
 }
 
+
 export function activate(context: ExtensionContext) {
     currentContext = context;
 
@@ -356,6 +365,13 @@ export function activate(context: ExtensionContext) {
         activateLogChannelAndPaths(true, settings);
     });
     context.subscriptions.push(onExtChange);
+
+
+    const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
+        let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+        activateLogChannelAndPaths(true, settings);
+    });
+    context.subscriptions.push(onDidChangeConfiguration);
 
     let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
 
@@ -507,13 +523,6 @@ export function activate(context: ExtensionContext) {
             // console.log('fetch task was rejected', reason);
         });
     });
-
-
-    const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
-        let settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-        activateLogChannelAndPaths(true, settings);
-    });
-    context.subscriptions.push(onDidChangeConfiguration);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
         let settings: ICOBOLSettings = VSCOBOLConfiguration.init();

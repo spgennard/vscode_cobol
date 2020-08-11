@@ -42,7 +42,7 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_house_standards = getLinter_house_standards();
         vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
         vsconfig.linter_mark_as_information = getLinter_mark_as_information();
-
+        vsconfig.ignore_unsafe_extensions = getIgnore_unsafe_extensions();
         return vsconfig;
     }
 
@@ -236,6 +236,10 @@ function getLinter_house_standards(): boolean {
 
 function getLinter_mark_as_information(): boolean {
     return getBoolean("linter_mark_as_information", true);
+}
+
+function getIgnore_unsafe_extensions() : boolean {
+    return getBoolean("ignore_unsafe_extensions", false);
 }
 
 function getCache_directory_strategy(): string {

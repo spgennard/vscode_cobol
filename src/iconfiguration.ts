@@ -39,6 +39,7 @@ export interface ICOBOLSettings {
     linter_unused_paragraphs_or_sections: boolean;
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
+    ignore_unsafe_extensions: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -72,6 +73,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter_unused_paragraphs_or_sections: boolean;
     public linter_house_standards: boolean;
     public linter_house_standards_rules: string[];
+    public ignore_unsafe_extensions: boolean;
 
     constructor() {
         this.experimential_features = false;
@@ -104,6 +106,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_unused_paragraphs_or_sections = true;
         this.linter_house_standards = true;
         this.linter_house_standards_rules = [];
+        this.ignore_unsafe_extensions = false;
     }
 }
 

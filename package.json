@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.6.11",
+    "version": "6.6.12",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -461,6 +461,12 @@
                         "report=.*",
                         "screen=.*"
                     ]
+                },
+                "coboleditor.ignore_unsafe_extensions": {
+                    "type": "boolean",
+                    "title": "Turn off unsafe extension check",
+                    "description": "Turn off unsafe extension check",
+                    "default": false
                 }
             }
         },
