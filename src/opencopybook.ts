@@ -37,49 +37,52 @@ export function isValidExtension(filename: string): boolean {
 
 
 function extractCopyBoolFilename(str: string) {
-    let getFirstMatchOrDefault =
-        (s: string, pattern: RegExp) => {
-            const match = s.match(pattern);
-            return match ? match[1] : null;
-        };
-
     let copyPos = str.toLowerCase().indexOf("copy");
     if (copyPos !== -1) {
-        let noCopyStr = str.substr(4+copyPos).trimLeft();
+        let noCopyStr = str.substr(4 + copyPos).trimLeft();
         let spacePos = noCopyStr.indexOf(" ");
         let justCopyArg = noCopyStr;
         if (spacePos !== -1) {
-            justCopyArg = justCopyArg.substr(0,spacePos).trim();
+            justCopyArg = justCopyArg.substr(0, spacePos).trim();
         }
 
         // remove trailing .
         if (justCopyArg.endsWith(".")) {
-            justCopyArg = justCopyArg.substr(0, justCopyArg.length-1);
+            justCopyArg = justCopyArg.substr(0, justCopyArg.length - 1);
             justCopyArg = justCopyArg.trim();
         }
 
         // remove double quote
         if (justCopyArg.startsWith('"') && justCopyArg.endsWith('"')) {
-            justCopyArg = justCopyArg.substr(1,justCopyArg.length-2);
+            justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
             justCopyArg = justCopyArg.trim();
             return justCopyArg;
         }
 
         // remove single quote
         if (justCopyArg.startsWith('\'') && justCopyArg.endsWith('\'')) {
-            justCopyArg = justCopyArg.substr(1,justCopyArg.length-2);
+            justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
             justCopyArg = justCopyArg.trim();
         }
 
         return justCopyArg;
     }
 
-    //FIXME this could be better
-    if (/exec sql include/i.test(str)) {
-        try {
-            return getFirstMatchOrDefault(str, /exec\\s*sql\\s*include\s(.*)\s*end-exec/);
-        } catch (e) {
-            /* continue */
+    let strLower = str.toLowerCase();
+    if (strLower.indexOf("exec") !== -1) {
+        if (strLower.includes("sql", strLower.indexOf("exec"))) {
+            let includePos = strLower.indexOf("include");
+            if (includePos !== -1) {
+                includePos += 7
+                let strRight = str.substr(includePos).trimLeft();
+                let strRightLower = strRight.toLowerCase();
+                let endExecPos = strRightLower.indexOf("end-exec");
+                if (endExecPos !== -1) {
+                    let filename = strRight.substr(0, endExecPos).trim();
+
+                    return filename;
+                }
+            }
         }
     }
     return "";
@@ -215,8 +218,14 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
 
     const line = doc.lineAt(pos);
     const text = line.text;
+    const textLower = text.toLowerCase();
     const filename = extractCopyBoolFilename(text);
-    const inPos = text.toLowerCase().indexOf("in");
+    let inPos = -1;
+
+    // exec sql include "has" in in the line.. so becareful
+    if (textLower.indexOf("copy") !== -1) {
+        inPos = textLower.indexOf("in");
+    }
 
     let inDirectory = inPos !== -1 ? text.substr(2 + inPos) : "";
 
