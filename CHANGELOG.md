@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.13
 ### GitHub [#186](https://github.com/spgennard/vscode_cobol/issues/186) syntax highlighting wrong after comment paragraphs  
 
 **syntax highlighting wrong after comment paragraphs Fix #186**
