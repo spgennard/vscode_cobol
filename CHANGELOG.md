@@ -3,6 +3,26 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#186](https://github.com/spgennard/vscode_cobol/issues/186) syntax highlighting wrong after comment paragraphs  
+
+**syntax highlighting wrong after comment paragraphs Fix #186**
+
+ * - AUTHOR not terminated by comment. 
+
+[811ccf1e77de2cd](https://github.com/spgennard/vscode_cobol/commit/811ccf1e77de2cd) *2020-08-12 16:52:01*
+
+
+### GitHub [#56](https://github.com/spgennard/vscode_cobol/issues/56) Show definition DCLGEN  
+
+**Show definition DCLGEN Fix #56**
+
+ * - broken by &quot;copy xx in&quot; handlimg 
+ * - recoded to avoid use of regex 
+
+[910327d68575890](https://github.com/spgennard/vscode_cobol/commit/910327d68575890) *2020-08-12 16:53:46*
+
+
 ## 6.6.11
 ### GitHub [#184](https://github.com/spgennard/vscode_cobol/issues/184) Outline view: 01 field with no-name not being picked up  
 
