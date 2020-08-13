@@ -386,6 +386,4 @@ export class COBOLUtils {
         }
         vscode.workspace.applyEdit(edits);
     }
-
-
 }
