@@ -6,8 +6,13 @@ import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolscanner';
 
-function makeRegex(partialRegEx: string): RegExp {
-    return new RegExp("^"+partialRegEx+"$","i");
+function makeRegex(partialRegEx: string): RegExp | undefined {
+    try {
+        return new RegExp("^" + partialRegEx + "$", "i");
+    }
+    catch {
+        return undefined;
+    }
 }
 
 export class CobolLinterActionFixer implements CodeActionProvider {
@@ -139,13 +144,16 @@ export class CobolLinterProvider {
                     let regexForRule = ruleRegexMap.get(token.inSection.tokenNameLower);
                     if (regexForRule === undefined) {
                         regexForRule = makeRegex(rule);
+                        if (regexForRule === undefined) {
+                            continue;
+                        }
                         ruleRegexMap.set(token.inSection.tokenNameLower, regexForRule);
                     }
                     if (regexForRule.test(token.tokenName) === false) {
                         let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
 
-                        let d = new vscode.Diagnostic(r, key + ' breaks house standards rule for '+token.inSection.tokenNameLower+" section", this.linterSev);
+                        let d = new vscode.Diagnostic(r, key + ' breaks house standards rule for ' + token.inSection.tokenNameLower + " section", this.linterSev);
                         d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                         if (diagRefs.has(token.filename)) {

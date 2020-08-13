@@ -1,8 +1,8 @@
 {
     "name": "cobol",
     "displayName": "COBOL",
-    "description": "COBOL, JCL, PL/I & DIR syntax support",
-    "version": "6.6.21",
+    "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
+    "version": "6.6.22",
     "publisher": "bitlang",
     "keywords": [
         "cobol",

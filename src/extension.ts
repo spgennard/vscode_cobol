@@ -96,36 +96,6 @@ export function isPathInWorkspace(ddir: string): boolean {
     return false;
 }
 
-function resetLanguage() {
-
-    languages.setLanguageConfiguration("COBOL", {
-
-        indentationRules: {
-            decreaseIndentPattern: /./,
-            increaseIndentPattern: /./
-        },
-        wordPattern: /./g,
-        comments: {
-            lineComment: ""
-        },
-        brackets: [
-        ]
-    });
-
-    /* flip any already opened docs */
-    for (let docid = 0; docid < workspace.textDocuments.length; docid++) {
-        switch_to_plaintext(workspace.textDocuments[docid]);
-    }
-
-    if (!window.activeTextEditor) {
-        return;
-    }
-
-    // try to avoid causing any problems due to the extension not being activate
-    if (window.activeTextEditor.document !== undefined) {
-        switch_to_plaintext(window.activeTextEditor.document);
-    }
-}
 
 const extension_id_of_duplicate_conflicting_extensions: string[] = [
     "broadcommfd.code4z-extension-pack",
@@ -138,67 +108,54 @@ const extension_id_of_duplicate_conflicting_extensions: string[] = [
 
 function checkForExtensionConflicts(settings: ICOBOLSettings): string {
     let dupExtensionMessage = "";
-    if (settings.ignore_unsafe_extensions) {
-        return dupExtensionMessage;
-    }
 
     for (let eiof_extention of extension_id_of_duplicate_conflicting_extensions) {
         let ext_info = extensions.getExtension(eiof_extention);
         if (ext_info !== undefined) {
             if (dupExtensionMessage.length === 0) {
-                logMessage("COBOL Extension from bitlang is now disabled until:");
-                logMessage(" - the conflicting extension(s) are removed or ");
-                logMessage(" - or this extension is removed");
-                logMessage(" - or this warning is disabled by setting coboleditor.ignore_unsafe_extensions to true (restart is required)\n");
-
-                logChannelSetPreserveFocus(false);
-                dupExtensionMessage = "(" + ext_info.id;
-            } else {
-                dupExtensionMessage += "," + ext_info.id;
+                if (settings.ignore_unsafe_extensions === false) {
+                    dupExtensionMessage += "The COBOL Extension from bitlang may produce duplicate results due to\n";
+                    dupExtensionMessage += " other extensions for COBOL being present.\n\n";
+                    dupExtensionMessage += "If you do not want see this warning message, change the setting\n";
+                    dupExtensionMessage += " coboleditor.ignore_unsafe_extensions to true and restart vscode\n";
+                }
             }
-            logMessage(`The extension ${ext_info.packageJSON.name} from ${ext_info.packageJSON.publisher} has conflicting functionality`);
+            dupExtensionMessage += `\nThe extension ${ext_info.packageJSON.name} from ${ext_info.packageJSON.publisher} has conflicting functionality\n`;
+
             if (ext_info.packageJSON.description !== undefined) {
-                logMessage(` Description   : ${ext_info.packageJSON.description}`);
+                dupExtensionMessage += ` Description   : ${ext_info.packageJSON.description}\n`;
             }
             if (ext_info.packageJSON.version !== undefined) {
-                logMessage(` Version       : ${ext_info.packageJSON.version}`);
+                dupExtensionMessage += ` Version       : ${ext_info.packageJSON.version}\n`;
             }
 
             if (ext_info.packageJSON.repository !== undefined && ext_info.packageJSON.repository.url !== undefined) {
-                logMessage(` Repository    : ${ext_info.packageJSON.repository.url}`);
+                dupExtensionMessage += ` Repository    : ${ext_info.packageJSON.repository.url}\n`;
             }
             if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.url !== undefined) {
-                logMessage(` Bug Reporting : ${ext_info.packageJSON.bugs.url}`);
+                dupExtensionMessage += ` Bug Reporting : ${ext_info.packageJSON.bugs.url}\n`;
             }
             if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.email !== undefined) {
-                logMessage(` Bug Email     : ${ext_info.packageJSON.bugs.email}`);
+                dupExtensionMessage += ` Bug Email     : ${ext_info.packageJSON.bugs.email}\n`;
+            }
+
+            if (dupExtensionMessage.length !== 0) {
+                dupExtensionMessage += "\n";
             }
         }
     }
 
-    if (dupExtensionMessage.length !== 0) {
-        dupExtensionMessage += ")";
-        resetLanguage();
-    }
     return dupExtensionMessage;
 }
 
-let activeCOBOL_To_PlaintextHandler: boolean = false;
-
+let checkForExtensionConflictsMessage: string = "";
+let messageBoxDone: boolean = false;
 function initExtensionSearchPaths(config: ICOBOLSettings) {
 
-    let mesg = checkForExtensionConflicts(config);
-    if (mesg.length !== 0) {
-        if (activeCOBOL_To_PlaintextHandler === false) {
-            // handle Micro Focus .lst files!
-            const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument((doc) => {
-                switch_to_plaintext(doc);
-            });
-            currentContext.subscriptions.push(onDidOpenTextDocumentHandler);
-            activeCOBOL_To_PlaintextHandler = true;
-        }
-        window.showErrorMessage("COBOL Extension is not active due to other extensions providing overlapping functionality\n" + mesg);
-        throw new Error("Aborted to avoid further complications");
+    checkForExtensionConflictsMessage = checkForExtensionConflicts(config);
+    if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
+        messageBoxDone = true;
+        window.showInformationMessage("COBOL Extension that has found duplicate functionality\n\nSee View->Output->COBOL for more information",  { modal: true });
     }
 
     fileSearchDirectory.length = 0;
@@ -332,12 +289,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
 
 export function getCurrentContext(): ExtensionContext {
     return currentContext;
-}
-
-function switch_to_plaintext(doc: TextDocument) {
-    if (doc.languageId === 'COBOL') {
-        vscode.languages.setTextDocumentLanguage(doc, "plaintext");
-    }
 }
 
 function flip_plaintext(doc: TextDocument) {
@@ -927,12 +878,17 @@ export function activate(context: ExtensionContext) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
     }
 
+    if (checkForExtensionConflictsMessage.length !== 0) {
+        logMessage(checkForExtensionConflictsMessage);
+    }
+
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm_cache_promise = async () => {
             VSQuickCOBOLParse.processAllFilesInWorkspaces(false);
         };
         pm_cache_promise();
     }
+
 }
 
 export function enableMarginStatusBar(formatStyle: ESourceFormat) {
