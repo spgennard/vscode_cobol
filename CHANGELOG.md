@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#187](https://github.com/spgennard/vscode_cobol/issues/187) Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline  
+
+**Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline Fix #187**
+
+
+[cda8aee4130ce61](https://github.com/spgennard/vscode_cobol/commit/cda8aee4130ce61) *2020-08-13 17:05:44*
+
+
 ## 6.6.13
 ### GitHub [#186](https://github.com/spgennard/vscode_cobol/issues/186) syntax highlighting wrong after comment paragraphs  
 
