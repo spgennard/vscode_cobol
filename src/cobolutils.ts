@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { isFile, logMessage, isDirectory,  logException, isPathInWorkspace } from './extension';
+import { isFile, logMessage, isDirectory, logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSQuickCOBOLParse from './vscobolscanner';
 import { writeFileSync } from 'fs';
@@ -115,6 +115,10 @@ export class COBOLUtils {
                 }
             }
         }).then(copybook_filename => {
+            // leave if we have no filename
+            if (copybook_filename === undefined) {
+                return;
+            }
             let filename = path.join(dir, copybook_filename + ".cpy");
             writeFileSync(filename, text);
 
@@ -145,6 +149,11 @@ export class COBOLUtils {
                 }
             }
         }).then(value => {
+            // leave early
+            if (value === undefined) {
+                return;
+            }
+
             activeTextEditor.edit(edit => {
                 edit.replace(ran, "           perform "
                     + value + "\n\n       "
@@ -289,7 +298,7 @@ export class COBOLUtils {
         let uri = activeEditor.document.uri;
 
         let file = new VSCodeSourceHandler(activeEditor.document, false);
-        let current: COBOLSourceScanner|undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
+        let current: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
         if (current === undefined) {
             logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
             return;
