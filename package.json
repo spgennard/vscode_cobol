@@ -290,7 +290,7 @@
                             "sourceformat": "fixed"
                         }
                     ],
-                    "description": "An array of filenames/patterns and its associated source formmat"
+                    "description": "An array of filenames/patterns and its associated source format"
                 },
                 "coboleditor.experimental_features": {
                     "type": "boolean",
