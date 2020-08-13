@@ -12,7 +12,10 @@
    version="1.1"
    id="svg28"
    sodipodi:docname="cobol.svg"
-   inkscape:version="1.0 (b51213c273, 2020-08-10)">
+   inkscape:version="1.0 (b51213c273, 2020-08-10)"
+   inkscape:export-filename="/home/spg/src/vscode_cobol/images/cobol.png"
+   inkscape:export-xdpi="36"
+   inkscape:export-ydpi="36">
   <metadata
      id="metadata34">
     <rdf:RDF>
@@ -21,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -77,7 +80,7 @@
      id="text12"
      lengthAdjust="spacing"
      style="font-style:normal;font-weight:bold;font-size:105.9px;font-family:Consolas, 'Arial Black';fill:#005820;stroke:#0b0b0b"
-     transform="matrix(0.67099976,0,0,1.0033234,55.534739,76.785573)"><tspan
+     transform="matrix(0.63032021,-0.00221299,0,1.3806599,59.461435,47.974037)"><tspan
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:82.6999px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a8cbfe"
        id="tspan36">COBOL</tspan></text>
 </svg>
