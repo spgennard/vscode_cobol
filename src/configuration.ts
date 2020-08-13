@@ -13,7 +13,7 @@ export class VSCOBOLConfiguration {
     public static init(): ICOBOLSettings {
         let vsconfig = VSCOBOLConfiguration.config;
 
-        vsconfig.experimential_features = getExperimentialFeatures();
+        vsconfig.experimental_features = getExperimentialFeatures();
         vsconfig.enable_tabstop = isTabstopEnabled();
         vsconfig.ignorecolumn_b_onwards = getColumBParsing();
         vsconfig.copybooks_nested = getCopybookNestedInSection();
@@ -51,7 +51,7 @@ export class VSCOBOLConfiguration {
     }
 
     public static getExperimentialFeatures(): boolean {
-        return VSCOBOLConfiguration.config.experimential_features;
+        return VSCOBOLConfiguration.config.experimental_features;
     }
 
     public static isTabstopEnabled(): boolean {
@@ -151,7 +151,7 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
 }
 
 function getExperimentialFeatures(): boolean {
-    return getBoolean('experimential_features', false);
+    return getBoolean('experimental_features', false);
 }
 
 function isTabstopEnabled(): boolean {

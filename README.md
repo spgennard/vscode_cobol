@@ -1,19 +1,25 @@
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![chat-img](https://img.shields.io/badge/Gitter-Join_the_vscode_cobol_chat-brightgreen.svg)](https://gitter.im/vscode_cobol/community)
 
-# COBOL Source colouriser for Visual Studio Code
+# COBOL Source editing for Visual Studio Code
 
-This extension was originally aimed at providing syntax highlighting for COBOL but overtime is has been extended to provide syntax highlighting for other related languages/file formats such JCL, PL/I and MF directive files.
+This extension was originally aimed at providing syntax highlighting for COBOL but overtime is has been extended to provide syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and Micro Focus Unit Test Reports.
 
 ## What can I expect from this extension
 
-This extension is certainly not an Integrated Development Environment for COBOL.   It does provide enough functionality for the causual developer to view, edit and compile source code (via tasks & problem matchers).
+This extension is certainly not an Integrated Development Environment for COBOL.   It does provide enough functionality for the casual developer to view, edit and compile source code (via tasks & problem matchers).
+
+## Does this extension include a language server protocol for COBOL
+
+Visual Studio Code has two ways of providing language extensions, one if via the [language server protocol](https://langserver.org/) and the second is via a set of Visual Studio Code APIs.
+
+This extension uses the Visual Studio Code APIs because the Language Server Protocol did not exist when this extension was created.
 
 ## What platform can it be used on?
 
 Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
-## Code colourisation for COBOL, PL/I and JCL:
+## Code colorization for COBOL, PL/I and JCL:
 
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/screenshot_three.png)
 
@@ -53,8 +59,8 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 ## Settings
 
 - COBOL tab stops can be changed by editing the *coboleditor.tabstops* setting.
-- Extensions used for *move to copybook*, can be changed by editting the *coboleditor.copybookexts* settings.
-- Directories used for *move to copybook*, can be changed by editting the *coboleditor.copybookdirs* settings.
+- Extensions used for *move to copybook*, can be changed by editing the *coboleditor.copybookexts* settings.
+- Directories used for *move to copybook*, can be changed by editing the *coboleditor.copybookdirs* settings.
 
 ## Tasks
 
@@ -233,8 +239,8 @@ The example below shows you how you can create a single task to compile one prog
 | Micro Focus Visual COBOL/Enterprise Developer | msbuild                                                      | $mfcobol-msbuild                            |
 |                                               | cob or cobol.exe + ERRFORMAT"3"                              | $mfcobol-errformat3                         |
 |                                               | cob or cobol.exe + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                  |
-|                                               | cob or cobol.exe + ERRFORMAT"2" | $$mfcobol-errformat2               |
-|                                               | cob or cobol.exe + ERRFORMAT"2" for errors in copybooks       | $$mfcobol-errformat2-copybook               |
+|                                               | cob or cobol.exe + ERRFORMAT"2" | $mfcobol-errformat2               |
+|                                               | cob or cobol.exe + ERRFORMAT"2" for errors in copybooks       | $mfcobol-errformat2-copybook               |
 
 ## Remote development using containers
 
@@ -313,11 +319,10 @@ Although this extension does not understand comments in COBOL source files, it c
 
 ```json
 {
-    "todo-tree.flat": false,
-    "todo-tree.expanded": true,
-
-    "todo-tree.regex": "((//|#|<!--|;|/\\*|\\*>|^......\\*)\\s*($TAGS)|^\\s*- \\[ \\])",
-    "todo-tree.tags": [
+    "todo-tree.tree.flat": false,
+    "todo-tree.tree.expanded": true,
+    "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|\\*>|^......\\*)\\s*($TAGS)|^\\s*- \\[ \\])",
+    "todo-tree.general.tags": [
         "TODO",
         "FIXME",
         "!FIXME",
@@ -325,15 +330,24 @@ Although this extension does not understand comments in COBOL source files, it c
         "BUG",
         "NOTE"
     ],
-    "todo-tree.filterCaseSensitive": true,
-
-    "todo-tree.iconColours": {
-        "FIXME" : "#A188FF",
-        "!FIXME" : "red",
-        "NOTE" : "blue",
-        "TODO" : "cyan",
-        "CHANGED" : "yellow",
-        "BUG" : "red"
+    "todo-tree.tree.filterCaseSensitive": true,
+    "todo-tree.highlights.customHighlight": {
+        "FIXME": {
+            "icon": "flame",
+            "iconColour": "#A188FF",
+        },
+        "NOTE": {
+            "iconColour:" : "blue"
+        },
+        "TODO": {
+            "iconColour:" : "cyan"
+        },
+        "CHANGED": {
+            "iconColour:" : "yellow"
+        },
+        "BUG": {
+            "icon": "bug"
+        }
     }
 }
 ```
@@ -375,13 +389,13 @@ For example, to ensure you use utf8 for all you files use:
 }
 ```
 
-## coboleditor.experimential_features
+## coboleditor.experimental_features
 
-Currently I have only one is active experimential feature and this is "hover" support for known APIs.
+Currently I have only one is active experimental feature and this is "hover" support for known APIs.
 
 This currently includes most of the *Micro Focus COBOL Library API* (CBL_) and a subset of ILE date apis.
 
-This can be activated by setting the flag coboleditor.experimential_features in the settings panel.
+This can be activated by setting the flag coboleditor.experimental_features in the settings panel.
 
 and looks like:
 
