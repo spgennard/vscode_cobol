@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import { InMemoryGlobalFileCache } from './cobolsourcescanner';
 import { isValidExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
+import { logException } from './extension';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;
@@ -36,21 +37,30 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.pliItem = new SourceFolderItem("PL/I");
         this.documentItem = new SourceFolderItem("Documents");
 
+        this.topLevelItem.push(this.cobolItem);
+        this.topLevelItem.push(this.copyBook);
+        this.topLevelItem.push(this.jclItem);
+        this.topLevelItem.push(this.hlasmItem);
+        this.topLevelItem.push(this.pliItem);
+        this.topLevelItem.push(this.documentItem);
+
         this.config = config;
 
         if (getWorkspaceFolders()) {
-            workspace.findFiles("*")
-                .then((allFiles) => {
-                    allFiles.forEach((file) => {
-                        let fileExtension = file.fsPath.split('.').pop();
-                        if (fileExtension) {
-                            this.addExtension(fileExtension, file);
-                        }
+            let standardFolders: string[] = ["*", "cbl/*", "jcl/*", "jclproc/*" ];
+            for (let standardFolder of standardFolders) {
+                workspace.findFiles(standardFolder)
+                    .then((allFiles) => {
+                        allFiles.forEach((file) => {
+                            let fileExtension = file.fsPath.split('.').pop();
+                            if (fileExtension) {
+                                this.addExtension(fileExtension, file);
+                            }
+                        });
+
+                        this.refreshItems();
                     });
-
-                    this.refreshItems();
-
-                });
+            }
         }
     }
 
@@ -91,6 +101,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         let base = path.basename(file.fsPath);
 
         switch (ext?.toLowerCase()) {
+            case "cobol":
             case "scbl":
             case "cob":
             case "pco":
@@ -156,23 +167,26 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private refreshItem(items: SourceFolderItem[], item: SourceItem) {
         if (items.length !== 0) {
             item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            this.topLevelItem.push(item);
+            // this.topLevelItem.push(item);
         } else {
             item.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
     }
 
     private refreshItems() {
-        this.topLevelItem = [];
-
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
             for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                let fileExtension = i.split('.').pop();
-                if (fileExtension) {
-                    if (isValidExtension(fileExtension)) {
-                        let vFile = vscode.Uri.file(i);
-                        this.addExtension(fileExtension, vFile);
+                try {
+                    let fileExtension = i.split('.').pop();
+                    if (fileExtension) {
+                        if (isValidExtension(fileExtension)) {
+                            let vFile = vscode.Uri.file(i);
+                            this.addExtension(fileExtension, vFile);
+                        }
                     }
+                }
+                catch (e) {
+                    logException("refreshItems", e);
                 }
             }
         }
@@ -188,10 +202,15 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     public async checkFile(vuri: vscode.Uri) {
-        let fileExtension = vuri.fsPath.split('.').pop();
-        if (fileExtension !== undefined) {
-            this.addExtension(fileExtension, vuri);
-            this.refreshItems();
+        try {
+            let fileExtension = vuri.fsPath.split('.').pop();
+            if (fileExtension !== undefined) {
+                this.addExtension(fileExtension, vuri);
+                this.refreshItems();
+            }
+        }
+        catch (e) {
+            logException("checkFile", e);
         }
     }
 
