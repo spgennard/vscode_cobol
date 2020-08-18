@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
+
+**Add type formatter for "Add support of coboldoc" #189**
+
+
+[fbfef738ce790c5](https://github.com/spgennard/vscode_cobol/commit/fbfef738ce790c5) *2020-08-18 16:59:32*
+
+
 ## 6.6.18
 ### GitHub [#187](https://github.com/spgennard/vscode_cobol/issues/187) Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline  
 
