@@ -443,12 +443,12 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
     public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
+    public sourceIsCopybook:boolean = false;
+
     skipToDot: boolean = false;
     addReferencesDuringSkipToTag: boolean = false;
 
     readonly copybookNestedInSection: boolean;
-
-    sourceLooksLikeCOBOL: boolean;
 
     readonly configHandler: ICOBOLSettings;
 
@@ -474,10 +474,10 @@ export default class COBOLSourceScanner implements ICommentCallback {
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.parseReferences = sourceHandler !== null;
-        this.sourceLooksLikeCOBOL = false;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
 
+        let sourceLooksLikeCOBOL:boolean = false;
         let prevToken: Token = Token.Blank;
 
         let hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
@@ -550,35 +550,37 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     state.procedureDivision = fakeDivision;
                     state.pickFields = false;
                     state.inProcedureDivision = true;
-                    this.sourceLooksLikeCOBOL = true;
+                    sourceLooksLikeCOBOL = true;
                     fakeDivision.ignoreInOutlineView = true;
+                    this.sourceIsCopybook = true;
                 }
                 else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
                     let fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", "Data", "Data Division (CopyBook)", state.currentDivision);
                     state.currentDivision = fakeDivision;
                     state.pickFields = true;
                     state.inProcedureDivision = false;
-                    this.sourceLooksLikeCOBOL = true;
+                    sourceLooksLikeCOBOL = true;
                     this.ImplicitProgramId = "";
                     fakeDivision.ignoreInOutlineView = true;
+                    this.sourceIsCopybook = true;
                 }
             }
 
             /* if the source has an extension, then continue on reguardless */
             if (hasCOBOLExtension) {
-                this.sourceLooksLikeCOBOL = true;
+                sourceLooksLikeCOBOL = true;
                 /* otherwise, does it look like COBOL? */
             } else if (preParseState.sectionsInToken !== 0 || preParseState.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
-                this.sourceLooksLikeCOBOL = true;
+                sourceLooksLikeCOBOL = true;
             }
 
             /* leave early */
-            if (this.sourceLooksLikeCOBOL === false) {
+            if (sourceLooksLikeCOBOL === false) {
                 return;
             }
 
         } else {
-            this.sourceLooksLikeCOBOL = true;
+            sourceLooksLikeCOBOL = true;
         }
 
         this.sourceFormat = getCOBOLSourceFormat(sourceHandler, configHandler);

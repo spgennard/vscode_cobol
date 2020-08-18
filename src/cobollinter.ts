@@ -96,10 +96,15 @@ export class CobolLinterProvider {
         }
 
         let qp: COBOLSourceScanner = this.current;
+
         let sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         let diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
+
+        if (qp.sourceIsCopybook) {
+            return;
+        }
 
         this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
 
