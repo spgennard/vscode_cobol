@@ -7,80 +7,89 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="320"
-   height="320"
+   width="256.0px"
+   height="256.0px"
+   viewBox="0 0 256.0 256.0"
    version="1.1"
-   id="svg28"
+   id="SVGRoot"
    sodipodi:docname="cobol.svg"
-   inkscape:version="1.0 (b51213c273, 2020-08-10)"
-   inkscape:export-filename="/home/spg/src/vscode_cobol/images/cobol.png"
-   inkscape:export-xdpi="36"
-   inkscape:export-ydpi="36">
+   inkscape:version="1.0 (b51213c273, 2020-08-10)">
+  <defs
+     id="defs181" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.02"
+     inkscape:cx="133.30793"
+     inkscape:cy="144.28907"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     inkscape:window-width="1428"
+     inkscape:window-height="1016"
+     inkscape:window-x="86"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid190" />
+  </sodipodi:namedview>
   <metadata
-     id="metadata34">
+     id="metadata184">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <defs
-     id="defs32" />
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1834"
-     inkscape:window-height="1016"
-     id="namedview30"
-     showgrid="false"
-     inkscape:zoom="2.384375"
-     inkscape:cx="153.49934"
-     inkscape:cy="171.20837"
-     inkscape:window-x="86"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg28"
-     inkscape:document-rotation="0" />
-  <polyline
-     fill="rgb(76, 151, 92)"
-     points="62,239 28,13"
-     id="polyline14" />
-  <circle
-     style="fill:#094bac;stroke-width:1.07418"
-     id="path88"
-     cx="160"
-     cy="160"
-     r="130" />
-  <circle
-     style="fill:#0d6efd;stroke-width:0.908923"
-     id="path88-7"
-     cx="160"
-     cy="160"
-     r="110" />
-  <text
-     font-family="Consolas, 'Arial Black'"
-     fill="#005820"
-     font-weight="bold"
-     font-style="normal"
-     font-size="105.9px"
-     stroke="#0b0b0b"
-     textLength="307.89999"
-     x="3.3"
-     y="109.7"
-     id="text12"
-     lengthAdjust="spacing"
-     style="font-style:normal;font-weight:bold;font-size:105.9px;font-family:Consolas, 'Arial Black';fill:#005820;stroke:#0b0b0b"
-     transform="matrix(0.63032021,-0.00221299,0,1.3806599,59.461435,47.974037)"><tspan
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:82.6999px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a8cbfe"
-       id="tspan36">COBOL</tspan></text>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g134"
+       transform="scale(0.99609375,0.98076923)"
+       inkscape:export-filename="/home/spg/snap/inkscape/7821/g134.png"
+       inkscape:export-xdpi="96.379997"
+       inkscape:export-ydpi="96.379997">
+      <ellipse
+         style="fill:#094bac;stroke-width:1.06589"
+         id="path88"
+         cx="128"
+         cy="130"
+         rx="128"
+         ry="130" />
+      <circle
+         style="fill:#0d6efd;stroke-width:0.908923"
+         id="path88-7"
+         cx="130"
+         cy="130"
+         r="110" />
+      <text
+         font-family="Consolas, 'Arial Black'"
+         fill="#005820"
+         font-weight="bold"
+         font-style="normal"
+         font-size="105.9px"
+         stroke="#0b0b0b"
+         textLength="307.89999"
+         x="3.3"
+         y="109.7"
+         id="text12"
+         lengthAdjust="spacing"
+         style="font-style:normal;font-weight:bold;font-size:105.9px;font-family:Consolas, 'Arial Black';fill:#b2dfbc;stroke:#0b0b0b"
+         transform="matrix(0.63032021,-0.00221299,0,1.3806599,29.461431,17.974032)"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:82.6999px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b2dfbc"
+           id="tspan36">COBOL</tspan></text>
+    </g>
+  </g>
 </svg>

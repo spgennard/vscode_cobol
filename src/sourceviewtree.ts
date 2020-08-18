@@ -4,7 +4,6 @@ import * as path from 'path';
 import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
-import * as fs from 'fs';
 import { InMemoryGlobalFileCache } from './cobolsourcescanner';
 import { isValidExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
@@ -27,8 +26,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private hlasmItems: SourceFolderItem[] = [];
     private documentIems: SourceFolderItem[] = [];
 
-    private config: ICOBOLSettings;
-
     constructor(config: ICOBOLSettings) {
         this.cobolItem = new SourceFolderItem("Cobol");
         this.copyBook = new SourceFolderItem("Copybooks");
@@ -44,10 +41,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.topLevelItem.push(this.pliItem);
         this.topLevelItem.push(this.documentItem);
 
-        this.config = config;
-
         if (getWorkspaceFolders()) {
-            let standardFolders: string[] = ["*", "cbl/*", "jcl/*", "jclproc/*" ];
+            let standardFolders: string[] = ["*", "cbl/*", "jcl/*", "jclproc/*"];
             for (let standardFolder of standardFolders) {
                 workspace.findFiles(standardFolder)
                     .then((allFiles) => {
@@ -164,10 +159,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         }
     }
 
-    private refreshItem(items: SourceFolderItem[], item: SourceItem) {
+    private setTreeState(items: SourceFolderItem[], item: SourceItem) {
         if (items.length !== 0) {
             item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            // this.topLevelItem.push(item);
         } else {
             item.collapsibleState = vscode.TreeItemCollapsibleState.None;
         }
@@ -191,12 +185,12 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             }
         }
 
-        this.refreshItem(this.cobolItems, this.cobolItem);
-        this.refreshItem(this.copyBooks, this.copyBook);
-        this.refreshItem(this.jclItems, this.jclItem);
-        this.refreshItem(this.hlasmItems, this.hlasmItem);
-        this.refreshItem(this.pliItems, this.pliItem);
-        this.refreshItem(this.documentIems, this.documentItem);
+        this.setTreeState(this.cobolItems, this.cobolItem);
+        this.setTreeState(this.copyBooks, this.copyBook);
+        this.setTreeState(this.jclItems, this.jclItem);
+        this.setTreeState(this.hlasmItems, this.hlasmItem);
+        this.setTreeState(this.pliItems, this.pliItem);
+        this.setTreeState(this.documentIems, this.documentItem);
 
         this.refreshAll();
     }
@@ -234,28 +228,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         return new Promise(resolve => {
             let rtn: SourceItem[] = [];
 
-            if (element.label === "Copybooks") {
-                rtn = this.copyBooks;
-            }
-
-            if (element.label === "Cobol") {
-                rtn = this.cobolItems;
-            }
-
-            if (element.label === "JCL") {
-                rtn = this.jclItems;
-            }
-
-            if (element.label === "PL/I") {
-                rtn = this.pliItems;
-            }
-
-            if (element.label === "HLASM") {
-                rtn = this.hlasmItems;
-            }
-
-            if (element.label === "Documents") {
-                rtn = this.documentIems;
+            switch (element.label) {
+                case "Copybooks": rtn = this.copyBooks; break;
+                case "Cobol": rtn = this.cobolItems; break;
+                case "JCL": rtn = this.jclItems; break;
+                case "PL/I": rtn = this.pliItems; break;
+                case "HLASM": rtn = this.hlasmItems; break;
+                case "Documents": rtn = this.documentIems; break;
             }
 
             resolve(rtn);
