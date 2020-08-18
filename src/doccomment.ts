@@ -11,12 +11,23 @@ export class DocComment {
             provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
                 const line = document.lineAt(position.line - 1);
                 if (line) {
+
+                    // micro focus xml doc
                     if (line.text.trim().startsWith("*>>")) {
                         return [
                             TextEdit.insert(position, "*>> ")
                         ];
                     }
+
+                    // coboldoc
+                    if (line.text.trim().startsWith("*>**")) {
+                        return [
+                            TextEdit.insert(position, "*>> ")
+                        ];
+                    }
                 }
+
+
 
                 return [];
 
