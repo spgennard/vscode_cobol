@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.29
 ### GitHub [#185](https://github.com/spgennard/vscode_cobol/issues/185) Paragraphs in Copy file used for code not showing as referenced  
 
 **Paragraphs in Copy file used for code not showing as referenced Fix #185**
