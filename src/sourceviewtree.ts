@@ -27,7 +27,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private documentIems: SourceFolderItem[] = [];
 
     constructor(config: ICOBOLSettings) {
-        this.cobolItem = new SourceFolderItem("Cobol");
+        this.cobolItem = new SourceFolderItem("COBOL");
         this.copyBook = new SourceFolderItem("Copybooks");
         this.jclItem = new SourceFolderItem("JCL");
         this.hlasmItem = new SourceFolderItem("HLASM");
@@ -68,7 +68,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 { selection: location },
             ],
             command: "vscode.open",
-            title: "Jump to Target",
+            title: "Open",
         };
     }
 
@@ -230,7 +230,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
             switch (element.label) {
                 case "Copybooks": rtn = this.copyBooks; break;
-                case "Cobol": rtn = this.cobolItems; break;
+                case "COBOL": rtn = this.cobolItems; break;
                 case "JCL": rtn = this.jclItems; break;
                 case "PL/I": rtn = this.pliItems; break;
                 case "HLASM": rtn = this.hlasmItems; break;
