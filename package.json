@@ -1350,15 +1350,8 @@
                 "message": 4
             },
             {
-                "name": "cobolit-warning-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
-                "file": 1,
-                "line": 2,
-                "message": 4
-            },
-            {
                 "name": "cobolit-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|[wW]arning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
@@ -1551,16 +1544,6 @@
                 "source": "COBOL-IT"
             },
             {
-                "name": "cobolit-warning-cobc",
-                "owner": "cobol",
-                "fileLocation": [
-                    "absolute"
-                ],
-                "pattern": "$cobolit-warning-cobc",
-                "severity": "warning",
-                "source": "COBOL-IT (warning)"
-            },
-            {
                 "name": "cobolit-error-cobc",
                 "owner": "cobol",
                 "fileLocation": [
@@ -1578,7 +1561,7 @@
                 ],
                 "pattern": "$cobolit-note-cobc",
                 "severity": "info",
-                "source": "COBOL-IT (note)"
+                "source": "COBOL-IT (note/warning)"
             },
             {
                 "name": "acucobol-ccbl",

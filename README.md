@@ -230,7 +230,7 @@ The example below shows you how you can create a single task to compile one prog
 | Product and Version                           | Tools                                                        | Problem matcher(s)                                                     |
 |-----------------------------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
 | COBOL-IT                                      | cobc                                                         | $cobolit-cobc                                                          |
-| COBOL-IT                                      | cobc                                                         | $cobolit-warning-cobc + $cobolit-error-cobc + $cobolit-note-cobc       |
+| COBOL-IT                                      | cobc                                                         | $cobolit-error-cobc + $cobolit-note-cobc       |
 | open-cobol 1-1.5                              | cobc                                                         | $opencobol-cobc                                                        |
 | open-cobol 1-1.5                              | cobc                                                         | $opencobol-warning-cobc + $opencobol-error-cobc + $opencobol-note-cobc |
 | ACU-COBOLGT                                   | ccbl                                                         | $acucobol-ccbl + $acucobol-warning-ccbl                                |
