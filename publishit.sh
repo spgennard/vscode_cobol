@@ -43,7 +43,6 @@ git push --tags
 touch .vscode-test
 cp -r .vscode-test ..
 git clean -fdx
-cp -r ../.vscode-test .
 npm install
 git push
 vsce publish
@@ -60,6 +59,8 @@ github-release upload \
   cobol*.vsix
 
 npx ovsx publish cobol*.vsix -p $(cat $HOME/.ovsx.token)
+
+cp -r ../.vscode-test .
 
 npm-check-updates
 
