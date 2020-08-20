@@ -1396,7 +1396,7 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-msbuild",
-                "source": "Microsoft msbuild"
+                "source": "Microsoft build engine (MSBuild)"
             },
             {
                 "name": "mfcobol-errformat3",
@@ -1405,7 +1405,7 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat3",
-                "source": "Micro Focus COBOL with ERRFORMAT(3)"
+                "source": "Micro Focus Visual COBOL with ERRFORMAT(3)"
             },
             {
                 "name": "mfcobol-errformat3-basefn",
@@ -1415,7 +1415,7 @@
                     "${workspaceFolder}"
                 ],
                 "pattern": "$mfcobol-errformat3-basefn",
-                "source": "Micro Focus COBOL with ERRFORMAT(3)/basefn"
+                "source": "Micro Focus Visual COBOL with ERRFORMAT(3)/basefn"
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
@@ -1547,7 +1547,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$cobolit-cobc"
+                "pattern": "$cobolit-cobc",
+                "source": "COBOL-IT"
             },
             {
                 "name": "cobolit-warning-cobc",
@@ -1556,7 +1557,8 @@
                     "absolute"
                 ],
                 "pattern": "$cobolit-warning-cobc",
-                "severity": "warning"
+                "severity": "warning",
+                "source": "COBOL-IT (warning)"
             },
             {
                 "name": "cobolit-error-cobc",
@@ -1565,7 +1567,8 @@
                     "absolute"
                 ],
                 "pattern": "$cobolit-error-cobc",
-                "severity": "error"
+                "severity": "error",
+                "source": "COBOL-IT (error)"
             },
             {
                 "name": "cobolit-note-cobc",
@@ -1574,7 +1577,8 @@
                     "absolute"
                 ],
                 "pattern": "$cobolit-note-cobc",
-                "severity": "info"
+                "severity": "info",
+                "source": "COBOL-IT (note)"
             },
             {
                 "name": "acucobol-ccbl",
@@ -1582,7 +1586,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$acucobol-ccbl"
+                "pattern": "$acucobol-ccbl",
+                "source": "ACUCOBOL-GT"
             },
             {
                 "name": "acucobol-warning-ccbl",
@@ -1590,7 +1595,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$acucobol-warning-ccbl"
+                "pattern": "$acucobol-warning-ccbl",
+                "source": "ACUCOBOL-GT (warning)"
             }
         ],
         "taskDefinitions": [
