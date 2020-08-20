@@ -1343,6 +1343,13 @@
                 "message": 4
             },
             {
+                "name": "cobolit-warning-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
                 "name": "cobolit-error-cobc",
                 "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
                 "file": 1,
