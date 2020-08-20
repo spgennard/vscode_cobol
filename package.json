@@ -1460,7 +1460,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$gnucobol-cobc"
+                "pattern": "$gnucobol-cobc",
+                "source": "GnuCOBOL"
             },
             {
                 "name": "gnucobol3-cobc",
@@ -1468,7 +1469,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$gnucobol3-cobc"
+                "pattern": "$gnucobol3-cobc",
+                "source": "GnuCOBOL v3"
             },
             {
                 "name": "gnucobol3-warning-cobc",
@@ -1477,7 +1479,8 @@
                     "absolute"
                 ],
                 "pattern": "$cobolit-warning-cobc",
-                "severity": "warning"
+                "severity": "warning",
+                "source": "GnuCOBOL v3 (warning)"
             },
             {
                 "name": "gnucobol3-error-cobc",
@@ -1486,7 +1489,8 @@
                     "absolute"
                 ],
                 "pattern": "$cobolit-error-cobc",
-                "severity": "error"
+                "severity": "error",
+                "source": "GnuCOBOL v3 (error)"
             },
             {
                 "name": "gnucobol3-note-cobc",
@@ -1495,7 +1499,8 @@
                     "absolute"
                 ],
                 "pattern": "$cobolit-note-cobc",
-                "severity": "info"
+                "severity": "info",
+                "source": "GnuCOBOL v3 (note)"
             },
             {
                 "name": "opencobol-cobc",
@@ -1503,7 +1508,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$opencobol-cobc"
+                "pattern": "$opencobol-cobc",
+                "source": "OpenCOBOL"
             },
             {
                 "name": "opencobol-warning-cobc",
@@ -1512,7 +1518,8 @@
                     "absolute"
                 ],
                 "pattern": "$opencobol-warning-cobc",
-                "severity": "warning"
+                "severity": "warning",
+                "source": "OpenCOBOL (warning)"
             },
             {
                 "name": "opencobol-error-cobc",
@@ -1521,7 +1528,8 @@
                     "absolute"
                 ],
                 "pattern": "$opencobol-error-cobc",
-                "severity": "error"
+                "severity": "error",
+                "source": "OpenCOBOL (error)"
             },
             {
                 "name": "opencobol-note-cobc",
@@ -1530,7 +1538,8 @@
                     "absolute"
                 ],
                 "pattern": "$opencobol-note-cobc",
-                "severity": "info"
+                "severity": "info",
+                "source": "OpenCOBOL (info)"
             },
             {
                 "name": "cobolit-cobc",
