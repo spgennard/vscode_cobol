@@ -1395,7 +1395,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$mfcobol-msbuild"
+                "pattern": "$mfcobol-msbuild",
+                "source": "Microsoft msbuild"
             },
             {
                 "name": "mfcobol-errformat3",
@@ -1403,7 +1404,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$mfcobol-errformat3"
+                "pattern": "$mfcobol-errformat3",
+                "source": "Micro Focus COBOL with ERRFORMAT(3)"
             },
             {
                 "name": "mfcobol-errformat3-basefn",
@@ -1412,7 +1414,8 @@
                     "relative",
                     "${workspaceFolder}"
                 ],
-                "pattern": "$mfcobol-errformat3-basefn"
+                "pattern": "$mfcobol-errformat3-basefn",
+                "source": "Micro Focus COBOL with ERRFORMAT(3)/basefn"
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
@@ -1420,7 +1423,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$mfcobol-errformat2-netx-sx"
+                "pattern": "$mfcobol-errformat2-netx-sx",
+                "source": "Micro Focus Net Express/Server Express with ERRFORMAT(2)"
             },
             {
                 "name": "mfcobol-errformat2-copybook",
@@ -1428,7 +1432,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$mfcobol-errformat2-copybook"
+                "pattern": "$mfcobol-errformat2-copybook",
+                "source": "Micro Focus Visual COBOL with ERRFORMAT(2)/copybook"
             },
             {
                 "name": "mfcobol-errformat2",
@@ -1436,7 +1441,8 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$mfcobol-errformat2"
+                "pattern": "$mfcobol-errformat2",
+                "source": "Micro Focus Visual COBOL with ERRFORMAT(2)"
             },
             {
                 "name": "mfcobol-errformat2-basefn",
@@ -1445,7 +1451,8 @@
                     "relative",
                     "${workspaceFolder}"
                 ],
-                "pattern": "$mfcobol-errformat2-basefn"
+                "pattern": "$mfcobol-errformat2-basefn",
+                "source": "Micro Focus Visual COBOL with ERRFORMAT(2)/basefn"
             },
             {
                 "name": "gnucobol-cobc",
