@@ -25,8 +25,8 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 
             // is it ours?
             if (diagnostic.code.toString().startsWith(CobolLinterProvider.NotReferencedMarker_internal) === true) {
-                let startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
-                let insertCode = diagnostic.code.toString().replace(CobolLinterProvider.NotReferencedMarker_internal, CobolLinterProvider.NotReferencedMarker_external);
+                const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
+                const insertCode = diagnostic.code.toString().replace(CobolLinterProvider.NotReferencedMarker_internal, CobolLinterProvider.NotReferencedMarker_external);
                 codeActions.push({
                     title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
                     diagnostics: [diagnostic],
@@ -44,10 +44,10 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 
     public async insertIgnoreCommentLine(docUri: vscode.Uri, offset: number, code: string) {
         await vscode.window.showTextDocument(docUri);
-        let w = vscode.window.activeTextEditor;
+        const w = vscode.window.activeTextEditor;
 
         if (w !== undefined && code !== undefined) {
-            let pos = w.document.positionAt(offset);
+            const pos = w.document.positionAt(offset);
             w.edit(edit => {
                 edit.insert(pos, "      *> cobol-lint " + code + "\n");
             });
@@ -71,8 +71,8 @@ export class CobolLinterProvider {
         this.linterSev = settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
     }
 
-    public static NotReferencedMarker_internal: string = "COBOL_NOT_REF";
-    public static NotReferencedMarker_external: string = "ignore";
+    public static NotReferencedMarker_internal = "COBOL_NOT_REF";
+    public static NotReferencedMarker_external = "ignore";
 
     public async updateLinter(document: vscode.TextDocument) {
 
@@ -95,11 +95,9 @@ export class CobolLinterProvider {
             return;
         }
 
-        let qp: COBOLSourceScanner = this.current;
+        const qp: COBOLSourceScanner = this.current;
 
-        let sourceRefs: SharedSourceReferences = this.sourceRefs;
-
-        let diagRefs = new Map<string, vscode.Diagnostic[]>();
+        const diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
 
         if (qp.sourceIsCopybook) {
@@ -116,8 +114,8 @@ export class CobolLinterProvider {
             this.processParsedDocumentForStandards(qp, diagRefs);
         }
 
-        for (let [f, value] of diagRefs) {
-            let u = vscode.Uri.file(f);
+        for (const [f, value] of diagRefs) {
+            const u = vscode.Uri.file(f);
             this.collection.set(u, value);
         }
     }
@@ -128,23 +126,22 @@ export class CobolLinterProvider {
             return;
         }
 
-        let standards: string[] = qp.configHandler.linter_house_standards_rules;
-        let standardsMap = new Map<string, string>();
-        let ruleRegexMap = new Map<string, RegExp>();
+        const standards: string[] = qp.configHandler.linter_house_standards_rules;
+        const standardsMap = new Map<string, string>();
+        const ruleRegexMap = new Map<string, RegExp>();
 
-        for (let standard of standards) {
-            let sectionStandard = standard.split("=", 2);
+        for (const standard of standards) {
+            const sectionStandard = standard.split("=", 2);
             standardsMap.set(sectionStandard[0].toLocaleLowerCase(), sectionStandard[1]);
         }
 
-        let sourceRefs: SharedSourceReferences = this.sourceRefs;
-        for (let [key, tokens] of qp.constantsOrVariables) {
-            for (let token of tokens) {
+        for (const [key, tokens] of qp.constantsOrVariables) {
+            for (const token of tokens) {
                 if (token.tokenNameLower === "filler") {
                     continue;
                 }
 
-                let rule = standardsMap.get(token.inSection.tokenNameLower);
+                const rule = standardsMap.get(token.inSection.tokenNameLower);
                 if (rule !== undefined) {
                     let regexForRule = ruleRegexMap.get(token.inSection.tokenNameLower);
                     if (regexForRule === undefined) {
@@ -155,19 +152,19 @@ export class CobolLinterProvider {
                         ruleRegexMap.set(token.inSection.tokenNameLower, regexForRule);
                     }
                     if (regexForRule.test(token.tokenName) === false) {
-                        let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                        const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
 
-                        let d = new vscode.Diagnostic(r, key + ' breaks house standards rule for ' + token.inSection.tokenNameLower + " section", this.linterSev);
+                        const d = new vscode.Diagnostic(r, key + ' breaks house standards rule for ' + token.inSection.tokenNameLower + " section", this.linterSev);
                         d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                         if (diagRefs.has(token.filename)) {
-                            let arr = diagRefs.get(token.filename);
+                            const arr = diagRefs.get(token.filename);
                             if (arr !== undefined) {
                                 arr.push(d);
                             }
                         } else {
-                            let arr: vscode.Diagnostic[] = [];
+                            const arr: vscode.Diagnostic[] = [];
                             arr.push(d);
                             diagRefs.set(token.filename, arr);
                         }
@@ -185,35 +182,35 @@ export class CobolLinterProvider {
             return;
         }
 
-        let sourceRefs: SharedSourceReferences = this.sourceRefs;
+        const sourceRefs: SharedSourceReferences = this.sourceRefs;
 
-        for (let [key, token] of qp.paragraphs) {
-            let workLower = key.toLowerCase();
+        for (const [key, token] of qp.paragraphs) {
+            const workLower = key.toLowerCase();
             if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
                 continue;
             }
             if (sourceRefs.targetReferences.has(workLower) === false) {
-                let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                let d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.linterSev);
+                const d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.linterSev);
                 d.tags = [vscode.DiagnosticTag.Unnecessary];
                 d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
 
                 if (diagRefs.has(token.filename)) {
-                    let arr = diagRefs.get(token.filename);
+                    const arr = diagRefs.get(token.filename);
                     if (arr !== undefined) {
                         arr.push(d);
                     }
                 } else {
-                    let arr: vscode.Diagnostic[] = [];
+                    const arr: vscode.Diagnostic[] = [];
                     arr.push(d);
                     diagRefs.set(token.filename, arr);
                 }
             }
         }
 
-        for (let [key, token] of qp.sections) {
-            let workLower = key.toLowerCase();
+        for (const [key, token] of qp.sections) {
+            const workLower = key.toLowerCase();
 
             if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
                 continue;
@@ -221,19 +218,19 @@ export class CobolLinterProvider {
 
             if (token.inProcedureDivision) {
                 if (sourceRefs.targetReferences.has(workLower) === false) {
-                    let r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                    const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                    let d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
+                    const d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
                     d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
                     d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                     if (diagRefs.has(token.filename)) {
-                        let arr = diagRefs.get(token.filename);
+                        const arr = diagRefs.get(token.filename);
                         if (arr !== undefined) {
                             arr.push(d);
                         }
                     } else {
-                        let arr: vscode.Diagnostic[] = [];
+                        const arr: vscode.Diagnostic[] = [];
                         arr.push(d);
                         diagRefs.set(token.filename, arr);
                     }

@@ -6,7 +6,6 @@ export class DocComment {
     static register() {
         const langPlusSchema = { scheme: 'file', language: 'COBOL' };
 
-
         return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {
             provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
                 const line = document.lineAt(position.line - 1);

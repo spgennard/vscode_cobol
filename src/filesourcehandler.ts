@@ -26,10 +26,10 @@ export class FileSourceHandler implements ISourceHandler {
         this.commentCount = 0;
         this.cacheBelow = cacheBelow;
 
-        let docstat = fs.statSync(document);
-        let docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
+        const docstat = fs.statSync(document);
+        const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
-        let startTime = performance_now();
+        const startTime = performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
             while (line = liner.next()) {
@@ -63,7 +63,7 @@ export class FileSourceHandler implements ISourceHandler {
 
     getRawLine(lineNumber: number): string {
         try {
-            let line = this.lines[lineNumber];
+            const line = this.lines[lineNumber];
             if (line === null || line === undefined) {
                 return "";
             }
@@ -80,7 +80,7 @@ export class FileSourceHandler implements ISourceHandler {
     getLine(lineNumber: number): string {
         let line = this.getRawLine(lineNumber);
 
-        let startComment = line.indexOf("*>");
+        const startComment = line.indexOf("*>");
         if (startComment !== -1) {
             this.sendCommentCallback(line);
             line = line.substring(0, startComment);
@@ -106,7 +106,7 @@ export class FileSourceHandler implements ISourceHandler {
                 line = "      " + line.substr(6);
             } else {
                 if (line.length > 7 && line[6] === ' ') {
-                    let possibleKeyword = line.substr(0, 6).trim();
+                    const possibleKeyword = line.substr(0, 6).trim();
                     if (this.isValidKeyword(possibleKeyword) === false) {
                         line = "       " + line.substr(6);
                     }

@@ -114,7 +114,7 @@ export class COBOLSettingsHelper {
     public static isCachingEnabled(setting: ICOBOLSettings): boolean {
         if (getWorkspaceFolders())
         {
-            let cacheEnum = setting.cache_metadata;
+            const cacheEnum = setting.cache_metadata;
 
             switch (cacheEnum) {
                 case "on": return true;
@@ -128,7 +128,7 @@ export class COBOLSettingsHelper {
     public static isOnDiskCachingEnabled(setting: ICOBOLSettings): boolean {
         if (getWorkspaceFolders())
         {
-            let cacheEnum = setting.cache_metadata;
+            const cacheEnum = setting.cache_metadata;
             switch (cacheEnum) {
                 case "on": return true;
                 case "partial": return false;

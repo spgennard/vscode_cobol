@@ -7,7 +7,7 @@ import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
 import ISourceHandler from './isourcehandler';
 
-let trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
+const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)",
@@ -26,25 +26,25 @@ let trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditor
 });
 
 function isMarginEnabled(configString: string): boolean {
-    let currentContext: ExtensionContext = getCurrentContext();
-    let enabledViaContext: boolean | undefined = currentContext.workspaceState.get<boolean>(configString);
+    const currentContext: ExtensionContext = getCurrentContext();
+    const enabledViaContext: boolean | undefined = currentContext.workspaceState.get<boolean>(configString);
 
     // if this is enabled via the context, then return it early
     if (enabledViaContext !== undefined && enabledViaContext !== null && enabledViaContext === true) {
         return true;
     }
 
-    let editorConfig = workspace.getConfiguration(configString);
-    let marginOn = editorConfig.get<boolean>('margin');
+    const editorConfig = workspace.getConfiguration(configString);
+    const marginOn = editorConfig.get<boolean>('margin');
     if (marginOn !== undefined) {
         return marginOn;
     }
     return true;
 }
 
-export function enableMarginCobolMargin(enabled: boolean) {
-    let configString: string = "coboleditor";
-    let currentContext: ExtensionContext = getCurrentContext();
+export function enableMarginCobolMargin(enabled: boolean): void {
+    const configString = "coboleditor";
+    const currentContext: ExtensionContext = getCurrentContext();
 
     currentContext.workspaceState.update(configString, enabled);
 }
@@ -81,8 +81,8 @@ function isNumber(value: string | number): boolean {
 }
 
 function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
-    let editorConfig = workspace.getConfiguration('coboleditor');
-    let files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
     if (files === undefined || files === null) {
         return [];
     }
@@ -103,14 +103,14 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
     }
 
     let linesWithJustNumbers = 0;
-    let maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
+    const maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
     let defFormat = ESourceFormat.unknown;
 
-    let checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
+    const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
 
     for (let i = 0; i < maxLines; i++) {
-        let lineText = doc.getLine(i);
-        let line = lineText.toLocaleLowerCase();
+        const lineText = doc.getLine(i);
+        const line = lineText.toLocaleLowerCase();
 
         // acu
         if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
@@ -121,7 +121,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
 
         // non-acu
         if (defFormat === ESourceFormat.unknown && !checkForTerminalFormat) {
-            let newcommentPos = line.indexOf("*>");
+            const newcommentPos = line.indexOf("*>");
             if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown) {
                 defFormat = ESourceFormat.variable;
             }
@@ -129,7 +129,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
 
         let pos4sourceformat_after = 0;
         for (let isf = 0; isf < inline_sourceformat.length; isf++) {
-            let pos4sourceformat = line.indexOf(inline_sourceformat[isf]);
+            const pos4sourceformat = line.indexOf(inline_sourceformat[isf]);
             if (pos4sourceformat !== -1) {
                 pos4sourceformat_after = pos4sourceformat + inline_sourceformat[isf].length + 1;
                 break;
@@ -139,7 +139,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
         // does it contain a inline comments? no
         if (pos4sourceformat_after === 0) {
             if (line.length > 72) {
-                let rightMargin = line.substr(72).trim();
+                const rightMargin = line.substr(72).trim();
                 if (isNumber(rightMargin)) {
                     linesWithJustNumbers++;
                 }
@@ -147,7 +147,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
             continue;
         } else {
             // got a inline comment,yes
-            let line2right = line.substr(pos4sourceformat_after);
+            const line2right = line.substr(pos4sourceformat_after);
 
             if (line2right.indexOf("fixed") !== -1) {
                 return ESourceFormat.fixed;
@@ -166,11 +166,11 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
         return ESourceFormat.fixed;
     }
 
-    let filesFilter = getFixedFilenameConfiguration();
+    const filesFilter = getFixedFilenameConfiguration();
     if (filesFilter.length >= 1) {
-        let docFilename: string = doc.getFilename();
+        const docFilename: string = doc.getFilename();
         for (let i = 0; i < filesFilter.length; i++) {
-            let filter: IEditorMarginFiles = filesFilter[i];
+            const filter: IEditorMarginFiles = filesFilter[i];
 
             if (minimatch(docFilename, filter.pattern, { nocase: true })) {
                 return ESourceFormat[filter.sourceformat];
@@ -182,7 +182,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
 
 }
 export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESourceFormat {
-    let langid = doc.languageId.toLowerCase();
+    const langid = doc.languageId.toLowerCase();
 
     /* just use the extension for jcl */
     switch (langid) {
@@ -199,13 +199,13 @@ export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESou
     }
 
     let linesWithJustNumbers = 0;
-    let maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
+    const maxLines = doc.lineCount > 10 ? 10 : doc.lineCount;
     let defFormat = ESourceFormat.unknown;
-    let checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
+    const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
 
     for (let i = 0; i < maxLines; i++) {
-        let lineText = doc.lineAt(i);
-        let line = lineText.text.toLocaleLowerCase();
+        const lineText = doc.lineAt(i);
+        const line = lineText.text.toLocaleLowerCase();
 
         // acu
         if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
@@ -216,7 +216,7 @@ export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESou
 
         // non-acu
         if (defFormat === ESourceFormat.unknown && !checkForTerminalFormat) {
-            let newcommentPos = line.indexOf("*>");
+            const newcommentPos = line.indexOf("*>");
             if (newcommentPos !== -1 && defFormat === ESourceFormat.unknown) {
                 defFormat = ESourceFormat.variable;
             }
@@ -224,7 +224,7 @@ export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESou
 
         let pos4sourceformat_after = 0;
         for (let isf = 0; isf < inline_sourceformat.length; isf++) {
-            let pos4sourceformat = line.indexOf(inline_sourceformat[isf]);
+            const pos4sourceformat = line.indexOf(inline_sourceformat[isf]);
             if (pos4sourceformat !== -1) {
                 pos4sourceformat_after = pos4sourceformat + inline_sourceformat[isf].length + 1;
                 break;
@@ -234,7 +234,7 @@ export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESou
         // does it contain a inline comments? no
         if (pos4sourceformat_after === 0) {
             if (line.length > 72) {
-                let rightMargin = line.substr(72).trim();
+                const rightMargin = line.substr(72).trim();
                 if (isNumber(rightMargin)) {
                     linesWithJustNumbers++;
                 }
@@ -242,7 +242,7 @@ export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESou
             continue;
         } else {
             // got a inline comment,yes
-            let line2right = line.substr(pos4sourceformat_after);
+            const line2right = line.substr(pos4sourceformat_after);
 
             if (line2right.indexOf("fixed") !== -1) {
                 return ESourceFormat.fixed;
@@ -261,11 +261,11 @@ export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESou
         return ESourceFormat.fixed;
     }
 
-    let filesFilter = getFixedFilenameConfiguration();
+    const filesFilter = getFixedFilenameConfiguration();
     if (filesFilter.length >= 1) {
-        let docFilename: string = doc.fileName;
+        const docFilename: string = doc.fileName;
         for (let i = 0; i < filesFilter.length; i++) {
-            let filter: IEditorMarginFiles = filesFilter[i];
+            const filter: IEditorMarginFiles = filesFilter[i];
 
             if (minimatch(docFilename, filter.pattern, { nocase: true })) {
                 return ESourceFormat[filter.sourceformat];
@@ -299,6 +299,7 @@ export function isSupportedLanguage(document: TextDocument): TextLanguage {
     return TextLanguage.Unknown;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default async function updateDecorations(activeTextEditor: TextEditor | undefined) {
     if (!activeTextEditor) {
         hideMarginStatusBar();
@@ -316,7 +317,7 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
         return;
     }
 
-    let enabledViaWorkspace4cobol: boolean = isEnabledViaWorkspace4cobol();
+    const enabledViaWorkspace4cobol: boolean = isEnabledViaWorkspace4cobol();
 
     /* is it enabled? (COBOL) */
     if (textLanguage === TextLanguage.COBOL && !enabledViaWorkspace4cobol) {
@@ -325,7 +326,7 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
         return;
     }
 
-    let enabledViaWorkspace4jcl: boolean = isEnabledViaWorkspace4jcl();
+    const enabledViaWorkspace4jcl: boolean = isEnabledViaWorkspace4jcl();
 
     /* is it enabled? (COBOL) */
     if (textLanguage === TextLanguage.JCL && !enabledViaWorkspace4jcl) {
@@ -352,21 +353,21 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
         }
 
         for (let i = 0; i < doc.lineCount; i++) {
-            let lineText = doc.lineAt(i);
-            let line = lineText.text;
+            const lineText = doc.lineAt(i);
+            const line = lineText.text;
 
             if (sourceformatStyle === ESourceFormat.fixed) {
                 if (line.length > 6) {
-                    let startPos = new Position(i, 0);
-                    let endPos = new Position(i, 6);
+                    const startPos = new Position(i, 0);
+                    const endPos = new Position(i, 6);
                     const decoration = { range: new Range(startPos, endPos) };
                     decorationOptions.push(decoration);
                 }
             }
 
             if (line.length > 72) {
-                let startPos = new Position(i, 72);
-                let endPos = new Position(i, line.length);
+                const startPos = new Position(i, 72);
+                const endPos = new Position(i, line.length);
                 const decoration = { range: new Range(startPos, endPos) };
                 decorationOptions.push(decoration);
             }
@@ -375,12 +376,12 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
 
     if (textLanguage === TextLanguage.JCL) {
         for (let i = 0; i < doc.lineCount; i++) {
-            let lineText = doc.lineAt(i);
-            let line = lineText.text;
+            const lineText = doc.lineAt(i);
+            const line = lineText.text;
 
             if (line.length > 72) {
-                let startPos = new Position(i, 72);
-                let endPos = new Position(i, line.length);
+                const startPos = new Position(i, 72);
+                const endPos = new Position(i, line.length);
                 const decoration = { range: new Range(startPos, endPos) };
                 decorationOptions.push(decoration);
             }

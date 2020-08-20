@@ -5,6 +5,7 @@
 
        data division.
        working-storage section.
+       01 ws-item                       pic x(10).
 
        procedure division.
 

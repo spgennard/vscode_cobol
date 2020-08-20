@@ -6,33 +6,33 @@ import VSQuickCOBOLParse from './vscobolscanner';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
-        let symbols: vscode.SymbolInformation[] = [];
+        const symbols: vscode.SymbolInformation[] = [];
 
         if (VSCOBOLConfiguration.isOutlineEnabled() === outlineFlag.Off) {
             return symbols;
         }
 
-        let ownerUri = document.uri;
+        const ownerUri = document.uri;
 
-        let lastLine = document.lineCount;
-        let lastLineColumn = document.lineAt(lastLine - 1).text.length;
+        const lastLine = document.lineCount;
+        const lastLineColumn = document.lineAt(lastLine - 1).text.length;
         let container = "";
 
         for (let i = 0; i < document.lineCount; i++) {
             const line = document.lineAt(i);
-            let textText = line.text;
+            const textText = line.text;
 
             if (textText.startsWith("//*")) {
                 continue;
             }
 
             if (textText.startsWith("//")) {
-                let textLineClean = textText.substr(2);
-                let lineTokens = [];
-                let possibleTokens = splitArgument(textLineClean,false);
+                const textLineClean = textText.substr(2);
+                const lineTokens = [];
+                const possibleTokens = splitArgument(textLineClean,false);
                 for (let l = 0; l < possibleTokens.length; l++) {
                     if (possibleTokens[l] !== undefined) {
-                        let possibleToken = possibleTokens[l].trim();
+                        const possibleToken = possibleTokens[l].trim();
                         if (possibleToken.length > 0) {
                             lineTokens.push(possibleToken);
                         }
@@ -43,18 +43,18 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
                     if (lineTokens.length > 1) {
 
                         if (lineTokens[1].toLowerCase().indexOf("job") !== -1) {
-                            let srange = new vscode.Range(new vscode.Position(i, 0),
+                            const srange = new vscode.Range(new vscode.Position(i, 0),
                                 new vscode.Position(lastLine, lastLineColumn));
-                            let lrange = new vscode.Location(ownerUri, srange);
+                            const lrange = new vscode.Location(ownerUri, srange);
 
                             symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Field, container, lrange));
                             container = lineTokens[0];
                         }
 
                         if (lineTokens[1].toLowerCase().indexOf("exec") !== -1) {
-                            let srange = new vscode.Range(new vscode.Position(i, 0),
+                            const srange = new vscode.Range(new vscode.Position(i, 0),
                                 new vscode.Position(i, lineTokens.length));
-                            let lrange = new vscode.Location(ownerUri, srange);
+                            const lrange = new vscode.Location(ownerUri, srange);
 
                             symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Function, container, lrange));
                         }
@@ -72,19 +72,19 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
 export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
-        let symbols: vscode.SymbolInformation[] = [];
-        let outlineLevel = VSCOBOLConfiguration.isOutlineEnabled();
+        const symbols: vscode.SymbolInformation[] = [];
+        const outlineLevel = VSCOBOLConfiguration.isOutlineEnabled();
         if (outlineLevel === outlineFlag.Off) {
             return symbols;
         }
 
-        let sf = VSQuickCOBOLParse.getCachedObject(document);
+        const sf = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf === undefined) {
             return symbols;
         }
 
-        let ownerUri = document.uri;
+        const ownerUri = document.uri;
 
         let includePara: boolean = true;
         let includeVars: boolean = true;
@@ -101,15 +101,15 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
         }
 
         for (let i = 0; i < sf.tokensInOrder.length; i++) {
-            let token: COBOLToken = sf.tokensInOrder[i];
+            const token: COBOLToken = sf.tokensInOrder[i];
 
             try {
-                let srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                const srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.endLine, token.endColumn));
 
-                let lrange = new vscode.Location(ownerUri, srange);
+                const lrange = new vscode.Location(ownerUri, srange);
 
-                let container = token.parentToken !== undefined ? token.parentToken.description : "";
+                const container = token.parentToken !== undefined ? token.parentToken.description : "";
 
                 if (token.ignoreInOutlineView === false) {
                     switch (token.tokenType) {
@@ -134,6 +134,9 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                             if (includePara === false) {
                                 break;
                             }
+
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
+                            break;
                         case COBOLTokenStyle.DeclarativesSection:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;

@@ -22,14 +22,14 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
     private processSearch(
         document: vscode.TextDocument,
         position: vscode.Position): Thenable<vscode.Location[] | null> {
-        let list: vscode.Location[] = [];
-        let wordRange = document.getWordRangeAtPosition(position, wordRegEx);
-        let word = wordRange ? document.getText(wordRange) : '';
+        const list: vscode.Location[] = [];
+        const wordRange = document.getWordRangeAtPosition(position, wordRegEx);
+        const word = wordRange ? document.getText(wordRange) : '';
         if (word === "") {
             return Promise.resolve(null);
         }
 
-        let workLower = word.toLocaleLowerCase();
+        const workLower = word.toLocaleLowerCase();
 
         // cache current document, interatives search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
@@ -44,49 +44,49 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             return Promise.resolve(null);
         }
 
-        let qp: COBOLSourceScanner = this.current;
-        let sourceRefs: SharedSourceReferences = this.sourceRefs;
+        const qp: COBOLSourceScanner = this.current;
+        const sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
-            let paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
+            const paraToken: COBOLToken | undefined = qp.paragraphs.get(workLower);
             if (paraToken !== undefined) {
-                let qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
+                const qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
                 list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
             }
 
-            let sectionToken: COBOLToken | undefined = qp.sections.get(workLower);
+            const sectionToken: COBOLToken | undefined = qp.sections.get(workLower);
             if (sectionToken !== undefined) {
-                let qpsUrl: vscode.Uri = vscode.Uri.file(sectionToken.filename);
+                const qpsUrl: vscode.Uri = vscode.Uri.file(sectionToken.filename);
                 list.push(new vscode.Location(qpsUrl, new vscode.Position(sectionToken.startLine, sectionToken.startColumn)));
             }
         }
 
         if (qp.constantsOrVariables.has(workLower)) {
-            let paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
+            const paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
             if (paraTokens !== undefined) {
                 for (let ptref = 0; ptref < paraTokens.length; ptref++) {
-                    let paraToken = paraTokens[ptref];
-                    let qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
+                    const paraToken = paraTokens[ptref];
+                    const qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
                     list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
                 }
             }
         }
 
         if (sourceRefs.targetReferences.has(workLower) === true) {
-            let targetRefs: SourceReference[] | undefined = sourceRefs.targetReferences.get(workLower);
+            const targetRefs: SourceReference[] | undefined = sourceRefs.targetReferences.get(workLower);
             if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                    let tref = targetRefs[trpos];
+                    const tref = targetRefs[trpos];
                     list.push(new vscode.Location(sourceRefs.filenames[tref.fileIdentifer], new vscode.Position(tref.line, tref.columnn)));
                 }
             }
         }
 
         if (sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
-            let targetRefs: SourceReference[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
+            const targetRefs: SourceReference[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
             if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                    let tref = targetRefs[trpos];
+                    const tref = targetRefs[trpos];
                     list.push(new vscode.Location(sourceRefs.filenames[tref.fileIdentifer], new vscode.Position(tref.line, tref.columnn)));
                 }
             }

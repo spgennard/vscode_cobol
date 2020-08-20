@@ -26,20 +26,20 @@ export enum FoldAction {
 export class COBOLUtils {
 
     public migrateCopybooksToWorkspace() {
-        let fileSearchDirectory = [];
+        const fileSearchDirectory = [];
 
-        let extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
-        let updateCopybookdirs: boolean = false;
+        const extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
+        let updateCopybookdirs = false;
         for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
-            let ddir = extsdir[extsdirpos];
+            const ddir = extsdir[extsdirpos];
 
             if (isDirectPath(ddir)) {
-                let ws = getWorkspaceFolders();
+                const ws = getWorkspaceFolders();
                 if (workspace !== undefined && ws !== undefined) {
                     if (isPathInWorkspace(ddir) === false) {
                         if (isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
-                            let uriToFolder = vscode.Uri.file(path.normalize(ddir));
+                            const uriToFolder = vscode.Uri.file(path.normalize(ddir));
                             vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
                             updateCopybookdirs = true;
                         }
@@ -48,12 +48,12 @@ export class COBOLUtils {
             }
         }
 
-        let ws = getWorkspaceFolders();
+        const ws = getWorkspaceFolders();
         if (ws !== undefined) {
-            for (let folder of ws) {
+            for (const folder of ws) {
                 for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
                     try {
-                        let extdir = extsdir[extsdirpos];
+                        const extdir = extsdir[extsdirpos];
 
                         let sdir: string;
 
@@ -64,7 +64,7 @@ export class COBOLUtils {
                                 if (isNetworkPath(sdir)) {
                                     if (isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
-                                        let uriToFolder = vscode.Uri.file(path.normalize(sdir));
+                                        const uriToFolder = vscode.Uri.file(path.normalize(sdir));
                                         vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
                                         updateCopybookdirs = true;
                                     } else {
@@ -87,7 +87,7 @@ export class COBOLUtils {
 
         // update copybookdirs with optiomized version
         if (updateCopybookdirs) {
-            let editorConfig = workspace.getConfiguration('coboleditor');
+            const editorConfig = workspace.getConfiguration('coboleditor');
             editorConfig.update('copybookdirs', fileSearchDirectory);
             logMessage("Copybook settings and workspace has been updated.");
         } else {
@@ -97,13 +97,13 @@ export class COBOLUtils {
     }
 
     public extractSelectionToCopybook(activeTextEditor: vscode.TextEditor) {
-        let sel = activeTextEditor.selection;
+        const sel = activeTextEditor.selection;
 
-        let ran = new vscode.Range(sel.start, sel.end);
-        let text = activeTextEditor.document.getText(ran);
-        let dir = path.dirname(activeTextEditor.document.fileName);
+        const ran = new vscode.Range(sel.start, sel.end);
+        const text = activeTextEditor.document.getText(ran);
+        const dir = path.dirname(activeTextEditor.document.fileName);
 
-        let value = vscode.window.showInputBox({
+        const value = vscode.window.showInputBox({
             prompt: 'Copybook name?',
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
@@ -119,7 +119,7 @@ export class COBOLUtils {
             if (copybook_filename === undefined) {
                 return;
             }
-            let filename = path.join(dir, copybook_filename + ".cpy");
+            const filename = path.join(dir, copybook_filename + ".cpy");
             writeFileSync(filename, text);
 
             activeTextEditor.edit(edit => {
@@ -130,16 +130,16 @@ export class COBOLUtils {
     }
 
     public extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean) {
-        let sel = activeTextEditor.selection;
+        const sel = activeTextEditor.selection;
 
-        let ran = new vscode.Range(sel.start, sel.end);
-        let text = activeTextEditor.document.getText(ran);
+        const ran = new vscode.Range(sel.start, sel.end);
+        const text = activeTextEditor.document.getText(ran);
 
 
         // TODO - Should put something in place to search forward of current line
         //        to find the best position..
 
-        let value = vscode.window.showInputBox({
+        const value = vscode.window.showInputBox({
             prompt: para ? 'New paragrah name?' : 'New section name?',
             validateInput: (text: string): string | undefined => {
                 if (!text || text.indexOf(' ') !== -1) {
@@ -175,7 +175,7 @@ export class COBOLUtils {
     }
 
     public getMFUnitAnsiColorConfig(): boolean {
-        let editorConfig = workspace.getConfiguration('coboleditor');
+        const editorConfig = workspace.getConfiguration('coboleditor');
         let expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;
@@ -188,19 +188,19 @@ export class COBOLUtils {
             return;
         }
 
-        let edits = new vscode.WorkspaceEdit();
-        let uri = activeEditor.document.uri;
+        const edits = new vscode.WorkspaceEdit();
+        const uri = activeEditor.document.uri;
 
         // traverse all the lines
         for (let l = 0; l < activeEditor.document.lineCount; l++) {
-            let lineAt = activeEditor.document.lineAt(l);
-            let text = lineAt.text;
+            const lineAt = activeEditor.document.lineAt(l);
+            const text = lineAt.text;
 
             if (text.length > 6) {
-                let startPos = new vscode.Position(l, 0);
-                let endPos = new vscode.Position(l, 6);
-                let range = new vscode.Range(startPos, endPos);
-                let padString = this.pad(startValue + (l * increment), 6);
+                const startPos = new vscode.Position(l, 0);
+                const endPos = new vscode.Position(l, 6);
+                const range = new vscode.Range(startPos, endPos);
+                const padString = this.pad(startValue + (l * increment), 6);
                 edits.replace(uri, range, padString);
             }
         }
@@ -209,18 +209,18 @@ export class COBOLUtils {
     }
 
     public removeColumnNumbers(activeEditor: vscode.TextEditor): any {
-        let edits = new vscode.WorkspaceEdit();
-        let uri = activeEditor.document.uri;
+        const edits = new vscode.WorkspaceEdit();
+        const uri = activeEditor.document.uri;
 
         // traverse all the lines
         for (let l = 0; l < activeEditor.document.lineCount; l++) {
-            let lineAt = activeEditor.document.lineAt(l);
-            let text = lineAt.text;
+            const lineAt = activeEditor.document.lineAt(l);
+            const text = lineAt.text;
 
             if (text.length > 6) {
-                let startPos = new vscode.Position(l, 0);
-                let endPos = new vscode.Position(l, 6);
-                let range = new vscode.Range(startPos, endPos);
+                const startPos = new vscode.Position(l, 0);
+                const endPos = new vscode.Position(l, 6);
+                const range = new vscode.Range(startPos, endPos);
                 edits.replace(uri, range, "      ");
             }
         }
@@ -228,18 +228,18 @@ export class COBOLUtils {
     }
 
     public RemoveIdentificationArea(activeEditor: vscode.TextEditor): any {
-        let edits = new vscode.WorkspaceEdit();
-        let uri = activeEditor.document.uri;
+        const edits = new vscode.WorkspaceEdit();
+        const uri = activeEditor.document.uri;
 
         // traverse all the lines
         for (let l = 0; l < activeEditor.document.lineCount; l++) {
-            let lineAt = activeEditor.document.lineAt(l);
-            let text = lineAt.text;
+            const lineAt = activeEditor.document.lineAt(l);
+            const text = lineAt.text;
 
             if (text.length > 73) {
-                let startPos = new vscode.Position(l, 72);
-                let endPos = new vscode.Position(l, text.length);
-                let range = new vscode.Range(startPos, endPos);
+                const startPos = new vscode.Position(l, 72);
+                const endPos = new vscode.Position(l, text.length);
+                const range = new vscode.Range(startPos, endPos);
                 edits.delete(uri, range);
             }
         }
@@ -247,10 +247,10 @@ export class COBOLUtils {
     }
 
     public RemoveComments(activeEditor: vscode.TextEditor): any {
-        let uri = activeEditor.document.uri;
-        let edits = new vscode.WorkspaceEdit();
-        let delimiters: string[] = [];
-        let removeRanges: boolean[] = [];
+        const uri = activeEditor.document.uri;
+        const edits = new vscode.WorkspaceEdit();
+        const delimiters: string[] = [];
+        const removeRanges: boolean[] = [];
 
         delimiters.push("\\*>");
         removeRanges.push(true);
@@ -259,25 +259,25 @@ export class COBOLUtils {
 
         // traverse all the lines
         for (let l = 0; l < activeEditor.document.lineCount; l++) {
-            let line = activeEditor.document.lineAt(l);
+            const line = activeEditor.document.lineAt(l);
             let matched = false;
             for (let i = 0; i < delimiters.length; i++) {
                 if (!matched) {
-                    let expression = delimiters[i].replace(/\//ig, "\\/");
-                    let removeRange = removeRanges[i];
-                    let regEx = new RegExp(expression, "ig");
-                    let match = regEx.exec(line.text);
+                    const expression = delimiters[i].replace(/\//ig, "\\/");
+                    const removeRange = removeRanges[i];
+                    const regEx = new RegExp(expression, "ig");
+                    const match = regEx.exec(line.text);
                     if (match) {
                         if (removeRange) {
-                            let startPos = new vscode.Position(l, match.index);
-                            let endPos = new vscode.Position(l, line.text.length);
-                            let range = new vscode.Range(startPos, endPos);
+                            const startPos = new vscode.Position(l, match.index);
+                            const endPos = new vscode.Position(l, line.text.length);
+                            const range = new vscode.Range(startPos, endPos);
                             edits.delete(uri, range);
-                            let n = activeEditor.document.getText(range);
+                            const n = activeEditor.document.getText(range);
                         } else {
-                            let startPos = new vscode.Position(l, match.index);
-                            let endPos = new vscode.Position(l + 1, 0);
-                            let range = new vscode.Range(startPos, endPos);
+                            const startPos = new vscode.Position(l, match.index);
+                            const endPos = new vscode.Position(l + 1, 0);
+                            const range = new vscode.Range(startPos, endPos);
                             edits.delete(uri, range);
                         }
 
@@ -294,25 +294,25 @@ export class COBOLUtils {
         return cobolKeywordDictionary.containsKey(keyword.toLowerCase());
     }
 
-    public foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle) {
-        let uri = activeEditor.document.uri;
+    public foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle):void {
+        const uri = activeEditor.document.uri;
 
-        let file = new VSCodeSourceHandler(activeEditor.document, false);
-        let current: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
+        const file = new VSCodeSourceHandler(activeEditor.document, false);
+        const current: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
         if (current === undefined) {
             logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
             return;
         }
 
-        let edits = new vscode.WorkspaceEdit();
+        const edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (let l = 0; l < file.getLineCount(); l++) {
-            let lineAt = file.getLine(l);
-            let text = lineAt;
+            const lineAt = file.getLine(l);
+            const text = lineAt;
             let newtext = text;
 
-            let args: string[] = splitArgument(text, true);
-            let textLower = text.toLowerCase();
+            const args: string[] = splitArgument(text, true);
+            const textLower = text.toLowerCase();
             let lastPos = 0;
             for (let ic = 0; ic < args.length; ic++) {
                 let arg = args[ic];
@@ -320,8 +320,8 @@ export class COBOLUtils {
                     arg = arg.substr(0, arg.length - 1);
                 }
 
-                let argLower = arg.toLowerCase();
-                let ipos = textLower.indexOf(argLower, lastPos);
+                const argLower = arg.toLowerCase();
+                const ipos = textLower.indexOf(argLower, lastPos);
                 let actionIt = false;
 
                 switch (action) {
@@ -346,7 +346,7 @@ export class COBOLUtils {
                         case FoldStyle.LowerCase:
                             {
                                 if (argLower !== arg) {
-                                    let tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
+                                    const tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
@@ -354,9 +354,9 @@ export class COBOLUtils {
                             break;
                         case FoldStyle.UpperCase:
                             {
-                                let argUpper = arg.toUpperCase();
+                                const argUpper = arg.toUpperCase();
                                 if (argUpper !== arg) {
-                                    let tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
+                                    const tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
@@ -364,9 +364,9 @@ export class COBOLUtils {
                             break;
                         case FoldStyle.CamelCase:
                             {
-                                let camelArg = camelize(arg);
+                                const camelArg = camelize(arg);
                                 if (camelArg !== arg) {
-                                    let tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
+                                    const tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
                                     newtext = tmpline;
                                     lastPos += arg.length;
                                 }
@@ -378,9 +378,9 @@ export class COBOLUtils {
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {
-                let startPos = new vscode.Position(l, 0);
-                let endPos = new vscode.Position(l, newtext.length);
-                let range = new vscode.Range(startPos, endPos);
+                const startPos = new vscode.Position(l, 0);
+                const endPos = new vscode.Position(l, newtext.length);
+                const range = new vscode.Range(startPos, endPos);
                 edits.replace(uri, range, newtext);
             }
         }

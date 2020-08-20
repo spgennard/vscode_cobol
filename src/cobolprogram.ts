@@ -2,8 +2,8 @@
 
 import { Range, Selection, TextEditorRevealType, window } from 'vscode';
 
-export function move2pd() {
-    let line = findProcedureDivision();
+export function move2pd():void {
+    const line = findProcedureDivision();
     if (line > 0) {
         goToLine(line);
     } else {
@@ -11,7 +11,7 @@ export function move2pd() {
     }
 }
 
-export function move2dd() {
+export function move2dd():void {
     let line = findDataDivision();
     if (line > 0) {
         goToLine(line);
@@ -37,14 +37,14 @@ export function move2ws() {
     window.setStatusBarMessage('ERROR: \'WORKING-STORAGE SECTION\' not found.', 4000);
 }
 
-export function move2anyforward() {
+export function move2anyforward():void {
     const line = findAnyNext(1);
     if (line > 0) {
         goToLine(line);
     }
 }
 
-export function move2anybackwards() {
+export function move2anybackwards():void {
     const line = findAnyNext(-1);
     if (line > 0) {
         goToLine(line);
@@ -87,14 +87,14 @@ function findAnyMatch(mats: RegExp[], counter: number) {
 }
 
 function findAnyNext(counter: number) {
-    let mats = [
+    const mats = [
         /.*\s*division/i,
         /entry\s*"/i,
         /.*\s*section\./i,
         /eject/i,
         /program-id\./i,
-        /class-id[\.|\s]/i,
-        /method-id[\.|\s]/i];
+        /class-id[.|\s]/i,
+        /method-id[.|\s]/i];
     return findAnyMatch(mats, counter);
 }
 
@@ -117,7 +117,7 @@ function goToLine(line: number) {
         {
             reviewType = TextEditorRevealType.InCenterIfOutsideViewport;
         }
-        let newSe = new Selection(line, 0, line, 0);
+        const newSe = new Selection(line, 0, line, 0);
         window.activeTextEditor.selection = newSe;
         window.activeTextEditor.revealRange(newSe, reviewType);
     }

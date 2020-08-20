@@ -15,19 +15,19 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        let sf: COBOLSourceScanner|undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const sf: COBOLSourceScanner|undefined = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
                 sf.cpPerformTargets = new TrieSearch("tokenName");
-                let words = sf.cpPerformTargets;
+                const words = sf.cpPerformTargets;
 
-                for (let [key, token] of sf.sections) {
+                for (const [key, token] of sf.sections) {
                     if (token.inProcedureDivision) {
                         words.add(token);
                     }
                 }
-                for (let [key, token] of sf.paragraphs) {
+                for (const [key, token] of sf.paragraphs) {
                     if (token.inProcedureDivision) {
                         words.add(token);
                     }
@@ -43,17 +43,17 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getConstantsOrVariables(document: TextDocument): TrieSearch {
-        let sf = VSQuickCOBOLParse.getCachedObject(document);
+        const sf = VSQuickCOBOLParse.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpConstantsOrVars === undefined) {
                 sf.cpPerformTargets = new TrieSearch('tokenName');
-                let words: TrieSearch = sf.cpPerformTargets;
+                const words: TrieSearch = sf.cpPerformTargets;
 
-                for (let key of sf.constantsOrVariables.keys()) {
-                    let tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
+                for (const key of sf.constantsOrVariables.keys()) {
+                    const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
                     if (tokens !== undefined) {
-                        for (let token of tokens) {
+                        for (const token of tokens) {
                             words.add(token);
                         }
                     }
@@ -69,40 +69,40 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
 
     private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
-        let iconfig: COBOLSettings = VSCOBOLConfiguration.get();
+        const iconfig: COBOLSettings = VSCOBOLConfiguration.get();
 
-        let includeUpper: boolean = iconfig.intellisense_include_uppercase;
-        let includeLower: boolean = iconfig.intellisense_include_lowercase;
-        let includeAsIS: boolean = iconfig.intellisense_include_unchanged;
-        let includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
-        let limit: number = iconfig.intellisense_item_limit;
+        const includeUpper: boolean = iconfig.intellisense_include_uppercase;
+        const includeLower: boolean = iconfig.intellisense_include_lowercase;
+        const includeAsIS: boolean = iconfig.intellisense_include_unchanged;
+        const includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
+        const limit: number = iconfig.intellisense_item_limit;
 
-        let words: COBOLToken[] = tsearch.get(wordToComplete);
-        let numberOfWordsInResults = words.length;
+        const words: COBOLToken[] = tsearch.get(wordToComplete);
+        const numberOfWordsInResults = words.length;
 
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
             //if the text is uppercase, the present the items as uppercase
-            let key: COBOLToken = words[c];
+            const key: COBOLToken = words[c];
 
             if (includeAsIS) {
-                let completionItem = new CompletionItem(key.tokenName, kind);
+                const completionItem = new CompletionItem(key.tokenName, kind);
                 items.push(completionItem);
             }
 
             if (includeLower && key.tokenName !== key.tokenNameLower) {
-                let completionItem = new CompletionItem(key.tokenNameLower, kind);
+                const completionItem = new CompletionItem(key.tokenNameLower, kind);
                 items.push(completionItem);
             }
 
             if (includeUpper && key.tokenName !== key.tokenName.toUpperCase()) {
-                let completionItem = new CompletionItem(key.tokenName.toUpperCase(), kind);
+                const completionItem = new CompletionItem(key.tokenName.toUpperCase(), kind);
                 items.push(completionItem);
             }
 
             if (includeCamelCase) {
-                let completionItem = new CompletionItem(camelize(key.tokenName), kind);
+                const completionItem = new CompletionItem(camelize(key.tokenName), kind);
                 items.push(completionItem);
             }
 
@@ -123,16 +123,16 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             return items;
         }
 
-        let startTime = performance_now();
+        const startTime = performance_now();
         let wordToComplete = '';
         let lineBefore = "";
         const range = document.getWordRangeAtPosition(position);
         if (range) {
             wordToComplete = document.getText(new Range(range.start, position));
             lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
-            let lastSpace = lineBefore.lastIndexOf(" ");
+            const lastSpace = lineBefore.lastIndexOf(" ");
             if (lastSpace !== -1) {
-                let lineOrg = lineBefore;
+                const lineOrg = lineBefore;
                 lineBefore = lineBefore.substr(1 + lastSpace);
                 if (lineBefore === "to") {
                     if (lineOrg.toLocaleLowerCase().indexOf("go") !== -1) {
@@ -141,8 +141,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 }
             }
         } else {
-            let currentLine: string = document.lineAt(position.line).text.trim();
-            let lastSpace = currentLine.lastIndexOf(" ");
+            const currentLine: string = document.lineAt(position.line).text.trim();
+            const lastSpace = currentLine.lastIndexOf(" ");
             if (lastSpace === -1) {
                 lineBefore = currentLine;
             } else {
@@ -205,8 +205,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
-        let totalTimeInMS = performance_now() - startTime;
-        let timeTaken = totalTimeInMS.toFixed(2);
+        const totalTimeInMS = performance_now() - startTime;
+        const timeTaken = totalTimeInMS.toFixed(2);
         if (totalTimeInMS > logTimeThreshold) {
             logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }

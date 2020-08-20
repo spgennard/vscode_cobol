@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ISourceHandler, { ICommentCallback } from "./isourcehandler";
 import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
@@ -1677,6 +1678,7 @@ export class COBOLSymbol {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     static fromJSON(d: any): COBOLSymbol {
         return Object.assign(new COBOLSymbol(), d);
     }
@@ -1698,7 +1700,8 @@ export function replacer(this: any, key: any, value: any):any {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function reviver(key: any, value: any) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function reviver(key: any, value: any):any {
     if (typeof value === 'object' && value !== null) {
         if (value.dataType === 'Map') {
             return new Map<string, COBOLSymbol>(value.value);
