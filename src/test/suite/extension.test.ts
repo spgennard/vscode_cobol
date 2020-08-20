@@ -19,6 +19,7 @@ suite('Extension Test Suite', () => {
 			assert.fail("test.cbl should have > 10 lines");
 		}
 
+		assert.ok(f.getFilename().length > 0, "filename is invalid");
 	});
 
 });
