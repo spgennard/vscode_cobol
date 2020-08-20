@@ -1320,7 +1320,7 @@
             },
             {
                 "name": "gnucobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[wW]arning):(.*)$",
+                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[wW]arning|[nN]ote):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1328,7 +1328,7 @@
             },
             {
                 "name": "gnucobol3-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning|nN]ote):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1336,7 +1336,7 @@
             },
             {
                 "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning|[nN]ote):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1352,6 +1352,20 @@
             {
                 "name": "cobolit-warning-cobc",
                 "regexp": "^(.*):(\\d+):\\s.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
+                "name": "cobolit-note-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
+                "name": "opencobol-note-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote):(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
@@ -1450,6 +1464,33 @@
                 "pattern": "$gnucobol3-cobc"
             },
             {
+                "name": "gnucobol3-warning-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-warning-cobc",
+                "severity": "warning"
+            },
+            {
+                "name": "gnucobol3-error-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-error-cobc",
+                "severity": "error"
+            },
+            {
+                "name": "gnucobol3-note-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-note-cobc",
+                "severity": "info"
+            },
+            {
                 "name": "opencobol-cobc",
                 "owner": "cobol",
                 "fileLocation": [
@@ -1476,6 +1517,15 @@
                 "severity": "error"
             },
             {
+                "name": "opencobol-note-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$opencobol-note-cobc",
+                "severity": "info"
+            },
+            {
                 "name": "cobolit-cobc",
                 "owner": "cobol",
                 "fileLocation": [
@@ -1489,7 +1539,7 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$cobolit-cobc",
+                "pattern": "$cobolit-warning-cobc",
                 "severity": "warning"
             },
             {
@@ -1498,9 +1548,19 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$cobolit-cobc",
+                "pattern": "$cobolit-error-cobc",
                 "severity": "error"
             },
+            {
+                "name": "cobolit-note-cobc",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$cobolit-note-cobc",
+                "severity": "info"
+            },
+
             {
                 "name": "acucobol-ccbl",
                 "owner": "cobol",

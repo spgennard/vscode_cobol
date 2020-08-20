@@ -5,7 +5,7 @@
         "target": "es6",
         "outDir": "out",
         "lib": [
-             "es6" 
+             "es6"
         ],
         "sourceMap": true,
         "rootDir": "src",
@@ -17,8 +17,8 @@
         // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
         // "noUnusedParameters": true,  /* Report errors on unused parameters. */
         "resolveJsonModule": true,
-        "esModuleInterop": false,
-	"allowSyntheticDefaultImports" : true
+        "esModuleInterop": true,
+	    "allowSyntheticDefaultImports" : true
     },
     "exclude": [
         "node_modules",
