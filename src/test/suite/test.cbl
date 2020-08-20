@@ -8,6 +8,8 @@
        01 ws-item                       pic x(10).
 
        procedure division.
+       first-para.
+       second section.
 
            goback.
 

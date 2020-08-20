@@ -32,7 +32,9 @@ suite('Extension Test Suite', () => {
 		const settings = new COBOLSettings();
 		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
 
-		assert.ok(s.constantsOrVariables.size > 0, "must contain should fields");
+		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
+		assert.ok(s.paragraphs.size > 0, "should contain at least one paragraph");
+		assert.ok(s.sections.size > 0, "should contain at least one section");
 
 	});
 });
