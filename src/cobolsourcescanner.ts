@@ -889,7 +889,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
             return literalTrimmed.substr(1, literalTrimmed.length - 2);
         }
         /* remove quotes */
-        if (literalTrimmed[0] === "\'" && literalTrimmed.endsWith("\'")) {
+        if (literalTrimmed[0] === "'" && literalTrimmed.endsWith("'")) {
             return literalTrimmed.substr(1, literalTrimmed.length - 2);
         }
 
