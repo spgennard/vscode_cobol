@@ -33,6 +33,7 @@ import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
 import { ICOBOLSettings } from './iconfiguration';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require('properties-reader');
 
 import util from 'util';
@@ -923,7 +924,7 @@ export function logException(message: string, ex: Error) {
 
 export const logTimeThreshold = 500;
 
-export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]) {
+export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]):void {
     const fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
     if (timeTaken < logTimeThreshold) {
@@ -958,6 +959,7 @@ export function logChannelHide() {
 export function performance_now(): number {
     if (!process.env.BROWSER) {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             return require('performance-now').performance.now;
         }
         catch {

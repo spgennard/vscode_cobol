@@ -18,6 +18,7 @@ import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
 
 export enum COBOLTokenStyle {
@@ -436,7 +437,9 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public sourceReferences: SharedSourceReferences;
     public sourceFileId: number;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public cpPerformTargets: any | undefined = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public cpConstantsOrVars: any | undefined = undefined;
 
     public ImplicitProgramId = "";
@@ -640,7 +643,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                 state.currentParagraph.endColumn = line.length;
             }
 
-            this.addinMissingEndlings(sourceHandler);
+            this.addinMissingEndlings();
 
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
@@ -734,7 +737,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         return ctoken;
     }
 
-    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string) {
+    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string):void {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
                 InMemoryGlobalSymbolCache.callableSymbols.clear();
@@ -752,7 +755,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         });
     }
 
-    public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string) {
+    public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string):void {
 
         if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {
             logMessage("Metadata is not enabled");
@@ -768,6 +771,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         logMessage("");
         logMessage("Global symbols  : (made lowercase)");
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [i, tag] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
             const fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
             if (fileSymbol === undefined) {
@@ -796,6 +800,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
             logMessage("");
             logMessage("Global copybooks:");
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
                 logMessage(" " + i);
             }
@@ -1386,6 +1391,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                                 const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                                 state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences);
                                 this.sourceReferences.topLevel = currentTopLevel;
                                 state.ignoreInOutlineView = currentIgnoreInOutlineView;
@@ -1574,7 +1580,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         return token;
     }
 
-    private addinMissingEndlings(sourceHandler: ISourceHandler) {
+    private addinMissingEndlings() {
         for (let i = 0; i < this.tokensInOrder.length; i++) {
             const token = this.tokensInOrder[i];
 
@@ -1629,6 +1635,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                                 const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                                 // this.sourceReferences.state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences);
                                 this.sourceReferences.topLevel = true;
                                 this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
@@ -1653,10 +1660,12 @@ export class COBOLFileSymbol {
         this.lnum = lineNumber;
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     static fromJSON(d: Object): COBOLFileSymbol {
         return Object.assign(new COBOLFileSymbol(), d);
     }
 }
+
 
 export class COBOLSymbol {
     public symbol: string | undefined;
@@ -1667,13 +1676,15 @@ export class COBOLSymbol {
         this.lnum = lineNumber;
     }
 
-    static fromJSON(d: Object): COBOLSymbol {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static fromJSON(d: any): COBOLSymbol {
         return Object.assign(new COBOLSymbol(), d);
     }
 }
 
 // JSON callbacks to Map to something that can be serialised
-export function replacer(this: any, key: any, value: any) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function replacer(this: any, key: any, value: any):any {
     const originalObject = this[key];
     if (originalObject instanceof Map) {
         return {
@@ -1685,6 +1696,8 @@ export function replacer(this: any, key: any, value: any) {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function reviver(key: any, value: any) {
     if (typeof value === 'object' && value !== null) {
         if (value.dataType === 'Map') {
@@ -1719,6 +1732,7 @@ export class COBOLGlobalSymbolTable {
         this.methodSymbols = new Map<string, COBOLFileSymbol[]>();
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     static fromJSON(d: Object): COBOLGlobalSymbolTable {
         return Object.assign(new COBOLGlobalSymbolTable(), d);
     }
@@ -1736,6 +1750,7 @@ export class COBOLSymbolTable {
         this.labelSymbols = new Map<string, COBOLSymbol>();
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     static fromJSON(d: Object): COBOLSymbolTable {
         return Object.assign(new COBOLSymbolTable(), d);
     }
@@ -1801,7 +1816,7 @@ export class COBOLSymbolTableHelper {
         return hash.digest('hex');
     }
 
-    public static saveToFile(cacheDirectory: string, st: COBOLSymbolTable) {
+    public static saveToFile(cacheDirectory: string, st: COBOLSymbolTable):void {
         const fn = path.join(cacheDirectory, this.getHashForFilename(st.fileName) + ".sym");
 
         fs.writeFileSync(fn, lzjs.compress(JSON.stringify(st, replacer)));
