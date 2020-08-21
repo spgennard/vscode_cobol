@@ -31,7 +31,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
     getRawLine(lineNumber: number): string {
         try {
-            let line = this.document.lineAt(lineNumber);
+            const line = this.document.lineAt(lineNumber);
             return line.text;
         }
         catch
@@ -51,7 +51,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     getLine(lineNumber: number): string {
         let line = this.document.lineAt(lineNumber).text;
 
-        let startComment = line.indexOf("*>");
+        const startComment = line.indexOf("*>");
         if (startComment !== -1) {
             this.sendCommentCallback(line);
             line = line.substring(0, startComment);
@@ -76,7 +76,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
                 line = "      " + line.substr(6);
             } else {
                 if (line.length > 7 && line[6] === ' ') {
-                    let possibleKeyword = line.substr(0, 6).trim();
+                    const possibleKeyword = line.substr(0, 6).trim();
                     if (this.isValidKeyword(possibleKeyword) === false) {
                         line = "       " + line.substr(6);
                     }
