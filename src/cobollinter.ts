@@ -16,6 +16,7 @@ function makeRegex(partialRegEx: string): RegExp | undefined {
 }
 
 export class CobolLinterActionFixer implements CodeActionProvider {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
         const codeActions: CodeAction[] = [];
         for (const diagnostic of context.diagnostics) {
@@ -42,7 +43,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         return codeActions;
     }
 
-    public async insertIgnoreCommentLine(docUri: vscode.Uri, offset: number, code: string) {
+    public async insertIgnoreCommentLine(docUri: vscode.Uri, offset: number, code: string):Promise<void> {
         await vscode.window.showTextDocument(docUri);
         const w = vscode.window.activeTextEditor;
 
@@ -74,7 +75,7 @@ export class CobolLinterProvider {
     public static NotReferencedMarker_internal = "COBOL_NOT_REF";
     public static NotReferencedMarker_external = "ignore";
 
-    public async updateLinter(document: vscode.TextDocument) {
+    public async updateLinter(document: vscode.TextDocument): Promise<void> {
 
         if (this.settings.linter === false) {
             this.collection.clear();

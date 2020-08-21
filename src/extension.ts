@@ -308,7 +308,7 @@ function flip_plaintext(doc: TextDocument) {
 }
 
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext):void {
     currentContext = context;
 
     // re-init if something gets installed or removed
@@ -472,7 +472,7 @@ export function activate(context: ExtensionContext) {
                 }
             }
         }, (reason) => {
-            // console.log('fetch task was rejected', reason);
+            logMessage(`Syntax check failed due to ${reason}`);
         });
     });
 
@@ -584,6 +584,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(cobolProviderDisposible);
 
     const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document, position, token) {
             const txt = document.getText(document.getWordRangeAtPosition(position));
             const txtTarger: CallTarget | undefined = getCallTarget(txt);
@@ -844,7 +845,7 @@ export function activate(context: ExtensionContext) {
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
 
-                const value = vscode.window.showInputBox({
+                vscode.window.showInputBox({
                     prompt: 'Enter start line number and increment',
                     validateInput: (text: string): string | undefined => {
                         if (!text || text.indexOf(' ') === -1) {
@@ -893,29 +894,29 @@ export function activate(context: ExtensionContext) {
 
 }
 
-export function enableMarginStatusBar(formatStyle: ESourceFormat) {
+export function enableMarginStatusBar(formatStyle: ESourceFormat):void {
     formatStatusBarItem.text = "Source:" + formatStyle;
     formatStyle.toString();
     formatStatusBarItem.show();
 }
 
 
-export function hideMarginStatusBar() {
+export function hideMarginStatusBar():void {
     formatStatusBarItem.hide();
 }
 
-export async function deactivateAsync() {
+export async function deactivateAsync(): Promise<void> {
     if (VSCOBOLConfiguration.isCachingEnabled()) {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
+        formatStatusBarItem.dispose();
     }
-    formatStatusBarItem.dispose();
 }
 
 export async function deactivate(): Promise<void> {
     await deactivateAsync();
 }
 
-export function logException(message: string, ex: Error) {
+export function logException(message: string, ex: Error):void {
     logMessage(ex.name + ":" + message);
     if (ex !== undefined && ex.stack !== undefined) {
         logMessage(ex.stack);
@@ -924,6 +925,7 @@ export function logException(message: string, ex: Error) {
 
 export const logTimeThreshold = 500;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]):void {
     const fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
@@ -940,7 +942,8 @@ export function logTimedMessage(timeTaken: number, message: string, ...parameter
 }
 
 
-export function logMessage(message: string, ...parameters: any[]) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function logMessage(message: string, ...parameters: any[]):void {
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
     } else {
@@ -948,11 +951,11 @@ export function logMessage(message: string, ...parameters: any[]) {
     }
 }
 
-export function logChannelSetPreserveFocus(preserveFocus: boolean) {
+export function logChannelSetPreserveFocus(preserveFocus: boolean):void {
     COBOLOutputChannel.show(preserveFocus);
 }
 
-export function logChannelHide() {
+export function logChannelHide():void {
     COBOLOutputChannel.hide();
 }
 

@@ -3,7 +3,8 @@
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult } from "vscode";
 
 export class DocComment {
-    static register() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static register():any {
         const langPlusSchema = { scheme: 'file', language: 'COBOL' };
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {

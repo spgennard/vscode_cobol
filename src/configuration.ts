@@ -305,7 +305,7 @@ function isOutlineEnabled(): outlineFlag {
 const DEFAULT_COPYBOOK_DIR:string[] = [];
 
 function expandEnvVars(startEnv: string) : string {
-    let complete: boolean = false;
+    let complete = false;
     let env: string = startEnv;
 
     while(complete === false) {
@@ -379,8 +379,7 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
 const DEFAULT_COPYBOOK_EXTS = ["cpy", "CPY"];
 
 function getCopybookExts(): string[] {
-    let editorConfig = workspace.getConfiguration('coboleditor');
-    editorConfig = editorConfig;
+    const editorConfig = workspace.getConfiguration('coboleditor');
     let extensions = editorConfig.get<string[]>('copybookexts');
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_COPYBOOK_EXTS;

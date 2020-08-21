@@ -27,6 +27,7 @@ export function getWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefine
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [k, v] of folderMap) {
         rwFolder.push(v);
     }

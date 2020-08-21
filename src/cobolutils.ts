@@ -25,7 +25,7 @@ export enum FoldAction {
 
 export class COBOLUtils {
 
-    public migrateCopybooksToWorkspace() {
+    public migrateCopybooksToWorkspace():void {
         const fileSearchDirectory = [];
 
         const extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
@@ -96,14 +96,14 @@ export class COBOLUtils {
 
     }
 
-    public extractSelectionToCopybook(activeTextEditor: vscode.TextEditor) {
+    public extractSelectionToCopybook(activeTextEditor: vscode.TextEditor):void {
         const sel = activeTextEditor.selection;
 
         const ran = new vscode.Range(sel.start, sel.end);
         const text = activeTextEditor.document.getText(ran);
         const dir = path.dirname(activeTextEditor.document.fileName);
 
-        const value = vscode.window.showInputBox({
+        vscode.window.showInputBox({
             prompt: 'Copybook name?',
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
@@ -129,7 +129,7 @@ export class COBOLUtils {
 
     }
 
-    public extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean) {
+    public extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean):void {
         const sel = activeTextEditor.selection;
 
         const ran = new vscode.Range(sel.start, sel.end);
@@ -139,7 +139,7 @@ export class COBOLUtils {
         // TODO - Should put something in place to search forward of current line
         //        to find the best position..
 
-        const value = vscode.window.showInputBox({
+        vscode.window.showInputBox({
             prompt: para ? 'New paragrah name?' : 'New section name?',
             validateInput: (text: string): string | undefined => {
                 if (!text || text.indexOf(' ') !== -1) {
@@ -183,7 +183,7 @@ export class COBOLUtils {
         return expEnabled;
     }
 
-    public resequenceColumnNumbers(activeEditor: vscode.TextEditor | undefined, startValue: number, increment: number): any {
+    public resequenceColumnNumbers(activeEditor: vscode.TextEditor | undefined, startValue: number, increment: number): void {
         if (activeEditor === undefined) {
             return;
         }
@@ -208,7 +208,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    public removeColumnNumbers(activeEditor: vscode.TextEditor): any {
+    public removeColumnNumbers(activeEditor: vscode.TextEditor): void {
         const edits = new vscode.WorkspaceEdit();
         const uri = activeEditor.document.uri;
 
@@ -227,7 +227,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    public RemoveIdentificationArea(activeEditor: vscode.TextEditor): any {
+    public RemoveIdentificationArea(activeEditor: vscode.TextEditor): void {
         const edits = new vscode.WorkspaceEdit();
         const uri = activeEditor.document.uri;
 
@@ -246,7 +246,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    public RemoveComments(activeEditor: vscode.TextEditor): any {
+    public RemoveComments(activeEditor: vscode.TextEditor): void {
         const uri = activeEditor.document.uri;
         const edits = new vscode.WorkspaceEdit();
         const delimiters: string[] = [];
@@ -273,7 +273,7 @@ export class COBOLUtils {
                             const endPos = new vscode.Position(l, line.text.length);
                             const range = new vscode.Range(startPos, endPos);
                             edits.delete(uri, range);
-                            const n = activeEditor.document.getText(range);
+                            activeEditor.document.getText(range);
                         } else {
                             const startPos = new vscode.Position(l, match.index);
                             const endPos = new vscode.Position(l + 1, 0);

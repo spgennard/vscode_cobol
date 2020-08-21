@@ -374,11 +374,14 @@ class ParseState {
     captureDivisions: boolean;
     programs: COBOLToken[];
     pickFields: boolean;
+    skipToDot: boolean;
 
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
 
     ignoreInOutlineView: boolean;
+
+    addReferencesDuringSkipToTag: boolean;
 
     constructor() {
         this.currentDivision = COBOLToken.Null;
@@ -400,6 +403,8 @@ class ParseState {
         this.inProcedureDivision = false;
         this.inDeclaratives = false;
         this.ignoreInOutlineView = false;
+        this.skipToDot = false;
+        this.addReferencesDuringSkipToTag = false;
     }
 }
 
@@ -448,9 +453,6 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
     public sourceIsCopybook = false;
-
-    skipToDot = false;
-    addReferencesDuringSkipToTag = false;
 
     readonly copybookNestedInSection: boolean;
 
@@ -1044,8 +1046,8 @@ export default class COBOLSourceScanner implements ICommentCallback {
                 }
 
                 // if skiptodot and not the end of the statement.. swallow
-                if (this.skipToDot && endWithDot === false) {
-                    if (this.addReferencesDuringSkipToTag) {
+                if (state.skipToDot && endWithDot === false) {
+                    if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
                         if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
                             if (this.sourceReferences !== undefined) {
@@ -1062,9 +1064,9 @@ export default class COBOLSourceScanner implements ICommentCallback {
                 }
 
                 // reset
-                if (this.skipToDot && endWithDot === true) {
-                    this.skipToDot = false;
-                    this.addReferencesDuringSkipToTag = false;
+                if (state.skipToDot && endWithDot === true) {
+                    state.skipToDot = false;
+                    state.addReferencesDuringSkipToTag = false;
                 }
 
 
@@ -1510,7 +1512,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                                 /* if spans multiple lines, skip to dot */
                                 if (this.sourceFormat !== ESourceFormat.fixed) {
                                     if (endWithDot === false) {
-                                        this.skipToDot = true;
+                                        state.skipToDot = true;
                                     }
                                 }
                             }
@@ -1532,9 +1534,9 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
                         if (prevTokenLower === "rd" || prevTokenLower === 'select') {
                             if (prevTokenLower === 'select') {
-                                this.addReferencesDuringSkipToTag = true;
+                                state.addReferencesDuringSkipToTag = true;
                             }
-                            this.skipToDot = true;
+                            state.skipToDot = true;
                         }
                         continue;
                     }

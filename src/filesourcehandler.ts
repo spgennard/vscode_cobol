@@ -4,6 +4,7 @@ import { logException, logTimedMessage, performance_now } from './extension';
 
 
 // let detab = require('detab');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 import fs from 'fs';
 import { Uri } from 'vscode';
@@ -32,7 +33,7 @@ export class FileSourceHandler implements ISourceHandler {
         const startTime = performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
-            while (line = liner.next()) {
+            while ((line = liner.next())) {
                 this.lines.push(line.toString());
             }
             logTimedMessage(performance_now() - startTime, ' - Loading File ' + document);

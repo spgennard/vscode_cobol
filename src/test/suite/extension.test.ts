@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { FileSourceHandler } from "../../filesourcehandler";
 import COBOLSourceScanner from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
+import path from 'path';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
@@ -12,8 +13,7 @@ suite('Extension Test Suite', () => {
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 
 	test('Read file (test.cbl)', () => {
-		console.log("CWD="+__dirname);
-		const f = new FileSourceHandler(baseForSource+"test.cbl",false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"),false,false);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -22,8 +22,7 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Parse file (test.cbl)', () => {
-		console.log("CWD="+__dirname);
-		const f = new FileSourceHandler(baseForSource+"test.cbl",false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"),false,false);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}

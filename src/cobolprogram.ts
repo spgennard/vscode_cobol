@@ -27,7 +27,7 @@ export function move2dd():void {
     window.setStatusBarMessage('ERROR: \'DATA DIVISION\' or \'WORKING-STORAGE SECTION\' not found.', 4000);
 }
 
-export function move2ws() {
+export function move2ws():void {
     const line = findWorkingStorageSection();
     if (line > 0) {
         goToLine(line);

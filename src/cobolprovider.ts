@@ -22,11 +22,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 sf.cpPerformTargets = new TrieSearch("tokenName");
                 const words = sf.cpPerformTargets;
 
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 for (const [key, token] of sf.sections) {
                     if (token.inProcedureDivision) {
                         words.add(token);
                     }
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 for (const [key, token] of sf.paragraphs) {
                     if (token.inProcedureDivision) {
                         words.add(token);
@@ -116,6 +118,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         let items: CompletionItem[] = [];
 

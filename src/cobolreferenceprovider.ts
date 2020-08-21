@@ -3,11 +3,12 @@ import * as vscode from 'vscode';
 import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolsourcescanner';
 import VSQuickCOBOLParse from './vscobolscanner';
 
-const wordRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
+const wordRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
 
 export class CobolReferenceProvider implements vscode.ReferenceProvider {
     public provideReferences(
         document: vscode.TextDocument, position: vscode.Position,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         options: { includeDeclaration: boolean }, token: vscode.CancellationToken):
         Thenable<vscode.Location[] | null> {
 

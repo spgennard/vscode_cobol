@@ -8,7 +8,7 @@ function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], fo
     editor.edit(edit => {
         for (let x = 0; x < sel.length; x++) {
             if (sel[x].start.line === sel[x].end.line) {
-                let position = sel[x].start;
+                const position = sel[x].start;
                 toggleLine(edit, doc, position.line, format);
             } else {
                 multipleToggleLine(edit, doc, sel[x], format);
@@ -17,16 +17,16 @@ function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], fo
     });
 }
 
-let var_free_insert_at_comment_column : boolean = true;
+const var_free_insert_at_comment_column  = true;
 
 function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: ESourceFormat) {
-    let line = d.lineAt(l);
-    let lineContents = line.text;
+    const line = d.lineAt(l);
+    const lineContents = line.text;
 
     if (format === ESourceFormat.terminal) {
-        let firstInlineIndex = lineContents.indexOf("| ");
+        const firstInlineIndex = lineContents.indexOf("| ");
         if (firstInlineIndex !== -1) {
-            let r = new Range(new Position(l, firstInlineIndex), new Position(l, 2 + firstInlineIndex));
+            const r = new Range(new Position(l, firstInlineIndex), new Position(l, 2 + firstInlineIndex));
             editor.delete(r);
             return;
         }
@@ -51,14 +51,14 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
     if (format !== ESourceFormat.fixed) {
         let firstInlineIndex = lineContents.indexOf("*> ");
         if (firstInlineIndex !== -1 && firstInlineIndex !== 6) {
-            let r = new Range(new Position(l, firstInlineIndex), new Position(l, 3 + firstInlineIndex));
+            const r = new Range(new Position(l, firstInlineIndex), new Position(l, 3 + firstInlineIndex));
             editor.delete(r);
             return;
         }
 
         firstInlineIndex = lineContents.indexOf("*>");
         if (firstInlineIndex !== -1) {
-            let r = new Range(new Position(l, firstInlineIndex), new Position(l, 2 + firstInlineIndex));
+            const r = new Range(new Position(l, firstInlineIndex), new Position(l, 2 + firstInlineIndex));
             editor.delete(r);
             return;
         }
@@ -98,7 +98,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
         }
 
         if (lineContents.length > 6 && lineContents[6] === ' ' &&  lineContents[7] === ' ') {
-            let r = new Range(new Position(l, 6), new Position(l, 8));
+            const r = new Range(new Position(l, 6), new Position(l, 8));
             editor.replace(r, "*>");
             return;
         }
@@ -109,13 +109,13 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
     /* remove * from column 6 */
     if (lineContents.length > 6 &&
         lineContents[6] === '*') {
-        let r = new Range(new Position(l, 6), new Position(l, 7));
+        const r = new Range(new Position(l, 6), new Position(l, 7));
         editor.replace(r, " ");
         return;
     }
 
     if (lineContents.length > 6 && lineContents[6] === ' ') {
-        let r = new Range(new Position(l, 6), new Position(l, 7));
+        const r = new Range(new Position(l, 6), new Position(l, 7));
         editor.replace(r, "*");
         return;
     }
@@ -131,7 +131,7 @@ function multipleToggleLine(edit: TextEditorEdit, d: TextDocument, sel: Selectio
     }
 }
 
-export function processCommentLine() {
+export function processCommentLine():void {
     const editor = window.activeTextEditor;
     if (editor) {
         const doc = editor.document;
