@@ -16,6 +16,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private pliItem: SourceItem;
     private hlasmItem: SourceItem;
     private documentItem: SourceItem;
+    private scriptItem: SourceItem;
 
     private topLevelItem: SourceItem[] = [];
 
@@ -25,6 +26,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private pliItems: SourceFolderItem[] = [];
     private hlasmItems: SourceFolderItem[] = [];
     private documentIems: SourceFolderItem[] = [];
+    private scriptItems: SourceFolderItem[] = [];
 
     constructor(config: ICOBOLSettings) {
         this.cobolItem = new SourceFolderItem("COBOL");
@@ -33,6 +35,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.hlasmItem = new SourceFolderItem("HLASM");
         this.pliItem = new SourceFolderItem("PL/I");
         this.documentItem = new SourceFolderItem("Documents");
+        this.scriptItem = new SourceFolderItem("Scripts");
 
         this.topLevelItem.push(this.cobolItem);
         this.topLevelItem.push(this.copyBook);
@@ -40,14 +43,15 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.topLevelItem.push(this.hlasmItem);
         this.topLevelItem.push(this.pliItem);
         this.topLevelItem.push(this.documentItem);
+        this.topLevelItem.push(this.scriptItem);
 
         if (getWorkspaceFolders()) {
-            let standardFolders: string[] = ["*", "cbl/*", "jcl/*", "jclproc/*"];
-            for (let standardFolder of standardFolders) {
+            const standardFolders: string[] = ["*", "cbl/*", "jcl/*", "jclproc/*"];
+            for (const standardFolder of standardFolders) {
                 workspace.findFiles(standardFolder)
                     .then((allFiles) => {
                         allFiles.forEach((file) => {
-                            let fileExtension = file.fsPath.split('.').pop();
+                            const fileExtension = file.fsPath.split('.').pop();
                             if (fileExtension) {
                                 this.addExtension(fileExtension, file);
                             }
@@ -60,7 +64,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
-        let location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
+        const location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
         return {
             arguments: [
@@ -73,7 +77,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number): SourceItem {
-        let item = new SourceItem(label, file, lnum);
+        const item = new SourceItem(label, file, lnum);
         item.command = this.getCommand(file);
         item.contextValue = contextValue;
         item.tooltip = file.fsPath;
@@ -90,10 +94,11 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this._onDidChangeTreeData.fire(this.pliItem);
         this._onDidChangeTreeData.fire(this.hlasmItem);
         this._onDidChangeTreeData.fire(this.documentItem);
+        this._onDidChangeTreeData.fire(this.scriptItem);
     }
 
     private addExtension(ext: string, file: vscode.Uri) {
-        let base = path.basename(file.fsPath);
+        const base = path.basename(file.fsPath);
 
         switch (ext?.toLowerCase()) {
             case "cobol":
@@ -101,7 +106,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             case "cob":
             case "pco":
             case "cbl":
-            case "cobol":
                 if (this.cobolItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
                     this.cobolItems.push(this.newSourceItem("cobol", base, file, 0));
                 }
@@ -156,6 +160,12 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                     this.documentIems.push(this.newSourceItem("document", base, file, 0));
                 }
                 break;
+            case "sh":
+            case "bat":
+                if (this.scriptItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
+                    this.scriptItems.push(this.newSourceItem("scripts", base, file, 0));
+                }
+                break;
         }
     }
 
@@ -169,12 +179,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     private refreshItems() {
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-            for (let [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
                 try {
-                    let fileExtension = i.split('.').pop();
+                    const fileExtension = i.split('.').pop();
                     if (fileExtension) {
                         if (isValidExtension(fileExtension)) {
-                            let vFile = vscode.Uri.file(i);
+                            const vFile = vscode.Uri.file(i);
                             this.addExtension(fileExtension, vFile);
                         }
                     }
@@ -191,13 +202,14 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.setTreeState(this.hlasmItems, this.hlasmItem);
         this.setTreeState(this.pliItems, this.pliItem);
         this.setTreeState(this.documentIems, this.documentItem);
+        this.setTreeState(this.scriptItems, this.scriptItem);
 
         this.refreshAll();
     }
 
-    public async checkFile(vuri: vscode.Uri) {
+    public async checkFile(vuri: vscode.Uri): Promise<void> {
         try {
-            let fileExtension = vuri.fsPath.split('.').pop();
+            const fileExtension = vuri.fsPath.split('.').pop();
             if (fileExtension !== undefined) {
                 this.addExtension(fileExtension, vuri);
                 this.refreshItems();
@@ -215,6 +227,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.hlasmItems = this.hlasmItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.pliItems = this.pliItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.documentIems = this.documentIems.filter(item => item.uri?.fsPath !== vuri.fsPath);
+        this.scriptItems = this.scriptItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
         this.refreshItems();
     }
 
@@ -235,6 +248,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "PL/I": rtn = this.pliItems; break;
                 case "HLASM": rtn = this.hlasmItems; break;
                 case "Documents": rtn = this.documentIems; break;
+                case "Scripts": rtn = this.scriptItems; break;
             }
 
             resolve(rtn);
