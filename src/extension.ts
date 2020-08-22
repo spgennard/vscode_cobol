@@ -561,11 +561,11 @@ export function activate(context: ExtensionContext):void {
     const jclSelectors = [
         { scheme: 'file', language: 'JCL' }
     ];
-    const completionJCLItemProvider = new KeywordAutocompleteCompletionItemProvider(jclStatements);
+    const completionJCLItemProvider = new KeywordAutocompleteCompletionItemProvider(jclStatements, false);
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(cobolKeywords);
+    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(cobolKeywords, true);
     const keywordProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
