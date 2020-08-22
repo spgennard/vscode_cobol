@@ -9,6 +9,12 @@ export class DocComment {
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {
             provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
+
+                // only do something if we are just pressed RETURN
+                if (ch !== '\n') {
+                    return;
+                }
+
                 const line = document.lineAt(position.line - 1);
                 if (line) {
 
@@ -28,11 +34,7 @@ export class DocComment {
                         ];
                     }
                 }
-
-
-
                 return [];
-
             }
         }, '\n');
     }
