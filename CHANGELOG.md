@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.6.41
 ### GitHub [#193](https://github.com/spgennard/vscode_cobol/issues/193) Please add output for finished metadata processing  
 
 **Please add output for finished metadata processing Fix #193**
