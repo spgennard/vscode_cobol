@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#193](https://github.com/spgennard/vscode_cobol/issues/193) Please add output for finished metadata processing  
+
+**Please add output for finished metadata processing Fix #193**
+
+
+[2472554951a6b38](https://github.com/spgennard/vscode_cobol/commit/2472554951a6b38) *2020-08-24 12:26:22*
+
+
 ## 6.6.29
 ### GitHub [#185](https://github.com/spgennard/vscode_cobol/issues/185) Paragraphs in Copy file used for code not showing as referenced  
 
