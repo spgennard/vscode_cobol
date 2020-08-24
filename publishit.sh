@@ -59,6 +59,7 @@ github-release upload \
 
 npx ovsx publish cobol*.vsix -p $(cat $HOME/.ovsx.token)
 
+mkdir .vscode-test 2>/dev/null && true
 cp -r ../.vscode-test .
 
 npm-check-updates
