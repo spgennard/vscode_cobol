@@ -40,7 +40,6 @@ git commit -m "Update CHANGELOG.md" CHANGELOG.md && true
 git push
 git tag $PACKAGE_VERSION
 git push --tags
-touch .vscode-test
 cp -r .vscode-test ..
 git clean -fdx
 npm install
