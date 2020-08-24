@@ -926,11 +926,11 @@ export function logException(message: string, ex: Error):void {
 export const logTimeThreshold = 500;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]):void {
+export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]):boolean {
     const fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
     if (timeTaken < logTimeThreshold) {
-        return;
+        return false;
     }
 
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
@@ -939,6 +939,8 @@ export function logTimedMessage(timeTaken: number, message: string, ...parameter
     } else {
         COBOLOutputChannel.appendLine(message.padEnd(60) + fixedTimeTaken);
     }
+
+    return true;
 }
 
 
