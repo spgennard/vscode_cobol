@@ -52,9 +52,9 @@ export enum COBOLTokenStyle {
 }
 
 export enum CobolDocStyle {
-    unknown,
-    MSDN,
-    COBOLDOC
+    unknown = "unknown",
+    MSDN = "MSDN",
+    COBOLDOC = "COBOLDOC"
 }
 
 export function camelize(text: string): string {
@@ -511,10 +511,8 @@ export default class COBOLSourceScanner implements ICommentCallback {
         this.sections = sourceReferences.sharedSections;
         this.tokensInOrder = sourceReferences.tokensInOrder;
 
-        // set the source handler for the comment callback to parse the lint comments
-        if (configHandler.linter) {
-            sourceHandler.setCommentCallback(this);
-        }
+        // set the source handler for the comments
+        sourceHandler.setCommentCallback(this);
 
         const state: ParseState = this.sourceReferences.state;
 
@@ -1606,8 +1604,6 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
     public processComment(commentLine: string): void {
         const startOfComment: number = commentLine.indexOf("*>");
-
-
 
         if (startOfComment !== undefined && startOfComment !== -1) {
 
