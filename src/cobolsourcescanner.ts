@@ -51,6 +51,11 @@ export enum COBOLTokenStyle {
     Null = "Null"
 }
 
+export enum CobolDocStyle {
+    unknown,
+    MSDN,
+    COBOLDOC
+}
 
 export function camelize(text: string): string {
     let ret = "";
@@ -454,6 +459,8 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
     public sourceIsCopybook = false;
 
+    public commentStyle: CobolDocStyle = CobolDocStyle.unknown;
+
     readonly copybookNestedInSection: boolean;
 
     readonly configHandler: ICOBOLSettings;
@@ -740,7 +747,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         return ctoken;
     }
 
-    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string):void {
+    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
                 InMemoryGlobalSymbolCache.callableSymbols.clear();
@@ -758,7 +765,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         });
     }
 
-    public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string):void {
+    public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
 
         if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {
             logMessage("Metadata is not enabled");
@@ -1600,7 +1607,24 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public processComment(commentLine: string): void {
         const startOfComment: number = commentLine.indexOf("*>");
 
+
+
         if (startOfComment !== undefined && startOfComment !== -1) {
+
+            if (this.commentStyle === CobolDocStyle.unknown) {
+                // is it a coboldoc?
+                if (commentLine.indexOf("*>*") !== -1) {
+                    this.commentStyle = CobolDocStyle.COBOLDOC;
+                }
+
+                const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
+                for (const possibleTag of possilexmltags) {
+                    if (commentLine.indexOf(possibleTag) !== -1) {
+                        this.commentStyle = CobolDocStyle.MSDN;
+                    }
+                }
+            }
+
             const comment = commentLine.substring(2 + startOfComment).trim();
 
             if (comment.startsWith(this.cobolLintLiteral)) {
@@ -1688,7 +1712,7 @@ export class COBOLSymbol {
 
 // JSON callbacks to Map to something that can be serialised
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function replacer(this: any, key: any, value: any):any {
+export function replacer(this: any, key: any, value: any): any {
     const originalObject = this[key];
     if (originalObject instanceof Map) {
         return {
@@ -1703,7 +1727,7 @@ export function replacer(this: any, key: any, value: any):any {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function reviver(key: any, value: any):any {
+export function reviver(key: any, value: any): any {
     if (typeof value === 'object' && value !== null) {
         if (value.dataType === 'Map') {
             return new Map<string, COBOLSymbol>(value.value);
@@ -1821,7 +1845,7 @@ export class COBOLSymbolTableHelper {
         return hash.digest('hex');
     }
 
-    public static saveToFile(cacheDirectory: string, st: COBOLSymbolTable):void {
+    public static saveToFile(cacheDirectory: string, st: COBOLSymbolTable): void {
         const fn = path.join(cacheDirectory, this.getHashForFilename(st.fileName) + ".sym");
 
         fs.writeFileSync(fn, lzjs.compress(JSON.stringify(st, replacer)));
