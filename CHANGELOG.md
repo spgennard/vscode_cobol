@@ -3,6 +3,16 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
+
+**Add support of coboldoc #189**
+
+ * - add file header snippet 
+
+[bb2524e28c02687](https://github.com/spgennard/vscode_cobol/commit/bb2524e28c02687) *2020-08-26 18:25:34*
+
+
 ## 6.6.41
 ### GitHub [#193](https://github.com/spgennard/vscode_cobol/issues/193) Please add output for finished metadata processing  
 
