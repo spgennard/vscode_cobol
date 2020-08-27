@@ -24,6 +24,9 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+    showDocumentation(activeTextEditor: vscode.TextEditor) {
+        throw new Error("Method not implemented.");
+    }
 
     public migrateCopybooksToWorkspace():void {
         const fileSearchDirectory = [];

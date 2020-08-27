@@ -925,6 +925,10 @@
             {
                 "command": "cobolplugin.migrateCopybooksToWorkspace",
                 "title": "COBOL: Migrate copybook settings to workspace (for performance)"
+            },
+            {
+                "command" : "cobolplugin.showDocumentation",
+                "title": "Show documentation"
             }
         ],
         "menus": {
@@ -968,6 +972,11 @@
                     "command": "cobolplugin.extractSelectionToCopybook",
                     "group": "cobolplugin",
                     "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+                },
+                {
+                    "command": "cobolplugin.showDocumentation",
+                    "group": "cobolplugin",
+                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 }
             ],
             "view/item/context": [

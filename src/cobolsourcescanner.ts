@@ -511,7 +511,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         this.sections = sourceReferences.sharedSections;
         this.tokensInOrder = sourceReferences.tokensInOrder;
 
-        // set the source handler for the comments
+        // set the source handler for the commentspackage
         sourceHandler.setCommentCallback(this);
 
         const state: ParseState = this.sourceReferences.state;
