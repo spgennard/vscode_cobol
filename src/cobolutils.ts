@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
+import COBOLSourceScanner, { splitArgument, camelize, CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { isFile, logMessage, isDirectory, logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
@@ -10,6 +10,7 @@ import path from 'path';
 import { isNetworkPath, isDirectPath } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
+import { exec } from 'child_process';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -24,8 +25,38 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+    private readonly terminalNameForDocs = "coboldoc";
+
     showDocumentation(activeTextEditor: vscode.TextEditor) {
-        throw new Error("Method not implemented.");
+
+        const sf = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
+        if (sf === undefined) {
+            return;
+        }
+
+        const tagStype = sf.commentTagStyle === CobolTagStyle.FREE ? "-s free" : "-s microfocus";
+        const tmpArea = "/tmp/coboldoc";
+        const textToSend = sf.commentStyle === CobolDocStyle.MSDN ?
+                    `coboldoc -o ${tmpArea} ${tagStype} -a msdn -f md generate ${sf.filename}` :
+                    `coboldoc -o ${tmpArea} ${tagStype} -a tag -f md generate ${sf.filename}`;
+
+        exec(textToSend,  (error, stdout, stderr) => {
+            if (error) {
+                logMessage(`coboldoc: [${error.message}]`);
+                return;
+            }
+            if (stderr) {
+                logMessage(`coboldoc: [${stderr}]`);
+                return;
+            }
+
+            logMessage(`coboldoc: ${stdout}`);
+            const openPreview = "markdown.showPreview";
+            const shortFilename = path.basename(sf.filename);
+            vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${tmpArea}/${shortFilename}.md`)).then(() =>
+                vscode.commands.executeCommand(openPreview)
+                );
+        });
     }
 
     public migrateCopybooksToWorkspace():void {

@@ -57,6 +57,12 @@ export enum CobolDocStyle {
     COBOLDOC = "COBOLDOC"
 }
 
+export enum CobolTagStyle {
+    unknown = "unknown",
+    FREE = "FREE",
+    MICROFOCUS = "MICROFOCUS"
+}
+
 export function camelize(text: string): string {
     let ret = "";
     let uppercaseNext = true;
@@ -460,6 +466,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public sourceIsCopybook = false;
 
     public commentStyle: CobolDocStyle = CobolDocStyle.unknown;
+    public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
 
     readonly copybookNestedInSection: boolean;
 
@@ -1607,18 +1614,32 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
         if (startOfComment !== undefined && startOfComment !== -1) {
 
-            if (this.commentStyle === CobolDocStyle.unknown) {
+            if (this.commentTagStyle === CobolTagStyle.unknown) {
                 // is it a coboldoc?
                 if (commentLine.indexOf("*>*") !== -1) {
-                    this.commentStyle = CobolDocStyle.COBOLDOC;
+                    this.commentTagStyle = CobolTagStyle.FREE;
+                } else {
+                    if (commentLine.indexOf("*>") !== -1) {
+                        this.commentTagStyle = CobolTagStyle.MICROFOCUS;
+                    }
                 }
+            }
 
+            if (this.commentStyle === CobolDocStyle.unknown) {
                 const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
                 for (const possibleTag of possilexmltags) {
                     if (commentLine.indexOf(possibleTag) !== -1) {
                         this.commentStyle = CobolDocStyle.MSDN;
                     }
                 }
+
+                const possiblecobdoc: string[] = ["@author", "@license"];
+                for (const possibleTag of possiblecobdoc) {
+                    if (commentLine.indexOf(possibleTag) !== -1) {
+                        this.commentStyle = CobolDocStyle.COBOLDOC;
+                    }
+                }
+
             }
 
             const comment = commentLine.substring(2 + startOfComment).trim();
