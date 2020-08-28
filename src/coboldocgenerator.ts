@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
-import { logMessage, isDirectory, logChannelHide, logChannelSetPreserveFocus } from './extension';
+import { logMessage, isDirectory, logChannelSetPreserveFocus } from './extension';
 import VSQuickCOBOLParse from './vscobolscanner';
 import path from 'path';
 import fs from 'fs';
@@ -11,12 +11,12 @@ import { getWorkspaceFolders } from './cobolfolders';
 
 export class COBOLDocumentationGenerator {
 
-    private static getTempDirectory() : string {
+    private static getTempDirectory(settings: ICOBOLSettings) : string {
         let firstCacheDir = "";
         const ws = getWorkspaceFolders();
         if (ws !== undefined) {
             for (const folder of ws) {
-                const cacheDir2: string = path.join(folder.uri.fsPath, "coboldoc");
+                const cacheDir2: string = path.join(folder.uri.fsPath, settings.coboldoc_workspace_folder);
                 if (isDirectory(cacheDir2)) {
                     return cacheDir2;
                 }
@@ -51,7 +51,7 @@ export class COBOLDocumentationGenerator {
         }
 
         const tagStype = sf.commentTagStyle === CobolTagStyle.FREE ? "-s free" : "-s microfocus";
-        const tmpArea = COBOLDocumentationGenerator.getTempDirectory();
+        const tmpArea = COBOLDocumentationGenerator.getTempDirectory(settings);
         if (tmpArea === "") {
             logChannelSetPreserveFocus(false);
             logMessage("Unable to find or create a coboldoc directory");

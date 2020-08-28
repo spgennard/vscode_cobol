@@ -43,6 +43,7 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
         vsconfig.linter_mark_as_information = getLinter_mark_as_information();
         vsconfig.ignore_unsafe_extensions = getIgnore_unsafe_extensions();
+        vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
         return vsconfig;
     }
 
@@ -240,6 +241,15 @@ function getLinter_mark_as_information(): boolean {
 
 function getIgnore_unsafe_extensions() : boolean {
     return getBoolean("ignore_unsafe_extensions", false);
+}
+
+function getCoboldoc_workspace_folder(): string {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    const coboldoc_folder = editorConfig.get<string>('coboldoc_workspace_folder');
+    if (coboldoc_folder === undefined || coboldoc_folder === null) {
+        return "coboldoc";
+    }
+    return coboldoc_folder;
 }
 
 function getCache_directory_strategy(): string {

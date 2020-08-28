@@ -40,6 +40,7 @@ export interface ICOBOLSettings {
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
     ignore_unsafe_extensions: boolean;
+    coboldoc_workspace_folder: string;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -74,6 +75,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter_house_standards: boolean;
     public linter_house_standards_rules: string[];
     public ignore_unsafe_extensions: boolean;
+    public coboldoc_workspace_folder: string;
 
     constructor() {
         this.experimental_features = false;
@@ -107,6 +109,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_house_standards = true;
         this.linter_house_standards_rules = [];
         this.ignore_unsafe_extensions = false;
+        this.coboldoc_workspace_folder = "coboldoc";
     }
 }
 
