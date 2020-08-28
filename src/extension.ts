@@ -38,6 +38,7 @@ const propertiesReader = require('properties-reader');
 
 import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
+import { COBOLDocumentationGenerator } from './coboldocgenerator';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -837,8 +838,7 @@ export function activate(context: ExtensionContext):void {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
-                const utils: COBOLUtils = new COBOLUtils();
-                utils.showDocumentation(vscode.window.activeTextEditor);
+                COBOLDocumentationGenerator.showCOBOLDOCDocumentation(vscode.window.activeTextEditor);
             }
         }
     });
