@@ -1,14 +1,49 @@
 import * as vscode from 'vscode';
 import { CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
-import { logMessage } from './extension';
+import { logMessage, isDirectory, logChannelHide, logChannelSetPreserveFocus } from './extension';
 import VSQuickCOBOLParse from './vscobolscanner';
 import path from 'path';
+import fs from 'fs';
 import { exec } from 'child_process';
+import { ICOBOLSettings } from './iconfiguration';
+import { getWorkspaceFolders } from './cobolfolders';
 
 
 export class COBOLDocumentationGenerator {
 
-    public static showCOBOLDOCDocumentation(activeTextEditor: vscode.TextEditor):void {
+    private static getTempDirectory() : string {
+        let firstCacheDir = "";
+        const ws = getWorkspaceFolders();
+        if (ws !== undefined) {
+            for (const folder of ws) {
+                const cacheDir2: string = path.join(folder.uri.fsPath, "coboldoc");
+                if (isDirectory(cacheDir2)) {
+                    return cacheDir2;
+                }
+                if (firstCacheDir === "") {
+                    firstCacheDir = cacheDir2;
+                }
+            }
+        }
+
+        if (firstCacheDir.length === 0) {
+            return "";
+        }
+
+        if (isDirectory(firstCacheDir) === false) {
+            try {
+                fs.mkdirSync(firstCacheDir);
+            }
+            catch {
+                return "";
+            }
+        }
+
+        return firstCacheDir;
+    }
+
+
+    public static showCOBOLDOCDocumentation(activeTextEditor: vscode.TextEditor, settings: ICOBOLSettings):void {
 
         const sf = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
         if (sf === undefined) {
@@ -16,17 +51,25 @@ export class COBOLDocumentationGenerator {
         }
 
         const tagStype = sf.commentTagStyle === CobolTagStyle.FREE ? "-s free" : "-s microfocus";
-        const tmpArea = "/tmp/coboldoc";
+        const tmpArea = COBOLDocumentationGenerator.getTempDirectory();
+        if (tmpArea === "") {
+            logChannelSetPreserveFocus(false);
+            logMessage("Unable to find or create a coboldoc directory");
+
+            return;
+        }
         const textToSend = sf.commentStyle === CobolDocStyle.MSDN ?
                     `coboldoc -o ${tmpArea} ${tagStype} -a msdn -f md generate ${sf.filename}` :
                     `coboldoc -o ${tmpArea} ${tagStype} -a tag -f md generate ${sf.filename}`;
 
         exec(textToSend,  (error, stdout, stderr) => {
             if (error) {
+                logChannelSetPreserveFocus(false);
                 logMessage(`coboldoc: [${error.message}]`);
                 return;
             }
             if (stderr) {
+                logChannelSetPreserveFocus(false);
                 logMessage(`coboldoc: [${stderr}]`);
                 return;
             }

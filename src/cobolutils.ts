@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import COBOLSourceScanner, { splitArgument, camelize, CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
+import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { isFile, logMessage, isDirectory, logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
@@ -10,7 +10,6 @@ import path from 'path';
 import { isNetworkPath, isDirectPath } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
-import { exec } from 'child_process';
 
 export enum FoldStyle {
     LowerCase = 1,

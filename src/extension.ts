@@ -838,7 +838,7 @@ export function activate(context: ExtensionContext):void {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
-                COBOLDocumentationGenerator.showCOBOLDOCDocumentation(vscode.window.activeTextEditor);
+                COBOLDocumentationGenerator.showCOBOLDOCDocumentation(vscode.window.activeTextEditor, settings);
             }
         }
     });
