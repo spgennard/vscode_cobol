@@ -934,7 +934,7 @@
             },
             {
                 "command" : "cobolplugin.showDocumentation",
-                "title": "Show documentation"
+                "title": "Show documentation (COBOLDOC)"
             }
         ],
         "menus": {
