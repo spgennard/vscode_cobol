@@ -110,6 +110,10 @@
       }
     },
     {
+      "match": "\\$(?i:doc|end-doc)(.*$)",
+      "name": "invalid.illegal.iscobol"
+    },
+    {
       "match": "\\$(?i:if|else|then|display|xfd|end-region|end)(.*$)",
       "name": "meta.preprocessor"
     },
