@@ -110,7 +110,8 @@
       }
     },
     {
-      "match": "\\$(?i:doc|end-doc)(.*$)",
+      "begin": "\\$(?i:doc)(.*$)",
+      "end": "\\$(?i:end-doc)(.*$)",
       "name": "invalid.illegal.iscobol"
     },
     {
