@@ -8,6 +8,30 @@ Changelog for spgennard vscode_cobol.
 
 **Add support of coboldoc #189**
 
+ * - move to side by side window &amp; fix dispose problem 
+
+[d9a45c836965cec](https://github.com/spgennard/vscode_cobol/commit/d9a45c836965cec) *2020-09-02 00:16:34*
+
+**Add support of coboldoc #189**
+
+ * - add &quot;Show Documentation&quot; menu to the editor to execute &quot;coboldoc&quot; and 
+ * open the resulting .md in preview mode. 
+ * (not ready for release but its looking good) 
+
+[779358d660cab45](https://github.com/spgennard/vscode_cobol/commit/779358d660cab45) *2020-08-27 19:37:18*
+
+**Add support of coboldoc #189**
+
+ * - add test, that ensure that the comment style is okay 
+
+[97ac9f0f3bf96f1](https://github.com/spgennard/vscode_cobol/commit/97ac9f0f3bf96f1) *2020-08-26 19:35:38*
+
+
+## 6.6.44
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
+
+**Add support of coboldoc #189**
+
  * - add file header snippet 
 
 [bb2524e28c02687](https://github.com/spgennard/vscode_cobol/commit/bb2524e28c02687) *2020-08-26 18:25:34*
@@ -845,7 +869,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.6.3
-### GitHub [#59](https://github.com/spgennard/vscode_cobol/issues/59) CTRL + Left Mouse Click =&gt; paragrah detection  
+### GitHub #59   
 
 **fix typo in previous fix of #59**
 
@@ -854,7 +878,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.6.1
-### GitHub [#59](https://github.com/spgennard/vscode_cobol/issues/59) CTRL + Left Mouse Click =&gt; paragrah detection  
+### GitHub #59   
 
 **Fix #59**
 
@@ -863,7 +887,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.6.0
-### GitHub [#58](https://github.com/spgennard/vscode_cobol/issues/58) Source not colourized if start from column 2.  
+### GitHub #58   
 
 **- Fix #58 - enhance goto section/paragraph to better understand fixed format**
 
@@ -872,7 +896,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.9
-### GitHub [#57](https://github.com/spgennard/vscode_cobol/issues/57) Show definition COPY REPLACING  
+### GitHub #57   
 
 **- Fix #57 - Show definition COPY REPLACING**
 
@@ -891,7 +915,7 @@ Changelog for spgennard vscode_cobol.
 [6e46a26ca261776](https://github.com/spgennard/vscode_cobol/commit/6e46a26ca261776) *2019-03-29 17:53:13*
 
 
-### GitHub [#58](https://github.com/spgennard/vscode_cobol/issues/58) Source not colourized if start from column 2.  
+### GitHub #58   
 
 **- Fix #58 - Source not colourized if start from column 2.**
 
@@ -910,7 +934,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.5
-### GitHub [#54](https://github.com/spgennard/vscode_cobol/issues/54) Paragraph detection  
+### GitHub #54   
 
 **- Fix #54 - Paragraph detection**
 
@@ -919,7 +943,7 @@ Changelog for spgennard vscode_cobol.
 [a8b1077a332ed22](https://github.com/spgennard/vscode_cobol/commit/a8b1077a332ed22) *2019-03-29 00:03:08*
 
 
-### GitHub [#55](https://github.com/spgennard/vscode_cobol/issues/55) doc comment continuation no longer works  
+### GitHub #55   
 
 **- Fix #54 - Paragraph detection**
 
@@ -929,7 +953,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.4
-### GitHub [#53](https://github.com/spgennard/vscode_cobol/issues/53) Comment not colourized in AcuCOBOL if start from column 1.  
+### GitHub #53   
 
 **Fix #53**
 
@@ -938,7 +962,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.3
-### GitHub [#52](https://github.com/spgennard/vscode_cobol/issues/52) Colourisation: iterator  
+### GitHub #52   
 
 **Fix #52 and various acu related "windows syntax"**
 
@@ -947,7 +971,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 4.5.1
-### GitHub [#51](https://github.com/spgennard/vscode_cobol/issues/51) Colourisation: member names that used reserved words are coloured incorrectly  
+### GitHub #51   
 
 **fix issue #51**
 
@@ -956,7 +980,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.0
-### GitHub [#50](https://github.com/spgennard/vscode_cobol/issues/50) CREATE is colourised wrong.  
+### GitHub #50   
 
 **dev: fix #50**
 
@@ -965,7 +989,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.4.4
-### GitHub [#50](https://github.com/spgennard/vscode_cobol/issues/50) CREATE is colourised wrong.  
+### GitHub #50   
 
 **dev: fix issue #50**
 
@@ -974,7 +998,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.4.3
-### GitHub [#49](https://github.com/spgennard/vscode_cobol/issues/49) Colourisation: async / await not coloured  
+### GitHub #49   
 
 **Fix issue #49**
 
@@ -983,7 +1007,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.3.4
-### GitHub [#1](https://github.com/spgennard/vscode_cobol/issues/1) packages.json case issue that affects Unix/Linux  
+### GitHub #1   
 
 **## Version - 3.2.11**
 
@@ -993,7 +1017,7 @@ Changelog for spgennard vscode_cobol.
 [0e29d9e318b6c58](https://github.com/spgennard/vscode_cobol/commit/0e29d9e318b6c58) *2018-06-28 22:19:09*
 
 
-### GitHub [#10](https://github.com/spgennard/vscode_cobol/issues/10) COBOL Line Comments are no longer grayed out.  
+### GitHub #10   
 
 **Comment in line column 1 fixed #10**
 
@@ -1014,7 +1038,7 @@ Changelog for spgennard vscode_cobol.
 [6c6ae9c95a00a4d](https://github.com/spgennard/vscode_cobol/commit/6c6ae9c95a00a4d) *2018-06-11 17:04:19*
 
 
-### GitHub [#13](https://github.com/spgennard/vscode_cobol/issues/13) Some lines are incorrectly coloured  
+### GitHub #13   
 
 **Tweak #13 fix**
 
@@ -1037,7 +1061,7 @@ Changelog for spgennard vscode_cobol.
 [9edf8eb94acdac1](https://github.com/spgennard/vscode_cobol/commit/9edf8eb94acdac1) *2018-06-20 19:39:28*
 
 
-### GitHub [#18](https://github.com/spgennard/vscode_cobol/issues/18) is crt is not colourised  
+### GitHub #18   
 
 **is crt is not colourised #18**
 
@@ -1050,7 +1074,7 @@ Changelog for spgennard vscode_cobol.
 [ccfe719a8fa4c4e](https://github.com/spgennard/vscode_cobol/commit/ccfe719a8fa4c4e) *2018-06-25 20:29:37*
 
 
-### GitHub [#2](https://github.com/spgennard/vscode_cobol/issues/2) FR: add compilation / error checking options with third-party compilers  
+### GitHub #2   
 
 **Close #2, added AcuCOBOL-GT example**
 
@@ -1058,7 +1082,7 @@ Changelog for spgennard vscode_cobol.
 [0a8fffbe136d323](https://github.com/spgennard/vscode_cobol/commit/0a8fffbe136d323) *2018-07-31 05:24:12*
 
 
-### GitHub [#21](https://github.com/spgennard/vscode_cobol/issues/21) Managed types should be coloured differently from keywords  
+### GitHub #21   
 
 **## Version - 3.2.9**
 
@@ -1067,7 +1091,7 @@ Changelog for spgennard vscode_cobol.
 [e147d114c6b437d](https://github.com/spgennard/vscode_cobol/commit/e147d114c6b437d) *2018-06-26 22:24:48*
 
 
-### GitHub [#23](https://github.com/spgennard/vscode_cobol/issues/23) Back TAB does not work if selection is at start of line  
+### GitHub #23   
 
 **Fix #23 - untab when column is 0**
 
@@ -1075,7 +1099,7 @@ Changelog for spgennard vscode_cobol.
 [d47608f0b5def5b](https://github.com/spgennard/vscode_cobol/commit/d47608f0b5def5b) *2018-07-07 22:29:19*
 
 
-### GitHub [#25](https://github.com/spgennard/vscode_cobol/issues/25) Constraints keyword not coloured  
+### GitHub #25   
 
 **Fix issue #25 add constraints, constrain**
 
@@ -1083,7 +1107,7 @@ Changelog for spgennard vscode_cobol.
 [864cf93e83af57b](https://github.com/spgennard/vscode_cobol/commit/864cf93e83af57b) *2018-07-26 19:57:28*
 
 
-### GitHub [#26](https://github.com/spgennard/vscode_cobol/issues/26) Keywords not coloured when followed by closing bracket  
+### GitHub #26   
 
 **Fix issue #26 and #27**
 
@@ -1091,7 +1115,7 @@ Changelog for spgennard vscode_cobol.
 [fb75449d6a0a6a5](https://github.com/spgennard/vscode_cobol/commit/fb75449d6a0a6a5) *2018-07-27 22:12:24*
 
 
-### GitHub [#27](https://github.com/spgennard/vscode_cobol/issues/27) end static and end factory not coloured  
+### GitHub #27   
 
 **Fix issue #26 and #27**
 
@@ -1099,7 +1123,7 @@ Changelog for spgennard vscode_cobol.
 [fb75449d6a0a6a5](https://github.com/spgennard/vscode_cobol/commit/fb75449d6a0a6a5) *2018-07-27 22:12:24*
 
 
-### GitHub [#29](https://github.com/spgennard/vscode_cobol/issues/29) Operator keywords not coloured  
+### GitHub #29   
 
 **Add b-exor for issue #29**
 
@@ -1107,7 +1131,7 @@ Changelog for spgennard vscode_cobol.
 [ecd94ffa5916406](https://github.com/spgennard/vscode_cobol/commit/ecd94ffa5916406) *2018-08-01 22:56:37*
 
 
-### GitHub [#30](https://github.com/spgennard/vscode_cobol/issues/30) `not` coloured as operator in context when it isn&#39;t  
+### GitHub #30   
 
 **## Version - 3.4.0**
 
@@ -1116,7 +1140,7 @@ Changelog for spgennard vscode_cobol.
 [354150e01a6599e](https://github.com/spgennard/vscode_cobol/commit/354150e01a6599e) *2018-08-05 22:07:27*
 
 
-### GitHub [#33](https://github.com/spgennard/vscode_cobol/issues/33) when in &quot;display blank when zero&quot; is coloured wrong in working-storage  
+### GitHub #33   
 
 **fix issue #33**
 
@@ -1124,7 +1148,7 @@ Changelog for spgennard vscode_cobol.
 [3c06d197bde5b7d](https://github.com/spgennard/vscode_cobol/commit/3c06d197bde5b7d) *2018-09-20 21:14:20*
 
 
-### GitHub [#34](https://github.com/spgennard/vscode_cobol/issues/34) &quot;exit section&quot; appears in symbols list  
+### GitHub #34   
 
 **Version - 3.6.1**
 
@@ -1133,7 +1157,7 @@ Changelog for spgennard vscode_cobol.
 [c9b841868885759](https://github.com/spgennard/vscode_cobol/commit/c9b841868885759) *2018-10-05 21:12:53*
 
 
-### GitHub [#35](https://github.com/spgennard/vscode_cobol/issues/35) `any` not coloured in method signature  
+### GitHub #35   
 
 **## Version - 3.9**
 
@@ -1143,7 +1167,7 @@ Changelog for spgennard vscode_cobol.
 [ff1c00a733b9f43](https://github.com/spgennard/vscode_cobol/commit/ff1c00a733b9f43) *2018-10-25 22:41:28*
 
 
-### GitHub [#36](https://github.com/spgennard/vscode_cobol/issues/36) PL/I claims Perl extension  
+### GitHub #36   
 
 **## Version - 3.9.2**
 
@@ -1158,7 +1182,7 @@ Changelog for spgennard vscode_cobol.
 [d6b221464d18a46](https://github.com/spgennard/vscode_cobol/commit/d6b221464d18a46) *2018-10-28 17:24:57*
 
 
-### GitHub [#37](https://github.com/spgennard/vscode_cobol/issues/37) Also take &quot;.proc&quot; as file extension for JCL  
+### GitHub #37   
 
 **## Version - 3.9.2**
 
@@ -1173,7 +1197,7 @@ Changelog for spgennard vscode_cobol.
 [34d5c9fbbf6b6a1](https://github.com/spgennard/vscode_cobol/commit/34d5c9fbbf6b6a1) *2018-10-28 17:31:57*
 
 
-### GitHub [#38](https://github.com/spgennard/vscode_cobol/issues/38) Add highlighting for JES2 control statements  
+### GitHub #38   
 
 **tweak for #38**
 
@@ -1192,7 +1216,7 @@ Changelog for spgennard vscode_cobol.
 [f4fd568655c8982](https://github.com/spgennard/vscode_cobol/commit/f4fd568655c8982) *2018-10-28 20:53:10*
 
 
-### GitHub [#39](https://github.com/spgennard/vscode_cobol/issues/39) &gt;&gt;IF not coloured  
+### GitHub #39   
 
 **fix issue #39**
 
@@ -1200,7 +1224,7 @@ Changelog for spgennard vscode_cobol.
 [e701a7d07614f85](https://github.com/spgennard/vscode_cobol/commit/e701a7d07614f85) *2018-11-12 22:58:33*
 
 
-### GitHub [#42](https://github.com/spgennard/vscode_cobol/issues/42) Keywords and literals are not colored when followed by comma or semicolon in AcuCOBOL  
+### GitHub #42   
 
 **- Fix for "Keywords and literals are not colored when followed by comma or semicolon in AcuCOBOL" #42**
 
@@ -1208,7 +1232,7 @@ Changelog for spgennard vscode_cobol.
 [46dde0ac5aa95c2](https://github.com/spgennard/vscode_cobol/commit/46dde0ac5aa95c2) *2019-01-11 15:06:43*
 
 
-### GitHub [#43](https://github.com/spgennard/vscode_cobol/issues/43) Colourisation: underscore not treated as separator  
+### GitHub #43   
 
 **Fix issue #43 - part two**
 
@@ -1221,7 +1245,7 @@ Changelog for spgennard vscode_cobol.
 [27b23e43ebe2483](https://github.com/spgennard/vscode_cobol/commit/27b23e43ebe2483) *2019-01-16 21:22:24*
 
 
-### GitHub [#47](https://github.com/spgennard/vscode_cobol/issues/47) Outline on ACUCOBOL  
+### GitHub #47   
 
 **- Fix issue #47 - activator not present for AcuCOBOL**
 
@@ -1229,7 +1253,7 @@ Changelog for spgennard vscode_cobol.
 [23872c4c0b83e55](https://github.com/spgennard/vscode_cobol/commit/23872c4c0b83e55) *2019-02-25 19:02:54*
 
 
-### GitHub [#6](https://github.com/spgennard/vscode_cobol/issues/6) Accept scbl file extension  
+### GitHub #6   
 
 **#6 - add scbl extension**
 
@@ -1237,7 +1261,7 @@ Changelog for spgennard vscode_cobol.
 [9eaf3ea401e65b8](https://github.com/spgennard/vscode_cobol/commit/9eaf3ea401e65b8) *2018-03-28 17:12:22*
 
 
-### GitHub [#7](https://github.com/spgennard/vscode_cobol/issues/7) goback has no outlining  
+### GitHub #7   
 
 **Fix #7 - typo in regex**
 
