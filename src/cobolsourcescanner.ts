@@ -437,6 +437,17 @@ class PreParseState {
     }
 }
 
+export class CallTargetInformation {
+
+    public Token: COBOLToken;
+    public IsEntryPoint: boolean;
+
+    constructor(token: COBOLToken, isEntryPoint: boolean) {
+        this.Token = token;
+        this.IsEntryPoint = isEntryPoint;
+    }
+}
+
 export default class COBOLSourceScanner implements ICommentCallback {
     public filename: string;
     public lastModifiedTime: number;
@@ -446,7 +457,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
     public constantsOrVariables: Map<string, COBOLToken[]>;
-    public callTargets: Map<string, COBOLToken>;
+    public callTargets: Map<string, CallTargetInformation>;
     public classes: Map<string, COBOLToken>;
     public methods: Map<string, COBOLToken>;
     public isCached: boolean;
@@ -492,7 +503,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
         this.constantsOrVariables = new Map<string, COBOLToken[]>();
-        this.callTargets = new Map<string, COBOLToken>();
+        this.callTargets = new Map<string, CallTargetInformation>();
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.parseReferences = sourceHandler !== null;
@@ -664,7 +675,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
-                this.callTargets.set(this.ImplicitProgramId, ctoken);
+                this.callTargets.set(this.ImplicitProgramId, new CallTargetInformation(ctoken, false));
             }
 
             if (cacheDirectory !== null && cacheDirectory.length > 0) {
@@ -1216,7 +1227,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                 if (prevTokenLower === "entry" && current.length !== 0) {
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
-                    this.callTargets.set(trimmedCurrent, ctoken);
+                    this.callTargets.set(trimmedCurrent, new CallTargetInformation(ctoken, true));
                     continue;
                 }
 
@@ -1226,7 +1237,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
                     state.programs.push(ctoken);
                     if (trimmedCurrent.indexOf(" ") !== -1 && token.isTokenPresent("external") === false) {
-                        this.callTargets.set(trimmedCurrent, ctoken);
+                        this.callTargets.set(trimmedCurrent, new CallTargetInformation(ctoken, false));
                     }
                     this.ImplicitProgramId = "";        /* don't need it */
 
