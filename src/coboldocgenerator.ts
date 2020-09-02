@@ -87,9 +87,16 @@ export class COBOLDocumentationGenerator {
             const htmlFilename = `${tmpArea}/${shortFilename}.html`;
 
             const htmlContents = fs.readFileSync(htmlFilename).toString();
-            if (COBOLDocumentationGenerator.cobolDocPanel === undefined) {
-                COBOLDocumentationGenerator.cobolDocPanel = vscode.window.createWebviewPanel("coboldoc", "COBOL Documentation", vscode.ViewColumn.One);
+            if (COBOLDocumentationGenerator.cobolDocPanel === undefined ) {
+                COBOLDocumentationGenerator.cobolDocPanel = vscode.window.createWebviewPanel("coboldoc", "COBOL Documentation",
+                vscode.ViewColumn.Beside, { enableScripts: true });
+
+                COBOLDocumentationGenerator.cobolDocPanel.onDidDispose(() => {
+                    COBOLDocumentationGenerator.cobolDocPanel = undefined;
+                });
             }
+
+            COBOLDocumentationGenerator.cobolDocPanel.title = `coboldoc: ${shortFilename}`;
             COBOLDocumentationGenerator.cobolDocPanel.webview.html = htmlContents;
         });
     }
