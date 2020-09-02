@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import COBOLSourceScanner, { CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
+import COBOLSourceScanner, { CobolDocStyle, CobolTagStyle, COBOLToken } from './cobolsourcescanner';
 import { logMessage, isDirectory, logChannelSetPreserveFocus } from './extension';
 import VSQuickCOBOLParse from './vscobolscanner';
 import path from 'path';
@@ -42,21 +42,15 @@ export class COBOLDocumentationGenerator {
         return firstCacheDir;
     }
 
+    static cobolDocPanel: vscode.WebviewPanel | undefined = undefined;
 
     public static showCOBOLDOCDocumentation(activeTextEditor: vscode.TextEditor, settings: ICOBOLSettings): void {
 
-        const sf = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
+        const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
         if (sf === undefined) {
             return;
         }
 
-        COBOLDocumentationGenerator.generateHTML(settings, sf);
-
-    }
-
-    static cobolDocPanel: vscode.WebviewPanel|undefined = undefined;
-
-    private static generateHTML(settings: ICOBOLSettings, sf: COBOLSourceScanner) {
         const tagStype = sf.commentTagStyle === CobolTagStyle.FREE ? "-s free" : "-s microfocus";
         const tmpArea = COBOLDocumentationGenerator.getTempDirectory(settings);
         if (tmpArea === "") {
@@ -87,9 +81,9 @@ export class COBOLDocumentationGenerator {
             const htmlFilename = `${tmpArea}/${shortFilename}.html`;
 
             const htmlContents = fs.readFileSync(htmlFilename).toString();
-            if (COBOLDocumentationGenerator.cobolDocPanel === undefined ) {
+            if (COBOLDocumentationGenerator.cobolDocPanel === undefined) {
                 COBOLDocumentationGenerator.cobolDocPanel = vscode.window.createWebviewPanel("coboldoc", "COBOL Documentation",
-                vscode.ViewColumn.Beside, { enableScripts: true });
+                    vscode.ViewColumn.Beside, { enableScripts: true });
 
                 COBOLDocumentationGenerator.cobolDocPanel.onDidDispose(() => {
                     COBOLDocumentationGenerator.cobolDocPanel = undefined;
@@ -101,41 +95,43 @@ export class COBOLDocumentationGenerator {
         });
     }
 
-    private generateMarkdown(settings: ICOBOLSettings, sf: COBOLSourceScanner) {
+    public static generateCOBOLSourceTag(activeTextEditor: vscode.TextEditor, settings: ICOBOLSettings): void {
+
+        const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
+        if (sf === undefined) {
+            return;
+        }
+
         const tagStype = sf.commentTagStyle === CobolTagStyle.FREE ? "-s free" : "-s microfocus";
-        const tmpArea = COBOLDocumentationGenerator.getTempDirectory(settings);
-        if (tmpArea === "") {
-            logChannelSetPreserveFocus(false);
-            logMessage("Unable to find or create a coboldoc directory");
+
+        if (activeTextEditor.selection !== undefined) {
+            const currentLineNumber = activeTextEditor.selection.start.line;
+            let closestToken = COBOLToken.Null;
+            let lastIdDiv: COBOLToken = COBOLToken.Null;
+            let lastProgId: COBOLToken = COBOLToken.Null;
+
+            for (const ctoken of sf.tokensInOrder) {
+                switch (ctoken.tokenNameLower) {
+                    case 'identification':
+                        lastIdDiv = ctoken;
+                        break;
+                    case 'program-id':
+                        lastProgId = ctoken;
+                        break;
+                }
+
+                if (ctoken.startLine >= currentLineNumber) {
+                    closestToken = ctoken;
+                    break;
+                }
+            }
+
+            
+            logMessage(closestToken.tokenName);
 
             return;
         }
-        const textToSend = sf.commentStyle === CobolDocStyle.MSDN ?
-            `coboldoc -o ${tmpArea} ${tagStype} -a msdn -f md generate ${sf.filename}` :
-            `coboldoc -o ${tmpArea} ${tagStype} -a tag -f md generate ${sf.filename}`;
 
-        exec(textToSend, (error, stdout, stderr) => {
-            if (error) {
-                logChannelSetPreserveFocus(false);
-                logMessage(`coboldoc: [${error.message}]`);
-                return;
-            }
-            if (stderr) {
-                logChannelSetPreserveFocus(false);
-                logMessage(`coboldoc: [${stderr}]`);
-                return;
-            }
-
-            logMessage(`coboldoc: ${stdout}`);
-
-            const openPreview = "markdown.showPreview";
-            const shortFilename = path.basename(sf.filename);
-            const mdFilename = `${tmpArea}/${shortFilename}.md`;
-
-            vscode.commands.executeCommand("workbench.action.newGroupRight").then(() =>
-                vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(`${mdFilename}`)).then(() =>
-                    vscode.commands.executeCommand(openPreview)
-                ));
-        });
+        logMessage("Nearest token not found");
     }
 }

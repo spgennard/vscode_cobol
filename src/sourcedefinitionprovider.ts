@@ -7,22 +7,22 @@ import VSQuickCOBOLParse from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
-const sectionRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-const variableRegEx: RegExp = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
-const callRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-const classRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-const methodRegEx: RegExp = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
+const callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const classRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+const methodRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
 function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
-    let word = wordRange ? document.getText(wordRange) : '';
+    const wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
+    const word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
-    let workLower = word.toLocaleLowerCase();
+    const workLower = word.toLocaleLowerCase();
 
     for (let i = 1; i < document.lineCount; i++) {
-        let lineText = document.lineAt(i).text;
+        const lineText = document.lineAt(i).text;
 
         // TODO - need to handle inline comments too
         if (lineText.length > 7 && lineText[6] === '*') {
@@ -34,9 +34,9 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
             return undefined;
         }
 
-        let wordIndex = lineText.toLowerCase().indexOf(workLower);
+        const wordIndex = lineText.toLowerCase().indexOf(workLower);
         if (wordIndex !== -1) {
-            let leftOfWord = lineText.substr(0, wordIndex).trim();
+            const leftOfWord = lineText.substr(0, wordIndex).trim();
 
             // fuzzy match for variable
             if (leftOfWord.match(/^[0-9 ]+$/i)) {
@@ -60,21 +60,21 @@ function getFuzzyVariable(document: vscode.TextDocument, position: vscode.Positi
 
 
 function getSectionOrParaLocation(document: vscode.TextDocument, sf: COBOLSourceScanner, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
-    let word = wordRange ? document.getText(wordRange) : '';
+    const wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
+    const word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
-    let wordLower = word.toLowerCase();
+    const wordLower = word.toLowerCase();
 
     try {
 
         if (sf.sections.has(wordLower)) {
-            let token = sf.sections.get(wordLower);
+            const token = sf.sections.get(wordLower);
             if (token !== undefined) {
-                let srange = new vscode.Position(token.startLine, token.startColumn);
-                let uri = vscode.Uri.file(token.filename);
+                const srange = new vscode.Position(token.startLine, token.startColumn);
+                const uri = vscode.Uri.file(token.filename);
                 return new vscode.Location(uri, new vscode.Range(srange, srange));
             }
         }
@@ -86,10 +86,10 @@ function getSectionOrParaLocation(document: vscode.TextDocument, sf: COBOLSource
 
     try {
         if (sf.paragraphs.has(wordLower)) {
-            let token = sf.paragraphs.get(wordLower);
+            const token = sf.paragraphs.get(wordLower);
             if (token !== undefined) {
-                let srange = new vscode.Position(token.startLine, token.startColumn);
-                let uri = vscode.Uri.file(token.filename);
+                const srange = new vscode.Position(token.startLine, token.startColumn);
+                const uri = vscode.Uri.file(token.filename);
                 return new vscode.Location(uri, new vscode.Range(srange, srange));
             }
         }
@@ -105,42 +105,42 @@ function isValidKeyword(keyword: string): boolean {
 }
 
 function getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position): boolean {
-    let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
-    let word = wordRange ? document.getText(wordRange) : '';
+    const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
+    const word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return false;
     }
 
-    let tokenLower: string = word.toLowerCase();
+    const tokenLower: string = word.toLowerCase();
     if (isValidKeyword(tokenLower)) {
         return false;
     }
 
-    let sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+    const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
     if (sf === undefined) {
         return false;
     }
 
-    let tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(tokenLower);
+    const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(tokenLower);
     if (tokens === undefined || tokens.length === 0) {
         return false;
     }
 
     for (let i = 0; i < tokens.length; i++) {
-        let token: COBOLToken = tokens[i];
+        const token: COBOLToken = tokens[i];
 
         switch (token.tokenType) {
             case COBOLTokenStyle.Constant:
                 {
-                    let srange = new vscode.Position(token.startLine, token.startColumn);
-                    let uri = vscode.Uri.file(token.filename);
+                    const srange = new vscode.Position(token.startLine, token.startColumn);
+                    const uri = vscode.Uri.file(token.filename);
                     locations.push(new vscode.Location(uri, srange));
                     break;
                 }
             case COBOLTokenStyle.Variable:
                 {
-                    let srange = new vscode.Position(token.startLine, token.startColumn);
-                    let uri = vscode.Uri.file(token.filename);
+                    const srange = new vscode.Position(token.startLine, token.startColumn);
+                    const uri = vscode.Uri.file(token.filename);
                     locations.push(new vscode.Location(uri, srange));
                     break;
                 }
@@ -154,18 +154,18 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
 }
 
 function getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>, document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-    let wordRange = document.getWordRangeAtPosition(position, queryRegEx);
-    let word = wordRange ? document.getText(wordRange) : '';
+    const wordRange = document.getWordRangeAtPosition(position, queryRegEx);
+    const word = wordRange ? document.getText(wordRange) : '';
     if (word === "") {
         return undefined;
     }
 
-    let workLower = word.toLowerCase();
+    const workLower = word.toLowerCase();
     if (tokenMap.has(workLower)) {
-        let token: COBOLToken | undefined = tokenMap.get(workLower);
+        const token: COBOLToken | undefined = tokenMap.get(workLower);
         if (token !== undefined) {
-            let srange = new vscode.Position(token.startLine, token.startColumn);
-            let uri = vscode.Uri.file(token.filename);
+            const srange = new vscode.Position(token.startLine, token.startColumn);
+            const uri = vscode.Uri.file(token.filename);
             return new vscode.Location(uri, srange);
         }
     }
@@ -190,26 +190,26 @@ function delay(ms: number) {
     }
 }
 
-const enableUrlOpenBodge: boolean = false;
+const enableUrlOpenBodge = false;
 
 function openFileViaCommand(filename: string, linnumber: number, locations: vscode.Location[]): boolean {
-    let uri = vscode.Uri.file(filename);
+    const uri = vscode.Uri.file(filename);
 
     // just do it quickly
     if (enableUrlOpenBodge === false) {
-        let loc =  new vscode.Location(
+        const loc =  new vscode.Location(
             uri,
             new vscode.Position(linnumber, 0)
         );
         locations.push(loc);
         return false;
     } else {
-        let l = linnumber;
+        const l = linnumber;
         vscode.workspace
             .openTextDocument(uri)
             .then(vscode.window.showTextDocument)
             .then(() => {
-                let a = vscode.window.activeTextEditor;
+                const a = vscode.window.activeTextEditor;
                 if (a !== undefined) {
                     a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
                 }
@@ -219,13 +219,13 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 }
 
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
-    let locations: vscode.Location[] = [];
+    const locations: vscode.Location[] = [];
     let loc;
 
-    let theline = document.lineAt(position.line).text;
+    const theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-        let qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
-        let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         if (qcp === undefined) {
             return locations;
         }
@@ -238,19 +238,19 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            let wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
-            let word = wordRange ? document.getText(wordRange) : '';
-            let wordLower = word.toLocaleLowerCase();
+            const wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            const wordLower = word.toLocaleLowerCase();
 
             if (wordLower.length > 0) {
                 /* iterater through all the known copybook references */
-                for (let [key, value] of qcp.copyBooksUsed) {
+                for (const [key, value] of qcp.copyBooksUsed) {
                     try {
-                        let fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
                         if (fileName.length > 0) {
-                            let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
+                            const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
-                                let symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
+                                const symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
                                 if (symbol !== undefined && symbol.lnum !== undefined) {
                                     if (openFileViaCommand(fileName, symbol.lnum, locations)) {
                                         return locations;
@@ -270,7 +270,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(new\s*|type).*$/i)) {
-        let qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -283,7 +283,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
-        let qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -294,16 +294,16 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         }
 
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            let wordRange = document.getWordRangeAtPosition(position, callRegEx);
-            let word = wordRange ? document.getText(wordRange) : '';
+            const wordRange = document.getWordRangeAtPosition(position, callRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
-                let img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
-                let wordLower = word.toLocaleLowerCase();
+                const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
+                const wordLower = word.toLocaleLowerCase();
                 if (img.classSymbols.has(wordLower)) {
-                    let symbols = img.classSymbols.get(wordLower);
+                    const symbols = img.classSymbols.get(wordLower);
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
-                            let symbol = symbols[i];
+                            const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
                                 if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
                                     return locations;
@@ -312,14 +312,14 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
-                let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+                const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
                 InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
     }
 
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
-        let qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -331,21 +331,21 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
         /* search for targets in a copybook */
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-            let wordRange = document.getWordRangeAtPosition(position, callRegEx);
-            let word = wordRange ? document.getText(wordRange) : '';
+            const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+            const wordRange = document.getWordRangeAtPosition(position, callRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
-                let img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
-                let wordLower = word.toLocaleLowerCase();
+                const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
+                const wordLower = word.toLocaleLowerCase();
                 if (img.callableSymbols.has(wordLower) === false) {
                     InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
                     InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
                 }
                 if (img.callableSymbols.has(wordLower)) {
-                    let symbols = img.callableSymbols.get(wordLower);
+                    const symbols = img.callableSymbols.get(wordLower);
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
-                            let symbol = symbols[i];
+                            const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
                                 if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
                                     return locations;
@@ -368,27 +368,27 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
      * for variables
      */
     if (VSCOBOLConfiguration.isCachingEnabled()) {
-        let qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
 
-        let cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
 
-        let wordRange = document.getWordRangeAtPosition(position, variableRegEx);
-        let word = wordRange ? document.getText(wordRange) : '';
-        let wordLower = word.toLowerCase();
+        const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
+        const word = wordRange ? document.getText(wordRange) : '';
+        const wordLower = word.toLowerCase();
 
         if (wordLower.length > 0) {
             /* iterater through all the known copybook references */
-            for (let [key, value] of qcp.copyBooksUsed) {
+            for (const [key, value] of qcp.copyBooksUsed) {
                 try {
 
-                    let fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
+                    const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
                     if (fileName.length > 0) {
-                        let symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
+                        const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                         if (symboleTable !== undefined) {
-                            let symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
+                            const symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
                             if (symbol !== undefined && symbol.lnum !== undefined) {
                                 if (openFileViaCommand(fileName, symbol.lnum, locations)) {
                                     return locations;

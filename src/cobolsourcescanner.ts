@@ -385,6 +385,7 @@ class ParseState {
     captureDivisions: boolean;
     programs: COBOLToken[];
     pickFields: boolean;
+    pickUpUsing: boolean;
     skipToDot: boolean;
 
     inProcedureDivision: boolean;
@@ -416,6 +417,7 @@ class ParseState {
         this.ignoreInOutlineView = false;
         this.skipToDot = false;
         this.addReferencesDuringSkipToTag = false;
+        this.pickUpUsing = false;
     }
 }
 
@@ -1057,6 +1059,28 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     token.endsWithDot = false;
                 }
 
+                // if pickUpUsing
+                if (state.pickUpUsing) {
+                    if (endWithDot) {
+                        state.pickUpUsing = false;
+                    }
+                    switch (tcurrentLower) {
+                        case "using": break;
+                        case "by": break;
+                        case "reference": break;
+                        case "value": break;
+                        default:
+                            if (this.sourceReferences !== undefined) {
+                                // no forward validation can be done, as this is a one pass scanner
+                                this.addReference(this.sourceReferences.targetReferences, tcurrentLower, lineNumber, token.currentCol);
+                            }
+                            // logMessage(`INFO: using parameter : ${tcurrent}`);
+                    }
+
+
+                    continue;
+                }
+
                 // if skiptodot and not the end of the statement.. swallow
                 if (state.skipToDot && endWithDot === false) {
                     if (state.addReferencesDuringSkipToTag) {
@@ -1178,6 +1202,9 @@ export default class COBOLSourceScanner implements ICommentCallback {
                         state.inProcedureDivision = true;
                         state.pickFields = false;
                         state.procedureDivision = state.currentDivision;
+                        if (endWithDot === false) {
+                            state.pickUpUsing = true;
+                        }
                         sourceHandler.setDumpAreaA(true);
                         sourceHandler.setDumpAreaBOnwards(false);
                     }
@@ -1232,6 +1259,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     state.captureDivisions = true;
                     state.currentMethod = COBOLToken.Null;
                     state.pickFields = false;
+                    state.inProcedureDivision = false;
                     continue;
                 }
 
@@ -1328,6 +1356,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     state.currentDivision = COBOLToken.Null;
                     state.currentSection = COBOLToken.Null;
                     state.currentParagraph = COBOLToken.Null;
+                    state.inProcedureDivision = false;
                     state.pickFields = false;
                     continue;
                 }
