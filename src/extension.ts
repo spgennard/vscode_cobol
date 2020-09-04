@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument,  Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -98,51 +98,63 @@ export function isPathInWorkspace(ddir: string): boolean {
     return false;
 }
 
-
-const extension_id_of_duplicate_conflicting_extensions: string[] = [
-    "broadcommfd.code4z-extension-pack",
-    "broadcommfd.cobol-language-support",
-    "ibm.zopeneditor",
-    "stfcv.cobolstf",
-    "rechinformatica.rech-editor-cobol",
-    "zio069.enterprise-cobol-for-z-os"
-];
-
 function checkForExtensionConflicts(settings: ICOBOLSettings): string {
     let dupExtensionMessage = "";
 
-    for (const eiof_extention of extension_id_of_duplicate_conflicting_extensions) {
-        const ext_info = extensions.getExtension(eiof_extention);
-        if (ext_info !== undefined) {
-            if (dupExtensionMessage.length === 0) {
-                if (settings.ignore_unsafe_extensions === false) {
-                    dupExtensionMessage += "The COBOL Extension from bitlang may produce duplicate results due to\n";
-                    dupExtensionMessage += " other extensions for COBOL being present.\n\n";
-                    dupExtensionMessage += "If you do not want see this warning message, change the setting\n";
-                    dupExtensionMessage += " coboleditor.ignore_unsafe_extensions to true and restart vscode\n";
+    for (const ext of extensions.all) {
+        if (ext !== undefined && ext.packageJSON !== undefined) {
+            const contribuesWhat = ext.packageJSON.contributes;
+            if (contribuesWhat !== undefined) {
+
+                // dont include ourself in the check, may want to introduce a "blessed" list
+                // of extensions at some point
+                if (ext.packageJSON.publisher !== undefined && ext.packageJSON.publisher === 'bitlang') {
+                    continue;
                 }
-            }
-            dupExtensionMessage += `\nThe extension ${ext_info.packageJSON.name} from ${ext_info.packageJSON.publisher} has conflicting functionality\n`;
+                let grammarsBody = ext.packageJSON.contributes.grammars;
+                if (grammarsBody !== undefined) {
+                    if (grammarsBody instanceof Object) {
+                        for (const key in grammarsBody) {
+                            const element = grammarsBody[key];
+                            if (element.language !== undefined) {
+                                const l = `${element.language}`.toUpperCase();
+                                if (l === 'COBOL') {
+                                    let ext_info = ext;
+                                    if (dupExtensionMessage.length === 0) {
+                                        if (settings.ignore_unsafe_extensions === false) {
+                                            dupExtensionMessage += "The COBOL Extension from bitlang may produce duplicate results due to\n";
+                                            dupExtensionMessage += " other extensions for COBOL being present.\n\n";
+                                            dupExtensionMessage += "If you do not want see this warning message, change the setting\n";
+                                            dupExtensionMessage += " coboleditor.ignore_unsafe_extensions to true and restart vscode\n";
+                                        }
+                                    }
+                                    dupExtensionMessage += `\nThe extension ${ext_info.packageJSON.name} from ${ext_info.packageJSON.publisher} has conflicting functionality\n`;
 
-            if (ext_info.packageJSON.description !== undefined) {
-                dupExtensionMessage += ` Description   : ${ext_info.packageJSON.description}\n`;
-            }
-            if (ext_info.packageJSON.version !== undefined) {
-                dupExtensionMessage += ` Version       : ${ext_info.packageJSON.version}\n`;
-            }
+                                    if (ext_info.packageJSON.description !== undefined) {
+                                        dupExtensionMessage += ` Description   : ${ext_info.packageJSON.description}\n`;
+                                    }
+                                    if (ext_info.packageJSON.version !== undefined) {
+                                        dupExtensionMessage += ` Version       : ${ext_info.packageJSON.version}\n`;
+                                    }
 
-            if (ext_info.packageJSON.repository !== undefined && ext_info.packageJSON.repository.url !== undefined) {
-                dupExtensionMessage += ` Repository    : ${ext_info.packageJSON.repository.url}\n`;
-            }
-            if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.url !== undefined) {
-                dupExtensionMessage += ` Bug Reporting : ${ext_info.packageJSON.bugs.url}\n`;
-            }
-            if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.email !== undefined) {
-                dupExtensionMessage += ` Bug Email     : ${ext_info.packageJSON.bugs.email}\n`;
-            }
+                                    if (ext_info.packageJSON.repository !== undefined && ext_info.packageJSON.repository.url !== undefined) {
+                                        dupExtensionMessage += ` Repository    : ${ext_info.packageJSON.repository.url}\n`;
+                                    }
+                                    if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.url !== undefined) {
+                                        dupExtensionMessage += ` Bug Reporting : ${ext_info.packageJSON.bugs.url}\n`;
+                                    }
+                                    if (ext_info.packageJSON.bugs !== undefined && ext_info.packageJSON.bugs.email !== undefined) {
+                                        dupExtensionMessage += ` Bug Email     : ${ext_info.packageJSON.bugs.email}\n`;
+                                    }
 
-            if (dupExtensionMessage.length !== 0) {
-                dupExtensionMessage += "\n";
+                                    if (dupExtensionMessage.length !== 0) {
+                                        dupExtensionMessage += "\n";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -157,7 +169,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
     checkForExtensionConflictsMessage = checkForExtensionConflicts(config);
     if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
         messageBoxDone = true;
-        window.showInformationMessage("COBOL Extension that has found duplicate functionality\n\nSee View->Output->COBOL for more information",  { modal: true });
+        window.showInformationMessage("COBOL Extension that has found duplicate functionality\n\nSee View->Output->COBOL for more information", { modal: true });
     }
 
     fileSearchDirectory.length = 0;
@@ -309,7 +321,7 @@ function flip_plaintext(doc: TextDocument) {
 }
 
 
-export function activate(context: ExtensionContext):void {
+export function activate(context: ExtensionContext): void {
     currentContext = context;
 
     // re-init if something gets installed or removed
@@ -916,13 +928,13 @@ export function activate(context: ExtensionContext):void {
 
 }
 
-export function enableMarginStatusBar(formatStyle: ESourceFormat):void {
+export function enableMarginStatusBar(formatStyle: ESourceFormat): void {
     formatStatusBarItem.text = "Source:" + formatStyle.toString();
     formatStatusBarItem.show();
 }
 
 
-export function hideMarginStatusBar():void {
+export function hideMarginStatusBar(): void {
     formatStatusBarItem.hide();
 }
 
@@ -937,7 +949,7 @@ export async function deactivate(): Promise<void> {
     await deactivateAsync();
 }
 
-export function logException(message: string, ex: Error):void {
+export function logException(message: string, ex: Error): void {
     logMessage(ex.name + ":" + message);
     if (ex !== undefined && ex.stack !== undefined) {
         logMessage(ex.stack);
@@ -947,7 +959,7 @@ export function logException(message: string, ex: Error):void {
 export const logTimeThreshold = 500;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]):boolean {
+export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean {
     const fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
     if (timeTaken < logTimeThreshold) {
@@ -966,7 +978,7 @@ export function logTimedMessage(timeTaken: number, message: string, ...parameter
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logMessage(message: string, ...parameters: any[]):void {
+export function logMessage(message: string, ...parameters: any[]): void {
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
     } else {
@@ -974,11 +986,11 @@ export function logMessage(message: string, ...parameters: any[]):void {
     }
 }
 
-export function logChannelSetPreserveFocus(preserveFocus: boolean):void {
+export function logChannelSetPreserveFocus(preserveFocus: boolean): void {
     COBOLOutputChannel.show(preserveFocus);
 }
 
-export function logChannelHide():void {
+export function logChannelHide(): void {
     COBOLOutputChannel.hide();
 }
 
@@ -990,7 +1002,7 @@ export function performance_now(): number {
         }
         catch {
             return Date.now();
-         }
+        }
     }
 
     return Date.now();
