@@ -583,18 +583,18 @@ export const cobolStorageKeywords: string[] = [
 ];
 
 /* inline decl */
-let tmpDict = new Collections.Dictionary<string, string>();
+const tmpDict = new Collections.Dictionary<string, string>();
 cobolKeywords.forEach(function (value) {
 		tmpDict.setValue(value,value);
 	});
 
 
-let tmpDict2 = new Collections.Dictionary<string, string>();
+const tmpDict2 = new Collections.Dictionary<string, string>();
 cobolProcedureKeywords.forEach(function (value) {
 		tmpDict2.setValue(value,value);
 	});
 
-let tmpDict3 = new Collections.Dictionary<string, string>();
+const tmpDict3 = new Collections.Dictionary<string, string>();
 cobolStorageKeywords.forEach(function (value) {
 		tmpDict3.setValue(value,value);
 	});

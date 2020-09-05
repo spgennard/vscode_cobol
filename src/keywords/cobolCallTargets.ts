@@ -27,12 +27,12 @@ interface CallTargetInterfaces {
 	apis: IAPIDictionary;
 }
 
-let callTargets: IDictionary = {};
+const callTargets: IDictionary = {};
 
 function addApis(a: CallTargetInterfaces) {
-	let values = Object.keys(a.apis);
+	const values = Object.keys(a.apis);
 	for (let c = 0; c < values.length; c++) {
-		let value = values[c];
+		const value = values[c];
 		callTargets[value] = new CallTarget(value, a.url, a.apis[value]);
 	}
 }

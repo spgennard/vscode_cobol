@@ -596,7 +596,6 @@ export function activate(context: ExtensionContext):void {
     });
     context.subscriptions.push(disposable4hover_more_info);
 
-
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
             return;
@@ -918,8 +917,7 @@ export function activate(context: ExtensionContext):void {
 }
 
 export function enableMarginStatusBar(formatStyle: ESourceFormat):void {
-    formatStatusBarItem.text = "Source:" + formatStyle;
-    formatStyle.toString();
+    formatStatusBarItem.text = "Source:" + formatStyle.toString();
     formatStatusBarItem.show();
 }
 

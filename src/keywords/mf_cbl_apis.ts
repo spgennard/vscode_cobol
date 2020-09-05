@@ -166,4 +166,4 @@ export default {
         "CBL_XOR": "Does a logical XOR between the bits of two data items.",
         "CBL_YIELD_RUN_UNIT": "Yields the remainder of a run-unit's time-slice."
     }
-}
+};

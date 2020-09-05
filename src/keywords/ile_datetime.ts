@@ -19,4 +19,4 @@ export default {
          "CEEFMTM": "Return Default Time String for Country or Region, returns the default time picture string for the country or region specified in the country/region_code parameter." ,
          "CEESCEN": "Set Century, sets the century within which 2-digit year values are assumed to lie."
     }
-}
+};
