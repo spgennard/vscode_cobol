@@ -488,6 +488,7 @@
         "configurationDefaults": {
             "[COBOL]": {
                 "files.autoGuessEncoding": false,
+                "editor.snippetSuggestions": "bottom",
                 "editor.renderIndentGuides": false,
                 "editor.autoIndent": "advanced",
                 "editor.insertSpaces": true,
@@ -495,9 +496,11 @@
                 "editor.rulers": [
                     6,
                     7,
+                    11,
                     72
                 ],
                 "editor.detectIndentation": false,
+                "editor.useTabStops": false,
                 "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
             },
             "[ACUCOBOL]": {
@@ -549,6 +552,17 @@
                     72,
                     80
                 ]
+            },
+            "[hlasm]": {
+                "editor.rulers": [
+                    0,
+                    9,
+                    15,
+                    71,
+                    72,
+                    80
+                ],
+                "editor.renderIndentGuides": false
             }
         },
         "languages": [
