@@ -4,7 +4,7 @@ import { Range, TextDocument, Definition, Position, CancellationToken, ProviderR
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, isFile, logMessage } from './extension';
+import { getCombinedCopyBookSearchPath, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 
@@ -20,7 +20,7 @@ export function isValidExtension(filename: string): boolean {
     }
     const exts = VSCOBOLConfiguration.getExtentions();
     for (let extpos = 0; extpos < exts.length; extpos++) {
-        let ext = exts[extpos];
+        const ext = exts[extpos];
         if (ext.length !== 0) {
             if (filename.endsWith(ext)) {
                 return true;
@@ -37,10 +37,10 @@ export function isValidExtension(filename: string): boolean {
 
 
 function extractCopyBoolFilename(str: string) {
-    let copyPos = str.toLowerCase().indexOf("copy");
+    const copyPos = str.toLowerCase().indexOf("copy");
     if (copyPos !== -1) {
-        let noCopyStr = str.substr(4 + copyPos).trimLeft();
-        let spacePos = noCopyStr.indexOf(" ");
+        const noCopyStr = str.substr(4 + copyPos).trimLeft();
+        const spacePos = noCopyStr.indexOf(" ");
         let justCopyArg = noCopyStr;
         if (spacePos !== -1) {
             justCopyArg = justCopyArg.substr(0, spacePos).trim();
@@ -68,17 +68,17 @@ function extractCopyBoolFilename(str: string) {
         return justCopyArg;
     }
 
-    let strLower = str.toLowerCase();
+    const strLower = str.toLowerCase();
     if (strLower.indexOf("exec") !== -1) {
         if (strLower.includes("sql", strLower.indexOf("exec"))) {
             let includePos = strLower.indexOf("include");
             if (includePos !== -1) {
-                includePos += 7
-                let strRight = str.substr(includePos).trimLeft();
-                let strRightLower = strRight.toLowerCase();
-                let endExecPos = strRightLower.indexOf("end-exec");
+                includePos += 7;
+                const strRight = str.substr(includePos).trimLeft();
+                const strRightLower = strRight.toLowerCase();
+                const endExecPos = strRightLower.indexOf("end-exec");
                 if (endExecPos !== -1) {
-                    let filename = strRight.substr(0, endExecPos).trim();
+                    const filename = strRight.substr(0, endExecPos).trim();
 
                     return filename;
                 }
@@ -89,7 +89,7 @@ function extractCopyBoolFilename(str: string) {
 }
 
 // only handle unc filenames
-export function isNetworkPath(dir: string) {
+export function isNetworkPath(dir: string):boolean {
     if (dir === undefined && dir === null) {
         return false;
     }
@@ -98,14 +98,13 @@ export function isNetworkPath(dir: string) {
         if (dir.length > 1 && dir[0] === '\\') {
             return true;
         }
-        path.win32.toNamespacedPath
     }
 
     return false;
 
 }
 
-export function isDirectPath(dir: string) {
+export function isDirectPath(dir: string):boolean {
     if (dir === undefined && dir === null) {
         return false;
     }
@@ -134,11 +133,11 @@ function findCopyBook(filename: string): string {
         return "";
     }
 
-    let hasDot = filename.indexOf(".");
+    const hasDot = filename.indexOf(".");
 
-    for (let copybookdir of getCombinedCopyBookSearchPath()) {
+    for (const copybookdir of getCombinedCopyBookSearchPath()) {
         /* check for the file as is.. */
-        let firstPossibleFile = path.join(copybookdir, filename);
+        const firstPossibleFile = path.join(copybookdir, filename);
         if (isFile(firstPossibleFile)) {
             return firstPossibleFile;
         }
@@ -146,8 +145,8 @@ function findCopyBook(filename: string): string {
         /* no extension? */
         if (hasDot === -1) {
             // search through the possible extensions
-            for (let ext of VSCOBOLConfiguration.getExtentions()) {
-                let possibleFile = path.join(copybookdir, filename + "." + ext);
+            for (const ext of VSCOBOLConfiguration.getExtentions()) {
+                const possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
                     return possibleFile;
@@ -166,13 +165,13 @@ function findCopyBookInDirectory(filename: string, inDirectory: string): string 
         return "";
     }
 
-    let hasDot = filename.indexOf(".");
+    const hasDot = filename.indexOf(".");
 
-    for (let baseCopybookdir of getCombinedCopyBookSearchPath()) {
-        let copybookdir = path.join(baseCopybookdir, inDirectory);
+    for (const baseCopybookdir of getCombinedCopyBookSearchPath()) {
+        const copybookdir = path.join(baseCopybookdir, inDirectory);
 
         /* check for the file as is.. */
-        let firstPossibleFile = path.join(copybookdir, filename);
+        const firstPossibleFile = path.join(copybookdir, filename);
         if (isFile(firstPossibleFile)) {
             return firstPossibleFile;
         }
@@ -180,8 +179,8 @@ function findCopyBookInDirectory(filename: string, inDirectory: string): string 
         /* no extension? */
         if (hasDot === -1) {
             // search through the possible extensions
-            for (let ext of VSCOBOLConfiguration.getExtentions()) {
-                let possibleFile = path.join(copybookdir, filename + "." + ext);
+            for (const ext of VSCOBOLConfiguration.getExtentions()) {
+                const possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
                     return possibleFile;
@@ -198,7 +197,7 @@ function findCopyBookInDirectory(filename: string, inDirectory: string): string 
 export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string): string {
 
     if (inDirectory === null || inDirectory.length === 0) {
-        let fullPath = findCopyBook(filename);
+        const fullPath = findCopyBook(filename);
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }
@@ -206,7 +205,7 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirec
         return fullPath;
     }
 
-    let fullPath = findCopyBookInDirectory(filename, inDirectory);
+    const fullPath = findCopyBookInDirectory(filename, inDirectory);
     if (fullPath.length !== 0) {
         return path.normalize(fullPath);
     }

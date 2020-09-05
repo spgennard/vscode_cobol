@@ -86,9 +86,9 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
 
         const ownerUri = document.uri;
 
-        let includePara: boolean = true;
-        let includeVars: boolean = true;
-        let includeSections: boolean = true;
+        let includePara = true;
+        let includeVars = true;
+        let includeSections = true;
 
         if (outlineLevel === outlineFlag.Partial) {
             includePara = false;

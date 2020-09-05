@@ -9,7 +9,7 @@ const themedIconPath = (name: string): any => {
 };
 
 export class SourceFolderItem extends vscode.TreeItem {
-    
+
     constructor(
         public readonly label: string,
         public readonly uri?: vscode.Uri,
@@ -20,11 +20,11 @@ export class SourceFolderItem extends vscode.TreeItem {
 
     public iconPath = themedIconPath("folder.svg");
 
-    contextValue: string = 'Source Folder';
+    contextValue = 'Source Folder';
 }
 
 export class SourceItem extends vscode.TreeItem {
-    
+
     constructor(
         public readonly label: string,
         public readonly uri?: vscode.Uri,
@@ -35,5 +35,5 @@ export class SourceItem extends vscode.TreeItem {
 
     public iconPath = themedIconPath("sourceitem.svg");
 
-    contextValue: string = 'Source';
+    contextValue = 'Source';
 }

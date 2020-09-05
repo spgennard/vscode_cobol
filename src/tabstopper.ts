@@ -104,7 +104,7 @@ function unTabSize(pos: number) {
     return 0;
 }
 
-export function processTabKey(inserting: boolean) {
+export function processTabKey(inserting: boolean):void {
     const editor = window.activeTextEditor;
     if (editor) {
         const doc = editor.document;
