@@ -743,7 +743,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.9.0
-### GitHub [#63](https://github.com/spgennard/vscode_cobol/issues/63) Colourisation: end valuetype not coloured  
+### GitHub #63   
 
 **Fix #63 - Colourisation: end valuetype not coloured**
 
@@ -751,7 +751,7 @@ Changelog for spgennard vscode_cobol.
 [74c788a61ff32b5](https://github.com/spgennard/vscode_cobol/commit/74c788a61ff32b5) *2019-04-08 19:53:04*
 
 
-### GitHub [#64](https://github.com/spgennard/vscode_cobol/issues/64) outline view does handle sections/entry-points correctly  
+### GitHub #64   
 
 **Fix #64 - outline view does handle sections**
 
@@ -760,7 +760,7 @@ Changelog for spgennard vscode_cobol.
 [7ba63e673203765](https://github.com/spgennard/vscode_cobol/commit/7ba63e673203765) *2019-04-09 20:21:06*
 
 
-### GitHub [#65](https://github.com/spgennard/vscode_cobol/issues/65) Indexes not being picked up by parser  
+### GitHub #65   
 
 **Fix #65 - Indexes not being picked up by parser**
 
@@ -818,7 +818,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.6.5
-### GitHub [#61](https://github.com/spgennard/vscode_cobol/issues/61) Colourisation: end-chain not coloured  
+### GitHub #61   
 
 **(techincal debt that actually fixes this problem)**
 
