@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.7.0
 ### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
 
 **Add support of coboldoc #189**
@@ -839,7 +839,7 @@ Changelog for spgennard vscode_cobol.
 [e864dc95c993511](https://github.com/spgennard/vscode_cobol/commit/e864dc95c993511) *2019-04-05 19:47:52*
 
 
-### GitHub [#62](https://github.com/spgennard/vscode_cobol/issues/62) Go To/Peek definition of PERFORM/THRU paragraph wrong  
+### GitHub #62   
 
 **## Version - 4.6.5**
 
@@ -860,7 +860,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.6.4
-### GitHub [#60](https://github.com/spgennard/vscode_cobol/issues/60) Multiline source-computer highlight captures too much  
+### GitHub #60   
 
 **Fix #60 - Multi-line source-computer highlight captures too much**
 
