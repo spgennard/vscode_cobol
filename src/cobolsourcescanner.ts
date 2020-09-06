@@ -54,7 +54,9 @@ export enum COBOLTokenStyle {
 export enum CobolDocStyle {
     unknown = "unknown",
     MSDN = "MSDN",
-    COBOLDOC = "COBOLDOC"
+    COBOLDOC = "COBOLDOC",
+    ISCOBOL = "ISCOBOL",
+    FUJITSU = "FUJITSU"
 }
 
 export enum CobolTagStyle {
@@ -1666,6 +1668,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
             }
 
             if (this.commentStyle === CobolDocStyle.unknown) {
+
                 const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
                 for (const possibleTag of possilexmltags) {
                     if (commentLine.indexOf(possibleTag) !== -1) {
@@ -1680,6 +1683,20 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     }
                 }
 
+                const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
+                for (const possibleICOBOL of possibleICOBOLs) {
+                    if (commentLine.indexOf(possibleICOBOL) !== -1) {
+                        this.commentStyle = CobolDocStyle.ISCOBOL;
+                    }
+                }
+
+                const possibleFUJITSUs: string[] = ["@**", "H ", "D "];
+                for (const possibleFUJITSU of possibleFUJITSUs) {
+                    const trimLine = commentLine.trimLeft();
+                    if (trimLine.startsWith(possibleFUJITSU)) {
+                        this.commentStyle = CobolDocStyle.FUJITSU;
+                    }
+                }
             }
 
             const comment = commentLine.substring(2 + startOfComment).trim();
