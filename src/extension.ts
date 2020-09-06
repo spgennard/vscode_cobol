@@ -111,7 +111,7 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
                 if (ext.packageJSON.publisher !== undefined && ext.packageJSON.publisher === 'bitlang') {
                     continue;
                 }
-                let grammarsBody = ext.packageJSON.contributes.grammars;
+                const grammarsBody = ext.packageJSON.contributes.grammars;
                 if (grammarsBody !== undefined) {
                     if (grammarsBody instanceof Object) {
                         for (const key in grammarsBody) {
@@ -119,7 +119,7 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
                             if (element.language !== undefined) {
                                 const l = `${element.language}`.toUpperCase();
                                 if (l === 'COBOL') {
-                                    let ext_info = ext;
+                                    const ext_info = ext;
                                     if (dupExtensionMessage.length === 0) {
                                         if (settings.ignore_unsafe_extensions === false) {
                                             dupExtensionMessage += "The COBOL Extension from bitlang may produce duplicate results due to\n";
