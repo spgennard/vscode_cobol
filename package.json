@@ -1,8 +1,8 @@
 {
     "name": "cobol",
     "displayName": "COBOL",
-    "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.5",
+    "description": "%description%",
+    "version": "6.7.6",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1680,7 +1680,8 @@
         "watch": "tsc -b -w",
         "lint": "eslint src --ext ts",
         "pretest": "npm run compile",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "clean": "gulp clean"
     },
     "devDependencies": {
         "@types/glob": "^7.1.3",
@@ -1696,12 +1697,19 @@
         "ts-loader": "^8.0.2",
         "typescript": "^4.0.2",
         "vsce": "^1.78.0",
+        "vscode-nls-dev": "^3.2.6",
         "vscode-test": "^1.4.0",
         "webpack": "^4.44.1",
-        "webpack-cli": "^3.3.12"
+        "webpack-cli": "^3.3.12",
+        "del": "^4.1.1",
+        "run-sequence": "^2.2.1",
+        "gulp": "^4.0.2",
+        "gulp-filter": "^5.1.0",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-typescript": "^5.0.1"
     },
     "dependencies": {
-        "coboldoc": "^1.2.0",
+        "vscode-nls": "^3.2.5",
         "lzjs": "1.3.0",
         "minimatch": "^3.0.4",
         "n-readlines": "1.0.0",
