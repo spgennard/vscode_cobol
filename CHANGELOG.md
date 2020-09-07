@@ -4,7 +4,7 @@
 Changelog for spgennard vscode_cobol.
 
 ## 6.7.0
-### GitHub #189   
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
 
 **Add support of coboldoc #189**
 
@@ -28,7 +28,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.44
-### GitHub #189   
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
 
 **Add support of coboldoc #189**
 
@@ -38,7 +38,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.41
-### GitHub #193   
+### GitHub [#193](https://github.com/spgennard/vscode_cobol/issues/193) Please add output for finished metadata processing  
 
 **Please add output for finished metadata processing Fix #193**
 
@@ -47,7 +47,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.29
-### GitHub #185   
+### GitHub [#185](https://github.com/spgennard/vscode_cobol/issues/185) Paragraphs in Copy file used for code not showing as referenced  
 
 **Paragraphs in Copy file used for code not showing as referenced Fix #185**
 
@@ -57,7 +57,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.28
-### GitHub #189   
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
 
 **Add type formatter for "Add support of coboldoc" #189**
 
@@ -66,7 +66,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.18
-### GitHub #187   
+### GitHub [#187](https://github.com/spgennard/vscode_cobol/issues/187) Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline  
 
 **Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline Fix #187**
 
@@ -75,7 +75,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.13
-### GitHub #186   
+### GitHub [#186](https://github.com/spgennard/vscode_cobol/issues/186) syntax highlighting wrong after comment paragraphs  
 
 **syntax highlighting wrong after comment paragraphs Fix #186**
 
@@ -84,7 +84,7 @@ Changelog for spgennard vscode_cobol.
 [811ccf1e77de2cd](https://github.com/spgennard/vscode_cobol/commit/811ccf1e77de2cd) *2020-08-12 16:52:01*
 
 
-### GitHub #56   
+### GitHub [#56](https://github.com/spgennard/vscode_cobol/issues/56) Show definition DCLGEN  
 
 **Show definition DCLGEN Fix #56**
 
@@ -95,7 +95,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.11
-### GitHub #184   
+### GitHub [#184](https://github.com/spgennard/vscode_cobol/issues/184) Outline view: 01 field with no-name not being picked up  
 
 **Outline view: 01 field with no-name not being picked up Fix #184**
 
@@ -104,7 +104,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.7
-### GitHub #183   
+### GitHub [#183](https://github.com/spgennard/vscode_cobol/issues/183) Support for Recursive COPY files  
 
 **Support for Recursive COPY files Fix #183**
 
@@ -115,7 +115,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.4
-### GitHub #182   
+### GitHub [#182](https://github.com/spgennard/vscode_cobol/issues/182) Copybook not longer working (quoted works)  
 
 **Copybook not longer working (quoted works) #182**
 
@@ -124,7 +124,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.2
-### GitHub #179   
+### GitHub [#179](https://github.com/spgennard/vscode_cobol/issues/179) Regression: Go to Definition for copybook without extension not working  
 
 **Regression: Go to Definition for copybook without extension not working Fix #179**
 
@@ -132,7 +132,7 @@ Changelog for spgennard vscode_cobol.
 [887585cc9c7e3d5](https://github.com/spgennard/vscode_cobol/commit/887585cc9c7e3d5) *2020-08-05 16:43:09*
 
 
-### GitHub #180   
+### GitHub [#180](https://github.com/spgennard/vscode_cobol/issues/180) Output panel still pulling focus with cache_on_start  
 
 **Output panel still pulling focus with cache_on_start Fix #180**
 
@@ -142,7 +142,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.6.0
-### GitHub #178   
+### GitHub [#178](https://github.com/spgennard/vscode_cobol/issues/178) Duplicate IntelliSense present when other extensions are loaded  
 
 **Duplicate IntelliSense present when other extensions are loaded Fix #178**
 
@@ -151,7 +151,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.27
-### GitHub #169   
+### GitHub [#169](https://github.com/spgennard/vscode_cobol/issues/169) parsing metadata should catch ENOENT  
 
 **parsing metadata should catch ENOENT Fix #169**
 
@@ -159,7 +159,7 @@ Changelog for spgennard vscode_cobol.
 [c43bfa11a406ee3](https://github.com/spgennard/vscode_cobol/commit/c43bfa11a406ee3) *2020-07-28 20:47:50*
 
 
-### GitHub #176   
+### GitHub [#176](https://github.com/spgennard/vscode_cobol/issues/176) typo-bug in setting coboleditor.intellisense_include_camalcase  
 
 **typo-bug in setting coboleditor.intellisense_include_camalcase Fix #176**
 
@@ -168,7 +168,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.24
-### GitHub #172   
+### GitHub [#172](https://github.com/spgennard/vscode_cobol/issues/172) ISO2002: Conditional Compilation - Directive syntax highlighting  
 
 **ISO2002: Conditional Compilation - Directive syntax highlighting Fix #172**
 
@@ -177,7 +177,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.22
-### GitHub #171   
+### GitHub [#171](https://github.com/spgennard/vscode_cobol/issues/171) Outline error with parse_copybooks_for_references and copybook first line is comment  
 
 **Outline error with parse_copybooks_for_references and copybook first line is comment Fix #171**
 
@@ -186,7 +186,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.19
-### GitHub #168   
+### GitHub [#168](https://github.com/spgennard/vscode_cobol/issues/168) coboleditor.copybookdirs is auto-unset  
 
 **coboleditor.copybookdirs is auto-unset Fix #168**
 
@@ -195,7 +195,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.17
-### GitHub #153   
+### GitHub [#153](https://github.com/spgennard/vscode_cobol/issues/153) Performance issues with metadata cache and go to definition for copybook using network drives  
 
 **Performance issues with metadata cache and go to definition for copybook using network drives Fix #153**
 
@@ -204,7 +204,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.6
-### GitHub #163   
+### GitHub [#163](https://github.com/spgennard/vscode_cobol/issues/163) NOHANDLE in EXEC CICS not handled correctly  
 
 **NOHANDLE in EXEC CICS not handled correctly Fix #163**
 
@@ -213,7 +213,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.3
-### GitHub #161   
+### GitHub [#161](https://github.com/spgennard/vscode_cobol/issues/161) Feature Request: Use `ExtensionContext.storagePath` for symbol cache  
 
 **Feature Request: Use `ExtensionContext.storagePath` for symbol cache Fix #161**
 
@@ -222,7 +222,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.5.1
-### GitHub #160   
+### GitHub [#160](https://github.com/spgennard/vscode_cobol/issues/160) Outline/parser does not pickup &quot;01 filler&quot; redefine  
 
 **Outline/parser does not pickup "01 filler" redefine Fix #160**
 
@@ -231,7 +231,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.21
-### GitHub #157   
+### GitHub [#157](https://github.com/spgennard/vscode_cobol/issues/157) some bugs    *More Info Required*  
 
 **some bugs fix #157**
 
@@ -241,7 +241,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.20
-### GitHub #142   
+### GitHub [#142](https://github.com/spgennard/vscode_cobol/issues/142) FR: support COPY of/in    *backlog*  
 
 **FR: support COPY of/in #142**
 
@@ -252,7 +252,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.19
-### GitHub #154   
+### GitHub [#154](https://github.com/spgennard/vscode_cobol/issues/154) IntelliSense changes case to either all upper or all lowercase, not original case of tag.  
 
 **IntelliSense changes case to either all upper or all lowercase, not original case of tag. #154**
 
@@ -262,7 +262,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.18
-### GitHub #154   
+### GitHub [#154](https://github.com/spgennard/vscode_cobol/issues/154) IntelliSense changes case to either all upper or all lowercase, not original case of tag.  
 
 **IntelliSense changes case to either all upper or all lowercase, not original case of tag. #154**
 
@@ -275,7 +275,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.12
-### GitHub #152   
+### GitHub [#152](https://github.com/spgennard/vscode_cobol/issues/152) Breadcrumb change/regression in 6.1.9  
 
 **Breadcrumb change/regression in 6.1.9 Fix #152**
 
@@ -283,7 +283,7 @@ Changelog for spgennard vscode_cobol.
 [8706c42c67ca2ac](https://github.com/spgennard/vscode_cobol/commit/8706c42c67ca2ac) *2020-06-24 17:44:04*
 
 
-### GitHub #153   
+### GitHub [#153](https://github.com/spgennard/vscode_cobol/issues/153) Performance issues with metadata cache and go to definition for copybook using network drives  
 
 **Performance issues with metadata cache and go to definition for copybook #153**
 
@@ -293,7 +293,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.8
-### GitHub #145   
+### GitHub [#145](https://github.com/spgennard/vscode_cobol/issues/145) issues with problem matchers and foreign languages  
 
 **issues with problem matchers and foreign languages Fix #145**
 
@@ -302,7 +302,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.7
-### GitHub #146   
+### GitHub [#146](https://github.com/spgennard/vscode_cobol/issues/146) mfcobol-errformat2 has invalid regex   
 
 **mfcobol-errformat2 has invalid regex Fix #146**
 
@@ -311,7 +311,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.5
-### GitHub #145   
+### GitHub [#145](https://github.com/spgennard/vscode_cobol/issues/145) issues with problem matchers and foreign languages  
 
 **issues with problem matchers and foreign languages Fix #145**
 
@@ -324,7 +324,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.3.3
-### GitHub #146   
+### GitHub [#146](https://github.com/spgennard/vscode_cobol/issues/146) mfcobol-errformat2 has invalid regex   
 
 **mfcobol-errformat2 has invalid regex Fix #146**
 
@@ -335,7 +335,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.41
-### GitHub #138   
+### GitHub [#138](https://github.com/spgennard/vscode_cobol/issues/138) FR: option to open CALLed programs  
 
 **FR: option to open CALLed programs #138**
 
@@ -345,7 +345,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.37
-### GitHub #139   
+### GitHub [#139](https://github.com/spgennard/vscode_cobol/issues/139) bug: copybook is not parsed if additional clauses are used  
 
 **bug: copybook is not parsed if additional clauses are used Fix #139**
 
@@ -354,7 +354,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.29
-### GitHub #136   
+### GitHub [#136](https://github.com/spgennard/vscode_cobol/issues/136) CopyBook: to (not found  
 
 **CopyBook: to (not found Fix #136**
 
@@ -363,7 +363,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.28
-### GitHub #133   
+### GitHub [#133](https://github.com/spgennard/vscode_cobol/issues/133) ACUCOBOL Problem matcher issue  
 
 **adjusted problem matcher for acu**
 
@@ -373,7 +373,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.26
-### GitHub #133   
+### GitHub [#133](https://github.com/spgennard/vscode_cobol/issues/133) ACUCOBOL Problem matcher issue  
 
 **ACUCOBOL Problem matcher issue Fix #133**
 
@@ -395,7 +395,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.24
-### GitHub #131   
+### GitHub [#131](https://github.com/spgennard/vscode_cobol/issues/131) missing reference for FILE STATUS and ASSIGN name  
 
 **missing reference for FILE STATUS and ASSIGN name Fix #131**
 
@@ -404,7 +404,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.20
-### GitHub #129   
+### GitHub [#129](https://github.com/spgennard/vscode_cobol/issues/129) issues with &quot;process files in workspace for metadata&quot;  
 
 **issues with "process files in workspace for metadata" #129**
 
@@ -413,7 +413,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.18
-### GitHub #130   
+### GitHub [#130](https://github.com/spgennard/vscode_cobol/issues/130) CopyBook not found  
 
 **CopyBook not found Fix #130**
 
@@ -422,7 +422,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.17
-### GitHub #129   
+### GitHub [#129](https://github.com/spgennard/vscode_cobol/issues/129) issues with &quot;process files in workspace for metadata&quot;  
 
 **issues with "process files in workspace for metadata #129**
 
@@ -431,7 +431,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.16
-### GitHub #127   
+### GitHub [#127](https://github.com/spgennard/vscode_cobol/issues/127) Can JCL language id be changed to lower case &quot;jcl&quot;  
 
 **Can JCL language id be changed to lower case "jcl" Fix #127**
 
@@ -441,7 +441,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.15
-### GitHub #128   
+### GitHub [#128](https://github.com/spgennard/vscode_cobol/issues/128) Outline: COPY item in view but should not be  
 
 **Outline: COPY item in view but should not be Fix #128**
 
@@ -450,7 +450,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.14
-### GitHub #125   
+### GitHub [#125](https://github.com/spgennard/vscode_cobol/issues/125) [exthost] [error] TypeError: Cannot read property &#39;api&#39; of undefined  
 
 **[exthost] [error] TypeError: Cannot read property 'api' of undefined Fix #125**
 
@@ -460,7 +460,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.11
-### GitHub #123   
+### GitHub [#123](https://github.com/spgennard/vscode_cobol/issues/123) FR: please co-publish on Open VSX Registry    *Investigating*  
 
 **FR: please co-publish on Open VSX Registry Fix #123**
 
@@ -469,7 +469,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.10
-### GitHub #124   
+### GitHub [#124](https://github.com/spgennard/vscode_cobol/issues/124) Issues with outline (first variable in a group missing)  
 
 **Issues with outline (first variable in a group missing) Fix #124**
 
@@ -478,7 +478,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.2.0
-### GitHub #118   
+### GitHub [#118](https://github.com/spgennard/vscode_cobol/issues/118) FR: handle SELECT items  
 
 **FR: handle SELECT items Fix #118**
 
@@ -487,7 +487,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.1.7
-### GitHub #117   
+### GitHub [#117](https://github.com/spgennard/vscode_cobol/issues/117) statement terminators are misinterpreted as paragraphs  
 
 **statement terminators are misinterpreted as paragraphs Fix #117**
 
@@ -497,7 +497,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.1.6
-### GitHub #111   
+### GitHub [#111](https://github.com/spgennard/vscode_cobol/issues/111) FR show data structure in breadcrumbs view    *More Info Required*  
 
 **FR show data structure in breadcrumbs view Fix #111**
 
@@ -507,7 +507,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.1.5
-### GitHub #116   
+### GitHub [#116](https://github.com/spgennard/vscode_cobol/issues/116) bug/fr support for constant entry  
 
 **bug/fr support for constant entry Fix #116**
 
@@ -516,7 +516,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.1.2
-### GitHub #112   
+### GitHub [#112](https://github.com/spgennard/vscode_cobol/issues/112) bug in breadcrumb view: DECLARATIVES are unknown  
 
 **bug in breadcrumb view: DECLARATIVES are unknown fix #112**
 
@@ -525,7 +525,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 6.0.9
-### GitHub #105   
+### GitHub [#105](https://github.com/spgennard/vscode_cobol/issues/105) Symbols like [$#%*] cause comment line to not be highlighted as comments  
 
 **Add $#% as allowed items in sequence number area for #105**
 
@@ -534,7 +534,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.8.3
-### GitHub #101   
+### GitHub [#101](https://github.com/spgennard/vscode_cobol/issues/101) Outline: var-d picked up as a paragraph  
 
 **Fix issue #101**
 
@@ -543,7 +543,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.7.22
-### GitHub #99   
+### GitHub [#99](https://github.com/spgennard/vscode_cobol/issues/99) Micro Focus Dialect allow # prefixed identifers  
 
 **Micro Focus Dialect allow #Fix #99**
 
@@ -557,7 +557,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.7.18
-### GitHub #98   
+### GitHub [#98](https://github.com/spgennard/vscode_cobol/issues/98) No symbol found in the document   
 
 **Fix #98 - No symbol found in the document**
 
@@ -569,7 +569,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.7.4
-### GitHub #94   
+### GitHub [#94](https://github.com/spgennard/vscode_cobol/issues/94) Unable to parse Copybooks without extension    *Investigating*  
 
 **Various changes to copybook path searching for #94**
 
@@ -578,7 +578,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.7.3
-### GitHub #95   
+### GitHub [#95](https://github.com/spgennard/vscode_cobol/issues/95) Go to entry points    *More Info Required*  *enhancement*  
 
 **Continue work on #95 and case insensitive searches**
 
@@ -587,7 +587,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.7
-### GitHub #95   
+### GitHub [#95](https://github.com/spgennard/vscode_cobol/issues/95) Go to entry points    *More Info Required*  *enhancement*  
 
 **Make part of the search case-insensitive - #95**
 
@@ -596,7 +596,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.6.6
-### GitHub #96   
+### GitHub [#96](https://github.com/spgennard/vscode_cobol/issues/96) `.vscode_cobol` directory created in my workspace  
 
 **Fix #96 - Ensure .vscode_cobol directory is not created unless you**
 
@@ -606,7 +606,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.4.6
-### GitHub #93   
+### GitHub [#93](https://github.com/spgennard/vscode_cobol/issues/93) Outline not correct for procedure copybook difference at 1 character  
 
 **Fix #93 - Outline not correct for procedure copybook difference at 1 character**
 
@@ -615,7 +615,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.4.5
-### GitHub #88   
+### GitHub [#88](https://github.com/spgennard/vscode_cobol/issues/88) Feature Request: Recursively parse discovered copybooks for go-to-definition symbols    *enhancement*  *in-progress*  
 
 **Feature Request: Recursively parse discovered copybooks for go-to-definition symbols #88**
 
@@ -625,7 +625,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.4.4
-### GitHub #88   
+### GitHub [#88](https://github.com/spgennard/vscode_cobol/issues/88) Feature Request: Recursively parse discovered copybooks for go-to-definition symbols    *enhancement*  *in-progress*  
 
 **Feature Request: Recursively parse discovered copybooks for go-to-definition symbols #88**
 
@@ -635,7 +635,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.4.3
-### GitHub #88   
+### GitHub [#88](https://github.com/spgennard/vscode_cobol/issues/88) Feature Request: Recursively parse discovered copybooks for go-to-definition symbols    *enhancement*  *in-progress*  
 
 **Feature Request: Recursively parse discovered copybooks for go-to-definition symbols #88**
 
@@ -649,7 +649,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.4.2
-### GitHub #92   
+### GitHub [#92](https://github.com/spgennard/vscode_cobol/issues/92) Unable to configure to see copybooks    *More Info Required*  *bug*  
 
 **Fix #92 - Add support for case & -**
 
@@ -658,7 +658,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.4.1
-### GitHub #92   
+### GitHub [#92](https://github.com/spgennard/vscode_cobol/issues/92) Unable to configure to see copybooks    *More Info Required*  *bug*  
 
 **Fix for "Unable to configure to see copybooks" #92**
 
@@ -667,7 +667,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.3.6
-### GitHub #87   
+### GitHub [#87](https://github.com/spgennard/vscode_cobol/issues/87) Feature Request: In outline, assume copybook break out of current paragraph    *enhancement*  
 
 **dev: best attemp at providing alternative nesting**
 
@@ -679,7 +679,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.3.3
-### GitHub #86   
+### GitHub [#86](https://github.com/spgennard/vscode_cobol/issues/86) Feature Request: Outline support for divisionless copybook    *enhancement*  *in-progress*  
 
 **Feature Request: Outline support for divisionless copybook #86**
 
@@ -688,7 +688,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## 5.3.1
-### GitHub #86   
+### GitHub [#86](https://github.com/spgennard/vscode_cobol/issues/86) Feature Request: Outline support for divisionless copybook    *enhancement*  *in-progress*  
 
 **Feature Request: Outline support for divisionless copybook #86 (data division)**
 
@@ -697,7 +697,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## latest
-### GitHub #69   
+### GitHub [#69](https://github.com/spgennard/vscode_cobol/issues/69) Paragraphs that start with numbers are not shown in the outline  
 
 **Fix #69**
 
@@ -707,7 +707,7 @@ Changelog for spgennard vscode_cobol.
 [f5d2a819b6bf2b8](https://github.com/spgennard/vscode_cobol/commit/f5d2a819b6bf2b8) *2019-04-16 16:49:23*
 
 
-### GitHub #71   
+### GitHub [#71](https://github.com/spgennard/vscode_cobol/issues/71) move from OpenCOBOL to GnuCOBOL  
 
 **Partial fix for "move from OpenCOBOL to GnuCOBOL #71"**
 
@@ -716,7 +716,7 @@ Changelog for spgennard vscode_cobol.
 [c63c364161a50e2](https://github.com/spgennard/vscode_cobol/commit/c63c364161a50e2) *2019-05-19 22:01:05*
 
 
-### GitHub #75   
+### GitHub [#75](https://github.com/spgennard/vscode_cobol/issues/75) Paragraphs in breadcrumbs/outline do not extend thru all lines of paragraph  
 
 **Paragraphs in breadcrumbs/outline do not extend thru all lines of paragraph #75**
 
@@ -724,7 +724,7 @@ Changelog for spgennard vscode_cobol.
 [6067a519c010660](https://github.com/spgennard/vscode_cobol/commit/6067a519c010660) *2019-06-12 22:15:03*
 
 
-### GitHub #77   
+### GitHub [#77](https://github.com/spgennard/vscode_cobol/pull/77) README.md - updated Shortcuts  
 
 **README: Shortcuts in keystroke format**
 
@@ -733,7 +733,7 @@ Changelog for spgennard vscode_cobol.
 [9c4e46e6f2211dd](https://github.com/spgennard/vscode_cobol/commit/9c4e46e6f2211dd) *2019-06-21 21:46:41*
 
 
-### GitHub #80   
+### GitHub [#80](https://github.com/spgennard/vscode_cobol/issues/80) Outline: unexpected item  
 
 **Outline: unexpected item**
 
@@ -743,7 +743,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.9.0
-### GitHub #63   
+### GitHub [#63](https://github.com/spgennard/vscode_cobol/issues/63) Colourisation: end valuetype not coloured  
 
 **Fix #63 - Colourisation: end valuetype not coloured**
 
@@ -751,7 +751,7 @@ Changelog for spgennard vscode_cobol.
 [74c788a61ff32b5](https://github.com/spgennard/vscode_cobol/commit/74c788a61ff32b5) *2019-04-08 19:53:04*
 
 
-### GitHub #64   
+### GitHub [#64](https://github.com/spgennard/vscode_cobol/issues/64) outline view does handle sections/entry-points correctly  
 
 **Fix #64 - outline view does handle sections**
 
@@ -760,7 +760,7 @@ Changelog for spgennard vscode_cobol.
 [7ba63e673203765](https://github.com/spgennard/vscode_cobol/commit/7ba63e673203765) *2019-04-09 20:21:06*
 
 
-### GitHub #65   
+### GitHub [#65](https://github.com/spgennard/vscode_cobol/issues/65) Indexes not being picked up by parser  
 
 **Fix #65 - Indexes not being picked up by parser**
 
@@ -773,7 +773,7 @@ Changelog for spgennard vscode_cobol.
 [00b98e6dedbe76e](https://github.com/spgennard/vscode_cobol/commit/00b98e6dedbe76e) *2019-04-09 23:25:40*
 
 
-### GitHub #66   
+### GitHub [#66](https://github.com/spgennard/vscode_cobol/issues/66) Colourisation: extension not coloured  
 
 **Fix #66 - Colourisation: extension not coloured**
 
@@ -784,7 +784,7 @@ Changelog for spgennard vscode_cobol.
 [cf88afbc8f3d91e](https://github.com/spgennard/vscode_cobol/commit/cf88afbc8f3d91e) *2019-04-12 18:36:07*
 
 
-### GitHub #67   
+### GitHub [#67](https://github.com/spgennard/vscode_cobol/issues/67) Colourisation: &quot;keep&quot; in read lockt-fd-2 with kept lock has no colour  
 
 **Fix #66 - Colourisation: extension not coloured**
 
@@ -795,7 +795,7 @@ Changelog for spgennard vscode_cobol.
 [cf88afbc8f3d91e](https://github.com/spgennard/vscode_cobol/commit/cf88afbc8f3d91e) *2019-04-12 18:36:07*
 
 
-### GitHub #68   
+### GitHub [#68](https://github.com/spgennard/vscode_cobol/issues/68) Colourisation: thread-local if fd not colourised  
 
 **Fix #66 - Colourisation: extension not coloured**
 
@@ -906,7 +906,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.7
-### GitHub #56   
+### GitHub [#56](https://github.com/spgennard/vscode_cobol/issues/56) Show definition DCLGEN  
 
 **- Fix #58 - Source not colourized if start from column 2.**
 
@@ -925,7 +925,7 @@ Changelog for spgennard vscode_cobol.
 
 
 ## v4.5.6
-### GitHub #56   
+### GitHub [#56](https://github.com/spgennard/vscode_cobol/issues/56) Show definition DCLGEN  
 
 **Fix #56 - Show definition DCLGEN**
 
