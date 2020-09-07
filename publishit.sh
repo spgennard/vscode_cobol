@@ -44,9 +44,9 @@ git push --tags
 git clean -fdx
 npm install
 git push
-gulp publish
+vsce publish
 rm -f *.vsix
-gulp package
+vsce package
 COMMIT_LOG=$(git log -1 --format='%ci %H %s')
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 github-release upload \

@@ -9,3 +9,4 @@ package-lock.json
 examples/
 src/extension.ts.bak
 src/textprovider.ts.bak
+*nls.*.json
