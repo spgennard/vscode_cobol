@@ -601,8 +601,8 @@
                     ".lks",
                     ".pdv",
                     ".cpy",
-		    ".copybook",
-		    ".cobcopy",
+                    ".copybook",
+                    ".cobcopy",
                     ".fd",
                     ".sel",
                     ".scb",
@@ -1701,6 +1701,7 @@
         "webpack-cli": "^3.3.12"
     },
     "dependencies": {
+        "coboldoc": "^1.2.0",
         "lzjs": "1.3.0",
         "minimatch": "^3.0.4",
         "n-readlines": "1.0.0",

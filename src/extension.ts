@@ -39,6 +39,7 @@ const propertiesReader = require('properties-reader');
 import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLDocumentationGenerator } from './coboldocgenerator';
+import { CobolCommentProvider } from './cobolcommentprovider';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -591,11 +592,14 @@ export function activate(context: ExtensionContext): void {
         context.subscriptions.push(languages.registerDocumentSymbolProvider(allCobolSelectors, documentSymbolProvider));
     }
 
-    /* hover provider */
     const cobolProvider = new CobolSourceCompletionItemProvider(VSCOBOLConfiguration.get());
     const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 
+    const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
+    const cobolCommentProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolCommentProvider);
+    context.subscriptions.push(cobolCommentProviderDisposible);
+    /* hover provider */
     const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document, position, token) {

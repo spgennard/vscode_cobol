@@ -369,6 +369,22 @@ export class SharedSourceReferences {
     }
 }
 
+export enum UsingState {
+    BY_VALUE,
+    BY_REF,
+    BY_CONTENT
+}
+
+export class COBOLParameter {
+    using: UsingState;
+    name: string;
+
+    constructor(u: UsingState, n: string) {
+        this.using = u;
+        this.name = n;
+    }
+}
+
 class ParseState {
     currentToken: COBOLToken;
     currentRegion: COBOLToken;
@@ -397,6 +413,10 @@ class ParseState {
 
     addReferencesDuringSkipToTag: boolean;
 
+    using: UsingState;
+
+    parameters: COBOLParameter[];
+
     constructor() {
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
@@ -420,6 +440,8 @@ class ParseState {
         this.skipToDot = false;
         this.addReferencesDuringSkipToTag = false;
         this.pickUpUsing = false;
+        this.using = UsingState.BY_REF;
+        this.parameters = [];
     }
 }
 
@@ -443,10 +465,12 @@ export class CallTargetInformation {
 
     public Token: COBOLToken;
     public IsEntryPoint: boolean;
+    public CallParameters: COBOLParameter[];
 
-    constructor(token: COBOLToken, isEntryPoint: boolean) {
+    constructor(token: COBOLToken, isEntryPoint: boolean, params: COBOLParameter[]) {
         this.Token = token;
         this.IsEntryPoint = isEntryPoint;
+        this.CallParameters = params;
     }
 }
 
@@ -459,6 +483,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
     public constantsOrVariables: Map<string, COBOLToken[]>;
+    public currentProgramTarget: CallTargetInformation;
     public callTargets: Map<string, CallTargetInformation>;
     public classes: Map<string, COBOLToken>;
     public methods: Map<string, COBOLToken>;
@@ -511,6 +536,8 @@ export default class COBOLSourceScanner implements ICommentCallback {
         this.parseReferences = sourceHandler !== null;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
+
+        this.currentProgramTarget = new CallTargetInformation(COBOLToken.Null , false, []);
 
         let sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;
@@ -677,7 +704,8 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
-                this.callTargets.set(this.ImplicitProgramId, new CallTargetInformation(ctoken, false));
+                this.currentProgramTarget.Token = ctoken;
+                this.callTargets.set(this.ImplicitProgramId, this.currentProgramTarget);
             }
 
             if (cacheDirectory !== null && cacheDirectory.length > 0) {
@@ -1077,17 +1105,29 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     if (endWithDot) {
                         state.pickUpUsing = false;
                     }
+
                     switch (tcurrentLower) {
-                        case "using": break;
-                        case "by": break;
-                        case "reference": break;
-                        case "value": break;
+                        case "using":
+                            state.using = UsingState.BY_REF;
+                            break;
+                        case "by":
+                            break;
+                        case "reference":
+                            state.using = UsingState.BY_REF;
+                            break;
+                        case "value":
+                            state.using = UsingState.BY_VALUE;
+                            break;
                         default:
                             if (this.sourceReferences !== undefined) {
                                 // no forward validation can be done, as this is a one pass scanner
                                 this.addReference(this.sourceReferences.targetReferences, tcurrentLower, lineNumber, token.currentCol);
                             }
-                            // logMessage(`INFO: using parameter : ${tcurrent}`);
+                            state.parameters.push(new COBOLParameter(state.using, tcurrent ));
+                        // logMessage(`INFO: using parameter : ${tcurrent}`);
+                    }
+                    if (endWithDot) {
+                        this.currentProgramTarget.CallParameters = state.parameters;
                     }
 
 
@@ -1229,7 +1269,9 @@ export default class COBOLSourceScanner implements ICommentCallback {
                 if (prevTokenLower === "entry" && current.length !== 0) {
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
-                    this.callTargets.set(trimmedCurrent, new CallTargetInformation(ctoken, true));
+
+                    this.currentProgramTarget = new CallTargetInformation(ctoken, true, []);
+                    this.callTargets.set(trimmedCurrent, this.currentProgramTarget);
                     continue;
                 }
 
@@ -1238,8 +1280,9 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
                     state.programs.push(ctoken);
-                    if (trimmedCurrent.indexOf(" ") !== -1 && token.isTokenPresent("external") === false) {
-                        this.callTargets.set(trimmedCurrent, new CallTargetInformation(ctoken, false));
+                    if (trimmedCurrent.indexOf(" ") === -1 && token.isTokenPresent("external") === false) {
+                        this.currentProgramTarget = new CallTargetInformation(ctoken, false, []);
+                        this.callTargets.set(trimmedCurrent, this.currentProgramTarget);
                     }
                     this.ImplicitProgramId = "";        /* don't need it */
 
