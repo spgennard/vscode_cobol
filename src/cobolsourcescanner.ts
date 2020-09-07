@@ -1270,8 +1270,10 @@ export default class COBOLSourceScanner implements ICommentCallback {
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
 
+                    state.parameters = [];
                     this.currentProgramTarget = new CallTargetInformation(ctoken, true, []);
                     this.callTargets.set(trimmedCurrent, this.currentProgramTarget);
+                    state.pickUpUsing = true;
                     continue;
                 }
 
