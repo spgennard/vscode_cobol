@@ -49,7 +49,7 @@ export class CobolCommentProvider implements CompletionItemProvider {
             if (callTarget !== undefined) {
                 const snippet = new CompletionItem(`Auto-Doc: for ${callTarget.Token.tokenName}`);
                 let c = 1;
-                let snippetText = "*> ${1:Description of " + callTarget.Token.tokenName + "}\n";
+                let snippetText = "\n*> ${1:Description of " + callTarget.Token.tokenName + "}\n";
                 c++;
                 for (const p of callTarget.CallParameters) {
                     snippetText += "*> @param " + p.name + " ${" + c + ":argument description}\n";
