@@ -40,7 +40,7 @@ git commit -m "Update CHANGELOG.md" CHANGELOG.md && true
 git push
 git tag $PACKAGE_VERSION
 git push --tags
-cp -r .vscode-test ..
+[ -d ".vscode_test" ] && cp -r .vscode-test ..
 git clean -fdx
 npm install
 git push
@@ -60,7 +60,7 @@ github-release upload \
 npx ovsx publish cobol*.vsix -p $(cat $HOME/.ovsx.token)
 
 mkdir .vscode-test 2>/dev/null && true
-cp -r ../.vscode-test .
+[ -d "../.vscode_test" ] && cp -r ../.vscode-test .
 
 npm-check-updates
 
