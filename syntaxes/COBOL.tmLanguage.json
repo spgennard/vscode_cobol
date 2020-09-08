@@ -25,6 +25,14 @@
   "name": "COBOL",
   "patterns": [
     {
+      "match": "(^.{6})(\\*.*$)",
+      "name": "comment.line.cobol.fixed"
+    },
+    {
+      "match": "(^.{6})(\\/.*$)",
+      "name": "comment.line.cobol.fixed"
+    },
+    {
       "match": "(^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*])([dD]\\s.*$)",
       "name": "token.info-token.cobol"
     },
