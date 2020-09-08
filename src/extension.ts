@@ -99,7 +99,13 @@ export function isPathInWorkspace(ddir: string): boolean {
     return false;
 }
 
-const blessed_extensions: string[] = ["bitlang.cobol", "HCLTechnologies.hclappscancodesweep"];
+const blessed_extensions: string[] = [
+    "bitlang.cobol",
+    "HCLTechnologies.hclappscancodesweep",      // code scanner
+    "BroadcomMFD.debugger-for-mainframe",       // debugger
+    "rechinformatica.rech-cobol-debugger",      // debugger
+    "BroadcomMFD.ccf"                           // control flow extension
+];
 
 function checkForExtensionConflicts(settings: ICOBOLSettings): string {
     let dupExtensionMessage = "";
@@ -192,7 +198,7 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
                     dupExtensionMessage += ` Bug Email     : ${grab_info_for_ext.packageJSON.bugs.email}\n`;
                 }
                 if (reason.length !== 0) {
-                    dupExtensionMessage += ` Reason        : ${reason}\n}`;
+                    dupExtensionMessage += ` Reason        : ${reason}\n`;
                 }
                 if (dupExtensionMessage.length !== 0) {
                     dupExtensionMessage += "\n";
