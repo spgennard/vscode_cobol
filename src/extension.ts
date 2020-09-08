@@ -172,7 +172,7 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
                     dupExtensionMessage += " The COBOL Extension from bitlang may produce duplicate results due to\n";
                     dupExtensionMessage += "  other extensions for COBOL being present.\n\n";
                     dupExtensionMessage += " If you do not want see this warning message, change the setting\n";
-                    dupExtensionMessage += "  coboleditor.ignore_unsafe_extensions to true and restart vscode\n";
+                    dupExtensionMessage += "  coboleditor.ignore_unsafe_extensions to true and restart vscode\n\n";
                     dupExtensionMessage += "NOTE: If you think the extension is being reported as 'unsafe' unfairly\n";
                     dupExtensionMessage += "      please raise issue @ https://github.com/spgennard/vscode_cobol/issues\n";
                 }
