@@ -1,4 +1,5 @@
 {
+    "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL.tmLanguage.json",
     "scopeName": "source.utreport",
     "fileTypes": [],
     "name": "Unit Test Report",
@@ -71,7 +72,7 @@
             },
             "comment": "info"
         },
-        
+
         {
             "match" : "(\\*\\*\\*\\*.*)$",
             "name" : "comment.line"

@@ -1,4 +1,5 @@
 {
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL.tmLanguage.json",
   "name": "jcl",
   "fileTypes": [
     "jcl",
@@ -50,7 +51,7 @@
         },
         "2" :{
           "name": "keyword.operator.jcl"
-          
+
         }
       }
     },
