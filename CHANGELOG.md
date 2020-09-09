@@ -4,6 +4,16 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#198](https://github.com/spgennard/vscode_cobol/issues/198) problemMatcher: please add code attribute where possible  
+
+**problemMatcher: please add code attribute where possible Fix #198**
+
+ * - remove size of names but try to keep all the information 
+
+[ca613f966069290](https://github.com/spgennard/vscode_cobol/commit/ca613f966069290) *2020-09-09 17:19:27*
+
+
+## 6.7.10
 ### GitHub [#196](https://github.com/spgennard/vscode_cobol/issues/196) Add missing pagebreak to COBOL Syntax  
 
 **Add missing pagebreak to COBOL Syntax Fix #196**
