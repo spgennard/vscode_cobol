@@ -346,7 +346,7 @@ export class SharedSourceReferences {
     public sharedConstantsOrVariables: Map<string, COBOLToken[]>;
     public sharedSections: Map<string, COBOLToken>;
     public sharedParagraphs: Map<string, COBOLToken>;
-    public processingMap: Map<string, string>;
+    public copyBooksUsed: Map<string, COBOLToken>;
     public state: ParseState;
     public tokensInOrder: COBOLToken[];
 
@@ -361,7 +361,7 @@ export class SharedSourceReferences {
         this.sharedConstantsOrVariables = new Map<string, COBOLToken[]>();
         this.sharedSections = new Map<string, COBOLToken>();
         this.sharedParagraphs = new Map<string, COBOLToken>();
-        this.processingMap = new Map<string, string>();
+        this.copyBooksUsed = new Map<string, COBOLToken>();
         this.state = new ParseState();
         this.tokensInOrder = [];
         this.topLevel = topLevel;
@@ -396,7 +396,7 @@ class ParseState {
     currentFunctionId: COBOLToken;
     current01Group: COBOLToken;
     currentLevel: COBOLToken;
-    processingMap: Map<string, string>;
+    copyBooksUsed: Map<string, COBOLToken>;
 
     procedureDivision: COBOLToken;
     declaratives: COBOLToken;
@@ -432,7 +432,7 @@ class ParseState {
         this.currentFunctionId = COBOLToken.Null;
         this.programs = [];
         this.captureDivisions = true;
-        this.processingMap = new Map<string, string>();
+        this.copyBooksUsed = new Map<string, COBOLToken>();
         this.pickFields = false;
         this.inProcedureDivision = false;
         this.inDeclaratives = false;
@@ -559,6 +559,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         this.paragraphs = sourceReferences.sharedParagraphs;
         this.sections = sourceReferences.sharedSections;
         this.tokensInOrder = sourceReferences.tokensInOrder;
+        this.copyBooksUsed = sourceReferences.copyBooksUsed;
 
         // set the source handler for the commentspackage
         sourceHandler.setCommentCallback(this);
@@ -566,7 +567,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
         const state: ParseState = this.sourceReferences.state;
 
         /* mark this has been processed (to help copy of self) */
-        state.processingMap.set(this.filename, this.filename);
+        state.copyBooksUsed.set(this.filename, COBOLToken.Null);
 
         if (this.sourceReferences.topLevel) {
             /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
