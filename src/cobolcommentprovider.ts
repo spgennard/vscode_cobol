@@ -1,8 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, Range, SnippetString, MarkdownString } from 'vscode';
 import VSQuickCOBOLParse from './vscobolscanner';
 import { ICOBOLSettings } from './iconfiguration';
-import COBOLSourceScanner, { CobolDocStyle } from './cobolsourcescanner';
-import { logMessage } from './extension';
+import COBOLSourceScanner, { CobolDocStyle, UsingState } from './cobolsourcescanner';
 
 export class CobolCommentProvider implements CompletionItemProvider {
 
@@ -53,10 +52,33 @@ export class CobolCommentProvider implements CompletionItemProvider {
                 c++;
                 for (const p of callTarget.CallParameters) {
                     snippetText += "*> @param " + p.name + " ${" + c + ":argument description}\n";
-                    logMessage(p.name);
                     c++;
                 }
                 snippetText += `*> @return return-code`;
+                snippet.insertText = new SnippetString(snippetText);
+                items.push(snippet);
+            }
+        }
+
+        for (const [key, callTarget] of sf.functionTargets) {
+            if (callTarget !== undefined) {
+                let addedReturn = false;
+                const snippet = new CompletionItem(`Auto-Doc: for function ${callTarget.Token.tokenName}`);
+                let c = 1;
+                let snippetText = "\n*> ${1:Description of " + callTarget.Token.tokenName + "}\n";
+                c++;
+                for (const p of callTarget.CallParameters) {
+                    if (p.using !== UsingState.RETURNING) {
+                        snippetText += "*> @param " + p.name + " ${" + c + ":argument description}\n";
+                    } else {
+                        snippetText += "*> @return " + p.name + " ${" + c + ":argument description}\n";
+                        addedReturn = true;
+                    }
+                    c++;
+                }
+                if (!addedReturn) {
+                    snippetText += `*> @return return-code`;
+                }
                 snippet.insertText = new SnippetString(snippetText);
                 items.push(snippet);
             }
