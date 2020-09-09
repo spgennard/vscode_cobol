@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#196](https://github.com/spgennard/vscode_cobol/issues/196) Add missing pagebreak to COBOL Syntax  
+
+**Add missing pagebreak to COBOL Syntax Fix #196**
+
+
+[4e5a187b205ef43](https://github.com/spgennard/vscode_cobol/commit/4e5a187b205ef43) *2020-09-08 21:13:10*
+
+
 ## 6.7.0
 ### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
 

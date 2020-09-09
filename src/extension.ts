@@ -99,92 +99,110 @@ export function isPathInWorkspace(ddir: string): boolean {
     return false;
 }
 
+const blessed_extensions: string[] = [
+    "bitlang.cobol",
+    "HCLTechnologies.hclappscancodesweep",      // code scanner
+    "BroadcomMFD.debugger-for-mainframe",       // debugger
+    "rechinformatica.rech-cobol-debugger",      // debugger
+    "BroadcomMFD.ccf"                           // control flow extension
+];
+
 function checkForExtensionConflicts(settings: ICOBOLSettings): string {
     let dupExtensionMessage = "";
 
     for (const ext of extensions.all) {
         if (ext !== undefined && ext.packageJSON !== undefined) {
-            const contribuesWhat = ext.packageJSON.contributes;
-            if (contribuesWhat !== undefined) {
-
-                // dont include ourself in the check, may want to introduce a "blessed" list
-                // of extensions at some point
-                if (ext.packageJSON.publisher !== undefined && ext.packageJSON.publisher === 'bitlang') {
+            if (ext.packageJSON.id !== undefined) {
+                let isOkay = false;
+                for (const blessed_extension of blessed_extensions) {
+                    if (blessed_extension === ext.packageJSON.id) {
+                        isOkay = true;
+                    }
+                }
+                if (isOkay) {
                     continue;
                 }
-                let grab_info_for_ext: vscode.Extension<any> | undefined = undefined;
-                let reason: string = "";
+            }
+        }
 
-                const grammarsBody = ext.packageJSON.contributes.grammars;
-                if (grammarsBody !== undefined) {
-                    if (grammarsBody instanceof Object) {
-                        for (const key in grammarsBody) {
-                            const element = grammarsBody[key];
-                            if (element.language !== undefined) {
-                                const l = `${element.language}`.toUpperCase();
-                                if (l === 'COBOL') {
-                                    grab_info_for_ext = ext;
-                                    reason = " contributes grammar";
-                                }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let grab_info_for_ext: vscode.Extension<any> | undefined = undefined;
+        let reason = "";
+
+        if (ext.packageJSON.contributes !== undefined) {
+            const grammarsBody = ext.packageJSON.contributes.grammars;
+            if (grammarsBody !== undefined) {
+                if (grammarsBody instanceof Object) {
+                    for (const key in grammarsBody) {
+                        const element = grammarsBody[key];
+                        if (element.language !== undefined) {
+                            const l = `${element.language}`.toUpperCase();
+                            if (l === 'COBOL') {
+                                grab_info_for_ext = ext;
+                                reason = "contributes grammar";
                             }
                         }
                     }
                 }
+            }
 
-                const languagesBody = ext.packageJSON.contributes.languages;
-                if (languagesBody !== undefined) {
-                    if (languagesBody instanceof Object) {
-                        for (const key in languagesBody) {
-                            const languageElement = languagesBody[key];
-                            if (languageElement.id !== undefined) {
-                                const l = `${languageElement.id}`.toUpperCase();
-                                if (l === 'COBOL') {
-                                    grab_info_for_ext = ext;
-                                    if (reason.length !== 0) {
-                                        reason += ", ";
-                                    }
-                                    reason += " contributes language id";
+            const languagesBody = ext.packageJSON.contributes.languages;
+            if (languagesBody !== undefined) {
+                if (languagesBody instanceof Object) {
+                    for (const key in languagesBody) {
+                        const languageElement = languagesBody[key];
+                        if (languageElement.id !== undefined) {
+                            const l = `${languageElement.id}`.toUpperCase();
+                            if (l === 'COBOL') {
+                                grab_info_for_ext = ext;
+                                if (reason.length !== 0) {
+                                    reason += ", ";
                                 }
+                                reason += "contributes language id";
                             }
                         }
                     }
                 }
+            }
+        }
 
-                if (grab_info_for_ext !== undefined) {
-                    if (dupExtensionMessage.length === 0) {
-                        if (settings.ignore_unsafe_extensions === false) {
-                            dupExtensionMessage += "The COBOL Extension from bitlang may produce duplicate results due to\n";
-                            dupExtensionMessage += " other extensions for COBOL being present.\n\n";
-                            dupExtensionMessage += "If you do not want see this warning message, change the setting\n";
-                            dupExtensionMessage += " coboleditor.ignore_unsafe_extensions to true and restart vscode\n";
-                        }
-                    }
-                    dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
-
-                    if (grab_info_for_ext.packageJSON.description !== undefined) {
-                        dupExtensionMessage += ` Description   : ${grab_info_for_ext.packageJSON.description}\n`;
-                    }
-                    if (grab_info_for_ext.packageJSON.version !== undefined) {
-                        dupExtensionMessage += ` Version       : ${grab_info_for_ext.packageJSON.version}\n`;
-                    }
-                    if (grab_info_for_ext.packageJSON.repository !== undefined && grab_info_for_ext.packageJSON.repository.url !== undefined) {
-                        dupExtensionMessage += ` Repository    : ${grab_info_for_ext.packageJSON.repository.url}\n`;
-                    }
-                    if (grab_info_for_ext.packageJSON.bugs !== undefined && grab_info_for_ext.packageJSON.bugs.url !== undefined) {
-                        dupExtensionMessage += ` Bug Reporting : ${grab_info_for_ext.packageJSON.bugs.url}\n`;
-                    }
-                    if (grab_info_for_ext.packageJSON.bugs !== undefined && grab_info_for_ext.packageJSON.bugs.email !== undefined) {
-                        dupExtensionMessage += ` Bug Email     : ${grab_info_for_ext.packageJSON.bugs.email}\n`;
-                    }
-                    if (reason.length !== 0) {
-                        dupExtensionMessage += ` Reason        : ${reason}\n}`;
-                    }
-                    if (dupExtensionMessage.length !== 0) {
-                        dupExtensionMessage += "\n";
-                    }
-
+        if (grab_info_for_ext !== undefined) {
+            if (dupExtensionMessage.length === 0) {
+                if (settings.ignore_unsafe_extensions === false) {
+                    dupExtensionMessage += " The COBOL Extension from bitlang may produce duplicate results due to\n";
+                    dupExtensionMessage += "  other extensions for COBOL being present.\n\n";
+                    dupExtensionMessage += " If you do not want see this warning message, change the setting\n";
+                    dupExtensionMessage += "  coboleditor.ignore_unsafe_extensions to true and restart vscode\n\n";
+                    dupExtensionMessage += "NOTE: If you think the extension is being reported as 'unsafe' unfairly\n";
+                    dupExtensionMessage += "      please raise issue @ https://github.com/spgennard/vscode_cobol/issues\n";
                 }
+            }
+            dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
 
+            if (grab_info_for_ext.packageJSON.id !== undefined) {
+                dupExtensionMessage += ` Id            : ${grab_info_for_ext.packageJSON.id}\n`;
+
+                if (grab_info_for_ext.packageJSON.description !== undefined) {
+                    dupExtensionMessage += ` Description   : ${grab_info_for_ext.packageJSON.description}\n`;
+                }
+                if (grab_info_for_ext.packageJSON.version !== undefined) {
+                    dupExtensionMessage += ` Version       : ${grab_info_for_ext.packageJSON.version}\n`;
+                }
+                if (grab_info_for_ext.packageJSON.repository !== undefined && grab_info_for_ext.packageJSON.repository.url !== undefined) {
+                    dupExtensionMessage += ` Repository    : ${grab_info_for_ext.packageJSON.repository.url}\n`;
+                }
+                if (grab_info_for_ext.packageJSON.bugs !== undefined && grab_info_for_ext.packageJSON.bugs.url !== undefined) {
+                    dupExtensionMessage += ` Bug Reporting : ${grab_info_for_ext.packageJSON.bugs.url}\n`;
+                }
+                if (grab_info_for_ext.packageJSON.bugs !== undefined && grab_info_for_ext.packageJSON.bugs.email !== undefined) {
+                    dupExtensionMessage += ` Bug Email     : ${grab_info_for_ext.packageJSON.bugs.email}\n`;
+                }
+                if (reason.length !== 0) {
+                    dupExtensionMessage += ` Reason        : ${reason}\n`;
+                }
+                if (dupExtensionMessage.length !== 0) {
+                    dupExtensionMessage += "\n";
+                }
             }
         }
     }
