@@ -434,7 +434,7 @@ class ParseState {
         this.current01Group = COBOLToken.Null;
         this.currentLevel = COBOLToken.Null;
         this.currentFunctionId = COBOLToken.Null;
-        this.currentProgramTarget = new CallTargetInformation(COBOLToken.Null , false, []);
+        this.currentProgramTarget = new CallTargetInformation(COBOLToken.Null, false, []);
         this.programs = [];
         this.captureDivisions = true;
         this.copyBooksUsed = new Map<string, COBOLToken>();
@@ -1140,7 +1140,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 // no forward validation can be done, as this is a one pass scanner
                                 this.addReference(this.sourceReferences.targetReferences, tcurrentLower, lineNumber, token.currentCol);
                             }
-                            state.parameters.push(new COBOLParameter(state.using, tcurrent ));
+                            state.parameters.push(new COBOLParameter(state.using, tcurrent));
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
                     }
                     if (endWithDot) {
@@ -2046,17 +2046,38 @@ export class COBOLSymbolTableHelper {
                 fs.unlinkSync(fn);
                 return undefined;
             }
+
             const str: string = fs.readFileSync(fn).toString();
-            const cachableTable = JSON.parse(lzjs.decompress(str), reviver);
-            InMemorySymbolCache.set(filename, cachableTable);
-            return cachableTable;
+            try {
+                const cachableTable = JSON.parse(lzjs.decompress(str), reviver);
+                InMemorySymbolCache.set(filename, cachableTable);
+                return cachableTable;
+            } catch {
+                try {
+                    fs.unlinkSync(fn);
+                } catch {
+                    logMessage(`Unable to remove symbol file : ${fn}`);
+                }
+                logMessage(` Symbol file removed : ${fn}`);
+
+                return undefined;
+            }
         }
         return undefined;
     }
 
     public static getSymbolTable_direct(nfilename: string): COBOLSymbolTable | undefined {
         const str: string = fs.readFileSync(nfilename).toString();
-        return JSON.parse(lzjs.decompress(str), reviver);
+        try {
+            return JSON.parse(lzjs.decompress(str), reviver);
+        } catch {
+            try {
+                fs.unlinkSync(nfilename);
+            } catch {
+                logMessage(`Unable to remove symbol file : ${nfilename}`);
+            }
+            logMessage(`Symbol file removed ${nfilename}`);
+        }
     }
 
 }
