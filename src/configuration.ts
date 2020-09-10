@@ -188,10 +188,6 @@ function getLinter_unused_paragraphs_or_sections(): boolean {
     return getBoolean("linter_unused_paragraphs_or_sections", true);
 }
 
-function getlinter_mark_as_information(): boolean {
-    return getBoolean("linter_mark_as_information", true);
-}
-
 function getFuzzyVariableSearch(): boolean {
     return getBoolean('fuzzy_variable_search', false);
 }
@@ -225,10 +221,6 @@ function getParse_copybooks_for_references(): boolean {
 
 function getIntellisense_include_lowercase(): boolean {
     return getBoolean("intellisense_include_lowercase",false);
-}
-
-function getMigrate_copybooks_directories_to_workspace(): boolean {
-    return getBoolean("migrate_network_copybooks_directories_to_workspace", true);
 }
 
 function getLinter_house_standards(): boolean {

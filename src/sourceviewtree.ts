@@ -182,11 +182,16 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
                 try {
-                    const fileExtension = i.split('.').pop();
-                    if (fileExtension) {
-                        if (isValidExtension(fileExtension)) {
-                            const vFile = vscode.Uri.file(i);
-                            this.addExtension(fileExtension, vFile);
+                    const lastDot = i.lastIndexOf(".");
+
+                    // if we have an extension, only process if we think it is valid
+                    if (lastDot !== -1) {
+                        if (isValidExtension(i)) {
+                            const fileExtension = i.substr(1+lastDot);
+                            if (fileExtension !== undefined) {
+                                const vFile = vscode.Uri.file(i);
+                                this.addExtension(fileExtension, vFile);
+                            }
                         }
                     }
                 }

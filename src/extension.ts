@@ -14,6 +14,8 @@ import { cobolKeywords } from "./keywords/cobolKeywords";
 
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
+import * as cachedsourcedefinitionprovider from './cachedsourcedefinitionprovider';
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as vscode from "vscode";
@@ -40,6 +42,8 @@ import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLDocumentationGenerator } from './coboldocgenerator';
 import { CobolCommentProvider } from './cobolcommentprovider';
+import { copy } from 'typescript-collections/dist/lib/arrays';
+import { config } from 'process';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -310,10 +314,10 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage(" Version           : " + thisExtension.packageJSON.version);
 
         if (VSCOBOLConfiguration.isCachingEnabled()) {
-            logMessage(" Caching                       : " + VSCOBOLConfiguration.getCachingSetting());
-            logMessage("  Cache Strategy               : " + VSCOBOLConfiguration.getCache_directory_strategy());
+            logMessage(` Caching                       : ${settings.cache_metadata}`);
+            logMessage(`  Cache Strategy               : ${settings.cache_directory_strategy}`);
             logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
-            logMessage("  UNC paths disabled           : " + VSCOBOLConfiguration.getDisable_unc_copybooks());
+            logMessage(`  UNC paths disabled           : ${settings.disable_unc_copybooks_directories}`);
         }
         logMessage(" Parse copybook for references : " + VSCOBOLConfiguration.getParse_copybooks_for_references());
     }
@@ -604,17 +608,28 @@ export function activate(context: ExtensionContext): void {
         { scheme: 'file', language: 'entcobol' }
     ];
 
-    languages.registerDefinitionProvider(allCobolSelectors, {
+    const copyBookProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return opencopybook.provideDefinition(doc, pos, ct);
         }
     });
+    context.subscriptions.push(copyBookProvider);
 
-    languages.registerDefinitionProvider(allCobolSelectors, {
+    const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return sourcedefinitionprovider.provideDefinition(doc, pos, ct);
         }
     });
+    context.subscriptions.push(sourcedefProvider);
+
+    if (VSCOBOLConfiguration.isCachingEnabled()) {
+        const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
+            provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+                return cachedsourcedefinitionprovider.provideDefinition(doc, pos, ct);
+            }
+        });
+        context.subscriptions.push(sourcedefProvider);
+    }
 
     context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors, cobolfixer));

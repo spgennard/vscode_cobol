@@ -9,27 +9,25 @@ import { VSCOBOLConfiguration } from './configuration';
 
 
 export function isValidExtension(filename: string): boolean {
-    switch (filename) {
-        case "tags":
-        case ".tag":
-        case ".ctags":
-        case ".diff":
-        case ".c":
-        case ".h":
+    const lastDot = filename.lastIndexOf(".");
+    let extension = filename;
+    if (lastDot !== -1) {
+        extension = filename.substr(1+lastDot);
+    }
+
+    switch (extension) {
+        case "tag":
+        case "ctags":
+        case "diff":
+        case "c":
+        case "h":
             return false;
     }
+
     const exts = VSCOBOLConfiguration.getExtentions();
     for (let extpos = 0; extpos < exts.length; extpos++) {
-        const ext = exts[extpos];
-        if (ext.length !== 0) {
-            if (filename.endsWith(ext)) {
-                return true;
-            }
-        } else {
-            // true to parse it, if we have no extension
-            if (filename.indexOf(".") === -1) {
-                return true;
-            }
+        if (exts[extpos] === extension) {
+            return true;
         }
     }
     return false;
@@ -89,7 +87,7 @@ function extractCopyBoolFilename(str: string) {
 }
 
 // only handle unc filenames
-export function isNetworkPath(dir: string):boolean {
+export function isNetworkPath(dir: string): boolean {
     if (dir === undefined && dir === null) {
         return false;
     }
@@ -104,7 +102,7 @@ export function isNetworkPath(dir: string):boolean {
 
 }
 
-export function isDirectPath(dir: string):boolean {
+export function isDirectPath(dir: string): boolean {
     if (dir === undefined && dir === null) {
         return false;
     }

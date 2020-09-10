@@ -478,7 +478,14 @@ export class CallTargetInformation {
     }
 }
 
-export default class COBOLSourceScanner implements ICommentCallback {
+export interface ICOBOLSourceScanner {
+    filename: string;
+    lastModifiedTime: number;
+    copyBooksUsed: any;
+    tokensInOrder: any;
+}
+
+export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
     public filename: string;
     public lastModifiedTime: number;
 
@@ -1920,7 +1927,7 @@ export class COBOLSymbolTable {
 }
 
 export class COBOLSymbolTableHelper {
-    public static getCOBOLSymbolTable(qp: COBOLSourceScanner): COBOLSymbolTable {
+    public static getCOBOLSymbolTable(qp: ICOBOLSourceScanner): COBOLSymbolTable {
         const st = new COBOLSymbolTable();
         st.fileName = qp.filename;
         st.lastModifiedTime = qp.lastModifiedTime;

@@ -1,11 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { isFile } from "./extension";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
 import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer, COBOLFileSymbol } from "./cobolsourcescanner";
 
 export class InMemoryGlobalCachesHelper {
-    public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string) {
+    public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string):boolean {
         //let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
         const fn: string = path.join(cacheDirectory, globalSymbolFilename);
         if (isFile(fn)) {
@@ -25,12 +26,12 @@ export class InMemoryGlobalCachesHelper {
                     return false;
                 }
             }
-            return false;
         }
+        return false;
     }
 
 
-    public static loadInMemoryGlobalFileCache(cacheDirectory: string) {
+    public static loadInMemoryGlobalFileCache(cacheDirectory: string):boolean {
         const fn: string = path.join(cacheDirectory, fileSymbolFilename);
 
         if (isFile(fn)) {
@@ -51,13 +52,12 @@ export class InMemoryGlobalCachesHelper {
                     return false;
                 }
             }
-            return false;
         }
-
+        return false;
     }
 
 
-    public static saveInMemoryGlobalCaches(cacheDirectory: string) {
+    public static saveInMemoryGlobalCaches(cacheDirectory: string):void {
 
         if (InMemoryGlobalSymbolCache.isDirty) {
             const fnGlobalSymbolFilename: string = path.join(cacheDirectory, globalSymbolFilename);
@@ -131,26 +131,26 @@ export class InMemoryGlobalCachesHelper {
     }
 
 
-    public static addClassSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number) {
+    public static addClassSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number):void {
         const symbolsCache = InMemoryGlobalSymbolCache.classSymbols;
 
         InMemoryGlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
     }
 
 
-    public static addMethodSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number) {
+    public static addMethodSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number):void {
         const symbolsCache = InMemoryGlobalSymbolCache.methodSymbols;
         InMemoryGlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
     }
 
 
-    public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number) {
+    public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number):void {
         const symbolsCache = InMemoryGlobalSymbolCache.callableSymbols;
         InMemoryGlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
     }
 
 
-    public static addCopyBookFilename(srcfilename: string) {
+    public static addCopyBookFilename(srcfilename: string):void {
         const symbolsCache = InMemoryGlobalFileCache.copybookFileSymbols;
         InMemoryGlobalCachesHelper.addSymbolFileToCache(srcfilename, symbolsCache);
     }
