@@ -18,6 +18,7 @@ import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
+import { clearCOBOLCache } from "./vscobolscanner";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -810,6 +811,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
+                clearCOBOLCache();
                 InMemoryGlobalSymbolCache.callableSymbols.clear();
                 InMemoryGlobalSymbolCache.classSymbols.clear();
                 InMemoryGlobalSymbolCache.isDirty = false;

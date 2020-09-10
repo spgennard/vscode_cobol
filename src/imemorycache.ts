@@ -6,6 +6,7 @@ const lzjs = require('lzjs');
 import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer, COBOLFileSymbol } from "./cobolsourcescanner";
 
 export class InMemoryGlobalCachesHelper {
+
     public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string):boolean {
         //let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
         const fn: string = path.join(cacheDirectory, globalSymbolFilename);

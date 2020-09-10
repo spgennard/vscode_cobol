@@ -15,6 +15,10 @@ import { getWorkspaceFolders } from "./cobolfolders";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 
+export function clearCOBOLCache():void {
+    InMemoryCache.clear();
+}
+
 export default class VSQuickCOBOLParse {
 
     public static isFile(fileName: string): boolean {

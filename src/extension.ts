@@ -26,7 +26,7 @@ import COBOLSourceScanner from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSQuickCOBOLParse, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
@@ -42,8 +42,6 @@ import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLDocumentationGenerator } from './coboldocgenerator';
 import { CobolCommentProvider } from './cobolcommentprovider';
-import { copy } from 'typescript-collections/dist/lib/arrays';
-import { config } from 'process';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -216,6 +214,7 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
 
 let checkForExtensionConflictsMessage = "";
 let messageBoxDone = false;
+
 function initExtensionSearchPaths(config: ICOBOLSettings) {
 
     checkForExtensionConflictsMessage = checkForExtensionConflicts(config);
@@ -386,6 +385,7 @@ export function activate(context: ExtensionContext): void {
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+        clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
     });
     context.subscriptions.push(onDidChangeConfiguration);
