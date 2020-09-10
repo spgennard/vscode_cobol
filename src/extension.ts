@@ -309,16 +309,13 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
     if (thisExtension !== undefined) {
         logMessage("VSCode version : " + vscode.version);
         logMessage("Extension Information:");
-        logMessage(" Extension path    : " + thisExtension.extensionPath);
-        logMessage(" Version           : " + thisExtension.packageJSON.version);
-
-        if (VSCOBOLConfiguration.isCachingEnabled()) {
-            logMessage(` Caching                       : ${settings.cache_metadata}`);
-            logMessage(`  Cache Strategy               : ${settings.cache_directory_strategy}`);
-            logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
-            logMessage(`  UNC paths disabled           : ${settings.disable_unc_copybooks_directories}`);
-        }
-        logMessage(" Parse copybook for references : " + VSCOBOLConfiguration.getParse_copybooks_for_references());
+        logMessage(` Extension path    : ${thisExtension.extensionPath}`);
+        logMessage(` Version           : ${thisExtension.packageJSON.version}`);
+        logMessage(` Caching                       : ${settings.cache_metadata}`);
+        logMessage(`  Cache Strategy               : ${settings.cache_directory_strategy}`);
+        logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
+        logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
+        logMessage(` Parse copybook for references : ${VSCOBOLConfiguration.getParse_copybooks_for_references()}`);
     }
 
     initExtensionSearchPaths(settings);
@@ -622,7 +619,7 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(sourcedefProvider);
 
-    if (VSCOBOLConfiguration.isCachingEnabled()) {
+    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
         const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
                 return cachedsourcedefinitionprovider.provideDefinition(doc, pos, ct);
@@ -1005,7 +1002,7 @@ export function hideMarginStatusBar(): void {
 }
 
 export async function deactivateAsync(): Promise<void> {
-    if (VSCOBOLConfiguration.isCachingEnabled()) {
+    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
         formatStatusBarItem.dispose();
     }

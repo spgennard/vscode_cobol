@@ -207,7 +207,6 @@
                 "coboleditor.cache_metadata": {
                     "enum": [
                         "off",
-                        "partial",
                         "on"
                     ],
                     "default": "off",
@@ -215,7 +214,6 @@
                     "title": "search inside copybook references and more",
                     "enumDescriptions": [
                         "No metadata caching",
-                        "In memory cache only",
                         "Save as much metadata as possible in .vscode_cobol directory"
                     ]
                 },

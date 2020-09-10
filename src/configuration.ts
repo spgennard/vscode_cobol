@@ -96,7 +96,6 @@ export class VSCOBOLConfiguration {
 
             switch (cacheEnum) {
                 case "on": return true;
-                case "partial": return true;
                 case "off": return false;
             }
         }
@@ -107,7 +106,6 @@ export class VSCOBOLConfiguration {
         const cacheEnum = getCachingSetting();
         switch (cacheEnum) {
             case "on": return true;
-            case "partial": return false;
             case "off": return false;
         }
         return false;

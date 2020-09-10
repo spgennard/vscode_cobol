@@ -41,7 +41,7 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     const locations: vscode.Location[] = [];
 
-    if (VSCOBOLConfiguration.isCachingEnabled() === false) {
+    if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
         return locations;
     }
 

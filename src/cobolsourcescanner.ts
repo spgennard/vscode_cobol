@@ -483,8 +483,8 @@ export class CallTargetInformation {
 export interface ICOBOLSourceScanner {
     filename: string;
     lastModifiedTime: number;
-    copyBooksUsed: any;
-    tokensInOrder: any;
+    copyBooksUsed: Map<string, COBOLToken>;
+    tokensInOrder: COBOLToken[];
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
@@ -866,7 +866,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (!(symTable.labelSymbols.size === 0 && symTable.variableSymbols.size === 0)) {
                         logMessage(" " + symTable.fileName + " in " + file);
                         logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
+
+                        for (const [i, value] of symTable.labelSymbols.entries()) {
+                            logMessage(`     ${value.symbol}:${value.symbol}`);
+                        }
+
                         logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
+                        for (const [i, value] of symTable.variableSymbols.entries()) {
+                            logMessage(`     ${value.symbol}:${value.symbol}`);
+                        }
                     }
                 }
             }
