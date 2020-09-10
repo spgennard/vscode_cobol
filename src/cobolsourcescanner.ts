@@ -13,12 +13,13 @@ import { logMessage, logException, isFile } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
-import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
 import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
+import { VSCOBOLConfiguration } from "./configuration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -829,7 +830,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
 
-        if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {
+        if (VSCOBOLConfiguration.isCachingEnabled() === false) {
             logMessage("Metadata is not enabled");
             return;
         }
@@ -862,9 +863,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
                 const symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
                 if (symTable !== undefined) {
-                    logMessage(" " + symTable.fileName + " in " + file);
-                    logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
-                    logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
+                    if (!(symTable.labelSymbols.size === 0 && symTable.variableSymbols.size === 0)) {
+                        logMessage(" " + symTable.fileName + " in " + file);
+                        logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
+                        logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
+                    }
                 }
             }
         }
