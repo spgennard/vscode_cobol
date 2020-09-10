@@ -8,7 +8,7 @@ import { getCombinedCopyBookSearchPath, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 
 
-export function isValidExtension(filename: string): boolean {
+export function isValidCopybookExtension(filename: string): boolean {
     const lastDot = filename.lastIndexOf(".");
     let extension = filename;
     if (lastDot !== -1) {

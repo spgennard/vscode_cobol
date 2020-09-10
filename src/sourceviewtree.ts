@@ -5,7 +5,7 @@ import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
 import { InMemoryGlobalFileCache } from './cobolsourcescanner';
-import { isValidExtension } from './opencopybook';
+import { isValidCopybookExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
 import { logException } from './extension';
 
@@ -186,7 +186,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
                     // if we have an extension, only process if we think it is valid
                     if (lastDot !== -1) {
-                        if (isValidExtension(i)) {
+                        if (isValidCopybookExtension(i)) {
                             const fileExtension = i.substr(1+lastDot);
                             if (fileExtension !== undefined) {
                                 const vFile = vscode.Uri.file(i);

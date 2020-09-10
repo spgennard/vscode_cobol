@@ -1882,11 +1882,9 @@ export function reviver(key: any, value: any): any {
 export class COBOLGlobalFileTable {
     public lastModifiedTime = 0;
     public isDirty = false;
-    public callableFileSymbols: Map<string, COBOLFileSymbol[]>;
     public copybookFileSymbols: Map<string, COBOLFileSymbol[]>;
 
     public constructor() {
-        this.callableFileSymbols = new Map<string, COBOLFileSymbol[]>();
         this.copybookFileSymbols = new Map<string, COBOLFileSymbol[]>();
     }
 }

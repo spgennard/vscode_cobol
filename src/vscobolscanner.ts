@@ -8,7 +8,7 @@ import * as path from 'path';
 
 import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
-import { isValidExtension } from "./opencopybook";
+import { isValidCopybookExtension } from "./opencopybook";
 import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 
@@ -143,7 +143,7 @@ export default class VSQuickCOBOLParse {
         const stat = fs.statSync(filename);
 
         if (stat.isDirectory() === false) {
-            const parseThisFilename = filterOnExtension ? isValidExtension(filename) : true;
+            const parseThisFilename = filterOnExtension ? isValidCopybookExtension(filename) : true;
             if (parseThisFilename) {
                 if (VSQuickCOBOLParse.isFile(filename) === true) {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {

@@ -42,7 +42,6 @@ export class InMemoryGlobalCachesHelper {
 
                     const str: string = fs.readFileSync(fn).toString();
                     const cachableTable: COBOLGlobalFileTable = JSON.parse(lzjs.decompress(str), reviver);
-                    InMemoryGlobalFileCache.callableFileSymbols = cachableTable.callableFileSymbols;
                     InMemoryGlobalFileCache.copybookFileSymbols = cachableTable.copybookFileSymbols;
                     InMemoryGlobalFileCache.lastModifiedTime = stat4cache.mtimeMs;
                     InMemoryGlobalFileCache.isDirty = false;
