@@ -850,7 +850,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 logMessage("  " + i + " => empty");
             } else {
                 fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                    logMessage(String.Format(" {0} => {1} @ {2}", i.padEnd(40), value.filename, value.lnum));
+                    logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum));
                 });
             }
         }
