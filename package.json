@@ -1279,39 +1279,43 @@
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\).*$",
-                "severity": 1,
-                "message": 2,
-                "file": 3,
-                "line": 4,
-                "column": 5
+                "regexp": "^\\*+\\s+COBCH(\\d)+([a-zA-Z])\\s+([^:]+):\\s+(\\S*)\\((\\d+),(\\d+).*\\).*$",
+                "code": 1,
+                "severity": 2,
+                "message": 3,
+                "file": 4,
+                "line": 5,
+                "column": 6
             },
             {
                 "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+([^\\(]*)\\((\\d+),(\\d+).*\\).*$",
-                "severity": 1,
-                "message": 2,
-                "file": 3,
-                "line": 4,
-                "column": 5
+                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+):\\s+([^\\(]*)\\((\\d+),(\\d+).*\\).*$",
+                "code": 1,
+                "severity": 2,
+                "message": 3,
+                "file": 4,
+                "line": 5,
+                "column": 6
             },
             {
                 "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
-                "severity": 1,
-                "message": 2,
-                "file": 3,
-                "line": 4,
-                "column": 5
+                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
+                "code": 1,
+                "severity": 2,
+                "message": 3,
+                "file": 4,
+                "line": 5,
+                "column": 6
             },
             {
                 "name": "mfcobol-errformat2-basefn",
-                "regexp": "^\\*+\\s+COBCH\\d+([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
-                "severity": 1,
-                "message": 2,
-                "file": 3,
-                "line": 4,
-                "column": 5
+                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
+                "code": 1,
+                "severity": 2,
+                "message": 3,
+                "file": 4,
+                "line": 5,
+                "column": 6
             },
             {
                 "name": "mfcobol-errformat3",
