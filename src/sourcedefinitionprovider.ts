@@ -126,6 +126,9 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
 
     for (let i = 0; i < tokens.length; i++) {
         const token: COBOLToken = tokens[i];
+        if (token.tokenNameLower === "filler") {
+            continue;
+        }
 
         switch (token.tokenType) {
             case COBOLTokenStyle.Constant:

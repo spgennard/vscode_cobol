@@ -56,6 +56,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
                     if (tokens !== undefined) {
                         for (const token of tokens) {
+                            if (token.tokenNameLower === "filler") {
+                                continue;
+                            }
                             words.add(token);
                         }
                     }
