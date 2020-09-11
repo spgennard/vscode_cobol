@@ -650,12 +650,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
+                logMessage(` Unabled to determine if ${filename} is COBOL after scanning ${maxLines} lines`);
                 return;
             }
 
         } else {
             sourceLooksLikeCOBOL = true;
         }
+        sourceHandler.resetCommentCount();
 
         this.sourceFormat = getCOBOLSourceFormat(sourceHandler, configHandler);
         switch (this.sourceFormat) {
@@ -669,6 +671,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         let line = "";
         prevToken = Token.Blank;
+        sourceHandler.resetCommentCount();
+
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 line = sourceHandler.getLine(l).trimRight();

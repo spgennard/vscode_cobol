@@ -143,4 +143,8 @@ export class FileSourceHandler implements ISourceHandler {
     setCommentCallback(commentCallback: ICommentCallback):void {
         this.commentCallback = commentCallback;
     }
+
+    resetCommentCount():void {
+        this.commentCount = 0;
+    }
 }

@@ -417,7 +417,7 @@ and looks like:
 
 COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "goto definition".
 
-If you do not have caching enabled, my recommendation is to use "file searches" to locate the required information.
+If you do not have caching enabled, my recommendation is to use "file searches" to locate the sourcrequired information.
 
 | Settings                        | Description of use                                                                         |
 |---------------------------------|--------------------------------------------------------------------------------------------|
