@@ -14,6 +14,8 @@ import { cobolKeywords } from "./keywords/cobolKeywords";
 
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 import * as sourcedefinitionprovider from './sourcedefinitionprovider';
+import * as cachedsourcedefinitionprovider from './cachedsourcedefinitionprovider';
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as vscode from "vscode";
@@ -24,7 +26,7 @@ import COBOLSourceScanner from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSQuickCOBOLParse, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
@@ -212,6 +214,7 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
 
 let checkForExtensionConflictsMessage = "";
 let messageBoxDone = false;
+
 function initExtensionSearchPaths(config: ICOBOLSettings) {
 
     checkForExtensionConflictsMessage = checkForExtensionConflicts(config);
@@ -306,16 +309,13 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
     if (thisExtension !== undefined) {
         logMessage("VSCode version : " + vscode.version);
         logMessage("Extension Information:");
-        logMessage(" Extension path    : " + thisExtension.extensionPath);
-        logMessage(" Version           : " + thisExtension.packageJSON.version);
-
-        if (VSCOBOLConfiguration.isCachingEnabled()) {
-            logMessage(" Caching                       : " + VSCOBOLConfiguration.getCachingSetting());
-            logMessage("  Cache Strategy               : " + VSCOBOLConfiguration.getCache_directory_strategy());
-            logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
-            logMessage("  UNC paths disabled           : " + VSCOBOLConfiguration.getDisable_unc_copybooks());
-        }
-        logMessage(" Parse copybook for references : " + VSCOBOLConfiguration.getParse_copybooks_for_references());
+        logMessage(` Extension path    : ${thisExtension.extensionPath}`);
+        logMessage(` Version           : ${thisExtension.packageJSON.version}`);
+        logMessage(` Caching                       : ${settings.cache_metadata}`);
+        logMessage(`  Cache Strategy               : ${settings.cache_directory_strategy}`);
+        logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
+        logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
+        logMessage(` Parse copybook for references : ${VSCOBOLConfiguration.getParse_copybooks_for_references()}`);
     }
 
     initExtensionSearchPaths(settings);
@@ -382,6 +382,7 @@ export function activate(context: ExtensionContext): void {
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+        clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
     });
     context.subscriptions.push(onDidChangeConfiguration);
@@ -604,17 +605,28 @@ export function activate(context: ExtensionContext): void {
         { scheme: 'file', language: 'entcobol' }
     ];
 
-    languages.registerDefinitionProvider(allCobolSelectors, {
+    const copyBookProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return opencopybook.provideDefinition(doc, pos, ct);
         }
     });
+    context.subscriptions.push(copyBookProvider);
 
-    languages.registerDefinitionProvider(allCobolSelectors, {
+    const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             return sourcedefinitionprovider.provideDefinition(doc, pos, ct);
         }
     });
+    context.subscriptions.push(sourcedefProvider);
+
+    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+        const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
+            provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+                return cachedsourcedefinitionprovider.provideDefinition(doc, pos, ct);
+            }
+        });
+        context.subscriptions.push(sourcedefProvider);
+    }
 
     context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors, cobolfixer));
@@ -990,7 +1002,7 @@ export function hideMarginStatusBar(): void {
 }
 
 export async function deactivateAsync(): Promise<void> {
-    if (VSCOBOLConfiguration.isCachingEnabled()) {
+    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
         InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
         formatStatusBarItem.dispose();
     }

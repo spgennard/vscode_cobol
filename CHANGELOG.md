@@ -3,6 +3,15 @@
 
 Changelog for spgennard vscode_cobol.
 
+## 6.7.14
+### GitHub [#198](https://github.com/spgennard/vscode_cobol/issues/198) problemMatcher: please add code attribute where possible  
+
+**problemMatcher: please add code attribute where possible Fix #198**
+
+
+[82223c11e6cfe82](https://github.com/spgennard/vscode_cobol/commit/82223c11e6cfe82) *2020-09-10 18:30:03*
+
+
 ## 6.7.11
 ### GitHub [#198](https://github.com/spgennard/vscode_cobol/issues/198) problemMatcher: please add code attribute where possible  
 

@@ -13,11 +13,13 @@ import { logMessage, logException, isFile } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
-import { ICOBOLSettings, COBOLSettingsHelper } from "./iconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
 import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
+import { clearCOBOLCache } from "./vscobolscanner";
+import { VSCOBOLConfiguration } from "./configuration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -433,7 +435,7 @@ class ParseState {
         this.current01Group = COBOLToken.Null;
         this.currentLevel = COBOLToken.Null;
         this.currentFunctionId = COBOLToken.Null;
-        this.currentProgramTarget = new CallTargetInformation(COBOLToken.Null , false, []);
+        this.currentProgramTarget = new CallTargetInformation(COBOLToken.Null, false, []);
         this.programs = [];
         this.captureDivisions = true;
         this.copyBooksUsed = new Map<string, COBOLToken>();
@@ -478,7 +480,14 @@ export class CallTargetInformation {
     }
 }
 
-export default class COBOLSourceScanner implements ICommentCallback {
+export interface ICOBOLSourceScanner {
+    filename: string;
+    lastModifiedTime: number;
+    copyBooksUsed: Map<string, COBOLToken>;
+    tokensInOrder: COBOLToken[];
+}
+
+export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
     public filename: string;
     public lastModifiedTime: number;
 
@@ -803,6 +812,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
+                clearCOBOLCache();
                 InMemoryGlobalSymbolCache.callableSymbols.clear();
                 InMemoryGlobalSymbolCache.classSymbols.clear();
                 InMemoryGlobalSymbolCache.isDirty = false;
@@ -820,7 +830,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
 
-        if (COBOLSettingsHelper.isCachingEnabled(settings) === false) {
+        if (VSCOBOLConfiguration.isCachingEnabled() === false) {
             logMessage("Metadata is not enabled");
             return;
         }
@@ -841,7 +851,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                 logMessage("  " + i + " => empty");
             } else {
                 fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                    logMessage(String.Format(" {0} => {1} @ {2}", i.padEnd(40), value.filename, value.lnum));
+                    logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum));
                 });
             }
         }
@@ -853,9 +863,19 @@ export default class COBOLSourceScanner implements ICommentCallback {
             if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
                 const symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
                 if (symTable !== undefined) {
-                    logMessage(" " + symTable.fileName + " in " + file);
-                    logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
-                    logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
+                    if (!(symTable.labelSymbols.size === 0 && symTable.variableSymbols.size === 0)) {
+                        logMessage(" " + symTable.fileName + " in " + file);
+                        logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
+
+                        for (const [i, value] of symTable.labelSymbols.entries()) {
+                            logMessage(`     ${value.symbol}:${value.symbol}`);
+                        }
+
+                        logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
+                        for (const [i, value] of symTable.variableSymbols.entries()) {
+                            logMessage(`     ${value.symbol}:${value.symbol}`);
+                        }
+                    }
                 }
             }
         }
@@ -1131,7 +1151,7 @@ export default class COBOLSourceScanner implements ICommentCallback {
                                 // no forward validation can be done, as this is a one pass scanner
                                 this.addReference(this.sourceReferences.targetReferences, tcurrentLower, lineNumber, token.currentCol);
                             }
-                            state.parameters.push(new COBOLParameter(state.using, tcurrent ));
+                            state.parameters.push(new COBOLParameter(state.using, tcurrent));
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
                     }
                     if (endWithDot) {
@@ -1873,11 +1893,9 @@ export function reviver(key: any, value: any): any {
 export class COBOLGlobalFileTable {
     public lastModifiedTime = 0;
     public isDirty = false;
-    public callableFileSymbols: Map<string, COBOLFileSymbol[]>;
     public copybookFileSymbols: Map<string, COBOLFileSymbol[]>;
 
     public constructor() {
-        this.callableFileSymbols = new Map<string, COBOLFileSymbol[]>();
         this.copybookFileSymbols = new Map<string, COBOLFileSymbol[]>();
     }
 }
@@ -1920,7 +1938,7 @@ export class COBOLSymbolTable {
 }
 
 export class COBOLSymbolTableHelper {
-    public static getCOBOLSymbolTable(qp: COBOLSourceScanner): COBOLSymbolTable {
+    public static getCOBOLSymbolTable(qp: ICOBOLSourceScanner): COBOLSymbolTable {
         const st = new COBOLSymbolTable();
         st.fileName = qp.filename;
         st.lastModifiedTime = qp.lastModifiedTime;
@@ -2039,17 +2057,38 @@ export class COBOLSymbolTableHelper {
                 fs.unlinkSync(fn);
                 return undefined;
             }
+
             const str: string = fs.readFileSync(fn).toString();
-            const cachableTable = JSON.parse(lzjs.decompress(str), reviver);
-            InMemorySymbolCache.set(filename, cachableTable);
-            return cachableTable;
+            try {
+                const cachableTable = JSON.parse(lzjs.decompress(str), reviver);
+                InMemorySymbolCache.set(filename, cachableTable);
+                return cachableTable;
+            } catch {
+                try {
+                    fs.unlinkSync(fn);
+                } catch {
+                    logMessage(`Unable to remove symbol file : ${fn}`);
+                }
+                logMessage(` Symbol file removed : ${fn}`);
+
+                return undefined;
+            }
         }
         return undefined;
     }
 
     public static getSymbolTable_direct(nfilename: string): COBOLSymbolTable | undefined {
         const str: string = fs.readFileSync(nfilename).toString();
-        return JSON.parse(lzjs.decompress(str), reviver);
+        try {
+            return JSON.parse(lzjs.decompress(str), reviver);
+        } catch {
+            try {
+                fs.unlinkSync(nfilename);
+            } catch {
+                logMessage(`Unable to remove symbol file : ${nfilename}`);
+            }
+            logMessage(`Symbol file removed ${nfilename}`);
+        }
     }
 
 }

@@ -230,7 +230,7 @@ The example below shows you how you can create a single task to compile one prog
 | Product and Version                           | Tools                                                        | Problem matcher(s)                                                     |
 |-----------------------------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
 | COBOL-IT                                      | cobc                                                         | $cobolit-cobc                                                          |
-| COBOL-IT                                      | cobc                                                         | $cobolit-error-cobc + $cobolit-note-cobc       |
+| COBOL-IT                                      | cobc                                                         | $cobolit-error-cobc + $cobolit-note-cobc                               |
 | open-cobol 1-1.5                              | cobc                                                         | $opencobol-cobc                                                        |
 | open-cobol 1-1.5                              | cobc                                                         | $opencobol-warning-cobc + $opencobol-error-cobc + $opencobol-note-cobc |
 | ACU-COBOLGT                                   | ccbl                                                         | $acucobol-ccbl + $acucobol-warning-ccbl                                |
@@ -412,6 +412,22 @@ This can be activated by setting the flag coboleditor.experimental_features in t
 and looks like:
 
  ![hover](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/hover.png)
+
+## Scanning and caching
+
+COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "goto definition".
+
+If you do not have caching enabled, my recommendation is to use "file searches" to locate the required information.
+
+| Settings                        | Description of use                                                                         |
+|---------------------------------|--------------------------------------------------------------------------------------------|
+| process_metadata_cache_on_start | Scan all files in the workspace and located copybooks                                |
+| cache_metadata=on               | Use cache data from scanned source                                                        |
+| parse_copybooks_for_references  | Scan for any copybooks when editing.     Helps with "goto definition" and "find all references. Does not require metadata caching enabled |
+
+The metadata cache does not have to be created on workspace startup but can be created at will by using the "COBOL: Process files in workspace for metadata" command.
+
+The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
 
 ## Online resources
 

@@ -112,33 +112,3 @@ export class COBOLSettings implements ICOBOLSettings {
         this.coboldoc_workspace_folder = "coboldoc";
     }
 }
-
-export class COBOLSettingsHelper {
-    public static isCachingEnabled(setting: ICOBOLSettings): boolean {
-        if (getWorkspaceFolders())
-        {
-            const cacheEnum = setting.cache_metadata;
-
-            switch (cacheEnum) {
-                case "on": return true;
-                case "partial": return true;
-                case "off": return false;
-            }
-        }
-        return false;
-    }
-
-    public static isOnDiskCachingEnabled(setting: ICOBOLSettings): boolean {
-        if (getWorkspaceFolders())
-        {
-            const cacheEnum = setting.cache_metadata;
-            switch (cacheEnum) {
-                case "on": return true;
-                case "partial": return false;
-                case "off": return false;
-            }
-        }
-        return false;
-    }
-
-}
