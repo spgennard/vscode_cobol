@@ -3,6 +3,17 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#198](https://github.com/spgennard/vscode_cobol/issues/198) problemMatcher: please add code attribute where possible  
+
+**problemMatcher: please add code attribute where possible Fix#198**
+
+ * - add VC ERRFORMAT&quot;3&quot; code support 
+ * - simplify source names 
+
+[d942974c8f3dc1f](https://github.com/spgennard/vscode_cobol/commit/d942974c8f3dc1f) *2020-09-11 17:33:46*
+
+
 ## 6.7.14
 ### GitHub [#198](https://github.com/spgennard/vscode_cobol/issues/198) problemMatcher: please add code attribute where possible  
 
