@@ -1315,16 +1315,17 @@
             },
             {
                 "name": "mfcobol-errformat3",
-                "regexp": "^(\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*).*$",
+                "regexp"  : "(.*)\\((\\d+),(\\d+)\\).*(error|warning)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
                 "severity": 4,
-                "message": 5
+                "code": 5,
+                "message": 6
             },
             {
                 "name": "mfcobol-errformat3-basefn",
-                "regexp": "^[\\./].*[/](\\S*)\\((\\d+),(\\d+)\\).*(error|warning)(.*).*$",
+                "regexp": ".*[\\/](.*)\\((\\d+),(\\d+)\\).*(error|warning)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
@@ -1440,7 +1441,7 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat3",
-                "source": "mfcobol/vc + EF3"
+                "source": "VC"
             },
             {
                 "name": "mfcobol-errformat3-basefn",
@@ -1450,7 +1451,7 @@
                     "${workspaceFolder}"
                 ],
                 "pattern": "$mfcobol-errformat3-basefn",
-                "source": "mfcobol/vc + EF3/basefn"
+                "source": "VC"
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
@@ -1459,7 +1460,7 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat2-netx-sx",
-                "source": "mfcobol/netx + EF2"
+                "source": "NETX/SX"
             },
             {
                 "name": "mfcobol-errformat2-copybook",
@@ -1468,7 +1469,7 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat2-copybook",
-                "source": "mfcobol/vc + EF2/CPY"
+                "source": "VC"
             },
             {
                 "name": "mfcobol-errformat2",
@@ -1477,7 +1478,7 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat2",
-                "source": "mfcobol/vc + EF2"
+                "source": "VC"
             },
             {
                 "name": "mfcobol-errformat2-basefn",
@@ -1487,7 +1488,7 @@
                     "${workspaceFolder}"
                 ],
                 "pattern": "$mfcobol-errformat2-basefn",
-                "source": "mfcobol/vc + EF2/BFN"
+                "source": "VC"
             },
             {
                 "name": "gnucobol-cobc",
@@ -1496,7 +1497,7 @@
                     "absolute"
                 ],
                 "pattern": "$gnucobol-cobc",
-                "source": "GnuCOBOL"
+                "source": "GnuCOBOL1+2"
             },
             {
                 "name": "gnucobol3-cobc",
@@ -1505,7 +1506,7 @@
                     "absolute"
                 ],
                 "pattern": "$gnucobol3-cobc",
-                "source": "GnuCOBOL v3"
+                "source": "GnuCOBOL3"
             },
             {
                 "name": "gnucobol3-warning-cobc",
@@ -1515,7 +1516,7 @@
                 ],
                 "pattern": "$cobolit-warning-cobc",
                 "severity": "warning",
-                "source": "GnuCOBOL v3 (warning)"
+                "source": "GnuCOBOL3"
             },
             {
                 "name": "gnucobol3-error-cobc",
@@ -1525,7 +1526,7 @@
                 ],
                 "pattern": "$cobolit-error-cobc",
                 "severity": "error",
-                "source": "GnuCOBOL v3 (error)"
+                "source": "GnuCOBOL3"
             },
             {
                 "name": "gnucobol3-note-cobc",
@@ -1535,7 +1536,7 @@
                 ],
                 "pattern": "$cobolit-note-cobc",
                 "severity": "info",
-                "source": "GnuCOBOL v3 (note)"
+                "source": "GnuCOBOL3"
             },
             {
                 "name": "opencobol-cobc",
@@ -1554,7 +1555,7 @@
                 ],
                 "pattern": "$opencobol-warning-cobc",
                 "severity": "warning",
-                "source": "OpenCOBOL (warning)"
+                "source": "OpenCOBOL"
             },
             {
                 "name": "opencobol-error-cobc",
@@ -1564,7 +1565,7 @@
                 ],
                 "pattern": "$opencobol-error-cobc",
                 "severity": "error",
-                "source": "OpenCOBOL (error)"
+                "source": "OpenCOBOL"
             },
             {
                 "name": "opencobol-note-cobc",
@@ -1574,7 +1575,7 @@
                 ],
                 "pattern": "$opencobol-note-cobc",
                 "severity": "info",
-                "source": "OpenCOBOL (info)"
+                "source": "OpenCOBOL"
             },
             {
                 "name": "cobolit-cobc",
@@ -1593,7 +1594,7 @@
                 ],
                 "pattern": "$cobolit-error-cobc",
                 "severity": "error",
-                "source": "COBOL-IT (error)"
+                "source": "COBOL-IT"
             },
             {
                 "name": "cobolit-note-cobc",
@@ -1603,7 +1604,7 @@
                 ],
                 "pattern": "$cobolit-note-cobc",
                 "severity": "info",
-                "source": "COBOL-IT (note/warning)"
+                "source": "COBOL-IT"
             },
             {
                 "name": "acucobol-ccbl",
@@ -1621,7 +1622,7 @@
                     "absolute"
                 ],
                 "pattern": "$acucobol-warning-ccbl",
-                "source": "ACUCOBOL-GT (warning)"
+                "source": "ACUCOBOL-Gt"
             }
         ],
         "taskDefinitions": [
