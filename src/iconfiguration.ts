@@ -15,7 +15,6 @@ export interface ICOBOLSettings {
     ignorecolumn_b_onwards: boolean;
     copybooks_nested:boolean;
     fuzzy_variable_search: boolean;
-    cache_metadata: string;
     outline: outlineFlag;
     copybookdirs: string[];
     invalid_copybookdirs: string[];
@@ -84,7 +83,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.ignorecolumn_b_onwards = false;
         this.copybooks_nested = false;
         this.fuzzy_variable_search = false;
-        this.cache_metadata = "off";
         this.fileformat_strategy = "normal";
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];

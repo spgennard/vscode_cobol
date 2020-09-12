@@ -19,8 +19,7 @@ import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
-import { VSCOBOLConfiguration } from "./configuration";
-import { config } from "vscode-nls";
+import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -835,19 +834,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
 
-        if (VSCOBOLConfiguration.isCachingEnabled() === false) {
+        if (settings.cache_directory_strategy === CacheDirectoryStrategy.Off) {
             logMessage("Metadata is not enabled");
             return;
         }
 
         logMessage("Metadata Dump");
 
-        logMessage(" cache folder   : " + cacheDirectory);
-        logMessage(" cache_metadata : " + settings.cache_metadata + "\n");
-        logMessage(" Last modified  : " + InMemoryGlobalSymbolCache.lastModifiedTime);
-        logMessage(" Dirty flag     : " + InMemoryGlobalSymbolCache.isDirty);
+        logMessage(" cache folder             : " + cacheDirectory);
+        logMessage(" cache_directory_strategy : " + settings.cache_directory_strategy + "\n");
+        logMessage(" Last modified            : " + InMemoryGlobalSymbolCache.lastModifiedTime);
+        logMessage(" Dirty flag               : " + InMemoryGlobalSymbolCache.isDirty);
         logMessage("");
-        logMessage("Global symbols  : (made lowercase)");
+        logMessage("Global symbols            : (made lowercase)");
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [i, tag] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {

@@ -4,7 +4,6 @@ import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
 import * as path from 'path';
 import { isDirectory } from './extension';
-import { getWorkspaceFolders } from './cobolfolders';
 
 export enum CacheDirectoryStrategy {
     Workspace = "workspace",
@@ -23,7 +22,6 @@ export class VSCOBOLConfiguration {
         vsconfig.ignorecolumn_b_onwards = getBoolean('ignorecolumn_b_onwards', false);
         vsconfig.copybooks_nested = getBoolean('copybooks_nested', false);
         vsconfig.fuzzy_variable_search = getBoolean('fuzzy_variable_search', false);
-        vsconfig.cache_metadata = getCachingSetting();
         vsconfig.outline = isOutlineEnabled();
         vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
         vsconfig.pre_parse_line_limit = getPreParseLineLimit();
@@ -57,25 +55,14 @@ export class VSCOBOLConfiguration {
     }
 
 
-    public static isCachingEnabled(): boolean {
-        if (getWorkspaceFolders()) {
-            const cacheEnum = getCachingSetting();
-
-            switch (cacheEnum) {
-                case "on": return true;
-                case "off": return false;
-            }
-        }
-        return false;
-    }
-
     public static isOnDiskCachingEnabled(): boolean {
-        const cacheEnum = getCachingSetting();
-        switch (cacheEnum) {
-            case "on": return true;
-            case "off": return false;
+        const config = VSCOBOLConfiguration.get();
+        const cacheStrat = config.cache_directory_strategy;
+        if (cacheStrat === CacheDirectoryStrategy.Off) {
+            return false;
         }
-        return false;
+
+        return true;
     }
 }
 
@@ -134,17 +121,6 @@ function getIntellisense_item_limit(): number {
     }
     return itemLimit;
 
-}
-
-function getCachingSetting(): string {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    const cacheEnum = editorConfig.get<string>('cache_metadata');
-
-    if (cacheEnum === undefined || cacheEnum === null) {
-        return "";
-    }
-
-    return cacheEnum;
 }
 
 function getFileformatStrategy(): string {

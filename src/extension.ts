@@ -311,11 +311,11 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage("Extension Information:");
         logMessage(` Extension path    : ${thisExtension.extensionPath}`);
         logMessage(` Version           : ${thisExtension.packageJSON.version}`);
-        logMessage(` Caching                       : ${settings.cache_metadata}`);
+        logMessage(" Caching:");
         logMessage(`  Cache Strategy               : ${settings.cache_directory_strategy}`);
         logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
         logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
-        logMessage(` Parse copybook for references : ${VSCOBOLConfiguration.getParse_copybooks_for_references()}`);
+        logMessage(` Parse copybook for references : ${settings.parse_copybooks_for_references}`);
     }
 
     initExtensionSearchPaths(settings);

@@ -82,6 +82,7 @@ export default class VSQuickCOBOLParse {
         } else {
             logChannelSetPreserveFocus(!viaCommand);
         }
+
         if (getWorkspaceFolders()) {
             const start = performance_now();
             try {
@@ -162,6 +163,10 @@ export default class VSQuickCOBOLParse {
     public static getCacheDirectory(): string {
 
         const settings = VSCOBOLConfiguration.get();
+
+        if (settings.cache_directory_strategy === CacheDirectoryStrategy.Off) {
+            return "";
+        }
 
         if (getWorkspaceFolders() && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
 
