@@ -15,7 +15,7 @@ import { getWorkspaceFolders } from "./cobolfolders";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, any> = new Map<string, any>();
 
-export function clearCOBOLCache():void {
+export function clearCOBOLCache(): void {
     InMemoryCache.clear();
 }
 
@@ -37,6 +37,10 @@ export default class VSQuickCOBOLParse {
 
     public static getCachedObject(document: TextDocument): COBOLSourceScanner | undefined {
         const fileName: string = document.fileName;
+        const cacheDirectory: string | undefined = VSQuickCOBOLParse.getCacheDirectory();
+        if (cacheDirectory === undefined) {
+            return undefined;
+        }
 
         /* if the document is edited, drop the in cached object */
         if (document.isDirty) {
@@ -47,7 +51,7 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 const startTime = performance_now();
-                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), cacheDirectory);
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
@@ -85,34 +89,36 @@ export default class VSQuickCOBOLParse {
 
         if (getWorkspaceFolders()) {
             const start = performance_now();
-            try {
-                logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
+            const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+            if (cacheDirectory !== undefined) {
+                try {
+                    logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
 
-                const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-                const promises: Promise<boolean>[] = [];
+                    const promises: Promise<boolean>[] = [];
 
-                const ws = getWorkspaceFolders();
-                if (ws !== undefined) {
-                    for (const folder of ws) {
-                        const p = VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath, viaCommand);
-                        promises.push(p);
+                    const ws = getWorkspaceFolders();
+                    if (ws !== undefined) {
+                        for (const folder of ws) {
+                            const p = VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath, viaCommand);
+                            promises.push(p);
+                        }
                     }
-                }
 
-                if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                        const p = VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
-                        promises.push(p);
+                    if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
+                            const p = VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
+                            promises.push(p);
+                        }
                     }
-                }
-                await Promise.all(promises);
-            } finally {
-                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
-                const end = performance_now() - start;
-                const completedMessage = 'Completed scanning all COBOL files in workspace';
-                if (logTimedMessage(end, completedMessage) === false) {
-                    logMessage(completedMessage);
+                    await Promise.all(promises);
+                } finally {
+                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                    const end = performance_now() - start;
+                    const completedMessage = 'Completed scanning all COBOL files in workspace';
+                    if (logTimedMessage(end, completedMessage) === false) {
+                        logMessage(completedMessage);
+                    }
                 }
             }
         } else {
@@ -160,22 +166,23 @@ export default class VSQuickCOBOLParse {
         return true;
     }
 
-    public static getCacheDirectory(): string {
+    public static getCacheDirectory(): string | undefined {
 
         const settings = VSCOBOLConfiguration.get();
 
-        if (settings.cache_directory_strategy === CacheDirectoryStrategy.Off) {
-            return "";
+        // turned off via the strategy
+        if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
+            return undefined;
         }
 
-        if (getWorkspaceFolders() && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
+        if (getWorkspaceFolders()) {
 
-            if (settings.cache_directory_strategy === CacheDirectoryStrategy.Storage) {
+            if (settings.cache_metadata === CacheDirectoryStrategy.Storage) {
                 const storageDirectory: string | undefined = getCurrentContext().storageUri?.fsPath;
 
                 /* no storage directory */
                 if (storageDirectory === undefined) {
-                    return "";
+                    return undefined;
                 }
 
                 if (!isDirectory(storageDirectory)) {
@@ -189,7 +196,7 @@ export default class VSQuickCOBOLParse {
 
                 /* not a directory, so ignore */
                 if (!isDirectory(storageDirectory)) {
-                    return "";
+                    return undefined;
                 }
 
                 return storageDirectory;
@@ -211,7 +218,7 @@ export default class VSQuickCOBOLParse {
             }
 
             if (firstCacheDir.length === 0) {
-                return "";
+                return undefined;
             }
 
             if (isDirectory(firstCacheDir) === false) {
@@ -219,14 +226,13 @@ export default class VSQuickCOBOLParse {
                     fs.mkdirSync(firstCacheDir);
                 }
                 catch {
-                    return "";
+                    return undefined;
                 }
             }
 
             return firstCacheDir;
         }
 
-        return "";
-
+        return undefined;
     }
 }

@@ -38,7 +38,7 @@ export class VSCOBOLConfiguration {
         vsconfig.intellisense_include_lowercase = getBoolean("intellisense_include_lowercase",false);
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
-        vsconfig.cache_directory_strategy = getCache_directory_strategy();
+        vsconfig.cache_metadata = getcache_metadata();
         vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
         vsconfig.copybookdirs_order = getCopybookdirs_order();
         vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
@@ -57,7 +57,7 @@ export class VSCOBOLConfiguration {
 
     public static isOnDiskCachingEnabled(): boolean {
         const config = VSCOBOLConfiguration.get();
-        const cacheStrat = config.cache_directory_strategy;
+        const cacheStrat = config.cache_metadata;
         if (cacheStrat === CacheDirectoryStrategy.Off) {
             return false;
         }
@@ -93,12 +93,12 @@ function getCoboldoc_workspace_folder(): string {
     return coboldoc_folder;
 }
 
-function getCache_directory_strategy(): CacheDirectoryStrategy {
+function getcache_metadata(): CacheDirectoryStrategy {
     const editorConfig = workspace.getConfiguration('coboleditor');
-    const cacheDirStrategy = editorConfig.get<string>('cache_directory_strategy');
+    const cacheDirStrategy = editorConfig.get<string>('cache_metadata');
 
     if (cacheDirStrategy === undefined || cacheDirStrategy === null) {
-        return CacheDirectoryStrategy.Workspace;
+        return CacheDirectoryStrategy.Off;
     }
 
     if (cacheDirStrategy === "off") {

@@ -206,19 +206,6 @@
                 },
                 "coboleditor.cache_metadata": {
                     "enum": [
-                        "off",
-                        "on"
-                    ],
-                    "default": "off",
-                    "markdownDescription": "Enable metadata cache",
-                    "title": "search inside copybook references and more",
-                    "enumDescriptions": [
-                        "No metadata caching",
-                        "Save as much metadata as possible in .vscode_cobol directory"
-                    ]
-                },
-                "coboleditor.cache_directory_strategy": {
-                    "enum": [
                         "workspace",
                         "storagepath",
                         "off"

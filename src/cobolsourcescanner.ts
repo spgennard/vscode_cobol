@@ -834,15 +834,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
 
-        if (settings.cache_directory_strategy === CacheDirectoryStrategy.Off) {
+        if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
             logMessage("Metadata is not enabled");
             return;
         }
 
         logMessage("Metadata Dump");
-
+        logMessage(" cache_metadata : " + settings.cache_metadata + "\n");
         logMessage(" cache folder             : " + cacheDirectory);
-        logMessage(" cache_directory_strategy : " + settings.cache_directory_strategy + "\n");
         logMessage(" Last modified            : " + InMemoryGlobalSymbolCache.lastModifiedTime);
         logMessage(" Dirty flag               : " + InMemoryGlobalSymbolCache.isDirty);
         logMessage("");

@@ -48,8 +48,11 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
     const theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
         const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        if (cacheDirectory === undefined) {
+            return locations;
+        }
+        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -109,7 +112,9 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 }
             }
             const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+            if (cacheDirectory !== undefined) {
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+            }
         }
     }
 
@@ -121,7 +126,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         const wordRange = document.getWordRangeAtPosition(position, callRegEx);
         const word = wordRange ? document.getText(wordRange) : '';
-        if (word !== "") {
+        if (cacheDirectory !== undefined && word !== "") {
             const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
             const wordLower = word.toLocaleLowerCase();
             if (img.callableSymbols.has(wordLower) === false) {
@@ -159,11 +164,10 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     const word = wordRange ? document.getText(wordRange) : '';
     const wordLower = word.toLowerCase();
 
-    if (wordLower.length > 0) {
+    if (wordLower.length > 0 && cacheDirectory !== undefined) {
         /* iterater through all the known copybook references */
         for (const [key, value] of qcp.copyBooksUsed) {
             try {
-
                 const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
                 if (fileName.length > 0) {
                     const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);

@@ -31,7 +31,7 @@ export interface ICOBOLSettings {
     intellisense_include_lowercase:boolean;
     intellisense_item_limit:number;
     process_metadata_cache_on_start:boolean;
-    cache_directory_strategy: CacheDirectoryStrategy;
+    cache_metadata: CacheDirectoryStrategy;
     parse_copybooks_for_references: boolean;
     copybookdirs_order: string[];
     linter_mark_as_information: boolean;
@@ -51,7 +51,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public pre_parse_line_limit: number;
     public ignorecolumn_b_onwards: boolean;
     public fuzzy_variable_search: boolean;
-    public cache_metadata: string;
     public outline: outlineFlag;
     public copybookdirs: string[];
     public linter: boolean;
@@ -66,7 +65,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public intellisense_include_lowercase:boolean;
     public intellisense_item_limit:number;
     public process_metadata_cache_on_start:boolean;
-    public cache_directory_strategy:CacheDirectoryStrategy;
+    public cache_metadata:CacheDirectoryStrategy;
     public parse_copybooks_for_references: boolean;
     public copybookdirs_order: string[];
     public linter_mark_as_information: boolean;
@@ -99,7 +98,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_include_lowercase = false;
         this.intellisense_item_limit = 0;
         this.process_metadata_cache_on_start = false;
-        this.cache_directory_strategy = CacheDirectoryStrategy.Off;
+        this.cache_metadata = CacheDirectoryStrategy.Off;
         this.parse_copybooks_for_references = false;
         this.copybookdirs_order = [];
         this.linter_mark_as_information = false;

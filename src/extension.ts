@@ -311,8 +311,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage("Extension Information:");
         logMessage(` Extension path    : ${thisExtension.extensionPath}`);
         logMessage(` Version           : ${thisExtension.packageJSON.version}`);
-        logMessage(" Caching:");
-        logMessage(`  Cache Strategy               : ${settings.cache_directory_strategy}`);
+        logMessage(" Caching");
+        logMessage(`  Cache Strategy               : ${settings.cache_metadata}`);
         logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
         logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
         logMessage(` Parse copybook for references : ${settings.parse_copybooks_for_references}`);
@@ -518,11 +518,22 @@ export function activate(context: ExtensionContext): void {
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        COBOLSourceScanner.dumpMetaData(settings, VSQuickCOBOLParse.getCacheDirectory());
+        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            COBOLSourceScanner.dumpMetaData(settings, cacheDirectory);
+        } else {
+            logMessage("Metadata caching is turned off");
+        }
     });
 
     const clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
-        COBOLSourceScanner.clearMetaData(settings, VSQuickCOBOLParse.getCacheDirectory());
+        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            COBOLSourceScanner.clearMetaData(settings, cacheDirectory);
+        } else {
+            logMessage("Metadata caching is turned off");
+
+        }
     });
 
 
@@ -973,7 +984,7 @@ export function activate(context: ExtensionContext): void {
 
     /* load the cache if we can */
     const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-    if (cacheDirectory !== null && cacheDirectory.length > 0) {
+    if (cacheDirectory !== undefined && cacheDirectory.length > 0) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
         InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
     }
@@ -1003,8 +1014,11 @@ export function hideMarginStatusBar(): void {
 
 export async function deactivateAsync(): Promise<void> {
     if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
-        InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(VSQuickCOBOLParse.getCacheDirectory());
-        formatStatusBarItem.dispose();
+        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+            formatStatusBarItem.dispose();
+        }
     }
 }
 
