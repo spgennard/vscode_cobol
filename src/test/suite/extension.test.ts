@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 
 import { FileSourceHandler } from "../../filesourcehandler";
-import COBOLSourceScanner from "../../cobolsourcescanner";
+import COBOLSourceScanner, { SharedSourceReferences } from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 
@@ -29,7 +29,8 @@ suite('Core Extension Test Suite', () => {
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 		const settings = new COBOLSettings();
-		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
+		const ssr = new SharedSourceReferences(true);
+		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "",ssr);
 
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 		assert.ok(s.paragraphs.size > 0, "should contain at least one paragraph");
@@ -45,7 +46,8 @@ suite('Core Extension Test Suite', () => {
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 		const settings = new COBOLSettings();
-		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
+		const ssr = new SharedSourceReferences(true);
+		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "", ssr);
 
 		assert.ok(s.functionTargets.size > 0, `should contain at least one function (got: ${s.functionTargets.size})`);
 	});

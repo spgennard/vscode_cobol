@@ -1317,7 +1317,7 @@
             },
             {
                 "name": "mfcobol-errformat3",
-                "regexp"  : "(.*)\\((\\d+),(\\d+)\\).*(error|warning)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": "(.*)\\((\\d+),(\\d+)\\).*(error|warning)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,

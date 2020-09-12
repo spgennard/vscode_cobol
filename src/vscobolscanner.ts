@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { TextDocument } from 'vscode';
-import COBOLSourceScanner, { COBOLSymbolTableHelper, InMemoryGlobalFileCache } from "./cobolsourcescanner";
+import COBOLSourceScanner, { COBOLSymbolTableHelper, InMemoryGlobalFileCache, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
 import * as fs from 'fs';
@@ -47,7 +47,8 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 const startTime = performance_now();
-                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+                const ssr = new SharedSourceReferences(true);
+                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory(), ssr);
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
@@ -149,8 +150,9 @@ export default class VSQuickCOBOLParse {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
 
                         const filefs = new FileSourceHandler(filename, false, false);
+                        const ssr = new SharedSourceReferences(true);
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        const qcp = new COBOLSourceScanner(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
+                        const qcp = new COBOLSourceScanner(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory, ssr);
                     }
                 }
             }
