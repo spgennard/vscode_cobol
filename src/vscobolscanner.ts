@@ -9,7 +9,7 @@ import * as path from 'path';
 import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
 import { isValidCopybookExtension } from "./opencopybook";
-import { VSCOBOLConfiguration } from "./configuration";
+import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -140,10 +140,11 @@ export default class VSQuickCOBOLParse {
             return false;
         }
 
+        const settings = VSCOBOLConfiguration.get();
         const stat = fs.statSync(filename);
 
         if (stat.isDirectory() === false) {
-            const parseThisFilename = filterOnExtension ? isValidCopybookExtension(filename) : true;
+            const parseThisFilename = filterOnExtension ? isValidCopybookExtension(filename, settings) : true;
             if (parseThisFilename) {
                 if (VSQuickCOBOLParse.isFile(filename) === true) {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
@@ -160,22 +161,25 @@ export default class VSQuickCOBOLParse {
 
     public static getCacheDirectory(): string {
 
+        const settings = VSCOBOLConfiguration.get();
+
         if (getWorkspaceFolders() && VSCOBOLConfiguration.isOnDiskCachingEnabled() === true) {
 
-            if (VSCOBOLConfiguration.getCache_directory_strategy() === "storagepath") {
-                const storageDirectory: string | undefined = getCurrentContext().storagePath;
-                if (storageDirectory !== undefined && !isDirectory(storageDirectory)) {
+            if (settings.cache_directory_strategy === CacheDirectoryStrategy.Storage) {
+                const storageDirectory: string | undefined = getCurrentContext().storageUri?.fsPath;
+
+                /* no storage directory */
+                if (storageDirectory === undefined) {
+                    return "";
+                }
+
+                if (!isDirectory(storageDirectory)) {
                     try {
                         fs.mkdirSync(storageDirectory);
                     }
                     catch {
                         // swallow
                     }
-                }
-
-                /* no storage directory */
-                if (storageDirectory === undefined) {
-                    return "";
                 }
 
                 /* not a directory, so ignore */

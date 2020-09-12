@@ -28,7 +28,11 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private documentIems: SourceFolderItem[] = [];
     private scriptItems: SourceFolderItem[] = [];
 
+    private settings: ICOBOLSettings;
+
     constructor(config: ICOBOLSettings) {
+        this.settings = config;
+
         this.cobolItem = new SourceFolderItem("COBOL");
         this.copyBook = new SourceFolderItem("Copybooks");
         this.jclItem = new SourceFolderItem("JCL");
@@ -179,6 +183,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     private refreshItems() {
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
+
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
                 try {
@@ -186,7 +191,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
                     // if we have an extension, only process if we think it is valid
                     if (lastDot !== -1) {
-                        if (isValidCopybookExtension(i)) {
+                        if (isValidCopybookExtension(i, this.settings)) {
                             const fileExtension = i.substr(1+lastDot);
                             if (fileExtension !== undefined) {
                                 const vFile = vscode.Uri.file(i);

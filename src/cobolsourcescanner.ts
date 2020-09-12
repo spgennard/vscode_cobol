@@ -20,6 +20,7 @@ import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./configuration";
+import { config } from "vscode-nls";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -1525,7 +1526,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         this.copyBooksUsed.set(trimmedCopyBook, copyToken);
 
                         if (this.sourceReferences !== undefined && this.configHandler.parse_copybooks_for_references) {
-                            const fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
+                            const fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
                             if (fileName.length > 0) {
                                 const qfile = new FileSourceHandler(fileName, false);
                                 const currentTopLevel = this.sourceReferences.topLevel;
@@ -1811,7 +1812,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (commandTrimmed !== undefined) {
                     for (const offset in args) {
                         const filename = args[offset].trim();
-                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(filename, "");
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(filename, "", this.configHandler);
                         if (fileName.length > 0) {
                             if (this.copyBooksUsed.has(fileName) === false) {
                                 this.copyBooksUsed.set(fileName, COBOLToken.Null);
@@ -1943,12 +1944,13 @@ export class COBOLSymbolTable {
 
 export class COBOLSymbolTableHelper {
     public static getCOBOLSymbolTable(qp: ICOBOLSourceScanner): COBOLSymbolTable {
+        const config = VSCOBOLConfiguration.get();
         const st = new COBOLSymbolTable();
         st.fileName = qp.filename;
         st.lastModifiedTime = qp.lastModifiedTime;
 
         for (const [key, value] of qp.copyBooksUsed) {
-            const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
+            const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
             InMemoryGlobalCachesHelper.addCopyBookFilename(fileName);
         }
 

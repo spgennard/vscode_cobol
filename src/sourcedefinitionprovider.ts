@@ -4,6 +4,7 @@ import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken, CallTargetInformation 
 import VSQuickCOBOLParse from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
+import { ICOBOLSettings } from './iconfiguration';
 
 const sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -204,6 +205,7 @@ function getCallTarget(document: vscode.TextDocument, sf: COBOLSourceScanner, po
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     const locations: vscode.Location[] = [];
     let loc;
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.get();
 
     const theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
@@ -264,7 +266,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     /* fuzzy search is not using the parser and it give false positive's, so lets
      * disable it by default but allow it to be re-enabled via config setting
      */
-    if (VSCOBOLConfiguration.getFuzzyVariableSearch()) {
+    if (settings.fuzzy_variable_search) {
         /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
         loc = getFuzzyVariable(document, position);
         if (loc) {

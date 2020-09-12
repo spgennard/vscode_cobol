@@ -225,8 +225,8 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
 
     fileSearchDirectory.length = 0;
 
-    const extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
-    invalidSearchDirectory = VSCOBOLConfiguration.getInvalid_copybookdirs();
+    const extsdir = config.copybookdirs;
+    invalidSearchDirectory = config.invalid_copybookdirs;
     invalidSearchDirectory.length = 0;
 
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
@@ -419,7 +419,7 @@ export function activate(context: ExtensionContext): void {
     });
 
     const tabCommand = commands.registerCommand('cobolplugin.tab', function () {
-        if (VSCOBOLConfiguration.isTabstopEnabled()) {
+        if (settings.enable_tabstop) {
             tabstopper.processTabKey(true);
         } else {
             commands.executeCommand("tab");
@@ -427,7 +427,7 @@ export function activate(context: ExtensionContext): void {
     });
 
     const unTabCommand = commands.registerCommand('cobolplugin.revtab', function () {
-        if (VSCOBOLConfiguration.isTabstopEnabled()) {
+        if (settings.enable_tabstop) {
             tabstopper.processTabKey(false);
         } else {
             commands.executeCommand("outdent");
@@ -439,7 +439,7 @@ export function activate(context: ExtensionContext): void {
             const langid = window.activeTextEditor.document.languageId;
 
             if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
-                if (VSCOBOLConfiguration.isLineCommentEnabled()) {
+                if (settings.line_comment) {
                     commenter.processCommentLine();
                 } else {
                     commands.executeCommand("editor.action.commentLine");
@@ -518,11 +518,11 @@ export function activate(context: ExtensionContext): void {
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        COBOLSourceScanner.dumpMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+        COBOLSourceScanner.dumpMetaData(settings, VSQuickCOBOLParse.getCacheDirectory());
     });
 
     const clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
-        COBOLSourceScanner.clearMetaData(VSCOBOLConfiguration.get(), VSQuickCOBOLParse.getCacheDirectory());
+        COBOLSourceScanner.clearMetaData(settings, VSQuickCOBOLParse.getCacheDirectory());
     });
 
 
@@ -642,7 +642,7 @@ export function activate(context: ExtensionContext): void {
     const keywordProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
-    if (VSCOBOLConfiguration.isOutlineEnabled()) {
+    if (settings.outline) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
 

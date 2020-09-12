@@ -27,8 +27,9 @@ export class COBOLUtils {
 
     public migrateCopybooksToWorkspace():void {
         const fileSearchDirectory = [];
+        const settings = VSCOBOLConfiguration.get();
+        const extsdir = settings.copybookdirs;
 
-        const extsdir = VSCOBOLConfiguration.getCopybookdirs_defaults();
         let updateCopybookdirs = false;
         for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
             const ddir = extsdir[extsdirpos];

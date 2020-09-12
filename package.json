@@ -220,14 +220,16 @@
                 "coboleditor.cache_directory_strategy": {
                     "enum": [
                         "workspace",
-                        "storagepath"
+                        "storagepath",
+                        "off"
                     ],
                     "default": "workspace",
                     "markdownDescription": "Cache directory location",
                     "title": "Cache directory location",
                     "enumDescriptions": [
                         "Cache directory in workspace",
-                        "Use extension storage path"
+                        "Use extension storage path",
+                        "Do not do any caching"
                     ]
                 },
                 "coboleditor.margin": {

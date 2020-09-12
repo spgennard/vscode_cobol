@@ -40,6 +40,7 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
 
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     const locations: vscode.Location[] = [];
+    const config = VSCOBOLConfiguration.get();
 
     if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
         return locations;
@@ -61,7 +62,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
             /* iterater through all the known copybook references */
             for (const [key, value] of qcp.copyBooksUsed) {
                 try {
-                    const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
+                    const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
                     if (fileName.length > 0) {
                         const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                         if (symboleTable !== undefined) {
@@ -163,7 +164,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         for (const [key, value] of qcp.copyBooksUsed) {
             try {
 
-                const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation);
+                const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
                 if (fileName.length > 0) {
                     const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                     if (symboleTable !== undefined) {

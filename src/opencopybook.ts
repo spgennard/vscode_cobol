@@ -6,9 +6,10 @@ import * as path from 'path';
 import * as process from 'process';
 import { getCombinedCopyBookSearchPath, isFile } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
+import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
 
 
-export function isValidCopybookExtension(filename: string): boolean {
+export function isValidCopybookExtension(filename: string, settings: COBOLSettings): boolean {
     const lastDot = filename.lastIndexOf(".");
     let extension = filename;
     if (lastDot !== -1) {
@@ -24,7 +25,7 @@ export function isValidCopybookExtension(filename: string): boolean {
             return false;
     }
 
-    const exts = VSCOBOLConfiguration.getExtentions();
+    const exts = settings.copybookexts;
     for (let extpos = 0; extpos < exts.length; extpos++) {
         if (exts[extpos] === extension) {
             return true;
@@ -126,7 +127,7 @@ export function isDirectPath(dir: string): boolean {
     return false;
 }
 
-function findCopyBook(filename: string): string {
+function findCopyBook(filename: string, config: ICOBOLSettings): string {
     if (!filename) {
         return "";
     }
@@ -143,7 +144,7 @@ function findCopyBook(filename: string): string {
         /* no extension? */
         if (hasDot === -1) {
             // search through the possible extensions
-            for (const ext of VSCOBOLConfiguration.getExtentions()) {
+            for (const ext of config.copybookexts) {
                 const possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
@@ -158,7 +159,7 @@ function findCopyBook(filename: string): string {
 }
 
 
-function findCopyBookInDirectory(filename: string, inDirectory: string): string {
+function findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings): string {
     if (!filename) {
         return "";
     }
@@ -177,7 +178,7 @@ function findCopyBookInDirectory(filename: string, inDirectory: string): string 
         /* no extension? */
         if (hasDot === -1) {
             // search through the possible extensions
-            for (const ext of VSCOBOLConfiguration.getExtentions()) {
+            for (const ext of config.copybookexts) {
                 const possibleFile = path.join(copybookdir, filename + "." + ext);
 
                 if (isFile(possibleFile)) {
@@ -192,10 +193,10 @@ function findCopyBookInDirectory(filename: string, inDirectory: string): string 
 }
 
 
-export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string): string {
+export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
 
     if (inDirectory === null || inDirectory.length === 0) {
-        const fullPath = findCopyBook(filename);
+        const fullPath = findCopyBook(filename, config);
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }
@@ -203,7 +204,7 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirec
         return fullPath;
     }
 
-    const fullPath = findCopyBookInDirectory(filename, inDirectory);
+    const fullPath = findCopyBookInDirectory(filename, inDirectory,config);
     if (fullPath.length !== 0) {
         return path.normalize(fullPath);
     }
@@ -212,7 +213,7 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirec
 }
 
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-
+    const config=VSCOBOLConfiguration.get();
     const line = doc.lineAt(pos);
     const text = line.text;
     const textLower = text.toLowerCase();
@@ -245,7 +246,7 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
     }
 
     if (filename !== null && filename.length !== 0) {
-        const fullPath = expandLogicalCopyBookToFilenameOrEmpty(filename.trim(), inDirectory);
+        const fullPath = expandLogicalCopyBookToFilenameOrEmpty(filename.trim(), inDirectory, config);
         if (fullPath.length !== 0) {
             return new vscode.Location(
                 Uri.file(fullPath),

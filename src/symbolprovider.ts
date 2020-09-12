@@ -7,8 +7,9 @@ import VSQuickCOBOLParse from './vscobolscanner';
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
+        const settings = VSCOBOLConfiguration.get();
 
-        if (VSCOBOLConfiguration.isOutlineEnabled() === outlineFlag.Off) {
+        if (settings.outline === outlineFlag.Off) {
             return symbols;
         }
 
@@ -73,7 +74,9 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
 
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
-        const outlineLevel = VSCOBOLConfiguration.isOutlineEnabled();
+        const settings = VSCOBOLConfiguration.get();
+        const outlineLevel = settings.outline;
+
         if (outlineLevel === outlineFlag.Off) {
             return symbols;
         }

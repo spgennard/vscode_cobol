@@ -6,6 +6,11 @@ import * as path from 'path';
 import { isDirectory } from './extension';
 import { getWorkspaceFolders } from './cobolfolders';
 
+export enum CacheDirectoryStrategy {
+    Workspace = "workspace",
+    Storage = "storagepath",
+    Off = "off"
+}
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
@@ -51,44 +56,6 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration.config;
     }
 
-    public static getExperimentialFeatures(): boolean {
-        return VSCOBOLConfiguration.config.experimental_features;
-    }
-
-    public static isTabstopEnabled(): boolean {
-        return VSCOBOLConfiguration.config.enable_tabstop;
-    }
-
-    public static isLineCommentEnabled(): boolean {
-        return VSCOBOLConfiguration.config.line_comment;
-    }
-
-    public static getPreParseLineLimit(): number {
-        return VSCOBOLConfiguration.config.pre_parse_line_limit;
-    }
-
-    public static getColumBParsing(): boolean {
-        return VSCOBOLConfiguration.config.ignorecolumn_b_onwards;
-    }
-
-    public static getCopybookNestedInSection(): boolean {
-        return VSCOBOLConfiguration.config.copybooks_nested;
-    }
-
-    public static getFuzzyVariableSearch(): boolean {
-        return VSCOBOLConfiguration.config.fuzzy_variable_search;
-    }
-
-    public static getDisable_unc_copybooks(): boolean {
-        return VSCOBOLConfiguration.config.disable_unc_copybooks_directories;
-    }
-
-    public static getCachingSetting(): string {
-        if (getWorkspaceFolders()) {
-            return VSCOBOLConfiguration.config.cache_metadata;
-        }
-        return "off";
-    }
 
     public static isCachingEnabled(): boolean {
         if (getWorkspaceFolders()) {
@@ -111,28 +78,12 @@ export class VSCOBOLConfiguration {
         return false;
     }
 
-    public static isOutlineEnabled(): outlineFlag {
-        return VSCOBOLConfiguration.config.outline;
-    }
-
-    public static getCopybookdirs_defaults(): string[] {
-        return VSCOBOLConfiguration.config.copybookdirs;
-    }
-
-    public static getInvalid_copybookdirs(): string[] {
-        return VSCOBOLConfiguration.config.invalid_copybookdirs;
-    }
-
     public static getExtentions(): string[] {
         return VSCOBOLConfiguration.config.copybookexts;
     }
 
     public static getTabStops(): number[] {
         return VSCOBOLConfiguration.config.tabstops;
-    }
-
-    public static getCache_directory_strategy() : string {
-        return VSCOBOLConfiguration.config.cache_directory_strategy;
     }
 
     public static getParse_copybooks_for_references(): boolean {
@@ -242,15 +193,24 @@ function getCoboldoc_workspace_folder(): string {
     return coboldoc_folder;
 }
 
-function getCache_directory_strategy(): string {
+function getCache_directory_strategy(): CacheDirectoryStrategy {
     const editorConfig = workspace.getConfiguration('coboleditor');
     const cacheDirStrategy = editorConfig.get<string>('cache_directory_strategy');
 
     if (cacheDirStrategy === undefined || cacheDirStrategy === null) {
-        return "workspace";
+        return CacheDirectoryStrategy.Workspace;
     }
 
-    return cacheDirStrategy;
+    if (cacheDirStrategy === "off") {
+        return CacheDirectoryStrategy.Off;
+    }
+
+    switch(cacheDirStrategy) {
+        case 'workspace' : return CacheDirectoryStrategy.Workspace;
+        case 'storage' : return CacheDirectoryStrategy.Storage;
+        case 'off' : return CacheDirectoryStrategy.Off;
+    }
+    return CacheDirectoryStrategy.Off;
 }
 
 function getIntellisense_item_limit(): number {
