@@ -530,7 +530,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences: SharedSourceReferences) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
         const stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
@@ -1527,7 +1527,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if (this.sourceReferences !== undefined && this.configHandler.parse_copybooks_for_references) {
                             const fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation);
                             if (fileName.length > 0) {
-                                const qfile = new FileSourceHandler(fileName, false, false);
+                                const qfile = new FileSourceHandler(fileName, false);
                                 const currentTopLevel = this.sourceReferences.topLevel;
                                 const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                                 state.ignoreInOutlineView = true;
@@ -1816,7 +1816,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             if (this.copyBooksUsed.has(fileName) === false) {
                                 this.copyBooksUsed.set(fileName, COBOLToken.Null);
 
-                                const qfile = new FileSourceHandler(fileName, false, false);
+                                const qfile = new FileSourceHandler(fileName, false);
                                 const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                                 // this.sourceReferences.state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;

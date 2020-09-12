@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 
 import { FileSourceHandler } from "../../filesourcehandler";
-import COBOLSourceScanner, { SharedSourceReferences } from "../../cobolsourcescanner";
+import COBOLSourceScanner from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 
@@ -13,7 +13,7 @@ suite('Core Extension Test Suite', () => {
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 
 	test('Read file [basic] (test.cbl)', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"),false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"),false);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -22,15 +22,14 @@ suite('Core Extension Test Suite', () => {
 	});
 
 	test('Parse file for constants/paragraphs/sections (test.cbl)', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"),false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"),false);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 		const settings = new COBOLSettings();
-		const ssr = new SharedSourceReferences(true);
-		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "",ssr);
+		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
 
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 		assert.ok(s.paragraphs.size > 0, "should contain at least one paragraph");
@@ -39,15 +38,14 @@ suite('Core Extension Test Suite', () => {
 	});
 
 	test('Parse file for functions (string.cbl)', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"string.cbl"),false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"string.cbl"),false);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 		const settings = new COBOLSettings();
-		const ssr = new SharedSourceReferences(true);
-		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "", ssr);
+		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
 
 		assert.ok(s.functionTargets.size > 0, `should contain at least one function (got: ${s.functionTargets.size})`);
 	});

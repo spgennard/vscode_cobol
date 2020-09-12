@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 
 import { FileSourceHandler } from "../../filesourcehandler";
-import COBOLSourceScanner, { CobolDocStyle, SharedSourceReferences } from "../../cobolsourcescanner";
+import COBOLSourceScanner, { CobolDocStyle } from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 
@@ -13,13 +13,12 @@ suite('Issues Raised Test Suite', () => {
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 
 	test('Issue: 189 [MSDN]', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"issue189_msdn.cbl"),false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"issue189_msdn.cbl"),false);
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
 		const settings = new COBOLSettings();
-		const ssr = new SharedSourceReferences(true);
-		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "", ssr);
+		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");
@@ -29,13 +28,12 @@ suite('Issues Raised Test Suite', () => {
 
 
 	test('Issue: 189 [COBOLDOC]', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"issue189_coboldoc.cbl"),false,false);
+		const f = new FileSourceHandler(path.join(baseForSource,"issue189_coboldoc.cbl"),false);
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
 		const settings = new COBOLSettings();
-		const ssr = new SharedSourceReferences(true);
-		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "",ssr);
+		const s = new COBOLSourceScanner(f, f.getFilename(), settings, "");
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");

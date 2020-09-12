@@ -17,10 +17,6 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCallback = commentCallback;
     }
 
-    isCacheBelow(): boolean {
-        return false;
-    }
-
     getLineCount(): number {
         return this.document.lineCount;
     }

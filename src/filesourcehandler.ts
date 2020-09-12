@@ -16,16 +16,14 @@ export class FileSourceHandler implements ISourceHandler {
     lines: string[];
     commentCount: number;
     commentCallback?: ICommentCallback;
-    cacheBelow:boolean;
 
-    public constructor(document: string, dumpNumbersInAreaA: boolean, cacheBelow: boolean, commentCallback?: ICommentCallback ) {
+    public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback ) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.commentCallback = commentCallback;
         this.dumpAreaBOnwards = false;
         this.lines = [];
         this.commentCount = 0;
-        this.cacheBelow = cacheBelow;
 
         const docstat = fs.statSync(document);
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
@@ -48,10 +46,6 @@ export class FileSourceHandler implements ISourceHandler {
         if (this.commentCallback !== undefined) {
             this.commentCallback.processComment(line);
         }
-    }
-
-    isCacheBelow(): boolean {
-        return this.cacheBelow;
     }
 
     getLineCount(): number {
