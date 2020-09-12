@@ -18,36 +18,36 @@ export class VSCOBOLConfiguration {
     public static init(): ICOBOLSettings {
         const vsconfig = VSCOBOLConfiguration.config;
 
-        vsconfig.experimental_features = getExperimentialFeatures();
-        vsconfig.enable_tabstop = isTabstopEnabled();
-        vsconfig.ignorecolumn_b_onwards = getColumBParsing();
-        vsconfig.copybooks_nested = getCopybookNestedInSection();
-        vsconfig.fuzzy_variable_search = getFuzzyVariableSearch();
+        vsconfig.experimental_features = getBoolean('experimental_features', false);
+        vsconfig.enable_tabstop = getBoolean('enable_tabstop', false);
+        vsconfig.ignorecolumn_b_onwards = getBoolean('ignorecolumn_b_onwards', false);
+        vsconfig.copybooks_nested = getBoolean('copybooks_nested', false);
+        vsconfig.fuzzy_variable_search = getBoolean('fuzzy_variable_search', false);
         vsconfig.cache_metadata = getCachingSetting();
         vsconfig.outline = isOutlineEnabled();
         vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
         vsconfig.pre_parse_line_limit = getPreParseLineLimit();
         vsconfig.copybookexts = getCopybookExts();
         vsconfig.tabstops = getTabStops();
-        vsconfig.linter = getLinter();
-        vsconfig.line_comment = getline_comment();
+        vsconfig.linter = getBoolean('linter', false);
+        vsconfig.line_comment = getBoolean("line_comment", false);
         vsconfig.fileformat_strategy = getFileformatStrategy();
-        vsconfig.enable_data_provider = getEnable_data_provider();
-        vsconfig.disable_unc_copybooks_directories = getDisable_unc_copybooks_directories();
-        vsconfig.intellisense_include_unchanged = getIntellisense_include_unchanged();
-        vsconfig.intellisense_include_camelcase = getintellisense_include_camelcase();
-        vsconfig.intellisense_include_uppercase = getIntellisense_include_uppercase();
-        vsconfig.intellisense_include_lowercase = getIntellisense_include_lowercase();
+        vsconfig.enable_data_provider = getBoolean('enable_data_provider', true);
+        vsconfig.disable_unc_copybooks_directories = getBoolean('disable_unc_copybooks_directories', false);
+        vsconfig.intellisense_include_unchanged = getBoolean("intellisense_include_unchanged", true);
+        vsconfig.intellisense_include_camelcase = getBoolean("intellisense_include_camelcase",false);
+        vsconfig.intellisense_include_uppercase = getBoolean("intellisense_include_uppercase", false);
+        vsconfig.intellisense_include_lowercase = getBoolean("intellisense_include_lowercase",false);
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
-        vsconfig.process_metadata_cache_on_start = getProcess_metadata_cache_on_start();
+        vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         vsconfig.cache_directory_strategy = getCache_directory_strategy();
-        vsconfig.parse_copybooks_for_references = getParse_copybooks_for_references();
+        vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
         vsconfig.copybookdirs_order = getCopybookdirs_order();
-        vsconfig.linter_unused_paragraphs_or_sections = getLinter_unused_paragraphs_or_sections();
-        vsconfig.linter_house_standards = getLinter_house_standards();
+        vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
+        vsconfig.linter_house_standards = getBoolean("linter_house_standards", true);
         vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
-        vsconfig.linter_mark_as_information = getLinter_mark_as_information();
-        vsconfig.ignore_unsafe_extensions = getIgnore_unsafe_extensions();
+        vsconfig.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
+        vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
         return vsconfig;
     }
@@ -77,18 +77,6 @@ export class VSCOBOLConfiguration {
         }
         return false;
     }
-
-    public static getExtentions(): string[] {
-        return VSCOBOLConfiguration.config.copybookexts;
-    }
-
-    public static getTabStops(): number[] {
-        return VSCOBOLConfiguration.config.tabstops;
-    }
-
-    public static getParse_copybooks_for_references(): boolean {
-        return VSCOBOLConfiguration.config.parse_copybooks_for_references;
-    }
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {
@@ -100,14 +88,6 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
     return expEnabled;
 }
 
-function getExperimentialFeatures(): boolean {
-    return getBoolean('experimental_features', false);
-}
-
-function isTabstopEnabled(): boolean {
-    return getBoolean('enable_tabstop', false);
-}
-
 function getPreParseLineLimit(): number {
     const editorConfig = workspace.getConfiguration('coboleditor');
     let lineLimit = editorConfig.get<number>('pre_parse_line_limit');
@@ -115,73 +95,6 @@ function getPreParseLineLimit(): number {
         lineLimit = 25;
     }
     return lineLimit;
-}
-
-function getline_comment(): boolean {
-    return getBoolean("line_comment", false);
-}
-
-function getColumBParsing(): boolean {
-    return getBoolean('ignorecolumn_b_onwards', false);
-}
-
-function getCopybookNestedInSection(): boolean {
-    return getBoolean('copybooks_nested', false);
-}
-
-function getLinter(): boolean {
-    return getBoolean('linter', false);
-}
-
-function getLinter_unused_paragraphs_or_sections(): boolean {
-    return getBoolean("linter_unused_paragraphs_or_sections", true);
-}
-
-function getFuzzyVariableSearch(): boolean {
-    return getBoolean('fuzzy_variable_search', false);
-}
-
-function getEnable_data_provider() : boolean {
-    return getBoolean('enable_data_provider', true);
-}
-function getDisable_unc_copybooks_directories(): boolean {
-    return getBoolean('disable_unc_copybooks_directories', false);
-
-}
-
-function getIntellisense_include_unchanged():boolean {
-    return getBoolean("intellisense_include_unchanged", true);
-}
-
-function getintellisense_include_camelcase(): boolean {
-    return getBoolean("intellisense_include_camelcase",false);
-}
-function getIntellisense_include_uppercase(): boolean {
-    return getBoolean("intellisense_include_uppercase", false);
-}
-
-function getProcess_metadata_cache_on_start(): boolean {
-    return getBoolean("process_metadata_cache_on_start", false);
-}
-
-function getParse_copybooks_for_references(): boolean {
-    return getBoolean("parse_copybooks_for_references", false);
-}
-
-function getIntellisense_include_lowercase(): boolean {
-    return getBoolean("intellisense_include_lowercase",false);
-}
-
-function getLinter_house_standards(): boolean {
-    return getBoolean("linter_house_standards", true);
-}
-
-function getLinter_mark_as_information(): boolean {
-    return getBoolean("linter_mark_as_information", true);
-}
-
-function getIgnore_unsafe_extensions() : boolean {
-    return getBoolean("ignore_unsafe_extensions", false);
 }
 
 function getCoboldoc_workspace_folder(): string {

@@ -4,33 +4,34 @@ import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, w
 import { VSCOBOLConfiguration } from './configuration';
 
 function executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean) {
+    const tabs = VSCOBOLConfiguration.get().tabstops;
     editor.edit(edit => {
         for (let x = 0; x < sel.length; x++) {
             if (sel[x].start.line === sel[x].end.line) {
                 const position = sel[x].start;
                 if (inserting) {
-                    singleSelectionTab(edit, doc, position);
+                    singleSelectionTab(edit, doc, position, tabs);
                 } else {
-                    singleSelectionUnTab(edit, doc, position);
+                    singleSelectionUnTab(edit, doc, position, tabs);
                 }
             } else {
                 if (inserting) {
-                    multipleSelectionTab(edit, doc, sel[x]);
+                    multipleSelectionTab(edit, doc, sel[x], tabs);
                 } else {
-                    multipleSelectionUnTab(edit, doc, sel[x]);
+                    multipleSelectionUnTab(edit, doc, sel[x], tabs);
                 }
             }
         }
     });
 }
 
-function singleSelectionTab(edit: TextEditorEdit, d: TextDocument, pos: Position) {
-    const size = tabSize(pos.character);
+function singleSelectionTab(edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]) {
+    const size = tabSize(pos.character, tabs);
     edit.insert(pos, ' '.repeat(size));
 }
 
-function singleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, pos: Position)  {
-    const size = unTabSize(pos.character);
+function singleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[])  {
+    const size = unTabSize(pos.character, tabs);
     const range = new Range(pos.line, pos.character - size, pos.line, pos.character);
     const txt = d.getText(range);
     if (txt === ' '.repeat(size)) {
@@ -42,16 +43,16 @@ function singleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, pos: Positi
     }
 }
 
-function multipleSelectionTab(edit: TextEditorEdit, d: TextDocument, sel: Selection) {
+function multipleSelectionTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, tabs: number[]) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
         const pos = new Position(line, sel.start.character);
-        singleSelectionTab(edit, d, pos);
+        singleSelectionTab(edit, d, pos, tabs);
     }
 }
 
 const multipleSelectionUnTabPttrn = /^\s*/;
 
-function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection) {
+function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, tabs: number[]) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
         let charpos =  sel.start.character;
         if (charpos === 0) {
@@ -65,12 +66,11 @@ function multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Sele
         }
 
         const pos = new Position(line, charpos);
-        singleSelectionUnTab(edit, d, pos);
+        singleSelectionUnTab(edit, d, pos, tabs);
     }
 }
 
-function tabSize(pos: number) {
-    const tabs = VSCOBOLConfiguration.getTabStops();
+function tabSize(pos: number, tabs: number[]) {
     let tab = 0;
     for (let index = 0; index < tabs.length; index++) {
         tab = tabs[index];
@@ -84,8 +84,7 @@ function tabSize(pos: number) {
 }
 
 
-function unTabSize(pos: number) {
-    const tabs = VSCOBOLConfiguration.getTabStops();
+function unTabSize(pos: number, tabs: number[]) {
 
     // outside range?
     if (pos > tabs[tabs.length - 1]) {
