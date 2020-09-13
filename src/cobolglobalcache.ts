@@ -9,7 +9,7 @@ import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { VSCOBOLConfiguration } from "./configuration";
-import { COBOLFileSymbol, COBOLSymbol, COBOLTokenStyle, ICOBOLSourceScanner } from "./cobolsourcescanner";
+import { COBOLTokenStyle, ICOBOLSourceScanner } from "./cobolsourcescanner";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -245,6 +245,39 @@ export class COBOLSymbolTableHelper {
     }
 
 }
+
+
+export class COBOLFileSymbol {
+    public filename: string | undefined;
+    public lnum: number | undefined;
+
+    public constructor(symbol?: string, lineNumber?: number) {
+        this.filename = symbol;
+        this.lnum = lineNumber;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    static fromJSON(d: Object): COBOLFileSymbol {
+        return Object.assign(new COBOLFileSymbol(), d);
+    }
+}
+
+export class COBOLSymbol {
+    public symbol: string | undefined;
+    public lnum: number | undefined;
+
+    public constructor(symbol?: string, lineNumber?: number) {
+        this.symbol = symbol;
+        this.lnum = lineNumber;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    static fromJSON(d: any): COBOLSymbol {
+        return Object.assign(new COBOLSymbol(), d);
+    }
+}
+
 
 export const globalSymbolFilename = "globalsymbols.sym";
 export const fileSymbolFilename = "filesymbols.sym";
