@@ -521,6 +521,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public commentStyle: CobolDocStyle = CobolDocStyle.unknown;
     public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
 
+    public readonly parse_copybooks_for_references: boolean;
+
     readonly copybookNestedInSection: boolean;
 
     readonly configHandler: ICOBOLSettings;
@@ -530,12 +532,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings, cacheDirectory: string, sourceReferences?: SharedSourceReferences) {
+    public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings,
+                        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
+                        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) {
         const stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
         this.lastModifiedTime = stat.mtimeMs;
+        this.parse_copybooks_for_references = parse_copybooks_for_references;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map<string, COBOLToken>();
@@ -556,13 +561,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         let prevToken: Token = Token.Blank;
 
         const hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
-
-        if (sourceReferences === undefined) {
-            this.sourceReferences = new SharedSourceReferences(true);
-            sourceReferences = this.sourceReferences;
-        } else {
-            this.sourceReferences = sourceReferences;
-        }
+        this.sourceReferences = sourceReferences;
 
         this.sourceFileId = 0;
         this.sourceFileId = sourceReferences.filenames.length;
@@ -870,12 +869,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         logMessage(" " + symTable.fileName + " in " + file);
                         logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
 
-                        for (const [i, value] of symTable.labelSymbols.entries()) {
+                        for (const [key, value] of symTable.labelSymbols.entries()) {
                             logMessage(`     ${value.symbol}:${value.symbol}`);
                         }
 
                         logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
-                        for (const [i, value] of symTable.variableSymbols.entries()) {
+                        for (const [key, value] of symTable.variableSymbols.entries()) {
                             logMessage(`     ${value.symbol}:${value.symbol}`);
                         }
                     }
@@ -1523,7 +1522,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                         this.copyBooksUsed.set(trimmedCopyBook, copyToken);
 
-                        if (this.sourceReferences !== undefined && this.configHandler.parse_copybooks_for_references) {
+                        if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
                             const fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
                             if (fileName.length > 0) {
                                 const qfile = new FileSourceHandler(fileName, false);
@@ -1532,7 +1531,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;
                                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                                const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
                                 this.sourceReferences.topLevel = currentTopLevel;
                                 state.ignoreInOutlineView = currentIgnoreInOutlineView;
                             }
@@ -1820,7 +1819,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 // this.sourceReferences.state.ignoreInOutlineView = true;
                                 this.sourceReferences.topLevel = false;
                                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences);
+                                const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
                                 this.sourceReferences.topLevel = true;
                                 this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                             } else {
