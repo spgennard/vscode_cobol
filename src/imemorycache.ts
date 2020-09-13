@@ -3,7 +3,8 @@ import * as path from 'path';
 import { isFile, logMessage } from "./extension";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
-import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer, COBOLFileSymbol } from "./cobolsourcescanner";
+import { COBOLFileSymbol } from "./cobolsourcescanner";
+import { globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer } from './cobolglobalcache';
 
 export class InMemoryGlobalCachesHelper {
 

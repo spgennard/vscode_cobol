@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { TextDocument } from 'vscode';
-import COBOLSourceScanner, { COBOLSymbolTableHelper, InMemoryGlobalFileCache } from "./cobolsourcescanner";
+import COBOLSourceScanner from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
 import * as fs from 'fs';
@@ -11,6 +11,7 @@ import { FileSourceHandler } from "./filesourcehandler";
 import { isValidCopybookExtension } from "./opencopybook";
 import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
+import { InMemoryGlobalFileCache, COBOLSymbolTableHelper } from "./cobolglobalcache";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, any> = new Map<string, any>();

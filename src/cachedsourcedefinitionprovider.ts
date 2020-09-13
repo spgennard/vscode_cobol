@@ -1,10 +1,12 @@
 import * as vscode from 'vscode';
 import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 
-import COBOLSourceScanner, { COBOLSymbolTableHelper, COBOLSymbolTable, COBOLSymbol, COBOLGlobalSymbolTable } from './cobolsourcescanner';
+import COBOLSourceScanner, {  COBOLSymbol } from './cobolsourcescanner';
+
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import VSQuickCOBOLParse from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
+import { COBOLGlobalSymbolTable, COBOLSymbolTable, COBOLSymbolTableHelper } from './cobolglobalcache';
 
 const sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');

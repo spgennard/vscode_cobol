@@ -4,10 +4,10 @@ import * as path from 'path';
 import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
-import { InMemoryGlobalFileCache } from './cobolsourcescanner';
 import { isValidCopybookExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
 import { logException } from './extension';
+import { InMemoryGlobalFileCache } from './cobolglobalcache';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;
