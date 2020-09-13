@@ -1680,13 +1680,13 @@
         "@types/mocha": "^8.0.3",
         "@types/node": "^14.6.4",
         "@types/vscode": "^1.47.0",
-        "@typescript-eslint/eslint-plugin": "^4.1.0",
-        "@typescript-eslint/parser": "^4.1.0",
+        "@typescript-eslint/eslint-plugin": "^3.9.7",
+        "@typescript-eslint/parser": "^3.9.7",
         "eslint": "^7.8.1",
         "glob": "^7.1.6",
         "mocha": "^8.1.3",
         "ts-loader": "^8.0.3",
-        "typescript": "^4.0.2",
+        "typescript": "^3.9.7",
         "vsce": "^1.79.5",
         "vscode-nls-dev": "^3.3.2",
         "vscode-test": "^1.4.0",
@@ -1694,15 +1694,16 @@
         "webpack-cli": "^3.3.12"
     },
     "dependencies": {
-        "vscode-nls": "^5.0.0",
         "lzjs": "1.3.0",
         "minimatch": "^3.0.4",
         "n-readlines": "1.0.0",
+        "node-html-parser": "^1.2.20",
         "performance-now": "2.1.0",
         "properties-reader": "^2.1.1",
         "trie-search": "^1.2.11",
         "typescript-collections": "^1.3.3",
-        "typescript-string-operations": "^1.3.3"
+        "typescript-string-operations": "^1.3.3",
+        "vscode-nls": "^5.0.0"
     },
     "extensionDependencies": []
 }
