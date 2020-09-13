@@ -419,10 +419,12 @@ COBOL source code can be complex and enabling/disabling the caching will make th
 
 If you do not have caching enabled, my recommendation is to use "file searches" to locate the sourcrequired information.
 
+If "cache_metadata" is enabled then navigating between source files becomes easier, if this is not a requirement then enabling is not a requirement!
+
 | Settings                        | Description of use                                                                         |
 |---------------------------------|--------------------------------------------------------------------------------------------|
-| process_metadata_cache_on_start | Scan all files in the workspace and located copybooks                                |
-| cache_metadata=on               | Use cache data from scanned source                                                        |
+| process_metadata_cache_on_start | Scan all files in the workspace and located copybooks                                      |
+| cache_metadata != off           | Caches data from scanned source, including entry-points & classes                          |
 | parse_copybooks_for_references  | Scan for any copybooks when editing.     Helps with "goto definition" and "find all references. Does not require metadata caching enabled |
 
 The metadata cache does not have to be created on workspace startup but can be created at will by using the "COBOL: Process files in workspace for metadata" command.
