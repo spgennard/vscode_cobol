@@ -1266,13 +1266,13 @@
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
-                "code": 1,
-                "severity": 2,
-                "message": 3,
-                "file": 4,
-                "line": 5,
-                "column": 6
+                "regexp": "^(.*)\\((\\d+),(\\d+)\\)\\s+:\\s+(warning|error)\\s+(\\d+)\\s+:\\s+(.*)$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "severity": 4,
+                "code": 5,
+                "message": 6
             },
             {
                 "name": "mfcobol-errformat2",
