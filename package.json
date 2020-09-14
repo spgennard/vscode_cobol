@@ -210,7 +210,7 @@
                         "storagepath",
                         "off"
                     ],
-                    "default": "workspace",
+                    "default": "off",
                     "markdownDescription": "Cache directory location",
                     "title": "Cache directory location",
                     "enumDescriptions": [
