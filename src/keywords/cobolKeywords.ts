@@ -387,6 +387,7 @@ export const cobolKeywords: string[] = [
 	"symbolic",
 	"sync",
 	"synchronized",
+	"tab",
 	"table",
 	"tally",
 	"tallying",
