@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.7.18
 ### GitHub [#200](https://github.com/spgennard/vscode_cobol/pull/200) Added the &#39;tab&#39; keyword to the list of keywords.  
 
 **Added the 'tab' keyword to the list of keywords. Fix #200**
