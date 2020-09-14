@@ -3,6 +3,45 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#200](https://github.com/spgennard/vscode_cobol/pull/200) Added the &#39;tab&#39; keyword to the list of keywords.  
+
+**Added the 'tab' keyword to the list of keywords. Fix #200**
+
+ * - add tab to acu &amp; core cobol language 
+ * - should not be in the keyword table (as it is not needed) 
+ * (seperate list for ACU, IBM etc.. is required) 
+
+[0fa9b7a28cdd826](https://github.com/spgennard/vscode_cobol/commit/0fa9b7a28cdd826) *2020-09-14 20:12:18*
+
+
+### GitHub [#201](https://github.com/spgennard/vscode_cobol/issues/201) The keyword BINARY is not colored when followed by a binary size override declaration  
+
+**The keyword BINARY is not colored when followed by a binary size override declaration Fix#201**
+
+ * - added ACU specific storage modifiers 
+
+[5c42ddcd25e58cd](https://github.com/spgennard/vscode_cobol/commit/5c42ddcd25e58cd) *2020-09-14 20:32:13*
+
+
+### GitHub [#202](https://github.com/spgennard/vscode_cobol/pull/202) mfcobol written twice  
+
+**mfcobol written twice fix#202**
+
+ * - should be &quot;ibmcobol&quot; 
+
+[f8389dfcecc5b1e](https://github.com/spgennard/vscode_cobol/commit/f8389dfcecc5b1e) *2020-09-14 20:06:09*
+
+
+### GitHub [#203](https://github.com/spgennard/vscode_cobol/issues/203) Every project gets an .vscode_cobol folder  
+
+**Every project gets an .vscode_cobol folder Fix #203**
+
+ * - Set default to &quot;off&quot; 
+
+[41ac01a2e330311](https://github.com/spgennard/vscode_cobol/commit/41ac01a2e330311) *2020-09-14 20:04:28*
+
+
 ## 6.7.16
 ### GitHub [#198](https://github.com/spgennard/vscode_cobol/issues/198) problemMatcher: please add code attribute where possible  
 
