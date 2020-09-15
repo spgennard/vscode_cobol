@@ -1793,32 +1793,29 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
 
-            if (comment.startsWith(this.cobolPreProcCopybook)) {
-                const startOfCOBOLPreCopyBook: number = comment.indexOf(this.cobolPreProcCopybook);
+            const startOfCOBOLPreCopyBook: number = comment.indexOf(this.cobolPreProcCopybook);
+            if (startOfCOBOLPreCopyBook !== -1) {
                 const commentCommandArgs = comment.substring(this.cobolPreProcCopybook.length + startOfCOBOLPreCopyBook).trim();
-                let args = commentCommandArgs.split(" ");
-                const command = args[0];
-                args = args.slice(1);
-                const commandTrimmed = command !== undefined ? command.trim() : undefined;
-                if (commandTrimmed !== undefined) {
+                const args = commentCommandArgs.split(" ");
+                if (args.length !== 0) {
                     for (const offset in args) {
-                        const filename = args[offset].trim();
-                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(filename, "", this.configHandler);
+                        const filenameTrimmed = args[offset].trim();
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
                         if (fileName.length > 0) {
                             if (this.copyBooksUsed.has(fileName) === false) {
                                 this.copyBooksUsed.set(fileName, COBOLToken.Null);
 
                                 const qfile = new FileSourceHandler(fileName, false);
                                 const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
-                                // this.sourceReferences.state.ignoreInOutlineView = true;
-                                this.sourceReferences.topLevel = false;
+                                this.sourceReferences.state.ignoreInOutlineView = true;
+                                this.sourceReferences.topLevel = true;
                                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 const qps = new COBOLSourceScanner(qfile, fileName, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
                                 this.sourceReferences.topLevel = true;
                                 this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
-                            } else {
-                                logMessage(" WARNING: " + this.cobolPreProcCopybook + " unable to locate " + filename);
                             }
+                        } else {
+                            logMessage(" WARNING: " + this.cobolPreProcCopybook + " unable to locate " + filenameTrimmed);
                         }
                     }
                 }

@@ -7,14 +7,15 @@ import COBOLSourceScanner, { CobolDocStyle } from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 import { extensions } from 'vscode';
+import * as fs from 'fs';
 
 suite('Issues Raised Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	const baseForSource = __dirname+"/../../../src/test/suite/";
+	const baseForSource = __dirname + "/../../../src/test/suite/";
 
 	test('Issue: 189 [MSDN]', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"issue189_msdn.cbl"),false);
+		const f = new FileSourceHandler(path.join(baseForSource, "issue189_msdn.cbl"), false);
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
@@ -29,7 +30,7 @@ suite('Issues Raised Test Suite', () => {
 
 
 	test('Issue: 189 [COBOLDOC]', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"issue189_coboldoc.cbl"),false);
+		const f = new FileSourceHandler(path.join(baseForSource, "issue189_coboldoc.cbl"), false);
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
@@ -68,11 +69,23 @@ suite('Issues Raised Test Suite', () => {
 				const patternName = `${pattern.name}`;
 
 				assert.ok(patternName !== null, "pattern should not be null");
-				console.log(`INFO: ${patternName}`);
+				// console.log(`INFO: ${patternName}`);
 				patternCount++;
 
 				if (patternName === 'mfcobol-errformat2-netx-sx') {
 					pattern_mfcobol_errformat2_netx_sx = pattern;
+				}
+
+				try {
+					const r = new RegExp(pattern);
+					r.compile();
+
+					const possibleData = path.join(baseForSource, `${patternName}.txt`);
+					if (fs.existsSync(possibleData)) {
+						console.log(`OK - Found test data for ${patternName}`);
+					}
+				} catch (e) {
+					assert.fail(`${key} : ${e}`);
 				}
 			}
 		}
@@ -82,8 +95,8 @@ suite('Issues Raised Test Suite', () => {
 		assert.ok(pattern_mfcobol_errformat2_netx_sx !== undefined, "mfcobol-errformat2-netx-sx not found");
 
 		const pattern_mfcobol_errformat2_netx_sx_regexp = pattern_mfcobol_errformat2_netx_sx.regexp;
-		console.log("pattern_mfcobol_errformat2_netx_sx: "+pattern_mfcobol_errformat2_netx_sx);
-		console.log("RegEx: "+pattern_mfcobol_errformat2_netx_sx_regexp);
+		console.log("pattern_mfcobol_errformat2_netx_sx: " + pattern_mfcobol_errformat2_netx_sx);
+		console.log("RegEx: " + pattern_mfcobol_errformat2_netx_sx_regexp);
 
 		const r = new RegExp(pattern_mfcobol_errformat2_netx_sx_regexp);
 		r.compile();
