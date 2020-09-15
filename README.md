@@ -101,6 +101,8 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
+For Net Express/Server Express compilers use the "$mfcobol-errformat3-netx-sx" problem matcher as although the directive ERRFORMAT"3" is used, the compiler output error format is slightly different.
+
 ```json
 {
     "label": "mf cobol (single file)",
@@ -237,7 +239,8 @@ The example below shows you how you can create a single task to compile one prog
 | GnuCOBOL 1-2                                  | cobc                                                         | $gnucobol-cobc                                                         |
 | GnuCOBOL 3                                    | cobc                                                         | $gnucobol3-cobc                                                        |
 | GnuCOBOL 3                                    | cobc                                                         | $gnucobol3-warning-cobc + $gnucobol3-error-cobc + $gnucobol3-note-cobc |
-| Micro Focus COBOL Net Express/Server Express  | cob or cobol.exe                                             | $mfcobol-errformat2-netx-sx                                            |
+| Micro Focus COBOL Net Express/Server Express  | cob or cobol.exe + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                                       |
+|                                               | cob or cobol.exe + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                       |
 | Micro Focus Visual COBOL/Enterprise Developer | msbuild                                                      | $mfcobol-msbuild                                                       |
 |                                               | cob or cobol.exe + ERRFORMAT"3"                              | $mfcobol-errformat3                                                    |
 |                                               | cob or cobol.exe + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                                             |
