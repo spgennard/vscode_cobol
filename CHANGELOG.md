@@ -3,6 +3,23 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#206](https://github.com/spgennard/vscode_cobol/issues/206) Issue with Metadata cache setting?  
+
+**Issue with Metadata cache setting? Fix#206**
+
+
+[8fa9f320c10b498](https://github.com/spgennard/vscode_cobol/commit/8fa9f320c10b498) *2020-09-15 14:01:07*
+
+
+### GitHub [#207](https://github.com/spgennard/vscode_cobol/issues/207) Outline regression starting at 6.7.17  
+
+**Outline regression starting at 6.7.17 Fix#207**
+
+
+[6fa59af77391543](https://github.com/spgennard/vscode_cobol/commit/6fa59af77391543) *2020-09-15 14:02:29*
+
+
 ## 6.7.18
 ### GitHub [#200](https://github.com/spgennard/vscode_cobol/pull/200) Added the &#39;tab&#39; keyword to the list of keywords.  
 
