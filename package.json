@@ -1335,7 +1335,7 @@
             },
             {
                 "name": "opencobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning|Fehler|Warnung|fehler|warnung|Errores|Alerta|errores|alerta):(.*)$",
+                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1373,21 +1373,21 @@
             },
             {
                 "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning|[nN]ote):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
                 "message": 4
             },
             {
-                "name": "cobolit-warning-cobc",
+                "name": "gnucobol-warning-cobc",
                 "regexp": "^(.*):(\\d+):\\s.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
             },
             {
-                "name": "cobolit-error-cobc",
+                "name": "gnucobol-error-cobc",
                 "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
                 "file": 1,
                 "line": 2,
@@ -1395,14 +1395,14 @@
             },
             {
                 "name": "cobolit-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|[wW]arning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|[wW]arning: -->):(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
             },
             {
-                "name": "opencobol-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote):(.*)$",
+                "name": "gnucobol3-note-cobc",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|Anmerkung|[nN]ota):(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
@@ -1524,7 +1524,7 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$cobolit-warning-cobc",
+                "pattern": "$gnucobol-warning-cobc",
                 "severity": "warning",
                 "source": "GnuCOBOL3"
             },
@@ -1534,7 +1534,7 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$cobolit-error-cobc",
+                "pattern": "$gnucobol-error-cobc",
                 "severity": "error",
                 "source": "GnuCOBOL3"
             },
@@ -1544,7 +1544,7 @@
                 "fileLocation": [
                     "absolute"
                 ],
-                "pattern": "$cobolit-note-cobc",
+                "pattern": "$gnucobol3-note-cobc",
                 "severity": "info",
                 "source": "GnuCOBOL3"
             },
@@ -1597,16 +1597,7 @@
                 "source": "COBOL-IT"
             },
             {
-                "name": "cobolit-error-cobc",
-                "owner": "cobol",
-                "fileLocation": [
-                    "absolute"
-                ],
-                "pattern": "$cobolit-error-cobc",
-                "severity": "error",
-                "source": "COBOL-IT"
-            },
-            {
+                // to actually use: place before $cobolit-cobc
                 "name": "cobolit-note-cobc",
                 "owner": "cobol",
                 "fileLocation": [
