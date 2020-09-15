@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.7.24
 ### GitHub [#206](https://github.com/spgennard/vscode_cobol/issues/206) Issue with Metadata cache setting?  
 
 **Issue with Metadata cache setting? Fix#206**
