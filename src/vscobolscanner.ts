@@ -39,9 +39,6 @@ export default class VSQuickCOBOLParse {
     public static getCachedObject(document: TextDocument): COBOLSourceScanner | undefined {
         const fileName: string = document.fileName;
         const cacheDirectory: string | undefined = VSQuickCOBOLParse.getCacheDirectory();
-        if (cacheDirectory === undefined) {
-            return undefined;
-        }
 
         /* if the document is edited, drop the in cached object */
         if (document.isDirty) {
@@ -52,7 +49,8 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 const startTime = performance_now();
-                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(), cacheDirectory);
+                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(),
+                    cacheDirectory === undefined ? "": cacheDirectory);
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
