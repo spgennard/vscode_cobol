@@ -51,6 +51,10 @@ export class VSCOBOLConfiguration {
     }
 
     public static get(): ICOBOLSettings {
+        if (VSCOBOLConfiguration.config.init_required) {
+            VSCOBOLConfiguration.init();
+            VSCOBOLConfiguration.config.init_required = false;
+        }
         return VSCOBOLConfiguration.config;
     }
 
@@ -95,19 +99,20 @@ function getCoboldoc_workspace_folder(): string {
 
 function getcache_metadata(): CacheDirectoryStrategy {
     const editorConfig = workspace.getConfiguration('coboleditor');
-    const cacheDirStrategy = editorConfig.get<string>('cache_metadata');
+    let cacheDirStrategy = editorConfig.get<string>('cache_metadata');
 
     if (cacheDirStrategy === undefined || cacheDirStrategy === null) {
         return CacheDirectoryStrategy.Off;
     }
 
+    cacheDirStrategy = cacheDirStrategy.toLowerCase();
     if (cacheDirStrategy === "off") {
         return CacheDirectoryStrategy.Off;
     }
 
     switch(cacheDirStrategy) {
         case 'workspace' : return CacheDirectoryStrategy.Workspace;
-        case 'storage' : return CacheDirectoryStrategy.Storage;
+        case 'storagepath' : return CacheDirectoryStrategy.Storage;
         case 'off' : return CacheDirectoryStrategy.Off;
     }
     return CacheDirectoryStrategy.Off;

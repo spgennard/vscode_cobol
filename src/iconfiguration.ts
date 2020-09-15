@@ -7,7 +7,6 @@ export enum outlineFlag {
     Skeleton = "skeleton"
 }
 
-
 export interface ICOBOLSettings {
     experimental_features: boolean;
     enable_tabstop: boolean;
@@ -40,6 +39,8 @@ export interface ICOBOLSettings {
     linter_house_standards_rules: string[];
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
+
+    init_required: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -74,6 +75,8 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter_house_standards_rules: string[];
     public ignore_unsafe_extensions: boolean;
     public coboldoc_workspace_folder: string;
+
+    public init_required: boolean = true;
 
     constructor() {
         this.experimental_features = false;
