@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.26",
+    "version": "6.7.27",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1275,6 +1275,16 @@
                 "column": 6
             },
             {
+                "name": "mfcobol-errformat2-copybook-netx-sx",
+                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+                "code": 1,
+                "severity": 2,
+                "message": 3,
+                "file": 4,
+                "line": 5,
+                "column": 6
+            },
+            {
                 "name": "mfcobol-errformat3-netx-sx",
                 "regexp": "^(.*)\\((\\d+),(\\d+)\\)\\s+:\\s+(warning|error)\\s+(\\d+)\\s+:\\s+(.*)$",
                 "file": 1,
@@ -1373,7 +1383,7 @@
             },
             {
                 "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):\\s+(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1395,7 +1405,7 @@
             },
             {
                 "name": "cobolit-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote:|[wW]arning: ->)(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote:|[wW]arning: ->)\\s+(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
@@ -1461,6 +1471,15 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat2-netx-sx",
+                "source": "NETX/SX"
+            },
+            {
+                "name" : "mfcobol-errformat2-copybook-netx-sx",
+                "owner": "cobol",
+                "fileLocation" : [
+                    "absolute"
+                ],
+                "pattern" : "$mfcobol-errformat2-copybook-netx-sx",
                 "source": "NETX/SX"
             },
             {

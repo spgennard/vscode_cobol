@@ -8,7 +8,6 @@ import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 import { extensions } from 'vscode';
 import * as fs from 'fs';
-import { trace } from 'console';
 
 
 suite('Issues Raised Test Suite', () => {
@@ -77,16 +76,36 @@ suite('Issues Raised Test Suite', () => {
 				try {
 					const possibleData = path.join(baseForSource, `co_${patternName}.txt`);
 					if (fs.existsSync(possibleData)) {
-						const r = new RegExp(`${pattern.regexp}`);
+						const r = new RegExp(`${pattern.regexp}`, "gm");
 
 						// console.log(`OK - Found test data for ${patternName}`);
 						const compilerOutputs = fs.readFileSync(possibleData);
 						let resultCount = 0;
 						let missingCount = 0;
 						for (const compilerOutput of compilerOutputs.toString().split("\n")) {
+							if(compilerOutput.length === 0) {
+								continue;
+							}
 							if (r.test(compilerOutput)) {
+								const regex = new RegExp(`${pattern.regexp}`, "gm");
+								let m;
+
+								while ((m = regex.exec(compilerOutput)) !== null) {
+									// This is necessary to avoid infinite loops with zero-width matches
+									if (m.index === regex.lastIndex) {
+										regex.lastIndex++;
+									}
+
+									// The result can be accessed through the `m`-variable.
+									m.forEach((match, groupIndex) => {
+										console.log(` ${groupIndex} => [${match}]`);
+									});
+								}
+
+
 								resultCount++;
 							} else {
+								// console.log(` MISSED: ${compilerOutput}`);
 								missingCount++;
 							}
 						}
@@ -94,7 +113,8 @@ suite('Issues Raised Test Suite', () => {
 						if (resultCount === 0) {
 							assert.fail(`${patternName} failed to match any lines in co_${patternName}.txt`);
 						} else {
-							console.log(`    ${patternName} did match lines in co_${patternName}.txt`);
+							console.log(`    ${patternName} did match lines in co_${patternName}.txt (count=${resultCount}, missed=${missingCount})`);
+
 						}
 
 					}
