@@ -3,6 +3,30 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#209](https://github.com/spgennard/vscode_cobol/pull/209) fixed pattern cobolit-note-cobc  
+
+**fixed pattern cobolit-note-cobc Fix #209**
+
+ * - add compiler output file for test 
+
+[00ef046202839a1](https://github.com/spgennard/vscode_cobol/commit/00ef046202839a1) *2020-09-16 20:09:28*
+
+
+### GitHub [#210](https://github.com/spgennard/vscode_cobol/issues/210) NETX/SX patterns must be extended to parse filename for diagnostics in copybooks  
+
+**NETX/SX patterns must be extended to parse filename for diagnostics in copybooks Fix #210**
+
+
+[29d095b4b1a72ea](https://github.com/spgennard/vscode_cobol/commit/29d095b4b1a72ea) *2020-09-16 21:51:39*
+
+**NETX/SX patterns must be extended to parse filename for diagnostics in copybooks Fix #210**
+
+ * - add mfcobol-errformat2-copybook-netx-sx 
+
+[b3bf03678626ffb](https://github.com/spgennard/vscode_cobol/commit/b3bf03678626ffb) *2020-09-16 21:46:02*
+
+
 ## 6.7.24
 ### GitHub [#206](https://github.com/spgennard/vscode_cobol/issues/206) Issue with Metadata cache setting?  
 
