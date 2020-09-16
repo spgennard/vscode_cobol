@@ -229,24 +229,26 @@ The example below shows you how you can create a single task to compile one prog
 
 ### Task: Breakdown of problem matchers
 
-| Product and Version                           | Tools                                                        | Problem matcher(s)                                                     |
-|-----------------------------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
-| COBOL-IT                                      | cobc                                                         | $cobolit-cobc                                                          |
-| COBOL-IT                                      | cobc                                                         | $cobolit-error-cobc + $cobolit-note-cobc                               |
-| open-cobol 1-1.5                              | cobc                                                         | $opencobol-cobc                                                        |
-| open-cobol 1-1.5                              | cobc                                                         | $opencobol-warning-cobc + $opencobol-error-cobc + $opencobol-note-cobc |
-| ACU-COBOLGT                                   | ccbl                                                         | $acucobol-ccbl + $acucobol-warning-ccbl                                |
-| GnuCOBOL 1-2                                  | cobc                                                         | $gnucobol-cobc                                                         |
-| GnuCOBOL 3                                    | cobc                                                         | $gnucobol3-cobc                                                        |
-| GnuCOBOL 3                                    | cobc                                                         | $gnucobol3-warning-cobc + $gnucobol3-error-cobc + $gnucobol3-note-cobc |
-| Micro Focus COBOL Net Express/Server Express  | cob or cobol.exe + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                            |
-|                                               | cob or cobol.exe + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx + $mfcobol-errformat2-netx-sx     |
-|                                               | cob or cobol.exe + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                            |
-| Micro Focus Visual COBOL/Enterprise Developer | msbuild                                                      | $mfcobol-msbuild                                                       |
-|                                               | cob or cobol.exe + ERRFORMAT"3"                              | $mfcobol-errformat3                                                    |
-|                                               | cob or cobol.exe + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                                             |
-|                                               | cob or cobol.exe + ERRFORMAT"2"                              | $mfcobol-errformat2                                                    |
-|                                               | cob or cobol.exe + ERRFORMAT"2" for errors in copybooks      | $mfcobol-errformat2-copybook                                           |
+| Product and Version                           | Tools                                                            | Problem matcher(s)                                                     |
+|-----------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------|
+| COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                                                          |
+| COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc                               |
+| open-cobol 1-1.5                              | *cobc*                                                           | $opencobol-cobc                                                        |
+| open-cobol 1-1.5                              | *cobc* for warnings/errors/notes                                 | $opencobol-warning-cobc + $opencobol-error-cobc + $opencobol-note-cobc |
+| ACU-COBOLGT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl                                |
+| GnuCOBOL 1-2                                  | *cobc*                                                           | $gnucobol-cobc                                                         |
+| GnuCOBOL 3                                    | *cobc*                                                           | $gnucobol3-cobc                                                        |
+| GnuCOBOL 3                                    | *cobc* for warnings/errors/notes                                 | $gnucobol3-warning-cobc + $gnucobol3-error-cobc + $gnucobol3-note-cobc |
+| Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                            |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx                                   |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                            |
+| Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                          | $mfcobol-msbuild                                                       |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                                                    |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                                             |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                                                    |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | $mfcobol-errformat2-copybook                                           |
+
+NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook" problem matcher is included before simular problem matchers.
 
 ## Remote development using containers
 

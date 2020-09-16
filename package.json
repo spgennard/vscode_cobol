@@ -1474,12 +1474,12 @@
                 "source": "NETX/SX"
             },
             {
-                "name" : "mfcobol-errformat2-copybook-netx-sx",
+                "name": "mfcobol-errformat2-copybook-netx-sx",
                 "owner": "cobol",
-                "fileLocation" : [
+                "fileLocation": [
                     "absolute"
                 ],
-                "pattern" : "$mfcobol-errformat2-copybook-netx-sx",
+                "pattern": "$mfcobol-errformat2-copybook-netx-sx",
                 "source": "NETX/SX"
             },
             {
