@@ -1395,7 +1395,7 @@
             },
             {
                 "name": "cobolit-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|[wW]arning: -->):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote:|[wW]arning: ->)(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
