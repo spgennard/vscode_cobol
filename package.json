@@ -1578,16 +1578,6 @@
                 "source": "OpenCOBOL"
             },
             {
-                "name": "opencobol-note-cobc",
-                "owner": "cobol",
-                "fileLocation": [
-                    "absolute"
-                ],
-                "pattern": "$opencobol-note-cobc",
-                "severity": "info",
-                "source": "OpenCOBOL"
-            },
-            {
                 "name": "cobolit-cobc",
                 "owner": "cobol",
                 "fileLocation": [
@@ -1597,7 +1587,6 @@
                 "source": "COBOL-IT"
             },
             {
-                // to actually use: place before $cobolit-cobc
                 "name": "cobolit-note-cobc",
                 "owner": "cobol",
                 "fileLocation": [

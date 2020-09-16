@@ -8,6 +8,8 @@ import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 import { extensions } from 'vscode';
 import * as fs from 'fs';
+import { trace } from 'console';
+
 
 suite('Issues Raised Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
@@ -62,7 +64,6 @@ suite('Issues Raised Test Suite', () => {
 
 		const patterns = ext.packageJSON.contributes.problemPatterns;
 		let patternCount = 0;
-		let pattern_mfcobol_errformat2_netx_sx;
 		for (const key in patterns) {
 			const pattern = patterns[key];
 			if (pattern.name !== undefined) {
@@ -72,17 +73,30 @@ suite('Issues Raised Test Suite', () => {
 				// console.log(`INFO: ${patternName}`);
 				patternCount++;
 
-				if (patternName === 'mfcobol-errformat2-netx-sx') {
-					pattern_mfcobol_errformat2_netx_sx = pattern;
-				}
 
 				try {
-					const r = new RegExp(pattern);
-					r.compile();
-
-					const possibleData = path.join(baseForSource, `${patternName}.txt`);
+					const possibleData = path.join(baseForSource, `co_${patternName}.txt`);
 					if (fs.existsSync(possibleData)) {
-						console.log(`OK - Found test data for ${patternName}`);
+						const r = new RegExp(`${pattern.regexp}`);
+
+						// console.log(`OK - Found test data for ${patternName}`);
+						const compilerOutputs = fs.readFileSync(possibleData);
+						let resultCount = 0;
+						let missingCount = 0;
+						for (const compilerOutput of compilerOutputs.toString().split("\n")) {
+							if (r.test(compilerOutput)) {
+								resultCount++;
+							} else {
+								missingCount++;
+							}
+						}
+						// console.log(`${patternName} found ${resultCount} did not match ${missingCount}`);
+						if (resultCount === 0) {
+							assert.fail(`${patternName} failed to match any lines in co_${patternName}.txt`);
+						} else {
+							console.log(`    ${patternName} did match lines in co_${patternName}.txt`);
+						}
+
 					}
 				} catch (e) {
 					assert.fail(`${key} : ${e}`);
@@ -92,14 +106,14 @@ suite('Issues Raised Test Suite', () => {
 
 		assert.ok(patternCount !== 0, "We should have at least one! pattern matcher :-)");
 
-		assert.ok(pattern_mfcobol_errformat2_netx_sx !== undefined, "mfcobol-errformat2-netx-sx not found");
+		// assert.ok(pattern_mfcobol_errformat2_netx_sx !== undefined, "mfcobol-errformat2-netx-sx not found");
 
-		const pattern_mfcobol_errformat2_netx_sx_regexp = pattern_mfcobol_errformat2_netx_sx.regexp;
-		console.log("pattern_mfcobol_errformat2_netx_sx: " + pattern_mfcobol_errformat2_netx_sx);
-		console.log("RegEx: " + pattern_mfcobol_errformat2_netx_sx_regexp);
+		// const pattern_mfcobol_errformat2_netx_sx_regexp = pattern_mfcobol_errformat2_netx_sx.regexp;
+		// console.log("pattern_mfcobol_errformat2_netx_sx: " + pattern_mfcobol_errformat2_netx_sx);
+		// console.log("RegEx: " + pattern_mfcobol_errformat2_netx_sx_regexp);
 
-		const r = new RegExp(pattern_mfcobol_errformat2_netx_sx_regexp);
-		r.compile();
+		// const r = new RegExp(pattern_mfcobol_errformat2_netx_sx_regexp);
+		// r.compile();
 	});
 
 });
