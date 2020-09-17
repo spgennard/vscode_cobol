@@ -8,6 +8,16 @@ Changelog for spgennard vscode_cobol.
 
 **NETX/SX patterns must be extended to parse filename for diagnostics in copybooks Fix #210**
 
+ * - update copybook reference (add endColumn) 
+
+[70aa27f0e90e964](https://github.com/spgennard/vscode_cobol/commit/70aa27f0e90e964) *2020-09-17 20:20:12*
+
+
+## 6.7.28
+### GitHub [#210](https://github.com/spgennard/vscode_cobol/issues/210) NETX/SX patterns must be extended to parse filename for diagnostics in copybooks  
+
+**NETX/SX patterns must be extended to parse filename for diagnostics in copybooks Fix #210**
+
  * - add mfcobol-errformat3-copybook 
  * - todo review other -copybook definitions 
 
