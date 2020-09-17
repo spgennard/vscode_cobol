@@ -119,7 +119,7 @@ suite('Issues Raised Test Suite', () => {
 
 					}
 				} catch (e) {
-					assert.fail(`${key} : ${e}`);
+					assert.fail(`${key}/${pattern} : ${e}`);
 				}
 			}
 		}

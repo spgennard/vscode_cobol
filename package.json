@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.28",
+    "version": "6.7.29",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1306,7 +1306,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
+                "regexp": "^\\*+\\s+COBCH(\\d+)([SEWIU])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1336,13 +1336,14 @@
             },
             {
                 "name": "mfcobol-errformat3-copybook",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([SEWI])\\s+([^:]+)[^,]+\\s+(.*),(.*)\\((\\d+),(\\d+),.*\\).*$",
+                "regexp": "^\\*+\\s+COBCH(\\d+)([SEWIU])\\s+([^:]+)[^,]+\\s+(.*),(.*)\\((\\d+),(\\d+),(\\d+)\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
-                "file": 4,
+                "file": 5,
                 "line": 6,
-                "column": 7
+                "column": 8,
+                "endColumn": 7
             },
             {
                 "name": "mfcobol-errformat3-basefn",
