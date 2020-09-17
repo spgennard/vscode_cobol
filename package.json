@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.27",
+    "version": "6.7.28",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1335,6 +1335,16 @@
                 "message": 6
             },
             {
+                "name": "mfcobol-errformat3-copybook",
+                "regexp": "^\\*+\\s+COBCH(\\d+)([SEWI])\\s+([^:]+)[^,]+\\s+(.*),(.*)\\((\\d+),(\\d+),.*\\).*$",
+                "code": 1,
+                "severity": 2,
+                "message": 3,
+                "file": 4,
+                "line": 6,
+                "column": 7
+            },
+            {
                 "name": "mfcobol-errformat3-basefn",
                 "regexp": ".*[\\/](.*)\\((\\d+),(\\d+)\\).*(error|warning)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
@@ -1452,6 +1462,16 @@
                     "absolute"
                 ],
                 "pattern": "$mfcobol-errformat3",
+                "source": "VC"
+            },
+            {
+                "name": "mfcobol-errformat3-copybook",
+                "owner": "cobol",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": "$mfcobol-errformat3-copybook",
                 "source": "VC"
             },
             {
