@@ -18,6 +18,7 @@ import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
 import { CacheDirectoryStrategy, } from "./configuration";
 import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache, InMemoryGlobalFileCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
+import { config } from "vscode-nls";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -528,8 +529,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_ScreenSectionFiles: string[] = [];
 
     public constructor(sourceHandler: ISourceHandler, filename: string, configHandler: ICOBOLSettings,
-                        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
-                        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) {
+        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
+        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) {
         const stat: fs.Stats = fs.statSync(filename);
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
@@ -721,8 +722,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             if (cacheDirectory !== null && cacheDirectory.length > 0) {
                 if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-                    const qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
-                    COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                    if (this.configHandler.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
+                        logMessage(` Skipping ${filename} as it is not a top level reference`);
+                    } else {
+                        const qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
+                        COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
+                    }
                 }
             }
         }
@@ -852,28 +857,33 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
         }
 
-        logMessage("");
-        logMessage("File symbols    :");
+        if (!settings.parse_copybooks_for_references) {
+            logMessage("");
+            logMessage("Paragraphs/Sections in file :");
 
-        for (const file of fs.readdirSync(cacheDirectory)) {
-            if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
-                const symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
-                if (symTable !== undefined) {
-                    if (!(symTable.labelSymbols.size === 0 && symTable.variableSymbols.size === 0)) {
-                        logMessage(" " + symTable.fileName + " in " + file);
-                        logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
+            for (const file of fs.readdirSync(cacheDirectory)) {
+                if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
+                    const symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
+                    if (symTable !== undefined) {
+                        if (!(symTable.labelSymbols.size === 0 && symTable.variableSymbols.size === 0)) {
+                            logMessage(" " + symTable.fileName + " in " + file);
+                            logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
 
-                        for (const [key, value] of symTable.labelSymbols.entries()) {
-                            logMessage(`     ${value.symbol}:${value.symbol}`);
-                        }
+                            for (const [key, value] of symTable.labelSymbols.entries()) {
+                                logMessage(`     ${value.symbol}:${value.symbol}`);
+                            }
 
-                        logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
-                        for (const [key, value] of symTable.variableSymbols.entries()) {
-                            logMessage(`     ${value.symbol}:${value.symbol}`);
+                            logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
+                            for (const [key, value] of symTable.variableSymbols.entries()) {
+                                logMessage(`     ${value.symbol}:${value.symbol}`);
+                            }
                         }
                     }
                 }
             }
+        } else {
+            logMessage("");
+            logMessage("Paragraphs/Sections in file : none (parse_copybooks_for_references set)");
         }
 
         if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {

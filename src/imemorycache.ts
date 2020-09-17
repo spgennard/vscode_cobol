@@ -126,6 +126,7 @@ export class InMemoryGlobalCachesHelper {
                 if (found === false) {
                     symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
                     InMemoryGlobalFileCache.isDirty = true;
+                    // return;
                 }
             }
         }
@@ -157,8 +158,10 @@ export class InMemoryGlobalCachesHelper {
 
 
     public static addCopyBookFilename(srcfilename: string): void {
-        const symbolsCache = InMemoryGlobalFileCache.copybookFileSymbols;
-        InMemoryGlobalCachesHelper.addSymbolFileToCache(srcfilename, symbolsCache);
+        if (srcfilename !== null && srcfilename.length > 1) {
+            const symbolsCache = InMemoryGlobalFileCache.copybookFileSymbols;
+            InMemoryGlobalCachesHelper.addSymbolFileToCache(srcfilename, symbolsCache);
+        }
     }
 
 

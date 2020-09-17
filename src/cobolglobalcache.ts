@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logMessage,  isFile } from "./extension";
+import { logMessage, isFile } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
@@ -105,16 +105,24 @@ export class COBOLSymbolTableHelper {
             const token = qp.tokensInOrder[i];
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
-                    st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    if (config.parse_copybooks_for_references === false) {
+                        st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    }
                     break;
                 case COBOLTokenStyle.Variable:
-                    st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    if (config.parse_copybooks_for_references === false) {
+                        st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    }
                     break;
                 case COBOLTokenStyle.Paragraph:
-                    st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    if (config.parse_copybooks_for_references === false) {
+                        st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    }
                     break;
                 case COBOLTokenStyle.Section:
-                    st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    if (config.parse_copybooks_for_references === false) {
+                        st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    }
                     break;
                 case COBOLTokenStyle.ImplicitProgramId:
                     InMemoryGlobalCachesHelper.addSymbol(st.fileName, token.tokenNameLower, token.startLine);
