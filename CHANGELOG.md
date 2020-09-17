@@ -4,6 +4,17 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#210](https://github.com/spgennard/vscode_cobol/issues/210) NETX/SX patterns must be extended to parse filename for diagnostics in copybooks  
+
+**NETX/SX patterns must be extended to parse filename for diagnostics in copybooks Fix #210**
+
+ * - add mfcobol-errformat3-copybook 
+ * - todo review other -copybook definitions 
+
+[42e41c98fc5b55f](https://github.com/spgennard/vscode_cobol/commit/42e41c98fc5b55f) *2020-09-17 07:54:48*
+
+
+## 6.7.27
 ### GitHub [#209](https://github.com/spgennard/vscode_cobol/pull/209) fixed pattern cobolit-note-cobc  
 
 **fixed pattern cobolit-note-cobc Fix #209**
