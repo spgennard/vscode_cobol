@@ -49,149 +49,153 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     const theline = document.lineAt(position.line).text;
-    if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-        if (cacheDirectory === undefined) {
-            return locations;
-        }
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
-        if (qcp === undefined) {
-            return locations;
+    if (!config.parse_copybooks_for_references) {
+        if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
+            const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+            if (cacheDirectory === undefined) {
+                return locations;
+            }
+            const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+            if (qcp === undefined) {
+                return locations;
+            }
+
+            const wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            const wordLower = word.toLocaleLowerCase();
+
+            if (wordLower.length > 0) {
+                /* iterater through all the known copybook references */
+                for (const [key, value] of qcp.copyBooksUsed) {
+                    try {
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
+                        if (fileName.length > 0) {
+                            const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
+                            if (symboleTable !== undefined) {
+                                const symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
+                                if (symbol !== undefined && symbol.lnum !== undefined) {
+                                    if (openFileViaCommand(fileName, symbol.lnum, locations)) {
+                                        return locations;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (fe) {
+                        console.log(fe.message);
+                        console.log(fe.stacktrace);
+                    }
+                }
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+            }
         }
 
-        const wordRange = document.getWordRangeAtPosition(position, sectionRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
-        const wordLower = word.toLocaleLowerCase();
+        if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
+            const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+            if (qcp === undefined) {
+                return locations;
+            }
 
-        if (wordLower.length > 0) {
-            /* iterater through all the known copybook references */
-            for (const [key, value] of qcp.copyBooksUsed) {
-                try {
-                    const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
-                    if (fileName.length > 0) {
-                        const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
-                        if (symboleTable !== undefined) {
-                            const symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
-                            if (symbol !== undefined && symbol.lnum !== undefined) {
-                                if (openFileViaCommand(fileName, symbol.lnum, locations)) {
+            const wordRange = document.getWordRangeAtPosition(position, callRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            if (word !== "") {
+                const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
+                const wordLower = word.toLocaleLowerCase();
+                if (img.classSymbols.has(wordLower)) {
+                    const symbols = img.classSymbols.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            const symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
                                     return locations;
                                 }
                             }
                         }
                     }
                 }
-                catch (fe) {
-                    console.log(fe.message);
-                    console.log(fe.stacktrace);
+
+                const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+                if (cacheDirectory !== undefined) {
+                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
                 }
             }
-            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
-        }
-    }
-
-    if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
-        if (qcp === undefined) {
-            return locations;
         }
 
-        const wordRange = document.getWordRangeAtPosition(position, callRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
-        if (word !== "") {
-            const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
-            const wordLower = word.toLocaleLowerCase();
-            if (img.classSymbols.has(wordLower)) {
-                const symbols = img.classSymbols.get(wordLower);
-                if (symbols !== undefined) {
-                    for (let i = 0; i < symbols.length; i++) {
-                        const symbol = symbols[i];
-                        if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                            if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
-                                return locations;
+        if (theline.match(/.*(call|cancel|chain).*$/i)) {
+            const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+            if (qcp === undefined) {
+                return locations;
+            }
+            const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+            const wordRange = document.getWordRangeAtPosition(position, callRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            if (cacheDirectory !== undefined && word !== "") {
+                const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
+                const wordLower = word.toLocaleLowerCase();
+                if (img.callableSymbols.has(wordLower) === false) {
+                    InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
+                    InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
+                }
+                if (img.callableSymbols.has(wordLower)) {
+                    const symbols = img.callableSymbols.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            const symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
+                                    return locations;
+                                }
                             }
                         }
                     }
                 }
-            }
-            const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-            if (cacheDirectory !== undefined) {
                 InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
-    }
 
-    if (theline.match(/.*(call|cancel|chain).*$/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
-        if (qcp === undefined) {
-            return locations;
-        }
-        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-        const wordRange = document.getWordRangeAtPosition(position, callRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
-        if (cacheDirectory !== undefined && word !== "") {
-            const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
-            const wordLower = word.toLocaleLowerCase();
-            if (img.callableSymbols.has(wordLower) === false) {
-                InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
-                InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
+        if (!config.parse_copybooks_for_references) {
+            /*
+             * search inside on disk copybooks referenced by the current program
+             * for variables
+             */
+            const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+            if (qcp === undefined) {
+                return locations;
             }
-            if (img.callableSymbols.has(wordLower)) {
-                const symbols = img.callableSymbols.get(wordLower);
-                if (symbols !== undefined) {
-                    for (let i = 0; i < symbols.length; i++) {
-                        const symbol = symbols[i];
-                        if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                            if (openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
-                                return locations;
+
+            const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+            const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            const wordLower = word.toLowerCase();
+
+            if (wordLower.length > 0 && cacheDirectory !== undefined) {
+                /* iterater through all the known copybook references */
+                for (const [key, value] of qcp.copyBooksUsed) {
+                    try {
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
+                        if (fileName.length > 0) {
+                            const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
+                            if (symboleTable !== undefined) {
+                                const symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
+                                if (symbol !== undefined && symbol.lnum !== undefined) {
+                                    if (openFileViaCommand(fileName, symbol.lnum, locations)) {
+                                        return locations;
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
-            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
-        }
-    }
-
-    /*
-     * search inside on disk copybooks referenced by the current program
-     * for variables
-     */
-    const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
-    if (qcp === undefined) {
-        return locations;
-    }
-
-    const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
-    const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
-    const word = wordRange ? document.getText(wordRange) : '';
-    const wordLower = word.toLowerCase();
-
-    if (wordLower.length > 0 && cacheDirectory !== undefined) {
-        /* iterater through all the known copybook references */
-        for (const [key, value] of qcp.copyBooksUsed) {
-            try {
-                const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
-                if (fileName.length > 0) {
-                    const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
-                    if (symboleTable !== undefined) {
-                        const symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
-                        if (symbol !== undefined && symbol.lnum !== undefined) {
-                            if (openFileViaCommand(fileName, symbol.lnum, locations)) {
-                                return locations;
-                            }
-                        }
+                    catch
+                    {
+                        // should not happen but if it does, continue on to the next copybook reference
                     }
                 }
-            }
-            catch
-            {
-                // should not happen but if it does, continue on to the next copybook reference
+                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                return locations;
             }
         }
-        InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+
         return locations;
     }
-
-
-    return locations;
 }
