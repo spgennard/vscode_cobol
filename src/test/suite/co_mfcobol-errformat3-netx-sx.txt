@@ -1,10 +1,3 @@
-> Executing task in folder uname: C:\Program Files (x86)\Micro Focus\Net Express 5.1\Base\bin\cobol.exe \\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl int(\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\) cobidy(\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\) nognt anim move-len-check(TRUNC) warning(2) errformat(3) errlist(verbose) ; <
-
-Micro Focus Net Express V5
-Version 5.116.0022 Copyright (C) Micro Focus 1984-2018. All rights reserved.
-URN AXCGG/AA0/00000
-Micro Focus Embedded HTML Preprocessor
-Version 5.1.16.01 Copyright (C) Micro Focus 1984-2018. All rights reserved.
             move wid-pd00016                       to whs-arquivo
 \\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(396,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
             move wid-pd09400                       to whs-arquivo
@@ -55,7 +48,3 @@ Version 5.1.16.01 Copyright (C) Micro Focus 1984-2018. All rights reserved.
 \\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1938,58) : warning 1247 : Truncated MOVE. Source length (255) exceeds target length (200)
             move wid-pd99800 to whs-arquivo
 \\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\..\..\biblioteca\cpy\PCL99800.CPY(9,43) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
-* Checking complete with no serious errors
-The terminal process "C:\Program Files (x86)\Micro Focus\Net Express 5.1\Base\bin\cobol.exe '\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl', 'int(\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\)', 'cobidy(\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\)', 'nognt', 'anim', 'move-len-check(TRUNC)', 'warning(2)', 'errformat(3)', 'errlist(verbose)', ';'" terminated with exit code: 4.
-
-Terminal will be reused by tasks, press any key to close it.

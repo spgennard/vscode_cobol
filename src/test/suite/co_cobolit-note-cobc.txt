@@ -1,3 +1,1 @@
-/tmp/some/TST982.cob: In paragraph 'X052-40':
-/tmp/some/TST982.cob:175: Warning: Alphanumeric value is expected
 /tmp/TEST.lib:19: Warning: -> 'MY-CODE' defined here as PIC X(01)

@@ -62,6 +62,7 @@ suite('Issues Raised Test Suite', () => {
 		}
 
 		const patterns = ext.packageJSON.contributes.problemPatterns;
+		const diagOutput = true;
 		let patternCount = 0;
 		for (const key in patterns) {
 			const pattern = patterns[key];
@@ -83,25 +84,30 @@ suite('Issues Raised Test Suite', () => {
 						let resultCount = 0;
 						let missingCount = 0;
 						for (const compilerOutput of compilerOutputs.toString().split("\n")) {
-							if(compilerOutput.length === 0) {
+							if (compilerOutput.length === 0) {
 								continue;
 							}
 							if (r.test(compilerOutput)) {
-								const regex = new RegExp(`${pattern.regexp}`, "gm");
-								let m;
-
-								while ((m = regex.exec(compilerOutput)) !== null) {
-									// This is necessary to avoid infinite loops with zero-width matches
-									if (m.index === regex.lastIndex) {
-										regex.lastIndex++;
-									}
-
-									// The result can be accessed through the `m`-variable.
-									m.forEach((match, groupIndex) => {
-										console.log(` ${groupIndex} => [${match}]`);
-									});
+								if (diagOutput) {
+									console.log(`${pattern.regexp}:`);
 								}
 
+								if (diagOutput) {
+									const regex = new RegExp(`${pattern.regexp}`, "gm");
+									let m;
+
+									while ((m = regex.exec(compilerOutput)) !== null) {
+										// This is necessary to avoid infinite loops with zero-width matches
+										if (m.index === regex.lastIndex) {
+											regex.lastIndex++;
+										}
+
+										// The result can be accessed through the `m`-variable.
+										m.forEach((match, groupIndex) => {
+											console.log(` ${groupIndex} => [${match}]`);
+										});
+									}
+								}
 
 								resultCount++;
 							} else {
@@ -109,14 +115,17 @@ suite('Issues Raised Test Suite', () => {
 								missingCount++;
 							}
 						}
+						let percenMatched = (resultCount / (resultCount+missingCount)) * 100;
+						let percenMatchedFixed = Number(percenMatched).toFixed(2);
 						// console.log(`${patternName} found ${resultCount} did not match ${missingCount}`);
-						if (resultCount === 0) {
-							assert.fail(`${patternName} failed to match any lines in co_${patternName}.txt`);
+						if (percenMatched < 50) {
+							assert.fail(`${patternName} failed to match enough lines in co_${patternName}.txt ${percenMatched}% (${resultCount}/${missingCount})
+							}})`);
 						} else {
-							console.log(`    ${patternName} did match lines in co_${patternName}.txt (count=${resultCount}, missed=${missingCount})`);
-
+							if (diagOutput) {
+								console.log(`    ${patternName} did match lines in co_${patternName}.txt ${percenMatchedFixed}% with count=${resultCount}, missed=${missingCount}`);
+							}
 						}
-
 					}
 				} catch (e) {
 					assert.fail(`${key}/${pattern} : ${e}`);
