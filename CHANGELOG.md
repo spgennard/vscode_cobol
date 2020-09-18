@@ -3,6 +3,16 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#210](https://github.com/spgennard/vscode_cobol/issues/210) NETX/SX patterns must be extended to parse filename for diagnostics in copybooks  
+
+**NETX/SX patterns must be extended to parse filename for diagnostics in copybooks Fix #210**
+
+ * - add information into messages for errformat&quot;3&quot; 
+
+[c0faa31581b6c8d](https://github.com/spgennard/vscode_cobol/commit/c0faa31581b6c8d) *2020-09-18 09:45:44*
+
+
 ## 6.7.29
 ### GitHub [#210](https://github.com/spgennard/vscode_cobol/issues/210) NETX/SX patterns must be extended to parse filename for diagnostics in copybooks  
 
