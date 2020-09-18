@@ -1,0 +1,6 @@
+    39 01 ws-non-portable      pic 9(5) comp-5.
+non-portable.cpy(1,46) : information  COBCH1209 : COMP-5 is machine specific format. (future occurrences not indicated)
+    40 PROCEDURE DIVIsSION.
+fizzbuzz.cbl(39,26) : warning COBCH1012 : DIVISION missing or misspelled. DIVISION assumed.
+   106     .
+fizzbuzz.cbl(105,12) : warning COBCH1101 : No COBOL statement between periods.
