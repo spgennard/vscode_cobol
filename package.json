@@ -143,6 +143,7 @@
                     ],
                     "description": "COBOL tabstops"
                 },
+
                 "coboleditor.copybookexts": {
                     "type": "array",
                     "items": {
@@ -165,6 +166,25 @@
                     ],
                     "markdownDescription": "COBOL CopyBook file name extensions",
                     "description": "COBOL CopyBook Extensions"
+                },
+                "coboleditor.program_extensions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "program_extensions",
+                        "properties": {
+                            "tabstop": {
+                                "type": "string",
+                                "description": "program_extension"
+                            }
+                        }
+                    },
+                    "default": [
+                        "cbl",
+                        "CBL"
+                    ],
+                    "markdownDescription": "COBOL Program file name extensions",
+                    "description": "COBOL Program Extensions"
                 },
                 "coboleditor.copybookdirs": {
                     "type": "array",

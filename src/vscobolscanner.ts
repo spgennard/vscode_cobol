@@ -8,11 +8,12 @@ import * as path from 'path';
 
 import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
-import { isValidCopybookExtension } from "./opencopybook";
+import { isValidCopybookExtension, isValidProgramExtension } from "./opencopybook";
 import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { InMemoryGlobalFileCache, COBOLSymbolTableHelper } from "./cobolglobalcache";
 import { ICOBOLSettings } from "./iconfiguration";
+import { parse } from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, any> = new Map<string, any>();
@@ -177,7 +178,16 @@ export default class VSQuickCOBOLParse {
     }
 
     private static async processFile(settings: ICOBOLSettings, cacheDirectory: string, filename: string, filterOnExtension: boolean, stats: ScanStats): Promise<boolean> {
-        const parseThisFilename = filterOnExtension ? isValidCopybookExtension(filename, settings) : true;
+        let parseThisFilename = false;
+
+        if (filterOnExtension) {
+            if (settings.parse_copybooks_for_references) {
+                parseThisFilename = isValidProgramExtension(filename, settings);
+            } else {
+                parseThisFilename = isValidCopybookExtension(filename, settings);
+            }
+        }
+
         if (parseThisFilename) {
             if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
                 // logMessage(` File: ${filename}`);

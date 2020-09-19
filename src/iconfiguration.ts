@@ -18,6 +18,7 @@ export interface ICOBOLSettings {
     copybookdirs: string[];
     invalid_copybookdirs: string[];
     copybookexts: string[];
+    program_extensions: string[];
     tabstops: number[];
     linter: boolean;
     line_comment: boolean;
@@ -75,8 +76,9 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter_house_standards_rules: string[];
     public ignore_unsafe_extensions: boolean;
     public coboldoc_workspace_folder: string;
+    public program_extensions: string[];
 
-    public init_required: boolean = true;
+    public init_required = true;
 
     constructor() {
         this.experimental_features = false;
@@ -89,6 +91,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];
         this.copybookexts = [];
+        this.program_extensions = [];
         this.invalid_copybookdirs = [];
         this.tabstops = [];
         this.linter = false;

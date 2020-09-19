@@ -16,15 +16,6 @@ export function isValidCopybookExtension(filename: string, settings: COBOLSettin
         extension = filename.substr(1+lastDot);
     }
 
-    switch (extension) {
-        case "tag":
-        case "ctags":
-        case "diff":
-        case "c":
-        case "h":
-            return false;
-    }
-
     const exts = settings.copybookexts;
     for (let extpos = 0; extpos < exts.length; extpos++) {
         if (exts[extpos] === extension) {
@@ -34,6 +25,21 @@ export function isValidCopybookExtension(filename: string, settings: COBOLSettin
     return false;
 }
 
+export function isValidProgramExtension(filename: string, settings: COBOLSettings): boolean {
+    const lastDot = filename.lastIndexOf(".");
+    let extension = "";
+    if (lastDot !== -1) {
+        extension = filename.substr(1+lastDot);
+    }
+
+    const exts = settings.program_extensions;
+    for (let extpos = 0; extpos < exts.length; extpos++) {
+        if (exts[extpos] === extension) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function extractCopyBoolFilename(str: string) {
     const copyPos = str.toLowerCase().indexOf("copy");

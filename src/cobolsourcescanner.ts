@@ -18,7 +18,6 @@ import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
 import { CacheDirectoryStrategy, } from "./configuration";
 import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache, InMemoryGlobalFileCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
-import { config } from "vscode-nls";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",

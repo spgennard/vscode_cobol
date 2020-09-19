@@ -26,6 +26,7 @@ export class VSCOBOLConfiguration {
         vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
         vsconfig.pre_parse_line_limit = getPreParseLineLimit();
         vsconfig.copybookexts = getCopybookExts();
+        vsconfig.program_extensions = getProgram_extensions();
         vsconfig.tabstops = getTabStops();
         vsconfig.linter = getBoolean('linter', false);
         vsconfig.line_comment = getBoolean("line_comment", false);
@@ -33,9 +34,9 @@ export class VSCOBOLConfiguration {
         vsconfig.enable_data_provider = getBoolean('enable_data_provider', true);
         vsconfig.disable_unc_copybooks_directories = getBoolean('disable_unc_copybooks_directories', false);
         vsconfig.intellisense_include_unchanged = getBoolean("intellisense_include_unchanged", true);
-        vsconfig.intellisense_include_camelcase = getBoolean("intellisense_include_camelcase",false);
+        vsconfig.intellisense_include_camelcase = getBoolean("intellisense_include_camelcase", false);
         vsconfig.intellisense_include_uppercase = getBoolean("intellisense_include_uppercase", false);
-        vsconfig.intellisense_include_lowercase = getBoolean("intellisense_include_lowercase",false);
+        vsconfig.intellisense_include_lowercase = getBoolean("intellisense_include_lowercase", false);
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         vsconfig.cache_metadata = getcache_metadata();
@@ -110,10 +111,10 @@ function getcache_metadata(): CacheDirectoryStrategy {
         return CacheDirectoryStrategy.Off;
     }
 
-    switch(cacheDirStrategy) {
-        case 'workspace' : return CacheDirectoryStrategy.Workspace;
-        case 'storagepath' : return CacheDirectoryStrategy.Storage;
-        case 'off' : return CacheDirectoryStrategy.Off;
+    switch (cacheDirStrategy) {
+        case 'workspace': return CacheDirectoryStrategy.Workspace;
+        case 'storagepath': return CacheDirectoryStrategy.Storage;
+        case 'off': return CacheDirectoryStrategy.Off;
     }
     return CacheDirectoryStrategy.Off;
 }
@@ -156,22 +157,22 @@ function isOutlineEnabled(): outlineFlag {
     return outlineFlag.On;
 }
 
-const DEFAULT_COPYBOOK_DIR:string[] = [];
+const DEFAULT_COPYBOOK_DIR: string[] = [];
 
-function expandEnvVars(startEnv: string) : string {
+function expandEnvVars(startEnv: string): string {
     let complete = false;
     let env: string = startEnv;
 
-    while(complete === false) {
+    while (complete === false) {
         const indexOfEnv = env.indexOf("${env:");
         if (indexOfEnv === -1) {
             complete = true;
         } else {
-            const lenOfValue = env.indexOf("}") - (indexOfEnv+6);
-            const envValue = env.substr(6+indexOfEnv,lenOfValue);
-            const left = env.substr(0,indexOfEnv);
-            const right = env.substr(1+env.indexOf("}"));
-            env = left + process.env[envValue]+right;
+            const lenOfValue = env.indexOf("}") - (indexOfEnv + 6);
+            const envValue = env.substr(6 + indexOfEnv, lenOfValue);
+            const left = env.substr(0, indexOfEnv);
+            const right = env.substr(1 + env.indexOf("}"));
+            env = left + process.env[envValue] + right;
         }
     }
 
@@ -231,6 +232,7 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
 }
 
 const DEFAULT_COPYBOOK_EXTS = ["cpy", "CPY"];
+const DEFAULT_PROGRAM_EXTS = ["cbl", "CBL"];
 
 function getCopybookExts(): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
@@ -241,6 +243,16 @@ function getCopybookExts(): string[] {
     extensions.push("");
     return extensions;
 }
+
+function getProgram_extensions(): string[] {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let extensions = editorConfig.get<string[]>('program_extensions');
+    if (!extensions || (extensions !== null && extensions.length === 0)) {
+        extensions = DEFAULT_PROGRAM_EXTS;
+    }
+    return extensions;
+}
+
 
 const DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
 
@@ -253,7 +265,7 @@ function getTabStops(): number[] {
     return tabStops;
 }
 
-function getCopybookdirs_order():string[] {
+function getCopybookdirs_order(): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
     let dirs = editorConfig.get<string[]>('copybookdirs_order');
     if (!dirs || (dirs !== null && dirs.length === 0)) {
