@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.32",
+    "version": "6.7.30",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -239,6 +239,12 @@
                         "Use extension storage path",
                         "Do not do any caching"
                     ]
+                },
+                "coboleditor.cache_metadata_time_limit": {
+                    "type" : "number",
+                    "markdownDescription": "Limited the time to process the cache (on startup) in ms",
+                    "title": "Limited the time to process the cache (on startup)",
+                    "default": 30000
                 },
                 "coboleditor.margin": {
                     "type": "boolean",

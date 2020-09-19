@@ -40,6 +40,7 @@ function openFileViaCommand(filename: string, linnumber: number, locations: vsco
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
     const locations: vscode.Location[] = [];
     const config = VSCOBOLConfiguration.get();

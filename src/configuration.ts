@@ -40,6 +40,7 @@ export class VSCOBOLConfiguration {
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         vsconfig.cache_metadata = getcache_metadata();
+        vsconfig.cache_metadata_time_limit = getNumber("cache_metadata_time_limit", 30000);
         vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
         vsconfig.copybookdirs_order = getCopybookdirs_order();
         vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
@@ -78,6 +79,15 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
         expEnabled = defaultValue;
     }
     return expEnabled;
+}
+
+function getNumber(configSection: string, defaultValue: number): number {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let lineLimit = editorConfig.get<number>(configSection);
+    if (lineLimit === undefined || lineLimit === null) {
+        lineLimit = defaultValue;
+    }
+    return lineLimit;
 }
 
 function getPreParseLineLimit(): number {

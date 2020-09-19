@@ -22,11 +22,13 @@ export function clearCOBOLCache(): void {
 }
 
 class ScanStats {
+    timeCap = 600000;
     directoriesScanned = 0;
     filesScanned = 0;
     filesUptodate = 0;
     programsDefined = 0;
     entryPointsDefined = 0;
+    start = 0;
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
@@ -85,8 +87,11 @@ export default class VSQuickCOBOLParse {
         if (getWorkspaceFolders()) {
             const stats = new ScanStats();
             const settings = VSCOBOLConfiguration.get();
-
-            const start = performance_now();
+            let aborted = false;
+            if (!viaCommand) {
+                stats.timeCap = settings.cache_metadata_time_limit;
+            }
+            stats.start = performance_now();
             const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             if (cacheDirectory !== undefined) {
                 try {
@@ -113,8 +118,12 @@ export default class VSQuickCOBOLParse {
                         await promise;
                     }
                     InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
-                    const end = performance_now() - start;
-                    const completedMessage = 'Completed scanning all COBOL files in workspace';
+                }
+                catch (e) {
+                    aborted = true;
+                } finally {
+                    const end = performance_now() - stats.start;
+                    const completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
                     if (logTimedMessage(end, completedMessage) === false) {
                         logMessage(completedMessage);
                     }
@@ -123,8 +132,6 @@ export default class VSQuickCOBOLParse {
                     logMessage(` File up to date     : ${stats.filesUptodate}`);
                     logMessage(` Program Count       : ${stats.programsDefined}`);
                     logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
-                } catch (e) {
-                    logException("Aborted", e);
                 }
 
             }
@@ -182,6 +189,11 @@ export default class VSQuickCOBOLParse {
 
     private static async processFile(settings: ICOBOLSettings, cacheDirectory: string, filename: string, filterOnExtension: boolean, stats: ScanStats): Promise<boolean> {
         let parseThisFilename = false;
+
+        const end = performance_now() - stats.start;
+        if (end > stats.timeCap) {
+            throw new Error("Processing has been aborted");
+        }
 
         if (filterOnExtension) {
             if (settings.parse_copybooks_for_references) {
