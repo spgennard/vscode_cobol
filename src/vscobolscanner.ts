@@ -1,5 +1,5 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { TextDocument } from 'vscode';
+import { FileType, TextDocument, Uri, workspace } from 'vscode';
 import COBOLSourceScanner from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
@@ -12,6 +12,7 @@ import { isValidCopybookExtension } from "./opencopybook";
 import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { InMemoryGlobalFileCache, COBOLSymbolTableHelper } from "./cobolglobalcache";
+import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, any> = new Map<string, any>();
@@ -20,21 +21,14 @@ export function clearCOBOLCache(): void {
     InMemoryCache.clear();
 }
 
+class ScanStats {
+    directoriesScanned = 0;
+    filesScanned = 0;
+    filesUptodate = 0;
+    directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
+}
+
 export default class VSQuickCOBOLParse {
-
-    public static isFile(fileName: string): boolean {
-        try {
-            const stat: fs.Stats = fs.statSync(fileName);
-            if (stat.isFile() && !stat.isDirectory()) {
-                return true;
-            }
-
-        } catch {
-            return false;
-        }
-
-        return false;
-    }
 
     public static getCachedObject(document: TextDocument): COBOLSourceScanner | undefined {
         const fileName: string = document.fileName;
@@ -50,7 +44,7 @@ export default class VSQuickCOBOLParse {
             try {
                 const startTime = performance_now();
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(),
-                    cacheDirectory === undefined ? "": cacheDirectory);
+                    cacheDirectory === undefined ? "" : cacheDirectory);
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
@@ -87,6 +81,9 @@ export default class VSQuickCOBOLParse {
         }
 
         if (getWorkspaceFolders()) {
+            const stats = new ScanStats();
+            const settings = VSCOBOLConfiguration.get();
+
             const start = performance_now();
             const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             if (cacheDirectory !== undefined) {
@@ -98,27 +95,33 @@ export default class VSQuickCOBOLParse {
                     const ws = getWorkspaceFolders();
                     if (ws !== undefined) {
                         for (const folder of ws) {
-                            const p = VSQuickCOBOLParse.processAllFilesDirectory(cacheDirectory, folder.uri.fsPath, viaCommand);
-                            promises.push(p);
+                            promises.push(VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, viaCommand,stats));
                         }
                     }
 
                     if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                            const p = VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, i, false);
-                            promises.push(p);
+                            promises.push(VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false,stats));
                         }
                     }
-                    await Promise.all(promises);
-                } finally {
+
+                    for (const promise of promises) {
+                        await promise;
+                    }
                     InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
                     const end = performance_now() - start;
                     const completedMessage = 'Completed scanning all COBOL files in workspace';
                     if (logTimedMessage(end, completedMessage) === false) {
                         logMessage(completedMessage);
                     }
+                    logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+                    logMessage(` File scanned        : ${stats.filesScanned}`);
+                    logMessage(` File up to date     : ${stats.filesUptodate}`);
+                } catch (e) {
+                    logException("Aborted", e);
                 }
+
             }
         } else {
             logMessage(" No workspaces folders present, no metadata processed.");
@@ -129,37 +132,61 @@ export default class VSQuickCOBOLParse {
         }
     }
 
-
-    private static async processAllFilesDirectory(cacheDirectory: string, dir: string, showMessage: boolean): Promise<boolean> {
-        if (showMessage) {
-            logMessage(` Processing metadata for directory ${dir}`);
+    private static ignoreDirectory(partialName: string) {
+        // do not traverse into . directories
+        if (partialName.startsWith('.')) {
+            return true;
         }
-        for (const file of fs.readdirSync(dir)) {
-            VSQuickCOBOLParse.processFileInDirectory(cacheDirectory, path.join(dir, file), true);
+        return false;
+    }
+
+    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, folder: Uri, showMessage: boolean, stats: ScanStats): Promise<boolean> {
+
+        const entries = await workspace.fs.readDirectory(folder);
+        stats.directoriesScanned++;
+        if (stats.directoriesScannedMap.has(folder.fsPath)) {
+            return true;
+        }
+
+        if (showMessage) {
+            logMessage(` Directory : ${folder.fsPath}`);
+        }
+
+        stats.directoriesScannedMap.set(folder.fsPath, folder);
+
+        for (const [entry, fileType] of entries) {
+            if (fileType === FileType.File) {
+                const fullFilename = path.join(folder.fsPath, entry);
+                await VSQuickCOBOLParse.processFile(settings, cacheDirectory, fullFilename, true, stats);
+            }
+            else if (fileType === FileType.Directory) {
+                if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
+                    const fullFilename = path.join(folder.fsPath, entry);
+                    const directoryUri = Uri.parse(fullFilename);
+                    if (fullFilename === folder.fsPath) {
+                        logMessage(" Are they the same?");
+                    }
+                    if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
+                        await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
+                    }
+                }
+            }
         }
 
         return true;
     }
 
-    private static async processFileInDirectory(cacheDirectory: string, filename: string, filterOnExtension: boolean): Promise<boolean> {
-        if (this.isFile(filename) === false) {
-            return false;
-        }
-
-        const settings = VSCOBOLConfiguration.get();
-        const stat = fs.statSync(filename);
-
-        if (stat.isDirectory() === false) {
-            const parseThisFilename = filterOnExtension ? isValidCopybookExtension(filename, settings) : true;
-            if (parseThisFilename) {
-                if (VSQuickCOBOLParse.isFile(filename) === true) {
-                    if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-
-                        const filefs = new FileSourceHandler(filename, false);
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        const qcp = new COBOLSourceScanner(filefs, filename, VSCOBOLConfiguration.get(), cacheDirectory);
-                    }
-                }
+    private static async processFile(settings: ICOBOLSettings, cacheDirectory: string, filename: string, filterOnExtension: boolean, stats: ScanStats): Promise<boolean> {
+        const parseThisFilename = filterOnExtension ? isValidCopybookExtension(filename, settings) : true;
+        if (parseThisFilename) {
+            if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
+                // logMessage(` File: ${filename}`);
+                const filefs = new FileSourceHandler(filename, false);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const qcp = new COBOLSourceScanner(filefs, filename, settings, cacheDirectory);
+                stats.filesScanned++;
+            } else {
+                stats.filesUptodate++;
             }
         }
         return true;

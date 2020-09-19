@@ -46,6 +46,7 @@
     "activationEvents": [
         "onFileSystem:file",
         "onLanguage:plaintext",
+        "onLanguage:cobol",
         "onLanguage:COBOL",
         "onLanguage:ACUCOBOL",
         "onLanguage:OpenCOBOL",
@@ -1632,52 +1633,6 @@
                 ],
                 "pattern": "$acucobol-warning-ccbl",
                 "source": "ACUCOBOL-Gt"
-            }
-        ],
-        "taskDefinitions": [
-            {
-                "type": "cobc",
-                "required": [
-                    "extraArguments",
-                    "label",
-                    "syntaxCheck"
-                ],
-                "properties": {
-                    "extraArguments": {
-                        "type": "string",
-                        "description": "Extra command line arguments"
-                    },
-                    "syntaxCheck": {
-                        "type": "boolean",
-                        "description": "Syntax Check"
-                    },
-                    "label": {
-                        "type": "string",
-                        "description": "label for task"
-                    }
-                }
-            },
-            {
-                "type": "mfcobol",
-                "required": [
-                    "extraArguments",
-                    "label",
-                    "syntaxCheck"
-                ],
-                "properties": {
-                    "extraArguments": {
-                        "type": "string",
-                        "description": "Extra command line arguments"
-                    },
-                    "syntaxCheck": {
-                        "type": "boolean",
-                        "description": "Syntax Check"
-                    },
-                    "label": {
-                        "type": "string",
-                        "description": "label for task"
-                    }
-                }
             }
         ]
     },

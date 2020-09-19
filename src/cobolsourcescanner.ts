@@ -418,6 +418,8 @@ class ParseState {
 
     parameters: COBOLParameter[];
 
+    entryPointCount: number;
+
     constructor() {
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
@@ -444,6 +446,7 @@ class ParseState {
         this.pickUpUsing = false;
         this.using = UsingState.BY_REF;
         this.parameters = [];
+        this.entryPointCount = 0;
     }
 }
 
@@ -1304,6 +1307,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
 
+                    state.entryPointCount++;
                     state.parameters = [];
                     state.currentProgramTarget = new CallTargetInformation(ctoken, true, []);
                     this.callTargets.set(trimmedCurrent, state.currentProgramTarget);
@@ -1523,6 +1527,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
                         }
                     }
+
                     if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                         this.copyBooksUsed.set(trimmedCopyBook, copyToken);
 
