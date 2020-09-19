@@ -218,6 +218,7 @@ export function expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirec
     return fullPath;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
     const config=VSCOBOLConfiguration.get();
     const line = doc.lineAt(pos);

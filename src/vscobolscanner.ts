@@ -13,7 +13,6 @@ import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { InMemoryGlobalFileCache, COBOLSymbolTableHelper } from "./cobolglobalcache";
 import { ICOBOLSettings } from "./iconfiguration";
-import { parse } from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, any> = new Map<string, any>();
@@ -26,6 +25,8 @@ class ScanStats {
     directoriesScanned = 0;
     filesScanned = 0;
     filesUptodate = 0;
+    programsDefined = 0;
+    entryPointsDefined = 0;
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
@@ -89,6 +90,7 @@ export default class VSQuickCOBOLParse {
             const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
             if (cacheDirectory !== undefined) {
                 try {
+                    logMessage("");
                     logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
 
                     const promises: Promise<boolean>[] = [];
@@ -96,14 +98,14 @@ export default class VSQuickCOBOLParse {
                     const ws = getWorkspaceFolders();
                     if (ws !== undefined) {
                         for (const folder of ws) {
-                            promises.push(VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, viaCommand,stats));
+                            promises.push(VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, viaCommand, stats));
                         }
                     }
 
                     if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                            promises.push(VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false,stats));
+                            promises.push(VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false, stats));
                         }
                     }
 
@@ -119,6 +121,8 @@ export default class VSQuickCOBOLParse {
                     logMessage(` Directories scanned : ${stats.directoriesScanned}`);
                     logMessage(` File scanned        : ${stats.filesScanned}`);
                     logMessage(` File up to date     : ${stats.filesUptodate}`);
+                    logMessage(` Program Count       : ${stats.programsDefined}`);
+                    logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
                 } catch (e) {
                     logException("Aborted", e);
                 }
@@ -149,9 +153,9 @@ export default class VSQuickCOBOLParse {
             return true;
         }
 
-        if (showMessage) {
-            logMessage(` Directory : ${folder.fsPath}`);
-        }
+        // if (showMessage) {
+        //     logMessage(` Directory : ${folder.fsPath}`);
+        // }
 
         stats.directoriesScannedMap.set(folder.fsPath, folder);
 
@@ -164,13 +168,12 @@ export default class VSQuickCOBOLParse {
                 if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                     const fullFilename = path.join(folder.fsPath, entry);
                     const directoryUri = Uri.parse(fullFilename);
-                    if (fullFilename === folder.fsPath) {
-                        logMessage(" Are they the same?");
-                    }
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                         await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
                     }
                 }
+            } else {
+                logMessage(` Symbolic link ignored : ${folder.fsPath}`);
             }
         }
 
@@ -194,6 +197,10 @@ export default class VSQuickCOBOLParse {
                 const filefs = new FileSourceHandler(filename, false);
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const qcp = new COBOLSourceScanner(filefs, filename, settings, cacheDirectory);
+                if (qcp.callTargets.size > 0) {
+                    stats.programsDefined++;
+                    stats.entryPointsDefined += (qcp.callTargets.size - 1);
+                }
                 stats.filesScanned++;
             } else {
                 stats.filesUptodate++;
