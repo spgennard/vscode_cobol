@@ -24,7 +24,10 @@ export function clearCOBOLCache(): void {
 class ScanStats {
     timeCap = 600000;
     directoriesScanned = 0;
+    directoryDepth = 0;
+    maxDirectoryDepth = 0;
     filesScanned = 0;
+    fileCount = 0;
     filesUptodate = 0;
     programsDefined = 0;
     entryPointsDefined = 0;
@@ -128,10 +131,14 @@ export default class VSQuickCOBOLParse {
                         logMessage(completedMessage);
                     }
                     logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+                    logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
+                    logMessage(` Files found         : ${stats.fileCount}`);
                     logMessage(` File scanned        : ${stats.filesScanned}`);
                     logMessage(` File up to date     : ${stats.filesUptodate}`);
                     logMessage(` Program Count       : ${stats.programsDefined}`);
                     logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
+                    const scanCopyBooks = !settings.parse_copybooks_for_references;
+                    logMessage(` Scan copybooks      : ${scanCopyBooks}`);
                 }
 
             }
@@ -166,6 +173,8 @@ export default class VSQuickCOBOLParse {
 
         stats.directoriesScannedMap.set(folder.fsPath, folder);
 
+        const dir2scan: Uri[] = [];
+
         for (const [entry, fileType] of entries) {
             if (fileType === FileType.File) {
                 const fullFilename = path.join(folder.fsPath, entry);
@@ -174,14 +183,27 @@ export default class VSQuickCOBOLParse {
             else if (fileType === FileType.Directory) {
                 if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                     const fullFilename = path.join(folder.fsPath, entry);
-                    const directoryUri = Uri.parse(fullFilename);
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
-                        await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
+                        const directoryUri = Uri.parse(fullFilename);
+                        dir2scan.push(directoryUri);
                     }
                 }
             } else {
                 logMessage(` Symbolic link ignored : ${folder.fsPath}`);
             }
+        }
+
+        if (dir2scan.length !== 0) {
+            stats.directoryDepth++;
+
+            for (const directoryUri of dir2scan) {
+                await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
+            }
+
+            if (stats.directoryDepth > stats.maxDirectoryDepth) {
+                stats.maxDirectoryDepth = stats.directoryDepth;
+            }
+            stats.directoryDepth--;
         }
 
         return true;
@@ -190,6 +212,7 @@ export default class VSQuickCOBOLParse {
     private static async processFile(settings: ICOBOLSettings, cacheDirectory: string, filename: string, filterOnExtension: boolean, stats: ScanStats): Promise<boolean> {
         let parseThisFilename = false;
 
+        stats.fileCount++;
         const end = performance_now() - stats.start;
         if (end > stats.timeCap) {
             throw new Error("Processing has been aborted");
