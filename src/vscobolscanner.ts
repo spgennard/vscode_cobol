@@ -219,10 +219,15 @@ export default class VSQuickCOBOLParse {
         }
 
         if (filterOnExtension) {
+            // if we are parsing copybooks, then we are only interested in programs
             if (settings.parse_copybooks_for_references) {
                 parseThisFilename = isValidProgramExtension(filename, settings);
             } else {
-                parseThisFilename = isValidCopybookExtension(filename, settings);
+                // could be an overlap.. so test for valid program first and then copybooks
+                parseThisFilename = isValidProgramExtension(filename, settings);
+                if (parseThisFilename === false) {
+                    parseThisFilename = isValidCopybookExtension(filename, settings);
+                }
             }
         }
 

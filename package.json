@@ -143,7 +143,6 @@
                     ],
                     "description": "COBOL tabstops"
                 },
-
                 "coboleditor.copybookexts": {
                     "type": "array",
                     "items": {
@@ -241,7 +240,7 @@
                     ]
                 },
                 "coboleditor.cache_metadata_time_limit": {
-                    "type" : "number",
+                    "type": "number",
                     "markdownDescription": "Limited the time to process the cache (on startup) in ms",
                     "title": "Limited the time to process the cache (on startup)",
                     "default": 30000
