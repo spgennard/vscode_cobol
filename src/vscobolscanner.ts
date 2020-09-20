@@ -194,16 +194,19 @@ export default class VSQuickCOBOLParse {
         }
 
         if (dir2scan.length !== 0) {
-            stats.directoryDepth++;
-
-            for (const directoryUri of dir2scan) {
-                await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
+            if (1 + stats.directoryDepth <= settings.cache_metadata_max_directory_scan_depth) {
+                stats.directoryDepth++;
+                for (const directoryUri of dir2scan) {
+                    await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
+                }
+                if (stats.directoryDepth > stats.maxDirectoryDepth) {
+                    stats.maxDirectoryDepth = stats.directoryDepth;
+                }
+                stats.directoryDepth--;
+            } else {
+                logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
             }
 
-            if (stats.directoryDepth > stats.maxDirectoryDepth) {
-                stats.maxDirectoryDepth = stats.directoryDepth;
-            }
-            stats.directoryDepth--;
         }
 
         return true;

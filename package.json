@@ -245,6 +245,12 @@
                     "title": "Limited the time to process the cache (on startup)",
                     "default": 30000
                 },
+                "coboleditor.cache_metadata_max_directory_scan_depth": {
+                    "type": "number",
+                    "markdownDescription": "Limited the depth of the metadata cache directory scan",
+                    "title": "Limited the depth of the metadata cache directory scan",
+                    "default": 32
+                },
                 "coboleditor.margin": {
                     "type": "boolean",
                     "title": "apply margin shading",

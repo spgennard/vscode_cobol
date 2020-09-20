@@ -33,6 +33,7 @@ export interface ICOBOLSettings {
     process_metadata_cache_on_start:boolean;
     cache_metadata: CacheDirectoryStrategy;
     cache_metadata_time_limit: number;
+    cache_metadata_max_directory_scan_depth: number;
     parse_copybooks_for_references: boolean;
     copybookdirs_order: string[];
     linter_mark_as_information: boolean;
@@ -70,6 +71,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public process_metadata_cache_on_start:boolean;
     public cache_metadata:CacheDirectoryStrategy;
     public cache_metadata_time_limit: number;
+    public cache_metadata_max_directory_scan_depth: number;
     public parse_copybooks_for_references: boolean;
     public copybookdirs_order: string[];
     public linter_mark_as_information: boolean;
@@ -108,6 +110,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.process_metadata_cache_on_start = false;
         this.cache_metadata = CacheDirectoryStrategy.Off;
         this.cache_metadata_time_limit = 60000;
+        this.cache_metadata_max_directory_scan_depth = 32;
         this.parse_copybooks_for_references = false;
         this.copybookdirs_order = [];
         this.linter_mark_as_information = false;
