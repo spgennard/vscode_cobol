@@ -50,6 +50,7 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
         vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
+        vsconfig.process_scanner_hints_embedded_in_comments = getBoolean("process_scanner_hints_embedded_in_comments", false);
         return vsconfig;
     }
 

@@ -42,6 +42,7 @@ export interface ICOBOLSettings {
     linter_house_standards_rules: string[];
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
+    process_scanner_hints_embedded_in_comments:boolean;
 
     init_required: boolean;
 }
@@ -81,6 +82,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public ignore_unsafe_extensions: boolean;
     public coboldoc_workspace_folder: string;
     public program_extensions: string[];
+    public process_scanner_hints_embedded_in_comments: boolean;
 
     public init_required = true;
 
@@ -118,6 +120,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_house_standards = true;
         this.linter_house_standards_rules = [];
         this.ignore_unsafe_extensions = false;
+        this.process_scanner_hints_embedded_in_comments = false;
         this.coboldoc_workspace_folder = "coboldoc";
     }
 }
