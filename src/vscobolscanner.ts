@@ -199,8 +199,17 @@ export default class VSQuickCOBOLParse {
                 if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                     const fullFilename = path.join(folder.fsPath, entry);
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
-                        const directoryUri = Uri.parse(fullFilename);
-                        dir2scan.push(directoryUri);
+                        try {
+                            const directoryUri = Uri.file(fullFilename);
+                            dir2scan.push(directoryUri);
+                        } catch (ex) {
+                            logMessage(` Uri.parse failed with ${fullFilename} from ${folder.fsPath} + ${entry}`);
+                            if (ex instanceof Error) {
+                                logException("Unexpected abort during Uri Parse", ex as Error);
+                            } else {
+                                logMessage(ex);
+                            }
+                        }
                     }
                 }
             } else {
