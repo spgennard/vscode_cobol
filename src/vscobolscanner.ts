@@ -93,7 +93,7 @@ export default class VSQuickCOBOLParse {
             const settings = VSCOBOLConfiguration.get();
             stats.showMessage = settings.cache_metadata_show_progress_messages;
             let aborted = false;
-            let abortedReason:Error|undefined = undefined;
+            let abortedReason: Error | undefined = undefined;
 
             if (!viaCommand) {
                 stats.timeCap = settings.cache_metadata_time_limit;
@@ -128,7 +128,7 @@ export default class VSQuickCOBOLParse {
                 }
                 catch (e) {
                     abortedReason = e;
-                      aborted = true;
+                    aborted = true;
                 } finally {
                     const end = performance_now() - stats.start;
                     const completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
@@ -252,18 +252,29 @@ export default class VSQuickCOBOLParse {
         if (parseThisFilename) {
             if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
                 if (stats.showMessage) {
-                    const spaces = " ".repeat(1+stats.directoryDepth);
+                    const spaces = " ".repeat(1 + stats.directoryDepth);
                     logMessage(` ${spaces}File: ${filename}`);
                 }
-                
-                const filefs = new FileSourceHandler(filename, false);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const qcp = new COBOLSourceScanner(filefs, filename, settings, cacheDirectory);
-                if (qcp.callTargets.size > 0) {
-                    stats.programsDefined++;
-                    stats.entryPointsDefined += (qcp.callTargets.size - 1);
+
+                try {
+                    const filefs = new FileSourceHandler(filename, false);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const qcp = new COBOLSourceScanner(filefs, filename, settings, cacheDirectory);
+                    if (qcp.callTargets.size > 0) {
+                        stats.programsDefined++;
+                        if (qcp.callTargets !== undefined) {
+                            stats.entryPointsDefined += (qcp.callTargets.size - 1);
+                        }
+                    }
+                    stats.filesScanned++;
+                } catch (e) {
+                    if (e instanceof Error) {
+                        logMessage(`Unable to scan ${filename}`, e as Error);
+                    } else {
+                        logMessage(e);
+                    }
                 }
-                stats.filesScanned++;
+
             } else {
                 stats.filesUptodate++;
             }
