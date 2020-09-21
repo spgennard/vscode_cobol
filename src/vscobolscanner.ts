@@ -51,7 +51,7 @@ export default class VSQuickCOBOLParse {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 const startTime = performance_now();
-                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), fileName, VSCOBOLConfiguration.get(),
+                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), VSCOBOLConfiguration.get(),
                     cacheDirectory === undefined ? "" : cacheDirectory);
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
@@ -267,7 +267,7 @@ export default class VSQuickCOBOLParse {
                 try {
                     const filefs = new FileSourceHandler(filename, false);
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    const qcp = new COBOLSourceScanner(filefs, filename, settings, cacheDirectory);
+                    const qcp = new COBOLSourceScanner(filefs, settings, cacheDirectory);
                     if (qcp.callTargets.size > 0) {
                         stats.programsDefined++;
                         if (qcp.callTargets !== undefined) {
