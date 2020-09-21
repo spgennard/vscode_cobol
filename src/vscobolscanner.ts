@@ -32,6 +32,7 @@ class ScanStats {
     programsDefined = 0;
     entryPointsDefined = 0;
     start = 0;
+    showMessage = false;
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
@@ -90,7 +91,10 @@ export default class VSQuickCOBOLParse {
         if (getWorkspaceFolders()) {
             const stats = new ScanStats();
             const settings = VSCOBOLConfiguration.get();
+            stats.showMessage = settings.cache_metadata_show_progress_messages;
             let aborted = false;
+            let abortedReason:Error|undefined = undefined;
+
             if (!viaCommand) {
                 stats.timeCap = settings.cache_metadata_time_limit;
             }
@@ -100,13 +104,13 @@ export default class VSQuickCOBOLParse {
                 try {
                     logMessage("");
                     logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
-
+                    logMessage(` Maximum time cap for meta data process set to ${stats.timeCap}`);
                     const promises: Promise<boolean>[] = [];
 
                     const ws = getWorkspaceFolders();
                     if (ws !== undefined) {
                         for (const folder of ws) {
-                            promises.push(VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, viaCommand, stats));
+                            promises.push(VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, stats));
                         }
                     }
 
@@ -123,7 +127,8 @@ export default class VSQuickCOBOLParse {
                     InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
                 }
                 catch (e) {
-                    aborted = true;
+                    abortedReason = e;
+                      aborted = true;
                 } finally {
                     const end = performance_now() - stats.start;
                     const completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
@@ -139,6 +144,15 @@ export default class VSQuickCOBOLParse {
                     logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
                     const scanCopyBooks = !settings.parse_copybooks_for_references;
                     logMessage(` Scan copybooks      : ${scanCopyBooks}`);
+
+                    if (end < stats.timeCap && abortedReason !== undefined) {
+                        if (abortedReason instanceof Error) {
+                            logException("Unexpected abort", abortedReason as Error);
+                        } else {
+                            logMessage(abortedReason);
+                        }
+                    }
+
                 }
 
             }
@@ -159,7 +173,7 @@ export default class VSQuickCOBOLParse {
         return false;
     }
 
-    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, folder: Uri, showMessage: boolean, stats: ScanStats): Promise<boolean> {
+    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, folder: Uri, stats: ScanStats): Promise<boolean> {
 
         const entries = await workspace.fs.readDirectory(folder);
         stats.directoriesScanned++;
@@ -167,9 +181,10 @@ export default class VSQuickCOBOLParse {
             return true;
         }
 
-        // if (showMessage) {
-        //     logMessage(` Directory : ${folder.fsPath}`);
-        // }
+        if (stats.showMessage) {
+            const spaces = " ".repeat(stats.directoryDepth);
+            logMessage(` ${spaces}Directory : ${folder.fsPath}`);
+        }
 
         stats.directoriesScannedMap.set(folder.fsPath, folder);
 
@@ -197,7 +212,7 @@ export default class VSQuickCOBOLParse {
             if (1 + stats.directoryDepth <= settings.cache_metadata_max_directory_scan_depth) {
                 stats.directoryDepth++;
                 for (const directoryUri of dir2scan) {
-                    await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, true, stats);
+                    await VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, directoryUri, stats);
                 }
                 if (stats.directoryDepth > stats.maxDirectoryDepth) {
                     stats.maxDirectoryDepth = stats.directoryDepth;
@@ -236,7 +251,11 @@ export default class VSQuickCOBOLParse {
 
         if (parseThisFilename) {
             if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-                // logMessage(` File: ${filename}`);
+                if (stats.showMessage) {
+                    const spaces = " ".repeat(1+stats.directoryDepth);
+                    logMessage(` ${spaces}File: ${filename}`);
+                }
+                
                 const filefs = new FileSourceHandler(filename, false);
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const qcp = new COBOLSourceScanner(filefs, filename, settings, cacheDirectory);

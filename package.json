@@ -251,6 +251,11 @@
                     "title": "Limited the depth of the metadata cache directory scan",
                     "default": 32
                 },
+                "coboleditor.cache_metadata_show_progress_messages": {
+                    "type": "boolean",
+                    "markdownDescription": "Show log message during meta data processing",
+                    "default": false
+                },
                 "coboleditor.margin": {
                     "type": "boolean",
                     "title": "apply margin shading",

@@ -43,6 +43,7 @@ export interface ICOBOLSettings {
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
     process_scanner_hints_embedded_in_comments:boolean;
+    cache_metadata_show_progress_messages: boolean;
 
     init_required: boolean;
 }
@@ -83,7 +84,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public coboldoc_workspace_folder: string;
     public program_extensions: string[];
     public process_scanner_hints_embedded_in_comments: boolean;
-
+    public cache_metadata_show_progress_messages:boolean;
     public init_required = true;
 
     constructor() {
@@ -113,6 +114,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.cache_metadata = CacheDirectoryStrategy.Off;
         this.cache_metadata_time_limit = 60000;
         this.cache_metadata_max_directory_scan_depth = 32;
+        this.cache_metadata_show_progress_messages = false;
         this.parse_copybooks_for_references = false;
         this.copybookdirs_order = [];
         this.linter_mark_as_information = false;
