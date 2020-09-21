@@ -115,8 +115,8 @@ suite('Issues Raised Test Suite', () => {
 								missingCount++;
 							}
 						}
-						let percenMatched = (resultCount / (resultCount+missingCount)) * 100;
-						let percenMatchedFixed = Number(percenMatched).toFixed(2);
+						const percenMatched = (resultCount / (resultCount+missingCount)) * 100;
+						const percenMatchedFixed = Number(percenMatched).toFixed(2);
 						// console.log(`${patternName} found ${resultCount} did not match ${missingCount}`);
 						if (percenMatched < 50) {
 							assert.fail(`${patternName} failed to match enough lines in co_${patternName}.txt ${percenMatched}% (${resultCount}/${missingCount})
