@@ -200,8 +200,7 @@ export default class VSQuickCOBOLParse {
                     const fullFilename = path.join(folder.fsPath, entry);
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                         try {
-                            const directoryUri = Uri.file(fullFilename);
-                            dir2scan.push(directoryUri);
+                            dir2scan.push(Uri.file(fullFilename));
                         } catch (ex) {
                             logMessage(` Uri.file failed with ${fullFilename} from ${folder.fsPath} + ${entry}`);
                             if (ex instanceof Error) {
