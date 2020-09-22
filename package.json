@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.38",
+    "version": "6.7.39",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1377,6 +1377,15 @@
                 "message": 6
             },
             {
+                "name": "mfcobol-errformat3-info",
+                "regexp": "(.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "code": 5,
+                "message": 6
+            },
+            {
                 "name": "mfcobol-errformat3-basefn",
                 "regexp": ".*[\\/](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
@@ -1385,6 +1394,14 @@
                 "severity": 4,
                 "message": 5
             },
+            {
+                "name": "mfcobol-errformat3-info-basefn",
+                "regexp": ".*[\\/](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "message": 5
+            },            
             {
                 "name": "opencobol-cobc",
                 "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
@@ -1491,9 +1508,21 @@
                 "name": "mfcobol-errformat3",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "relative",
+                    "${workspaceFolder}"
                 ],
                 "pattern": "$mfcobol-errformat3",
+                "source": "VC"
+            },
+            {
+                "name": "mfcobol-errformat3-info",
+                "owner": "cobol",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": "$mfcobol-errformat3-info",
+                "severity": "info",
                 "source": "VC"
             },
             {
@@ -1504,6 +1533,16 @@
                     "${workspaceFolder}"
                 ],
                 "pattern": "$mfcobol-errformat3-basefn",
+                "source": "VC"
+            },
+            {
+                "name": "mfcobol-errformat3-info-basefn",
+                "owner": "cobol",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": "$mfcobol-errformat3-info-basefn",
                 "source": "VC"
             },
             {

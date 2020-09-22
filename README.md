@@ -242,13 +242,14 @@ The example below shows you how you can create a single task to compile one prog
 | Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                            |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx                                   |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                            |
-| Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                          | $mfcobol-msbuild                                                       |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"32 for information              | +mfcobol-errformat3-info                                               |
+| Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                                                       |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                                                    |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                                             |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                                                    |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | $mfcobol-errformat2-copybook                                           |
 
-NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook" problem matcher is included before simular problem matchers.
+NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook" & "-info" problem matcher is included before simular problem matchers.
 
 ## Remote development using containers
 
