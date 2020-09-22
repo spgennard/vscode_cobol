@@ -22,8 +22,7 @@ export function clearCOBOLCache(): void {
 }
 
 class ScanStats {
-    // timeCap = 600000;
-    timeCap = 60;
+    timeCap = 600000;
     directoriesScanned = 0;
     directoryDepth = 0;
     maxDirectoryDepth = 0;
@@ -204,10 +203,16 @@ export default class VSQuickCOBOLParse {
 
         for (const [entry, fileType] of entries) {
             switch (fileType) {
+                case FileType.File | FileType.SymbolicLink:
+                    const spaces4file = " ".repeat(1 + stats.directoryDepth);
+                    logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
                 case FileType.File:
                     const fullFilename = path.join(folder.fsPath, entry);
                     await VSQuickCOBOLParse.processFile(settings, cacheDirectory, fullFilename, true, stats);
                     break;
+                case FileType.Directory | FileType.SymbolicLink:
+                    const spaces4dir = " ".repeat(1 + stats.directoryDepth);
+                    logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
                 case FileType.Directory:
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                         const fullDirectory = path.join(folder.fsPath, entry);
@@ -225,13 +230,7 @@ export default class VSQuickCOBOLParse {
                         }
                     }
                     break;
-                case FileType.SymbolicLink: 
-                    // TODO - do stat
-                    break;
             }
-            // } else {
-            //     logMessage(` Symbolic link ignored : ${folder.fsPath}`);
-            // }
         }
 
         if (dir2scan.length !== 0) {
@@ -279,7 +278,7 @@ export default class VSQuickCOBOLParse {
             if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
                 if (stats.showMessage) {
                     const spaces = " ".repeat(1 + stats.directoryDepth);
-                    logMessage(` ${spaces}File: ${filename}`);
+                    logMessage(` ${spaces}File : ${filename}`);
                 }
 
                 try {
