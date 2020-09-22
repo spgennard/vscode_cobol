@@ -3,6 +3,23 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#212](https://github.com/spgennard/vscode_cobol/issues/212) metadata parsing should ignore missing directories  
+
+**metadata parsing should ignore missing directories Fix #212**
+
+
+[ab1520ca8956691](https://github.com/spgennard/vscode_cobol/commit/ab1520ca8956691) *2020-09-22 17:53:27*
+
+
+### GitHub [#213](https://github.com/spgennard/vscode_cobol/issues/213) metadata parsing and &quot;Symbolic link ignored&quot;  
+
+**metadata parsing and "Symbolic link ignored" Fix #213**
+
+
+[a9b73136244d7fc](https://github.com/spgennard/vscode_cobol/commit/a9b73136244d7fc) *2020-09-22 18:15:02*
+
+
 ## 6.7.32
 ### GitHub [#210](https://github.com/spgennard/vscode_cobol/issues/210) NETX/SX patterns must be extended to parse filename for diagnostics in copybooks  
 
