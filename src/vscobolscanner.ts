@@ -1,5 +1,5 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { FileType, TextDocument, Uri, workspace } from 'vscode';
+import { FileSystemError, FileType, TextDocument, Uri, workspace } from 'vscode';
 import COBOLSourceScanner from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
@@ -22,7 +22,8 @@ export function clearCOBOLCache(): void {
 }
 
 class ScanStats {
-    timeCap = 600000;
+    // timeCap = 600000;
+    timeCap = 60;
     directoriesScanned = 0;
     directoryDepth = 0;
     maxDirectoryDepth = 0;
@@ -105,24 +106,35 @@ export default class VSQuickCOBOLParse {
                     logMessage("");
                     logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
                     logMessage(` Maximum time cap for meta data process set to ${stats.timeCap}`);
-                    const promises: Promise<boolean>[] = [];
+                    const promises = new Map<string, Promise<boolean>>();
 
                     const ws = getWorkspaceFolders();
                     if (ws !== undefined) {
                         for (const folder of ws) {
-                            promises.push(VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, stats));
+                            promises.set(folder.uri.fsPath, VSQuickCOBOLParse.processAllFilesDirectory(settings, cacheDirectory, folder.uri, stats));
                         }
                     }
 
                     if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                            promises.push(VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false, stats));
+                            promises.set(i, VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false, stats));
                         }
                     }
 
-                    for (const promise of promises) {
-                        await promise;
+                    for (const [pathOrFilename, promise] of promises) {
+                        try {
+                            await promise;
+                        } catch (e) {
+                            if (e instanceof FileSystemError) {
+                                const fse = e as FileSystemError;
+                                if (fse.code === 'FileNotFound') {
+                                    logMessage(`  Skipping ${pathOrFilename} (Not Found)`);
+                                    continue;
+                                }
+                            }
+                            throw e;
+                        }
                     }
                     InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
                 }
@@ -191,29 +203,35 @@ export default class VSQuickCOBOLParse {
         const dir2scan: Uri[] = [];
 
         for (const [entry, fileType] of entries) {
-            if (fileType === FileType.File) {
-                const fullFilename = path.join(folder.fsPath, entry);
-                await VSQuickCOBOLParse.processFile(settings, cacheDirectory, fullFilename, true, stats);
-            }
-            else if (fileType === FileType.Directory) {
-                if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
+            switch (fileType) {
+                case FileType.File:
                     const fullFilename = path.join(folder.fsPath, entry);
+                    await VSQuickCOBOLParse.processFile(settings, cacheDirectory, fullFilename, true, stats);
+                    break;
+                case FileType.Directory:
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
-                        try {
-                            dir2scan.push(Uri.file(fullFilename));
-                        } catch (ex) {
-                            logMessage(` Uri.file failed with ${fullFilename} from ${folder.fsPath} + ${entry}`);
-                            if (ex instanceof Error) {
-                                logException("Unexpected abort during Uri Parse", ex as Error);
-                            } else {
-                                logMessage(ex);
+                        const fullDirectory = path.join(folder.fsPath, entry);
+                        if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
+                            try {
+                                dir2scan.push(Uri.file(fullDirectory));
+                            } catch (ex) {
+                                logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
+                                if (ex instanceof Error) {
+                                    logException("Unexpected abort during Uri Parse", ex as Error);
+                                } else {
+                                    logMessage(ex);
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                logMessage(` Symbolic link ignored : ${folder.fsPath}`);
+                    break;
+                case FileType.SymbolicLink: 
+                    // TODO - do stat
+                    break;
             }
+            // } else {
+            //     logMessage(` Symbolic link ignored : ${folder.fsPath}`);
+            // }
         }
 
         if (dir2scan.length !== 0) {

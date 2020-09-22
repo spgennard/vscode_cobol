@@ -1027,7 +1027,7 @@ export async function deactivate(): Promise<void> {
 }
 
 export function logException(message: string, ex: Error): void {
-    logMessage(ex.name + ":" + message);
+    logMessage(ex.name + ": " + message);
     if (ex !== undefined && ex.stack !== undefined) {
         logMessage(ex.stack);
     }
