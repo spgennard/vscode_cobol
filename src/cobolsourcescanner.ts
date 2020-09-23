@@ -604,6 +604,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         else {
                             prevToken = this.relaxedParseLineByLine(Token.Blank, line, preParseState);
                         }
+                    } else {
+                        maxLines++;     // increase the max lines, as this line is ignored
                     }
 
                     if (preParseState.leaveEarly) {
