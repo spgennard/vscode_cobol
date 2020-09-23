@@ -455,6 +455,7 @@ class PreParseState {
     procedureDivisionRelatedTokens: number;
     sectionsInToken: number;
     divisionsInToken: number;
+    leaveEarly: boolean;
 
     constructor() {
         this.numberTokensInHeader = 0;
@@ -462,6 +463,7 @@ class PreParseState {
         this.procedureDivisionRelatedTokens = 0;
         this.sectionsInToken = 0;
         this.divisionsInToken = 0;
+        this.leaveEarly = false;
     }
 }
 
@@ -590,18 +592,22 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             let line = "";
             const preParseState: PreParseState = new PreParseState();
 
-            for (let l = 0; l < maxLines+sourceHandler.getCommentCount(); l++) {
+            for (let l = 0; l < maxLines + sourceHandler.getCommentCount(); l++) {
                 try {
                     line = sourceHandler.getLine(l).trimRight();
 
                     // don't parse a empty line
                     if (line.length > 0) {
                         if (prevToken.endsWithDot === false) {
-                            prevToken = this.relaxedParseLineByLine(sourceHandler, l, prevToken, line, preParseState);
+                            prevToken = this.relaxedParseLineByLine(prevToken, line, preParseState);
                         }
                         else {
-                            prevToken = this.relaxedParseLineByLine(sourceHandler, l, Token.Blank, line, preParseState);
+                            prevToken = this.relaxedParseLineByLine(Token.Blank, line, preParseState);
                         }
+                    }
+
+                    if (preParseState.leaveEarly) {
+                        break;
                     }
 
                 }
@@ -999,7 +1005,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return literalTrimmed;
     }
 
-    private relaxedParseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string, state: PreParseState): Token {
+    private relaxedParseLineByLine(prevToken: Token, line: string, state: PreParseState): Token {
         const token = new Token(line, prevToken);
         let tokenCountPerLine = 0;
         do {
@@ -1031,20 +1037,33 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if (token.prevToken.length !== 0) {
                             switch (token.prevTokenLower) {
                                 case "working-storage": state.sectionsInToken++;
+                                    state.leaveEarly = true;
                                     break;
                                 case "file": state.sectionsInToken++;
+                                    state.leaveEarly = true;
                                     break;
                                 case "linkage": state.sectionsInToken++;
+                                    state.leaveEarly = true;
                                     break;
                                 case "screen": state.sectionsInToken++;
+                                    state.leaveEarly = true;
                                     break;
                             }
                         }
                         break;
+                    case "program-id":
+                        state.divisionsInToken++;       // not really a division but that's okay because it looks like a program
+                        state.leaveEarly = true;
+                        break;
                     case "division":
                         switch (token.prevTokenLower) {
-                            case "identification": state.divisionsInToken++; break;
-                            case "procedure": state.divisionsInToken++; break;
+                            case "identification":
+                                state.divisionsInToken++;
+                                state.leaveEarly = true;
+                                break;
+                            case "procedure": state.divisionsInToken++;
+                                state.leaveEarly = true;
+                                break;
                         }
                         break;
                     default:
