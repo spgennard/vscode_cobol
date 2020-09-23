@@ -4,6 +4,16 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#199](https://github.com/spgennard/vscode_cobol/issues/199) Do we need to tweak the pre_parse_line_limit?  
+
+**Do we need to tweak the pre_parse_line_limit? Fix #199**
+
+ * - include comment count in the limit automatically 
+
+[0a95fdc51d0044c](https://github.com/spgennard/vscode_cobol/commit/0a95fdc51d0044c) *2020-09-23 20:52:17*
+
+
+## 6.7.39
 ### GitHub [#212](https://github.com/spgennard/vscode_cobol/issues/212) metadata parsing should ignore missing directories  
 
 **metadata parsing should ignore missing directories Fix #212**
