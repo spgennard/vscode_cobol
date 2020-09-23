@@ -1401,7 +1401,7 @@
                 "line": 2,
                 "column": 3,
                 "message": 5
-            },            
+            },
             {
                 "name": "opencobol-cobc",
                 "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",

@@ -204,15 +204,23 @@ export default class VSQuickCOBOLParse {
         for (const [entry, fileType] of entries) {
             switch (fileType) {
                 case FileType.File | FileType.SymbolicLink:
-                    const spaces4file = " ".repeat(1 + stats.directoryDepth);
-                    logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                    {
+                        const spaces4file = " ".repeat(1 + stats.directoryDepth);
+                        logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                    }
+                // eslint-disable-next-line no-fallthrough
                 case FileType.File:
-                    const fullFilename = path.join(folder.fsPath, entry);
-                    await VSQuickCOBOLParse.processFile(settings, cacheDirectory, fullFilename, true, stats);
+                    {
+                        const fullFilename = path.join(folder.fsPath, entry);
+                        await VSQuickCOBOLParse.processFile(settings, cacheDirectory, fullFilename, true, stats);
+                    }
                     break;
                 case FileType.Directory | FileType.SymbolicLink:
-                    const spaces4dir = " ".repeat(1 + stats.directoryDepth);
-                    logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                    {
+                        const spaces4dir = " ".repeat(1 + stats.directoryDepth);
+                        logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                    }
+                // eslint-disable-next-line no-fallthrough
                 case FileType.Directory:
                     if (!VSQuickCOBOLParse.ignoreDirectory(entry)) {
                         const fullDirectory = path.join(folder.fsPath, entry);

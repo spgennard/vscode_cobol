@@ -872,12 +872,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             logMessage(" " + symTable.fileName + " in " + file);
                             logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
 
-                            for (const [key, value] of symTable.labelSymbols.entries()) {
+                            for (const [, value] of symTable.labelSymbols.entries()) {
                                 logMessage(`     ${value.symbol}:${value.symbol}`);
                             }
 
                             logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
-                            for (const [key, value] of symTable.variableSymbols.entries()) {
+                            for (const [, value] of symTable.variableSymbols.entries()) {
                                 logMessage(`     ${value.symbol}:${value.symbol}`);
                             }
                         }
