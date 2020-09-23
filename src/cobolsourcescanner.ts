@@ -589,7 +589,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             let line = "";
             const preParseState: PreParseState = new PreParseState();
-            for (let l = 0; l < maxLines; l++) {
+
+            for (let l = 0; l < maxLines+sourceHandler.getCommentCount(); l++) {
                 try {
                     line = sourceHandler.getLine(l).trimRight();
 

@@ -15,7 +15,7 @@ import { InMemoryGlobalFileCache, COBOLSymbolTableHelper } from "./cobolglobalca
 import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InMemoryCache: Map<string, any> = new Map<string, any>();
+const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
 
 export function clearCOBOLCache(): void {
     InMemoryCache.clear();
