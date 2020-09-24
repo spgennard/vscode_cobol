@@ -56,20 +56,6 @@ export class FileSourceHandler implements ISourceHandler {
         return this.commentCount;
     }
 
-    getRawLine(lineNumber: number): string {
-        try {
-            const line = this.lines[lineNumber];
-            if (line === null || line === undefined) {
-                return "";
-            }
-            return line;
-        }
-        catch
-        {
-            return "";
-        }
-    }
-
     private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
     getLine(lineNumber: number): string | undefined {

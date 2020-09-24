@@ -25,17 +25,6 @@ export class VSCodeSourceHandler implements ISourceHandler {
         return this.commentCount;
     }
 
-    getRawLine(lineNumber: number): string {
-        try {
-            const line = this.document.lineAt(lineNumber);
-            return line.text;
-        }
-        catch
-        {
-            return "";
-        }
-    }
-
     private static paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
     private sendCommentCallback(line: string) {

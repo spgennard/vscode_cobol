@@ -10,7 +10,6 @@ export default interface ISourceHandler {
     getCommentCount(): number;
     resetCommentCount():void;
     getLine(lineNumber: number): string|undefined;
-    getRawLine(lineNumber: number): string;
     setDumpAreaA(flag: boolean): void;
     setDumpAreaBOnwards(flag: boolean): void;
     getFilename(): string;
