@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.7.41
 ### GitHub [#199](https://github.com/spgennard/vscode_cobol/issues/199) Do we need to tweak the pre_parse_line_limit?  
 
 **Do we need to tweak the pre_parse_line_limit? Fix #199**
