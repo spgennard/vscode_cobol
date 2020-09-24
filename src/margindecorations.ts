@@ -110,6 +110,9 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
 
     for (let i = 0; i < maxLines; i++) {
         const lineText = doc.getLine(i);
+        if (lineText === undefined) {
+            break;
+        }
         const line = lineText.toLocaleLowerCase();
 
         // acu

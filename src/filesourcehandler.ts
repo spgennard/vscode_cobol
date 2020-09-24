@@ -17,7 +17,7 @@ export class FileSourceHandler implements ISourceHandler {
     commentCount: number;
     commentCallback?: ICommentCallback;
 
-    public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback ) {
+    public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.commentCallback = commentCallback;
@@ -72,44 +72,55 @@ export class FileSourceHandler implements ISourceHandler {
 
     private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
-    getLine(lineNumber: number): string {
-        let line = this.getRawLine(lineNumber);
+    getLine(lineNumber: number): string | undefined {
+        let line:string|undefined=undefined;
 
-        const startComment = line.indexOf("*>");
-        if (startComment !== -1) {
-            this.sendCommentCallback(line);
-            line = line.substring(0, startComment);
-            this.commentCount++;
-        }
-        // drop fixed format line
-        if (line.length > 1 && line[0] === '*') {
-            this.commentCount++;
-            this.sendCommentCallback(line);
-            return "";
-        }
+        try {
+            if (lineNumber > this.lines.length) {
+                return undefined;
+            }
 
-        // drop fixed format line
-        if (line.length > 7 && line[6] === '*') {
-            this.commentCount++;
-            this.sendCommentCallback(line);
-            return "";
-        }
+            line = this.lines[lineNumber];
 
-        // todo - this is a bit messy and should be revised
-        if (this.dumpNumbersInAreaA) {
-            if (line.match(FileSourceHandler.paraPrefixRegex1)) {
-                line = "      " + line.substr(6);
-            } else {
-                if (line.length > 7 && line[6] === ' ') {
-                    const possibleKeyword = line.substr(0, 6).trim();
-                    if (this.isValidKeyword(possibleKeyword) === false) {
-                        line = "       " + line.substr(6);
+            const startComment = line.indexOf("*>");
+            if (startComment !== -1) {
+                this.sendCommentCallback(line);
+                line = line.substring(0, startComment);
+                this.commentCount++;
+            }
+            // drop fixed format line
+            if (line.length > 1 && line[0] === '*') {
+                this.commentCount++;
+                this.sendCommentCallback(line);
+                return "";
+            }
+
+            // drop fixed format line
+            if (line.length > 7 && line[6] === '*') {
+                this.commentCount++;
+                this.sendCommentCallback(line);
+                return "";
+            }
+
+            // todo - this is a bit messy and should be revised
+            if (this.dumpNumbersInAreaA) {
+                if (line.match(FileSourceHandler.paraPrefixRegex1)) {
+                    line = "      " + line.substr(6);
+                } else {
+                    if (line.length > 7 && line[6] === ' ') {
+                        const possibleKeyword = line.substr(0, 6).trim();
+                        if (this.isValidKeyword(possibleKeyword) === false) {
+                            line = "       " + line.substr(6);
+                        }
                     }
                 }
             }
+            if (this.dumpAreaBOnwards && line.length >= 73) {
+                line = line.substr(0, 72);
+            }
         }
-        if (this.dumpAreaBOnwards && line.length >= 73) {
-            line = line.substr(0, 72);
+        catch {
+            return undefined;
         }
 
         return line;
@@ -127,18 +138,18 @@ export class FileSourceHandler implements ISourceHandler {
         return cobolKeywordDictionary.containsKey(keyword);
     }
 
-    getUri() : Uri {
+    getUri(): Uri {
         return Uri.file(this.document);
     }
     getFilename(): string {
         return this.document;
     }
 
-    setCommentCallback(commentCallback: ICommentCallback):void {
+    setCommentCallback(commentCallback: ICommentCallback): void {
         this.commentCallback = commentCallback;
     }
 
-    resetCommentCount():void {
+    resetCommentCount(): void {
         this.commentCount = 0;
     }
 }

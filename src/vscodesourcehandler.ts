@@ -44,8 +44,15 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
     }
 
-    getLine(lineNumber: number): string {
-        let line = this.document.lineAt(lineNumber).text;
+    getLine(lineNumber: number): string|undefined {
+
+        if (lineNumber >= this.document.lineCount) {
+            return undefined;
+        }
+
+        const lineText = this.document.lineAt(lineNumber);
+
+        let line = lineText.text;
 
         const startComment = line.indexOf("*>");
         if (startComment !== -1) {

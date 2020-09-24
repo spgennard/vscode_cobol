@@ -311,8 +311,12 @@ export class COBOLUtils {
         for (let l = 0; l < file.getLineCount(); l++) {
             const lineAt = file.getLine(l);
             const text = lineAt;
-            let newtext = text;
 
+            if (text === undefined) {
+                break;      // eof
+            }
+
+            let newtext = text;
             const args: string[] = splitArgument(text, true);
             const textLower = text.toLowerCase();
             let lastPos = 0;

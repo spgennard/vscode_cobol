@@ -584,17 +584,27 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         if (this.sourceReferences.topLevel) {
             /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
             const lineLimit = configHandler.pre_parse_line_limit;
-            let maxLines = sourceHandler.getLineCount();
+            const maxLinesInFile = sourceHandler.getLineCount();
+            let maxLines = maxLinesInFile;
             if (maxLines > lineLimit) {
                 maxLines = lineLimit;
             }
 
-            let line = "";
+            let line: string|undefined = undefined;
             const preParseState: PreParseState = new PreParseState();
 
             for (let l = 0; l < maxLines + sourceHandler.getCommentCount(); l++) {
+                if (l > maxLinesInFile) {
+                    break;
+                }
+
                 try {
-                    line = sourceHandler.getLine(l).trimRight();
+                    line = sourceHandler.getLine(l);
+                    if (line === undefined) {
+                        break; // eof
+                    }
+
+                    line = line.trimRight();
 
                     // don't parse a empty line
                     if (line.length > 0) {
@@ -675,13 +685,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 break;
         }
 
-        let line = "";
+        let line:string|undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
-                line = sourceHandler.getLine(l).trimRight();
+                line = sourceHandler.getLine(l);
+
+                if (line === undefined) {
+                    break;
+                }
+
+                line = line.trimRight();
 
                 // don't parse a empty line
                 if (line.length > 0) {
@@ -699,29 +715,30 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         if (this.sourceReferences.topLevel) {
+            const lineLength = line !== undefined ? line.length : 0;
             if (state.programs.length !== 0) {
                 for (let cp = 0; cp < state.programs.length; cp++) {
                     const currentProgram = state.programs.pop();
                     if (currentProgram !== undefined) {
                         currentProgram.endLine = sourceHandler.getLineCount();
-                        currentProgram.endColumn = line.length;
+                        currentProgram.endColumn = lineLength;
                     }
                 }
             }
 
             if (state.currentDivision !== COBOLToken.Null) {
                 state.currentDivision.endLine = sourceHandler.getLineCount();
-                state.currentDivision.endColumn = line.length;
+                state.currentDivision.endColumn = lineLength;
             }
 
             if (state.currentSection !== COBOLToken.Null) {
                 state.currentSection.endLine = sourceHandler.getLineCount();
-                state.currentSection.endColumn = line.length;
+                state.currentSection.endColumn = lineLength;
             }
 
             if (state.currentParagraph !== COBOLToken.Null) {
                 state.currentParagraph.endLine = sourceHandler.getLineCount();
-                state.currentParagraph.endColumn = line.length;
+                state.currentParagraph.endColumn = lineLength;
             }
 
             this.addinMissingEndlings();
