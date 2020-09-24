@@ -1721,108 +1721,108 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
         const startOfComment: number = commentLine.indexOf("*>");
 
-        if (startOfComment !== undefined && startOfComment !== -1) {
+        if (startOfComment === undefined || startOfComment === -1) {
+            return;
+        }
 
-            if (this.commentTagStyle === CobolTagStyle.unknown) {
-                // is it a coboldoc?
-                if (commentLine.indexOf("*>*") !== -1) {
-                    this.commentTagStyle = CobolTagStyle.FREE;
-                } else {
-                    if (commentLine.indexOf("*>") !== -1) {
-                        this.commentTagStyle = CobolTagStyle.MICROFOCUS;
-                    }
+        if (this.commentTagStyle === CobolTagStyle.unknown) {
+            // is it a coboldoc?
+            if (commentLine.indexOf("*>*") !== -1) {
+                this.commentTagStyle = CobolTagStyle.FREE;
+            } else {
+                if (commentLine.indexOf("*>") !== -1) {
+                    this.commentTagStyle = CobolTagStyle.MICROFOCUS;
+                }
+            }
+        }
+
+        if (this.commentDocStyle === CobolDocStyle.unknown) {
+            const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
+            for (const possibleTag of possilexmltags) {
+                if (commentLine.indexOf(possibleTag) !== -1) {
+                    this.commentDocStyle = CobolDocStyle.MSDN;
                 }
             }
 
-            if (this.commentDocStyle === CobolDocStyle.unknown) {
-                const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
-                for (const possibleTag of possilexmltags) {
-                    if (commentLine.indexOf(possibleTag) !== -1) {
-                        this.commentDocStyle = CobolDocStyle.MSDN;
-                    }
-                }
-
-                const possiblecobdoc: string[] = ["@author", "@license"];
-                for (const possibleTag of possiblecobdoc) {
-                    if (commentLine.indexOf(possibleTag) !== -1) {
-                        this.commentDocStyle = CobolDocStyle.COBOLDOC;
-                    }
-                }
-
-                const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
-                for (const possibleICOBOL of possibleICOBOLs) {
-                    if (commentLine.indexOf(possibleICOBOL) !== -1) {
-                        this.commentDocStyle = CobolDocStyle.ISCOBOL;
-                    }
-                }
-
-                const possibleFUJITSUs: string[] = ["@**", "H ", "D "];
-                for (const possibleFUJITSU of possibleFUJITSUs) {
-                    const trimLine = commentLine.trimLeft();
-                    if (trimLine.startsWith(possibleFUJITSU)) {
-                        this.commentDocStyle = CobolDocStyle.FUJITSU;
-                    }
-                }
-
-                // leave early, if comment style found
-                if (this.commentDocStyle !== CobolDocStyle.unknown) {
-                    return;
+            const possiblecobdoc: string[] = ["@author", "@license"];
+            for (const possibleTag of possiblecobdoc) {
+                if (commentLine.indexOf(possibleTag) !== -1) {
+                    this.commentDocStyle = CobolDocStyle.COBOLDOC;
                 }
             }
 
-            // const comment = commentLine.substring(2 + startOfComment).trim();
-            const startOfCOBOLint: number = commentLine.indexOf(this.cobolLintLiteral);
-
-            if (startOfCOBOLint !== -1) {
-                const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
-                let args = commentCommandArgs.split(" ");
-                const command = args[0];
-                args = args.slice(1);
-                const commandTrimmed = command !== undefined ? command.trim() : undefined;
-                if (commandTrimmed !== undefined) {
-                    if (commandTrimmed === CobolLinterProvider.NotReferencedMarker_external) {
-                        for (const offset in args) {
-                            this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLocaleLowerCase(), args[offset]);
-                        }
-                    }
+            const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
+            for (const possibleICOBOL of possibleICOBOLs) {
+                if (commentLine.indexOf(possibleICOBOL) !== -1) {
+                    this.commentDocStyle = CobolDocStyle.ISCOBOL;
                 }
             }
 
-            // only enable scanner hint when process_scanner_hints_embedded_in_comments is set
-            if (this.configHandler.process_scanner_hints_embedded_in_comments) {
-                const startOfTokenFor = this.configHandler.process_scanner_hint_token_for_source_dependancies;
+            const possibleFUJITSUs: string[] = ["@**", "H ", "D "];
+            for (const possibleFUJITSU of possibleFUJITSUs) {
+                const trimLine = commentLine.trimLeft();
+                if (trimLine.startsWith(possibleFUJITSU)) {
+                    this.commentDocStyle = CobolDocStyle.FUJITSU;
+                }
+            }
 
-                const startOfSourceDepIndex: number = commentLine.indexOf(startOfTokenFor);
-                if (startOfSourceDepIndex !== -1) {
-                    const commentCommandArgs = commentLine.substring(startOfTokenFor.length + startOfSourceDepIndex).trim();
-                    const args = commentCommandArgs.split(" ");
-                    if (args.length !== 0) {
-                        for (const offset in args) {
-                            const filenameTrimmed = args[offset].trim();
-                            const fileName = expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
-                            if (fileName.length > 0) {
-                                if (this.copyBooksUsed.has(fileName) === false) {
-                                    this.copyBooksUsed.set(fileName, COBOLToken.Null);
+            // leave early, if comment style found
+            if (this.commentDocStyle !== CobolDocStyle.unknown) {
+                return;
+            }
+        }
 
-                                    const qfile = new FileSourceHandler(fileName, false);
-                                    const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
-                                    this.sourceReferences.state.ignoreInOutlineView = true;
-                                    this.sourceReferences.topLevel = true;
-                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
-                                    this.sourceReferences.topLevel = true;
-                                    this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
-                                }
-                            } else {
-                                const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed}`;
-                                this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
+        // const comment = commentLine.substring(2 + startOfComment).trim();
+        const startOfCOBOLint: number = commentLine.indexOf(this.cobolLintLiteral);
 
+        if (startOfCOBOLint !== -1) {
+            const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
+            let args = commentCommandArgs.split(" ");
+            const command = args[0];
+            args = args.slice(1);
+            const commandTrimmed = command !== undefined ? command.trim() : undefined;
+            if (commandTrimmed !== undefined) {
+                if (commandTrimmed === CobolLinterProvider.NotReferencedMarker_external) {
+                    for (const offset in args) {
+                        this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLocaleLowerCase(), args[offset]);
+                    }
+                }
+            }
+        }
+
+        // only enable scanner hint when process_scanner_hints_embedded_in_comments is set
+        if (this.configHandler.process_scanner_hints_embedded_in_comments) {
+            const startOfTokenFor = this.configHandler.process_scanner_hint_token_for_source_dependancies;
+
+            const startOfSourceDepIndex: number = commentLine.indexOf(startOfTokenFor);
+            if (startOfSourceDepIndex !== -1) {
+                const commentCommandArgs = commentLine.substring(startOfTokenFor.length + startOfSourceDepIndex).trim();
+                const args = commentCommandArgs.split(" ");
+                if (args.length !== 0) {
+                    for (const offset in args) {
+                        const filenameTrimmed = args[offset].trim();
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
+                        if (fileName.length > 0) {
+                            if (this.copyBooksUsed.has(fileName) === false) {
+                                this.copyBooksUsed.set(fileName, COBOLToken.Null);
+
+                                const qfile = new FileSourceHandler(fileName, false);
+                                const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
+                                this.sourceReferences.state.ignoreInOutlineView = true;
+                                this.sourceReferences.topLevel = true;
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
+                                this.sourceReferences.topLevel = true;
+                                this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                             }
+                        } else {
+                            const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed}`;
+                            this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
+
                         }
                     }
                 }
             }
         }
     }
-
 }

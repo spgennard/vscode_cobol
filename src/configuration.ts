@@ -52,6 +52,7 @@ export class VSCOBOLConfiguration {
         vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
         vsconfig.process_scanner_hints_embedded_in_comments = getBoolean("process_scanner_hints_embedded_in_comments", false);
+        vsconfig.process_scanner_hint_token_for_source_dependancies = workspace.getConfiguration('coboleditor').get<string>('process_scanner_hint_token_for_source_dependancies') || vsconfig.process_scanner_hint_token_for_source_dependancies;
         return vsconfig;
     }
 
