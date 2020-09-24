@@ -41,7 +41,7 @@ export function isValidProgramExtension(filename: string, settings: COBOLSetting
     return false;
 }
 
-function extractCopyBoolFilename(str: string) {
+function extractCopyBoolFilename(str: string): string|undefined {
     const copyPos = str.toLowerCase().indexOf("copy");
     if (copyPos !== -1) {
         const noCopyStr = str.substr(4 + copyPos).trimLeft();
@@ -90,7 +90,7 @@ function extractCopyBoolFilename(str: string) {
             }
         }
     }
-    return "";
+    return undefined;
 }
 
 // only handle unc filenames
@@ -227,6 +227,11 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
     const filename = extractCopyBoolFilename(text);
     let inPos = -1;
 
+    // leave asap
+    if (filename === undefined) {
+        return undefined;
+    }
+
     // exec sql include "has" in in the line.. so becareful
     if (textLower.indexOf("copy") !== -1) {
         inPos = textLower.indexOf("in");
@@ -262,5 +267,5 @@ export function provideDefinition(doc: TextDocument, pos: Position, ct: Cancella
         }
     }
 
-    return;
+    return undefined;
 }

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const themedIconPath = (name: string): any => {
 	return {
 		light: path.join(__filename, '..', '..', 'images', 'light', name),
