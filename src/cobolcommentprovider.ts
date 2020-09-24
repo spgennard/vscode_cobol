@@ -34,7 +34,7 @@ export class CobolCommentProvider implements CompletionItemProvider {
         }
 
         // can only do coboldoc at the moment
-        if (!(sf.commentStyle === CobolDocStyle.COBOLDOC || sf.commentStyle === CobolDocStyle.unknown)) {
+        if (!(sf.commentDocStyle === CobolDocStyle.COBOLDOC || sf.commentDocStyle === CobolDocStyle.unknown)) {
             return items;
         }
 
@@ -60,7 +60,7 @@ export class CobolCommentProvider implements CompletionItemProvider {
             }
         }
 
-        for (const [key, callTarget] of sf.functionTargets) {
+        for (const [, callTarget] of sf.functionTargets) {
             if (callTarget !== undefined) {
                 let addedReturn = false;
                 const snippet = new CompletionItem(`Auto-Doc: for function ${callTarget.Token.tokenName}`);

@@ -44,6 +44,7 @@ export interface ICOBOLSettings {
     coboldoc_workspace_folder: string;
     process_scanner_hints_embedded_in_comments:boolean;
     cache_metadata_show_progress_messages: boolean;
+    process_scanner_hint_token_for_source_dependancies: string;
 
     init_required: boolean;
 }
@@ -84,7 +85,9 @@ export class COBOLSettings implements ICOBOLSettings {
     public coboldoc_workspace_folder: string;
     public program_extensions: string[];
     public process_scanner_hints_embedded_in_comments: boolean;
+    public process_scanner_hint_token_for_source_dependancies: string;
     public cache_metadata_show_progress_messages:boolean;
+
     public init_required = true;
 
     constructor() {
@@ -123,6 +126,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_house_standards_rules = [];
         this.ignore_unsafe_extensions = false;
         this.process_scanner_hints_embedded_in_comments = false;
+        this.process_scanner_hint_token_for_source_dependancies = "source-dependency";
         this.coboldoc_workspace_folder = "coboldoc";
     }
 }

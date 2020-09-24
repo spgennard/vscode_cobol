@@ -8,7 +8,7 @@ import { String } from 'typescript-string-operations';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException } from "./extension";
+import { logMessage, logException, logWarningMessage } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -518,7 +518,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public sourceIsCopybook = false;
 
-    public commentStyle: CobolDocStyle = CobolDocStyle.unknown;
+    public commentDocStyle: CobolDocStyle = CobolDocStyle.unknown;
     public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
 
     public readonly parse_copybooks_for_references: boolean;
@@ -605,7 +605,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             prevToken = this.relaxedParseLineByLine(Token.Blank, line, preParseState);
                         }
                     } else {
-                        maxLines++;     // increase the max lines, as this line is ignored
+                        maxLines++;     // increase the max lines, as this line is
                     }
 
                     if (preParseState.leaveEarly) {
@@ -1762,7 +1762,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
     private cobolLintLiteral = "cobol-lint";
-    private cobolPreProcCopybook = "cobol-include-copybook";
 
     public processComment(commentLine: string): void {
         const startOfComment: number = commentLine.indexOf("*>");
@@ -1780,26 +1779,25 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
 
-            if (this.commentStyle === CobolDocStyle.unknown) {
-
+            if (this.commentDocStyle === CobolDocStyle.unknown) {
                 const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
                 for (const possibleTag of possilexmltags) {
                     if (commentLine.indexOf(possibleTag) !== -1) {
-                        this.commentStyle = CobolDocStyle.MSDN;
+                        this.commentDocStyle = CobolDocStyle.MSDN;
                     }
                 }
 
                 const possiblecobdoc: string[] = ["@author", "@license"];
                 for (const possibleTag of possiblecobdoc) {
                     if (commentLine.indexOf(possibleTag) !== -1) {
-                        this.commentStyle = CobolDocStyle.COBOLDOC;
+                        this.commentDocStyle = CobolDocStyle.COBOLDOC;
                     }
                 }
 
                 const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
                 for (const possibleICOBOL of possibleICOBOLs) {
                     if (commentLine.indexOf(possibleICOBOL) !== -1) {
-                        this.commentStyle = CobolDocStyle.ISCOBOL;
+                        this.commentDocStyle = CobolDocStyle.ISCOBOL;
                     }
                 }
 
@@ -1807,16 +1805,21 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 for (const possibleFUJITSU of possibleFUJITSUs) {
                     const trimLine = commentLine.trimLeft();
                     if (trimLine.startsWith(possibleFUJITSU)) {
-                        this.commentStyle = CobolDocStyle.FUJITSU;
+                        this.commentDocStyle = CobolDocStyle.FUJITSU;
                     }
+                }
+
+                // leave early, if comment style found
+                if (this.commentDocStyle !== CobolDocStyle.unknown) {
+                    return;
                 }
             }
 
-            const comment = commentLine.substring(2 + startOfComment).trim();
+            // const comment = commentLine.substring(2 + startOfComment).trim();
+            const startOfCOBOLint: number = commentLine.indexOf(this.cobolLintLiteral);
 
-            if (comment.startsWith(this.cobolLintLiteral)) {
-                const startOfCOBOLint: number = comment.indexOf(this.cobolLintLiteral);
-                const commentCommandArgs = comment.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
+            if (startOfCOBOLint !== -1) {
+                const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
                 let args = commentCommandArgs.split(" ");
                 const command = args[0];
                 args = args.slice(1);
@@ -1832,9 +1835,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             // only enable scanner hint when process_scanner_hints_embedded_in_comments is set
             if (this.configHandler.process_scanner_hints_embedded_in_comments) {
-                const startOfCOBOLPreCopyBook: number = comment.indexOf(this.cobolPreProcCopybook);
-                if (startOfCOBOLPreCopyBook !== -1) {
-                    const commentCommandArgs = comment.substring(this.cobolPreProcCopybook.length + startOfCOBOLPreCopyBook).trim();
+                const startOfTokenFor = this.configHandler.process_scanner_hint_token_for_source_dependancies;
+
+                const startOfSourceDepIndex: number = commentLine.indexOf(startOfTokenFor);
+                if (startOfSourceDepIndex !== -1) {
+                    const commentCommandArgs = commentLine.substring(startOfTokenFor.length + startOfSourceDepIndex).trim();
                     const args = commentCommandArgs.split(" ");
                     if (args.length !== 0) {
                         for (const offset in args) {
@@ -1854,7 +1859,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                                 }
                             } else {
-                                logMessage(" WARNING: " + this.cobolPreProcCopybook + " unable to locate " + filenameTrimmed);
+                                logWarningMessage(` ${startOfTokenFor}  unable to locate ${filenameTrimmed}`);
                             }
                         }
                     }

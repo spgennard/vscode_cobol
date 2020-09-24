@@ -236,7 +236,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
             invalidSearchDirectory.push(ddir);
         }
         else if (isDirectPath(ddir)) {
-            logMessage(` Warning: non portable copybook directory ${ddir} defined`);
+            logWarningMessage(` non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
                 if (isPathInWorkspace(ddir) === false) {
                     if (isNetworkPath(ddir)) {
@@ -1060,6 +1060,19 @@ export function logMessage(message: string, ...parameters: any[]): void {
         COBOLOutputChannel.appendLine(util.format(message, parameters));
     } else {
         COBOLOutputChannel.appendLine(message);
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function logWarningMessage(message: string, ...parameters: any[]): void {
+    const trimmedLeftCount = message.length - message.trimLeft().length;
+    const spacesToLeft = " ".repeat(trimmedLeftCount);
+
+    // TODO: Could this be colorised?
+    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+        COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${util.format(message, parameters)}`);
+    } else {
+        COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${message}`);
     }
 }
 

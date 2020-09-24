@@ -502,6 +502,11 @@
                     "type": "boolean",
                     "title": "Process scanner hints embedded in comments",
                     "default": false
+                },
+                "coboleditor.process_scanner_hint_token_for_source_dependancies": {
+                    "type": "string",
+                    "title": "Comment token used for processing source code dependancies",
+                    "default": "source-dependency"
                 }
             }
         },

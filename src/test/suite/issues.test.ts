@@ -26,7 +26,7 @@ suite('Issues Raised Test Suite', () => {
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");
 		assert.ok(f.commentCallback !== undefined, "comment callback should be set");
-		assert.ok(s.commentStyle === CobolDocStyle.MSDN, `Source comment style should be MSDN, got ${s.commentStyle}`);
+		assert.ok(s.commentDocStyle === CobolDocStyle.MSDN, `Source comment style should be MSDN, got ${s.commentDocStyle}`);
 	});
 
 
@@ -41,7 +41,7 @@ suite('Issues Raised Test Suite', () => {
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");
 		assert.ok(f.commentCallback !== undefined, "comment callback should be set");
-		assert.ok(s.commentStyle === CobolDocStyle.COBOLDOC, `Source comment style should be COBOLDOC, got ${s.commentStyle}`);
+		assert.ok(s.commentDocStyle === CobolDocStyle.COBOLDOC, `Source comment style should be COBOLDOC, got ${s.commentDocStyle}`);
 	});
 
 	test('Issue: Package.json checks', () => {

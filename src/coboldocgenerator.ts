@@ -59,7 +59,7 @@ export class COBOLDocumentationGenerator {
 
             return;
         }
-        const textToSend = sf.commentStyle === CobolDocStyle.MSDN ?
+        const textToSend = sf.commentDocStyle === CobolDocStyle.MSDN ?
             `coboldoc -o ${tmpArea} ${tagStype} -a msdn -f html generate ${sf.filename}` :
             `coboldoc -o ${tmpArea} ${tagStype} -a tag -f html generate ${sf.filename}`;
 
