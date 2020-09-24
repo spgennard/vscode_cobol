@@ -1,7 +1,7 @@
 import { Uri } from "vscode";
 
 export interface ICommentCallback {
-    processComment(commentLine: string) : void;
+    processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number) : void;
 }
 
 export default interface ISourceHandler {

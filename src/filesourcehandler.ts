@@ -42,9 +42,9 @@ export class FileSourceHandler implements ISourceHandler {
 
     }
 
-    private sendCommentCallback(line: string) {
+    private sendCommentCallback(line: string, lineNumber:number) {
         if (this.commentCallback !== undefined) {
-            this.commentCallback.processComment(line);
+            this.commentCallback.processComment(line, this.getFilename(), lineNumber);
         }
     }
 
@@ -70,21 +70,21 @@ export class FileSourceHandler implements ISourceHandler {
 
             const startComment = line.indexOf("*>");
             if (startComment !== -1) {
-                this.sendCommentCallback(line);
+                this.sendCommentCallback(line,lineNumber);
                 line = line.substring(0, startComment);
                 this.commentCount++;
             }
             // drop fixed format line
             if (line.length > 1 && line[0] === '*') {
                 this.commentCount++;
-                this.sendCommentCallback(line);
+                this.sendCommentCallback(line,lineNumber);
                 return "";
             }
 
             // drop fixed format line
             if (line.length > 7 && line[6] === '*') {
                 this.commentCount++;
-                this.sendCommentCallback(line);
+                this.sendCommentCallback(line,lineNumber);
                 return "";
             }
 

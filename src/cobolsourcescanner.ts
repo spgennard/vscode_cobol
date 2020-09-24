@@ -8,7 +8,7 @@ import { String } from 'typescript-string-operations';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, logWarningMessage } from "./extension";
+import { logMessage, logException } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -502,6 +502,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public methods: Map<string, COBOLToken>;
     public isCached: boolean;
     public copyBooksUsed: Map<string, COBOLToken>;
+    public diagWarnings: Map<string, COBOLFileSymbol>;
 
     public parseReferences: boolean;
     public sourceReferences: SharedSourceReferences;
@@ -553,6 +554,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.functionTargets = new Map<string, CallTargetInformation>();
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
+        this.diagWarnings = new Map<string, COBOLFileSymbol>();
         this.parseReferences = sourceHandler !== null;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
@@ -1780,7 +1782,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     private cobolLintLiteral = "cobol-lint";
 
-    public processComment(commentLine: string): void {
+    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number): void {
         const startOfComment: number = commentLine.indexOf("*>");
 
         if (startOfComment !== undefined && startOfComment !== -1) {
@@ -1876,7 +1878,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                                 }
                             } else {
-                                logWarningMessage(` ${startOfTokenFor}  unable to locate ${filenameTrimmed}`);
+                                const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed}`;
+                                this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
+
                             }
                         }
                     }

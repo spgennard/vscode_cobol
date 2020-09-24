@@ -43,7 +43,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         return codeActions;
     }
 
-    public async insertIgnoreCommentLine(docUri: vscode.Uri, offset: number, code: string):Promise<void> {
+    public async insertIgnoreCommentLine(docUri: vscode.Uri, offset: number, code: string): Promise<void> {
         await vscode.window.showTextDocument(docUri);
         const w = vscode.window.activeTextEditor;
 
@@ -77,7 +77,7 @@ export class CobolLinterProvider {
 
     public async updateLinter(document: vscode.TextDocument): Promise<void> {
 
-        if (this.settings.linter === false) {
+        if (this.settings.linter === false && this.settings.process_scanner_hints_embedded_in_comments === false) {
             this.collection.clear();
             return;
         }
@@ -101,18 +101,37 @@ export class CobolLinterProvider {
         const diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
 
-        if (qp.sourceIsCopybook) {
-            return;
+        if (!qp.sourceIsCopybook) {
+
+            this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
+
+            if (qp.configHandler.linter_unused_paragraphs_or_sections) {
+                this.processParsedDocumentForUnusedSymbols(qp, diagRefs);
+            }
+
+            if (qp.configHandler.linter_house_standards_rules) {
+                this.processParsedDocumentForStandards(qp, diagRefs);
+            }
         }
 
-        this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
+        if (qp.diagWarnings.size !== 0) {
+            for (const [msg, fileSymbol] of qp.diagWarnings) {
+                if (fileSymbol.filename !== undefined && fileSymbol.lnum !== undefined) {
+                    const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
+                    const diagMessage = new vscode.Diagnostic(r, msg);
+                    if (diagRefs.has(fileSymbol.filename)) {
+                        const diags = diagRefs.get(fileSymbol.filename);
+                        if (diags !== undefined) {
+                            diags.push(diagMessage);
+                        }
+                    } else {
+                        const arr: vscode.Diagnostic[] = [];
+                        arr.push(diagMessage);
+                        diagRefs.set(fileSymbol.filename, arr);
+                    }
 
-        if (qp.configHandler.linter_unused_paragraphs_or_sections) {
-            this.processParsedDocumentForUnusedSymbols(qp, diagRefs);
-        }
-
-        if (qp.configHandler.linter_house_standards_rules) {
-            this.processParsedDocumentForStandards(qp, diagRefs);
+                }
+            }
         }
 
         for (const [f, value] of diagRefs) {
