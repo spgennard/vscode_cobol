@@ -10,7 +10,6 @@ import path from 'path';
 import { isNetworkPath, isDirectPath } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
-import { COBOLSettings } from './iconfiguration';
 
 export enum FoldStyle {
     LowerCase = 1,

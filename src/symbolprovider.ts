@@ -5,6 +5,8 @@ import { outlineFlag } from './iconfiguration';
 import VSQuickCOBOLParse from './vscobolscanner';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
         const settings = VSCOBOLConfiguration.get();
@@ -72,6 +74,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
 
 export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
         const settings = VSCOBOLConfiguration.get();
