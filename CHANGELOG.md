@@ -3,6 +3,17 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#208](https://github.com/spgennard/vscode_cobol/issues/208) Feature Request: Add config setting to allow finding definitions in _any_ workspace file  
+
+**Add config setting to allow finding definitions in _any_ workspace file #208**
+
+ * - wire warning messages into diagnostic engine 
+ * (unable to find copybook defined by hint) 
+
+[a704f90e458561c](https://github.com/spgennard/vscode_cobol/commit/a704f90e458561c) *2020-09-24 23:14:05*
+
+
 ## 6.7.41
 ### GitHub [#199](https://github.com/spgennard/vscode_cobol/issues/199) Do we need to tweak the pre_parse_line_limit?  
 
