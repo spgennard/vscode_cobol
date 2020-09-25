@@ -32,7 +32,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
             if (textText.startsWith("//")) {
                 const textLineClean = textText.substr(2);
                 const lineTokens = [];
-                const possibleTokens = splitArgument(textLineClean,false);
+                const possibleTokens = splitArgument(textLineClean, false);
                 for (let l = 0; l < possibleTokens.length; l++) {
                     if (possibleTokens[l] !== undefined) {
                         const possibleToken = possibleTokens[l].trim();
@@ -106,18 +106,15 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
             includePara = false;
         }
 
-        for (let i = 0; i < sf.tokensInOrder.length; i++) {
-            const token: COBOLToken = sf.tokensInOrder[i];
-
+        for (const token of sf.tokensInOrder) {
             try {
-                const srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                    new vscode.Position(token.endLine, token.endColumn));
-
-                const lrange = new vscode.Location(ownerUri, srange);
-
-                const container = token.parentToken !== undefined ? token.parentToken.description : "";
-
                 if (token.ignoreInOutlineView === false) {
+                    const srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                        new vscode.Position(token.endLine, token.endColumn));
+
+                    const lrange = new vscode.Location(ownerUri, srange);
+
+                    const container = token.parentToken !== undefined ? token.parentToken.description : "";
                     switch (token.tokenType) {
                         case COBOLTokenStyle.ClassId:
                         case COBOLTokenStyle.ProgramId:
@@ -132,7 +129,6 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                         case COBOLTokenStyle.Declaratives:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;
-
                         case COBOLTokenStyle.Division:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;
@@ -140,7 +136,6 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                             if (includePara === false) {
                                 break;
                             }
-
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;
                         case COBOLTokenStyle.DeclarativesSection:

@@ -119,42 +119,4 @@ export class COBOLDocumentationGenerator {
 
         return root.toString();
     }
-
-    public static generateCOBOLSourceTag(activeTextEditor: vscode.TextEditor, settings: ICOBOLSettings): void {
-
-        const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
-        if (sf === undefined) {
-            return;
-        }
-
-        if (activeTextEditor.selection !== undefined) {
-            const currentLineNumber = activeTextEditor.selection.start.line;
-            let closestToken = COBOLToken.Null;
-            let lastIdDiv: COBOLToken = COBOLToken.Null;
-            let lastProgId: COBOLToken = COBOLToken.Null;
-
-            for (const ctoken of sf.tokensInOrder) {
-                switch (ctoken.tokenNameLower) {
-                    case 'identification':
-                        lastIdDiv = ctoken;
-                        break;
-                    case 'program-id':
-                        lastProgId = ctoken;
-                        break;
-                }
-
-                if (ctoken.startLine >= currentLineNumber) {
-                    closestToken = ctoken;
-                    break;
-                }
-            }
-
-
-            logMessage(closestToken.tokenName);
-
-            return;
-        }
-
-        logMessage("Nearest token not found");
-    }
 }

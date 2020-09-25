@@ -685,6 +685,7 @@ export function activate(context: ExtensionContext): void {
     const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
     const cobolCommentProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolCommentProvider);
     context.subscriptions.push(cobolCommentProviderDisposible);
+
     /* hover provider */
     const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -944,18 +945,6 @@ export function activate(context: ExtensionContext): void {
         }
     });
     context.subscriptions.push(showDocumentationCommand);
-
-    const generateCOBOLSourceTagCommand = vscode.commands.registerCommand('cobolplugin.generateSourceTag', () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
-                COBOLDocumentationGenerator.generateCOBOLSourceTag(vscode.window.activeTextEditor, settings);
-            }
-        }
-    });
-    context.subscriptions.push(generateCOBOLSourceTagCommand);
-
 
     const migrateCopybooksToWorkspaceCommand = vscode.commands.registerCommand('cobolplugin.migrateCopybooksToWorkspace', () => {
         const utils: COBOLUtils = new COBOLUtils();
