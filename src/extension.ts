@@ -79,6 +79,22 @@ export function isFile(sdir: string): boolean {
     return false;
 }
 
+const defaultStats  = new fs.Stats();
+
+export function isFileT(sdir: string): [boolean, fs.Stats] {
+    let f: fs.Stats = defaultStats;
+    try {
+       f = fs.statSync(sdir);
+        if (f.isFile()) {
+            return [true, f];
+        }
+    }
+    catch {
+        return [false,f];
+    }
+    return [false,f];
+}
+
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;

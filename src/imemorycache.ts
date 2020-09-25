@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { isFile, logMessage } from "./extension";
+import { isFileT, logMessage } from "./extension";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
 import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver, fileSymbolFilename, InMemoryGlobalFileCache, COBOLGlobalFileTable, replacer } from './cobolglobalcache';
@@ -10,7 +10,8 @@ export class InMemoryGlobalCachesHelper {
     public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string): boolean {
         //let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
         const fn: string = path.join(cacheDirectory, globalSymbolFilename);
-        if (isFile(fn)) {
+        const fnStat = isFileT(fn);
+        if (fnStat[0]) {
             const stat4cache: fs.Stats = fs.statSync(fn);
             if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
                 try {
@@ -34,9 +35,9 @@ export class InMemoryGlobalCachesHelper {
 
     public static loadInMemoryGlobalFileCache(cacheDirectory: string): boolean {
         const fn: string = path.join(cacheDirectory, fileSymbolFilename);
-
-        if (isFile(fn)) {
-            const stat4cache: fs.Stats = fs.statSync(fn);
+        const fnStat = isFileT(fn);
+        if (fnStat[0]) {
+            const stat4cache: fs.Stats = fnStat[1];
             if (stat4cache.mtimeMs !== InMemoryGlobalFileCache.lastModifiedTime) {
                 try {
 

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logMessage, isFile } from "./extension";
+import { logMessage, isFileT } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
@@ -182,8 +182,9 @@ export class COBOLSymbolTableHelper {
         }
 
         const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        if (isFile(fn)) {
-            const stat4cache: fs.Stats = fs.statSync(fn);
+        const fnStat = isFileT(fn);
+        if (fnStat[0]) {
+            const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);
             if (stat4cache.mtimeMs < stat4src.mtimeMs) {
                 return true;
@@ -210,8 +211,9 @@ export class COBOLSymbolTableHelper {
         }
 
         const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        if (isFile(fn)) {
-            const stat4cache: fs.Stats = fs.statSync(fn);
+        const fnStat = isFileT(fn);
+        if (fnStat[0]) {
+            const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);
             if (stat4cache.mtimeMs < stat4src.mtimeMs) {
                 // never return a out of date cache
