@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import COBOLSourceScanner, { CobolDocStyle, CobolTagStyle, COBOLToken } from './cobolsourcescanner';
+import COBOLSourceScanner, { CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
 import { logMessage, isDirectory, logChannelSetPreserveFocus } from './extension';
 import VSQuickCOBOLParse from './vscobolscanner';
 import path from 'path';
