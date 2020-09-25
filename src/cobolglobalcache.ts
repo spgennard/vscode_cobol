@@ -94,7 +94,7 @@ export class COBOLSymbolTableHelper {
         const config = VSCOBOLConfiguration.get();
         const st = new COBOLSymbolTable();
         st.fileName = qp.filename;
-        st.lastModifiedTime = qp.getLastModifiedTime();
+        st.lastModifiedTime = qp.lastModifiedTime;
 
         for (const [key, value] of qp.copyBooksUsed) {
             const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);

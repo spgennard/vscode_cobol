@@ -482,13 +482,14 @@ export class CallTargetInformation {
 
 export interface ICOBOLSourceScanner {
     filename: string;
-    getLastModifiedTime(): number;
+    lastModifiedTime: number;
     copyBooksUsed: Map<string, COBOLToken>;
     tokensInOrder: COBOLToken[];
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
     public filename: string;
+    public lastModifiedTime = 0;
 
     public tokensInOrder: COBOLToken[] = [];
 
@@ -531,8 +532,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_WorkingStorageFiles: string[] = [];
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
-
-    private lastModifiedTime = 0;
 
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
@@ -586,6 +585,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         state.copyBooksUsed.set(this.filename, COBOLToken.Null);
 
         if (this.sourceReferences.topLevel) {
+            const stat: fs.Stats = fs.statSync(this.filename);
+            this.lastModifiedTime = stat.mtimeMs;
+
             /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
             const lineLimit = configHandler.pre_parse_line_limit;
             const maxLinesInFile = sourceHandler.getLineCount();
@@ -766,12 +768,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
     }
 
-    public getLastModifiedTime(): number {
-        const stat: fs.Stats = fs.statSync(this.filename);
-        this.lastModifiedTime = stat.mtimeMs;
-
-        return this.lastModifiedTime;
-    }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
         description: string, parentToken: COBOLToken | undefined,
