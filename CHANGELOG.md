@@ -4,6 +4,16 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#215](https://github.com/spgennard/vscode_cobol/issues/215) Extension causes high cpu load  
+
+**Extension causes high cpu load #215**
+
+ * - reduce the times used fsStat is used by using a tuple 
+
+[38e5a3b98bbd378](https://github.com/spgennard/vscode_cobol/commit/38e5a3b98bbd378) *2020-09-25 07:33:04*
+
+
+## 6.7.43
 ### GitHub [#208](https://github.com/spgennard/vscode_cobol/issues/208) Feature Request: Add config setting to allow finding definitions in _any_ workspace file  
 
 **Add config setting to allow finding definitions in _any_ workspace file #208**
