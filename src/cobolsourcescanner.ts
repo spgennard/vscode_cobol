@@ -482,14 +482,13 @@ export class CallTargetInformation {
 
 export interface ICOBOLSourceScanner {
     filename: string;
-    lastModifiedTime: number;
+    getLastModifiedTime(): number;
     copyBooksUsed: Map<string, COBOLToken>;
     tokensInOrder: COBOLToken[];
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
     public filename: string;
-    public lastModifiedTime: number;
 
     public tokensInOrder: COBOLToken[] = [];
 
@@ -533,15 +532,18 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
+    private lastModifiedTime = 0;
+
+
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
         cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) {
         const filename = sourceHandler.getFilename();
-        const stat: fs.Stats = fs.statSync(filename);
+
         this.configHandler = configHandler;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
-        this.lastModifiedTime = stat.mtimeMs;
+
         this.parse_copybooks_for_references = parse_copybooks_for_references;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
@@ -762,6 +764,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
         }
+    }
+
+    public getLastModifiedTime(): number {
+        const stat: fs.Stats = fs.statSync(this.filename);
+        this.lastModifiedTime = stat.mtimeMs;
+
+        return this.lastModifiedTime;
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,

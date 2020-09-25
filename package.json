@@ -1313,7 +1313,7 @@
             },
             {
                 "name": "mfcobol-errformat2-netx-sx",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1323,7 +1323,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook-netx-sx",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1343,7 +1343,7 @@
             },
             {
                 "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1353,7 +1353,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([USEWI])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1363,7 +1363,7 @@
             },
             {
                 "name": "mfcobol-errformat2-basefn",
-                "regexp": "^\\*+\\s+COBCH(\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1392,20 +1392,22 @@
             },
             {
                 "name": "mfcobol-errformat3-basefn",
-                "regexp": ".*[\\/](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": ".*[/\\\\](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
                 "severity": 4,
-                "message": 5
+                "code": 5,
+                "message": 6
             },
             {
                 "name": "mfcobol-errformat3-info-basefn",
-                "regexp": ".*[\\/](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": ".*[/\\\\](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
-                "message": 5
+                "code":4,
+                "message": 6
             },
             {
                 "name": "opencobol-cobc",
