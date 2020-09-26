@@ -52,6 +52,7 @@ export class VSCOBOLConfiguration {
         vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
         vsconfig.process_scanner_hints_embedded_in_comments = getBoolean("process_scanner_hints_embedded_in_comments", false);
+        vsconfig.process_scanner_hint_token_for_source_dependancies = getProcess_scanner_hint_token_for_source_dependancies();
         return vsconfig;
     }
 
@@ -132,6 +133,16 @@ function getcache_metadata(): CacheDirectoryStrategy {
     return CacheDirectoryStrategy.Off;
 }
 
+
+function getProcess_scanner_hint_token_for_source_dependancies(): string {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let hintToken = editorConfig.get<string>('process_scanner_hint_token_for_source_dependancies');
+    if (hintToken === undefined || hintToken === null) {
+        hintToken = "source-dependency";
+    }
+    return hintToken;
+}
+
 function getIntellisense_item_limit(): number {
     const editorConfig = workspace.getConfiguration('coboleditor');
     let itemLimit = editorConfig.get<number>('intellisense_item_limit');
@@ -139,7 +150,6 @@ function getIntellisense_item_limit(): number {
         itemLimit = 0;
     }
     return itemLimit;
-
 }
 
 function getFileformatStrategy(): string {

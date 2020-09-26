@@ -50,13 +50,15 @@ export enum CobolDocStyle {
     MSDN = "MSDN",
     COBOLDOC = "COBOLDOC",
     ISCOBOL = "ISCOBOL",
-    FUJITSU = "FUJITSU"
+    FUJITSU = "FUJITSU",
+    OCDOC = "OCDOC"
 }
 
 export enum CobolTagStyle {
     unknown = "unknown",
     FREE = "FREE",
-    MICROFOCUS = "MICROFOCUS"
+    MICROFOCUS = "MICROFOCUS",
+    OCDOC = "OCDOC"
 }
 
 export function camelize(text: string): string {
@@ -1709,6 +1711,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     private cobolLintLiteral = "cobol-lint";
 
     public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
+
+        // should consider other inline comments (aka terminal) and fixed position comments
         const startOfComment: number = commentLine.indexOf("*>");
 
         if (startOfComment !== undefined && startOfComment !== -1) {
@@ -1720,6 +1724,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 } else {
                     if (commentLine.indexOf("*>") !== -1) {
                         this.commentTagStyle = CobolTagStyle.MICROFOCUS;
+                    }
+                }
+
+                if (this.commentTagStyle === CobolTagStyle.unknown) {
+                    if (commentLine.indexOf("*><[") !== -1) {
+                        this.commentTagStyle = CobolTagStyle.OCDOC;
                     }
                 }
             }
@@ -1751,6 +1761,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     const trimLine = commentLine.trimLeft();
                     if (trimLine.startsWith(possibleFUJITSU)) {
                         this.commentDocStyle = CobolDocStyle.FUJITSU;
+                    }
+                }
+
+                const possibleOCDOCs: string[] = ["Author:", ":Date: ", ":Rights:"];
+                for (const possibleOCDOC of possibleOCDOCs) {
+                    const trimLine = commentLine.trimLeft();
+                    if (trimLine.startsWith(possibleOCDOC)) {
+                        this.commentDocStyle = CobolDocStyle.OCDOC;
                     }
                 }
 

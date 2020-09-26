@@ -51,6 +51,20 @@ export class COBOLDocumentationGenerator {
             return;
         }
 
+        // refactor if we have more tagstyles
+        if (sf.commentTagStyle === CobolTagStyle.OCDOC) {
+            COBOLDocumentationGenerator.processWithOCOC(sf, settings);
+        } else {
+            COBOLDocumentationGenerator.processWithCOBOLDOC(sf, settings);
+        }
+    }
+
+    private static processWithOCOC(sf: COBOLSourceScanner, settings: ICOBOLSettings): void {
+        logMessage(" - No support for OCDOC (yet)");
+    }
+
+    private static processWithCOBOLDOC(sf: COBOLSourceScanner, settings: ICOBOLSettings): void {
+
         const tagStype = sf.commentTagStyle === CobolTagStyle.FREE ? "-s free" : "-s microfocus";
         const tmpArea = COBOLDocumentationGenerator.getTempDirectory(settings);
         if (tmpArea === "") {
