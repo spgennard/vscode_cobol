@@ -62,7 +62,7 @@ export class FileSourceHandler implements ISourceHandler {
         let line:string|undefined=undefined;
 
         try {
-            if (lineNumber > this.lines.length) {
+            if (lineNumber >= this.lines.length) {
                 return undefined;
             }
 

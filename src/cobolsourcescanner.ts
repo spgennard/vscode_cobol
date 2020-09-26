@@ -15,7 +15,7 @@ import { Uri, window } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
-import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache,  COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache, COBOLFileSymbol } from "./cobolglobalcache";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -1511,15 +1511,23 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
                             const fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
                             if (fileName.length > 0) {
-                                const qfile = new FileSourceHandler(fileName, false);
-                                const currentTopLevel = this.sourceReferences.topLevel;
-                                const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
-                                state.ignoreInOutlineView = true;
-                                this.sourceReferences.topLevel = false;
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
-                                this.sourceReferences.topLevel = currentTopLevel;
-                                state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                                if (this.copyBooksUsed.has(fileName) === false) {
+
+                                    // move the source version of the copybook
+                                    this.copyBooksUsed.delete(trimmedCopyBook);
+
+                                    // add the specific version
+                                    this.copyBooksUsed.set(fileName, copyToken);
+                                    const qfile = new FileSourceHandler(fileName, false);
+                                    const currentTopLevel = this.sourceReferences.topLevel;
+                                    const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
+                                    state.ignoreInOutlineView = true;
+                                    this.sourceReferences.topLevel = false;
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                    const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
+                                    this.sourceReferences.topLevel = currentTopLevel;
+                                    state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                                }
                             }
                         }
                     }
