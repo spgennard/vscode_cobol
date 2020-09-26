@@ -68,35 +68,6 @@ export class InMemoryGlobalCachesHelper {
         return;
     }
 
-
-    private static addSymbolFileToCache(srcfilename: string, symbolsCache: Map<string, COBOLFileSymbol[]>) {
-        const symbol: string = srcfilename, lineNumber = 0;
-        if (symbolsCache.has(symbol)) {
-            const symbolList: COBOLFileSymbol[] | undefined = symbolsCache.get(symbol);
-
-            /* search the list of COBOLFileSymbols */
-            if (symbolList !== undefined) {
-                let found = false;
-                for (let i = 0; i < symbolList.length; i++) {
-                    if (symbolList[i].filename === srcfilename && symbolList[i].lnum === lineNumber) {
-                        found = true;
-                        break;
-                    }
-                }
-                // not found?
-                if (found === false) {
-                    symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
-                    // return;
-                }
-            }
-        }
-        const symbolList = [];
-        symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
-        symbolsCache.set(symbol, symbolList);
-        return;
-    }
-
-
     public static addClassSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
         const symbolsCache = InMemoryGlobalSymbolCache.classSymbols;
 

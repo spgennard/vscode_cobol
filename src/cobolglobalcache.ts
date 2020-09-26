@@ -5,7 +5,6 @@ import * as crypto from 'crypto';
 
 import { logMessage, isFileT } from "./extension";
 
-import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { Hash } from "crypto";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { VSCOBOLConfiguration } from "./configuration";
