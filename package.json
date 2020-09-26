@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.47",
+    "version": "6.7.48",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -984,11 +984,7 @@
             },
             {
                 "command": "cobolplugin.showDocumentation",
-                "title": "Show documentation (COBOLDOC)"
-            },
-            {
-                "command": "cobolplugin.generateSourceTag",
-                "title": "Generate Source Tag (COBOLDOC)"
+                "title": "Show documentation"
             }
         ],
         "menus": {
