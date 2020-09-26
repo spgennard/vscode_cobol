@@ -136,7 +136,6 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 const wordLower = word.toLocaleLowerCase();
                 if (img.callableSymbols.has(wordLower) === false) {
                     InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
-                    InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
                 }
                 if (img.callableSymbols.has(wordLower)) {
                     const symbols = img.callableSymbols.get(wordLower);

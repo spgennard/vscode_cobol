@@ -7,7 +7,6 @@ import { ICOBOLSettings } from './iconfiguration';
 import { isValidCopybookExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
 import { logException } from './extension';
-import { InMemoryGlobalFileCache } from './cobolglobalcache';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;
@@ -182,30 +181,6 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private refreshItems() {
-        if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                try {
-                    const lastDot = i.lastIndexOf(".");
-
-                    // if we have an extension, only process if we think it is valid
-                    if (lastDot !== -1) {
-                        if (isValidCopybookExtension(i, this.settings)) {
-                            const fileExtension = i.substr(1+lastDot);
-                            if (fileExtension !== undefined) {
-                                const vFile = vscode.Uri.file(i);
-                                this.addExtension(fileExtension, vFile);
-                            }
-                        }
-                    }
-                }
-                catch (e) {
-                    logException("refreshItems", e);
-                }
-            }
-        }
-
         this.setTreeState(this.cobolItems, this.cobolItem);
         this.setTreeState(this.copyBooks, this.copyBook);
         this.setTreeState(this.jclItems, this.jclItem);

@@ -17,7 +17,7 @@ import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { CobolLinterProvider } from "./cobollinter";
 import { clearCOBOLCache } from "./vscobolscanner";
 import { CacheDirectoryStrategy, } from "./configuration";
-import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache, InMemoryGlobalFileCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache,  globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -854,7 +854,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 InMemoryGlobalSymbolCache.callableSymbols.clear();
                 InMemoryGlobalSymbolCache.classSymbols.clear();
                 InMemoryGlobalSymbolCache.isDirty = false;
-                InMemoryGlobalFileCache.copybookFileSymbols.clear();
                 for (const file of fs.readdirSync(cacheDirectory)) {
                     if (file.endsWith(".sym")) {
                         const fileName = path.join(cacheDirectory, file);
@@ -920,15 +919,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         } else {
             logMessage("");
             logMessage("Paragraphs/Sections in file : none (parse_copybooks_for_references set)");
-        }
-
-        if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-            logMessage("");
-            logMessage("Global copybooks:");
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                logMessage(" " + i);
-            }
         }
     }
 

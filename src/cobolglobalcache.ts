@@ -42,16 +42,6 @@ export function replacer(this: any, key: any, value: any): any {
 }
 
 
-export class COBOLGlobalCopyBookTable {
-    public lastModifiedTime = 0;
-    public isDirty = false;
-    public copybookFileSymbols: Map<string, COBOLFileSymbol[]>;
-
-    public constructor() {
-        this.copybookFileSymbols = new Map<string, COBOLFileSymbol[]>();
-    }
-}
-
 export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
     public callableSymbols: Map<string, COBOLFileSymbol[]>;
@@ -96,11 +86,6 @@ export class COBOLSymbolTableHelper {
         const st = new COBOLSymbolTable();
         st.fileName = qp.filename;
         st.lastModifiedTime = qp.lastModifiedTime;
-
-        for (const [key, value] of qp.copyBooksUsed) {
-            const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
-            InMemoryGlobalCachesHelper.addCopyBookFilename(fileName);
-        }
 
         for (let i = 0; i < qp.tokensInOrder.length; i++) {
             const token = qp.tokensInOrder[i];
@@ -295,4 +280,3 @@ export const fileSymbolFilename = "filesymbols.sym";
 
 const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
 export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
-export const InMemoryGlobalFileCache: COBOLGlobalCopyBookTable = new COBOLGlobalCopyBookTable();

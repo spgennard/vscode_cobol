@@ -991,7 +991,6 @@ export function activate(context: ExtensionContext): void {
     const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
     if (cacheDirectory !== undefined && cacheDirectory.length > 0) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
-        InMemoryGlobalCachesHelper.loadInMemoryGlobalFileCache(cacheDirectory);
     }
 
     if (checkForExtensionConflictsMessage.length !== 0) {
