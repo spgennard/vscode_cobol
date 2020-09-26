@@ -42,6 +42,7 @@ import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLDocumentationGenerator } from './coboldocgenerator';
 import { CobolCommentProvider } from './cobolcommentprovider';
+import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -536,7 +537,7 @@ export function activate(context: ExtensionContext): void {
     const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
         const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
         if (cacheDirectory !== undefined) {
-            COBOLSourceScanner.dumpMetaData(settings, cacheDirectory);
+            COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);
         } else {
             logMessage("Metadata caching is turned off");
         }

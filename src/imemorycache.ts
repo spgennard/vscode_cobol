@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { isFileT, logMessage } from "./extension";
+import { isFileT } from "./extension";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
 import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver,  replacer } from './cobolglobalcache';
