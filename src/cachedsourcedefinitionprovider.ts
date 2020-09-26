@@ -49,7 +49,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
         return locations;
     }
 
-    const theline = document.lineAt(position.line).text;
+    const theline = document.lineAt(position).text;
     if (!config.parse_copybooks_for_references) {
         if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
             const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
@@ -151,7 +151,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                         }
                     }
                 }
-                InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                // InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             }
         }
 

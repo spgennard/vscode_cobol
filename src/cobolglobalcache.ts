@@ -42,7 +42,7 @@ export function replacer(this: any, key: any, value: any): any {
 }
 
 
-export class COBOLGlobalFileTable {
+export class COBOLGlobalCopyBookTable {
     public lastModifiedTime = 0;
     public isDirty = false;
     public copybookFileSymbols: Map<string, COBOLFileSymbol[]>;
@@ -90,6 +90,7 @@ export class COBOLSymbolTable {
 }
 
 export class COBOLSymbolTableHelper {
+
     public static getCOBOLSymbolTable(qp: ICOBOLSourceScanner): COBOLSymbolTable {
         const config = VSCOBOLConfiguration.get();
         const st = new COBOLSymbolTable();
@@ -294,4 +295,4 @@ export const fileSymbolFilename = "filesymbols.sym";
 
 const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
 export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
-export const InMemoryGlobalFileCache: COBOLGlobalFileTable = new COBOLGlobalFileTable();
+export const InMemoryGlobalFileCache: COBOLGlobalCopyBookTable = new COBOLGlobalCopyBookTable();

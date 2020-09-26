@@ -596,7 +596,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 maxLines = lineLimit;
             }
 
-            let line: string|undefined = undefined;
+            let line: string | undefined = undefined;
             const preParseState: PreParseState = new PreParseState();
 
             for (let l = 0; l < maxLines + sourceHandler.getCommentCount(); l++) {
@@ -691,7 +691,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 break;
         }
 
-        let line:string|undefined = undefined;
+        let line: string | undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
@@ -756,10 +756,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
 
             if (cacheDirectory !== null && cacheDirectory.length > 0) {
-                if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-                    if (this.configHandler.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
-                        logMessage(` Skipping ${filename} as it is not a top level reference`);
-                    } else {
+                if (this.configHandler.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
+                    logMessage(` Skipping ${filename} as it is not a top level reference`);
+                } else {
+                    if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
                         const qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
                         COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
                     }
@@ -1787,7 +1787,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     private cobolLintLiteral = "cobol-lint";
 
-    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number): void {
+    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
         const startOfComment: number = commentLine.indexOf("*>");
 
         if (startOfComment !== undefined && startOfComment !== -1) {

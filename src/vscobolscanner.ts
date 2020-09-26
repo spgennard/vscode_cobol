@@ -114,13 +114,6 @@ export default class VSQuickCOBOLParse {
                         }
                     }
 
-                    if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
-                            promises.set(i, VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false, stats));
-                        }
-                    }
-
                     for (const [pathOrFilename, promise] of promises) {
                         try {
                             await promise;
@@ -135,6 +128,32 @@ export default class VSQuickCOBOLParse {
                             throw e;
                         }
                     }
+                    promises.clear();
+
+                    // process any found copybooks if we are not doing a full parse
+                    if (settings.parse_copybooks_for_references === false) {
+                        if (InMemoryGlobalFileCache.copybookFileSymbols.size !== 0) {
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            for (const [i, tag] of InMemoryGlobalFileCache.copybookFileSymbols.entries()) {
+                                promises.set(i, VSQuickCOBOLParse.processFile(settings, cacheDirectory, i, false, stats));
+                            }
+                            for (const [pathOrFilename, promise] of promises) {
+                                try {
+                                    await promise;
+                                } catch (e) {
+                                    if (e instanceof FileSystemError) {
+                                        const fse = e as FileSystemError;
+                                        if (fse.code === 'FileNotFound') {
+                                            logMessage(`  Skipping ${pathOrFilename} (Not Found)`);
+                                            continue;
+                                        }
+                                    }
+                                    throw e;
+                                }
+                            }
+                        }
+                    }
+
                     InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
                 }
                 catch (e) {

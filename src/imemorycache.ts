@@ -8,14 +8,12 @@ import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOL
 export class InMemoryGlobalCachesHelper {
 
     public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string): boolean {
-        //let symbolDir = COBOLSymbolTableHelper.getCacheDirectory();
         const fn: string = path.join(cacheDirectory, globalSymbolFilename);
         const fnStat = isFileT(fn);
         if (fnStat[0]) {
             const stat4cache: fs.Stats = fs.statSync(fn);
             if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
                 try {
-
                     const str: string = fs.readFileSync(fn).toString();
                     const cachableTable: COBOLGlobalSymbolTable = JSON.parse(lzjs.decompress(str), reviver);
                     InMemoryGlobalSymbolCache.callableSymbols = cachableTable.callableSymbols;
