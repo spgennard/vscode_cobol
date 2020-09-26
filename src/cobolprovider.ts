@@ -1,5 +1,5 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
@@ -15,7 +15,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        const sf: COBOLSourceScanner|undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const sf: COBOLSourceScanner|undefined = VSCOBOLSourceScanner.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
@@ -45,7 +45,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getConstantsOrVariables(document: TextDocument): TrieSearch {
-        const sf = VSQuickCOBOLParse.getCachedObject(document);
+        const sf = VSCOBOLSourceScanner.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpConstantsOrVars === undefined) {

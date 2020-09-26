@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolsourcescanner';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 
 const wordRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
 
@@ -34,7 +34,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
         // cache current document, interatives search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSQuickCOBOLParse.getCachedObject(document);
+            this.current = VSCOBOLSourceScanner.getCachedObject(document);
             if (this.current !== undefined) {
                 this.sourceRefs = this.current.sourceReferences;
                 this.currentVersion = document.version;

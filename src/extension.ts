@@ -22,11 +22,10 @@ import * as vscode from "vscode";
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
-import COBOLSourceScanner from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import { isDirectPath, isNetworkPath } from './opencopybook';
 
-import VSQuickCOBOLParse, { clearCOBOLCache } from './vscobolscanner';
+import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
@@ -330,7 +329,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage(` Version           : ${thisExtension.packageJSON.version}`);
         logMessage(" Caching");
         logMessage(`  Cache Strategy               : ${settings.cache_metadata}`);
-        logMessage("  Cache directory              : " + VSQuickCOBOLParse.getCacheDirectory());
+        logMessage("  Cache directory              : " + VSCOBOLSourceScanner.getCacheDirectory());
         logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
         logMessage(` Parse copybook for references : ${settings.parse_copybooks_for_references}`);
     }
@@ -531,11 +530,11 @@ export function activate(context: ExtensionContext): void {
     });
 
     const processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
-        VSQuickCOBOLParse.processAllFilesInWorkspaces(true);
+        VSCOBOLSourceScanner.processAllFilesInWorkspaces(true);
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
-        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);
         } else {
@@ -544,9 +543,9 @@ export function activate(context: ExtensionContext): void {
     });
 
     const clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
-        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
-            COBOLSourceScanner.clearMetaData(settings, cacheDirectory);
+            VSCOBOLSourceScanner.clearMetaData(settings, cacheDirectory);
         } else {
             logMessage("Metadata caching is turned off");
 
@@ -989,7 +988,7 @@ export function activate(context: ExtensionContext): void {
     context.subscriptions.push(resequenceColumnNumbersCommands);
 
     /* load the cache if we can */
-    const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+    const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
     if (cacheDirectory !== undefined && cacheDirectory.length > 0) {
         InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
     }
@@ -1000,7 +999,7 @@ export function activate(context: ExtensionContext): void {
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm_cache_promise = async () => {
-            VSQuickCOBOLParse.processAllFilesInWorkspaces(false);
+            VSCOBOLSourceScanner.processAllFilesInWorkspaces(false);
         };
         pm_cache_promise();
     }
@@ -1019,7 +1018,7 @@ export function hideMarginStatusBar(): void {
 
 export async function deactivateAsync(): Promise<void> {
     if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
-        const cacheDirectory = VSQuickCOBOLParse.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
             formatStatusBarItem.dispose();

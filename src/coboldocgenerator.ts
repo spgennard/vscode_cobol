@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import COBOLSourceScanner, { CobolDocStyle, CobolTagStyle } from './cobolsourcescanner';
 import { logMessage, isDirectory, logChannelSetPreserveFocus } from './extension';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
@@ -46,7 +46,7 @@ export class COBOLDocumentationGenerator {
 
     public static showCOBOLDOCDocumentation(activeTextEditor: vscode.TextEditor, settings: ICOBOLSettings): void {
 
-        const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeTextEditor.document);
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeTextEditor.document);
         if (sf === undefined) {
             return;
         }

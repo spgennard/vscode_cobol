@@ -11,11 +11,10 @@ import { logMessage, logException } from "./extension";
 
 import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
 import { ICOBOLSettings } from "./iconfiguration";
-import { Uri, window } from "vscode";
+import { Uri } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { CobolLinterProvider } from "./cobollinter";
-import { clearCOBOLCache } from "./vscobolscanner";
-import { COBOLSymbolTableHelper, COBOLSymbolTable, InMemoryGlobalSymbolCache, COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper, COBOLSymbolTable, COBOLFileSymbol } from "./cobolglobalcache";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -845,23 +844,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return ctoken;
     }
 
-    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
-        window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
-            if (data === 'Yes') {
-                clearCOBOLCache();
-                InMemoryGlobalSymbolCache.callableSymbols.clear();
-                InMemoryGlobalSymbolCache.classSymbols.clear();
-                InMemoryGlobalSymbolCache.isDirty = false;
-                for (const file of fs.readdirSync(cacheDirectory)) {
-                    if (file.endsWith(".sym")) {
-                        const fileName = path.join(cacheDirectory, file);
-                        fs.unlinkSync(fileName);
-                    }
-                }
-                logMessage("Metadata cache cleared");
-            }
-        });
-    }
 
     private static readonly literalRegex = /^[#a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
 
@@ -1824,7 +1806,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             } else {
                                 const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed}`;
                                 this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
-
                             }
                         }
                     }
@@ -1832,5 +1813,4 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
         }
     }
-
 }

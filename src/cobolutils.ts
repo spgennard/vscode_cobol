@@ -4,7 +4,7 @@ import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanne
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { isFile, logMessage, isDirectory, logException, isPathInWorkspace } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { isNetworkPath, isDirectPath } from './opencopybook';
@@ -299,7 +299,7 @@ export class COBOLUtils {
         const uri = activeEditor.document.uri;
 
         const file = new VSCodeSourceHandler(activeEditor.document, false);
-        const current: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(activeEditor.document);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document);
         if (current === undefined) {
             logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
             return;

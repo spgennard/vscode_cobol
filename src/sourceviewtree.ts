@@ -4,7 +4,6 @@ import * as path from 'path';
 import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
-import { isValidCopybookExtension } from './opencopybook';
 import { getWorkspaceFolders } from './cobolfolders';
 import { logException } from './extension';
 

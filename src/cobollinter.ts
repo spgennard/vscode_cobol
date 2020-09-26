@@ -4,7 +4,7 @@ import COBOLSourceScanner, { SharedSourceReferences } from './cobolsourcescanner
 import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 
 function makeRegex(partialRegEx: string): RegExp | undefined {
     try {
@@ -266,7 +266,7 @@ export class CobolLinterProvider {
 
         // cache current document, interatives search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSQuickCOBOLParse.getCachedObject(document);
+            this.current = VSCOBOLSourceScanner.getCachedObject(document);
             this.sourceRefs = this.current?.sourceReferences;
             this.currentVersion = document.version;
             return true;

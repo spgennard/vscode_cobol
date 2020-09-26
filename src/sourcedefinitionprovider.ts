@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { logMessage } from './extension';
 import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken, CallTargetInformation } from './cobolsourcescanner';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { ICOBOLSettings } from './iconfiguration';
@@ -115,7 +115,7 @@ function getVariableInCurrentDocument(locations: vscode.Location[], document: vs
         return false;
     }
 
-    const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+    const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
     if (sf === undefined) {
         return false;
     }
@@ -210,7 +210,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
 
     const theline = document.lineAt(position.line).text;
     if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -223,7 +223,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(new\s*|type).*$/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -236,7 +236,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }
@@ -248,7 +248,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
     }
 
     if (theline.match(/.*(call|cancel|chain).*$/i)) {
-        const qcp: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
         if (qcp === undefined) {
             return locations;
         }

@@ -1,5 +1,5 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, Range, SnippetString, MarkdownString } from 'vscode';
-import VSQuickCOBOLParse from './vscobolscanner';
+import VSCOBOLSourceScanner from './vscobolscanner';
 import { ICOBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { CobolDocStyle, UsingState } from './cobolsourcescanner';
 
@@ -28,7 +28,7 @@ export class CobolCommentProvider implements CompletionItemProvider {
             return items;
         }
 
-        const sf: COBOLSourceScanner | undefined = VSQuickCOBOLParse.getCachedObject(document);
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
         if (sf === undefined) {
             return items;
         }
