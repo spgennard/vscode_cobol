@@ -69,7 +69,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 /* iterater through all the known copybook references */
                 for (const [key, value] of qcp.copyBooksUsed) {
                     try {
-                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
                         if (fileName.length > 0) {
                             const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
@@ -173,7 +173,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 /* iterater through all the known copybook references */
                 for (const [key, value] of qcp.copyBooksUsed) {
                     try {
-                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.extraInformation, config);
+                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
                         if (fileName.length > 0) {
                             const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
