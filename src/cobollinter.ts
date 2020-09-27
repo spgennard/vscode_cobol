@@ -118,7 +118,7 @@ export class CobolLinterProvider {
             for (const [msg, fileSymbol] of qp.diagWarnings) {
                 if (fileSymbol.filename !== undefined && fileSymbol.lnum !== undefined) {
                     const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
-                    const diagMessage = new vscode.Diagnostic(r, msg);
+                    const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
                     if (diagRefs.has(fileSymbol.filename)) {
                         const diags = diagRefs.get(fileSymbol.filename);
                         if (diags !== undefined) {

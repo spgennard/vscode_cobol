@@ -335,7 +335,7 @@ class Token {
 }
 
 export class COBOLCopybookToken {
-    static Null: COBOLCopybookToken = new COBOLCopybookToken(COBOLToken.Null,true);
+    static Null: COBOLCopybookToken = new COBOLCopybookToken(COBOLToken.Null, true);
 
     public readonly token: COBOLToken;
     public parsed: boolean;
@@ -1527,6 +1527,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                                     copybookToken.parsed = true;
                                 }
+                            } else {
+                                const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
+                                this.diagWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
                             }
                         }
                     }
