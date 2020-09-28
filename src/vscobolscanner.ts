@@ -171,7 +171,7 @@ export default class VSCOBOLSourceScanner {
         }
     }
 
-    private static ignoreDirectory(partialName: string) {
+    public static ignoreDirectory(partialName: string):boolean {
         // do not traverse into . directories
         if (partialName.startsWith('.')) {
             return true;

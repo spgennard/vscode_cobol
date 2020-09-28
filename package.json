@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.7.50",
+    "version": "6.7.51",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -161,7 +161,11 @@
                         "CPY",
                         "SCR",
                         "cbl",
-                        "CBL"
+                        "CBL",
+                        "ccp",
+                        "dds",
+                        "ss",
+                        "wks"
                     ],
                     "markdownDescription": "COBOL CopyBook file name extensions",
                     "description": "COBOL CopyBook Extensions"
@@ -180,7 +184,10 @@
                     },
                     "default": [
                         "cbl",
-                        "CBL"
+                        "CBL",
+                        "cobol",
+                        "scbl",
+                        "pco"
                     ],
                     "markdownDescription": "COBOL Program file name extensions",
                     "description": "COBOL Program Extensions"
@@ -1398,7 +1405,7 @@
             },
             {
                 "name": "mfcobol-errformat3-basefn",
-                "regexp": "\\.\\..*[\/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
@@ -1408,7 +1415,7 @@
             },
             {
                 "name": "mfcobol-errformat3-info-basefn",
-                "regexp": "\\.\\..*[\/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,

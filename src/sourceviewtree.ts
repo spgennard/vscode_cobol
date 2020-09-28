@@ -5,7 +5,8 @@ import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
 import { getWorkspaceFolders } from './cobolfolders';
-import { logException } from './extension';
+import { logException, logMessage } from './extension';
+import VSCOBOLSourceScanner from './vscobolscanner';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;
@@ -47,22 +48,46 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.topLevelItem.push(this.documentItem);
         this.topLevelItem.push(this.scriptItem);
 
-        if (getWorkspaceFolders()) {
-            const standardFolders: string[] = ["*", "cbl/*", "jcl/*", "jclproc/*"];
-            for (const standardFolder of standardFolders) {
-                workspace.findFiles(standardFolder)
-                    .then((allFiles) => {
-                        allFiles.forEach((file) => {
-                            const fileExtension = file.fsPath.split('.').pop();
-                            if (fileExtension) {
-                                this.addExtension(fileExtension, file);
-                            }
-                        });
+        const folders = getWorkspaceFolders();
 
-                        this.refreshItems();
-                    });
+        if (folders) {
+            for (const folder of folders) {
+                this.addWorkspace(folder);
             }
         }
+    }
+
+    private async addWorkspace(standardFolder: vscode.WorkspaceFolder) {
+        this.addFolder(standardFolder.uri.fsPath);
+    }
+
+    private async addFolder(topLevel: string) {
+        const topLevelUri = vscode.Uri.file(topLevel);
+        const entries = await workspace.fs.readDirectory(topLevelUri);
+
+        for (const entry of entries) {
+            switch (entry[1]) {
+                case vscode.FileType.File: {
+                    const filename = entry[0];
+                    const lastDot = filename.lastIndexOf(".");
+                    if (lastDot !== -1) {
+                        const ext = filename.substr(1 + lastDot);
+                        const subDir = path.join(topLevel, entry[0]);
+                        this.addExtension(ext, vscode.Uri.file(subDir));
+                    }
+                }
+                    break;
+
+                case vscode.FileType.Directory: {
+                    if (!VSCOBOLSourceScanner.ignoreDirectory(entry[0])) {
+                        const subDir = path.join(topLevel, entry[0]);
+                        this.addFolder(subDir);
+                    }
+                }
+                    break;
+            }
+        }
+        this.refreshItems();
     }
 
     private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
@@ -99,29 +124,28 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this._onDidChangeTreeData.fire(this.scriptItem);
     }
 
+    private addExtensionIfInList(ext: string, file: vscode.Uri, validExtensions: string[], sourceItem: string, base: string, items: SourceFolderItem[]): boolean {
+        let found = false;
+        for (const validExtension of validExtensions) {
+            if (validExtension.length > 0 && ext === validExtension) {
+                if (items.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
+                    items.push(this.newSourceItem(sourceItem, base, file, 0));
+                    found = true;
+                }
+
+            }
+        }
+
+        return found;
+    }
+
     private addExtension(ext: string, file: vscode.Uri) {
         const base = path.basename(file.fsPath);
 
+        this.addExtensionIfInList(ext?.toLowerCase(), file, this.settings.program_extensions, "cobol", base, this.cobolItems);
+        this.addExtensionIfInList(ext?.toLowerCase(), file, this.settings.copybookexts, "copybook", base, this.copyBooks);
+
         switch (ext?.toLowerCase()) {
-            case "cobol":
-            case "scbl":
-            case "cob":
-            case "pco":
-            case "cbl":
-                if (this.cobolItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.cobolItems.push(this.newSourceItem("cobol", base, file, 0));
-                }
-                break;
-            case "ccp":
-            case "dds":
-            case "ss":
-            case "wks":
-            case "scr":
-            case "cpy":
-                if (this.copyBooks.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.copyBooks.push(this.newSourceItem("copybook", base, file, 0));
-                }
-                break;
             case "jcl":
             case "job":
             case "cntl":
