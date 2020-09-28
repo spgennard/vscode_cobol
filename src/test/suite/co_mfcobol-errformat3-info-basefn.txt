@@ -1,3 +1,2 @@
 ../../non-portable.cpy(1,46) : information  COBCH1209 : COMP-5 is machine specific format. (future occurrences not indicated)
 ..\..\non-portable.cpy(1,46) : information  COBCH1209 : COMP-5 is machine specific format. (future occurrences not indicated)
-..\..\non-portable.cpy(1,46) : information  COBCH1209 : COMP-5 is machine specific format. (future occurrences not indicated)

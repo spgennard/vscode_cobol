@@ -1368,6 +1368,16 @@
                 "column": 6
             },
             {
+                "name": "mfcobol-errformat3-absolute",
+                "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*)$",
+                "file": 1,
+                "line": 2,
+                "column": 3,
+                "severity": 4,
+                "code": 5,
+                "message": 6
+            },
+            {
                 "name": "mfcobol-errformat3",
                 "regexp": "(.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
@@ -1388,7 +1398,7 @@
             },
             {
                 "name": "mfcobol-errformat3-basefn",
-                "regexp": ".*[/\\\\](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": "\\.\\..*[\/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
@@ -1398,7 +1408,7 @@
             },
             {
                 "name": "mfcobol-errformat3-info-basefn",
-                "regexp": ".*[/\\\\](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
+                "regexp": "\\.\\..*[\/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COBCH\\d+)\\s+:\\s+(.*).*$",
                 "file": 1,
                 "line": 2,
                 "column": 3,
@@ -1508,6 +1518,15 @@
                 "source": "MSBuild"
             },
             {
+                "name": "mfcobol-errformat3-absolute",
+                "owner": "cobol",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$mfcobol-errformat3-absolute",
+                "source": "VC"
+            },
+            {
                 "name": "mfcobol-errformat3",
                 "owner": "cobol",
                 "fileLocation": [
@@ -1545,6 +1564,7 @@
                     "relative",
                     "${workspaceFolder}"
                 ],
+                "severity": "info",
                 "pattern": "$mfcobol-errformat3-info-basefn",
                 "source": "VC"
             },

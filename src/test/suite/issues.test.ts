@@ -77,7 +77,6 @@ suite('Issues Raised Test Suite', () => {
 				try {
 					const possibleData = path.join(baseForSource, `co_${patternName}.txt`);
 					if (fs.existsSync(possibleData)) {
-						const r = new RegExp(`${pattern.regexp}`, "gm");
 
 						// console.log(`OK - Found test data for ${patternName}`);
 						const compilerOutputs = fs.readFileSync(possibleData);
@@ -87,9 +86,10 @@ suite('Issues Raised Test Suite', () => {
 							if (compilerOutput.length === 0) {
 								continue;
 							}
+							const r = new RegExp(`${pattern.regexp}`, "gm");
 							if (r.test(compilerOutput)) {
 								if (diagOutput) {
-									console.log(`${pattern.regexp}:`);
+									console.log(`${patternName} is ${pattern.regexp}:`);
 								}
 
 								if (diagOutput) {
@@ -111,7 +111,10 @@ suite('Issues Raised Test Suite', () => {
 
 								resultCount++;
 							} else {
-								// console.log(` MISSED: ${compilerOutput}`);
+								if (diagOutput) {
+									console.log(`${patternName} is ${pattern.regexp}:`);
+								}
+								console.log(` MISSED: ${patternName} => "${compilerOutput}"`);
 								missingCount++;
 							}
 						}
