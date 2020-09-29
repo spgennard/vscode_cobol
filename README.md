@@ -242,14 +242,14 @@ The example below shows you how you can create a single task to compile one prog
 | Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                            |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx                                   |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                            |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"32 for information              | +mfcobol-errformat3-info                                               |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3" for information              | +mfcobol-errformat3-info                                               |
 | Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                                                       |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                                                    |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                                             |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                                                    |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | $mfcobol-errformat2-copybook                                           |
 
-NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook" & "-info" problem matcher is included before simular problem matchers.
+NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook", "-info", "-note" and similar problem matcher are included before problem matchers without this suffix.
 
 ## Remote development using containers
 
@@ -412,7 +412,7 @@ The source code generation is provided by the npm coboldoc and is required to be
 
 Currently I have only one is active experimental feature and this is "hover" support for known APIs.
 
-This currently includes most of the *Micro Focus COBOL Library API* (CBL_) and a subset of ILE date apis.
+This currently includes most of the *Micro Focus COBOL Library API* (CBL_) and a subset of ILE date APIs.
 
 This can be activated by setting the flag coboleditor.experimental_features in the settings panel.
 
@@ -424,7 +424,7 @@ and looks like:
 
 COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "goto definition".
 
-If you do not have caching enabled, my recommendation is to use "file searches" to locate the sourcrequired information.
+If you do not have caching enabled, my recommendation is to use "file searches" to locate the required source information.
 
 If "cache_metadata" is enabled then navigating between source files becomes easier, if this is not a requirement then enabling is not a requirement!
 
