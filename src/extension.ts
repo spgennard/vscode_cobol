@@ -69,19 +69,19 @@ export function isDirectory(sdir: string): boolean {
 
 
 export class COBOLStatUtils {
-    public static async isFileASync(sdir: string): Promise<boolean> {
-        try {
-            const u = vscode.Uri.file(sdir);
-            const f = await workspace.fs.stat(u);
-            if (f.type === FileType.File) {
-                return true;
-            }
-        }
-        catch {
-            return false;
-        }
-        return false;
-    }
+    // public static async isFileASync(sdir: string): Promise<boolean> {
+    //     try {
+    //         const u = vscode.Uri.file(sdir);
+    //         const f = await workspace.fs.stat(u);
+    //         if (f.type === FileType.File) {
+    //             return true;
+    //         }
+    //     }
+    //     catch {
+    //         return false;
+    //     }
+    //     return false;
+    // }
 
     public static isFile(sdir: string): boolean {
         try {
@@ -103,15 +103,33 @@ export class COBOLStatUtils {
     public static isFileT(sdir: string): [boolean, fs.Stats] {
         let f: fs.Stats = COBOLStatUtils.defaultStats;
         try {
-            f = fs.statSync(sdir);
-            if (f && f.isFile()) {
-                return [true, f];
+            if (fs.existsSync(sdir)) {
+                f = fs.statSync(sdir);
+                if (f && f.isFile()) {
+                    return [true, f];
+                }
             }
         }
         catch {
             return [false, f];
         }
         return [false, f];
+    }
+
+    public static isPathInWorkspace(ddir: string): boolean {
+        const ws = getWorkspaceFolders();
+        if (workspace === undefined || ws === undefined) {
+            return false;
+        }
+
+        const fullPath = path.normalize(ddir);
+        for (const folder of ws) {
+            if (folder.uri.fsPath === fullPath) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -122,21 +140,7 @@ let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
 
 
-export function isPathInWorkspace(ddir: string): boolean {
-    const ws = getWorkspaceFolders();
-    if (workspace === undefined || ws === undefined) {
-        return false;
-    }
 
-    const fullPath = path.normalize(ddir);
-    for (const folder of ws) {
-        if (folder.uri.fsPath === fullPath) {
-            return true;
-        }
-    }
-
-    return false;
-}
 
 const blessed_extensions: string[] = [
     "bitlang.cobol",
@@ -275,7 +279,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
         else if (COBOLFileUtils.isDirectPath(ddir)) {
             logWarningMessage(` non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
-                if (isPathInWorkspace(ddir) === false) {
+                if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
                     if (COBOLFileUtils.isNetworkPath(ddir)) {
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
@@ -313,7 +317,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
                         const sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
-                            if (COBOLFileUtils.isNetworkPath(sdir) && isPathInWorkspace(sdir) === false) {
+                            if (COBOLFileUtils.isNetworkPath(sdir) && COBOLStatUtils.isPathInWorkspace(sdir) === false) {
                                 logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
 

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage, isDirectory, logException, isPathInWorkspace, COBOLStatUtils } from './extension';
+import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { writeFileSync } from 'fs';
@@ -37,7 +37,7 @@ export class COBOLUtils {
             if (COBOLFileUtils.isDirectPath(ddir)) {
                 const ws = getWorkspaceFolders();
                 if (workspace !== undefined && ws !== undefined) {
-                    if (isPathInWorkspace(ddir) === false) {
+                    if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
                             const uriToFolder = vscode.Uri.file(path.normalize(ddir));
@@ -63,7 +63,7 @@ export class COBOLUtils {
 
                             if (isDirectory(sdir)) {
                                 if (COBOLFileUtils.isNetworkPath(sdir)) {
-                                    if (isPathInWorkspace(sdir) === false) {
+                                    if (COBOLStatUtils.isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
                                         const uriToFolder = vscode.Uri.file(path.normalize(sdir));
                                         vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
