@@ -4,12 +4,16 @@ import { Range, TextDocument, Definition, Position, CancellationToken, Uri } fro
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, isFile } from './extension';
+import { getCombinedCopyBookSearchPath, COBOLStatUtils} from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
 
 
 export class COBOLFileUtils {
+
+    static readonly isWin32 = process.platform === "win32";
+
+
     public static isValidCopybookExtension(filename: string, settings: COBOLSettings): boolean {
         const lastDot = filename.lastIndexOf(".");
         let extension = filename;
@@ -47,7 +51,7 @@ export class COBOLFileUtils {
             return false;
         }
 
-        if (process.platform === "win32") {
+        if (COBOLFileUtils.isWin32) {
             if (dir.length > 2 && dir[1] === ':') {
                 return true;
             }
@@ -72,7 +76,7 @@ export class COBOLFileUtils {
             return false;
         }
 
-        if (process.platform === "win32") {
+        if (COBOLFileUtils.isWin32) {
             if (dir.length > 1 && dir[0] === '\\') {
                 return true;
             }
@@ -89,9 +93,10 @@ export class COBOLFileUtils {
         const hasDot = filename.indexOf(".");
 
         for (const copybookdir of getCombinedCopyBookSearchPath()) {
+
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
-            if (isFile(firstPossibleFile)) {
+            if (COBOLStatUtils.isFile(firstPossibleFile)) {
                 return firstPossibleFile;
             }
 
@@ -101,12 +106,11 @@ export class COBOLFileUtils {
                 for (const ext of config.copybookexts) {
                     const possibleFile = path.join(copybookdir, filename + "." + ext);
 
-                    if (isFile(possibleFile)) {
+                    if (COBOLStatUtils.isFile(possibleFile)) {
                         return possibleFile;
                     }
                 }
             }
-
         }
 
         return "";
@@ -124,7 +128,7 @@ export class COBOLFileUtils {
 
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
-            if (isFile(firstPossibleFile)) {
+            if (COBOLStatUtils.isFile(firstPossibleFile)) {
                 return firstPossibleFile;
             }
 
@@ -134,7 +138,7 @@ export class COBOLFileUtils {
                 for (const ext of config.copybookexts) {
                     const possibleFile = path.join(copybookdir, filename + "." + ext);
 
-                    if (isFile(possibleFile)) {
+                    if (COBOLStatUtils.isFile(possibleFile)) {
                         return possibleFile;
                     }
                 }
@@ -146,12 +150,6 @@ export class COBOLFileUtils {
     }
 
 }
-
-
-
-
-
-
 
 export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 

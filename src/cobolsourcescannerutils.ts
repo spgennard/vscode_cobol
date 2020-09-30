@@ -35,7 +35,8 @@ export class COBOLSourceScannerUtils {
                 logMessage("  " + i + " => empty");
             } else {
                 fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                    logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum));
+                    // lvalue 0-n-1 but terminal urls are 1-n
+                    logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum === undefined ? 1 : 1+value.lnum));
                 });
             }
         }

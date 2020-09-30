@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks, FileType } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -66,34 +66,55 @@ export function isDirectory(sdir: string): boolean {
     return false;
 }
 
-export function isFile(sdir: string): boolean {
-    try {
-        const f = fs.statSync(sdir);
-        if (f && f.isFile()) {
-            return true;
+
+
+export class COBOLStatUtils {
+    public static async isFileASync(sdir: string): Promise<boolean> {
+        try {
+            const u = vscode.Uri.file(sdir);
+            const f = await workspace.fs.stat(u);
+            if (f.type === FileType.File) {
+                return true;
+            }
         }
-    }
-    catch {
+        catch {
+            return false;
+        }
         return false;
     }
-    return false;
-}
 
-const defaultStats = new fs.Stats();
-
-export function isFileT(sdir: string): [boolean, fs.Stats] {
-    let f: fs.Stats = defaultStats;
-    try {
-        f = fs.statSync(sdir);
-        if (f && f.isFile()) {
-            return [true, f];
+    public static isFile(sdir: string): boolean {
+        try {
+            if (fs.existsSync(sdir)) {
+                const f = fs.statSync(sdir);
+                if (f && f.isFile()) {
+                    return true;
+                }
+            }
         }
+        catch {
+            return false;
+        }
+        return false;
     }
-    catch {
+
+    static readonly defaultStats = new fs.Stats();
+
+    public static isFileT(sdir: string): [boolean, fs.Stats] {
+        let f: fs.Stats = COBOLStatUtils.defaultStats;
+        try {
+            f = fs.statSync(sdir);
+            if (f && f.isFile()) {
+                return [true, f];
+            }
+        }
+        catch {
+            return [false, f];
+        }
         return [false, f];
     }
-    return [false, f];
 }
+
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -634,7 +655,7 @@ export function activate(context: ExtensionContext): void {
 
     const copyBookProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            const ccbp  = new opencopybook.COBOLCopyBookProvider();
+            const ccbp = new opencopybook.COBOLCopyBookProvider();
             return ccbp.provideDefinition(doc, pos, ct);
         }
     });
@@ -643,7 +664,7 @@ export function activate(context: ExtensionContext): void {
     const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const csd = new COBOLSourceDefinition();
-            return csd.provideDefinition(doc, pos,ct);
+            return csd.provideDefinition(doc, pos, ct);
         }
     });
     context.subscriptions.push(sourcedefProvider);

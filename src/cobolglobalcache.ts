@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 
-import { logMessage, isFileT } from "./extension";
+import { COBOLStatUtils, logMessage } from "./extension";
 
 import { Hash } from "crypto";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
@@ -167,7 +167,7 @@ export class COBOLSymbolTableHelper {
         }
 
         const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        const fnStat = isFileT(fn);
+        const fnStat = COBOLStatUtils.isFileT(fn);
         if (fnStat[0]) {
             const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);
@@ -196,7 +196,7 @@ export class COBOLSymbolTableHelper {
         }
 
         const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        const fnStat = isFileT(fn);
+        const fnStat = COBOLStatUtils.isFileT(fn);
         if (fnStat[0]) {
             const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);

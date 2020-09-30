@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { isFile, logMessage, isDirectory, logException, isPathInWorkspace } from './extension';
+import { logMessage, isDirectory, logException, isPathInWorkspace, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { writeFileSync } from 'fs';
@@ -109,7 +109,7 @@ export class COBOLUtils {
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
                     copybook_filename.indexOf(".") !== -1 ||
-                    isFile(path.join(dir, copybook_filename + ".cpy"))) {
+                    COBOLStatUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
                     return 'Invalid copybook';
                 } else {
                     return undefined;

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { isFileT } from "./extension";
+import { COBOLStatUtils  } from "./extension";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
 import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable, reviver,  replacer } from './cobolglobalcache';
@@ -9,7 +9,7 @@ export class InMemoryGlobalCachesHelper {
 
     public static loadInMemoryGlobalSymbolCaches(cacheDirectory: string): boolean {
         const fn: string = path.join(cacheDirectory, globalSymbolFilename);
-        const fnStat = isFileT(fn);
+        const fnStat = COBOLStatUtils.isFileT(fn);
         if (fnStat[0]) {
             const stat4cache: fs.Stats = fs.statSync(fn);
             if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
