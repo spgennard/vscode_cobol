@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks, FileType } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
