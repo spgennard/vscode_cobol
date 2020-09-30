@@ -22,7 +22,7 @@ import * as vscode from "vscode";
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
-import { isDirectPath, isNetworkPath } from './opencopybook';
+import { COBOLFileUtils } from './opencopybook';
 
 import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
@@ -247,15 +247,15 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
 
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
     for (const ddir of extsdir) {
-        if (config.disable_unc_copybooks_directories && isNetworkPath(ddir)) {
+        if (config.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
             logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
             invalidSearchDirectory.push(ddir);
         }
-        else if (isDirectPath(ddir)) {
+        else if (COBOLFileUtils.isDirectPath(ddir)) {
             logWarningMessage(` non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
                 if (isPathInWorkspace(ddir) === false) {
-                    if (isNetworkPath(ddir)) {
+                    if (COBOLFileUtils.isNetworkPath(ddir)) {
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
                 }
@@ -288,11 +288,11 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
             /* now add any extra directories that are below this workspace folder */
             for (const extdir of extsdir) {
                 try {
-                    if (isDirectPath(extdir) === false) {
+                    if (COBOLFileUtils.isDirectPath(extdir) === false) {
                         const sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
-                            if (isNetworkPath(sdir) && isPathInWorkspace(sdir) === false) {
+                            if (COBOLFileUtils.isNetworkPath(sdir) && isPathInWorkspace(sdir) === false) {
                                 logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
 
@@ -634,7 +634,8 @@ export function activate(context: ExtensionContext): void {
 
     const copyBookProvider = languages.registerDefinitionProvider(allCobolSelectors, {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            return opencopybook.provideDefinition(doc, pos, ct);
+            const ccbp  = new opencopybook.COBOLCopyBookProvider();
+            return ccbp.provideDefinition(doc, pos, ct);
         }
     });
     context.subscriptions.push(copyBookProvider);

@@ -9,7 +9,7 @@ import * as path from 'path';
 
 import { logMessage, logException } from "./extension";
 
-import { expandLogicalCopyBookToFilenameOrEmpty } from "./opencopybook";
+import { COBOLCopyBookProvider } from "./opencopybook";
 import { ICOBOLSettings } from "./iconfiguration";
 import { Uri } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
@@ -1506,7 +1506,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
 
                         if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
-                            const fileName = expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
+                            const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
                             if (fileName.length > 0) {
                                 if (this.copyBooksUsed.has(fileName) === false) {
 
@@ -1825,7 +1825,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (args.length !== 0) {
                         for (const offset in args) {
                             const filenameTrimmed = args[offset].trim();
-                            const fileName = expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
+                            const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
                             if (fileName.length > 0) {
                                 if (this.copyBooksUsed.has(fileName) === false) {
                                     this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);

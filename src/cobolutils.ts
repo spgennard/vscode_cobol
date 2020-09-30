@@ -7,7 +7,7 @@ import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { writeFileSync } from 'fs';
 import path from 'path';
-import { isNetworkPath, isDirectPath } from './opencopybook';
+import { COBOLFileUtils } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 
@@ -34,11 +34,11 @@ export class COBOLUtils {
         for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
             const ddir = extsdir[extsdirpos];
 
-            if (isDirectPath(ddir)) {
+            if (COBOLFileUtils.isDirectPath(ddir)) {
                 const ws = getWorkspaceFolders();
                 if (workspace !== undefined && ws !== undefined) {
                     if (isPathInWorkspace(ddir) === false) {
-                        if (isNetworkPath(ddir)) {
+                        if (COBOLFileUtils.isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
                             const uriToFolder = vscode.Uri.file(path.normalize(ddir));
                             vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
@@ -58,11 +58,11 @@ export class COBOLUtils {
 
                         let sdir: string;
 
-                        if (isDirectPath(extdir) === false) {
+                        if (COBOLFileUtils.isDirectPath(extdir) === false) {
                             sdir = path.join(folder.uri.fsPath, extdir);
 
                             if (isDirectory(sdir)) {
-                                if (isNetworkPath(sdir)) {
+                                if (COBOLFileUtils.isNetworkPath(sdir)) {
                                     if (isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
                                         const uriToFolder = vscode.Uri.file(path.normalize(sdir));

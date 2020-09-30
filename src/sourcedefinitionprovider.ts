@@ -10,20 +10,15 @@ import { ICOBOLSettings } from './iconfiguration';
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
-
     readonly sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly classRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly methodRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 
-
-
-    public provideDefinition(
-        document: vscode.TextDocument,
+    public provideDefinition( document: vscode.TextDocument,
         position: vscode.Position,
-        token: vscode.CancellationToken
-    ): vscode.ProviderResult<vscode.Definition> {
+        token: vscode.CancellationToken ): vscode.ProviderResult<vscode.Definition> {
         return this.resolveDefinitions(document, position, token);
     }
 

@@ -8,7 +8,7 @@ import * as path from 'path';
 
 import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
-import { isValidCopybookExtension, isValidProgramExtension } from "./opencopybook";
+import { COBOLFileUtils } from "./opencopybook";
 import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBOLSymbolTableHelper, InMemoryGlobalSymbolCache } from "./cobolglobalcache";
@@ -267,12 +267,12 @@ export default class VSCOBOLSourceScanner {
         if (filterOnExtension) {
             // if we are parsing copybooks, then we are only interested in programs
             if (settings.parse_copybooks_for_references) {
-                parseThisFilename = isValidProgramExtension(filename, settings);
+                parseThisFilename = COBOLFileUtils.isValidProgramExtension(filename, settings);
             } else {
                 // could be an overlap.. so test for valid program first and then copybooks
-                parseThisFilename = isValidProgramExtension(filename, settings);
+                parseThisFilename = COBOLFileUtils.isValidProgramExtension(filename, settings);
                 if (parseThisFilename === false) {
-                    parseThisFilename = isValidCopybookExtension(filename, settings);
+                    parseThisFilename = COBOLFileUtils.isValidCopybookExtension(filename, settings);
                 }
             }
         }

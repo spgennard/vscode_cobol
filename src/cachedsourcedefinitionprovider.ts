@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { expandLogicalCopyBookToFilenameOrEmpty } from './opencopybook';
 
 import COBOLSourceScanner from './cobolsourcescanner';
 
@@ -7,6 +6,7 @@ import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable, COBOLSymbolTableHelper } from './cobolglobalcache';
+import { COBOLCopyBookProvider } from './opencopybook';
 
 const sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
 const variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -69,7 +69,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 /* iterater through all the known copybook references */
                 for (const [key, value] of qcp.copyBooksUsed) {
                     try {
-                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                        const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
                         if (fileName.length > 0) {
                             const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
@@ -173,7 +173,7 @@ export function provideDefinition(document: vscode.TextDocument, position: vscod
                 /* iterater through all the known copybook references */
                 for (const [key, value] of qcp.copyBooksUsed) {
                     try {
-                        const fileName = expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                        const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
                         if (fileName.length > 0) {
                             const symboleTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symboleTable !== undefined) {
