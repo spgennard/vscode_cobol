@@ -56,7 +56,7 @@ export function getCombinedCopyBookSearchPath(): string[] {
 export function isDirectory(sdir: string): boolean {
     try {
         const f = fs.statSync(sdir);
-        if (f.isDirectory()) {
+        if (f && f.isDirectory()) {
             return true;
         }
     }
@@ -69,7 +69,7 @@ export function isDirectory(sdir: string): boolean {
 export function isFile(sdir: string): boolean {
     try {
         const f = fs.statSync(sdir);
-        if (f.isFile()) {
+        if (f && f.isFile()) {
             return true;
         }
     }
@@ -79,20 +79,20 @@ export function isFile(sdir: string): boolean {
     return false;
 }
 
-const defaultStats  = new fs.Stats();
+const defaultStats = new fs.Stats();
 
 export function isFileT(sdir: string): [boolean, fs.Stats] {
     let f: fs.Stats = defaultStats;
     try {
-       f = fs.statSync(sdir);
-        if (f.isFile()) {
+        f = fs.statSync(sdir);
+        if (f && f.isFile()) {
             return [true, f];
         }
     }
     catch {
-        return [false,f];
+        return [false, f];
     }
-    return [false,f];
+    return [false, f];
 }
 
 let fileSearchDirectory: string[] = [];
