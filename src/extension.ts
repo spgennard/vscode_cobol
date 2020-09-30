@@ -13,7 +13,6 @@ import { jclStatements } from "./keywords/jclstatements";
 import { cobolKeywords } from "./keywords/cobolKeywords";
 
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
-import * as cachedsourcedefinitionprovider from './cachedsourcedefinitionprovider';
 
 import * as path from 'path';
 import * as fs from 'fs';
@@ -42,6 +41,7 @@ import { COBOLDocumentationGenerator } from './coboldocgenerator';
 import { CobolCommentProvider } from './cobolcommentprovider';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
+import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -651,7 +651,8 @@ export function activate(context: ExtensionContext): void {
     if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
         const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-                return cachedsourcedefinitionprovider.provideDefinition(doc, pos, ct);
+                const csdp = new CachedCOBOLSourceDefinition();
+                return csdp.provideDefinition(doc, pos, ct);
             }
         });
         context.subscriptions.push(sourcedefProvider);
