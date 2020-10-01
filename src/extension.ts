@@ -69,27 +69,22 @@ export function isDirectory(sdir: string): boolean {
 
 
 export class COBOLStatUtils {
-    // public static async isFileASync(sdir: string): Promise<boolean> {
-    //     try {
-    //         const u = vscode.Uri.file(sdir);
-    //         const f = await workspace.fs.stat(u);
-    //         if (f.type === FileType.File) {
-    //             return true;
-    //         }
-    //     }
-    //     catch {
-    //         return false;
-    //     }
-    //     return false;
-    // }
 
-    public static isFilePrev(sdir: string): boolean {
+    public static isFile(sdir: string): boolean {
         try {
             if (fs.existsSync(sdir)) {
-                const f = fs.statSync(sdir);
-                if (f && f.isFile()) {
-                    return true;
+                // not on windows, do extra check for +x perms (protects exe & dirs)
+                if (!COBOLFileUtils.isWin32) {
+                    try {
+                        fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
+                        return false;
+                    }
+                    catch {
+                        return true;
+                    }
                 }
+
+                return true;
             }
         }
         catch {
@@ -98,24 +93,6 @@ export class COBOLStatUtils {
         return false;
     }
 
-    public static isFile(sdir: string): boolean {
-        try {
-            fs.accessSync(sdir, fs.constants.F_OK | fs.constants.R_OK);
-            if (!COBOLFileUtils.isWin32) {
-                try {
-                    fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
-                    return false;
-                }
-                catch {
-                    return true;
-                }
-            }
-            return true;
-        }
-        catch {
-            return false;
-        }
-    }
 
     static readonly defaultStats = new fs.Stats();
 
