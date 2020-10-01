@@ -3,6 +3,16 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#215](https://github.com/spgennard/vscode_cobol/issues/215) Extension causes high cpu load  
+
+**Extension causes high cpu load #215**
+
+ * - flip over to using fs.access to see if we get a better performance profile 
+
+[f3df393ea728707](https://github.com/spgennard/vscode_cobol/commit/f3df393ea728707) *2020-10-01 22:06:40*
+
+
 ## 6.7.44
 ### GitHub [#215](https://github.com/spgennard/vscode_cobol/issues/215) Extension causes high cpu load  
 
