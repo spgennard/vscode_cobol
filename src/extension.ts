@@ -83,7 +83,7 @@ export class COBOLStatUtils {
     //     return false;
     // }
 
-    public static isFile(sdir: string): boolean {
+    public static isFilePrev(sdir: string): boolean {
         try {
             if (fs.existsSync(sdir)) {
                 const f = fs.statSync(sdir);
@@ -96,6 +96,25 @@ export class COBOLStatUtils {
             return false;
         }
         return false;
+    }
+
+    public static isFile(sdir: string): boolean {
+        try {
+            fs.accessSync(sdir, fs.constants.F_OK | fs.constants.R_OK);
+            if (!COBOLFileUtils.isWin32) {
+                try {
+                    fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
+                    return false;
+                }
+                catch {
+                    return true;
+                }
+            }
+            return true;
+        }
+        catch {
+            return false;
+        }
     }
 
     static readonly defaultStats = new fs.Stats();

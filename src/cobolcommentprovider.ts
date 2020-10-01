@@ -1,4 +1,5 @@
-import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, Range, SnippetString, MarkdownString } from 'vscode';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList,  SnippetString } from 'vscode';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { ICOBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { CobolDocStyle, UsingState } from './cobolsourcescanner';
