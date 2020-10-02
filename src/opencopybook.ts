@@ -170,7 +170,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         const config = VSCOBOLConfiguration.get();
         const line = doc.lineAt(pos);
         const text = line.text;
-        const textLower = text.toLowerCase();
+        const textLower = text.toLowerCase().replace("\t", " ");
         const filename = this.extractCopyBoolFilename(text);
         let inPos = -1;
 
@@ -181,7 +181,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
         // exec sql include "has" in in the line.. so becareful
         if (textLower.indexOf("copy") !== -1) {
-            inPos = textLower.indexOf("in");
+            inPos = textLower.indexOf(" in ");
         }
 
         let inDirectory = inPos !== -1 ? text.substr(2 + inPos) : "";
