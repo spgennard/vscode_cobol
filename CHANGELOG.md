@@ -4,6 +4,17 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#218](https://github.com/spgennard/vscode_cobol/issues/218) How to debug &quot;no definition found&quot; for copybooks?  
+
+**How to debug "no definition found" for copybooks? Fix #218**
+
+ * - the letters &#39;IN&#39; in a copybook caused the def provider to miss the 
+ * copybook 
+
+[3624946165a232c](https://github.com/spgennard/vscode_cobol/commit/3624946165a232c) *2020-10-02 17:53:38*
+
+
+## 6.8.1
 ### GitHub [#215](https://github.com/spgennard/vscode_cobol/issues/215) Extension causes high cpu load  
 
 **Extension causes high cpu load #215**
