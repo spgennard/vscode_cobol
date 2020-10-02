@@ -70,6 +70,15 @@ export function isDirectory(sdir: string): boolean {
 
 export class COBOLStatUtils {
 
+    public static async isFileASync(sdir: string): Promise<boolean> {
+        try {
+            const statSDir = await workspace.fs.stat(vscode.Uri.file(sdir));
+            return (statSDir.type & vscode.FileType.File) === vscode.FileType.File;
+        } catch {
+            return false;
+        }
+    }
+
     public static isFile(sdir: string): boolean {
         try {
             if (fs.existsSync(sdir)) {
@@ -134,8 +143,6 @@ let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
-
-
 
 
 const blessed_extensions: string[] = [
