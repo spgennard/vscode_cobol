@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { FileSystemError, FileType, TextDocument, Uri, window, workspace } from 'vscode';
-import COBOLSourceScanner from "./cobolsourcescanner";
+import COBOLSourceScanner, { SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
 import * as fs from 'fs';
@@ -27,6 +27,7 @@ class ScanStats {
     directoryDepth = 0;
     maxDirectoryDepth = 0;
     filesScanned = 0;
+    copyBookExts = 0;
     fileCount = 0;
     filesUptodate = 0;
     programsDefined = 0;
@@ -171,7 +172,7 @@ export default class VSCOBOLSourceScanner {
         }
     }
 
-    public static ignoreDirectory(partialName: string):boolean {
+    public static ignoreDirectory(partialName: string): boolean {
         // do not traverse into . directories
         if (partialName.startsWith('.')) {
             return true;
@@ -207,7 +208,7 @@ export default class VSCOBOLSourceScanner {
                 case FileType.File:
                     {
                         const fullFilename = path.join(folder.fsPath, entry);
-                        await VSCOBOLSourceScanner.processFile(settings, cacheDirectory, fullFilename, true, stats);
+                        await VSCOBOLSourceScanner.processFile(settings, cacheDirectory, fullFilename, stats);
                     }
                     break;
                 case FileType.Directory | FileType.SymbolicLink:
@@ -255,7 +256,7 @@ export default class VSCOBOLSourceScanner {
         return true;
     }
 
-    private static async processFile(settings: ICOBOLSettings, cacheDirectory: string, filename: string, filterOnExtension: boolean, stats: ScanStats): Promise<boolean> {
+    private static async processFile(settings: ICOBOLSettings, cacheDirectory: string, filename: string, stats: ScanStats): Promise<boolean> {
         let parseThisFilename = false;
 
         stats.fileCount++;
@@ -264,16 +265,12 @@ export default class VSCOBOLSourceScanner {
             throw new Error("Processing has been aborted");
         }
 
-        if (filterOnExtension) {
-            // if we are parsing copybooks, then we are only interested in programs
-            if (settings.parse_copybooks_for_references) {
-                parseThisFilename = COBOLFileUtils.isValidProgramExtension(filename, settings);
-            } else {
-                // could be an overlap.. so test for valid program first and then copybooks
-                parseThisFilename = COBOLFileUtils.isValidProgramExtension(filename, settings);
-                if (parseThisFilename === false) {
-                    parseThisFilename = COBOLFileUtils.isValidCopybookExtension(filename, settings);
-                }
+        // could be an overlap.. so test for valid program first and then copybooks
+        parseThisFilename = COBOLFileUtils.isValidProgramExtension(filename, settings);
+        if (parseThisFilename === false) {
+            parseThisFilename = COBOLFileUtils.isValidCopybookExtension(filename, settings);
+            if (parseThisFilename) {
+                stats.copyBookExts++;
             }
         }
 
@@ -286,8 +283,10 @@ export default class VSCOBOLSourceScanner {
 
                 try {
                     const filefs = new FileSourceHandler(filename, false);
+
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    const qcp = new COBOLSourceScanner(filefs, settings, cacheDirectory);
+                    // treat each file as the top-level file and don't parse anything below it
+                    const qcp = new COBOLSourceScanner(filefs, settings, cacheDirectory, new SharedSourceReferences(true), false);
                     if (qcp.callTargets.size > 0) {
                         stats.programsDefined++;
                         if (qcp.callTargets !== undefined) {
@@ -327,7 +326,6 @@ export default class VSCOBOLSourceScanner {
             }
         });
     }
-
 
     public static getCacheDirectory(): string | undefined {
 
