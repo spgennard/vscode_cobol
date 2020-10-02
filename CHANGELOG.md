@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.8.2
 ### GitHub [#218](https://github.com/spgennard/vscode_cobol/issues/218) How to debug &quot;no definition found&quot; for copybooks?  
 
 **How to debug "no definition found" for copybooks? Fix #218**
