@@ -767,7 +767,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
 
             if (cacheDirectory !== null && cacheDirectory.length > 0) {
-                if (this.configHandler.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
+                if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
                     logMessage(` Skipping ${filename} as it is not a top level reference`);
                 } else {
                     if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
