@@ -11,8 +11,9 @@ import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileUtils } from "./opencopybook";
 import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { COBOLSymbolTableHelper, InMemoryGlobalSymbolCache } from "./cobolglobalcache";
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
+import { InMemoryGlobalSymbolCache } from "./cobolglobalcache";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();

@@ -14,7 +14,8 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { Uri } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { CobolLinterProvider } from "./cobollinter";
-import { COBOLSymbolTableHelper, COBOLFileSymbol } from "./cobolglobalcache";
+import {  COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",

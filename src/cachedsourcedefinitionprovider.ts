@@ -5,8 +5,9 @@ import COBOLSourceScanner from './cobolsourcescanner';
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
-import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable, COBOLSymbolTableHelper } from './cobolglobalcache';
+import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
+import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 
 
 

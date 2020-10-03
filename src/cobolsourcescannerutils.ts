@@ -9,7 +9,8 @@ import { logMessage } from "./extension";
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, } from "./configuration";
-import { COBOLSymbolTableHelper, InMemoryGlobalSymbolCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
+import { InMemoryGlobalSymbolCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 
 export class COBOLSourceScannerUtils {
 
