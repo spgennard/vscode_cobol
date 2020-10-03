@@ -54,12 +54,12 @@ export class COBOLSourceScannerUtils {
                             logMessage("   Label symbol count    : " + symTable.labelSymbols.size);
 
                             for (const [, value] of symTable.labelSymbols.entries()) {
-                                logMessage(`     ${value.symbol}:${value.symbol}`);
+                                logMessage(`     ${value.symbol}:${value.lnum}`);
                             }
 
                             logMessage("   Variable symbol count : " + symTable.variableSymbols.size);
                             for (const [, value] of symTable.variableSymbols.entries()) {
-                                logMessage(`     ${value.symbol}:${value.symbol}`);
+                                logMessage(`     ${value.symbol}:${value.lnum}`);
                             }
                         }
                     }

@@ -14,7 +14,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { Uri } from "vscode";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { CobolLinterProvider } from "./cobollinter";
-import { COBOLSymbolTableHelper, COBOLSymbolTable, COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper, COBOLFileSymbol } from "./cobolglobalcache";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -491,11 +491,17 @@ export class CallTargetInformation {
     }
 }
 
+export interface ICOBOLSourceScannerEvents {
+    processToken(token: COBOLToken): void;
+    finish(): void;
+}
+
 export interface ICOBOLSourceScanner {
     filename: string;
     lastModifiedTime: number;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
     tokensInOrder: COBOLToken[];
+    cacheDirectory: string;
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
@@ -544,13 +550,16 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
+    readonly cacheDirectory: string;
 
+    private eventHandler: ICOBOLSourceScannerEvents | undefined;
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
         cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) {
         const filename = sourceHandler.getFilename();
 
         this.configHandler = configHandler;
+        this.cacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
 
@@ -594,6 +603,16 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         /* mark this has been processed (to help copy of self) */
         state.copyBooksUsed.set(this.filename, COBOLToken.Null);
+
+        // setup the event handler
+        if (cacheDirectory !== null && cacheDirectory.length > 0) {
+            if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
+                logMessage(` Skipping ${filename} as it is not a top level reference`);
+            } else {
+                this.eventHandler = new COBOLSymbolTableHelper(configHandler, this);
+            }
+        }
+
 
         if (this.sourceReferences.topLevel) {
             const stat: fs.Stats = fs.statSync(this.filename);
@@ -766,19 +785,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 this.callTargets.set(this.ImplicitProgramId, state.currentProgramTarget);
             }
 
-            if (cacheDirectory !== null && cacheDirectory.length > 0) {
-                if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
-                    logMessage(` Skipping ${filename} as it is not a top level reference`);
-                } else {
-                    if (COBOLSymbolTableHelper.cacheUpdateRequired(cacheDirectory, filename)) {
-                        const qcp_symtable: COBOLSymbolTable = COBOLSymbolTableHelper.getCOBOLSymbolTable(this);
-                        COBOLSymbolTableHelper.saveToFile(cacheDirectory, qcp_symtable);
-                    }
-                }
+            if (this.eventHandler !== undefined) {
+                this.eventHandler.finish();
             }
         }
     }
-
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
         description: string, parentToken: COBOLToken | undefined,
@@ -791,6 +802,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         if (ctoken.ignoreInOutlineView) {
             this.tokensInOrder.push(ctoken);
+            if (this.eventHandler !== undefined) {
+                this.eventHandler.processToken(ctoken);
+            }
             return ctoken;
         }
 
@@ -819,17 +833,27 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 state.currentSection = COBOLToken.Null;
             }
             this.tokensInOrder.push(ctoken);
+            if (this.eventHandler !== undefined) {
+                this.eventHandler.processToken(ctoken);
+            }
+
             return ctoken;
         }
 
         // new section
-        if (tokenType === COBOLTokenStyle.Section && state.currentSection !== COBOLToken.Null) {
-            state.currentParagraph = COBOLToken.Null;
-            state.currentSection.endLine = startLine;
-            if (ctoken.startColumn !== 0) {
-                state.currentSection.endColumn = ctoken.startColumn - 1;
+        if (tokenType === COBOLTokenStyle.Section) {
+            if (state.currentSection !== COBOLToken.Null) {
+                state.currentParagraph = COBOLToken.Null;
+                state.currentSection.endLine = startLine;
+                if (ctoken.startColumn !== 0) {
+                    state.currentSection.endColumn = ctoken.startColumn - 1;
+                }
+                if (this.eventHandler !== undefined && state.inProcedureDivision) {
+                    this.eventHandler.processToken(ctoken);
+                }
             }
             this.tokensInOrder.push(ctoken);
+
             return ctoken;
         }
 
@@ -851,10 +875,18 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             this.tokensInOrder.push(ctoken);
+            if (this.eventHandler !== undefined) {
+                this.eventHandler.processToken(ctoken);
+            }
+
             return ctoken;
         }
 
         this.tokensInOrder.push(ctoken);
+        if (this.eventHandler !== undefined) {
+            this.eventHandler.processToken(ctoken);
+        }
+
         return ctoken;
     }
 
@@ -1240,10 +1272,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         }
                     }
 
-                    state.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, state.currentDivision);
-                    this.sections.set(prevTokenLower, state.currentSection);
-                    state.current01Group = COBOLToken.Null;
-                    state.currentLevel = COBOLToken.Null;
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
@@ -1253,6 +1281,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         // sourceHandler.setDumpAreaA(false);
                         // sourceHandler.setDumpAreaBOnwards(false);
                     }
+
+                    state.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, state.currentDivision);
+                    this.sections.set(prevTokenLower, state.currentSection);
+                    state.current01Group = COBOLToken.Null;
+                    state.currentLevel = COBOLToken.Null;
+
 
                     continue;
                 }
