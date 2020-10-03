@@ -149,23 +149,6 @@ export class COBOLSymbolTableHelper implements ICOBOLSourceScannerEvents {
     public finish():void {
         COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
     }
-    // public static getCOBOLSymbolTable(qp: ICOBOLSourceScanner): COBOLSymbolTable {
-    //     const config = VSCOBOLConfiguration.get();
-    //     const st = new COBOLSymbolTable();
-    //     st.fileName = qp.filename;
-    //     st.lastModifiedTime = qp.lastModifiedTime;
-
-    //     for (let i = 0; i < qp.tokensInOrder.length; i++) {
-    //         const token = qp.tokensInOrder[i];
-
-
-
-    //         COBOLSymbolTableHelper.processToken(config, st, token);
-    //     }
-    //     //logCOBOLChannelLine("- Creating symbol table for " + st.fileName + ", symbols found: " + qp.tokensInOrder.length + " -> " + (performance_now() - startTime).toFixed(2));
-    //     return st;
-    // }
-
 
     private static getHashForFilename(filename: string) {
         const hash: Hash = crypto.createHash('sha256');
