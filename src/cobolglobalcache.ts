@@ -88,6 +88,12 @@ export class COBOLSymbolTableHelper {
 
         for (let i = 0; i < qp.tokensInOrder.length; i++) {
             const token = qp.tokensInOrder[i];
+
+            // hident token should not be placed in the symbol table, as they from a different file
+            if (token.ignoreInOutlineView) {
+                continue;
+            }
+
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:
                     if (config.parse_copybooks_for_references === false) {
