@@ -5,7 +5,7 @@ import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 import fs from 'fs';
-import { COBOLScannerLogger } from './cobolsourcescanner';
+import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 
 export class FileSourceHandler implements ISourceHandler {
     document: string;
@@ -15,7 +15,7 @@ export class FileSourceHandler implements ISourceHandler {
     commentCount: number;
     commentCallback?: ICommentCallback;
 
-    public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
+    public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.commentCallback = commentCallback;
@@ -23,19 +23,22 @@ export class FileSourceHandler implements ISourceHandler {
         this.lines = [];
         this.commentCount = 0;
 
+        if (features === undefined) {
+            features = EmptyExternalFeature.Default;
+        }
         const docstat = fs.statSync(document);
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
-        const startTime = COBOLScannerLogger.performance_now();
+        const startTime = features.performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
             while ((line = liner.next())) {
                 this.lines.push(line.toString());
             }
-            COBOLScannerLogger.logTimedMessage(COBOLScannerLogger.performance_now() - startTime, ' - Loading File ' + document);
+            features.logTimedMessage(features.performance_now() - startTime, ' - Loading File ' + document);
         }
         catch (e) {
-            COBOLScannerLogger.logException("File failed! (" + document + ")", e);
+            features.logException("File failed! (" + document + ")", e);
         }
 
     }

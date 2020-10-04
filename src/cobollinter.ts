@@ -5,6 +5,7 @@ import { CodeActionProvider, CodeAction } from 'vscode';
 import { isSupportedLanguage, TextLanguage } from './margindecorations';
 import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
+import { CobolLinterProviderSymbols } from './externalfeatures';
 
 function makeRegex(partialRegEx: string): RegExp | undefined {
     try {
@@ -25,9 +26,9 @@ export class CobolLinterActionFixer implements CodeActionProvider {
             }
 
             // is it ours?
-            if (diagnostic.code.toString().startsWith(CobolLinterProvider.NotReferencedMarker_internal) === true) {
+            if (diagnostic.code.toString().startsWith(CobolLinterProviderSymbols.NotReferencedMarker_internal) === true) {
                 const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
-                const insertCode = diagnostic.code.toString().replace(CobolLinterProvider.NotReferencedMarker_internal, CobolLinterProvider.NotReferencedMarker_external);
+                const insertCode = diagnostic.code.toString().replace(CobolLinterProviderSymbols.NotReferencedMarker_internal, CobolLinterProviderSymbols.NotReferencedMarker_external);
                 codeActions.push({
                     title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
                     diagnostics: [diagnostic],
@@ -72,8 +73,6 @@ export class CobolLinterProvider {
         this.linterSev = settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
     }
 
-    public static NotReferencedMarker_internal = "COBOL_NOT_REF";
-    public static NotReferencedMarker_external = "ignore";
 
     public async updateLinter(document: vscode.TextDocument): Promise<void> {
 
@@ -214,7 +213,7 @@ export class CobolLinterProvider {
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                 const d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.linterSev);
                 d.tags = [vscode.DiagnosticTag.Unnecessary];
-                d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
+                d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
 
                 if (diagRefs.has(token.filename)) {
                     const arr = diagRefs.get(token.filename);
@@ -241,7 +240,7 @@ export class CobolLinterProvider {
                     const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                     const d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
-                    d.code = CobolLinterProvider.NotReferencedMarker_internal + " " + key;
+                    d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
                     d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                     if (diagRefs.has(token.filename)) {

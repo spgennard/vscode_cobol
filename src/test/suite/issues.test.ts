@@ -3,17 +3,20 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 
 import { FileSourceHandler } from "../../filesourcehandler";
-import COBOLSourceScanner, { CobolDocStyle } from "../../cobolsourcescanner";
+import COBOLSourceScanner, { CobolDocStyle, EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
 import { extensions } from 'vscode';
 import * as fs from 'fs';
+import { ExternalFeatures } from '../../extension';
 
 
 suite('Issues Raised Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
 	const baseForSource = __dirname + "/../../../src/test/suite/";
+	const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
+	const features = ExternalFeatures;
 
 	test('Issue: 189 [MSDN]', () => {
 		const f = new FileSourceHandler(path.join(baseForSource, "issue189_msdn.cbl"), false);
@@ -21,7 +24,7 @@ suite('Issues Raised Test Suite', () => {
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
 		const settings = new COBOLSettings();
-		const s = COBOLSourceScanner.ParseUncached(f, settings, false);
+		const s = COBOLSourceScanner.ParseUncached(f, settings, false, eventHandler, features);
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");
@@ -36,7 +39,7 @@ suite('Issues Raised Test Suite', () => {
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
 		const settings = new COBOLSettings();
-		const s =  COBOLSourceScanner.ParseUncached(f,  settings, false);
+		const s =  COBOLSourceScanner.ParseUncached(f,  settings, false, eventHandler, features);
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");

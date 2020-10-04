@@ -6,6 +6,7 @@ import minimatch from 'minimatch';
 import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
 import ISourceHandler from './isourcehandler';
+import { ESourceFormat } from './externalfeatures';
 
 const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -57,14 +58,6 @@ function isEnabledViaWorkspace4jcl(): boolean {
     return isMarginEnabled('jcleditor');
 }
 
-export enum ESourceFormat {
-    unknown = 'unknown',
-    fixed = 'fixed',
-    free = 'free',
-    terminal = 'terminal',
-    variable = 'variable',
-    jcl = 'jcl'
-}
 
 export const sourceformatMessages: string[] = ['unknown', 'fixed', 'free', 'variable'];
 

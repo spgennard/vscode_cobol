@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ISourceHandler, { ICommentCallback } from "./isourcehandler";
 import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
@@ -8,51 +9,9 @@ import { COBOLFileSymbol } from "./cobolglobalcache";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { COBOLCopyBookProvider } from "./opencopybook";
 import { ICOBOLSettings } from "./iconfiguration";
-import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
-import { CobolLinterProvider } from "./cobollinter";
-import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
+import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 
-
-interface ImessageLogger {
-    logMessage(message: string):void;
-    logException(message: string, ex: Error): void;
-    logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean;
-    performance_now(): number;
-}
-
-export class COBOLScannerLogger {
-    public static logger: ImessageLogger|undefined;
-
-    public static logMessage(message: string):void {
-        if (this.logger !== undefined) {
-            this.logger.logMessage(message);
-        }
-    }
-
-    public static logException(message: string, ex: Error): void {
-        if (this.logger !== undefined) {
-            this.logger.logException(message,ex);
-        }
-    }
-
-    public static logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean {
-        if (this.logger !== undefined) {
-            return this.logger.logTimedMessage(timeTaken, message, parameters);
-        }
-
-        return false;
-    }
-
-    public static performance_now(): number {
-        if (this.logger !== undefined) {
-            return this.logger.performance_now();
-        }
-
-        return Date.now();
-    }
-}
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -530,6 +489,7 @@ export class CallTargetInformation {
 }
 
 export interface ICOBOLSourceScannerEvents {
+    start(qp: ICOBOLSourceScanner):void;
     processToken(token: COBOLToken): void;
     finish(): void;
 }
@@ -538,12 +498,28 @@ export interface ICOBOLSourceScanner {
     filename: string;
     lastModifiedTime: number;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
-    tokensInOrder: COBOLToken[];
+    // tokensInOrder: COBOLToken[];
     cacheDirectory: string;
 }
 
 export interface ICOBOLLogger {
     logMessage(message: string): void;
+}
+
+export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerEvents {
+
+    static readonly Default = new EmptyCOBOLSourceScannerEventHandler();
+
+    start(qp: ICOBOLSourceScanner):void {
+        return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    processToken(token: COBOLToken): void {
+        return;
+    }
+    finish(): void {
+        return;
+    }
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
@@ -594,38 +570,70 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     readonly cacheDirectory: string;
 
-    private eventHandler: ICOBOLSourceScannerEvents | undefined;
+    private eventHandler: ICOBOLSourceScannerEvents;
+
+    private externalFeatures: IExternalFeatures;
 
     public static ParseUncached(sourceHandler: ISourceHandler,
-                         configHandler: ICOBOLSettings,
-                         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) : COBOLSourceScanner {
+        configHandler: ICOBOLSettings,
+        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
+        eventHandler : ICOBOLSourceScannerEvents,
+        externalFeatures: IExternalFeatures
+        ): COBOLSourceScanner {
 
         return new COBOLSourceScanner(sourceHandler,
-                                      configHandler,
-                                      "",
-                                      new SharedSourceReferences(true),
-                                      parse_copybooks_for_references);
+            configHandler,
+            "",
+            new SharedSourceReferences(true),
+            parse_copybooks_for_references,
+            eventHandler,
+            externalFeatures
+            );
     }
 
+    public static ParseCached(sourceHandler: ISourceHandler,
+        configHandler: ICOBOLSettings,
+        cacheDirectory: string,
+        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
+        eventHandler : ICOBOLSourceScannerEvents,
+        externalFeatures: IExternalFeatures
+        ): COBOLSourceScanner {
+
+        return new COBOLSourceScanner(sourceHandler,
+            configHandler,
+            cacheDirectory,
+            new SharedSourceReferences(true),
+            parse_copybooks_for_references,
+            eventHandler,
+            externalFeatures
+            );
+    }
     public static ParseUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: COBOLSourceScanner,
-        parse_copybooks_for_references: boolean) : COBOLSourceScanner {
+        parse_copybooks_for_references: boolean,
+        eventHandler : ICOBOLSourceScannerEvents,
+        externalFeatures: IExternalFeatures
+
+        ): COBOLSourceScanner {
 
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
 
         return new COBOLSourceScanner(sourceHandler,
-                                      configHandler,
-                                      "",
-                                      sharedSource,
-                                      parse_copybooks_for_references);
+            configHandler,
+            "",
+            sharedSource,
+            parse_copybooks_for_references,
+            eventHandler,
+            externalFeatures);
     }
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
         cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
-        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references) {
-
+        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
+        sourceEventHandler: ICOBOLSourceScannerEvents,
+        externalFeatures:IExternalFeatures) {
 
         const filename = sourceHandler.getFilename();
 
@@ -635,6 +643,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
 
         this.parse_copybooks_for_references = parse_copybooks_for_references;
+        this.eventHandler = sourceEventHandler;
+        this.externalFeatures = externalFeatures;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
@@ -678,9 +688,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         // setup the event handler
         if (cacheDirectory !== null && cacheDirectory.length > 0) {
             if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
-                COBOLScannerLogger.logMessage(` Skipping ${filename} as it is not a top level reference`);
+                this.externalFeatures.logMessage(` Skipping ${filename} as it is not a top level reference`);
+                this.eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
             } else {
-                this.eventHandler = new COBOLSymbolTableHelper(configHandler, this);
+                this.eventHandler = sourceEventHandler;
+                this.eventHandler.start(this);
+                // this.eventHandler = new COBOLSymbolTableHelper(configHandler, this);
             }
         }
 
@@ -731,7 +744,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 }
                 catch (e) {
-                    COBOLScannerLogger.logException("CobolQuickParse - Parse error : " + e, e);
+                    this.externalFeatures.logException("CobolQuickParse - Parse error : " + e, e);
                 }
             }
 
@@ -773,7 +786,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
-                COBOLScannerLogger.logMessage(` Unabled to determine if ${filename} is COBOL after scanning ${maxLines} lines`);
+                this.externalFeatures.logMessage(` Unabled to determine if ${filename} is COBOL after scanning ${maxLines} lines`);
                 return;
             }
 
@@ -782,7 +795,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
         sourceHandler.resetCommentCount();
 
-        this.sourceFormat = getCOBOLSourceFormat(sourceHandler, configHandler);
+        this.sourceFormat = this.externalFeatures.getCOBOLSourceFormat(sourceHandler, configHandler);
         switch (this.sourceFormat) {
             case ESourceFormat.free: sourceHandler.setDumpAreaBOnwards(false);
                 break;
@@ -817,7 +830,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                COBOLScannerLogger.logException("CobolQuickParse - Parse error", e);
+                this.externalFeatures.logException("CobolQuickParse - Parse error", e);
             }
         }
 
@@ -856,9 +869,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 this.callTargets.set(this.ImplicitProgramId, state.currentProgramTarget);
             }
 
-            if (this.eventHandler !== undefined) {
-                this.eventHandler.finish();
-            }
+            this.eventHandler.finish();
         }
     }
 
@@ -873,9 +884,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         if (ctoken.ignoreInOutlineView) {
             this.tokensInOrder.push(ctoken);
-            if (this.eventHandler !== undefined) {
-                this.eventHandler.processToken(ctoken);
-            }
+            this.eventHandler.processToken(ctoken);
             return ctoken;
         }
 
@@ -904,9 +913,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 state.currentSection = COBOLToken.Null;
             }
             this.tokensInOrder.push(ctoken);
-            if (this.eventHandler !== undefined) {
-                this.eventHandler.processToken(ctoken);
-            }
+            this.eventHandler.processToken(ctoken);
 
             return ctoken;
         }
@@ -919,7 +926,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (ctoken.startColumn !== 0) {
                     state.currentSection.endColumn = ctoken.startColumn - 1;
                 }
-                if (this.eventHandler !== undefined && state.inProcedureDivision) {
+                if (state.inProcedureDivision) {
                     this.eventHandler.processToken(ctoken);
                 }
             }
@@ -946,17 +953,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             this.tokensInOrder.push(ctoken);
-            if (this.eventHandler !== undefined) {
-                this.eventHandler.processToken(ctoken);
-            }
+            this.eventHandler.processToken(ctoken);
 
             return ctoken;
         }
 
         this.tokensInOrder.push(ctoken);
-        if (this.eventHandler !== undefined) {
-            this.eventHandler.processToken(ctoken);
-        }
+        this.eventHandler.processToken(ctoken);
 
         return ctoken;
     }
@@ -1017,7 +1020,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             return !isNaN(Number(value.toString()));
         }
         catch (e) {
-            COBOLScannerLogger.logException("isNumber(" + value + ")", e);
+            this.externalFeatures.logException("isNumber(" + value + ")", e);
             return false;
         }
     }
@@ -1139,7 +1142,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                COBOLScannerLogger.logException("Cobolquickparse relaxedParseLineByLine line error: ", e);
+                this.externalFeatures.logException("Cobolquickparse relaxedParseLineByLine line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1611,7 +1614,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
 
                         if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
-                            const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
                             if (fileName.length > 0) {
                                 if (this.copyBooksUsed.has(fileName) === false) {
 
@@ -1626,7 +1629,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     state.ignoreInOutlineView = true;
                                     this.sourceReferences.topLevel = false;
                                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references);
+                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
                                     // const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
                                     this.sourceReferences.topLevel = currentTopLevel;
                                     state.ignoreInOutlineView = currentIgnoreInOutlineView;
@@ -1813,7 +1816,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                COBOLScannerLogger.logException("Cobolquickparse line error: ", e);
+                this.externalFeatures.logException("Cobolquickparse line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1912,7 +1915,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 args = args.slice(1);
                 const commandTrimmed = command !== undefined ? command.trim() : undefined;
                 if (commandTrimmed !== undefined) {
-                    if (commandTrimmed === CobolLinterProvider.NotReferencedMarker_external) {
+                    if (commandTrimmed === CobolLinterProviderSymbols.NotReferencedMarker_external) {
                         for (const offset in args) {
                             this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLocaleLowerCase(), args[offset]);
                         }
@@ -1931,7 +1934,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (args.length !== 0) {
                         for (const offset in args) {
                             const filenameTrimmed = args[offset].trim();
-                            const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
                             if (fileName.length > 0) {
                                 if (this.copyBooksUsed.has(fileName) === false) {
                                     this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
@@ -1943,7 +1946,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                                     // const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
                                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references);
+                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
                                     this.sourceReferences.topLevel = true;
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                                 }

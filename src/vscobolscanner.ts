@@ -1,19 +1,21 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { FileSystemError, FileType, TextDocument, Uri, window, workspace } from 'vscode';
-import COBOLSourceScanner, { SharedSourceReferences } from "./cobolsourcescanner";
+import COBOLSourceScanner, { EmptyCOBOLSourceScannerEventHandler, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCachesHelper } from "./imemorycache";
 
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide } from "./extension";
+import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide, ExternalFeatures } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileUtils } from "./opencopybook";
-import { CacheDirectoryStrategy, VSCOBOLConfiguration } from "./configuration";
+import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 import { InMemoryGlobalSymbolCache } from "./cobolglobalcache";
+import { CacheDirectoryStrategy } from "./externalfeatures";
+import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -53,8 +55,14 @@ export default class VSCOBOLSourceScanner {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 const startTime = performance_now();
-                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), VSCOBOLConfiguration.get(),
-                    cacheDirectory === undefined ? "" : cacheDirectory);
+                const config = VSCOBOLConfiguration.get();
+
+                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
+                                                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
+                                                    config.parse_copybooks_for_references,
+                                                    EmptyCOBOLSourceScannerEventHandler.Default,
+                                                    ExternalFeatures);
+
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
@@ -284,10 +292,10 @@ export default class VSCOBOLSourceScanner {
 
                 try {
                     const filefs = new FileSourceHandler(filename, false);
-
+                    const symbolCacher = new COBOLSymbolTableEventHelper(settings);
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     // treat each file as the top-level file and don't parse anything below it
-                    const qcp = new COBOLSourceScanner(filefs, settings, cacheDirectory, new SharedSourceReferences(true), false);
+                    const qcp = new COBOLSourceScanner(filefs, settings, cacheDirectory, new SharedSourceReferences(true), false, symbolCacher, ExternalFeatures);
                     if (qcp.callTargets.size > 0) {
                         stats.programsDefined++;
                         if (qcp.callTargets !== undefined) {

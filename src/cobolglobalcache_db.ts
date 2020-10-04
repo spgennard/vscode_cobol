@@ -25,6 +25,11 @@ export class COBOLSymbolTableHelperDB implements ICOBOLSourceScannerEvents {
         this.parse_copybooks_for_references = config.parse_copybooks_for_references;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    start(qp: ICOBOLSourceScanner): void {
+        throw new Error('Method not implemented.');
+    }
+
     public processToken(token: COBOLToken): void {
         // hident token should not be placed in the symbol table, as they from a different file
         if (token.ignoreInOutlineView) {
@@ -89,6 +94,7 @@ export class COBOLSymbolTableHelperDB implements ICOBOLSourceScannerEvents {
 
     public static getSymbolTableGivenFile(cacheDirectory: string, nfilename: string): COBOLSymbolTable | undefined {
         const filename = path.normalize(nfilename);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
         return undefined;
     }

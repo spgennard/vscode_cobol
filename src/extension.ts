@@ -7,7 +7,7 @@ import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
 import { DocComment } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
-import { ESourceFormat, enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
+import {  enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
 import { cobolKeywords } from "./keywords/cobolKeywords";
@@ -42,12 +42,15 @@ import { CobolCommentProvider } from './cobolcommentprovider';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
+import { ESourceFormat } from './externalfeatures';
+import { VSExternalFeatures } from './vsexternalfeatures';
 
 let formatStatusBarItem: StatusBarItem;
 
 let currentContext: ExtensionContext;
 const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 
+export const ExternalFeatures = new VSExternalFeatures();
 
 export function getCombinedCopyBookSearchPath(): string[] {
     return fileSearchDirectory;

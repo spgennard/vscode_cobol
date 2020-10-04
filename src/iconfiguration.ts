@@ -1,4 +1,4 @@
-import { CacheDirectoryStrategy } from "./configuration";
+import { CacheDirectoryStrategy } from "./externalfeatures";
 
 export enum outlineFlag {
     On = "on",

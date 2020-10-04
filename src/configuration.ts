@@ -4,12 +4,8 @@ import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
 import * as path from 'path';
 import { isDirectory } from './extension';
+import { CacheDirectoryStrategy } from './externalfeatures';
 
-export enum CacheDirectoryStrategy {
-    Workspace = "workspace",
-    Storage = "storagepath",
-    Off = "off"
-}
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();

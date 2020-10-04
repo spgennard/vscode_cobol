@@ -2,7 +2,8 @@
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window } from 'vscode';
 import { VSCOBOLConfiguration } from './configuration';
-import { getSourceFormat, ESourceFormat } from './margindecorations';
+import { ESourceFormat } from './externalfeatures';
+import { getSourceFormat } from './margindecorations';
 
 function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
     editor.edit(edit => {
