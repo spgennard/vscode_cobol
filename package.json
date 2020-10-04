@@ -1750,7 +1750,7 @@
         "vscode:prepublish": "npm run compile && webpack --mode production",
         "webpack": "npm run compile && webpack --mode development",
         "webpack-dev-not-used": "webpack --mode development --watch",
-        "compile": "tsc -b",
+        "compile": "tsc -b && cp ./out/cobolsourcescanner.js cobscanner/",
         "test-compile": "tsc -p ./",
         "watch": "tsc -b -w",
         "lint": "eslint src --ext ts",

@@ -21,7 +21,7 @@ suite('Issues Raised Test Suite', () => {
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
 		const settings = new COBOLSettings();
-		const s = new COBOLSourceScanner(f, settings, "");
+		const s = COBOLSourceScanner.ParseUncached(f, settings, false);
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");
@@ -36,7 +36,7 @@ suite('Issues Raised Test Suite', () => {
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 
 		const settings = new COBOLSettings();
-		const s = new COBOLSourceScanner(f,  settings, "");
+		const s =  COBOLSourceScanner.ParseUncached(f,  settings, false);
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 
 		assert.ok(f.commentCount > 0, "number of comments should be > 0");

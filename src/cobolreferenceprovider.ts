@@ -78,7 +78,8 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                     const tref = targetRefs[trpos];
-                    list.push(new vscode.Location(sourceRefs.filenames[tref.fileIdentifer], new vscode.Position(tref.line, tref.columnn)));
+                    const uiref = vscode.Uri.file(sourceRefs.filenames[tref.fileIdentifer]);
+                    list.push(new vscode.Location(uiref, new vscode.Position(tref.line, tref.columnn)));
                 }
             }
         }
@@ -88,7 +89,8 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                     const tref = targetRefs[trpos];
-                    list.push(new vscode.Location(sourceRefs.filenames[tref.fileIdentifer], new vscode.Position(tref.line, tref.columnn)));
+                    const uiref = vscode.Uri.file(sourceRefs.filenames[tref.fileIdentifer]);
+                    list.push(new vscode.Location(uiref, new vscode.Position(tref.line, tref.columnn)));
                 }
             }
         }
