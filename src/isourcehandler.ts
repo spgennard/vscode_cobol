@@ -1,11 +1,8 @@
-import { Uri } from "vscode";
-
 export interface ICommentCallback {
     processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number) : void;
 }
 
 export default interface ISourceHandler {
-    getUri(): Uri;
     getLineCount(): number;
     getCommentCount(): number;
     resetCommentCount():void;

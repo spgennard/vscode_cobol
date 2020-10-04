@@ -1,13 +1,11 @@
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { logException, logTimedMessage, performance_now } from './extension';
-
 
 // let detab = require('detab');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 import fs from 'fs';
-import { Uri } from 'vscode';
+import { COBOLScannerLogger } from './cobolsourcescanner';
 
 export class FileSourceHandler implements ISourceHandler {
     document: string;
@@ -28,16 +26,16 @@ export class FileSourceHandler implements ISourceHandler {
         const docstat = fs.statSync(document);
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
-        const startTime = performance_now();
+        const startTime = COBOLScannerLogger.performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
             while ((line = liner.next())) {
                 this.lines.push(line.toString());
             }
-            logTimedMessage(performance_now() - startTime, ' - Loading File ' + document);
+            COBOLScannerLogger.logTimedMessage(COBOLScannerLogger.performance_now() - startTime, ' - Loading File ' + document);
         }
         catch (e) {
-            logException("File failed! (" + document + ")", e);
+            COBOLScannerLogger.logException("File failed! (" + document + ")", e);
         }
 
     }
@@ -124,9 +122,6 @@ export class FileSourceHandler implements ISourceHandler {
         return cobolKeywordDictionary.containsKey(keyword);
     }
 
-    getUri(): Uri {
-        return Uri.file(this.document);
-    }
     getFilename(): string {
         return this.document;
     }

@@ -10,9 +10,7 @@ import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
 
 
 export class COBOLFileUtils {
-
     static readonly isWin32 = process.platform === "win32";
-
 
     public static isValidCopybookExtension(filename: string, settings: COBOLSettings): boolean {
         const lastDot = filename.lastIndexOf(".");

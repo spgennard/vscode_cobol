@@ -93,10 +93,6 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
 export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings) : ESourceFormat {
-    let langid = "";
-    if (window.activeTextEditor !== undefined) {
-        langid = window.activeTextEditor.document.languageId.toLowerCase();
-    }
 
     if (config.fileformat_strategy === "always_fixed") {
         return ESourceFormat.fixed;
@@ -105,6 +101,11 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
     let linesWithJustNumbers = 0;
     const maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
     let defFormat = ESourceFormat.unknown;
+
+    let langid = "";
+    if (window.activeTextEditor !== undefined) {
+        langid = window.activeTextEditor.document.languageId.toLowerCase();
+    }
 
     const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
 
@@ -182,8 +183,8 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
     }
 
     return defFormat;
-
 }
+
 export function getSourceFormat(doc: TextDocument, config: ICOBOLSettings): ESourceFormat {
     const langid = doc.languageId.toLowerCase();
 

@@ -3,18 +3,56 @@ import ISourceHandler, { ICommentCallback } from "./isourcehandler";
 import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
+import { COBOLFileSymbol } from "./cobolglobalcache";
 
 import * as fs from 'fs';
 import * as path from 'path';
-
-import { logMessage, logException } from "./extension";
 
 import { COBOLCopyBookProvider } from "./opencopybook";
 import { ICOBOLSettings } from "./iconfiguration";
 import { getCOBOLSourceFormat, ESourceFormat } from "./margindecorations";
 import { CobolLinterProvider } from "./cobollinter";
-import { COBOLFileSymbol } from "./cobolglobalcache";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
+
+
+interface ImessageLogger {
+    logMessage(message: string):void;
+    logException(message: string, ex: Error): void;
+    logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean;
+    performance_now(): number;
+}
+
+export class COBOLScannerLogger {
+    public static logger: ImessageLogger|undefined;
+
+    public static logMessage(message: string):void {
+        if (this.logger !== undefined) {
+            this.logger.logMessage(message);
+        }
+    }
+
+    public static logException(message: string, ex: Error): void {
+        if (this.logger !== undefined) {
+            this.logger.logException(message,ex);
+        }
+    }
+
+    public static logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean {
+        if (this.logger !== undefined) {
+            return this.logger.logTimedMessage(timeTaken, message, parameters);
+        }
+
+        return false;
+    }
+
+    public static performance_now(): number {
+        if (this.logger !== undefined) {
+            return this.logger.performance_now();
+        }
+
+        return Date.now();
+    }
+}
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -621,7 +659,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         this.sourceFileId = 0;
         this.sourceFileId = sourceReferences.filenames.length;
-        sourceReferences.filenames.push(sourceHandler.getUri().fsPath);
+        sourceReferences.filenames.push(sourceHandler.getFilename());
 
         this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
         this.paragraphs = sourceReferences.sharedParagraphs;
@@ -640,7 +678,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         // setup the event handler
         if (cacheDirectory !== null && cacheDirectory.length > 0) {
             if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
-                logMessage(` Skipping ${filename} as it is not a top level reference`);
+                COBOLScannerLogger.logMessage(` Skipping ${filename} as it is not a top level reference`);
             } else {
                 this.eventHandler = new COBOLSymbolTableHelper(configHandler, this);
             }
@@ -693,7 +731,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 }
                 catch (e) {
-                    logException("CobolQuickParse - Parse error : " + e, e);
+                    COBOLScannerLogger.logException("CobolQuickParse - Parse error : " + e, e);
                 }
             }
 
@@ -735,7 +773,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
-                logMessage(` Unabled to determine if ${filename} is COBOL after scanning ${maxLines} lines`);
+                COBOLScannerLogger.logMessage(` Unabled to determine if ${filename} is COBOL after scanning ${maxLines} lines`);
                 return;
             }
 
@@ -779,7 +817,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                logException("CobolQuickParse - Parse error", e);
+                COBOLScannerLogger.logException("CobolQuickParse - Parse error", e);
             }
         }
 
@@ -979,7 +1017,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             return !isNaN(Number(value.toString()));
         }
         catch (e) {
-            logException("isNumber(" + value + ")", e);
+            COBOLScannerLogger.logException("isNumber(" + value + ")", e);
             return false;
         }
     }
@@ -1101,7 +1139,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                logException("Cobolquickparse relaxedParseLineByLine line error: ", e);
+                COBOLScannerLogger.logException("Cobolquickparse relaxedParseLineByLine line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1775,7 +1813,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                logException("Cobolquickparse line error: ", e);
+                COBOLScannerLogger.logException("Cobolquickparse line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1902,8 +1940,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                                     this.sourceReferences.state.ignoreInOutlineView = true;
                                     this.sourceReferences.topLevel = true;
-                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
                                     // const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                     const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references);
                                     this.sourceReferences.topLevel = true;
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
