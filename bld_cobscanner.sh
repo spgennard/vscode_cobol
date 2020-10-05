@@ -1,3 +1,4 @@
+test ! -d cobscanner && mkdir cobscanner
 cp ./out/cobolglobalcache_file.js cobscanner/
 cp ./out/imemorycache.js cobscanner/
 cp ./out/cobolsymboltableeventhelper.js cobscanner/
