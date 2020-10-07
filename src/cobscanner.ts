@@ -1,7 +1,8 @@
 import COBOLSourceScanner from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
+import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
-import { EmptyExternalFeature } from "./externalfeatures";
+import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings } from "./iconfiguration";
 
@@ -12,7 +13,11 @@ for (const arg of args) {
     const config = new COBOLSettings();
     const cacheDir = "subdir";
     const symbolCacher = new COBOLSymbolTableEventHelper(config);
-    const scanner = COBOLSourceScanner.ParseCached(file, config, cacheDir, false, symbolCacher, EmptyExternalFeature.Default);
+    const features: IExternalFeatures = ConsoleExternalFeatures.Default;
 
-    console.log(scanner);
+    features.logMessage(`Scanning : ${arg}`);
+    // config.
+    const scanner = COBOLSourceScanner.ParseCached(file, config, cacheDir, false, symbolCacher, features);
+
+    // console.log(scanner);
 }

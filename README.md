@@ -1,6 +1,7 @@
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![chat-img](https://img.shields.io/badge/Gitter-Join_the_vscode_cobol_chat-brightgreen.svg)](https://gitter.im/vscode_cobol/community)
 
+
 # COBOL Source editing for Visual Studio Code
 
 This extension was originally aimed at providing syntax highlighting for COBOL but overtime is has been extended to provide syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and Micro Focus Unit Test Reports.
