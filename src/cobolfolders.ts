@@ -7,7 +7,7 @@ export function getWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefine
         return ws;
     }
 
-    const folders_order = VSCOBOLConfiguration.get().copybookdirs_order;
+    const folders_order = VSCOBOLConfiguration.get().workspacefolders_order;
     if (folders_order.length === 0) {
         return workspace.workspaceFolders;
     }

@@ -40,7 +40,7 @@ export class VSCOBOLConfiguration {
         vsconfig.cache_metadata_max_directory_scan_depth = getNumber("cache_metadata_max_directory_scan_depth", 32);
         vsconfig.cache_metadata_show_progress_messages = getBoolean("cache_metadata_show_progress_messages", false);
         vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
-        vsconfig.copybookdirs_order = getCopybookdirs_order();
+        vsconfig.workspacefolders_order = getWorkspacefolders_order();
         vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
         vsconfig.linter_house_standards = getBoolean("linter_house_standards", true);
         vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
@@ -284,9 +284,9 @@ function getTabStops(): number[] {
     return tabStops;
 }
 
-function getCopybookdirs_order(): string[] {
+function getWorkspacefolders_order(): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
-    let dirs = editorConfig.get<string[]>('copybookdirs_order');
+    let dirs = editorConfig.get<string[]>('workspacefolders_order');
     if (!dirs || (dirs !== null && dirs.length === 0)) {
         dirs = [];
     }

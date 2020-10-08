@@ -564,6 +564,11 @@ export function activate(context: ExtensionContext): void {
         VSCOBOLSourceScanner.processAllFilesInWorkspaces(true);
     });
 
+    const checkWorkspaceForMissingCopybookDirs = commands.registerCommand('cobolplugin.checkWorkspaceForMissingCopybookDirs', async () => {
+        await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
+    });
+
+
     const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
@@ -583,7 +588,6 @@ export function activate(context: ExtensionContext): void {
         }
     });
 
-
     const syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
         tasks.fetchTasks().then((fetchedTasks) => {
             for (const task of fetchedTasks) {
@@ -595,6 +599,7 @@ export function activate(context: ExtensionContext): void {
             logMessage(`Syntax check failed due to ${reason}`);
         });
     });
+
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
@@ -643,6 +648,7 @@ export function activate(context: ExtensionContext): void {
     context.subscriptions.push(changeLanguageToGnuCOBOL);
 
     context.subscriptions.push(toggleCOBOLMargin);
+    context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
 
     context.subscriptions.push(processAllFilesInWorkspace);
     context.subscriptions.push(dumpMetadata);

@@ -10,6 +10,7 @@ import path from 'path';
 import { COBOLFileUtils } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
+import { ICOBOLSettings } from './iconfiguration';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -24,6 +25,16 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+
+    public static inCopybookdirs(config: ICOBOLSettings, copybookdir:string) : boolean {
+        for(const ext of config.copybookdirs) {
+            if (ext === copybookdir) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public migrateCopybooksToWorkspace():void {
         const fileSearchDirectory = [];

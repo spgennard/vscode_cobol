@@ -35,7 +35,7 @@ export interface ICOBOLSettings {
     cache_metadata_time_limit: number;
     cache_metadata_max_directory_scan_depth: number;
     parse_copybooks_for_references: boolean;
-    copybookdirs_order: string[];
+    workspacefolders_order: string[];
     linter_mark_as_information: boolean;
     linter_unused_paragraphs_or_sections: boolean;
     linter_house_standards: boolean;
@@ -76,7 +76,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public cache_metadata_time_limit: number;
     public cache_metadata_max_directory_scan_depth: number;
     public parse_copybooks_for_references: boolean;
-    public copybookdirs_order: string[];
+    public workspacefolders_order: string[];
     public linter_mark_as_information: boolean;
     public linter_unused_paragraphs_or_sections: boolean;
     public linter_house_standards: boolean;
@@ -119,7 +119,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.cache_metadata_max_directory_scan_depth = 32;
         this.cache_metadata_show_progress_messages = false;
         this.parse_copybooks_for_references = false;
-        this.copybookdirs_order = [];
+        this.workspacefolders_order = [];
         this.linter_mark_as_information = false;
         this.linter_unused_paragraphs_or_sections = true;
         this.linter_house_standards = true;

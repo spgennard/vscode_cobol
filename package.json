@@ -73,6 +73,7 @@
         "onCommand:cobolplugin.clearMetaData",
         "onCommand:cobolplugin.syntaxCheck",
         "onCommand:cobolplugin.processAllFilesInWorkspace",
+        "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
         "onCommand:cobolplugin.mfurunMenu",
         "onCommand:cobolplugin.removeAllComments",
         "onCommand:cobolplugin.removeIdentificationArea",
@@ -449,15 +450,15 @@
                     "description": "Parse copybook for reference [WARNING: use with care] (default false)",
                     "default": false
                 },
-                "coboleditor.copybookdirs_order": {
+                "coboleditor.workspacefolders_order": {
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "title": "copybooks",
+                        "title": "workspacefolders",
                         "properties": {
                             "copybook": {
                                 "type": "string",
-                                "description": "copybook"
+                                "description": "workspacefolder"
                             }
                         }
                     },
@@ -904,6 +905,10 @@
             {
                 "command": "cobolplugin.processAllFilesInWorkspace",
                 "title": "COBOL: Process files in workspace for metadata"
+            },
+            {
+                "command" : "cobolplugin.checkWorkspaceForMissingCopybookDirs",
+                "title" : "COBOL: Check workspace folders recursively for potential copybook directories"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
