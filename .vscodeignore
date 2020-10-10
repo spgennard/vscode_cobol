@@ -14,6 +14,9 @@ node_modules
 out/
 src/
 publishit.sh
+bld_cobscanner.sh
+justpublish.sh
+publishit2gitonly.sh
 tsconfig.json
 tslint.json
 webpack.config.js

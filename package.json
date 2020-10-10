@@ -907,12 +907,12 @@
                 "title": "COBOL: Process files in workspace for metadata"
             },
             {
-                "command" : "cobolplugin.checkWorkspaceForMissingCopybookDirs",
-                "title" : "COBOL: Check workspace folders recursively for potential copybook directories"
+                "command": "cobolplugin.checkWorkspaceForMissingCopybookDirs",
+                "title": "COBOL: Check workspace folders recursively for potential copybook directories"
             },
             {
                 "command": "cobolplugin.generateCOBScannerFile",
-                "title" : "COBOL: Generate COBScanner file (WIP, internal use only)"
+                "title": "COBOL: Generate COBScanner file (WIP, internal use only)"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
