@@ -38,7 +38,7 @@ Changelog for {{ownerName}} {{repoName}}.
 " >CHANGELOG.md
 git commit -m "Update CHANGELOG.md" CHANGELOG.md && true
 git push
-git tag $PACKAGE_VERSION
+git tag -f $PACKAGE_VERSION
 git push --tags
 [ -d ".vscode_test" ] && cp -r .vscode-test ..
 git clean -fdx
