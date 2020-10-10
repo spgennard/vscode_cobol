@@ -9,9 +9,6 @@ import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable } from './cobolgl
 import { COBOLCopyBookProvider } from './opencopybook';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 
-
-
-
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
         position: vscode.Position,
@@ -22,7 +19,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     readonly sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-    readonly enableUrlOpenBodge = false;
+    // readonly enableUrlOpenBodge = false;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private resolveDefinitions(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
@@ -34,6 +31,64 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         const theline = document.lineAt(position).text;
+
+        if (theline.match(/.*(call|cancel|chain).*$/i)) {
+            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
+            if (qcp === undefined) {
+                return locations;
+            }
+            const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+            const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            if (cacheDirectory !== undefined && word !== "") {
+                const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
+                const wordLower = word.toLocaleLowerCase();
+                if (img.callableSymbols.has(wordLower) === false) {
+                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
+                }
+                if (img.callableSymbols.has(wordLower)) {
+                    const symbols = img.callableSymbols.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            const symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                if (this.getLocationGivenFile(symbol.filename, symbol.lnum, locations)) {
+                                    return locations;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
+            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
+            if (qcp === undefined) {
+                return locations;
+            }
+
+            const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
+            const word = wordRange ? document.getText(wordRange) : '';
+            if (word !== "") {
+                const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
+                const wordLower = word.toLocaleLowerCase();
+                if (img.classSymbols.has(wordLower)) {
+                    const symbols = img.classSymbols.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            const symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                if (this.getLocationGivenFile(symbol.filename, symbol.lnum, locations)) {
+                                    return locations;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         if (!config.parse_copybooks_for_references) {
             if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
                 const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
@@ -59,7 +114,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                                 if (symboleTable !== undefined) {
                                     const symbol: COBOLSymbol | undefined = symboleTable.labelSymbols.get(wordLower);
                                     if (symbol !== undefined && symbol.lnum !== undefined) {
-                                        if (this.openFileViaCommand(fileName, symbol.lnum, locations)) {
+                                        if (this.getLocationGivenFile(fileName, symbol.lnum, locations)) {
                                             return locations;
                                         }
                                     }
@@ -71,70 +126,6 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                             console.log(fe.stacktrace);
                         }
                     }
-                    GlobalCachesHelper.saveGlobalCache(cacheDirectory);
-                }
-            }
-
-            if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
-                const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
-                if (qcp === undefined) {
-                    return locations;
-                }
-
-                const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
-                const word = wordRange ? document.getText(wordRange) : '';
-                if (word !== "") {
-                    const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
-                    const wordLower = word.toLocaleLowerCase();
-                    if (img.classSymbols.has(wordLower)) {
-                        const symbols = img.classSymbols.get(wordLower);
-                        if (symbols !== undefined) {
-                            for (let i = 0; i < symbols.length; i++) {
-                                const symbol = symbols[i];
-                                if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                    if (this.openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
-                                        return locations;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-                    if (cacheDirectory !== undefined) {
-                        GlobalCachesHelper.saveGlobalCache(cacheDirectory);
-                    }
-                }
-            }
-
-            if (theline.match(/.*(call|cancel|chain).*$/i)) {
-                const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
-                if (qcp === undefined) {
-                    return locations;
-                }
-                const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-                const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
-                const word = wordRange ? document.getText(wordRange) : '';
-                if (cacheDirectory !== undefined && word !== "") {
-                    const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
-                    const wordLower = word.toLocaleLowerCase();
-                    if (img.callableSymbols.has(wordLower) === false) {
-                        GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
-                    }
-                    if (img.callableSymbols.has(wordLower)) {
-                        const symbols = img.callableSymbols.get(wordLower);
-                        if (symbols !== undefined) {
-                            for (let i = 0; i < symbols.length; i++) {
-                                const symbol = symbols[i];
-                                if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                    if (this.openFileViaCommand(symbol.filename, symbol.lnum, locations)) {
-                                        return locations;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
                 }
             }
 
@@ -163,7 +154,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                                 if (symboleTable !== undefined) {
                                     const symbol: COBOLSymbol | undefined = symboleTable.variableSymbols.get(wordLower);
                                     if (symbol !== undefined && symbol.lnum !== undefined) {
-                                        if (this.openFileViaCommand(fileName, symbol.lnum, locations)) {
+                                        if (this.getLocationGivenFile(fileName, symbol.lnum, locations)) {
                                             return locations;
                                         }
                                     }
@@ -175,7 +166,6 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                             // should not happen but if it does, continue on to the next copybook reference
                         }
                     }
-                    GlobalCachesHelper.saveGlobalCache(cacheDirectory);
                     return locations;
                 }
             }
@@ -184,30 +174,31 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         }
     }
 
-    private openFileViaCommand(filename: string, linnumber: number, locations: vscode.Location[]): boolean {
+    private getLocationGivenFile(filename: string, linnumber: number, locations: vscode.Location[]): boolean {
         const uri = vscode.Uri.file(filename);
 
         // just do it quickly
-        if (this.enableUrlOpenBodge === false) {
-            const loc = new vscode.Location(
-                uri,
-                new vscode.Position(linnumber, 0)
-            );
-            locations.push(loc);
-            return false;
-        } else {
-            const l = linnumber;
-            vscode.workspace
-                .openTextDocument(uri)
-                .then(vscode.window.showTextDocument)
-                .then(() => {
-                    const a = vscode.window.activeTextEditor;
-                    if (a !== undefined) {
-                        a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
-                    }
-                });
-            return true;
-        }
+        // if (this.enableUrlOpenBodge === false) {
+        const loc = new vscode.Location(
+            uri,
+            new vscode.Position(linnumber, 0)
+        );
+        locations.push(loc);
+        return false;
+        // }
+        // else {
+        //     const l = linnumber;
+        //     vscode.workspace
+        //         .openTextDocument(uri)
+        //         .then(vscode.window.showTextDocument)
+        //         .then(() => {
+        //             const a = vscode.window.activeTextEditor;
+        //             if (a !== undefined) {
+        //                 a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
+        //             }
+        //         });
+        //     return true;
+        // }
     }
 
 }
