@@ -1,7 +1,7 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { FileSystemError, FileType, TextDocument, Uri, window, workspace } from 'vscode';
 import COBOLSourceScanner, { EmptyCOBOLSourceScannerEventHandler, SharedSourceReferences } from "./cobolsourcescanner";
-import { InMemoryGlobalCachesHelper } from "./imemorycache";
+import { GlobalCachesHelper } from "./globalcachehelper";
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -183,7 +183,7 @@ export default class VSCOBOLSourceScanner {
                     }
                     promises.clear();
 
-                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                    GlobalCachesHelper.saveGlobalCache(cacheDirectory);
                 }
                 catch (e) {
                     abortedReason = e;

@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 
 
 import { Hash } from "crypto";
-import { InMemoryGlobalCachesHelper } from "./imemorycache";
+import { GlobalCachesHelper } from "./globalcachehelper";
 import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./cobolsourcescanner";
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
@@ -58,25 +58,25 @@ export class COBOLSymbolTableHelperDB implements ICOBOLSourceScannerEvents {
                 }
                 break;
             case COBOLTokenStyle.ImplicitProgramId:
-                InMemoryGlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.ProgramId:
-                InMemoryGlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.EntryPoint:
-                InMemoryGlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
-                InMemoryGlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.EnumId:
-                InMemoryGlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.ClassId:
-                InMemoryGlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.MethodId:
-                InMemoryGlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
+                GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
         }
     }

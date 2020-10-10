@@ -20,7 +20,7 @@ import * as vscode from "vscode";
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
-import { InMemoryGlobalCachesHelper } from "./imemorycache";
+import { GlobalCachesHelper } from "./globalcachehelper";
 import { COBOLFileUtils } from './opencopybook';
 
 import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
@@ -1030,7 +1030,7 @@ export function activate(context: ExtensionContext): void {
     /* load the cache if we can */
     const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
     if (cacheDirectory !== undefined && cacheDirectory.length > 0) {
-        InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
+        GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
     }
 
     if (checkForExtensionConflictsMessage.length !== 0) {
@@ -1060,7 +1060,7 @@ export async function deactivateAsync(): Promise<void> {
     if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
-            InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+            GlobalCachesHelper.saveGlobalCache(cacheDirectory);
             formatStatusBarItem.dispose();
         }
     }

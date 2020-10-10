@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import COBOLSourceScanner from './cobolsourcescanner';
 
-import { InMemoryGlobalCachesHelper } from "./imemorycache";
+import { GlobalCachesHelper } from "./globalcachehelper";
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable } from './cobolglobalcache';
@@ -71,7 +71,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                             console.log(fe.stacktrace);
                         }
                     }
-                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                    GlobalCachesHelper.saveGlobalCache(cacheDirectory);
                 }
             }
 
@@ -84,7 +84,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                 const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
                 const word = wordRange ? document.getText(wordRange) : '';
                 if (word !== "") {
-                    const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
+                    const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
                     const wordLower = word.toLocaleLowerCase();
                     if (img.classSymbols.has(wordLower)) {
                         const symbols = img.classSymbols.get(wordLower);
@@ -102,7 +102,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
 
                     const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
                     if (cacheDirectory !== undefined) {
-                        InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                        GlobalCachesHelper.saveGlobalCache(cacheDirectory);
                     }
                 }
             }
@@ -116,10 +116,10 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                 const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
                 const word = wordRange ? document.getText(wordRange) : '';
                 if (cacheDirectory !== undefined && word !== "") {
-                    const img: COBOLGlobalSymbolTable = InMemoryGlobalCachesHelper.getGlobalSymbolCache();
+                    const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
                     const wordLower = word.toLocaleLowerCase();
                     if (img.callableSymbols.has(wordLower) === false) {
-                        InMemoryGlobalCachesHelper.loadInMemoryGlobalSymbolCaches(cacheDirectory);
+                        GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
                     }
                     if (img.callableSymbols.has(wordLower)) {
                         const symbols = img.callableSymbols.get(wordLower);
@@ -175,7 +175,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                             // should not happen but if it does, continue on to the next copybook reference
                         }
                     }
-                    InMemoryGlobalCachesHelper.saveInMemoryGlobalCaches(cacheDirectory);
+                    GlobalCachesHelper.saveGlobalCache(cacheDirectory);
                     return locations;
                 }
             }
