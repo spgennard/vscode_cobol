@@ -1,11 +1,45 @@
 import path from "path";
 import { FileType, Uri, workspace } from "vscode";
+import { getWorkspaceFolders } from "./cobolfolders";
+import { VSCOBOLConfiguration } from "./configuration";
 import { logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
-import VSCOBOLSourceScanner, { ScanStats } from "./vscobolscanner";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+
+class ScanStats {
+    directoriesScanned = 0;
+    directoryDepth = 0;
+    maxDirectoryDepth = 0;
+    fileCount = 0;
+    showMessage = false;
+    directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
+}
 
 export class VSCobScanner {
-    private static async generateCOBScannerData(settings: ICOBOLSettings, cacheDirectory: string, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {
+    public static async generateCOBScannerFile(): Promise<void> {
+        const settings = VSCOBOLConfiguration.get();
+        const ws = getWorkspaceFolders();
+        const stats = new ScanStats();
+        const files: string[] = [];
+        if (ws !== undefined) {
+            for (const folder of ws) {
+                try {
+                    await VSCobScanner.generateCOBScannerData(settings, folder.uri, stats, files);
+                } catch {
+                    continue;
+                }
+            }
+
+        }
+
+        logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+        logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
+        logMessage(` Files found         : ${stats.fileCount}`);
+
+        return;
+    }
+
+    private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {
         const entries = await workspace.fs.readDirectory(folder);
         stats.directoriesScanned++;
         if (stats.directoriesScannedMap.has(folder.fsPath)) {
@@ -30,6 +64,7 @@ export class VSCobScanner {
                 case FileType.File:
                     {
                         files2scan.push(path.join(folder.fsPath, entry));
+                        stats.fileCount++;
                     }
                     break;
                 case FileType.Directory | FileType.SymbolicLink:
@@ -62,7 +97,11 @@ export class VSCobScanner {
             if (1 + stats.directoryDepth <= settings.cache_metadata_max_directory_scan_depth) {
                 stats.directoryDepth++;
                 for (const directoryUri of dir2scan) {
-                    await VSCobScanner.generateCOBScannerData(settings, cacheDirectory, directoryUri, stats, files2scan);
+                    try {
+                        await VSCobScanner.generateCOBScannerData(settings, directoryUri, stats, files2scan);
+                    } catch {
+                        continue;       // file not found
+                    }
                 }
                 if (stats.directoryDepth > stats.maxDirectoryDepth) {
                     stats.maxDirectoryDepth = stats.directoryDepth;

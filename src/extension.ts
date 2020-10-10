@@ -17,6 +17,7 @@ import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbol
 import * as path from 'path';
 import * as fs from 'fs';
 import * as vscode from "vscode";
+import os from 'os';
 
 import updateDecorations from './margindecorations';
 import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
@@ -44,6 +45,7 @@ import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
 import { ESourceFormat } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
+import { VSCobScanner } from './vscobscanner';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -354,13 +356,15 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
     if (thisExtension !== undefined) {
-        logMessage("VSCode version : " + vscode.version);
+        logMessage(`VSCode version : ${vscode.version}`);
+        logMessage(` Platform          : ${os.platform}`);
+        logMessage(` Architecture      : ${os.arch}`);
         logMessage("Extension Information:");
         logMessage(` Extension path    : ${thisExtension.extensionPath}`);
         logMessage(` Version           : ${thisExtension.packageJSON.version}`);
         logMessage(" Caching");
         logMessage(`  Cache Strategy               : ${settings.cache_metadata}`);
-        logMessage("  Cache directory              : " + VSCOBOLSourceScanner.getCacheDirectory());
+        logMessage(`  Cache directory              : ${VSCOBOLSourceScanner.getCacheDirectory()}`);
         logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
         logMessage(` Parse copybook for references : ${settings.parse_copybooks_for_references}`);
     }
@@ -568,6 +572,10 @@ export function activate(context: ExtensionContext): void {
         await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
     });
 
+    const generateCOBScannerFile = commands.registerCommand('cobolplugin.generateCOBScannerFile', async () => {
+        await VSCobScanner.generateCOBScannerFile();
+    });
+
 
     const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
@@ -649,6 +657,7 @@ export function activate(context: ExtensionContext): void {
 
     context.subscriptions.push(toggleCOBOLMargin);
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
+    context.subscriptions.push(generateCOBScannerFile);
 
     context.subscriptions.push(processAllFilesInWorkspace);
     context.subscriptions.push(dumpMetadata);

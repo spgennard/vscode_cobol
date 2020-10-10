@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.8.5",
+    "version": "6.8.6",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -340,7 +340,7 @@
                     "default": true
                 },
                 "coboleditor.outline": {
-                    "markdownDescription": "Configure or disable outline for COBOL",
+                    "markdownDescription": "Configure or disable outline view for COBOL",
                     "type": "string",
                     "description": "on=everything, partial=no paragraphs, skeleton=basic structure and off",
                     "enum": [
@@ -909,6 +909,10 @@
             {
                 "command" : "cobolplugin.checkWorkspaceForMissingCopybookDirs",
                 "title" : "COBOL: Check workspace folders recursively for potential copybook directories"
+            },
+            {
+                "command": "cobolplugin.generateCOBScannerFile",
+                "title" : "COBOL: Generate COBScanner file (WIP, internal use only)"
             },
             {
                 "command": "cobolplugin.dumpMetaData",

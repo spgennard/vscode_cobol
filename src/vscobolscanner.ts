@@ -59,10 +59,10 @@ export default class VSCOBOLSourceScanner {
                 const config = VSCOBOLConfiguration.get();
 
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
-                                                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
-                                                    config.parse_copybooks_for_references,
-                                                    EmptyCOBOLSourceScannerEventHandler.Default,
-                                                    ExternalFeatures);
+                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
+                    config.parse_copybooks_for_references,
+                    EmptyCOBOLSourceScannerEventHandler.Default,
+                    ExternalFeatures);
 
                 InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
@@ -85,7 +85,7 @@ export default class VSCOBOLSourceScanner {
         return InMemoryCache.get(fileName);
     }
 
-    public static async checkWorkspaceForMissingCopybookDirs():Promise<void> {
+    public static async checkWorkspaceForMissingCopybookDirs(): Promise<void> {
         logChannelSetPreserveFocus(false);
         logMessage("Checking workspace for folders that are not present in copybookdirs setting");
 
@@ -94,7 +94,7 @@ export default class VSCOBOLSourceScanner {
         if (ws !== undefined) {
             for (const folder of ws) {
                 try {
-                    await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings,folder.uri, folder.uri);
+                    await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings, folder.uri, folder.uri);
                 } catch {
                     continue;       // most likely an invalid directory
                 }
@@ -103,20 +103,20 @@ export default class VSCOBOLSourceScanner {
         logMessage(" -- Analysis complete");
     }
 
-    public static async checkWorkspaceForMissingCopybookDir(settings: ICOBOLSettings, topLevelFolder: Uri, folder: Uri):Promise<void> {
+    public static async checkWorkspaceForMissingCopybookDir(settings: ICOBOLSettings, topLevelFolder: Uri, folder: Uri): Promise<void> {
         const entries = await workspace.fs.readDirectory(folder);
 
         for (const [entry, fileType] of entries) {
             switch (fileType) {
-                case FileType.Directory|FileType.SymbolicLink:
+                case FileType.Directory | FileType.SymbolicLink:
                 case FileType.Directory:
                     if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
                         const fullDirectory = path.join(folder.fsPath, entry);
                         if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                            const topLevelLength = 1+topLevelFolder.fsPath.length;
+                            const topLevelLength = 1 + topLevelFolder.fsPath.length;
                             const possibleCopydir = fullDirectory.substr(topLevelLength);
 
-                            if (COBOLUtils.inCopybookdirs(settings,possibleCopydir) === false) {
+                            if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
                                 logMessage(`  Configuration Recommendation : include : ${possibleCopydir} in coboleditor.copybookdirs to ensure the copybooks in this directory can be found`);
                             }
                             await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings, topLevelFolder, Uri.file(fullDirectory));
@@ -232,87 +232,89 @@ export default class VSCOBOLSourceScanner {
         return false;
     }
 
-    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, topLevelFolder:Uri, folder: Uri, stats: ScanStats): Promise<boolean> {
+    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, topLevelFolder: Uri, folder: Uri, stats: ScanStats): Promise<boolean> {
+        try {
+            const entries = await workspace.fs.readDirectory(folder);
+            stats.directoriesScanned++;
+            if (stats.directoriesScannedMap.has(folder.fsPath)) {
+                return true;
+            }
 
-        const entries = await workspace.fs.readDirectory(folder);
-        stats.directoriesScanned++;
-        if (stats.directoriesScannedMap.has(folder.fsPath)) {
-            return true;
-        }
+            if (stats.showMessage) {
+                const spaces = " ".repeat(stats.directoryDepth);
+                logMessage(` ${spaces}Directory : ${folder.fsPath}`);
+            }
 
-        if (stats.showMessage) {
-            const spaces = " ".repeat(stats.directoryDepth);
-            logMessage(` ${spaces}Directory : ${folder.fsPath}`);
-        }
+            stats.directoriesScannedMap.set(folder.fsPath, folder);
 
-        stats.directoriesScannedMap.set(folder.fsPath, folder);
+            const dir2scan: Uri[] = [];
 
-        const dir2scan: Uri[] = [];
-
-        for (const [entry, fileType] of entries) {
-            switch (fileType) {
-                case FileType.File | FileType.SymbolicLink:
-                    {
-                        const spaces4file = " ".repeat(1 + stats.directoryDepth);
-                        logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
-                    }
-                // eslint-disable-next-line no-fallthrough
-                case FileType.File:
-                    {
-                        const fullFilename = path.join(folder.fsPath, entry);
-                        await VSCOBOLSourceScanner.processFile(settings, cacheDirectory, fullFilename, stats);
-                    }
-                    break;
-                case FileType.Directory | FileType.SymbolicLink:
-                    {
-                        const spaces4dir = " ".repeat(1 + stats.directoryDepth);
-                        logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
-                    }
-                // eslint-disable-next-line no-fallthrough
-                case FileType.Directory:
-                    if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                        const fullDirectory = path.join(folder.fsPath, entry);
+            for (const [entry, fileType] of entries) {
+                switch (fileType) {
+                    case FileType.File | FileType.SymbolicLink:
+                        {
+                            const spaces4file = " ".repeat(1 + stats.directoryDepth);
+                            logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                        }
+                    // eslint-disable-next-line no-fallthrough
+                    case FileType.File:
+                        {
+                            const fullFilename = path.join(folder.fsPath, entry);
+                            await VSCOBOLSourceScanner.processFile(settings, cacheDirectory, fullFilename, stats);
+                        }
+                        break;
+                    case FileType.Directory | FileType.SymbolicLink:
+                        {
+                            const spaces4dir = " ".repeat(1 + stats.directoryDepth);
+                            logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                        }
+                    // eslint-disable-next-line no-fallthrough
+                    case FileType.Directory:
                         if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                            const topLevelLength = 1+topLevelFolder.fsPath.length;
-                            const possibleCopydir = fullDirectory.substr(topLevelLength);
-                            // if (possibleCopydir.length !== 0) {
-                            //     continue;
-                            // }
-                            if (COBOLUtils.inCopybookdirs(settings,possibleCopydir) === false) {
-                                logMessage(`  Configuration Recommendation : include : ${possibleCopydir} in coboleditor.copybookdirs to ensure the copybook`);
-                            }
-                            try {
-                                dir2scan.push(Uri.file(fullDirectory));
-                            } catch (ex) {
-                                logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
-                                if (ex instanceof Error) {
-                                    logException("Unexpected abort during Uri Parse", ex as Error);
-                                } else {
-                                    logMessage(ex);
+                            const fullDirectory = path.join(folder.fsPath, entry);
+                            if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
+                                const topLevelLength = 1 + topLevelFolder.fsPath.length;
+                                const possibleCopydir = fullDirectory.substr(topLevelLength);
+                                // if (possibleCopydir.length !== 0) {
+                                //     continue;
+                                // }
+                                if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
+                                    logMessage(`  Configuration Recommendation : include : ${possibleCopydir} in coboleditor.copybookdirs to ensure the copybook`);
+                                }
+                                try {
+                                    dir2scan.push(Uri.file(fullDirectory));
+                                } catch (ex) {
+                                    logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
+                                    if (ex instanceof Error) {
+                                        logException("Unexpected abort during Uri Parse", ex as Error);
+                                    } else {
+                                        logMessage(ex);
+                                    }
                                 }
                             }
                         }
+                        break;
+                }
+            }
+
+            if (dir2scan.length !== 0) {
+                if (1 + stats.directoryDepth <= settings.cache_metadata_max_directory_scan_depth) {
+                    stats.directoryDepth++;
+                    for (const directoryUri of dir2scan) {
+                        await VSCOBOLSourceScanner.processAllFilesDirectory(settings, cacheDirectory, topLevelFolder, directoryUri, stats);
                     }
-                    break;
-            }
-        }
-
-        if (dir2scan.length !== 0) {
-            if (1 + stats.directoryDepth <= settings.cache_metadata_max_directory_scan_depth) {
-                stats.directoryDepth++;
-                for (const directoryUri of dir2scan) {
-                    await VSCOBOLSourceScanner.processAllFilesDirectory(settings, cacheDirectory, topLevelFolder, directoryUri, stats);
+                    if (stats.directoryDepth > stats.maxDirectoryDepth) {
+                        stats.maxDirectoryDepth = stats.directoryDepth;
+                    }
+                    stats.directoryDepth--;
+                } else {
+                    logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
                 }
-                if (stats.directoryDepth > stats.maxDirectoryDepth) {
-                    stats.maxDirectoryDepth = stats.directoryDepth;
-                }
-                stats.directoryDepth--;
-            } else {
-                logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
+
             }
-
+        } catch (ex) {
+            // do nothing
         }
-
         return true;
     }
 
