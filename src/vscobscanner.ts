@@ -1,6 +1,7 @@
 import path from "path";
 import { FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
+import { ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -42,6 +43,15 @@ export class VSCobScanner {
         for (const file of files) {
             logMessage(` => ${file}`);
         }
+
+        const sf = new ScanData();
+        sf.Files = files;
+
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            sf.cacheDirectory = cacheDirectory;
+            ScanDataHelper.save(cacheDirectory, sf);
+        }
         return;
     }
 
@@ -71,7 +81,7 @@ export class VSCobScanner {
                 case FileType.File:
                     {
                         const fullPath = path.join(folder.fsPath, entry);
-                        if (COBOLFileUtils.isValidProgramExtension(fullPath,settings) || COBOLFileUtils.isValidCopybookExtension(fullPath,settings)) {
+                        if (COBOLFileUtils.isValidProgramExtension(fullPath, settings) || COBOLFileUtils.isValidCopybookExtension(fullPath, settings)) {
                             files2scan.push(fullPath);
                             stats.fileCount++;
                         } else {

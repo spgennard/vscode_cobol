@@ -1,23 +1,38 @@
 import COBOLSourceScanner from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
+import { ScanDataHelper } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
 import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
+import { GlobalCachesHelper } from "./globalcachehelper";
 import { COBOLSettings } from "./iconfiguration";
 
 const args = process.argv.slice(2);
+const features: IExternalFeatures = ConsoleExternalFeatures.Default;
 
 for (const arg of args) {
-    const file = new FileSourceHandler(arg, false);
-    const config = new COBOLSettings();
-    const cacheDir = "subdir";
-    const symbolCacher = new COBOLSymbolTableEventHelper(config);
-    const features: IExternalFeatures = ConsoleExternalFeatures.Default;
 
-    features.logMessage(`Scanning : ${arg}`);
-    // config.
-    const scanner = COBOLSourceScanner.ParseCached(file, config, cacheDir, false, symbolCacher, features);
+    if (arg.endsWith(".json")) {
+        const scanData = ScanDataHelper.load(arg);
+        GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
+        features.logMessage("Scanning : ");
+        let count = 0;
+        for(const file of scanData.Files) {
+            const filesHandler= new FileSourceHandler(file, false);
+            const config = new COBOLSettings();
+            const cacheDir = scanData.cacheDirectory;
+            const symbolCacher = new COBOLSymbolTableEventHelper(config);
 
+            features.logMessage(`  => ${file}`);
+            const scanner = COBOLSourceScanner.ParseCached(filesHandler, config, cacheDir, false, symbolCacher, features);
+
+            count++;
+        }
+        GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
+    } else {
+        features.logMessage(`Unknown argument : ${arg}`);
+
+    }
     // console.log(scanner);
 }

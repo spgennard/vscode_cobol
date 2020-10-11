@@ -1,6 +1,7 @@
 set -e
 
 test ! -d cobscanner && mkdir cobscanner
+cp ./out/cobscannerdata.js cobscanner/
 cp ./out/consoleexternalfeatures.js cobscanner/
 cp ./out/cobolglobalcache_file.js cobscanner/
 cp ./out/globalcachehelper.js cobscanner/
