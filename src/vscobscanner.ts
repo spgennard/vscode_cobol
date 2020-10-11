@@ -4,9 +4,11 @@ import { getWorkspaceFolders } from "./cobolfolders";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
 
 class ScanStats {
+    filesIgnored = 0;
     directoriesScanned = 0;
     directoryDepth = 0;
     maxDirectoryDepth = 0;
@@ -35,7 +37,11 @@ export class VSCobScanner {
         logMessage(` Directories scanned : ${stats.directoriesScanned}`);
         logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
         logMessage(` Files found         : ${stats.fileCount}`);
+        logMessage(` Files ignored       : ${stats.filesIgnored}`);
 
+        for (const file of files) {
+            logMessage(` => ${file}`);
+        }
         return;
     }
 
@@ -45,6 +51,7 @@ export class VSCobScanner {
         if (stats.directoriesScannedMap.has(folder.fsPath)) {
             return true;
         }
+
         if (stats.showMessage) {
             const spaces = " ".repeat(stats.directoryDepth);
             logMessage(` ${spaces}Directory : ${folder.fsPath}`);
@@ -63,8 +70,13 @@ export class VSCobScanner {
                 // eslint-disable-next-line no-fallthrough
                 case FileType.File:
                     {
-                        files2scan.push(path.join(folder.fsPath, entry));
-                        stats.fileCount++;
+                        const fullPath = path.join(folder.fsPath, entry);
+                        if (COBOLFileUtils.isValidProgramExtension(fullPath,settings) || COBOLFileUtils.isValidCopybookExtension(fullPath,settings)) {
+                            files2scan.push(fullPath);
+                            stats.fileCount++;
+                        } else {
+                            stats.filesIgnored++;
+                        }
                     }
                     break;
                 case FileType.Directory | FileType.SymbolicLink:
