@@ -1,5 +1,7 @@
 import path from "path";
-import { FileType, Uri, workspace } from "vscode";
+import fs from "fs";
+import os from "os";
+import { extensions, FileType, ShellExecution, ShellExecutionOptions, Terminal, TerminalOptions, Uri, window, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
@@ -17,6 +19,9 @@ class ScanStats {
     showMessage = false;
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
+
+let cobscannerTerminal: Terminal | undefined = undefined;
+const cobscannerTerminalName = "COBOL Source Scanner";
 
 export class VSCobScanner {
     public static async generateCOBScannerFile(): Promise<void> {
@@ -51,6 +56,31 @@ export class VSCobScanner {
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
+            const thisExtension = extensions.getExtension("bitlang.cobol");
+            let platform = "linux";
+            let suffix = "";
+            if (os.platform().startsWith("win")) {
+                platform = "win";
+                suffix = ".exe";
+            }
+            if (os.platform().startsWith("darwin")) {
+                platform = "macos";
+            }
+            if (thisExtension !== undefined) {
+                const extPath = `${thisExtension.extensionPath}`;
+                const binPath = path.join(extPath,"bin");
+                const exeName = `cobscanner-${platform}-${thisExtension.packageJSON.version}${suffix}`;
+                const exeNameFull = path.join(binPath, exeName);
+                if (fs.existsSync(exeNameFull)) {
+                    const jsonFile = path.join(cacheDirectory,"cobscanner.json");
+                    const cmdLine = `${exeNameFull} ${jsonFile}`;
+                    if (cobscannerTerminal === undefined) {
+                        const options: TerminalOptions = { cwd: binPath, hideFromUser: false, name: cobscannerTerminalName };
+                        cobscannerTerminal = window.createTerminal(options);
+                    }
+                    cobscannerTerminal.sendText(`${cmdLine}`);
+                }
+            }
         }
         return;
     }

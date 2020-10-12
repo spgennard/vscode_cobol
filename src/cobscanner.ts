@@ -17,7 +17,6 @@ for (const arg of args) {
         const scanData = ScanDataHelper.load(arg);
         GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
         features.logMessage("Scanning : ");
-        let count = 0;
         for(const file of scanData.Files) {
             const filesHandler= new FileSourceHandler(file, false);
             const config = new COBOLSettings();
@@ -26,8 +25,6 @@ for (const arg of args) {
 
             features.logMessage(`  => ${file}`);
             const scanner = COBOLSourceScanner.ParseCached(filesHandler, config, cacheDir, false, symbolCacher, features);
-
-            count++;
         }
         GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
     } else {
