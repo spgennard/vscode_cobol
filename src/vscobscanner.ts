@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import os from "os";
-import { extensions, FileType, ShellExecution, ShellExecutionOptions, Terminal, TerminalOptions, Uri, window, workspace } from "vscode";
+import { extensions, FileType, Terminal, TerminalOptions, Uri, window, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as path from 'path';
 import * as crypto from 'crypto';
 
 
@@ -92,10 +91,10 @@ export class COBOLSymbolTableHelperDB implements ICOBOLSourceScannerEvents {
         return hash.digest('hex');
     }
 
-    public static getSymbolTableGivenFile(cacheDirectory: string, nfilename: string): COBOLSymbolTable | undefined {
-        const filename = path.normalize(nfilename);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        return undefined;
-    }
+    // public static getSymbolTableGivenFile(cacheDirectory: string, nfilename: string): COBOLSymbolTable | undefined {
+    //     const filename = path.normalize(nfilename);
+    //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //     const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
+    //     return undefined;
+    // }
 }

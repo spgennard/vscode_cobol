@@ -58,6 +58,7 @@ export class COBOLSymbolTableHelper {
         }
         return [false, f];
     }
+
     private static getHashForFilename(filename: string) {
         const hash: Hash = crypto.createHash('sha256');
         hash.update(filename);
