@@ -83,6 +83,7 @@ for (const arg of args) {
                 if (Utils.cacheUpdateRequired(cacheDir, file)) {
                     const filesHandler = new FileSourceHandler(file, false);
                     const config = new COBOLSettings();
+                    config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     const symbolCacher = new COBOLSymbolTableEventHelper(config);
 
                     features.logMessage(`  Updating: ${file}`);

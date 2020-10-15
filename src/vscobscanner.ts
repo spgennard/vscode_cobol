@@ -9,6 +9,7 @@ import { logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
+import { config } from "vscode-nls";
 
 class ScanStats {
     filesIgnored = 0;
@@ -50,6 +51,7 @@ export class VSCobScanner {
         }
 
         const sf = new ScanData();
+        sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
 
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();

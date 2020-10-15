@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 
 export class ScanData {
+    public parse_copybooks_for_references = false;
     public cacheDirectory = "";
     public Files: string[] = [];
 }

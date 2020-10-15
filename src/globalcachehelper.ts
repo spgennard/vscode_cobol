@@ -49,7 +49,6 @@ export class GlobalCachesHelper {
     }
 
     public static saveGlobalCache(cacheDirectory: string): void {
-
         if (InMemoryGlobalSymbolCache.isDirty) {
             const fnGlobalSymbolFilename: string = path.join(cacheDirectory, globalSymbolFilename);
             fs.writeFileSync(fnGlobalSymbolFilename, lzjs.compress(JSON.stringify(InMemoryGlobalSymbolCache, replacer)));
