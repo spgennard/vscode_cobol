@@ -671,6 +671,7 @@ export function activate(context: ExtensionContext): void {
 
 
     const allCobolSelectors = [
+        { scheme: 'file', language: 'COBOL_LISTFILE' },
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
         { scheme: 'file', language: 'OpenCOBOL' },
