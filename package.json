@@ -1335,7 +1335,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook-netx-sx",
-                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):[^,]++(.*)\\((\\d+),(\\d+).*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):[^,]+,(.*)\\((\\d+),(\\d+).*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
