@@ -4,28 +4,22 @@
   "name": "COBOL_LISTFILE",
   "patterns": [
     {
-      "match" : "(\\f)",
-      "name" : "strong comment.line.form_feed.cobol_listfile"
+      "match": "(\\f)",
+      "name": "strong comment.line.form_feed.cobol_listfile"
     },
     {
-      "match": "(^[0-9 \\*][0-9 \\*][0-9 \\*][0-9 \\*][0-9 \\*][0-9 \\*])([pP])(.*)",
-      "captures": {
-        "1": {
-          "name": "constant.numeric.cobol_listfile"
-        },
-        "2": {
-          "name": "comment.block.preprocessor.cobol_listfile"
-        },
-        "3" : {
-          "name" : "emphasis bold"
+      "match": "(^\\*.*$)",
+      "name": "comment.line.modern"
+    },
+    {
+      "begin": "(^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ])",
+      "name": "constant.numeric.cobol_listfile",
+      "patterns": [
+        {
+          "include": "source.cobol"
         }
-      }
-    },
-    {
-
-    },
-    {
-      "include": "source.cobol"
+      ],
+      "end": "$"
     }
   ],
   "scopeName": "source.cobol_listfile"

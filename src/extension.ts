@@ -405,7 +405,7 @@ export function getCurrentContext(): ExtensionContext {
 }
 
 function flip_plaintext(doc: TextDocument) {
-    if (doc.languageId === 'plaintext') {
+    if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
         const lcount = doc.lineCount;
         if (lcount >= 3) {
             const firstLine = doc.lineAt((0)).text;
