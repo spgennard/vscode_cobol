@@ -1521,6 +1521,28 @@
                 "severity": 3,
                 "message": 4,
                 "loop": true
+            },
+            {
+                "name": "procobol-preprocessor",
+                "patterns": [
+                    {
+                        "regexp": "^Error at line (\\d+), column (\\d+) in file (.*)$",
+                        "line": 1,
+                        "column": 2,
+                        "file": 3
+                    },
+                    {
+                        "regexp": "^(.*)$"
+                    },
+                    {
+                        "regexp": "^(.*)$"
+                    },
+                    {
+                        "regexp": "^(\\s+\\d+\\s+)?([^:]*):\\s+(.*)$",
+                        "message": 3,
+                        "code": 2
+                    }
+                ]
             }
         ],
         "problemMatchers": [
@@ -1751,7 +1773,17 @@
                     "absolute"
                 ],
                 "pattern": "$acucobol-warning-ccbl",
-                "source": "ACUCOBOL-Gt"
+                "source": "ACUCOBOL-GT"
+            },
+            {
+                "name": "procobol-preprocessor",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": "$procobol-preprocessor",
+                "source": "Pro*COBOL",
+                "owner": "cobol",
+                "severity": "error"
             }
         ]
     },

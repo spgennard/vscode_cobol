@@ -1,0 +1,24 @@
+Error at line 1498, column 12 in file /tmp/MYPRG.pco
+           EXEC SQL
+...........1
+PCB-S-00576, PLS-390: undefined column 'CNT' in INSERT statement
+Error at line 1498, column 12 in file /tmp/MYPRG.pco
+           EXEC SQL
+...........1
+PCB-S-00576, PLS-0: SQL Statement ignored
+Error at line 1573, column 12 in file /tmp/MYPRG.pco
+           EXEC SQL
+...........1
+PCB-S-00576, PLS-417: unable to resolve "CNT" as a column
+Error at line 1573, column 12 in file /tmp/MYPRG.pco
+           EXEC SQL
+...........1
+PCB-S-00576, PLS-0: SQL Statement ignored
+Error at line 2080, column 12 in file /tmp/MYPRG.pco
+           EXEC SQL
+...........1
+PCB-S-00576, PLS-201: identifier 'CNT' must be declared
+Error at line 2080, column 12 in file /tmp/MYPRG.pco
+           EXEC SQL
+...........1
+PCB-S-00576, PLS-0: SQL Statement ignored
