@@ -5,7 +5,6 @@ dist/
 .vscode_cobol/
 .vscode-test/
 *.vsix
-package-lock.json
 examples/
 src/extension.ts.bak
 src/textprovider.ts.bak
