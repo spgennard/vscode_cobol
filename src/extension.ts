@@ -416,7 +416,8 @@ function flip_plaintext(doc: TextDocument) {
                 return;
             }
 
-            if (firstLine.startsWith("Pro*COBOL: Release")) {
+            if (firstLine.startsWith("GnuCOBOL ")
+             || firstLine.startsWith("Pro*COBOL: Release")) {
                 vscode.languages.setTextDocumentLanguage(doc, "COBOL_LISTFILE");
                 return;
             }
