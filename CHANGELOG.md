@@ -3,6 +3,43 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#187](https://github.com/spgennard/vscode_cobol/issues/187) Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline  
+
+**Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline Fix #187**
+
+ * - tweak language to handle line numbers &amp; move to using an 
+ * embedded approach to the listing syntax 
+
+[de366f628a0e993](https://github.com/spgennard/vscode_cobol/commit/de366f628a0e993) *2020-10-15 22:16:24*
+
+
+### GitHub [#222](https://github.com/spgennard/vscode_cobol/issues/222) partial patch - Problem matcher for Pro*COBOL  
+
+**partial patch - Problem matcher for Pro*COBOL Fix #222**
+
+ * - test included &amp; changed 
+ * - split problem matches out (think I will rename this) 
+
+[f9476ee008895a0](https://github.com/spgennard/vscode_cobol/commit/f9476ee008895a0) *2020-10-16 23:21:37*
+
+
+### GitHub [#224](https://github.com/spgennard/vscode_cobol/issues/224) FR: provide outline for &quot;COBOL_LISTFILE&quot;  
+
+**FR: provide outline for "COBOL_LISTFILE" Fix #224**
+
+
+[cea61e25a322862](https://github.com/spgennard/vscode_cobol/commit/cea61e25a322862) *2020-10-15 22:21:58*
+
+
+### GitHub [#225](https://github.com/spgennard/vscode_cobol/issues/225) Support Pro*COBOL listing  
+
+**Support Pro*COBOL listing Fix #225**
+
+
+[4cfc966e36b5418](https://github.com/spgennard/vscode_cobol/commit/4cfc966e36b5418) *2020-10-15 22:51:54*
+
+
 ## 6.8.2
 ### GitHub [#218](https://github.com/spgennard/vscode_cobol/issues/218) How to debug &quot;no definition found&quot; for copybooks?  
 
