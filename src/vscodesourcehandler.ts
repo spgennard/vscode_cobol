@@ -91,7 +91,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     }
 
      isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.containsKey(keyword);
+        return cobolKeywordDictionary.has(keyword);
     }
 
     getUri() : vscode.Uri {

@@ -1,4 +1,3 @@
-import * as Collections from 'typescript-collections';
 
 export const cobolKeywords: string[] = [
 	"accept",
@@ -462,7 +461,7 @@ export const cobolStorageKeywords: string[] = [
 	"property"
 ];
 
- export const cobolProcedureKeywords: string[] = [
+export const cobolProcedureKeywords: string[] = [
 	"accept",
 	"add",
 	"address",
@@ -582,25 +581,21 @@ export const cobolStorageKeywords: string[] = [
 	"write"
 ];
 
+
+
+export const cobolKeywordDictionary = new Map<string, string>();
+export const cobolProcedureKeywordDictionary = new Map<string, string>();
+export const cobolStorageKeywordDictionary = new Map<string, string>();
+
 /* inline decl */
-const tmpDict = new Collections.Dictionary<string, string>();
-cobolKeywords.forEach(function (value) {
-		tmpDict.setValue(value,value);
-	});
+for (const key of cobolKeywords) {
+	cobolKeywordDictionary.set(key, key);
+}
 
+for (const key of cobolProcedureKeywords) {
+	cobolProcedureKeywordDictionary.set(key, key);
+}
 
-const tmpDict2 = new Collections.Dictionary<string, string>();
-cobolProcedureKeywords.forEach(function (value) {
-		tmpDict2.setValue(value,value);
-	});
-
-const tmpDict3 = new Collections.Dictionary<string, string>();
-cobolStorageKeywords.forEach(function (value) {
-		tmpDict3.setValue(value,value);
-	});
-
-
-
-export const cobolKeywordDictionary: Collections.Dictionary<string, string> = tmpDict;
-export const cobolProcedureKeywordDictionary: Collections.Dictionary<string, string> = tmpDict2;
-export const cobolStorageKeywordDictionary: Collections.Dictionary<string, string> = tmpDict3;
+for (const key of cobolStorageKeywords) {
+	cobolStorageKeywordDictionary.set(key, key);
+}

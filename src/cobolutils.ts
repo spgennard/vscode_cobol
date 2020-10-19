@@ -303,7 +303,7 @@ export class COBOLUtils {
     }
 
     private isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.containsKey(keyword.toLowerCase());
+        return cobolKeywordDictionary.has(keyword.toLowerCase());
     }
 
     public foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle):void {

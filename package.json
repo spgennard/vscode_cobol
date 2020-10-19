@@ -72,6 +72,7 @@
         "onCommand:cobolplugin.dumpMetaData",
         "onCommand:cobolplugin.clearMetaData",
         "onCommand:cobolplugin.syntaxCheck",
+        "onCommand:cobolplugin.processAllFilesInWorkspaceLegacy",
         "onCommand:cobolplugin.processAllFilesInWorkspace",
         "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
         "onCommand:cobolplugin.mfurunMenu",
@@ -903,16 +904,16 @@
                 "title": "COBOL: Toggle margin"
             },
             {
-                "command": "cobolplugin.processAllFilesInWorkspace",
-                "title": "COBOL: Process files in workspace for metadata"
+                "command": "cobolplugin.processAllFilesInWorkspaceLegacy",
+                "title": "COBOL: Process files in workspace for metadata (Legacy code, to be removed)"
             },
             {
                 "command": "cobolplugin.checkWorkspaceForMissingCopybookDirs",
                 "title": "COBOL: Check workspace folders recursively for potential copybook directories"
             },
             {
-                "command": "cobolplugin.generateCOBScannerFile",
-                "title": "COBOL: Generate COBScanner file (WIP, internal use only)"
+                "command": "cobolplugin.processAllFilesInWorkspace",
+                "title": "COBOL: Process files in workspace for metadata"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
@@ -1826,7 +1827,6 @@
         "pkg": "^4.4.9",
         "properties-reader": "^2.1.1",
         "trie-search": "^1.2.11",
-        "typescript-collections": "^1.3.3",
         "typescript-string-operations": "^1.4.0",
         "vscode-nls": "^5.0.0"
     },

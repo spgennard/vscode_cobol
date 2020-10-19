@@ -570,7 +570,7 @@ export function activate(context: ExtensionContext): void {
         updateDecorations(act);
     });
 
-    const processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
+    const processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspaceLegacy', async () => {
         VSCOBOLSourceScanner.processAllFilesInWorkspaces(true);
     });
 
@@ -578,8 +578,8 @@ export function activate(context: ExtensionContext): void {
         await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
     });
 
-    const generateCOBScannerFile = commands.registerCommand('cobolplugin.generateCOBScannerFile', async () => {
-        await VSCobScanner.generateCOBScannerFile();
+    const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess();
     });
 
 
@@ -663,7 +663,7 @@ export function activate(context: ExtensionContext): void {
 
     context.subscriptions.push(toggleCOBOLMargin);
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
-    context.subscriptions.push(generateCOBScannerFile);
+    context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);
 
     context.subscriptions.push(processAllFilesInWorkspace);
     context.subscriptions.push(dumpMetadata);
@@ -1055,7 +1055,7 @@ export function activate(context: ExtensionContext): void {
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm_cache_promise = async () => {
-            VSCOBOLSourceScanner.processAllFilesInWorkspaces(false);
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess();
         };
         pm_cache_promise();
     }

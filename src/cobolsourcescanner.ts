@@ -1001,15 +1001,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
     private isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.containsKey(keyword);
+        return cobolKeywordDictionary.has(keyword);
     }
 
     private isValidProcedureKeyword(keyword: string): boolean {
-        return cobolProcedureKeywordDictionary.containsKey(keyword);
+        return cobolProcedureKeywordDictionary.has(keyword);
     }
 
     private isValidStorageKeyword(keyword: string): boolean {
-        return cobolStorageKeywordDictionary.containsKey(keyword);
+        return cobolStorageKeywordDictionary.has(keyword);
     }
 
     private isNumber(value: string): boolean {

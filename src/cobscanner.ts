@@ -73,10 +73,11 @@ console.clear();
 for (const arg of args) {
 
     if (arg.endsWith(".json")) {
-        const exitnow = false;
+        let exitnow = false;
         while (exitnow === false) {
             const scanData = ScanDataHelper.load(arg);
             GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
+            features.logMessage(`Ready to scan ${scanData.Files.length} file in ${scanData.Directories.length} directories`);
             for (const file of scanData.Files) {
                 const cacheDir = scanData.cacheDirectory;
 
@@ -92,7 +93,8 @@ for (const arg of args) {
             }
             GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
 
-            Utils.sleep(2);
+            features.logMessage(`Complete`);
+            exitnow=true;
         }
     }
     // console.log(scanner);

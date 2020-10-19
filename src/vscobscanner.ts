@@ -9,7 +9,6 @@ import { logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
-import { config } from "vscode-nls";
 
 class ScanStats {
     filesIgnored = 0;
@@ -25,11 +24,12 @@ let cobscannerTerminal: Terminal | undefined = undefined;
 const cobscannerTerminalName = "COBOL Source Scanner";
 
 export class VSCobScanner {
-    public static async generateCOBScannerFile(): Promise<void> {
+    public static async processAllFilesInWorkspaceOutOfProcess(): Promise<void> {
         const settings = VSCOBOLConfiguration.get();
         const ws = getWorkspaceFolders();
         const stats = new ScanStats();
         const files: string[] = [];
+        logMessage(`Preparing data for external scanner`);
         if (ws !== undefined) {
             for (const folder of ws) {
                 try {
@@ -40,15 +40,15 @@ export class VSCobScanner {
             }
 
         }
-
-        logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+        logMessage(`Scan Data:`);
+        logMessage(` Directories found   : ${stats.directoriesScanned}`);
         logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
         logMessage(` Files found         : ${stats.fileCount}`);
         logMessage(` Files ignored       : ${stats.filesIgnored}`);
 
-        for (const file of files) {
-            logMessage(` => ${file}`);
-        }
+        // for (const file of files) {
+        //     logMessage(` => ${file}`);
+        // }
 
         const sf = new ScanData();
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
@@ -57,7 +57,7 @@ export class VSCobScanner {
             sf.Directories.push(uri.fsPath);
         }
 
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        const cacheDirectory =  VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
@@ -82,6 +82,8 @@ export class VSCobScanner {
                     if (cobscannerTerminal === undefined) {
                         const options: TerminalOptions = { cwd: binPath, hideFromUser: false, name: cobscannerTerminalName };
                         cobscannerTerminal = window.createTerminal(options);
+                    } else {
+                        cobscannerTerminal.sendText('\\c');
                     }
                     cobscannerTerminal.sendText(`${cmdLine}`);
                 }

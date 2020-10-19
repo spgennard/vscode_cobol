@@ -208,7 +208,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
     }
 
     private isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.containsKey(keyword);
+        return cobolKeywordDictionary.has(keyword);
     }
 
     private getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position): boolean {

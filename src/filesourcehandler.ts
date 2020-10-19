@@ -122,7 +122,7 @@ export class FileSourceHandler implements ISourceHandler {
     }
 
     isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.containsKey(keyword);
+        return cobolKeywordDictionary.has(keyword);
     }
 
     getFilename(): string {
