@@ -14,6 +14,8 @@ cp ./out/cobscanner.js cobscanner/
 cp ./out/cobolsourcescanner.js cobscanner/
 cp -r ./out/keywords cobscanner/
 
+export PATH=$(npm bin):$PATH
+
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
 cd cobscanner

@@ -5,6 +5,7 @@ export class ScanData {
     public parse_copybooks_for_references = false;
     public cacheDirectory = "";
     public Files: string[] = [];
+    public Directories: string[] = [];
 }
 
 export class ScanDataHelper {

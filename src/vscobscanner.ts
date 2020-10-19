@@ -53,6 +53,9 @@ export class VSCobScanner {
         const sf = new ScanData();
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
+        for(const [,uri] of stats.directoriesScannedMap) {
+            sf.Directories.push(uri.fsPath);
+        }
 
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
