@@ -1,14 +1,15 @@
 import path from "path";
 import fs from "fs";
 import os from "os";
-import { extensions, FileType, Terminal, TerminalOptions, Uri, window, workspace } from "vscode";
+import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { logException, logMessage } from "./extension";
+import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
+import { spawn } from 'child_process';
 
 class ScanStats {
     filesIgnored = 0;
@@ -20,15 +21,22 @@ class ScanStats {
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
-let cobscannerTerminal: Terminal | undefined = undefined;
-const cobscannerTerminalName = "COBOL Source Scanner";
+// let cobscannerTerminal: Terminal | undefined = undefined;
+// const cobscannerTerminalName = "COBOL Source Scanner";
 
 export class VSCobScanner {
-    public static async processAllFilesInWorkspaceOutOfProcess(): Promise<void> {
+    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
         const settings = VSCOBOLConfiguration.get();
         const ws = getWorkspaceFolders();
         const stats = new ScanStats();
         const files: string[] = [];
+
+        if (!viaCommand) {
+            logChannelHide();
+        } else {
+            logChannelSetPreserveFocus(!viaCommand);
+        }
+
         logMessage(`Preparing data for external scanner`);
         if (ws !== undefined) {
             for (const folder of ws) {
@@ -53,11 +61,11 @@ export class VSCobScanner {
         const sf = new ScanData();
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
-        for(const [,uri] of stats.directoriesScannedMap) {
+        for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
         }
 
-        const cacheDirectory =  VSCOBOLSourceScanner.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
@@ -73,22 +81,36 @@ export class VSCobScanner {
             }
             if (thisExtension !== undefined) {
                 const extPath = `${thisExtension.extensionPath}`;
-                const binPath = path.join(extPath,"bin");
+                const binPath = path.join(extPath, "bin");
                 const exeName = `cobscanner-${platform}-${thisExtension.packageJSON.version}${suffix}`;
                 const exeNameFull = path.join(binPath, exeName);
                 if (fs.existsSync(exeNameFull)) {
-                    const jsonFile = path.join(cacheDirectory,"cobscanner.json");
-                    const cmdLine = `${exeNameFull} ${jsonFile}`;
-                    if (cobscannerTerminal === undefined) {
-                        const options: TerminalOptions = { cwd: binPath, hideFromUser: false, name: cobscannerTerminalName };
-                        cobscannerTerminal = window.createTerminal(options);
-                    } else {
-                        cobscannerTerminal.sendText('\\c');
+                    const jsonFile = path.join(cacheDirectory, "cobscanner.json");
+                    const child = spawn(`${exeNameFull}`, [`${jsonFile}`]);
+
+                    // child.on('exit', code => {
+                    //     logMessage(`Scan completed (${code})`);
+                    // });
+
+                    for await (const data of child.stdout) {
+                        // compress the output
+                        const lines: string = data.toString();
+                        for (const line of lines.split("\n")) {
+                            const lineTrimmed = line.trim();
+                            if (lineTrimmed.length !== 0) {
+                                logMessage(`==> ${line}`);
+                            }
+                        }
                     }
-                    cobscannerTerminal.sendText(`${cmdLine}`);
                 }
             }
         }
+
+
+        if (viaCommand) {
+            logChannelSetPreserveFocus(true);
+        }
+
         return;
     }
 

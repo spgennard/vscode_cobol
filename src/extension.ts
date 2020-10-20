@@ -579,7 +579,7 @@ export function activate(context: ExtensionContext): void {
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess();
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true);
     });
 
 
@@ -1055,7 +1055,7 @@ export function activate(context: ExtensionContext): void {
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm_cache_promise = async () => {
-            VSCobScanner.processAllFilesInWorkspaceOutOfProcess();
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false);
         };
         pm_cache_promise();
     }
