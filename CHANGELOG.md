@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.9.0
 ### GitHub [#187](https://github.com/spgennard/vscode_cobol/issues/187) Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline  
 
 **Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline Fix #187**
