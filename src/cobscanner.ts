@@ -1,6 +1,6 @@
 import COBOLSourceScanner from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
-import { ScanDataHelper } from "./cobscannerdata";
+import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
 import { IExternalFeatures } from "./externalfeatures";
@@ -19,7 +19,7 @@ const features: IExternalFeatures = ConsoleExternalFeatures.Default;
 class Utils {
     static readonly defaultStats = new fs.Stats();
 
-    private static msleep(n:number) {
+    private static msleep(n: number) {
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
     }
 
@@ -66,6 +66,19 @@ class Utils {
         return true;
     }
 
+    public static performance_now(): number {
+        if (!process.env.BROWSER) {
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                return require('performance-now').performance.now;
+            }
+            catch {
+                return Date.now();
+            }
+        }
+
+        return Date.now();
+    }
 }
 
 console.clear();
@@ -76,25 +89,66 @@ for (const arg of args) {
         let exitnow = false;
         while (exitnow === false) {
             const scanData = ScanDataHelper.load(arg);
+            const aborted = false;
+            const stats = new ScanStats();
+            stats.start = Utils.performance_now();
+            stats.directoriesScanned = scanData.directoriesScanned;
+            stats.maxDirectoryDepth = scanData.maxDirectoryDepth;
+            stats.fileCount = scanData.fileCount;
+
             GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
-            features.logMessage(`Ready to scan ${scanData.Files.length} file in ${scanData.Directories.length} directories`);
-            for (const file of scanData.Files) {
-                const cacheDir = scanData.cacheDirectory;
+            features.logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+            features.logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
+            features.logMessage(` Files found         : ${stats.fileCount}`);
+            try {
 
-                if (Utils.cacheUpdateRequired(cacheDir, file)) {
-                    const filesHandler = new FileSourceHandler(file, false);
-                    const config = new COBOLSettings();
-                    config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
-                    const symbolCacher = new COBOLSymbolTableEventHelper(config);
+                for (const file of scanData.Files) {
+                    const cacheDir = scanData.cacheDirectory;
 
-                    features.logMessage(`  Updating: ${file}`);
-                    const scanner = COBOLSourceScanner.ParseCached(filesHandler, config, cacheDir, false, symbolCacher, features);
+                    if (Utils.cacheUpdateRequired(cacheDir, file)) {
+                        const filesHandler = new FileSourceHandler(file, false);
+                        const config = new COBOLSettings();
+                        config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
+                        const symbolCacher = new COBOLSymbolTableEventHelper(config);
+
+                        const qcp = COBOLSourceScanner.ParseCached(filesHandler, config, cacheDir, false, symbolCacher, features);
+                        if (qcp.callTargets.size > 0) {
+                            stats.programsDefined++;
+                            if (qcp.callTargets !== undefined) {
+                                stats.entryPointsDefined += (qcp.callTargets.size - 1);
+                            }
+                        }
+                        if (scanData.showMessage) {
+                            features.logMessage(`  Updating: ${file}`);
+                        }
+                        stats.filesScanned++;
+                    } else {
+                        stats.filesUptodate++;
+                    }
                 }
-            }
-            GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
+            } finally {
+                const end = Utils.performance_now() - stats.start;
+                const completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
+                if (features.logTimedMessage(end, completedMessage) === false) {
+                    features.logMessage(completedMessage);
+                }
 
-            features.logMessage(`Complete`);
-            exitnow=true;
+                if (stats.filesScanned !== 0) {
+                    features.logMessage(` Files scanned       : ${stats.filesScanned}`);
+                }
+
+                if (stats.filesUptodate) {
+                    features.logMessage(` Files up to date    : ${stats.filesUptodate}`);
+                }
+
+                features.logMessage(` Program Count       : ${stats.programsDefined}`);
+                features.logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
+                GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
+
+                // delete the json file
+                fs.unlinkSync(arg);
+                exitnow = true;
+            }
         }
     }
     // console.log(scanner);

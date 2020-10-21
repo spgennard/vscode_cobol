@@ -17,6 +17,7 @@ import { InMemoryGlobalSymbolCache } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBOLUtils } from "./cobolutils";
+import { ScanStats } from "./cobscannerdata";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -25,19 +26,7 @@ export function clearCOBOLCache(): void {
     InMemoryCache.clear();
 }
 
-export class ScanStats {
-    timeCap = 600000;
-    directoriesScanned = 0;
-    directoryDepth = 0;
-    maxDirectoryDepth = 0;
-    filesScanned = 0;
-    copyBookExts = 0;
-    fileCount = 0;
-    filesUptodate = 0;
-    programsDefined = 0;
-    entryPointsDefined = 0;
-    start = 0;
-    showMessage = false;
+export class VSScanStats extends ScanStats {
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
@@ -142,7 +131,7 @@ export default class VSCOBOLSourceScanner {
         }
 
         if (getWorkspaceFolders()) {
-            const stats = new ScanStats();
+            const stats = new VSScanStats();
             const settings = VSCOBOLConfiguration.get();
             stats.showMessage = settings.cache_metadata_show_progress_messages;
             let aborted = false;
@@ -197,12 +186,10 @@ export default class VSCOBOLSourceScanner {
                     logMessage(` Directories scanned : ${stats.directoriesScanned}`);
                     logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
                     logMessage(` Files found         : ${stats.fileCount}`);
-                    logMessage(` File scanned        : ${stats.filesScanned}`);
-                    logMessage(` File up to date     : ${stats.filesUptodate}`);
+                    logMessage(` Files scanned       : ${stats.filesScanned}`);
+                    logMessage(` Files up to date    : ${stats.filesUptodate}`);
                     logMessage(` Program Count       : ${stats.programsDefined}`);
                     logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
-                    const scanCopyBooks = !settings.parse_copybooks_for_references;
-                    logMessage(` Scan copybooks      : ${scanCopyBooks}`);
 
                     if (end < stats.timeCap && abortedReason !== undefined) {
                         if (abortedReason instanceof Error) {
@@ -232,7 +219,7 @@ export default class VSCOBOLSourceScanner {
         return false;
     }
 
-    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, topLevelFolder: Uri, folder: Uri, stats: ScanStats): Promise<boolean> {
+    private static async processAllFilesDirectory(settings: ICOBOLSettings, cacheDirectory: string, topLevelFolder: Uri, folder: Uri, stats: VSScanStats): Promise<boolean> {
         try {
             const entries = await workspace.fs.readDirectory(folder);
             stats.directoriesScanned++;

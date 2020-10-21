@@ -21,9 +21,6 @@ class ScanStats {
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
-// let cobscannerTerminal: Terminal | undefined = undefined;
-// const cobscannerTerminalName = "COBOL Source Scanner";
-
 export class VSCobScanner {
     private static getExeName(): string {
         const thisExtension = extensions.getExtension("bitlang.cobol");
@@ -77,6 +74,9 @@ export class VSCobScanner {
             return VSCOBOLSourceScanner.processAllFilesInWorkspaces(viaCommand);
         }
 
+        logMessage("");
+        logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
+
         if (ws !== undefined) {
             for (const folder of ws) {
                 try {
@@ -87,19 +87,15 @@ export class VSCobScanner {
             }
 
         }
-        logMessage(`Scan Data:`);
-        logMessage(` Directories found   : ${stats.directoriesScanned}`);
-        logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
-        logMessage(` Files found         : ${stats.fileCount}`);
-        logMessage(` Files ignored       : ${stats.filesIgnored}`);
-
-        // for (const file of files) {
-        //     logMessage(` => ${file}`);
-        // }
 
         const sf = new ScanData();
+        sf.directoriesScanned = stats.directoriesScanned;
+        sf.maxDirectoryDepth = stats.maxDirectoryDepth;
+        sf.fileCount = stats.fileCount;
+
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
+        sf.showMessage = settings.cache_metadata_show_progress_messages;
         for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
         }
@@ -109,13 +105,15 @@ export class VSCobScanner {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
 
-
             const jsonFile = path.join(cacheDirectory, "cobscanner.json");
-            const child = spawn(`${exeName}`, [`${jsonFile}`]);
+            const windowsExe = exeName.endsWith(".exe");
+            const child = windowsExe ?
+                spawn('cmd.exe', ['/c', `${exeName}`, `${jsonFile}`])
+                : spawn(`${exeName}`, [`${jsonFile}`]);
 
-            // child.on('exit', code => {
-            //     logMessage(`Scan completed (${code})`);
-            // });
+            child.on('exit', code => {
+                logMessage(`Scan completed (${code})`);
+            });
 
             for await (const data of child.stdout) {
                 // compress the output
@@ -123,7 +121,7 @@ export class VSCobScanner {
                 for (const line of lines.split("\n")) {
                     const lineTrimmed = line.trim();
                     if (lineTrimmed.length !== 0) {
-                        logMessage(`==> ${line}`);
+                        logMessage(` ${line}`);
                     }
                 }
             }
