@@ -25,9 +25,13 @@ test -f cobscanner-linux-* && rm -f cobscanner-linux-*
 test -f cobscanner-macos-* && rm -f cobscanner-macos-*
 test -f cobscanner-linux-* && rm -f cobscanner-win*.exe
 
-mv cobscanner-linux cobscanner-linux-${PACKAGE_VERSION}
-mv cobscanner-macos cobscanner-macos-${PACKAGE_VERSION}
-mv cobscanner-win.exe cobscanner-win-${PACKAGE_VERSION}.exe
+test -f cobscanner-x64-linux-* && rm -f cobscanner-x64-linux-*
+test -f cobscanner-x64-macos-* && rm -f cobscanner-x64-macos-*
+test -f cobscanner-x64-linux-* && rm -f cobscanner-x64-win*.exe
+
+mv cobscanner-linux cobscanner-x64-linux-${PACKAGE_VERSION}
+mv cobscanner-macos cobscanner-x64-macos-${PACKAGE_VERSION}
+mv cobscanner-win.exe cobscanner-x64-win-${PACKAGE_VERSION}.exe
 cd ..
 
 test ! -d bin && mkdir bin

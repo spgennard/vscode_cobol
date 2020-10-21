@@ -25,11 +25,45 @@ class ScanStats {
 // const cobscannerTerminalName = "COBOL Source Scanner";
 
 export class VSCobScanner {
+    private static getExeName(): string {
+        const thisExtension = extensions.getExtension("bitlang.cobol");
+        const arch = process.arch;
+        let platform = "linux";
+        let suffix = "";
+        if (os.platform().startsWith("win")) {
+            platform = "win";
+            suffix = ".exe";
+        }
+        if (os.platform().startsWith("darwin")) {
+            platform = "macos";
+        }
+        if (thisExtension !== undefined) {
+            const extPath = `${thisExtension.extensionPath}`;
+            const binPath = path.join(extPath, "bin");
+            const exeName = `cobscanner-${arch}-${platform}-${thisExtension.packageJSON.version}${suffix}`;
+            const exeNameFull = path.join(binPath, exeName);
+            if (fs.existsSync(exeNameFull)) {
+                return exeNameFull;
+            }
+        }
+        return "";
+    }
+
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
+        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
+            logMessage("Metadata cache is off, no action taken");
+            return;
+        }
+
         const settings = VSCOBOLConfiguration.get();
         const ws = getWorkspaceFolders();
         const stats = new ScanStats();
         const files: string[] = [];
+
+        if (ws === undefined) {
+            logMessage(`No workspace folders available`);
+            return;
+        }
 
         if (!viaCommand) {
             logChannelHide();
@@ -37,7 +71,12 @@ export class VSCobScanner {
             logChannelSetPreserveFocus(!viaCommand);
         }
 
-        logMessage(`Preparing data for external scanner`);
+        const exeName = VSCobScanner.getExeName();
+        if (exeName.length === 0) {
+            logMessage(` External scanner is not available, using in memory version`);
+            return VSCOBOLSourceScanner.processAllFilesInWorkspaces(viaCommand);
+        }
+
         if (ws !== undefined) {
             for (const folder of ws) {
                 try {
@@ -69,38 +108,22 @@ export class VSCobScanner {
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
-            const thisExtension = extensions.getExtension("bitlang.cobol");
-            let platform = "linux";
-            let suffix = "";
-            if (os.platform().startsWith("win")) {
-                platform = "win";
-                suffix = ".exe";
-            }
-            if (os.platform().startsWith("darwin")) {
-                platform = "macos";
-            }
-            if (thisExtension !== undefined) {
-                const extPath = `${thisExtension.extensionPath}`;
-                const binPath = path.join(extPath, "bin");
-                const exeName = `cobscanner-${platform}-${thisExtension.packageJSON.version}${suffix}`;
-                const exeNameFull = path.join(binPath, exeName);
-                if (fs.existsSync(exeNameFull)) {
-                    const jsonFile = path.join(cacheDirectory, "cobscanner.json");
-                    const child = spawn(`${exeNameFull}`, [`${jsonFile}`]);
 
-                    // child.on('exit', code => {
-                    //     logMessage(`Scan completed (${code})`);
-                    // });
 
-                    for await (const data of child.stdout) {
-                        // compress the output
-                        const lines: string = data.toString();
-                        for (const line of lines.split("\n")) {
-                            const lineTrimmed = line.trim();
-                            if (lineTrimmed.length !== 0) {
-                                logMessage(`==> ${line}`);
-                            }
-                        }
+            const jsonFile = path.join(cacheDirectory, "cobscanner.json");
+            const child = spawn(`${exeName}`, [`${jsonFile}`]);
+
+            // child.on('exit', code => {
+            //     logMessage(`Scan completed (${code})`);
+            // });
+
+            for await (const data of child.stdout) {
+                // compress the output
+                const lines: string = data.toString();
+                for (const line of lines.split("\n")) {
+                    const lineTrimmed = line.trim();
+                    if (lineTrimmed.length !== 0) {
+                        logMessage(`==> ${line}`);
                     }
                 }
             }
