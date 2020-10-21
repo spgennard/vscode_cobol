@@ -19,6 +19,7 @@ export PATH=$(npm bin):$PATH
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
 cd cobscanner
+#pkg -t "node10-linux-x64,node10-win-x64" cobscanner.js
 pkg -t "node10-linux-x64,node10-macos-x64,node10-win-x64" cobscanner.js
 
 test -f cobscanner-linux-* && rm -f cobscanner-linux-*
@@ -30,7 +31,7 @@ test -f cobscanner-x64-macos-* && rm -f cobscanner-x64-macos-*
 test -f cobscanner-x64-linux-* && rm -f cobscanner-x64-win*.exe
 
 mv cobscanner-linux cobscanner-x64-linux-${PACKAGE_VERSION}
-mv cobscanner-macos cobscanner-x64-macos-${PACKAGE_VERSION}
+#mv cobscanner-macos cobscanner-x64-macos-${PACKAGE_VERSION}
 mv cobscanner-win.exe cobscanner-x64-win-${PACKAGE_VERSION}.exe
 cd ..
 
