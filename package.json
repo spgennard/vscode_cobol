@@ -1501,10 +1501,11 @@
             },
             {
                 "name": "gnucobol3-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|Anmerkung|[nN]ota):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|Anmerkung|[nN]ota|error): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
-                "message": 4
+                "message": 4,
+                "code": 6
             },
             {
                 "name": "acucobol-ccbl",

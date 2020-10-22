@@ -1,0 +1,2 @@
+prog.cob:22: error: OPEN REVERSED is obsolete in GnuCOBOL
+prog.cob:22: errores: OPEN REVERSED is obsolete in GnuCOBOL

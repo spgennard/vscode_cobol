@@ -1,0 +1,3 @@
+prog.cob:18: note: OPEN REVERSED is obsolete in GnuCOBOL [-Werror=obsolete]
+prog.cob:22: note: OPEN REVERSED is obsolete in GnuCOBOL
+prog.cob:22: warning: OPEN REVERSED is obsolete in GnuCOBOL
