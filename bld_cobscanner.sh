@@ -20,8 +20,8 @@ PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
 cd cobscanner
 #pkg -t "node10-linux-x64,node10-macos-x64,node10-win-x64" cobscanner.js
-pkg -t "node10-linux-x64,node10-win-x64" cobscanner.js
-
+pkg -t "linux-x64" -o cobscanner-linux cobscanner.js
+pkg -t "win-x64" --no-bytecode --public --public-packages '*' -o cobscanner-win.exe cobscanner.js
 test -f cobscanner-linux-* && rm -f cobscanner-linux-*
 test -f cobscanner-macos-* && rm -f cobscanner-macos-*
 test -f cobscanner-linux-* && rm -f cobscanner-win*.exe
