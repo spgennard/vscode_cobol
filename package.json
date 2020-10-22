@@ -1501,7 +1501,7 @@
             },
             {
                 "name": "gnucobol3-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|Anmerkung|[nN]ota|error): ([^[]*)(\\[(.*)\\])?$",
+                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|Anmerkung|[nN]ota): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
                 "message": 4,
