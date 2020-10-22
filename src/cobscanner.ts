@@ -1,4 +1,4 @@
-import COBOLSourceScanner from "./cobolsourcescanner";
+import COBOLSourceScanner, { SharedSourceReferences } from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
@@ -110,14 +110,14 @@ for (const arg of args) {
                         const config = new COBOLSettings();
                         config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                         const symbolCacher = new COBOLSymbolTableEventHelper(config);
-
-                        const qcp = COBOLSourceScanner.ParseCached(filesHandler, config, cacheDir, false, symbolCacher, features);
+                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(true), false, symbolCacher, features);
                         if (qcp.callTargets.size > 0) {
                             stats.programsDefined++;
                             if (qcp.callTargets !== undefined) {
                                 stats.entryPointsDefined += (qcp.callTargets.size - 1);
                             }
                         }
+
                         if (scanData.showMessage) {
                             features.logMessage(`  Updating: ${file}`);
                         }

@@ -112,7 +112,11 @@ export class VSCobScanner {
                 : spawn(`${exeName}`, [`${jsonFile}`]);
 
             child.on('exit', code => {
-                logMessage(`Scan completed (${code})`);
+                if (code !== 0) {
+                    logMessage(`Scan completed (Exit Code=${code})`);
+                } else {
+                    logMessage(`Scan completed`);
+                }
             });
 
             for await (const data of child.stdout) {
@@ -126,7 +130,6 @@ export class VSCobScanner {
                 }
             }
         }
-
 
         if (viaCommand) {
             logChannelSetPreserveFocus(true);

@@ -489,7 +489,7 @@ export class CallTargetInformation {
 }
 
 export interface ICOBOLSourceScannerEvents {
-    start(qp: ICOBOLSourceScanner):void;
+    start(qp: ICOBOLSourceScanner): void;
     processToken(token: COBOLToken): void;
     finish(): void;
 }
@@ -510,7 +510,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
 
     static readonly Default = new EmptyCOBOLSourceScannerEventHandler();
 
-    start(qp: ICOBOLSourceScanner):void {
+    start(qp: ICOBOLSourceScanner): void {
         return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -577,9 +577,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public static ParseUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
-        eventHandler : ICOBOLSourceScannerEvents,
+        eventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures
-        ): COBOLSourceScanner {
+    ): COBOLSourceScanner {
 
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
@@ -588,17 +588,16 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             parse_copybooks_for_references,
             eventHandler,
             externalFeatures
-            );
+        );
     }
 
     public static ParseCached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         cacheDirectory: string,
-        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
-        eventHandler : ICOBOLSourceScannerEvents,
+        parse_copybooks_for_references: boolean,
+        eventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures
-        ): COBOLSourceScanner {
-
+    ): COBOLSourceScanner {
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
             cacheDirectory,
@@ -606,16 +605,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             parse_copybooks_for_references,
             eventHandler,
             externalFeatures
-            );
+        );
     }
+
     public static ParseUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: COBOLSourceScanner,
         parse_copybooks_for_references: boolean,
-        eventHandler : ICOBOLSourceScannerEvents,
+        eventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures
 
-        ): COBOLSourceScanner {
+    ): COBOLSourceScanner {
 
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
@@ -633,7 +633,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
         sourceEventHandler: ICOBOLSourceScannerEvents,
-        externalFeatures:IExternalFeatures) {
+        externalFeatures: IExternalFeatures) {
 
         const filename = sourceHandler.getFilename();
 
