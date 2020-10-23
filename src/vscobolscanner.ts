@@ -18,6 +18,7 @@ import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBOLUtils } from "./cobolutils";
 import { ScanStats } from "./cobscannerdata";
+import { VSCobScanner } from "./vscobscanner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -359,6 +360,11 @@ export default class VSCOBOLSourceScanner {
     }
 
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
+        if (VSCobScanner.IsScannerActive()) {
+            window.showInformationMessage(" Unabled to clear metadata while caching is already in progress");
+            return;
+        }
+
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
                 clearCOBOLCache();

@@ -46,6 +46,12 @@ export class VSCobScanner {
         return "";
     }
 
+    private static activePid = 0;
+
+    public static IsScannerActive() : boolean {
+        return VSCobScanner.activePid !== 0;
+    }
+
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
             logMessage("Metadata cache is off, no action taken");
@@ -62,6 +68,11 @@ export class VSCobScanner {
             return;
         }
 
+        if (VSCobScanner.IsScannerActive()) {
+            logMessage(" Caching already in progress (no action taken");;
+            return;
+        }
+
         if (!viaCommand) {
             logChannelHide();
         } else {
@@ -70,8 +81,11 @@ export class VSCobScanner {
 
         const exeName = VSCobScanner.getExeName();
         if (exeName.length === 0) {
+            VSCobScanner.activePid++;
             logMessage(` External scanner is not available, using in memory version`);
-            return VSCOBOLSourceScanner.processAllFilesInWorkspaces(viaCommand);
+            const result = await VSCOBOLSourceScanner.processAllFilesInWorkspaces(viaCommand);
+            VSCobScanner.activePid = 0;
+            return result;
         }
 
         logMessage("");
@@ -111,7 +125,10 @@ export class VSCobScanner {
                 spawn('cmd.exe', ['/c', `${exeName}`, `${jsonFile}`])
                 : spawn(`${exeName}`, [`${jsonFile}`]);
 
+            VSCobScanner.activePid = child.pid;
+
             child.on('exit', code => {
+                VSCobScanner.activePid = 0;
                 if (code !== 0) {
                     logMessage(`Scan completed (Exit Code=${code})`);
                 } else {
