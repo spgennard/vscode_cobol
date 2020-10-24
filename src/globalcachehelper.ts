@@ -35,6 +35,7 @@ export class GlobalCachesHelper {
                     const str: string = fs.readFileSync(fn).toString();
                     const cachableTable: COBOLGlobalSymbolTable = JSON.parse(lzjs.decompress(str), reviver);
                     InMemoryGlobalSymbolCache.callableSymbols = cachableTable.callableSymbols;
+                    InMemoryGlobalSymbolCache.sourceFilenameModified = cachableTable.sourceFilenameModified;
                     InMemoryGlobalSymbolCache.lastModifiedTime = stat4cache.mtimeMs;
                     InMemoryGlobalSymbolCache.isDirty = false;
                     return true;
@@ -105,5 +106,14 @@ export class GlobalCachesHelper {
 
     public static getGlobalSymbolCache(): COBOLGlobalSymbolTable {
         return InMemoryGlobalSymbolCache;
+    }
+
+    public static addFilename(filename:string, lastModified: number):void {
+        if (InMemoryGlobalSymbolCache.sourceFilenameModified.has(filename)) {
+            InMemoryGlobalSymbolCache.sourceFilenameModified.delete(filename);
+            InMemoryGlobalSymbolCache.sourceFilenameModified.set(filename, lastModified);
+        } else {
+            InMemoryGlobalSymbolCache.sourceFilenameModified.set(filename, lastModified);
+        }
     }
 }

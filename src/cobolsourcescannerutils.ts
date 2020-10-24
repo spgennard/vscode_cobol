@@ -70,5 +70,7 @@ export class COBOLSourceScannerUtils {
             logMessage("");
             logMessage("Paragraphs/Sections in file : none (parse_copybooks_for_references set)");
         }
+
+        logMessage("   Source FileName cache : " + InMemoryGlobalSymbolCache.sourceFilenameModified.size);
     }
 }

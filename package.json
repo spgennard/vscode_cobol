@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.9.10",
+    "version": "6.9.11",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -72,7 +72,6 @@
         "onCommand:cobolplugin.dumpMetaData",
         "onCommand:cobolplugin.clearMetaData",
         "onCommand:cobolplugin.syntaxCheck",
-        "onCommand:cobolplugin.processAllFilesInWorkspaceLegacy",
         "onCommand:cobolplugin.processAllFilesInWorkspace",
         "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
         "onCommand:cobolplugin.mfurunMenu",
@@ -902,10 +901,6 @@
             {
                 "command": "cobolplugin.toggle_margin",
                 "title": "COBOL: Toggle margin"
-            },
-            {
-                "command": "cobolplugin.processAllFilesInWorkspaceLegacy",
-                "title": "COBOL: Process files in workspace for metadata (Legacy code, to be removed)"
             },
             {
                 "command": "cobolplugin.checkWorkspaceForMissingCopybookDirs",
@@ -1825,7 +1820,6 @@
         "n-readlines": "1.0.0",
         "node-html-parser": "^1.3.1",
         "performance-now": "2.1.0",
-        "pkg": "^4.4.9",
         "properties-reader": "^2.1.1",
         "trie-search": "^1.3.4",
         "typescript-string-operations": "^1.4.0",

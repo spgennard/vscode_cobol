@@ -3,16 +3,11 @@
 
 export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
-    public callableSymbols: Map<string, COBOLFileSymbol[]>;
+    public callableSymbols = new Map<string, COBOLFileSymbol[]>();
     public isDirty = false;
-    public classSymbols: Map<string, COBOLFileSymbol[]>;
-    public methodSymbols: Map<string, COBOLFileSymbol[]>;
-
-    public constructor() {
-        this.callableSymbols = new Map<string, COBOLFileSymbol[]>();
-        this.classSymbols = new Map<string, COBOLFileSymbol[]>();
-        this.methodSymbols = new Map<string, COBOLFileSymbol[]>();
-    }
+    public classSymbols = new Map<string, COBOLFileSymbol[]>();
+    public methodSymbols = new Map<string, COBOLFileSymbol[]>();
+    public sourceFilenameModified = new Map<string, number>();
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     static fromJSON(d: Object): COBOLGlobalSymbolTable {

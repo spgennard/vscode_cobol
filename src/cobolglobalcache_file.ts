@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 
 import { Hash } from "crypto";
-import { COBOLSymbol, COBOLSymbolTable, InMemorySymbolCache } from './cobolglobalcache';
+import { COBOLSymbol, COBOLSymbolTable, InMemoryGlobalSymbolCache, InMemorySymbolCache } from './cobolglobalcache';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -29,6 +29,9 @@ export function replacer(this: any, key: any, value: any): any {
 export function reviver(key: any, value: any): any {
     if (typeof value === 'object' && value !== null) {
         if (value.dataType === 'Map') {
+            if (key === 'sourceFilenameModified') {
+                return new Map<string, number>(value.value);
+            }
             return new Map<string, COBOLSymbol>(value.value);
         }
     }
@@ -73,6 +76,15 @@ export class COBOLSymbolTableHelper {
 
     public static cacheUpdateRequired(cacheDirectory: string, nfilename: string): boolean {
         const filename = path.normalize(nfilename);
+
+        const cachedMtime = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
+        if (cachedMtime !== undefined) {
+            const stat4src = fs.statSync(filename);
+            if (cachedMtime < stat4src.mtimeMs) {
+                return true;
+            }
+            return false;
+        }
 
         // check memory first
         if (InMemorySymbolCache.has(filename)) {

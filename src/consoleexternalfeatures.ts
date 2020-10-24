@@ -9,7 +9,12 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
 
 
     public logMessage(message: string): void {
+        if (process.send) {
+            process.send(message);
+
+        }
         console.log(message);
+
         return;
     }
 
@@ -46,10 +51,12 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         return Date.now();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
         return "";
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return ESourceFormat.unknown;
     }

@@ -13,28 +13,3 @@ cp ./out/cobolglobalcache.js cobscanner/
 cp ./out/cobscanner.js cobscanner/
 cp ./out/cobolsourcescanner.js cobscanner/
 cp -r ./out/keywords cobscanner/
-
-export PATH=$(npm bin):$PATH
-
-PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
-
-cd cobscanner
-#pkg -t "node10-linux-x64,node10-macos-x64,node10-win-x64" cobscanner.js
-pkg -t "linux-x64" -o cobscanner-linux cobscanner.js
-pkg -t "win-x64" --no-bytecode --public --public-packages '*' -o cobscanner-win.exe cobscanner.js
-test -f cobscanner-linux-* && rm -f cobscanner-linux-*
-test -f cobscanner-macos-* && rm -f cobscanner-macos-*
-test -f cobscanner-linux-* && rm -f cobscanner-win*.exe
-
-test -f cobscanner-x64-linux-* && rm -f cobscanner-x64-linux-*
-test -f cobscanner-x64-macos-* && rm -f cobscanner-x64-macos-*
-test -f cobscanner-x64-linux-* && rm -f cobscanner-x64-win*.exe
-
-mv cobscanner-linux cobscanner-x64-linux-${PACKAGE_VERSION}
-#mv cobscanner-macos cobscanner-x64-macos-${PACKAGE_VERSION}
-mv cobscanner-win.exe cobscanner-x64-win-${PACKAGE_VERSION}.exe
-cd ..
-
-test ! -d bin && mkdir bin
-mv cobscanner/cobscanner-* bin/
-rm -rf cobscanner

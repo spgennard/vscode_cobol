@@ -570,9 +570,6 @@ export function activate(context: ExtensionContext): void {
         updateDecorations(act);
     });
 
-    const processAllFilesInWorkspace = commands.registerCommand('cobolplugin.processAllFilesInWorkspaceLegacy', async () => {
-        VSCOBOLSourceScanner.processAllFilesInWorkspaces(true);
-    });
 
     const checkWorkspaceForMissingCopybookDirs = commands.registerCommand('cobolplugin.checkWorkspaceForMissingCopybookDirs', async () => {
         await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
@@ -665,7 +662,6 @@ export function activate(context: ExtensionContext): void {
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);
 
-    context.subscriptions.push(processAllFilesInWorkspace);
     context.subscriptions.push(dumpMetadata);
     context.subscriptions.push(clearMetaData);
 

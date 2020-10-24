@@ -684,6 +684,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         /* mark this has been processed (to help copy of self) */
         state.copyBooksUsed.set(this.filename, COBOLToken.Null);
+        if (this.sourceReferences.topLevel) {
+            const stat: fs.Stats = fs.statSync(this.filename);
+            this.lastModifiedTime = stat.mtimeMs;
+        }
 
         // setup the event handler
         if (cacheDirectory !== null && cacheDirectory.length > 0) {
@@ -699,9 +703,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
 
         if (this.sourceReferences.topLevel) {
-            const stat: fs.Stats = fs.statSync(this.filename);
-            this.lastModifiedTime = stat.mtimeMs;
-
             /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
             const lineLimit = configHandler.pre_parse_line_limit;
             const maxLinesInFile = sourceHandler.getLineCount();

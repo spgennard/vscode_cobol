@@ -9,7 +9,8 @@ import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage } 
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
-import { spawn } from 'child_process';
+import { fork, ForkOptions } from 'child_process';
+import { GlobalCachesHelper } from "./globalcachehelper";
 
 class ScanStats {
     filesIgnored = 0;
@@ -46,10 +47,31 @@ export class VSCobScanner {
         return "";
     }
 
+    private static getCobScannerDirectory(): string {
+        const thisExtension = extensions.getExtension("bitlang.cobol");
+        if (thisExtension !== undefined) {
+            const extPath = `${thisExtension.extensionPath}`;
+            return path.join(extPath, "cobscanner");
+        }
+        return "";
+    }
     private static activePid = 0;
 
-    public static IsScannerActive() : boolean {
-        return VSCobScanner.activePid !== 0;
+    public static isAlive(pid: number): boolean {
+        try {
+            return process.kill(pid, 0);
+        }
+        catch (e) {
+            return e.code === 'EPERM';
+        }
+    }
+
+    public static IsScannerActive(): boolean {
+        if (VSCobScanner.activePid === 0) {
+            return false;
+        }
+
+        return this.isAlive(VSCobScanner.activePid);
     }
 
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
@@ -68,26 +90,11 @@ export class VSCobScanner {
             return;
         }
 
-        if (VSCobScanner.IsScannerActive()) {
-            logMessage(" Caching already in progress (no action taken");;
-            return;
-        }
-
         if (!viaCommand) {
             logChannelHide();
         } else {
             logChannelSetPreserveFocus(!viaCommand);
         }
-
-        const exeName = VSCobScanner.getExeName();
-        if (exeName.length === 0) {
-            VSCobScanner.activePid++;
-            logMessage(` External scanner is not available, using in memory version`);
-            const result = await VSCOBOLSourceScanner.processAllFilesInWorkspaces(viaCommand);
-            VSCobScanner.activePid = 0;
-            return result;
-        }
-
         logMessage("");
         logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
 
@@ -119,11 +126,14 @@ export class VSCobScanner {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
 
+            const jDir = path.join(VSCobScanner.getCobScannerDirectory(), "cobscanner.js");
             const jsonFile = path.join(cacheDirectory, "cobscanner.json");
-            const windowsExe = exeName.endsWith(".exe");
-            const child = windowsExe ?
-                spawn('cmd.exe', ['/c', `${exeName}`, `${jsonFile}`])
-                : spawn(`${exeName}`, [`${jsonFile}`]);
+
+            const options: ForkOptions = {
+                stdio: [0, 1, 2, "ipc"]
+            };
+
+            const child = await fork(jDir, [jsonFile], options);
 
             VSCobScanner.activePid = child.pid;
 
@@ -133,26 +143,28 @@ export class VSCobScanner {
                     logMessage(`Scan completed (Exit Code=${code})`);
                 } else {
                     logMessage(`Scan completed`);
+                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
                 }
             });
 
-            for await (const data of child.stdout) {
-                // compress the output
-                const lines: string = data.toString();
-                for (const line of lines.split("\n")) {
-                    const lineTrimmed = line.trim();
-                    if (lineTrimmed.length !== 0) {
-                        logMessage(` ${line}`);
+            child.on('message', (msg)=>{
+                logMessage(msg as string);
+            });
+
+            if (child.stdout !== null) {
+                for await (const data of child.stdout) {
+                    // compress the output
+                    const lines: string = data.toString();
+                    for (const line of lines.split("\n")) {
+                        const lineTrimmed = line.trim();
+                        if (lineTrimmed.length !== 0) {
+                            logMessage(` ${line}`);
+                        }
                     }
                 }
             }
-        }
 
-        if (viaCommand) {
-            logChannelSetPreserveFocus(true);
         }
-
-        return;
     }
 
     private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {
