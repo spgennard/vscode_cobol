@@ -88,8 +88,6 @@ class Utils {
     }
 }
 
-features.logMessage("Scanner started with "+args.length+" arguments");
-
 for (const arg of args) {
 
     if (arg.endsWith(".json")) {

@@ -46,6 +46,7 @@ import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
 import { ESourceFormat } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
+import { config } from 'vscode-nls';
 
 let formatStatusBarItem: StatusBarItem;
 
@@ -622,7 +623,9 @@ export function activate(context: ExtensionContext): void {
     });
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
-        await VSCobScanner.processSavedFile(doc.uri.fsPath, settings);
+        if (settings.process_metadata_cache_on_file_save) {
+            await VSCobScanner.processSavedFile(doc.uri.fsPath, settings);
+        }
     });
     context.subscriptions.push(onDidSaveTextDocumentHandler);
 

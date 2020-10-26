@@ -87,10 +87,6 @@ export class VSCobScanner {
                 logException("Fork caused", err);
             });
 
-            child.on('close', (code, signal) => {
-                logMessage(`Child process terminated due to receipt of signal ${signal} (${code})`);
-            });
-
             child.on('exit', code => {
                 VSCobScanner.activePid = 0;
                 if (code !== 0) {

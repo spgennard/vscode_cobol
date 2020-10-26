@@ -49,6 +49,7 @@ export class VSCOBOLConfiguration {
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
         vsconfig.process_scanner_hints_embedded_in_comments = getBoolean("process_scanner_hints_embedded_in_comments", false);
         vsconfig.process_scanner_hint_token_for_source_dependancies = getProcess_scanner_hint_token_for_source_dependancies();
+        vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
         return vsconfig;
     }
 
