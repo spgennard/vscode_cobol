@@ -64,22 +64,32 @@ export class VSCobScanner {
         return this.isAlive(VSCobScanner.activePid);
     }
 
-    public static async forkScanner(sf: ScanData):Promise<void> {
+    public static async forkScanner(sf: ScanData): Promise<void> {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
 
-            const jDir = path.join(VSCobScanner.getCobScannerDirectory(), "cobscanner.js");
+            const scannerDir = VSCobScanner.getCobScannerDirectory();
+            const jDir = path.join(scannerDir, "cobscanner.js");
             const jsonFile = path.join(cacheDirectory, "cobscanner.json");
 
             const options: ForkOptions = {
-                stdio: [0, 1, 2, "ipc"]
+                stdio: [0, 1, 2, "ipc"],
+                cwd : scannerDir
             };
 
-            const child = await fork(jDir, [jsonFile], options);
+            const child = fork(jDir, [jsonFile], options);
 
             VSCobScanner.activePid = child.pid;
+
+            child.on('error', err => {
+                logException("Fork caused", err);
+            });
+
+            child.on('close', (code, signal) => {
+                logMessage(`Child process terminated due to receipt of signal ${signal} (${code})`);
+            });
 
             child.on('exit', code => {
                 VSCobScanner.activePid = 0;
@@ -117,6 +127,11 @@ export class VSCobScanner {
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
             logMessage("Metadata cache is off, no action taken");
+            return;
+        }
+
+        if (VSCobScanner.IsScannerActive()) {
+            logMessage("Source scanner already active, no action taken");
             return;
         }
 

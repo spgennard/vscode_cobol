@@ -18,8 +18,6 @@ const args = process.argv.slice(2);
 const features: IExternalFeatures = ConsoleExternalFeatures.Default;
 
 class Utils {
-    static readonly defaultStats = new fs.Stats();
-
     private static msleep(n: number) {
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
     }
@@ -28,20 +26,19 @@ class Utils {
         Utils.msleep(n * 1000);
     }
 
-    private static isFileT(sdir: string): [boolean, fs.Stats] {
-        let f: fs.Stats = Utils.defaultStats;
+    private static isFileT(sdir: string): [boolean, fs.Stats|undefined] {
         try {
             if (fs.existsSync(sdir)) {
-                f = fs.statSync(sdir);
+                const f = fs.statSync(sdir);
                 if (f && f.isFile()) {
                     return [true, f];
                 }
             }
         }
         catch {
-            return [false, f];
+            return [false, undefined];
         }
-        return [false, f];
+        return [false, undefined];
     }
 
     public static getHashForFilename(filename: string) {
@@ -67,7 +64,7 @@ class Utils {
         if (fnStat[0]) {
             const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);
-            if (stat4cache.mtimeMs < stat4src.mtimeMs) {
+            if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
                 return true;
             }
             return false;
@@ -91,7 +88,7 @@ class Utils {
     }
 }
 
-console.clear();
+features.logMessage("Scanner started with "+args.length+" arguments");
 
 for (const arg of args) {
 

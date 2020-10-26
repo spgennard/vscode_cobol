@@ -107,25 +107,6 @@ export class COBOLStatUtils {
         return false;
     }
 
-
-    static readonly defaultStats = new fs.Stats();
-
-    public static isFileT(sdir: string): [boolean, fs.Stats] {
-        let f: fs.Stats = COBOLStatUtils.defaultStats;
-        try {
-            if (fs.existsSync(sdir)) {
-                f = fs.statSync(sdir);
-                if (f && f.isFile()) {
-                    return [true, f];
-                }
-            }
-        }
-        catch {
-            return [false, f];
-        }
-        return [false, f];
-    }
-
     public static isPathInWorkspace(ddir: string): boolean {
         const ws = getWorkspaceFolders();
         if (workspace === undefined || ws === undefined) {
@@ -1055,12 +1036,11 @@ export function activate(context: ExtensionContext): void {
     }
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
-        const pm_cache_promise = async () => {
-            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false);
-        };
-        pm_cache_promise();
+        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false);
+        pm.then( () => {
+            return;
+        });
     }
-
 }
 
 export function enableMarginStatusBar(formatStyle: ESourceFormat): void {

@@ -6,6 +6,8 @@ dist/
 .vscode-test/
 *.vsix
 examples/
+cobscanner/*.js
+cobscanner/keywords/*
 src/extension.ts.bak
 src/textprovider.ts.bak
 *nls.*.json

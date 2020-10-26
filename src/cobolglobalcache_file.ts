@@ -44,22 +44,20 @@ function logMessage(mesg: string) {
 }
 
 export class COBOLSymbolTableHelper {
-    static readonly defaultStats = new fs.Stats();
 
-    private static isFileT(sdir: string): [boolean, fs.Stats] {
-        let f: fs.Stats = COBOLSymbolTableHelper.defaultStats;
+    private static isFileT(sdir: string): [boolean, fs.Stats|undefined] {
         try {
             if (fs.existsSync(sdir)) {
-                f = fs.statSync(sdir);
+                const f = fs.statSync(sdir);
                 if (f && f.isFile()) {
                     return [true, f];
                 }
             }
         }
         catch {
-            return [false, f];
+            return [false, undefined];
         }
-        return [false, f];
+        return [false, undefined];
     }
 
     private static getHashForFilename(filename: string) {
@@ -105,7 +103,7 @@ export class COBOLSymbolTableHelper {
         if (fnStat[0]) {
             const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);
-            if (stat4cache.mtimeMs < stat4src.mtimeMs) {
+            if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
                 return true;
             }
             return false;
@@ -134,7 +132,7 @@ export class COBOLSymbolTableHelper {
         if (fnStat[0]) {
             const stat4cache = fnStat[1];
             const stat4src = fs.statSync(filename);
-            if (stat4cache.mtimeMs < stat4src.mtimeMs) {
+            if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
                 // never return a out of date cache
                 fs.unlinkSync(fn);
                 return undefined;

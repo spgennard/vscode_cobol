@@ -7,22 +7,19 @@ import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOL
 import { replacer, reviver } from './cobolglobalcache_file';
 
 export class GlobalCachesHelper {
-    static readonly defaultStats = new fs.Stats();
-
-    private static isFileT(sdir: string): [boolean, fs.Stats] {
-        let f: fs.Stats = GlobalCachesHelper.defaultStats;
+    private static isFileT(sdir: string): [boolean, fs.Stats|undefined] {
         try {
             if (fs.existsSync(sdir)) {
-                f = fs.statSync(sdir);
+                const f = fs.statSync(sdir);
                 if (f && f.isFile()) {
                     return [true, f];
                 }
             }
         }
         catch {
-            return [false, f];
+            return [false, undefined];
         }
-        return [false, f];
+        return [false, undefined];
     }
 
     public static loadGlobalSymbolCache(cacheDirectory: string): boolean {
