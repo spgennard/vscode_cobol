@@ -1,6 +1,4 @@
 import path from "path";
-import fs from "fs";
-import os from "os";
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
@@ -23,28 +21,20 @@ class ScanStats {
 }
 
 export class VSCobScanner {
-    private static getExeName(): string {
-        const thisExtension = extensions.getExtension("bitlang.cobol");
-        const arch = process.arch;
-        let platform = "linux";
-        let suffix = "";
-        if (os.platform().startsWith("win")) {
-            platform = "win";
-            suffix = ".exe";
+    public static async processSavedFile(fsPath: string, settings: ICOBOLSettings): Promise<void> {
+        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
+            return;
         }
-        if (os.platform().startsWith("darwin")) {
-            platform = "macos";
+
+        if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
+            const sf = new ScanData();
+            sf.showStats = false;
+            sf.Files.push(fsPath);
+            sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
+            sf.showMessage = settings.cache_metadata_show_progress_messages;
+            await this.forkScanner(sf);
         }
-        if (thisExtension !== undefined) {
-            const extPath = `${thisExtension.extensionPath}`;
-            const binPath = path.join(extPath, "bin");
-            const exeName = `cobscanner-${arch}-${platform}-${thisExtension.packageJSON.version}${suffix}`;
-            const exeNameFull = path.join(binPath, exeName);
-            if (fs.existsSync(exeNameFull)) {
-                return exeNameFull;
-            }
-        }
-        return "";
+
     }
 
     private static getCobScannerDirectory(): string {
@@ -72,6 +62,56 @@ export class VSCobScanner {
         }
 
         return this.isAlive(VSCobScanner.activePid);
+    }
+
+    public static async forkScanner(sf: ScanData):Promise<void> {
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            sf.cacheDirectory = cacheDirectory;
+            ScanDataHelper.save(cacheDirectory, sf);
+
+            const jDir = path.join(VSCobScanner.getCobScannerDirectory(), "cobscanner.js");
+            const jsonFile = path.join(cacheDirectory, "cobscanner.json");
+
+            const options: ForkOptions = {
+                stdio: [0, 1, 2, "ipc"]
+            };
+
+            const child = await fork(jDir, [jsonFile], options);
+
+            VSCobScanner.activePid = child.pid;
+
+            child.on('exit', code => {
+                VSCobScanner.activePid = 0;
+                if (code !== 0) {
+                    if (sf.showMessage) {
+                        logMessage(`Scan completed (Exit Code=${code})`);
+                    }
+                } else {
+                    if (sf.showMessage && sf.showStats) {
+                        logMessage(`Scan completed`);
+                    }
+                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
+                }
+            });
+
+            child.on('message', (msg) => {
+                logMessage(msg as string);
+            });
+
+            if (child.stdout !== null) {
+                for await (const data of child.stdout) {
+                    // compress the output
+                    const lines: string = data.toString();
+                    for (const line of lines.split("\n")) {
+                        const lineTrimmed = line.trim();
+                        if (lineTrimmed.length !== 0) {
+                            logMessage(` ${line}`);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
@@ -121,50 +161,7 @@ export class VSCobScanner {
             sf.Directories.push(uri.fsPath);
         }
 
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-        if (cacheDirectory !== undefined) {
-            sf.cacheDirectory = cacheDirectory;
-            ScanDataHelper.save(cacheDirectory, sf);
-
-            const jDir = path.join(VSCobScanner.getCobScannerDirectory(), "cobscanner.js");
-            const jsonFile = path.join(cacheDirectory, "cobscanner.json");
-
-            const options: ForkOptions = {
-                stdio: [0, 1, 2, "ipc"]
-            };
-
-            const child = await fork(jDir, [jsonFile], options);
-
-            VSCobScanner.activePid = child.pid;
-
-            child.on('exit', code => {
-                VSCobScanner.activePid = 0;
-                if (code !== 0) {
-                    logMessage(`Scan completed (Exit Code=${code})`);
-                } else {
-                    logMessage(`Scan completed`);
-                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
-                }
-            });
-
-            child.on('message', (msg)=>{
-                logMessage(msg as string);
-            });
-
-            if (child.stdout !== null) {
-                for await (const data of child.stdout) {
-                    // compress the output
-                    const lines: string = data.toString();
-                    for (const line of lines.split("\n")) {
-                        const lineTrimmed = line.trim();
-                        if (lineTrimmed.length !== 0) {
-                            logMessage(` ${line}`);
-                        }
-                    }
-                }
-            }
-
-        }
+        await VSCobScanner.forkScanner(sf);
     }
 
     private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {

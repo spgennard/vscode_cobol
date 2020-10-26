@@ -184,13 +184,33 @@ export default class VSCOBOLSourceScanner {
                     if (logTimedMessage(end, completedMessage) === false) {
                         logMessage(completedMessage);
                     }
-                    logMessage(` Directories scanned : ${stats.directoriesScanned}`);
-                    logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
-                    logMessage(` Files found         : ${stats.fileCount}`);
-                    logMessage(` Files scanned       : ${stats.filesScanned}`);
-                    logMessage(` Files up to date    : ${stats.filesUptodate}`);
-                    logMessage(` Program Count       : ${stats.programsDefined}`);
-                    logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
+                    if (stats.directoriesScanned !== 0) {
+                        logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+                    }
+
+                    if (stats.maxDirectoryDepth !== 0) {
+                        logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
+                    }
+
+                    if (stats.fileCount !== 0) {
+                        logMessage(` Files found         : ${stats.fileCount}`);
+                    }
+
+                    if (stats.filesScanned !== 0) {
+                        logMessage(` Files scanned       : ${stats.filesScanned}`);
+                    }
+
+                    if (stats.filesUptodate !== 0) {
+                        logMessage(` Files up to date    : ${stats.filesUptodate}`);
+                    }
+
+                    if (stats.programsDefined !== 0) {
+                        logMessage(` Program Count       : ${stats.programsDefined}`);
+                    }
+
+                    if (stats.entryPointsDefined !== 0) {
+                        logMessage(` Entry-Point Count   : ${stats.entryPointsDefined}`);
+                    }
 
                     if (end < stats.timeCap && abortedReason !== undefined) {
                         if (abortedReason instanceof Error) {

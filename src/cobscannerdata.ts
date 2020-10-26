@@ -10,6 +10,7 @@ export class ScanData {
     public cacheDirectory = "";
     public Files: string[] = [];
     public Directories: string[] = [];
+    public showStats = true;
 }
 
 export class ScanStats {

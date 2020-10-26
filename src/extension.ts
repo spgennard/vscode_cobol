@@ -640,6 +640,11 @@ export function activate(context: ExtensionContext): void {
         treeView.clearFile(uri);
     });
 
+    const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
+        await VSCobScanner.processSavedFile(doc.uri.fsPath, settings);
+    });
+    context.subscriptions.push(onDidSaveTextDocumentHandler);
+
     window.registerTreeDataProvider('flat-source-view', treeView);
 
     context.subscriptions.push(move2pdCommand);

@@ -107,9 +107,18 @@ for (const arg of args) {
             stats.fileCount = scanData.fileCount;
 
             GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
-            features.logMessage(` Directories scanned : ${stats.directoriesScanned}`);
-            features.logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
-            features.logMessage(` Files found         : ${stats.fileCount}`);
+            if (scanData.showStats) {
+                if (stats.directoriesScanned !== 0) {
+                    features.logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+                }
+                if (stats.maxDirectoryDepth !== 0) {
+                    features.logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
+                }
+
+                if (stats.fileCount) {
+                    features.logMessage(` Files found         : ${stats.fileCount}`);
+                }
+            }
             try {
 
                 for (const file of scanData.Files) {
@@ -129,7 +138,7 @@ for (const arg of args) {
                         }
 
                         if (scanData.showMessage) {
-                            features.logMessage(`  Updating: ${file}`);
+                            features.logMessage(`  Parse completed: ${file}`);
                         }
                         stats.filesScanned++;
                     } else {
@@ -138,20 +147,31 @@ for (const arg of args) {
                 }
             } finally {
                 const end = Utils.performance_now() - stats.start;
-                const completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
-                if (features.logTimedMessage(end, completedMessage) === false) {
-                    features.logMessage(completedMessage);
+                if (scanData.showStats) {
+                    let completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
+                    if (stats.filesScanned === 1) {
+                        completedMessage = "";
+                    }
+                    if (features.logTimedMessage(end, completedMessage) === false) {
+                        features.logMessage(completedMessage);
+                    }
+
+                    if (stats.filesScanned !== 0) {
+                        features.logMessage(` Files scanned         : ${stats.filesScanned}`);
+                    }
+
+                    if (stats.filesUptodate !== 0) {
+                        features.logMessage(` Files up to date      : ${stats.filesUptodate}`);
+                    }
+
+                    if (stats.programsDefined !== 0) {
+                        features.logMessage(` Program Count         : ${stats.programsDefined}`);
+                    }
+
+                    if (stats.entryPointsDefined !== 0) {
+                        features.logMessage(` Entry-Point Count     : ${stats.entryPointsDefined}`);
+                    }
                 }
-
-                if (stats.filesScanned !== 0) {
-                    features.logMessage(` Files scanned         : ${stats.filesScanned}`);
-                }
-
-                features.logMessage(` Files up to date      : ${stats.filesUptodate}`);
-
-                features.logMessage(` Program Count         : ${stats.programsDefined}`);
-                features.logMessage(` Entry-Point Count     : ${stats.entryPointsDefined}`);
-                features.logMessage(` Source FileName cache : ${InMemoryGlobalSymbolCache.sourceFilenameModified.size}`);
                 GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
 
                 // delete the json file
