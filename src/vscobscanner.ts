@@ -96,6 +96,8 @@ export class VSCobScanner {
             VSCobScanner.activePid = child.pid;
 
             child.on('error', err => {
+                const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+                fs.unlinkSync(jsonFile);
                 logException("Fork caused", err);
             });
 

@@ -26,7 +26,7 @@ class Utils {
         Utils.msleep(n * 1000);
     }
 
-    private static isFileT(sdir: string): [boolean, fs.Stats|undefined] {
+    private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
         try {
             if (fs.existsSync(sdir)) {
                 const f = fs.statSync(sdir);
@@ -89,10 +89,8 @@ class Utils {
 }
 
 for (const arg of args) {
-
     if (arg.endsWith(".json")) {
-        let exitnow = false;
-        while (exitnow === false) {
+        try {
             const scanData = ScanDataHelper.load(arg);
             const aborted = false;
             const stats = new ScanStats();
@@ -166,12 +164,16 @@ for (const arg of args) {
 
                 }
                 GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
-
-                // delete the json file
-                fs.unlinkSync(arg);
-                exitnow = true;
             }
         }
+        catch (e) {
+            features.logException("cobscanner", e);
+        }
+        finally {
+            // delete the json file
+            fs.unlinkSync(arg);
+        }
+
     }
     // console.log(scanner);
 }
