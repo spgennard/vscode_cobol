@@ -12,6 +12,7 @@ import { fork, ForkOptions } from 'child_process';
 import { GlobalCachesHelper } from "./globalcachehelper";
 
 class ScanStats {
+    parentPid = 0;
     filesIgnored = 0;
     directoriesScanned = 0;
     directoryDepth = 0;
@@ -22,7 +23,7 @@ class ScanStats {
 }
 
 export class VSCobScanner {
-    private static readonly scannerDir = VSCobScanner.getCobScannerDirectory();
+    public static readonly scannerBinDir = VSCobScanner.getCobScannerDirectory();
 
     public static async processSavedFile(fsPath: string, settings: ICOBOLSettings): Promise<void> {
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
@@ -60,7 +61,8 @@ export class VSCobScanner {
     }
 
     public static IsScannerActive(cacheDirectory: string): boolean {
-        const jsonFile = path.join(cacheDirectory, "cobscanner.json");
+
+        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
         const jsonFileExists = fs.existsSync(jsonFile);
 
         if (VSCobScanner.activePid === 0) {
@@ -81,12 +83,12 @@ export class VSCobScanner {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
 
-            const jcobscanner_js = path.join(VSCobScanner.scannerDir, "cobscanner.js");
-            const jsonFile = path.join(cacheDirectory, "cobscanner.json");
+            const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
+            const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
 
             const options: ForkOptions = {
                 stdio: [0, 1, 2, "ipc"],
-                cwd : VSCobScanner.scannerDir
+                cwd : VSCobScanner.scannerBinDir
             };
 
             const child = fork(jcobscanner_js, [jsonFile], options);

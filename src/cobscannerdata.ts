@@ -29,7 +29,7 @@ export class ScanStats {
 }
 
 export class ScanDataHelper {
-    static readonly scanFilename = "cobscanner.json";
+    public static readonly scanFilename = "cobscanner.json";
 
     public static save(cacheDirectory: string, st: ScanData): void {
         const fn = path.join(cacheDirectory,ScanDataHelper.scanFilename);
