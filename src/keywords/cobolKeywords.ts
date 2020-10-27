@@ -42,6 +42,7 @@ export const cobolKeywords: string[] = [
 	"cells",
 	"cf",
 	"ch",
+	"chaining",
 	"character",
 	"characters",
 	"class",

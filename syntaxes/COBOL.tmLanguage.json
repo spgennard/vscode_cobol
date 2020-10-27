@@ -536,7 +536,7 @@
       "name": "keyword.control.catch-exception.cobol"
     },
     {
-      "match": "(?<![-_])(?i:select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|yielding|\\+\\+include|copy|replace)(?=\\s)",
+      "match": "(?<![-_])(?i:select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|chaining|yielding|\\+\\+include|copy|replace)(?=\\s)",
       "name": "keyword.otherverbs.cobol"
     },
     {
