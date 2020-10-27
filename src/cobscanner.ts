@@ -104,14 +104,14 @@ for (const arg of args) {
             GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {
-                    features.logMessage(` Directories scanned : ${stats.directoriesScanned}`);
+                    features.logMessage(` Directories scanned   : ${stats.directoriesScanned}`);
                 }
                 if (stats.maxDirectoryDepth !== 0) {
-                    features.logMessage(` Directory Depth     : ${stats.maxDirectoryDepth}`);
+                    features.logMessage(` Directory Depth       : ${stats.maxDirectoryDepth}`);
                 }
 
                 if (stats.fileCount) {
-                    features.logMessage(` Files found         : ${stats.fileCount}`);
+                    features.logMessage(` Files found           : ${stats.fileCount}`);
                 }
             }
             try {
@@ -132,9 +132,9 @@ for (const arg of args) {
                             }
                         }
 
-                        if (scanData.showMessage) {
-                            features.logMessage(`  Parse completed: ${file}`);
-                        }
+                        // if (scanData.showMessage) {
+                        //     features.logMessage(`  Parse completed: ${file}`);
+                        // }
                         stats.filesScanned++;
                     } else {
                         stats.filesUptodate++;
@@ -143,14 +143,6 @@ for (const arg of args) {
             } finally {
                 const end = Utils.performance_now() - stats.start;
                 if (scanData.showStats) {
-                    let completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Completed scanning all COBOL files in workspace');
-                    if (stats.filesScanned === 1) {
-                        completedMessage = "";
-                    }
-                    if (features.logTimedMessage(end, completedMessage) === false) {
-                        features.logMessage(completedMessage);
-                    }
-
                     if (stats.filesScanned !== 0) {
                         features.logMessage(` Files scanned         : ${stats.filesScanned}`);
                     }
@@ -166,6 +158,12 @@ for (const arg of args) {
                     if (stats.entryPointsDefined !== 0) {
                         features.logMessage(` Entry-Point Count     : ${stats.entryPointsDefined}`);
                     }
+
+                    const completedMessage = (aborted ? `Scan aborted (elapsed time ${end})` : 'Scan completed');
+                    if (features.logTimedMessage(end, completedMessage) === false) {
+                        features.logMessage(completedMessage);
+                    }
+
                 }
                 GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
 

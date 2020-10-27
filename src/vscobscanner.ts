@@ -1,4 +1,5 @@
 import path from "path";
+import fs from 'fs';
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
@@ -21,6 +22,8 @@ class ScanStats {
 }
 
 export class VSCobScanner {
+    private static readonly scannerDir = VSCobScanner.getCobScannerDirectory();
+
     public static async processSavedFile(fsPath: string, settings: ICOBOLSettings): Promise<void> {
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
             return;
@@ -56,9 +59,17 @@ export class VSCobScanner {
         }
     }
 
-    public static IsScannerActive(): boolean {
+    public static IsScannerActive(cacheDirectory: string): boolean {
+        const jsonFile = path.join(cacheDirectory, "cobscanner.json");
+        const jsonFileExists = fs.existsSync(jsonFile);
+
         if (VSCobScanner.activePid === 0) {
-            return false;
+            return jsonFileExists;
+        }
+
+        // if the file exists.. then leave early
+        if (jsonFileExists) {
+            return jsonFileExists;
         }
 
         return this.isAlive(VSCobScanner.activePid);
@@ -70,16 +81,15 @@ export class VSCobScanner {
             sf.cacheDirectory = cacheDirectory;
             ScanDataHelper.save(cacheDirectory, sf);
 
-            const scannerDir = VSCobScanner.getCobScannerDirectory();
-            const jDir = path.join(scannerDir, "cobscanner.js");
+            const jcobscanner_js = path.join(VSCobScanner.scannerDir, "cobscanner.js");
             const jsonFile = path.join(cacheDirectory, "cobscanner.json");
 
             const options: ForkOptions = {
                 stdio: [0, 1, 2, "ipc"],
-                cwd : scannerDir
+                cwd : VSCobScanner.scannerDir
             };
 
-            const child = fork(jDir, [jsonFile], options);
+            const child = fork(jcobscanner_js, [jsonFile], options);
 
             VSCobScanner.activePid = child.pid;
 
@@ -91,12 +101,9 @@ export class VSCobScanner {
                 VSCobScanner.activePid = 0;
                 if (code !== 0) {
                     if (sf.showMessage) {
-                        logMessage(`Scan completed (Exit Code=${code})`);
+                        logMessage(`External scan completed (Exit Code=${code})`);
                     }
                 } else {
-                    if (sf.showMessage && sf.showStats) {
-                        logMessage(`Scan completed`);
-                    }
                     GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
                 }
             });
@@ -126,7 +133,8 @@ export class VSCobScanner {
             return;
         }
 
-        if (VSCobScanner.IsScannerActive()) {
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        if (cacheDirectory !== undefined && VSCobScanner.IsScannerActive(cacheDirectory)) {
             logMessage("Source scanner already active, no action taken");
             return;
         }

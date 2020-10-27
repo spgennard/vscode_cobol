@@ -46,7 +46,6 @@ import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
 import { ESourceFormat } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
-import { config } from 'vscode-nls';
 
 let formatStatusBarItem: StatusBarItem;
 
