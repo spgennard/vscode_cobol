@@ -1,6 +1,6 @@
 {
   "name": "cobscanner",
-  "version": "6.9.14",
+  "version": "6.9.15",
   "description": "",
   "main": "index.js",
   "scripts": {
