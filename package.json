@@ -169,7 +169,8 @@
                         "wks"
                     ],
                     "markdownDescription": "COBOL CopyBook file name extensions",
-                    "description": "COBOL CopyBook Extensions"
+                    "description": "COBOL CopyBook Extensions",
+                    "uniqueItems": true
                 },
                 "coboleditor.program_extensions": {
                     "type": "array",
@@ -191,7 +192,8 @@
                         "pco"
                     ],
                     "markdownDescription": "COBOL Program file name extensions",
-                    "description": "COBOL Program Extensions"
+                    "description": "COBOL Program Extensions",
+                    "uniqueItems": true
                 },
                 "coboleditor.copybookdirs": {
                     "type": "array",
