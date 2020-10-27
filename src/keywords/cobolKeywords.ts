@@ -416,6 +416,7 @@ export const cobolKeywords: string[] = [
 	"usage",
 	"use",
 	"using",
+	"chaining",
 	"value",
 	"values",
 	"varying",
