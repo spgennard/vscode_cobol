@@ -114,8 +114,19 @@ for (const arg of args) {
             }
             try {
 
+                let fCount = 0;
+                const fSendOn = (scanData.fileCount * 0.05) | 0;
+                let fSendCount =0;
                 for (const file of scanData.Files) {
                     const cacheDir = scanData.cacheDirectory;
+
+                    fCount++; fSendCount++;
+                    if (fSendCount === fSendOn) {
+                        if (process.send) {
+                            process.send(`@@STATUS ${fCount} ${scanData.Files.length}`);
+                        }
+                        fSendCount=0;
+                    }
 
                     if (Utils.cacheUpdateRequired(cacheDir, file)) {
                         const filesHandler = new FileSourceHandler(file, false);

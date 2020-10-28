@@ -4,7 +4,7 @@ import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage } from "./extension";
+import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
@@ -49,6 +49,7 @@ export class VSCobScanner {
         }
         return "";
     }
+
     private static activePid = 0;
 
     public static isAlive(pid: number): boolean {
@@ -88,8 +89,9 @@ export class VSCobScanner {
 
             const options: ForkOptions = {
                 stdio: [0, 1, 2, "ipc"],
-                cwd : VSCobScanner.scannerBinDir
+                cwd: VSCobScanner.scannerBinDir
             };
+
 
             const child = fork(jcobscanner_js, [jsonFile], options);
 
@@ -109,11 +111,26 @@ export class VSCobScanner {
                     }
                 } else {
                     GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
+                    progressStatusBarItem.hide();
                 }
             });
 
+            let prevPercent = 0;
             child.on('message', (msg) => {
-                logMessage(msg as string);
+                const message = msg as string;
+                if (message.startsWith("@@STATUS")) {
+                    const args = message.split(" ");
+                    progressStatusBarItem.show();
+                    const a1 = Number.parseInt(args[1]);
+                    const a2 = Number.parseInt(args[2]);
+                    const percent = ((a1 / a2) * 100) | 0;
+                    if (prevPercent !== percent) {
+                        progressStatusBarItem.text = `Processing metadata: ${percent}%`;
+                        prevPercent = percent;
+                    }
+                } else {
+                    logMessage(msg as string);
+                }
             });
 
             if (child.stdout !== null) {

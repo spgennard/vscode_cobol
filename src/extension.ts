@@ -48,6 +48,7 @@ import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 
 let formatStatusBarItem: StatusBarItem;
+export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
 let currentContext: ExtensionContext;
 const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
@@ -768,6 +769,11 @@ export function activate(context: ExtensionContext): void {
     formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
     formatStatusBarItem.command = "cobolplugin.change_source_format";
     formatStatusBarItem.show();
+    context.subscriptions.push(formatStatusBarItem);
+
+    progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
+    progressStatusBarItem.hide();
+    context.subscriptions.push(progressStatusBarItem);
 
     if (window.activeTextEditor !== undefined) {
         updateDecorations(window.activeTextEditor);
@@ -991,6 +997,12 @@ export function activate(context: ExtensionContext): void {
         utils.migrateCopybooksToWorkspace();
     });
     context.subscriptions.push(migrateCopybooksToWorkspaceCommand);
+
+    const showCOBOLChannel = vscode.commands.registerCommand('cobolplugin.showCOBOLChannel', () => {
+        logChannelSetPreserveFocus(true);
+    });
+    context.subscriptions.push(showCOBOLChannel);
+
 
     const resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {

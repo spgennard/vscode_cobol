@@ -1007,6 +1007,10 @@
             {
                 "command": "cobolplugin.showDocumentation",
                 "title": "Show documentation"
+            },
+            {
+                "command": "cobolplugin.showCOBOLChannel",
+                "title": "Show COBOL Channel"
             }
         ],
         "menus": {
