@@ -17,7 +17,7 @@ import { InMemoryGlobalSymbolCache } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBOLUtils } from "./cobolutils";
-import { ScanStats } from "./cobscannerdata";
+import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -397,6 +397,8 @@ export default class VSCOBOLSourceScanner {
                         fs.unlinkSync(fileName);
                     }
                 }
+                const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+                fs.unlinkSync(jsonFile);
                 logMessage("Metadata cache cleared");
             }
         });

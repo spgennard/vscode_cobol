@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.9.15",
+    "version": "6.9.14",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -208,7 +208,8 @@
                         }
                     },
                     "default": [],
-                    "description": "COBOL CopyBook directories to search into"
+                    "description": "COBOL CopyBook directories to search into",
+                    "uniqueItems": true
                 },
                 "coboleditor.ignorecolumn_b_onwards": {
                     "type": "boolean",
@@ -464,7 +465,8 @@
                             }
                         }
                     },
-                    "default": []
+                    "default": [],
+                    "uniqueItems": true
                 },
                 "coboleditor.linter_house_standards": {
                     "type": "boolean",
@@ -494,7 +496,8 @@
                         "communication=.*",
                         "report=.*",
                         "screen=.*"
-                    ]
+                    ],
+                    "uniqueItems": true
                 },
                 "coboleditor.ignore_unsafe_extensions": {
                     "type": "boolean",
