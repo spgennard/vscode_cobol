@@ -1,0 +1,83 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL.tmLanguage.json",
+  "fileTypes": [],
+  "name": "COBOL_GNU_LISTFILE",
+  "patterns": [
+    {
+      "match": "(\\f)",
+      "name": "strong comment.line.form_feed.cobol_gnu_listfile"
+    },
+    {
+      "match": "(GnuCOBOL\\s\\S+)\\s+(\\S+)\\s+(.*)\\s+(Page\\s+\\d+.*)$",
+      "captures": {
+        "1": {
+          "name": "entity.name.section.cobol_gnu_listfile"
+        },
+        "2": {
+          "name": "markup.bold.cobol_gnu_listfile"
+        },
+        "3": {
+          "name": "entity.name.function.cobol_gnu_listfile"
+        },
+        "4": {
+          "name": "entity.name.function.cobol_gnu_listfile"
+        }
+      }
+    },
+    {
+      "match": "(^error:)\\s+(.*)$",
+      "captures": {
+        "1": {
+          "name": "invalid.illegal.cobol_gnu_listfile"
+        },
+        "2": {
+          "name": "markup.bold.cobol_gnu_listfile"
+        }
+      }
+    },
+    {
+      "match": "(^LINE)\\s+(\\S+)\\s+(.*)$",
+      "captures": {
+        "1": {
+          "name": "entity.name.section.cobol_gnu_listfile"
+        },
+        "2": {
+          "name": "entity.name.function.cobol_gnu_listfile"
+        },
+        "3": {
+          "name": "markup.bold.cobol_gnu_listfile"
+        }
+      }
+    },
+    {
+      "match": "(^\\d+)\\s+(warnings in compilation group|errors in compilation group)$",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.cobol_gnu_listfile"
+        },
+        "2": {
+          "name":  "comment.line.modern"
+        }
+      }
+    },
+    {
+      "match": "(^\\*.*$)",
+      "name": "comment.line.modern"
+    },
+    {
+      "begin": "(^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9])",
+      "name": "constant.numeric.cobol_gnu_listfile",
+      "patterns": [
+        {
+          "include": "source.cobol"
+        }
+      ],
+      "end": "($)"
+    },
+    {
+      "match": "(.*$)",
+      "name": ""
+    }
+  ],
+  "scopeName": "source.cobol_gnu_listfile"
+}

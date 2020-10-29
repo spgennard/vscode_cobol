@@ -671,7 +671,12 @@
                 "configuration": "./cobol.configuration.json"
             },
             {
-                "id": "COBOL_LISTFILE",
+                "id": "COBOL_MF_LISTFILE",
+                "extensions": [],
+                "configuration": "./cobol.configuration.json"
+            },
+            {
+                "id": "COBOL_GNU_LISTFILE",
                 "extensions": [],
                 "configuration": "./cobol.configuration.json"
             },
@@ -798,9 +803,18 @@
                 }
             },
             {
-                "language": "COBOL_LISTFILE",
-                "scopeName": "source.cobol_listfile",
-                "path": "./syntaxes/COBOL_listfile.tmLanguage.json",
+                "language": "COBOL_MF_LISTFILE",
+                "scopeName": "source.cobol_mf_listfile",
+                "path": "./syntaxes/COBOL_mf_listfile.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.sql": "sql",
+                    "meta.embedded.block.html": "html"
+                }
+            },
+            {
+                "language": "COBOL_GNU_LISTFILE",
+                "scopeName": "source.cobol_gnu_listfile",
+                "path": "./syntaxes/COBOL_gnu_listfile.tmLanguage.json",
                 "embeddedLanguages": {
                     "meta.embedded.block.sql": "sql",
                     "meta.embedded.block.html": "html"

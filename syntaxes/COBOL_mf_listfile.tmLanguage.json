@@ -1,0 +1,83 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL.tmLanguage.json",
+  "fileTypes": [],
+  "name": "COBOL_MF_LISTFILE",
+  "patterns": [
+    {
+      "match": "(\\f)",
+      "name": "strong comment.line.form_feed.cobol_mf_listfile"
+    },
+    {
+      "match": "(\\*)\\s+(\\d+..)(\\*+)",
+      "captures": {
+        "1": {
+          "name": "comment.line.modern"
+        },
+        "2": {
+          "name": "invalid.illegal.cobol_mf_listfile"
+        },
+        "3": {
+          "name": "markup.bold.cobol_mf_listfile"
+        }
+      }
+    },
+    {
+      "match": "(^\\*\\*)\\s+(.*)$",
+      "captures": {
+        "1": {
+          "name": "comment.line.modern"
+        },
+        "2": {
+          "name": "markup.bold.cobol_mf_listfile"
+        }
+      }
+    },
+
+    {
+      "match": "(\\*.*:\\s+)(\\d+)(.*:\\s+)(\\d+)$",
+      "captures": {
+        "1": {
+          "name": "comment.line.modern"
+        },
+        "2": {
+          "name": "constant.numeric.cobol_mf_listfile"
+        },
+        "3": {
+          "name": "comment.line.modern"
+        },
+        "4": {
+          "name": "constant.numeric.cobol_mf_listfile"
+        }
+      }
+    },
+    {
+      "match": "(\\*.*:\\s+)(\\d+)$",
+      "captures": {
+        "1": {
+          "name": "comment.line.modern"
+        },
+        "2": {
+          "name": "constant.numeric.cobol_mf_listfile"
+        }
+      }
+    },    {
+      "match": "(^\\*.*$)",
+      "name": "comment.line.modern"
+    },
+    {
+      "begin": "(^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9])",
+      "name": "constant.numeric.cobol_mf_listfile",
+      "patterns": [
+        {
+          "include": "source.cobol"
+        }
+      ],
+      "end": "($)"
+    },
+    {
+      "match": "(.*$)",
+      "name": ""
+    }
+  ],
+  "scopeName": "source.cobol_mf_listfile"
+}

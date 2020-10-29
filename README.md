@@ -1,4 +1,3 @@
-
 [![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![chat-img](https://img.shields.io/badge/Gitter-Join_the_vscode_cobol_chat-brightgreen.svg)](https://gitter.im/vscode_cobol/community)
 
 
@@ -460,3 +459,5 @@ I would like to thank the follow contributors for providing patches, fixes, kind
  - Ted John of Berkshire, UK
  - Kevin Abel of Lincoln, NE, USA
  - Simon Sobisch of Germany
+
+__aaa__

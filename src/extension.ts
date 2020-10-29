@@ -394,12 +394,18 @@ function flip_plaintext(doc: TextDocument) {
             const secondLine = doc.lineAt(1).text;
 
             if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ")) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_LISTFILE");
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL_MF_LISTFILE");
                 return;
             }
 
+            //NOTE: If we have more.. refactor..
             if (firstLine.startsWith("Pro*COBOL: Release")) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_LISTFILE");
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL_MF_LISTFILE");
+                return;
+            }
+
+            if (firstLine.startsWith("GnuCOBOL ")) {
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL_GNU_LISTFILE");
                 return;
             }
 
@@ -662,7 +668,8 @@ export function activate(context: ExtensionContext): void {
 
 
     const allCobolSelectors = [
-        { scheme: 'file', language: 'COBOL_LISTFILE' },
+        { scheme: 'file', language: 'COBOL_MF_LISTFILE' },
+        { scheme: 'file', language: 'COBOL_GNU_LISTFILE' },
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'ACUCOBOL' },
         { scheme: 'file', language: 'OpenCOBOL' },
