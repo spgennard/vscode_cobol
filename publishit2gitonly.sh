@@ -39,7 +39,7 @@ Changelog for {{ownerName}} {{repoName}}.
 git commit -m "Update CHANGELOG.md" CHANGELOG.md && true
 git push
 git tag -f $PACKAGE_VERSION
-git push --tags
+git push --tags --force
 [ -d ".vscode_test" ] && cp -r .vscode-test ..
 git clean -fdx
 npm install
