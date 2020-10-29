@@ -52,7 +52,7 @@ github-release delete \
 	  --owner=spgennard \
 	  --repo=vscode_cobol \
 	  --tag="$PACKAGE_VERSION" \
-	  --name=$PACKAGE_VERSION
+	  --name=$PACKAGE_VERSION \
 	&& true
 
 github-release upload \
