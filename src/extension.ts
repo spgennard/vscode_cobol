@@ -400,7 +400,7 @@ function flip_plaintext(doc: TextDocument) {
 
             //NOTE: If we have more.. refactor..
             if (firstLine.startsWith("Pro*COBOL: Release")) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_MF_LISTFILE");
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL_PCOB_LISTFILE");
                 return;
             }
 

@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.9.14",
+    "version": "6.9.15",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -681,6 +681,11 @@
                 "configuration": "./cobol.configuration.json"
             },
             {
+                "id": "COBOL_PCOB_LISTFILE",
+                "extensions": [],
+                "configuration": "./cobol.configuration.json"
+            },
+            {
                 "id": "OpenCOBOL",
                 "aliases": [
                     "OpenCOBOL",
@@ -815,6 +820,15 @@
                 "language": "COBOL_GNU_LISTFILE",
                 "scopeName": "source.cobol_gnu_listfile",
                 "path": "./syntaxes/COBOL_gnu_listfile.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.sql": "sql",
+                    "meta.embedded.block.html": "html"
+                }
+            },
+            {
+                "language": "COBOL_PCOB_LISTFILE",
+                "scopeName": "source.cobol_pcob_listfile",
+                "path": "./syntaxes/COBOL_pcob_listfile.tmLanguage.json",
                 "embeddedLanguages": {
                     "meta.embedded.block.sql": "sql",
                     "meta.embedded.block.html": "html"
