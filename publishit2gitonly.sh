@@ -48,6 +48,13 @@ rm -f *.vsix
 vsce package
 COMMIT_LOG=$(git log -1 --format='%ci %H %s')
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
+github-release delete \
+	  --owner=spgennard \
+	  --repo=vscode_cobol \
+	  --tag="$PACKAGE_VERSION" \
+	  --name=$PACKAGE_VERSION
+	&& true
+
 github-release upload \
   --owner=spgennard \
   --repo=vscode_cobol \
