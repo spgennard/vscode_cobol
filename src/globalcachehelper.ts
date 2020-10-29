@@ -7,7 +7,7 @@ import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOL
 import { replacer, reviver } from './cobolglobalcache_file';
 
 export class GlobalCachesHelper {
-    private static isFileT(sdir: string): [boolean, fs.Stats|undefined] {
+    private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
         try {
             if (fs.existsSync(sdir)) {
                 const f = fs.statSync(sdir);
@@ -38,7 +38,12 @@ export class GlobalCachesHelper {
                     return true;
                 }
                 catch (e) {
-                    fs.unlinkSync(fn);
+                    try {
+                        fs.unlinkSync(fn);
+                    }
+                    catch {
+                        //continue
+                    }
                     return false;
                 }
             }
@@ -105,7 +110,7 @@ export class GlobalCachesHelper {
         return InMemoryGlobalSymbolCache;
     }
 
-    public static addFilename(filename:string, lastModified: number):void {
+    public static addFilename(filename: string, lastModified: number): void {
         if (InMemoryGlobalSymbolCache.sourceFilenameModified.has(filename)) {
             InMemoryGlobalSymbolCache.sourceFilenameModified.delete(filename);
             InMemoryGlobalSymbolCache.sourceFilenameModified.set(filename, lastModified);

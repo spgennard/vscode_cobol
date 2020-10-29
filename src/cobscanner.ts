@@ -116,7 +116,7 @@ for (const arg of args) {
 
                 let fCount = 0;
                 const fSendOn = (scanData.fileCount * 0.05) | 0;
-                let fSendCount =0;
+                let fSendCount = 0;
                 for (const file of scanData.Files) {
                     const cacheDir = scanData.cacheDirectory;
 
@@ -125,7 +125,7 @@ for (const arg of args) {
                         if (process.send) {
                             process.send(`@@STATUS ${fCount} ${scanData.Files.length}`);
                         }
-                        fSendCount=0;
+                        fSendCount = 0;
                     }
 
                     if (Utils.cacheUpdateRequired(cacheDir, file)) {
@@ -181,8 +181,13 @@ for (const arg of args) {
             features.logException("cobscanner", e);
         }
         finally {
-            // delete the json file
-            fs.unlinkSync(arg);
+            try {
+                // delete the json file
+                fs.unlinkSync(arg);
+            }
+            catch {
+                //continue
+            }
         }
 
     }

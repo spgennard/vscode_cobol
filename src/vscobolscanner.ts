@@ -394,11 +394,20 @@ export default class VSCOBOLSourceScanner {
                 for (const file of fs.readdirSync(cacheDirectory)) {
                     if (file.endsWith(".sym")) {
                         const fileName = path.join(cacheDirectory, file);
-                        fs.unlinkSync(fileName);
+                        try {
+                            fs.unlinkSync(fileName);
+                        }
+                        catch {
+                            //continue
+                        }
                     }
                 }
                 const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-                fs.unlinkSync(jsonFile);
+                try {
+                    fs.unlinkSync(jsonFile);
+                } catch {
+                    //continue
+                }
                 logMessage("Metadata cache cleared");
             }
         });
