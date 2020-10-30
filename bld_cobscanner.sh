@@ -1,9 +1,7 @@
 set +e
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
-
 export PATH=$(pwd)/./node_modules/.bin:$PATH
-test ! -d cobscanner && mkdir cobscanner
 #browserify out/cobscanner.js --require n-readlines --outfile cobscanner/cobscanner.js
 cp ./out/cobscanner.js cobscanner/
 cp ./out/cobscannerdata.js cobscanner/
