@@ -15,7 +15,7 @@ cp ./out/filesourcehandler.js cobscanner/
 cp ./out/cobolglobalcache.js cobscanner/
 cp ./out/cobolsourcescanner.js cobscanner/
 cp -r ./out/keywords cobscanner/
-cp -r ./out/keywords cobscanner/
+
 cd cobscanner
 npm version --allow-same-version $PACKAGE_VERSION
 npm install
