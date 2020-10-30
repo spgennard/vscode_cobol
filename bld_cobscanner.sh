@@ -25,4 +25,4 @@ npm install performance-now
 npm version --allow-same-version $PACKAGE_VERSION
 npm install
 depcheck
-rm package.json
+rm package.json package-lock.json
