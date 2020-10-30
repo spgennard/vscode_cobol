@@ -1,2 +1,10 @@
+a.out:1: Error: Invalid indicator 'X' at column 7 OC1.1
+
+a.out: 1: Error: Invalid indicator 'X' at column 7 GC2.0beta
+
+a.out: 6: error: invalid indicator ' GC3.1
+a.out: 7: error: PROGRAM-ID header missing
+
 prog.cob:22: error: OPEN REVERSED is obsolete in GnuCOBOL
+prog.cob:18: error: OPEN REVERSED is obsolete in GnuCOBOL [-Werror=obsolete]
 prog.cob:22: errores: OPEN REVERSED is obsolete in GnuCOBOL
