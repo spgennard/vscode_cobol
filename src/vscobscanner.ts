@@ -38,7 +38,6 @@ export class VSCobScanner {
             sf.showMessage = settings.cache_metadata_show_progress_messages;
             await this.forkScanner(sf);
         }
-
     }
 
     private static getCobScannerDirectory(): string {
