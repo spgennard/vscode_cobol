@@ -2,7 +2,7 @@ set +e
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
 export PATH=$(pwd)/./node_modules/.bin:$PATH
-test ! -d cobscanner && mkdir cobscanner
+rm -rf cobscanner && mkdir cobscanner
 #browserify out/cobscanner.js --require n-readlines --outfile cobscanner/cobscanner.js
 cp ./out/cobscanner.js cobscanner/
 cp ./out/cobscannerdata.js cobscanner/
@@ -16,12 +16,13 @@ cp ./out/filesourcehandler.js cobscanner/
 cp ./out/cobolglobalcache.js cobscanner/
 cp ./out/cobolsourcescanner.js cobscanner/
 cp -r ./out/keywords cobscanner/
-cp -r ./out/keywords cobscanner/
 cd cobscanner
 export npm_config_loglevel=silent
 npm init -y >/dev/null
 npm install lzjs
 npm install n-readlines
+npm install performance-now
 npm version --allow-same-version $PACKAGE_VERSION
 npm install
+depcheck
 rm package.json

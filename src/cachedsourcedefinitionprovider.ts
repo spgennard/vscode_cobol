@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-
 import COBOLSourceScanner from './cobolsourcescanner';
 
 import { GlobalCachesHelper } from "./globalcachehelper";

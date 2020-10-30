@@ -8,6 +8,7 @@ export class DocComment {
         const langPlusSchema = { scheme: 'file', language: 'COBOL' };
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 
                 // only do something if we are just pressed RETURN

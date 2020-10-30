@@ -57,6 +57,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		return items;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
 		let wordToComplete = '';
 		let lineBefore = '';
