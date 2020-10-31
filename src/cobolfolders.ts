@@ -8,22 +8,23 @@ export function getWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefine
     }
 
     const folders_order = VSCOBOLConfiguration.get().workspacefolders_order;
-    if (folders_order.length === 0) {
-        return workspace.workspaceFolders;
-    }
 
     // make a map of the folders
     const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();
     for (const folder of ws) {
-        folderMap.set(folder.name, folder);
+        if (folder.uri.scheme === 'file') {             // filter out anothing other than file related
+            folderMap.set(folder.name, folder);
+        }
     }
 
     const rwFolder: WorkspaceFolder[] = [];
-    for (const forder of folders_order) {
-        const f = folderMap.get(forder);
-        if (f !== undefined) {
-            rwFolder.push(f);
-            folderMap.delete(forder);
+    if (folders_order.length !== 0) {
+        for (const forder of folders_order) {
+            const f = folderMap.get(forder);
+            if (f !== undefined) {
+                rwFolder.push(f);
+                folderMap.delete(forder);
+            }
         }
     }
 
