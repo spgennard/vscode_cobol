@@ -46,6 +46,7 @@ export interface ICOBOLSettings {
     cache_metadata_show_progress_messages: boolean;
     process_scanner_hint_token_for_source_dependancies: string;
     process_metadata_cache_on_file_save: boolean;
+    storagearea_id: string;
 
     init_required: boolean;
 }
@@ -89,6 +90,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public process_scanner_hint_token_for_source_dependancies: string;
     public cache_metadata_show_progress_messages:boolean;
     public process_metadata_cache_on_file_save: boolean;
+    public storagearea_id: string;
 
     public init_required = true;
 
@@ -131,5 +133,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.process_scanner_hint_token_for_source_dependancies = "source-dependency";
         this.coboldoc_workspace_folder = "coboldoc";
         this.process_metadata_cache_on_file_save = false;
+        this.storagearea_id = "";
     }
 }

@@ -50,6 +50,7 @@ export class VSCOBOLConfiguration {
         vsconfig.process_scanner_hints_embedded_in_comments = getBoolean("process_scanner_hints_embedded_in_comments", false);
         vsconfig.process_scanner_hint_token_for_source_dependancies = getProcess_scanner_hint_token_for_source_dependancies();
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
+        vsconfig.storagearea_id = getString("storagearea_id", "");
         return vsconfig;
     }
 
@@ -80,6 +81,15 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
         expEnabled = defaultValue;
     }
     return expEnabled;
+}
+
+function getString(configSection: string, defaultValue: string): string {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let strValue = editorConfig.get<string>(configSection);
+    if (strValue === undefined || strValue === null) {
+        strValue = defaultValue;
+    }
+    return strValue;
 }
 
 function getNumber(configSection: string, defaultValue: number): number {

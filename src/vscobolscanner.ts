@@ -5,6 +5,8 @@ import { GlobalCachesHelper } from "./globalcachehelper";
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
+import * as crypto from 'crypto';
 
 import { logMessage, logException, logTimedMessage, isDirectory, performance_now, getCurrentContext, logChannelSetPreserveFocus, logChannelHide, ExternalFeatures } from "./extension";
 import { FileSourceHandler } from "./filesourcehandler";
@@ -379,6 +381,31 @@ export default class VSCOBOLSourceScanner {
         return true;
     }
 
+    private static wipeCacheDirectory(cacheDirectory: string) {
+        clearCOBOLCache();
+        InMemoryGlobalSymbolCache.callableSymbols.clear();
+        InMemoryGlobalSymbolCache.classSymbols.clear();
+        InMemoryGlobalSymbolCache.isDirty = false;
+
+        for (const file of fs.readdirSync(cacheDirectory)) {
+            if (file.endsWith(".sym")) {
+                const fileName = path.join(cacheDirectory, file);
+                try {
+                    fs.unlinkSync(fileName);
+                }
+                catch {
+                    //continue
+                }
+            }
+        }
+        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+        try {
+            fs.unlinkSync(jsonFile);
+        } catch {
+            //continue
+        }
+
+    }
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
         if (VSCobScanner.IsScannerActive(cacheDirectory)) {
             window.showInformationMessage(" Unabled to clear metadata while caching is already in progress");
@@ -387,30 +414,36 @@ export default class VSCOBOLSourceScanner {
 
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
-                clearCOBOLCache();
-                InMemoryGlobalSymbolCache.callableSymbols.clear();
-                InMemoryGlobalSymbolCache.classSymbols.clear();
-                InMemoryGlobalSymbolCache.isDirty = false;
-                for (const file of fs.readdirSync(cacheDirectory)) {
-                    if (file.endsWith(".sym")) {
-                        const fileName = path.join(cacheDirectory, file);
-                        try {
-                            fs.unlinkSync(fileName);
-                        }
-                        catch {
-                            //continue
-                        }
-                    }
-                }
-                const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-                try {
-                    fs.unlinkSync(jsonFile);
-                } catch {
-                    //continue
-                }
+                VSCOBOLSourceScanner.wipeCacheDirectory(cacheDirectory);
                 logMessage("Metadata cache cleared");
             }
         });
+    }
+
+    private static getStoragePathArea(settings: ICOBOLSettings): string | undefined {
+        const storagePath = getCurrentContext().storageUri?.fsPath;
+        if (storagePath === undefined) {
+            return undefined;
+        }
+
+        let storageid = settings.storagearea_id;
+        if (storageid.length === 0) {
+            storageid = crypto.randomBytes(16).toString("hex");
+            workspace.getConfiguration("coboleditor").update("storagearea_id", storageid);
+
+            // cleanup old storage area
+            VSCOBOLSourceScanner.wipeCacheDirectory(storagePath);
+        }
+
+        const storagePathPlusUser = path.join(storagePath,os.userInfo().username);
+        if (!fs.existsSync(storagePathPlusUser)) {
+            fs.mkdirSync(storagePathPlusUser);
+        }
+        const completePath = path.join(storagePathPlusUser, storageid);
+        if (!fs.existsSync(completePath)) {
+            fs.mkdirSync(completePath);
+        }
+        return completePath;
     }
 
     public static getCacheDirectory(): string | undefined {
@@ -425,7 +458,7 @@ export default class VSCOBOLSourceScanner {
         if (getWorkspaceFolders()) {
 
             if (settings.cache_metadata === CacheDirectoryStrategy.Storage) {
-                const storageDirectory: string | undefined = getCurrentContext().storageUri?.fsPath;
+                const storageDirectory: string | undefined = VSCOBOLSourceScanner.getStoragePathArea(settings);
 
                 /* no storage directory */
                 if (storageDirectory === undefined) {
