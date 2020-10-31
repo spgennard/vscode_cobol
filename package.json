@@ -1477,7 +1477,7 @@
             },
             {
                 "name": "opencobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*(error|warning):(.*)$",
+                "regexp": "^(.*):\\s(\\d+): (error|warning):(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1485,66 +1485,70 @@
             },
             {
                 "name": "opencobol-error-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
+                "regexp": "^(.*):\\s(\\d+): ([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
             },
             {
                 "name": "opencobol-warning-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "regexp": "^(.*):\\s(\\d+): ([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "file": 1,
+                "line": 2,
+                "message": 4
+            },
+            {
+                "name": "cobolit-cobc",
+                "regexp": "^(.*):(\\d+): ([eE]rror|[wW]arning):\\s+(.*)$",
+                "file": 1,
+                "line": 2,
+                "severity": 3,
+                "message": 4
+            },
+            {
+                "name": "cobolit-note-cobc",
+                "regexp": "^(.*):(\\d+): ([nN]ote:|[wW]arning: ->)\\s+(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
             },
             {
                 "name": "gnucobol-cobc",
-                "regexp": "^(.*):\\s(\\d+):.*([eE]rror|[wW]arning|[nN]ote):(.*)$",
+                "regexp": "^(.*): ?(\\d+): ([eE]rror|[wW]arning): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
-                "message": 4
+                "message": 4,
+                "code": 6
             },
             {
                 "name": "gnucobol3-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning|nN]ote):(.*)$",
+                "regexp": "^(.*): ?(\\d+): (error|warning): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
-                "message": 4
-            },
-            {
-                "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[wW]arning):\\s+(.*)$",
-                "file": 1,
-                "line": 2,
-                "severity": 3,
-                "message": 4
+                "message": 4,
+                "code": 6
             },
             {
                 "name": "gnucobol-warning-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "regexp": "^(.*): ?(\\d+): ([wW]arning|[wW]arnung|[wW]aarschuwing|[aA]lerta|avertissement|упозорење): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
-                "message": 4
+                "message": 4,
+                "code": 6
             },
             {
                 "name": "gnucobol-error-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
+                "regexp": "^(.*): ?(\\d+): *([eE]rror|[fF]ehler|[fF]out||[eE]rrores|[eE]rrores|erreur|грешка): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
-                "message": 4
-            },
-            {
-                "name": "cobolit-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote:|[wW]arning: ->)\\s+(.*)$",
-                "file": 1,
-                "line": 2,
-                "message": 4
+                "message": 4,
+                "code": 6
             },
             {
                 "name": "gnucobol3-note-cobc",
-                "regexp": "^(.*):(\\d+):\\s.*([nN]ote|Anmerkung|[nN]ota): ([^[]*)(\\[(.*)\\])?$",
+                "regexp": "^(.*): ?(\\d+): ([nN]ote|Anmerkung|[nN]ota): ([^[]*)(\\[(.*)\\])?$",
                 "file": 1,
                 "line": 2,
                 "message": 4,
