@@ -3,6 +3,75 @@ import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEv
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
+import { logMessage } from "./extension";
+
+export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
+    private qp: ICOBOLSourceScanner | undefined;
+    private st: COBOLSymbolTable | undefined;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public constructor(config: ICOBOLSettings) {
+        // config not used
+    }
+
+
+    public start(qp: ICOBOLSourceScanner): void {
+        this.qp = qp;
+        this.st = new COBOLSymbolTable();
+        this.st.fileName = qp.filename;
+        this.st.lastModifiedTime = qp.lastModifiedTime;
+
+        if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
+            GlobalCachesHelper.loadGlobalSymbolCache(this.qp.cacheDirectory);
+            GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+        }
+    }
+
+    public processToken(token: COBOLToken): void {
+        // hident token should not be placed in the symbol table, as they from a different file
+        if (token.ignoreInOutlineView) {
+            return;
+        }
+
+        if (this.st === undefined) {
+            return;
+        }
+
+        switch (token.tokenType) {
+            case COBOLTokenStyle.ImplicitProgramId:
+                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                break;
+            case COBOLTokenStyle.ProgramId:
+                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                break;
+            case COBOLTokenStyle.EntryPoint:
+                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                break;
+            case COBOLTokenStyle.InterfaceId:
+                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                break;
+            case COBOLTokenStyle.EnumId:
+                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                break;
+            case COBOLTokenStyle.ClassId:
+                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                break;
+            case COBOLTokenStyle.MethodId:
+                GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
+                break;
+        }
+    }
+
+    public finish(): void {
+        if (this.st !== undefined && this.qp !== undefined) {
+            if (GlobalCachesHelper.isGlobalSymbolCacheLoadRequired(this.qp.cacheDirectory)) {
+                logMessage(" WARNING: Cache was updated unexpectedly");
+            } else {
+                COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
+            }
+        }
+    }
+}
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
     private qp: ICOBOLSourceScanner | undefined;

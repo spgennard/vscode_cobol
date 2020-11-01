@@ -30,6 +30,11 @@ export class VSCobScanner {
             return;
         }
 
+        // handle when parsed
+        if (settings.parse_copybooks_for_references) {
+            return;
+        }
+
         if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
             const sf = new ScanData();
             sf.showStats = false;

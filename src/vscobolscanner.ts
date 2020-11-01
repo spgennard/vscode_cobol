@@ -17,7 +17,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 import { InMemoryGlobalSymbolCache } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
-import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
+import { COBOLSymbolTableEventHelper, COBOLSymbolTableGlobalEventHelper } from "./cobolsymboltableeventhelper";
 import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
@@ -53,7 +53,7 @@ export default class VSCOBOLSourceScanner {
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
                     cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
                     config.parse_copybooks_for_references,
-                    EmptyCOBOLSourceScannerEventHandler.Default,
+                    config.process_metadata_cache_on_file_save ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);
 
                 InMemoryCache.set(fileName, qcpd);
@@ -404,8 +404,8 @@ export default class VSCOBOLSourceScanner {
         } catch {
             //continue
         }
-
     }
+
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
         if (VSCobScanner.IsScannerActive(cacheDirectory)) {
             window.showInformationMessage(" Unabled to clear metadata while caching is already in progress");

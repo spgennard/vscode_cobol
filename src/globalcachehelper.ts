@@ -22,7 +22,21 @@ export class GlobalCachesHelper {
         return [false, undefined];
     }
 
+    public static isGlobalSymbolCacheLoadRequired(cacheDirectory: string): boolean {
+        const fn: string = path.join(cacheDirectory, globalSymbolFilename);
+        const fnStat = GlobalCachesHelper.isFileT(fn);
+        if (fnStat[0]) {
+            const stat4cache: fs.Stats = fs.statSync(fn);
+            if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static loadGlobalSymbolCache(cacheDirectory: string): boolean {
+
         const fn: string = path.join(cacheDirectory, globalSymbolFilename);
         const fnStat = GlobalCachesHelper.isFileT(fn);
         if (fnStat[0]) {
