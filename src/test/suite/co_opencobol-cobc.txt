@@ -1,0 +1,6 @@
+a.out:1: Error: Invalid indicator 'X' at column 7
+err.cbl:10: Warning: Alphanumeric value is expected
+err.cbl:7: Warning: 'fred' defined here as PIC X
+err.cbl:12: Error: 'Wibble' undefined
+err.cbl:12: Error: syntax error, unexpected "end of file"
+

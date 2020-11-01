@@ -1477,7 +1477,7 @@
             },
             {
                 "name": "opencobol-cobc",
-                "regexp": "^(.*):\\s(\\d+): (error|warning):(.*)$",
+                "regexp": "^(.*):(\\d+):\\s([eE]rror|[wW]arning):\\s(.*)$",
                 "file": 1,
                 "line": 2,
                 "severity": 3,
@@ -1485,14 +1485,14 @@
             },
             {
                 "name": "opencobol-error-cobc",
-                "regexp": "^(.*):\\s(\\d+): ([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):(.*)$",
+                "regexp": "^(.*):(\\d+): ([eE]rror|[fF]ehler|[eE]rrores|[eE]rrores):\\s(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4
             },
             {
                 "name": "opencobol-warning-cobc",
-                "regexp": "^(.*):\\s(\\d+): ([wW]arning|[wW]arnung|[aA]lerta):(.*)$",
+                "regexp": "^(.*):(\\d+): ([wW]arning|[wW]arnung|[aA]lerta):\\s(.*)$",
                 "file": 1,
                 "line": 2,
                 "message": 4

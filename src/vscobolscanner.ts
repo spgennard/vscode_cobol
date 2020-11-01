@@ -420,6 +420,8 @@ export default class VSCOBOLSourceScanner {
         });
     }
 
+    static readonly username = os.userInfo().username;
+
     private static getStoragePathArea(settings: ICOBOLSettings): string | undefined {
         const storagePath = getCurrentContext().storageUri?.fsPath;
         if (storagePath === undefined) {
@@ -433,9 +435,11 @@ export default class VSCOBOLSourceScanner {
 
             // cleanup old storage area
             VSCOBOLSourceScanner.wipeCacheDirectory(storagePath);
+            logMessage(" Rebuild of metadata cache is required due to moving to storagearea");
+            logMessage("  cache into subdirectory to allow multi-workspace caching.");
         }
 
-        const storagePathPlusUser = path.join(storagePath,os.userInfo().username);
+        const storagePathPlusUser = path.join(storagePath,VSCOBOLSourceScanner.username);
         if (!fs.existsSync(storagePathPlusUser)) {
             fs.mkdirSync(storagePathPlusUser);
         }
