@@ -1039,10 +1039,6 @@
                 "title": "COBOL: Migrate copybook settings to workspace (for performance)"
             },
             {
-                "command": "cobolplugin.showDocumentation",
-                "title": "Show documentation"
-            },
-            {
                 "command": "cobolplugin.showCOBOLChannel",
                 "title": "Show COBOL Channel"
             }
@@ -1088,11 +1084,6 @@
                     "command": "cobolplugin.extractSelectionToCopybook",
                     "group": "cobolplugin",
                     "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.showDocumentation",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
                 }
             ],
             "view/item/context": [

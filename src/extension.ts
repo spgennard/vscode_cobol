@@ -38,7 +38,7 @@ const propertiesReader = require('properties-reader');
 
 import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
-import { COBOLDocumentationGenerator } from './coboldocgenerator';
+// import { COBOLDocumentationGenerator } from './coboldocgenerator';
 import { CobolCommentProvider } from './cobolcommentprovider';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
@@ -988,16 +988,16 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(extractSelectionToCopybookCommand);
 
-    const showDocumentationCommand = vscode.commands.registerCommand('cobolplugin.showDocumentation', () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
+    // const showDocumentationCommand = vscode.commands.registerCommand('cobolplugin.showDocumentation', () => {
+    //     if (vscode.window.activeTextEditor) {
+    //         const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
-                COBOLDocumentationGenerator.showCOBOLDOCDocumentation(vscode.window.activeTextEditor, settings);
-            }
-        }
-    });
-    context.subscriptions.push(showDocumentationCommand);
+    //         if (langid === 'COBOL' || langid === 'OpenCOBOL' || langid === 'ACUCOBOL') {
+    //             COBOLDocumentationGenerator.showCOBOLDOCDocumentation(vscode.window.activeTextEditor, settings);
+    //         }
+    //     }
+    // });
+    // context.subscriptions.push(showDocumentationCommand);
 
     const migrateCopybooksToWorkspaceCommand = vscode.commands.registerCommand('cobolplugin.migrateCopybooksToWorkspace', () => {
         const utils: COBOLUtils = new COBOLUtils();
