@@ -1,13 +1,13 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks, ViewColumn } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
 import { DocComment } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
-import {  enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
+import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
 import { cobolKeywords } from "./keywords/cobolKeywords";
@@ -1056,9 +1056,11 @@ export function activate(context: ExtensionContext): void {
         logMessage(checkForExtensionConflictsMessage);
     }
 
+    openChangeLog();
+
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false);
-        pm.then( () => {
+        pm.then(() => {
             return;
         });
     }
@@ -1084,6 +1086,22 @@ export async function deactivateAsync(): Promise<void> {
     }
 }
 
+function openChangeLog(): void {
+    const thisExtension = extensions.getExtension("bitlang.cobol");
+    if (thisExtension !== undefined) {
+        const extPath = `${thisExtension.extensionPath}`;
+        const version = `${thisExtension.packageJSON.version}`;
+        const lastVersion = currentContext.globalState.get("bitlang.cobol.version");
+        if (lastVersion !== version) {
+            const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
+            if (fs.existsSync(verFile)) {
+                const readmeUri = vscode.Uri.file(verFile);
+                commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
+                currentContext.globalState.update("bitlang.cobol.version", version);
+            }
+        }
+    }
+}
 export async function deactivate(): Promise<void> {
     await deactivateAsync();
 }
