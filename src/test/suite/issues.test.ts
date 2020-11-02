@@ -1,20 +1,20 @@
-import * as assert from 'assert';
+// import * as assert from 'assert';
 
 import * as vscode from 'vscode';
 
-import { FileSourceHandler } from "../../filesourcehandler";
-import COBOLSourceScanner, { CobolDocStyle, EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
-import { COBOLSettings } from '../../iconfiguration';
-import path from 'path';
-import { ExternalFeatures } from '../../extension';
+// import { FileSourceHandler } from "../../filesourcehandler";
+// import COBOLSourceScanner, { CobolDocStyle, EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
+// import { COBOLSettings } from '../../iconfiguration';
+// import path from 'path';
+// import { ExternalFeatures } from '../../extension';
 
 
 suite('Issues Raised Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	const baseForSource = __dirname + "/../../../src/test/suite/";
-	const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
-	const features = ExternalFeatures;
+	// const baseForSource = __dirname + "/../../../src/test/suite/";
+	// const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
+	// const features = ExternalFeatures;
 
 	// test('Issue: 189 [MSDN]', () => {
 	// 	const f = new FileSourceHandler(path.join(baseForSource, "issue189_msdn.cbl"), false);
