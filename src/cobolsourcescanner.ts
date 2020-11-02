@@ -554,8 +554,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public sourceIsCopybook = false;
 
-    public commentDocStyle: CobolDocStyle = CobolDocStyle.unknown;
-    public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
+    // public commentDocStyle: CobolDocStyle = CobolDocStyle.unknown;
+    // public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
 
     public readonly parse_copybooks_for_references: boolean;
 
@@ -1845,66 +1845,66 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         if (startOfComment !== undefined && startOfComment !== -1) {
 
-            if (this.commentTagStyle === CobolTagStyle.unknown) {
-                // is it a coboldoc?
-                if (commentLine.indexOf("*>*") !== -1) {
-                    this.commentTagStyle = CobolTagStyle.FREE;
-                } else {
-                    if (commentLine.indexOf("*>") !== -1) {
-                        this.commentTagStyle = CobolTagStyle.MICROFOCUS;
-                    }
-                }
+            // if (this.commentTagStyle === CobolTagStyle.unknown) {
+            //     // is it a coboldoc?
+            //     if (commentLine.indexOf("*>*") !== -1) {
+            //         this.commentTagStyle = CobolTagStyle.FREE;
+            //     } else {
+            //         if (commentLine.indexOf("*>") !== -1) {
+            //             this.commentTagStyle = CobolTagStyle.MICROFOCUS;
+            //         }
+            //     }
 
-                if (this.commentTagStyle === CobolTagStyle.unknown) {
-                    if (commentLine.indexOf("*><[") !== -1) {
-                        this.commentTagStyle = CobolTagStyle.OCDOC;
-                    }
-                }
-            }
+            //     if (this.commentTagStyle === CobolTagStyle.unknown) {
+            //         if (commentLine.indexOf("*><[") !== -1) {
+            //             this.commentTagStyle = CobolTagStyle.OCDOC;
+            //         }
+            //     }
+            // }
 
-            if (this.commentDocStyle === CobolDocStyle.unknown) {
-                const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
-                for (const possibleTag of possilexmltags) {
-                    if (commentLine.indexOf(possibleTag) !== -1) {
-                        this.commentDocStyle = CobolDocStyle.MSDN;
-                    }
-                }
+            // if (this.commentDocStyle === CobolDocStyle.unknown) {
+            //     const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
+            //     for (const possibleTag of possilexmltags) {
+            //         if (commentLine.indexOf(possibleTag) !== -1) {
+            //             this.commentDocStyle = CobolDocStyle.MSDN;
+            //         }
+            //     }
 
-                const possiblecobdoc: string[] = ["@author", "@license"];
-                for (const possibleTag of possiblecobdoc) {
-                    if (commentLine.indexOf(possibleTag) !== -1) {
-                        this.commentDocStyle = CobolDocStyle.COBOLDOC;
-                    }
-                }
+            //     const possiblecobdoc: string[] = ["@author", "@license"];
+            //     for (const possibleTag of possiblecobdoc) {
+            //         if (commentLine.indexOf(possibleTag) !== -1) {
+            //             this.commentDocStyle = CobolDocStyle.COBOLDOC;
+            //         }
+            //     }
 
-                const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
-                for (const possibleICOBOL of possibleICOBOLs) {
-                    if (commentLine.indexOf(possibleICOBOL) !== -1) {
-                        this.commentDocStyle = CobolDocStyle.ISCOBOL;
-                    }
-                }
+            //     const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
+            //     for (const possibleICOBOL of possibleICOBOLs) {
+            //         if (commentLine.indexOf(possibleICOBOL) !== -1) {
+            //             this.commentDocStyle = CobolDocStyle.ISCOBOL;
+            //         }
+            //     }
 
-                const possibleFUJITSUs: string[] = ["@**", "H ", "D "];
-                for (const possibleFUJITSU of possibleFUJITSUs) {
-                    const trimLine = commentLine.trimLeft();
-                    if (trimLine.startsWith(possibleFUJITSU)) {
-                        this.commentDocStyle = CobolDocStyle.FUJITSU;
-                    }
-                }
+            //     const possibleFUJITSUs: string[] = ["@**", "H ", "D "];
+            //     for (const possibleFUJITSU of possibleFUJITSUs) {
+            //         const trimLine = commentLine.trimLeft();
+            //         if (trimLine.startsWith(possibleFUJITSU)) {
+            //             this.commentDocStyle = CobolDocStyle.FUJITSU;
+            //         }
+            //     }
 
-                const possibleOCDOCs: string[] = ["Author:", ":Date: ", ":Rights:"];
-                for (const possibleOCDOC of possibleOCDOCs) {
-                    const trimLine = commentLine.trimLeft();
-                    if (trimLine.startsWith(possibleOCDOC)) {
-                        this.commentDocStyle = CobolDocStyle.OCDOC;
-                    }
-                }
+            //     const possibleOCDOCs: string[] = ["Author:", ":Date: ", ":Rights:"];
+            //     for (const possibleOCDOC of possibleOCDOCs) {
+            //         const trimLine = commentLine.trimLeft();
+            //         if (trimLine.startsWith(possibleOCDOC)) {
+            //             this.commentDocStyle = CobolDocStyle.OCDOC;
+            //         }
+            //     }
 
-                // leave early, if comment style found
-                if (this.commentDocStyle !== CobolDocStyle.unknown) {
-                    return;
-                }
-            }
+            //     // leave early, if comment style found
+            //     if (this.commentDocStyle !== CobolDocStyle.unknown) {
+            //         return;
+            //     }
+            // }
 
             // const comment = commentLine.substring(2 + startOfComment).trim();
             const startOfCOBOLint: number = commentLine.indexOf(this.cobolLintLiteral);

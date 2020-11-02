@@ -39,7 +39,7 @@ const propertiesReader = require('properties-reader');
 import util from 'util';
 import { getWorkspaceFolders } from './cobolfolders';
 // import { COBOLDocumentationGenerator } from './coboldocgenerator';
-import { CobolCommentProvider } from './cobolcommentprovider';
+// import { CobolCommentProvider } from './cobolcommentprovider';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
@@ -730,9 +730,9 @@ export function activate(context: ExtensionContext): void {
     const cobolProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 
-    const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
-    const cobolCommentProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolCommentProvider);
-    context.subscriptions.push(cobolCommentProviderDisposible);
+    // const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
+    // const cobolCommentProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolCommentProvider);
+    // context.subscriptions.push(cobolCommentProviderDisposible);
 
     /* hover provider */
     const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
