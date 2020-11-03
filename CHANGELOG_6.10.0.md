@@ -6,4 +6,4 @@
 
 - Bulk processing of metadata caching has been moved out of the vscode process to enable a more responsive editing experience using nodejs/fork
 - COBOLDoc support has been removed, awaiting completion of issues raised with the COBOLDoc project itself, once these issues have been resolved the support can be re-instated.
-- COBOL Listing file support has been split out into compiler-specific variants allow custom colourisation for each style of listing file
+- COBOL Listing file support has been split out into compiler-specific variants allowing custom colourisation for each style of listing file
