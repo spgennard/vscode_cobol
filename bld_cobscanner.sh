@@ -25,4 +25,14 @@ npm install performance-now
 npm version --allow-same-version $PACKAGE_VERSION
 npm install
 depcheck
+touch fred.json
+result=$(node cobscanner.js fred.json)
+if [ "$result" = "Unable to load fred.json" ]; then
+ echo Quick confidence test okay
+else
+ echo Quick confidence test failed
+ echo " Result: [$result]"
+ rm -f fred.json
+ exit 1
+fi
 rm package.json package-lock.json

@@ -41,7 +41,7 @@ export class VSCobScanner {
             sf.Files.push(fsPath);
             sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
             sf.showMessage = settings.cache_metadata_show_progress_messages;
-            await this.forkScanner(sf);
+            await this.forkScanner(sf, "OnSave");
         }
     }
 
@@ -57,11 +57,24 @@ export class VSCobScanner {
     private static activePid = 0;
 
     public static isAlive(pid: number): boolean {
+        if (this.activePid === 0) {
+            return false;
+        }
+
         try {
             return process.kill(pid, 0);
         }
         catch (e) {
             return e.code === 'EPERM';
+        }
+    }
+
+    private static removeScannerFile(cacheDirectory: string):void {
+        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+        try {
+            fs.unlinkSync(jsonFile);
+        } catch {
+            //continue
         }
     }
 
@@ -82,7 +95,7 @@ export class VSCobScanner {
         return this.isAlive(VSCobScanner.activePid);
     }
 
-    public static async forkScanner(sf: ScanData): Promise<void> {
+    public static async forkScanner(sf: ScanData, reason: string): Promise<void> {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
@@ -96,27 +109,20 @@ export class VSCobScanner {
                 cwd: VSCobScanner.scannerBinDir
             };
 
-
             const child = fork(jcobscanner_js, [jsonFile], options);
 
             VSCobScanner.activePid = child.pid;
 
             child.on('error', err => {
-                const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-                try {
-                    fs.unlinkSync(jsonFile);
-                }
-                catch {
-                    //continue
-                }
-                logException("Fork caused", err);
+                VSCobScanner.removeScannerFile(cacheDirectory);
+                logException(`Fork caused ${reason}`, err);
             });
 
             child.on('exit', code => {
                 VSCobScanner.activePid = 0;
                 if (code !== 0) {
                     if (sf.showMessage) {
-                        logMessage(`External scan completed (Exit Code=${code})`);
+                        logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
                     }
                 } else {
                     GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
@@ -158,15 +164,22 @@ export class VSCobScanner {
     }
 
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
+        const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
-            logMessage("Metadata cache is off, no action taken");
+            logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
             return;
         }
 
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined && VSCobScanner.IsScannerActive(cacheDirectory)) {
-            logMessage("Source scanner already active, no action taken");
-            return;
+            if (!viaCommand) {
+                logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
+                VSCobScanner.removeScannerFile(cacheDirectory);
+                logMessage(` - lock file released`);
+            } else {
+                logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
+                return;
+            }
         }
 
         const settings = VSCOBOLConfiguration.get();
@@ -175,7 +188,7 @@ export class VSCobScanner {
         const files: string[] = [];
 
         if (ws === undefined) {
-            logMessage(`No workspace folders available`);
+            logMessage(`No workspace folders available ${msgViaCommand}`);
             return;
         }
 
@@ -185,7 +198,7 @@ export class VSCobScanner {
             logChannelSetPreserveFocus(!viaCommand);
         }
         logMessage("");
-        logMessage("Starting to process metadata from workspace folders (" + (viaCommand ? "on demand" : "startup") + ")");
+        logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
         if (ws !== undefined) {
             for (const folder of ws) {
@@ -210,7 +223,7 @@ export class VSCobScanner {
             sf.Directories.push(uri.fsPath);
         }
 
-        await VSCobScanner.forkScanner(sf);
+        await VSCobScanner.forkScanner(sf, msgViaCommand);
     }
 
     private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {

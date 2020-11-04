@@ -88,9 +88,11 @@ class Utils {
     }
 }
 
+let lastJsonFile = "";
 for (const arg of args) {
     if (arg.endsWith(".json")) {
         try {
+            lastJsonFile = arg;
             const scanData = ScanDataHelper.load(arg);
             const aborted = false;
             const stats = new ScanStats();
@@ -178,18 +180,21 @@ for (const arg of args) {
             }
         }
         catch (e) {
-            features.logException("cobscanner", e);
-        }
-        finally {
-            try {
-                // delete the json file
-                fs.unlinkSync(arg);
-            }
-            catch {
-                //continue
+            if (e instanceof SyntaxError) {
+                features.logMessage(`Unable to load ${arg}`);
+            } else {
+                features.logException("cobscanner", e);
             }
         }
-
     }
-    // console.log(scanner);
+}
+
+if (lastJsonFile.length !== 0) {
+    try {
+        // delete the json file
+        fs.unlinkSync(lastJsonFile);
+    }
+    catch {
+        //continue
+    }
 }
