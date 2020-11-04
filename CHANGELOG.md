@@ -3,6 +3,31 @@
 
 Changelog for spgennard vscode_cobol.
 
+## Unreleased
+### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
+
+**Add support of coboldoc - Fix #189**
+
+ * - Second part, comment out the support 
+ * Schedule cleanup next month just incase. 
+
+[e6ae98bb8470944](https://github.com/spgennard/vscode_cobol/commit/e6ae98bb8470944) *2020-11-02 20:50:15*
+
+**Add support of coboldoc - Fix #189**
+
+ * - Support for COBOLDoc has been abandoned until it is more mature 
+
+[c137fa606879251](https://github.com/spgennard/vscode_cobol/commit/c137fa606879251) *2020-11-02 20:43:47*
+
+
+### GitHub [#235](https://github.com/spgennard/vscode_cobol/issues/235) MF matcher problem with COBCH038 name XYZ undeclared, line 878 (first usage)  
+
+**MF matcher problem with COBCH038 name XYZ undeclared, line 878 (first usage) #235**
+
+
+[ec7459528b6dd5c](https://github.com/spgennard/vscode_cobol/commit/ec7459528b6dd5c) *2020-11-04 21:06:10*
+
+
 ## 6.9.0
 ### GitHub [#187](https://github.com/spgennard/vscode_cobol/issues/187) Metadata entries (like AUTHOR and SOURCE-COMPUTER) are not terminated by a newline  
 
