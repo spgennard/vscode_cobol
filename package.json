@@ -1390,7 +1390,7 @@
             },
             {
                 "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+),(\\d+),.*\\)$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,
@@ -1400,7 +1400,7 @@
             },
             {
                 "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+)[^,]+,(.*)\\((\\d+),(\\d+),.*\\).*$",
+                "regexp" : "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+)[^,]+,(\\S.*)\\((\\d+),(\\d+),.*\\).*$",
                 "code": 1,
                 "severity": 2,
                 "message": 3,

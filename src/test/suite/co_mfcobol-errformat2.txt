@@ -1,0 +1,3 @@
+**    COBCH0301S Unrecognized verb  : /some/CODE.cob(1619,8,8)
+**    COBCH0348S Procedure name U040-ERR undeclared, line 25901 (first usage)  : /some/CODE.cob(398,33,23)
+**    COBCH0348S Procedure name C123-ERR undeclared, line 27136 (first usage)  : /some/CODE.cob(1633,30,20)
