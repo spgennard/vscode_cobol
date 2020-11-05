@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
-import { cobolKeywordDictionary } from './keywords/cobolKeywords';
+import { cobolKeywordDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
@@ -302,8 +302,13 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    private isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.has(keyword.toLowerCase());
+    private isValidKeywordOrStorageKeyword(keyword: string): boolean {
+        const keywordLower = keyword.toLowerCase();
+        const isKeyword=cobolKeywordDictionary.has(keywordLower);
+        if (isKeyword) {
+            return true;
+        }
+        return cobolStorageKeywordDictionary.has(keywordLower);
     }
 
     public foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle):void {
@@ -353,7 +358,7 @@ export class COBOLUtils {
                         break;
 
                     case FoldAction.Keywords:
-                        actionIt = this.isValidKeyword(argLower);
+                        actionIt = this.isValidKeywordOrStorageKeyword(argLower);
                         break;
                 }
 
