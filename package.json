@@ -692,6 +692,11 @@
                 "configuration": "./cobol.configuration.json"
             },
             {
+                "id": "COBOL_ACU_LISTFILE",
+                "extensions": [],
+                "configuration": "./cobol.configuration.json"
+            },
+            {
                 "id": "OpenCOBOL",
                 "aliases": [
                     "OpenCOBOL",
@@ -826,6 +831,15 @@
                 "language": "COBOL_GNU_LISTFILE",
                 "scopeName": "source.cobol_gnu_listfile",
                 "path": "./syntaxes/COBOL_gnu_listfile.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.sql": "sql",
+                    "meta.embedded.block.html": "html"
+                }
+            },
+            {
+                "language": "COBOL_ACU_LISTFILE",
+                "scopeName": "source.cobol_acu_listfile",
+                "path": "./syntaxes/COBOL_acu_listfile.tmLanguage.json",
                 "embeddedLanguages": {
                     "meta.embedded.block.sql": "sql",
                     "meta.embedded.block.html": "html"

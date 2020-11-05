@@ -1,5 +1,5 @@
 {
-  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL.tmLanguage.json",
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/ACUCOBOL.tmLanguage.json",
   "fileTypes": [],
   "name": "ACUCOBOL",
   "patterns": [
@@ -15,7 +15,7 @@
       }
     },
     {
-      "match": "(?<![-_])(?i:record-position|modify|inquire|tab|title|event|center|label-offset|cell|help-id|cells|push-button|list-box|label|default-font|id\\s+division|id|no-tab|unsorted|color|height|width|bind|thread|erase|modeless|scroll|system|menu|title-bar|wrap|destroy|resizeable|user-gray|large-font|newline|3-d|data-columns|display-columns|alignment|separation|cursor-frame-width|divider-color|drag-color|heading-color|heading-divider-color|num-rows|record-data|tiled-headings|vpadding|centered-headings|column-headings|self-act|cancel-button|vscroll|report-composer|clsid|primary-interface|active-x-control|default-interface|default-source|auto-minimize|auto-resize|resource|engraved|initial-state|frame|acuactivexcontrol|activex-res|grid|box|message|namespace|class-name|module|constructor|version|strong|culture|method|handle|exception-value|read-only|dividers|graphical|indexed|termination-value|permanent|boxed|visible|convert|centered)(?=\\s|\\.|,|;|$)",
+      "match": "(?<![-_])(?i:examine|draw|exclusive|transform|un_exclusive|transaction|wait|record-position|modify|inquire|tab|title|event|center|label-offset|cell|help-id|cells|push-button|list-box|label|default-font|id\\s+division|id|no-tab|unsorted|color|height|width|bind|thread|erase|modeless|scroll|system|menu|title-bar|wrap|destroy|resizeable|user-gray|large-font|newline|3-d|data-columns|display-columns|alignment|separation|cursor-frame-width|divider-color|drag-color|heading-color|heading-divider-color|num-rows|record-data|tiled-headings|vpadding|centered-headings|column-headings|self-act|cancel-button|vscroll|report-composer|clsid|primary-interface|active-x-control|default-interface|default-source|auto-minimize|auto-resize|resource|engraved|initial-state|frame|acuactivexcontrol|activex-res|grid|box|message|namespace|class-name|module|constructor|version|strong|culture|method|handle|exception-value|read-only|dividers|graphical|indexed|termination-value|permanent|boxed|visible|convert|centered)(?=\\s|\\.|,|;|$)",
       "name": "keyword.cobol.acu"
     },
     {
