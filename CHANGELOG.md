@@ -4,6 +4,16 @@
 Changelog for spgennard vscode_cobol.
 
 ## Unreleased
+### GitHub [#229](https://github.com/spgennard/vscode_cobol/issues/229) add acucobol-listing  
+
+**add acucobol-listing Fix #229**
+
+ * - fix observed issues with various tmLanguage files (copyright entity) 
+
+[ede84ab0cbea7de](https://github.com/spgennard/vscode_cobol/commit/ede84ab0cbea7de) *2020-11-05 22:11:23*
+
+
+## 6.9.18
 ### GitHub [#189](https://github.com/spgennard/vscode_cobol/issues/189) Add support of coboldoc  
 
 **Add support of coboldoc - Fix #189**
