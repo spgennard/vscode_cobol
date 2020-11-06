@@ -17,7 +17,7 @@ This extension uses the Visual Studio Code APIs because the Language Server Prot
 
 ## What platform can it be used on?
 
-Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
+Everywhere Visual Studio Code works... aka Windows, Linux and Mac OSX.
 
 ## Code colorization for COBOL, PL/I and JCL:
 
@@ -35,32 +35,33 @@ Everywhere Visual Studio Code works.. aka Windows, Linux and Mac OSX.
 
 ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/outline.png)
 
-## Goto definition:
+## Go to Definition:
 
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/gotodef.gif)
 
-## Peek definition:
+## Peek Definition:
 
 ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/peekdef.gif)
 
 ## Keybinds
 
-| Keys                     |                          Description                           |
-|--------------------------|:--------------------------------------------------------------:|
-| ctrl+alt+p               |                    Goto procedure division                     |
-| ctrl+alt+w               |                  Goto working-storage section                  |
-| ctrl+alt+d               | Goto data division (or working-storage section if not present) |
-| ctrl+alt+,               |             Go backwards to next section/division              |
-| ctrl+alt+.               |            Go forward to next next section/division            |
-| f12 or ctrl+click        |                     Move to copybook/file                      |
-| ctrl+hover over copybook |                     Peek head of copybook                      |
-| right mouse/peek         |            Peek copybook without opening the file)             |
+| Keys                    |                          Description                            |
+|-------------------------|:---------------------------------------------------------------:|
+| ctrl+alt+p              |                    Go to procedure division                     |
+| ctrl+alt+w              |                 Go to working-storage section                   |
+| ctrl+alt+d              | Go to data division (or working-storage section if not present) |
+| ctrl+alt+,              |             Go backwards to next section/division               |
+| ctrl+alt+.              |            Go forward to next next section/division             |
+| f12 or ctrl+click       |          Go to symbol (section/variable/copybook/file)          |
+| ctrl+hover over symbol  |               Peek defintion of symbol (tooltip)                |
+| right mouse/peek        |            Peek defintion of symbol in peek-editor              |
 
 ## Settings
 
 - COBOL tab stops can be changed by editing the *coboleditor.tabstops* setting.
-- Extensions used for *move to copybook*, can be changed by editing the *coboleditor.copybookexts* settings.
-- Directories used for *move to copybook*, can be changed by editing the *coboleditor.copybookdirs* settings.
+- COBOL source file extensions used for *go to symol*, can be changed by editing the *coboleditor.copybookexts*
+  and *coboleditor.program_extensions* settings.
+- Directories used for *go to symbol*, can be changed by editing the *coboleditor.copybookdirs* settings.
 
 ## Tasks
 
@@ -422,7 +423,7 @@ and looks like:
 
 ## Scanning and caching
 
-COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "goto definition".
+COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "go to definition".
 
 If you do not have caching enabled, my recommendation is to use "file searches" to locate the required source information.
 
@@ -432,7 +433,7 @@ If "cache_metadata" is enabled then navigating between source files becomes easi
 |---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | process_metadata_cache_on_start | Scan all files in the workspace and located copybooks                                                                                     |
 | cache_metadata != off           | Caches data from scanned source, including entry-points & classes                                                                         |
-| parse_copybooks_for_references  | Scan for any copybooks when editing.     Helps with "goto definition" and "find all references. Does not require metadata caching enabled |
+| parse_copybooks_for_references  | Scan for any copybooks when editing.     Helps with "go to definition" and "find all references. Does not require metadata caching enabled |
 
 The metadata cache does not have to be created on workspace startup but can be created at will by using the "COBOL: Process files in workspace for metadata" command.
 
