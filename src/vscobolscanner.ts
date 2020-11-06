@@ -36,7 +36,7 @@ export class VSScanStats extends ScanStats {
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
     private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
-    
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public constructor(config: ICOBOLSettings) {
         //
@@ -103,6 +103,8 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 
 export default class VSCOBOLSourceScanner {
 
+    private static readonly MAX_MEM_CACHE_SIZE = 30;
+
     public static getCachedObject(document: TextDocument): COBOLSourceScanner | undefined {
         const fileName: string = document.fileName;
         const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
@@ -124,17 +126,24 @@ export default class VSCOBOLSourceScanner {
                     config.process_metadata_cache_on_file_save ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);
 
-                InMemoryCache.set(fileName, qcpd);
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
 
-                if (InMemoryCache.size > 20) {
-                    const memKeys = InMemoryCache.keys();
-                    let dropKey = memKeys.next().value;
-                    if (dropKey === qcpd) {
-                        dropKey = memKeys.next().value;
+                if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
+                    // drop the smallest..
+                    let smallest=Number.MAX_VALUE;
+                    let dropKey = "";
+                    for(const [key,val] of InMemoryCache) {
+                        if (val.tokensInOrder.length < smallest) {
+                            dropKey = key;
+                            smallest = val.tokensInOrder.length;
+                        }
                     }
-                    InMemoryCache.delete(dropKey);
+                    if (dropKey.length !== 0) {
+                        InMemoryCache.delete(dropKey);
+                    }
                 }
+
+                InMemoryCache.set(fileName, qcpd);
                 return qcpd;
             }
             catch (e) {
