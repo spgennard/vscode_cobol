@@ -171,7 +171,7 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" p
 }
 ```
 
-### Task: Single file compile using GnuCOBOL/OpenCOBOL/COBOL-IT
+### Task: Single file compile using GnuCOBOL/OpenCOBOL/opensource COBOL/COBOL-IT
 
 The example below shows you how you can create a single task to compile one program using the `cobc` command.
 
@@ -261,7 +261,7 @@ The following ```Dockerfile``` is an example on how you can extend your existing
 
 This example uses the SLES 15.1 base images using Visual COBOL 5.0.
 
-You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different commant eg: yum, microdnf etc..).
+You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different command eg: yum, microdnf etc..).
 
 Dockerfile:
 
@@ -442,9 +442,10 @@ The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
 
 - [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
 - [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
+- [GnuCOBOL Community](https://sourceforge.net/p/gnucobol/discussion/)
+- [Stack Overflow on COBOL](https://stackoverflow.com/questions/tagged/cobol)
 
 ## Shortcuts
-
 
  - [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
  - [ALT] + [SHIFT] + [A]: Change to ACUCOBOL-GT Syntax
