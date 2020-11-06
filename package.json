@@ -922,138 +922,172 @@
         "commands": [
             {
                 "command": "cobolplugin.move2pd",
-                "title": "Move to procedure division"
+                "category": "COBOL",
+                "title": "Go to Procedure Division"
             },
             {
                 "command": "cobolplugin.move2ws",
-                "title": "Move to working-storage section"
+                "category": "COBOL",
+                "title": "Go to Working-Storage Section"
             },
             {
                 "command": "cobolplugin.move2dd",
-                "title": "Move to data division"
+                "category": "COBOL",
+                "title": "Go to Data Division"
             },
             {
                 "command": "cobolplugin.move2anyforward",
-                "title": "Move to next section/division"
+                "category": "COBOL",
+                "title": "Go to next Section/Division"
             },
             {
                 "command": "cobolplugin.move2anybackwards",
-                "title": "Move to backwards to section/division"
+                "category": "COBOL",
+                "title": "Move to Previous Section/Division"
             },
             {
                 "command": "cobolplugin.tab",
+                "category": "COBOL",
                 "title": "Insert a tab"
             },
             {
                 "command": "cobolplugin.revtab",
+                "category": "COBOL",
                 "title": "Remove a tab"
             },
             {
                 "command": "cobolplugin.commentline",
+                "category": "COBOL",
                 "title": "Comment line"
             },
             {
                 "command": "cobolplugin.change_lang_to_acu",
-                "title": "COBOL: Select ACUCOBOL-GT language"
+                "category": "COBOL",
+                "title": "Select ACUCOBOL-GT language"
             },
             {
                 "command": "cobolplugin.toggle_margin",
-                "title": "COBOL: Toggle margin"
+                "category": "COBOL",
+                "title": "Toggle margin"
             },
             {
                 "command": "cobolplugin.checkWorkspaceForMissingCopybookDirs",
-                "title": "COBOL: Check workspace folders recursively for potential copybook directories"
+                "category": "COBOL",
+                "title": "Check workspace folders recursively for potential copybook directories"
             },
             {
                 "command": "cobolplugin.processAllFilesInWorkspace",
-                "title": "COBOL: Process files in workspace for metadata"
+                "category": "COBOL",
+                "title": "Process files in workspace for metadata"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
-                "title": "COBOL: Dump metadata for diagnostic"
+                "category": "COBOL",
+                "title": "Dump metadata for diagnostic"
             },
             {
                 "command": "cobolplugin.clearMetaData",
-                "title": "COBOL: Clear metadata"
+                "category": "COBOL",
+                "title": "Clear metadata"
             },
             {
                 "command": "cobolplugin.syntaxCheck",
+                "category": "COBOL",
                 "title": "Compile: Syntax Check"
             },
             {
                 "command": "cobolplugin.mfurunMenu",
-                "title": "COBOL: Run UnitTest"
+                "category": "COBOL",
+                "title": "Run UnitTest"
             },
             {
                 "command": "cobolplugin.removeAllComments",
-                "title": "COBOL: Remove COBOL Comments"
+                "category": "COBOL",
+                "title": "Remove COBOL Comments"
             },
             {
                 "command": "cobolplugin.removeIdentificationArea",
-                "title": "COBOL: Remove COBOL Identification Area"
+                "category": "COBOL",
+                "title": "Remove COBOL Identification Area"
             },
             {
                 "command": "cobolplugin.removeColumnNumbers",
-                "title": "COBOL: Remove Column Numbers"
+                "category": "COBOL",
+                "title": "Remove Column Numbers"
             },
             {
                 "command": "cobolplugin.resequenceColumnNumbers",
-                "title": "COBOL: Re-sequence Column Numbers"
+                "category": "COBOL",
+                "title": "Re-sequence Column Numbers"
             },
             {
                 "command": "cobolplugin.makeKeywordsLowercase",
-                "title": "COBOL: Make keywords lowercase"
+                "category": "COBOL",
+                "title": "Make keywords lowercase"
             },
             {
                 "command": "cobolplugin.makeKeywordsUppercase",
-                "title": "COBOL: Make keywords uppercase"
+                "category": "COBOL",
+                "title": "Make keywords uppercase"
             },
             {
                 "command": "cobolplugin.makeKeywordsCamelCase",
-                "title": "COBOL: Make keywords camelcase"
+                "category": "COBOL",
+                "title": "Make keywords camelcase"
             },
             {
                 "command": "cobolplugin.makeFieldsLowercase",
-                "title": "COBOL: Make fields lowercase"
+                "category": "COBOL",
+                "title": "Make fields lowercase"
             },
             {
                 "command": "cobolplugin.makeFieldsUppercase",
-                "title": "COBOL: Make fields uppercase"
+                "category": "COBOL",
+                "title": "Make fields uppercase"
             },
             {
                 "command": "cobolplugin.makeFieldsCamelCase",
-                "title": "COBOL: Make fields camelcase"
+                "category": "COBOL",
+                "title": "Make fields camelcase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsLowerCase",
-                "title": "COBOL: Make perform targets lowercase"
+                "category": "COBOL",
+                "title": "Make perform targets lowercase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsUpperCase",
-                "title": "COBOL: Make perform targets uppercase"
+                "category": "COBOL",
+                "title": "Make perform targets uppercase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsCamelCase",
-                "title": "COBOL: Make perform targets camelcase"
+                "category": "COBOL",
+                "title": "Make perform targets camelcase"
             },
             {
                 "command": "cobolplugin.extractSelectionToParagraph",
+                "category": "COBOL",
                 "title": "Extract selection to paragraph"
             },
             {
                 "command": "cobolplugin.extractSelectionToSection",
+                "category": "COBOL",
                 "title": "Extract selection to section"
             },
             {
                 "command": "cobolplugin.extractSelectionToCopybook",
+                "category": "COBOL",
                 "title": "Extract selection to copybook"
             },
             {
                 "command": "cobolplugin.migrateCopybooksToWorkspace",
-                "title": "COBOL: Migrate copybook settings to workspace (for performance)"
+                "category": "COBOL",
+                "title": "Migrate copybook settings to workspace (for performance)"
             },
             {
                 "command": "cobolplugin.showCOBOLChannel",
+                "category": "COBOL",
                 "title": "Show COBOL Channel"
             }
         ],

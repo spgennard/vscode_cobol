@@ -409,6 +409,10 @@ function flip_plaintext(doc: TextDocument) {
                 return;
             }
 
+            if ((firstLine.indexOf("ACUCOBOL-GT ") !== -1) && (firstLine.indexOf("Page:") !== -1)) {
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL_ACU_LISTFILE");
+                return;
+            }
         }
     }
 }
