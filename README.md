@@ -261,7 +261,7 @@ The following ```Dockerfile``` is an example on how you can extend your existing
 
 This example uses the SLES 15.1 base images using Visual COBOL 5.0.
 
-You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different commant eg: yum, microdnf etc..).
+You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different commands eg: yum, microdnf etc..).
 
 Dockerfile:
 
