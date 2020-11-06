@@ -922,23 +922,23 @@
         "commands": [
             {
                 "command": "cobolplugin.move2pd",
-                "title": "Move to procedure division"
+                "title": "Go to procedure division"
             },
             {
                 "command": "cobolplugin.move2ws",
-                "title": "Move to working-storage section"
+                "title": "Go to working-storage section"
             },
             {
                 "command": "cobolplugin.move2dd",
-                "title": "Move to data division"
+                "title": "Go to data division"
             },
             {
                 "command": "cobolplugin.move2anyforward",
-                "title": "Move to next section/division"
+                "title": "Go to next section/division"
             },
             {
                 "command": "cobolplugin.move2anybackwards",
-                "title": "Move to backwards to section/division"
+                "title": "Go to previous section/division"
             },
             {
                 "command": "cobolplugin.tab",
