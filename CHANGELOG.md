@@ -6,6 +6,16 @@ Changelog for spgennard vscode_cobol.
 ## Unreleased
 ### GitHub [#229](https://github.com/spgennard/vscode_cobol/issues/229) add acucobol-listing  
 
+**- add acucobol-listing Fix #229**
+
+ * - remove &quot;COBOL:&quot; and add cat field 
+
+[8a901e9d62d6e0d](https://github.com/spgennard/vscode_cobol/commit/8a901e9d62d6e0d) *2020-11-06 22:31:48*
+
+
+## 6.9.19
+### GitHub [#229](https://github.com/spgennard/vscode_cobol/issues/229) add acucobol-listing  
+
 **add acucobol-listing Fix #229**
 
  * - fix observed issues with various tmLanguage files (copyright entity) 
