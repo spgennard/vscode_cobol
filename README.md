@@ -440,8 +440,26 @@ The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
 
 ## Online resources
 
-- [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
-- [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
+- Online communities
+  - [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
+   - [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
+   - [GnuCOBOL Community](https://sourceforge.net/p/gnucobol/discussion/)
+   - [Open Mainframe Project - COBOL Forum](https://community.openmainframeproject.org/c/cobol-technical-questions)
+   - [Tek-Tips - COBOL General discussion](https://www.tek-tips.com/threadminder.cfm?pid=209)
+ - Stack Overflow topics/tags:
+   - [Micro Focus COBOL, PL/I, REXX, JCL and CICS](https://stackoverflow.com/questions/tagged/microfocus)
+   - [ACUCOBOL-GT](https://stackoverflow.com/questions/tagged/acucobol-gt)
+   - [COBOL](https://stackoverflow.com/questions/tagged/cobol)
+   - [GnuCOBOL](https://stackoverflow.com/questions/tagged/gnucobol)
+   - [COBOL.NET](https://stackoverflow.com/questions/tagged/cobol.net)
+   - [CICS](https://stackoverflow.com/questions/tagged/cics)
+ - [COBOL Programming Language Articles on Reddit](https://www.reddit.com/r/cobol/)
+ - [Linkedin Learning COBOL Resources](https://www.linkedin.com/learning/topics/cobol)
+- wikipedia
+  - [COBOL](https://en.wikipedia.org/wiki/COBOL)
+  - [CICS](https://en.wikipedia.org/wiki/CICS)
+- standards
+  - [ICS > 35 > 35.060 / ISO/IEC 1989:2014](https://www.iso.org/standard/51416.html)
 
 ## Shortcuts
 
