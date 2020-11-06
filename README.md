@@ -11,7 +11,7 @@ This extension is certainly not an Integrated Development Environment for COBOL.
 
 ## Does this extension include a language server protocol for COBOL
 
-Visual Studio Code has two ways of providing language extensions, one if via the [language server protocol](https://langserver.org/) and the second is via a set of Visual Studio Code APIs.
+Visual Studio Code has two ways of providing language extensions, one is via the [language server protocol](https://langserver.org/) and the second is via a set of Visual Studio Code APIs.
 
 This extension uses the Visual Studio Code APIs because the Language Server Protocol did not exist when this extension was created.
 
