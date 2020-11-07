@@ -3,7 +3,7 @@
 
 Changelog for spgennard vscode_cobol.
 
-## Unreleased
+## 6.9.20
 ### GitHub [#229](https://github.com/spgennard/vscode_cobol/issues/229) add acucobol-listing  
 
 **- add acucobol-listing Fix #229**
