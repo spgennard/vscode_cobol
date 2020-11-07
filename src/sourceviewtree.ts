@@ -19,13 +19,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     private topLevelItems: SourceItem[] = [];
 
-    private cobolItems: SourceFolderItem[] = [];
-    private copyBookItems: SourceFolderItem[] = [];
-    private jclItems: SourceFolderItem[] = [];
-    private pliItems: SourceFolderItem[] = [];
-    private hlasmItems: SourceFolderItem[] = [];
-    private documentIems: SourceFolderItem[] = [];
-    private scriptItems: SourceFolderItem[] = [];
+    private cobolItems = new Map<string, SourceFolderItem>();
+    private copyBookItems = new Map<string, SourceFolderItem>();
+    private jclItems = new Map<string, SourceFolderItem>();
+    private pliItems = new Map<string, SourceFolderItem>();
+    private hlasmItems = new Map<string, SourceFolderItem>();
+    private documentIems = new Map<string, SourceFolderItem>();
+    private scriptItems = new Map<string, SourceFolderItem>();
 
     private settings: ICOBOLSettings;
 
@@ -123,6 +123,21 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this._onDidChangeTreeData.fire(this.scriptItem);
     }
 
+
+    private addExtensionIfInList2(ext: string, file: vscode.Uri, validExtensions: string[], sourceItem: string, base: string, items: Map<string, SourceFolderItem>): boolean {
+        for (const validExtension of validExtensions) {
+            if (validExtension.length > 0 && ext === validExtension) {
+                const f = file.fsPath;
+                if (items.has(f) === false) {
+                    items.set(f, this.newSourceItem(sourceItem, base, file, 0));
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private addExtensionIfInList(ext: string, file: vscode.Uri, validExtensions: string[], sourceItem: string, base: string, items: SourceFolderItem[]): boolean {
         let found = false;
         for (const validExtension of validExtensions) {
@@ -140,61 +155,64 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private addExtension(ext: string, file: vscode.Uri) {
         const base = path.basename(file.fsPath);
 
-        this.addExtensionIfInList(ext?.toLowerCase(), file, this.settings.program_extensions, "cobol", base, this.cobolItems);
-        this.addExtensionIfInList(ext?.toLowerCase(), file, this.settings.copybookexts, "copybook", base, this.copyBookItems);
+        if (ext !== undefined) {
+            this.addExtensionIfInList2(ext.toLowerCase(), file, this.settings.program_extensions, "cobol", base, this.cobolItems);
+            this.addExtensionIfInList2(ext.toLowerCase(), file, this.settings.copybookexts, "copybook", base, this.copyBookItems);
 
-        switch (ext?.toLowerCase()) {
-            case "jcl":
-            case "job":
-            case "cntl":
-            case "prc":
-            case "proc":
-                if (this.jclItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.jclItems.push(this.newSourceItem("jcl", base, file, 0));
-                }
-                break;
-            case "hlasm":
-            case "asm":
-            case "s":
-            case "asmpgm":
-            case "mac":
-            case "mlc":
-            case "asmmac":
-                if (this.hlasmItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.hlasmItems.push(this.newSourceItem("hlasm", base, file, 0));
-                }
-                break;
+                const fsp = file.fsPath;
+            switch (ext.toLowerCase()) {
+                case "jcl":
+                case "job":
+                case "cntl":
+                case "prc":
+                case "proc":
+                    if (this.jclItems.has(fsp) === false) {
+                        this.jclItems.set(fsp, this.newSourceItem("jcl", base, file, 0));
+                    }
+                    break;
+                case "hlasm":
+                case "asm":
+                case "s":
+                case "asmpgm":
+                case "mac":
+                case "mlc":
+                case "asmmac":
+                    if (this.hlasmItems.has(fsp) === false) {
+                        this.hlasmItems.set(fsp,this.newSourceItem("hlasm", base, file, 0));
+                    }
+                    break;
 
-            case "pl1":
-            case "pli":
-            case "plinc":
-            case "pc":
-            case "pci":
-            case "pcx":
-            case "inc":
-                if (this.pliItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.pliItems.push(this.newSourceItem("pli", base, file, 0));
-                }
-                break;
+                case "pl1":
+                case "pli":
+                case "plinc":
+                case "pc":
+                case "pci":
+                case "pcx":
+                case "inc":
+                    if (this.pliItems.has(fsp) === false) {
+                        this.pliItems.set(fsp, this.newSourceItem("pli", base, file, 0));
+                    }
+                    break;
 
-            case "md":
-            case "txt":
-            case "html":
-                if (this.documentIems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.documentIems.push(this.newSourceItem("document", base, file, 0));
-                }
-                break;
-            case "sh":
-            case "bat":
-                if (this.scriptItems.find(e => e.uri?.fsPath === file.fsPath) === undefined) {
-                    this.scriptItems.push(this.newSourceItem("scripts", base, file, 0));
-                }
-                break;
+                case "md":
+                case "txt":
+                case "html":
+                    if (this.documentIems.has(fsp) === false) {
+                        this.documentIems.set(fsp,this.newSourceItem("document", base, file, 0));
+                    }
+                    break;
+                case "sh":
+                case "bat":
+                    if (this.scriptItems.has(fsp) === undefined) {
+                        this.scriptItems.set(fsp,this.newSourceItem("scripts", base, file, 0));
+                    }
+                    break;
+            }
         }
     }
 
-    private setTreeState(items: SourceFolderItem[], item: SourceItem) {
-        if (items.length !== 0) {
+    private setTreeState(items: Map<string, SourceFolderItem>, item: SourceItem) {
+        if (items.size !== 0) {
             item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
         } else {
             item.collapsibleState = vscode.TreeItemCollapsibleState.None;
@@ -227,14 +245,19 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     public clearFile(vuri: vscode.Uri): void {
-        this.cobolItems = this.cobolItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.copyBookItems = this.copyBookItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.jclItems = this.jclItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.hlasmItems = this.hlasmItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.pliItems = this.pliItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.documentIems = this.documentIems.filter(item => item.uri?.fsPath !== vuri.fsPath);
-        this.scriptItems = this.scriptItems.filter(item => item.uri?.fsPath !== vuri.fsPath);
+        const f = vuri.fsPath;
+        this.cobolItems.delete(f);
+        this.copyBookItems.delete(f);
+        this.jclItems.delete(f);
+        this.hlasmItems.delete(f);
+        this.pliItems.delete(f);
+        this.documentIems.delete(f);
+        this.scriptItems .delete(f);
         this.refreshItems();
+    }
+
+    private getItemsFromMap(itemMap: Map<string, SourceItem>): SourceItem[] {
+        return [...itemMap.values()];
     }
 
     public getChildren(element?: SourceItem): Thenable<SourceItem[]> {
@@ -248,13 +271,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             let rtn: SourceItem[] = [];
 
             switch (element.label) {
-                case "COBOL": rtn = this.cobolItems; break;
-                case "Copybooks": rtn = this.copyBookItems; break;
-                case "JCL": rtn = this.jclItems; break;
-                case "PL/I": rtn = this.pliItems; break;
-                case "HLASM": rtn = this.hlasmItems; break;
-                case "Documents": rtn = this.documentIems; break;
-                case "Scripts": rtn = this.scriptItems; break;
+                case "COBOL": rtn = this.getItemsFromMap(this.cobolItems); break;
+                case "Copybooks": rtn = this.getItemsFromMap(this.copyBookItems); break;
+                case "JCL": rtn = this.getItemsFromMap(this.jclItems); break;
+                case "PL/I": rtn = this.getItemsFromMap(this.pliItems); break;
+                case "HLASM": rtn = this.getItemsFromMap(this.hlasmItems); break;
+                case "Documents": rtn = this.getItemsFromMap(this.documentIems); break;
+                case "Scripts": rtn = this.getItemsFromMap(this.scriptItems); break;
             }
 
             resolve(rtn);
