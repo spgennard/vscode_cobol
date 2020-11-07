@@ -511,12 +511,7 @@
                     "description": "Turn off unsafe extension check",
                     "default": false
                 },
-                "coboleditor.coboldoc_workspace_folder": {
-                    "type": "string",
-                    "title": "Default folder name for coboldoc files",
-                    "description": "Default folder name for coboldoc files",
-                    "default": "coboldoc"
-                },
+
                 "coboleditor.process_scanner_hints_embedded_in_comments": {
                     "type": "boolean",
                     "title": "Process scanner hints embedded in comments",

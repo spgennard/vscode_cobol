@@ -409,16 +409,6 @@ For example, to ensure you use utf8 for all you files use:
 }
 ```
 
-## COBOLDOC
-
-When editing COBOL source code, the documentation contained within the source code can be generated and view via "editor->Show documentation (COBOLDOC)".
-
-The source code is generated to html in the "coboldoc" directory in the workspace.   The folder name can be changed by changing the property *coboleditor.coboldoc_workspace_folder*.
-
-The source generation includes a index.html, as well as a sourcefile.cbl.html file, so if you change the directory please be aware that the *coboldoc* tool overwrites the index.html file too.
-
-The source code generation is provided by the npm coboldoc and is required to be installed for this to work.
-
 ## coboleditor.experimental_features
 
 Currently I have only one is active experimental feature and this is "hover" support for known APIs.
