@@ -320,6 +320,17 @@ devcontainer.json:
 }
 ```
 
+### Workspace Setup
+
+Visual Studio Code workspaces are not "projects" but do allow you keep your source in one place.
+
+Things to consider:
+
+ - If you have copybooks, you should change the *coboleditor.copybookdirs* setting to setup where the extension can find your copybooks.
+  - If use the *copy* verb with an extension, you may also need to adjust the *coboleditor.copybookexts* setting
+  - If you want the extension to understand the contents of your copybook before you access the them, then turn on the *coboleditor.parse_copybooks_for_references* setting.
+
+
 ## Complementary extensions
 
 ### [ToDo tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree) by Gruntfuggly
