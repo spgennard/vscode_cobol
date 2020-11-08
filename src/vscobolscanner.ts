@@ -18,6 +18,7 @@ import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
+import { COBOLFileUtils } from "./opencopybook";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -183,7 +184,10 @@ export default class VSCOBOLSourceScanner {
                             const possibleCopydir = fullDirectory.substr(topLevelLength);
 
                             if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
-                                logMessage(`  Configuration Recommendation : include : ${possibleCopydir} in coboleditor.copybookdirs to ensure the copybooks in this directory can be found`);
+                                const copyBookCount = await VSCOBOLSourceScanner.howManyCopyBooksInDirectory(fullDirectory, settings);
+                                if (copyBookCount !== 0) {
+                                    logMessage(`  Add: ${possibleCopydir} to coboleditor.copybookdirs (possible copybooks ${copyBookCount})`);
+                                }
                             }
                             await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings, topLevelFolder, Uri.file(fullDirectory));
                         }
@@ -192,6 +196,24 @@ export default class VSCOBOLSourceScanner {
             }
         }
         return;
+    }
+
+    public static async howManyCopyBooksInDirectory(directory: string, settings:ICOBOLSettings): Promise<number> {
+        const folder = Uri.file(directory);
+        const entries = await workspace.fs.readDirectory(folder);
+        let copyBookCount = 0;
+        for (const [entry, fileType] of entries) {
+            switch (fileType) {
+                case FileType.File | FileType.SymbolicLink:
+                case FileType.File:
+                    if (COBOLFileUtils.isValidCopybookExtension(entry,settings)) {
+                        copyBookCount++;
+                    }
+
+            }
+        }
+
+        return copyBookCount;
     }
 
     public static ignoreDirectory(partialName: string): boolean {

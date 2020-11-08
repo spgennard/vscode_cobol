@@ -11,6 +11,7 @@ images/cobol.psd
 images/cobol.xcf
 justpublish.sh
 node_modules
+docs/
 out/
 src/
 publishit.sh
