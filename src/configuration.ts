@@ -51,6 +51,7 @@ export class VSCOBOLConfiguration {
         vsconfig.process_scanner_hint_token_for_source_dependancies = getProcess_scanner_hint_token_for_source_dependancies();
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
         vsconfig.storagearea_id = getString("storagearea_id", "");
+        vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration('editor').get<number>("maxTokenizationLineLength",10000);
         return vsconfig;
     }
 

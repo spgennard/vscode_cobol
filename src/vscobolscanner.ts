@@ -106,6 +106,13 @@ export default class VSCOBOLSourceScanner {
     public static getCachedObject(document: TextDocument): COBOLSourceScanner | undefined {
         const fileName: string = document.fileName;
         const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
+        const config = VSCOBOLConfiguration.get();
+
+        // file is too large to parse
+        if (document.lineCount > config.editor_maxTokenizationLineLength) {
+            logMessage(` ${document.fileName} is not parsed, line count is ${document.lineCount} and editor.maxTokenizationLineLength is ${config.editor_maxTokenizationLineLength}`);
+            return undefined;
+        }
 
         /* if the document is edited, drop the in cached object */
         if (document.isDirty) {
@@ -116,8 +123,6 @@ export default class VSCOBOLSourceScanner {
         if (InMemoryCache.has(fileName) === false) {
             try {
                 const startTime = performance_now();
-                const config = VSCOBOLConfiguration.get();
-
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
                     cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
                     config.parse_copybooks_for_references,

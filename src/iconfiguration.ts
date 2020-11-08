@@ -48,6 +48,7 @@ export interface ICOBOLSettings {
     process_metadata_cache_on_file_save: boolean;
     storagearea_id: string;
 
+    editor_maxTokenizationLineLength: number;
     init_required: boolean;
 }
 
@@ -91,6 +92,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public cache_metadata_show_progress_messages:boolean;
     public process_metadata_cache_on_file_save: boolean;
     public storagearea_id: string;
+    public editor_maxTokenizationLineLength: number;
 
     public init_required = true;
 
@@ -134,5 +136,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.coboldoc_workspace_folder = "coboldoc";
         this.process_metadata_cache_on_file_save = false;
         this.storagearea_id = "";
+        this.editor_maxTokenizationLineLength = 20000;
     }
 }
