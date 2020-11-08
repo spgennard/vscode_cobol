@@ -1873,7 +1873,7 @@
         "vscode:prepublish": "npm run compile && webpack --mode production",
         "webpack": "npm run compile && webpack --mode development",
         "webpack-dev-not-used": "webpack --mode development --watch",
-        "compile": "tsc -b && ./bld_cobscanner.sh ",
+        "compile": "tsc -b && ./bld_cobscanner.sh && ./gen_changelog.sh",
         "test-compile": "tsc -p ./",
         "watch": "tsc -b -w",
         "lint": "eslint src --ext ts",
