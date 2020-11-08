@@ -58,9 +58,9 @@ Everywhere Visual Studio Code works.
 
 ## Settings
 
-- COBOL tab stops can be changed by editing the *coboleditor.tabstops* setting.
-- Extensions used for *Go to copybook*, can be changed by editing the *coboleditor.copybookexts* settings.
-- Directories used for *Go to copybook*, can be changed by editing the *coboleditor.copybookdirs* settings.
+- COBOL tab stops can be changed by editing the ```coboleditor.tabstops``` setting.
+- Extensions used for *Go to copybook*, can be changed by editing the ```coboleditor.copybookexts``` settings.
+- Directories used for *Go to copybook*, can be changed by editing the ```coboleditor.copybookdirs``` settings.
 
 ## Tasks
 
@@ -326,9 +326,9 @@ Visual Studio Code workspaces are not "projects" but do allow you keep your sour
 
 Things to consider:
 
- - If you have copybooks, you should change the *coboleditor.copybookdirs* setting to setup where the extension can find your copybooks
-  - If use the *copy* verb with this extension, you may also need to adjust the *coboleditor.copybookexts* setting
-  - If you want the extension to understand the contents of your copybook before you access it, then turn on the *coboleditor.parse_copybooks_for_references* setting to allow the extension to look inside the copybook references
+ - If you have copybooks, you should change the ```coboleditor.copybookdirs``` setting to setup where the extension can find your copybooks
+  - If use the *COPY* verb with this extension, you may also need to adjust the ```coboleditor.copybookexts``` setting
+  - If you want the extension to understand the contents of your copybook before you access it, then turn on the ```coboleditor.parse_copybooks_for_references``` setting to allow the extension to look inside the copybook references
 
 
 ## Complementary extensions
@@ -415,7 +415,7 @@ Currently I have only one is active experimental feature and this is "hover" sup
 
 This currently includes most of the *Micro Focus COBOL Library API* (CBL_) and a subset of ILE date APIs.
 
-This can be activated by setting the flag coboleditor.experimental_features in the settings panel.
+This can be activated by setting the flag ```coboleditor.experimental_features``` in the settings panel.
 
 and looks like:
 
