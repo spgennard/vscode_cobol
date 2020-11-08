@@ -53,6 +53,9 @@ export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(S
 let currentContext: ExtensionContext;
 const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 
+let sourceTreeView: SourceViewTree | undefined = undefined;
+let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
+
 export const ExternalFeatures = new VSExternalFeatures();
 
 export function getCombinedCopyBookSearchPath(): string[] {
@@ -417,6 +420,32 @@ function flip_plaintext(doc: TextDocument) {
     }
 }
 
+function setupSourceViewTree(config: ICOBOLSettings) {
+    if (config.sourceview && sourceTreeView === undefined) {
+        sourceTreeView = new SourceViewTree(config);
+        sourceTreeWatcher = workspace.createFileSystemWatcher('**/*');
+
+        sourceTreeWatcher.onDidCreate((uri) => {
+            if (sourceTreeView !== undefined) {
+                sourceTreeView.checkFile(uri);
+            }
+        });
+
+        sourceTreeWatcher.onDidDelete((uri) => {
+            if (sourceTreeView !== undefined) {
+                sourceTreeView.clearFile(uri);
+            }
+        });
+
+        window.registerTreeDataProvider('flat-source-view', sourceTreeView);
+        return;
+    }
+
+    if (config.sourceview === false && sourceTreeView !== undefined) {
+        sourceTreeWatcher?.dispose();
+        sourceTreeView = undefined;
+    }
+}
 
 export function activate(context: ExtensionContext): void {
     currentContext = context;
@@ -433,6 +462,7 @@ export function activate(context: ExtensionContext): void {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
+        setupSourceViewTree(settings);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -621,16 +651,7 @@ export function activate(context: ExtensionContext): void {
         flip_plaintext(workspace.textDocuments[docid]);
     }
 
-    const treeView = new SourceViewTree(VSCOBOLConfiguration.get());
-    const watcher = workspace.createFileSystemWatcher('**/*');
-
-    watcher.onDidCreate((uri) => {
-        treeView.checkFile(uri);
-    });
-
-    watcher.onDidDelete((uri) => {
-        treeView.clearFile(uri);
-    });
+    setupSourceViewTree(VSCOBOLConfiguration.get());
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
         if (settings.process_metadata_cache_on_file_save) {
@@ -638,8 +659,6 @@ export function activate(context: ExtensionContext): void {
         }
     });
     context.subscriptions.push(onDidSaveTextDocumentHandler);
-
-    window.registerTreeDataProvider('flat-source-view', treeView);
 
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);

@@ -47,6 +47,7 @@ export interface ICOBOLSettings {
     process_scanner_hint_token_for_source_dependancies: string;
     process_metadata_cache_on_file_save: boolean;
     storagearea_id: string;
+    sourceview: boolean;
 
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
@@ -92,6 +93,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public cache_metadata_show_progress_messages:boolean;
     public process_metadata_cache_on_file_save: boolean;
     public storagearea_id: string;
+    public sourceview: boolean;
     public editor_maxTokenizationLineLength: number;
 
     public init_required = true;
@@ -137,5 +139,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.process_metadata_cache_on_file_save = false;
         this.storagearea_id = "";
         this.editor_maxTokenizationLineLength = 20000;
+        this.sourceview = false;
     }
 }

@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.10.1",
+    "version": "6.10.2",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -396,7 +396,7 @@
                     "type": "boolean",
                     "title": "Enable experimential explorer source view",
                     "description": "Enable experimential explorer source view",
-                    "default": true
+                    "default": false
                 },
                 "coboleditor.line_comment": {
                     "type": "boolean",
