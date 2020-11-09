@@ -420,7 +420,13 @@ function flip_plaintext(doc: TextDocument) {
     }
 }
 
-function setupSourceViewTree(config: ICOBOLSettings) {
+function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
+
+    if ((config.sourceview === false || reinit) && sourceTreeView !== undefined) {
+        sourceTreeWatcher?.dispose();
+        sourceTreeView = undefined;
+    }
+
     if (config.sourceview && sourceTreeView === undefined) {
         sourceTreeView = new SourceViewTree(config);
         sourceTreeWatcher = workspace.createFileSystemWatcher('**/*');
@@ -441,10 +447,6 @@ function setupSourceViewTree(config: ICOBOLSettings) {
         return;
     }
 
-    if (config.sourceview === false && sourceTreeView !== undefined) {
-        sourceTreeWatcher?.dispose();
-        sourceTreeView = undefined;
-    }
 }
 
 export function activate(context: ExtensionContext): void {
@@ -462,7 +464,7 @@ export function activate(context: ExtensionContext): void {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
-        setupSourceViewTree(settings);
+        setupSourceViewTree(settings, true);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -651,7 +653,7 @@ export function activate(context: ExtensionContext): void {
         flip_plaintext(workspace.textDocuments[docid]);
     }
 
-    setupSourceViewTree(VSCOBOLConfiguration.get());
+    setupSourceViewTree(VSCOBOLConfiguration.get(), false);
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
         if (settings.process_metadata_cache_on_file_save) {

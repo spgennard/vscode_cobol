@@ -53,6 +53,8 @@ export class VSCOBOLConfiguration {
         vsconfig.storagearea_id = getString("storagearea_id", "");
         vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration('editor').get<number>("maxTokenizationLineLength",20000);
         vsconfig.sourceview = getBoolean("sourceview", false);
+        vsconfig.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
+        vsconfig.sourceview_include_hlasm_files = getBoolean("sourceview_include_hlasm_files", true);
         return vsconfig;
     }
 

@@ -48,6 +48,8 @@ export interface ICOBOLSettings {
     process_metadata_cache_on_file_save: boolean;
     storagearea_id: string;
     sourceview: boolean;
+    sourceview_include_jcl_files: boolean;
+    sourceview_include_hlasm_files: boolean;
 
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
@@ -94,6 +96,9 @@ export class COBOLSettings implements ICOBOLSettings {
     public process_metadata_cache_on_file_save: boolean;
     public storagearea_id: string;
     public sourceview: boolean;
+    public sourceview_include_jcl_files: boolean;
+    public sourceview_include_hlasm_files: boolean;
+
     public editor_maxTokenizationLineLength: number;
 
     public init_required = true;
@@ -140,5 +145,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.storagearea_id = "";
         this.editor_maxTokenizationLineLength = 20000;
         this.sourceview = false;
+        this.sourceview_include_jcl_files = true;
+        this.sourceview_include_hlasm_files = true;
     }
 }

@@ -398,6 +398,18 @@
                     "description": "Enable experimential explorer source view",
                     "default": false
                 },
+                "coboleditor.sourceview_include_jcl_files":                 {
+                    "type": "boolean",
+                    "title": "Include JCL Files in source view",
+                    "description": "Include JCL Files in source view",
+                    "default": true
+                },
+                "coboleditor.sourceview_include_hlasm_files":                 {
+                    "type": "boolean",
+                    "title": "Include HLASM Files in source view",
+                    "description": "Include HLASM Files in source view",
+                    "default": true
+                },
                 "coboleditor.line_comment": {
                     "type": "boolean",
                     "title": "Replace standard comment in/out with COBOL specific",
