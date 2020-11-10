@@ -50,6 +50,9 @@ export interface ICOBOLSettings {
     sourceview: boolean;
     sourceview_include_jcl_files: boolean;
     sourceview_include_hlasm_files: boolean;
+    sourceview_include_pli_files: boolean;
+    sourceview_include_doc_files: boolean;
+    sourceview_include_script_files: boolean;
 
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
@@ -98,6 +101,9 @@ export class COBOLSettings implements ICOBOLSettings {
     public sourceview: boolean;
     public sourceview_include_jcl_files: boolean;
     public sourceview_include_hlasm_files: boolean;
+    public sourceview_include_pli_files: boolean;
+    public sourceview_include_doc_files: boolean;
+    public sourceview_include_script_files: boolean;
 
     public editor_maxTokenizationLineLength: number;
 
@@ -147,5 +153,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.sourceview = false;
         this.sourceview_include_jcl_files = true;
         this.sourceview_include_hlasm_files = true;
+        this.sourceview_include_pli_files = true;
+        this.sourceview_include_doc_files = true;
+        this.sourceview_include_script_files = true;
     }
 }

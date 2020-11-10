@@ -55,6 +55,9 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview = getBoolean("sourceview", false);
         vsconfig.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
         vsconfig.sourceview_include_hlasm_files = getBoolean("sourceview_include_hlasm_files", true);
+        vsconfig.sourceview_include_pli_files = getBoolean("sourceview_include_pli_files", true);
+        vsconfig.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
+        vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         return vsconfig;
     }
 

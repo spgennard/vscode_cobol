@@ -42,6 +42,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
         this.topLevelItems.push(this.cobolItem);
         this.topLevelItems.push(this.copyBookItem);
+
         if (config.sourceview_include_jcl_files) {
             this.topLevelItems.push(this.jclItem);
         }
@@ -49,9 +50,18 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         if (config.sourceview_include_hlasm_files) {
             this.topLevelItems.push(this.hlasmItem);
         }
-        this.topLevelItems.push(this.pliItem);
-        this.topLevelItems.push(this.documentItem);
-        this.topLevelItems.push(this.scriptItem);
+
+        if (config.sourceview_include_pli_files) {
+            this.topLevelItems.push(this.pliItem);
+        }
+
+        if (config.sourceview_include_doc_files) {
+            this.topLevelItems.push(this.documentItem);
+        }
+
+        if (config.sourceview_include_script_files) {
+            this.topLevelItems.push(this.scriptItem);
+        }
 
         const folders = getWorkspaceFolders();
         if (folders) {
