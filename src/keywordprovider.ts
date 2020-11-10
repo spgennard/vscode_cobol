@@ -1,5 +1,8 @@
 import TrieSearch from 'trie-search';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
+import { camelize } from './cobolsourcescanner';
+import { VSCOBOLConfiguration } from './configuration';
+import { COBOLSettings } from './iconfiguration';
 
 interface TrieObject {
 	key: string;
@@ -15,7 +18,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		this.isCOBOL = forCOBOL;
 
 		/* in the future, this could be extended to add a pri rather than just use the position
-	     * the array
+		 * the array
 		 */
 		this.words.addAll(keywords.map((value: string) => {
 			return {
@@ -26,29 +29,48 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 	}
 
 	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number): CompletionItem[] {
+		const iconfig: COBOLSettings = VSCOBOLConfiguration.get();
 		const results = this.words.get(wordToComplete);
-		const isUpper = wordToComplete.toUpperCase() === wordToComplete;
+		const includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
+		const includeUpper: boolean = iconfig.intellisense_include_uppercase;
+		const includeLower: boolean = iconfig.intellisense_include_lowercase;
+		const includeAsIS: boolean = iconfig.intellisense_include_unchanged;
 
 		// Sort the results by index
 		results.sort((a: TrieObject, b: TrieObject) => {
 			return a.index - b.index;
 		});
 
-		const numberOfWordsInResults = results.length;
 		const items: CompletionItem[] = [];
-		for (const [i, tag] of results.entries()) {
+		for (const [, tag] of results.entries()) {
+			const retKeys = [];
 
 			//if the text is uppercase, the present the items as uppercase
 			let key = tag.key;
-			if (isUpper) {
-				key = tag.key.toUpperCase();
+			if (includeAsIS) {
+				retKeys.push(key);
 			}
 
-			const completionItem = new CompletionItem(key, CompletionItemKind.Keyword);
+			if (includeCamelCase) {
+				retKeys.push(camelize(key));
+			}
 
-			// Set sortText to order the value when displaying them in the autocompletion menu
-			completionItem.sortText = this.stringPad(i.toString(), numberOfWordsInResults.toString().length, '0');
-			items.push(completionItem);
+			if (includeUpper) {
+				retKeys.push(key.toUpperCase());
+			}
+
+			if (includeLower) {
+				key = tag.key.toLowerCase();
+			}
+
+			const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
+				return index === self.indexOf(elem);
+			})
+
+			for (const uniqueRetKey of uniqueRetKeys) {
+				items.push(new CompletionItem(uniqueRetKey, CompletionItemKind.Keyword));
+			}
+
 			if (items.length >= limit) {
 				return items;
 			}

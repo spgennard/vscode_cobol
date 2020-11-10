@@ -398,31 +398,31 @@
                     "description": "Enable experimential explorer source view",
                     "default": false
                 },
-                "coboleditor.sourceview_include_jcl_files":                 {
+                "coboleditor.sourceview_include_jcl_files": {
                     "type": "boolean",
                     "title": "Include JCL Files in source view",
                     "description": "Include JCL Files in source view",
                     "default": true
                 },
-                "coboleditor.sourceview_include_hlasm_files":                 {
+                "coboleditor.sourceview_include_hlasm_files": {
                     "type": "boolean",
                     "title": "Include HLASM Files in source view",
                     "description": "Include HLASM Files in source view",
                     "default": true
                 },
-                "coboleditor.sourceview_include_pli_files":                 {
+                "coboleditor.sourceview_include_pli_files": {
                     "type": "boolean",
                     "title": "Include PL/I Files in source view",
                     "description": "Include PL/I Files in source view",
                     "default": true
                 },
-                "coboleditor.sourceview_include_doc_files":                 {
+                "coboleditor.sourceview_include_doc_files": {
                     "type": "boolean",
                     "title": "Include Documentation Files in source view",
                     "description": "Include Documentation Files in source view",
                     "default": true
                 },
-                "coboleditor.sourceview_include_script_files":                 {
+                "coboleditor.sourceview_include_script_files": {
                     "type": "boolean",
                     "title": "Include Script Files in source view",
                     "description": "Include Script Files in source view",

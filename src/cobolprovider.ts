@@ -85,30 +85,36 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const words: COBOLToken[] = tsearch.get(wordToComplete);
         const numberOfWordsInResults = words.length;
 
+        
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
             //if the text is uppercase, the present the items as uppercase
             const key: COBOLToken = words[c];
+            const retKeys = [];
 
             if (includeAsIS) {
-                const completionItem = new CompletionItem(key.tokenName, kind);
-                items.push(completionItem);
+                retKeys.push((key.tokenName));
             }
 
             if (includeLower && key.tokenName !== key.tokenNameLower) {
-                const completionItem = new CompletionItem(key.tokenNameLower, kind);
-                items.push(completionItem);
+                retKeys.push(key.tokenNameLower);
             }
 
             if (includeUpper && key.tokenName !== key.tokenName.toUpperCase()) {
-                const completionItem = new CompletionItem(key.tokenName.toUpperCase(), kind);
-                items.push(completionItem);
+                retKeys.push(key.tokenName.toUpperCase());
             }
 
             if (includeCamelCase) {
-                const completionItem = new CompletionItem(camelize(key.tokenName), kind);
-                items.push(completionItem);
+                retKeys.push(camelize(key.tokenName));
+            }
+
+            const uniqueRetKeys = retKeys.filter(function(elem, index, self) {
+                return index === self.indexOf(elem);
+            })
+            
+            for(const uniqueRetKey of uniqueRetKeys) {
+                items.push(new CompletionItem(uniqueRetKey, kind));
             }
 
             if (items.length >= limit) {
