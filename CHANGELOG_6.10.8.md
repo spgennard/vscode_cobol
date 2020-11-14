@@ -27,4 +27,4 @@ mkdir %USERPROFILE%\.vscode_cobol
 mkdir %USERPROFILE%\.vscode_cobol\myworkspace
 ```
 
-For more information see the online [README](https://github.com/spgennard/vscode_cobol_extension/blob/master/README.md#metadata-caching-location).
+For more information see the online [README](https://github.com/spgennard/vscode_cobol_extension/blob/main/README.md#metadata-caching-location).

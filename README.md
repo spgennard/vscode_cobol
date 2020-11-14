@@ -21,27 +21,27 @@ Everywhere Visual Studio Code works.
 
 ## Code colorization for COBOL, PL/I and JCL:
 
- ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/screenshot_three.png)
+ ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/screenshot_three.png)
 
 ## IntelliSense example:
 
-![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/perform_add.gif)
+![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/perform_add.gif)
 
 ## Breadcrumb support:
 
-![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/breadcrumb.png)
+![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/breadcrumb.png)
 
 ## Outline support:
 
-![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/outline.png)
+![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/outline.png)
 
 ## Go to definition:
 
-![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/gotodef.gif)
+![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/gotodef.gif)
 
 ## Peek definition:
 
-![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/peekdef.gif)
+![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/peekdef.gif)
 
 ## Keybindings
 
@@ -525,7 +525,7 @@ This can be activated by setting the flag ```coboleditor.experimental_features``
 
 and looks like:
 
- ![hover](https://raw.githubusercontent.com/spgennard/vscode_cobol/master/images/hover.png)
+ ![hover](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/hover.png)
 
 ## Scanning and caching
 
