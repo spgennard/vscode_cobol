@@ -951,32 +951,38 @@
             {
                 "command": "cobolplugin.checkWorkspaceForMissingCopybookDirs",
                 "category": "COBOL",
-                "title": "Check workspace folders recursively for potential copybook directories"
+                "title": "Check workspace folders recursively for potential copybook directories",
+                "enablement": "!isWeb"
             },
             {
                 "command": "cobolplugin.processAllFilesInWorkspace",
                 "category": "COBOL",
-                "title": "Process files in workspace for metadata"
+                "title": "Process files in workspace for metadata",
+                "enablement": "!isWeb"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
                 "category": "COBOL",
-                "title": "Dump metadata for diagnostic"
+                "title": "Dump metadata for diagnostic",
+                "enablement": "!isWeb"
             },
             {
                 "command": "cobolplugin.clearMetaData",
                 "category": "COBOL",
-                "title": "Clear metadata"
+                "title": "Clear metadata",
+                "enablement": "!isWeb"
             },
             {
                 "command": "cobolplugin.syntaxCheck",
                 "category": "COBOL",
-                "title": "Compile: Syntax Check"
+                "title": "Compile: Syntax Check",
+                "enablement": "!isWeb"
             },
             {
                 "command": "cobolplugin.mfurunMenu",
                 "category": "COBOL",
-                "title": "Run UnitTest"
+                "title": "Run UnitTest",
+                "enablement": "!isWeb"
             },
             {
                 "command": "cobolplugin.removeAllComments",
@@ -1115,14 +1121,14 @@
             "view/item/context": [
                 {
                     "command": "cobolplugin.syntaxCheck",
-                    "when": "view == flat-source-view && viewItem == cobol"
+                    "when": "view == flat-source-view && viewItem == cobol",
                 }
             ],
             "explorer/context": [
                 {
                     "command": "cobolplugin.mfurunMenu",
                     "group": "navigation",
-                    "when": "filesExplorerFocus && resourceExtname == .mfu"
+                    "when": "filesExplorerFocus && resourceExtname == .mfu",
                 }
             ]
         },
