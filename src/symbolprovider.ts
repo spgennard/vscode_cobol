@@ -164,6 +164,12 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                             if (includeVars === false) {
                                 break;
                             }
+
+                            // drop fillers
+                            if (token.tokenNameLower === "filler") {
+                                continue;
+                            }
+
                             if (token.extraInformation === 'fd' || token.extraInformation === 'sd'
                                 || token.extraInformation === 'rd' || token.extraInformation === 'select') {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));

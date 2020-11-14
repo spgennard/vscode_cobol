@@ -76,7 +76,7 @@
       }
     },
     {
-      "match": "(^[0-9a-zA-Z\\s\\$#%\\.@][0-9a-zA-Z\\s\\$#%\\.@][0-9a-zA-Z\\s\\$#%\\.@][0-9a-zA-Z\\s\\$#%\\.@][0-9a-zA-Z\\s\\$#%\\.@][0-9a-zA-Z\\s\\$#%\\.@])(\\*.*$)",
+      "match": "(^[0-9a-zA-Z\\s\\$#%\\.@\\- ][0-9a-zA-Z\\s\\$#%\\.@\\- ][0-9a-zA-Z\\s\\$#%\\.@\\- ][0-9a-zA-Z\\s\\$#%\\.@\\- ][0-9a-zA-Z\\s\\$#%\\.@\\- ][0-9a-zA-Z\\s\\$#%\\.@\\- ])(\\*.*$)",
       "captures": {
         "1": {
           "name": "constant.cobol"
@@ -365,6 +365,17 @@
       "patterns": [
         {
           "include": "text.html.basic"
+        }
+      ],
+      "end": "(?i:end\\-exec)"
+    },
+    {
+      "begin": "(?i:exec\\s+java)",
+      "name": "string.quoted.cobol.java",
+      "contentName": "meta.embedded.block.java",
+      "patterns": [
+        {
+          "include": "source.java"
         }
       ],
       "end": "(?i:end\\-exec)"
