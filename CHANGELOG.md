@@ -6,6 +6,20 @@ Changelog for spgennard vscode_cobol.
 ## Unreleased
 ### GitHub [#208](https://github.com/spgennard/vscode_cobol/issues/208) Feature Request: Add config setting to allow finding definitions in _any_ workspace file  
 
+**Publish fix for Fix #208**
+
+
+[30915c5f3436141](https://github.com/spgennard/vscode_cobol/commit/30915c5f3436141) *2020-11-13 22:43:28*
+
+**README.md - move gnucobol related items to gnucobol extension**
+
+ * README.md - add section about source deps 
+ * Feature Request: Add config setting to allow finding definitions in _any_ workspace file #208 
+ * - readme update 
+ * - add colouriser support 
+
+[7d233447f5a5f07](https://github.com/spgennard/vscode_cobol/commit/7d233447f5a5f07) *2020-11-13 22:41:30*
+
 **fix typo - Related to: #208**
 
 
