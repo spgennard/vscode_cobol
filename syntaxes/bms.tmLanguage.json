@@ -1,0 +1,202 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/bms.tmLanguage.json",
+  "fileTypes": [],
+  "name": "bms",
+  "patterns": [
+    {
+      "match": "^(\\*.*)$",
+      "name": "comment.line.set.bms"
+    },
+    {
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.bms"
+        }
+      },
+      "end": "('|$)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.bms"
+        }
+      },
+      "name": "string.quoted.single.bms"
+    },
+    {
+      "match" : "(?i:(attrb|initial)(\\=))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				}
+      }
+    },
+    {
+      "match": "(?i:UNPROTECTED|UNPROT|PROTECTED|BRIGHT|NORMAL|DARK|FSET|NUMERIC|ASKIP|IC|BRT)",
+      "name": "entity.name.function.bms"
+    },
+    {
+      "match": "(?i:DFHMSD|DFHMDI|DFHMDF|END)",
+      "name": "keyword.bms"
+    },
+    {
+      "match" : "((?i:length|occurs|line|column)(\\=)([0-9]+))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "constant.numeric.integer.bms"
+				}
+			}
+    },
+    {
+      "match" : "((?i:size|pos)(\\=)(\\()([0-9]+)(\\,)([0-9]+)(\\)))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+        },
+        "3" : {
+          "name" : "keyword.bracket.bms"
+        },
+				"4": {
+					"name": "constant.numeric.integer.bms"
+				},
+				"5": {
+					"name": "keyword.operator.bms"
+				},
+				"6": {
+					"name": "constant.numeric.integer.bms"
+				},
+        "7" : {
+          "name" : "keyword.bracket.bms"
+        }
+			}
+    },
+    {
+      "match" : "((i:ctrl)(\\=)(?i:print|length|freekb|alarm|frset|no))",
+      "name": "entity.name.function.bms",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(type)(\\=)(dsect|map|final))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
+          "name": "entity.name.function.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(mode)(\\=)(inout|out|in))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+        },
+        "3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(fold)(\\=)(upper|no|in))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+        },
+        "3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(TIOAPFX|SOSI|TRIGRAPH|EXTATT)(\\=)(yes))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+        },
+        "3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(lang)(\\=)(COBOL|ASM|PLI|RPG))",
+      "name": "entity.name.function.bms",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.1.bms"
+				},
+				"2": {
+					"name": "keyword.operator.2.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(storage)(\\=)(auto))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+        },
+        "3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+    },
+    {
+      "match" : "(?i:(term)(\\=)([a-zA-Z0-9]+))",
+      "captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+        },
+        "3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+    },
+    {
+      "match": "([0-9]+)",
+      "name": "constant.numeric.integer.bms"
+    },
+    {
+      "match": "^([0-9a-zA-Z\\-_]+)",
+      "name": "variable.bms"
+    }
+  ],
+  "scopeName": "source.bms"
+}

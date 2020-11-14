@@ -1,0 +1,50 @@
+            move wid-pd00016                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(396,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd09400                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(403,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd26800                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(411,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd90200                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(419,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd99800                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(428,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-wd99800                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(437,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+                 move lt-arquivo ( ws-ind )        to wt-nm-arquivo ( ws-ind )
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(770,78) : warning 1247 : Truncated MOVE. Source length (100) exceeds target length (50)
+            if  ws-cbl-status-code not= 00000
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(826,39) : warning 1126 : Punctuation character not preceded by a space.  Assume space.
+                if  ws-cbl-status-code not= 00000
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(860,43) : warning 1126 : Punctuation character not preceded by a space.  Assume space.
+            move wid-pd99800                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(907,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd04915                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(935,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+                 move lt-arquivo ( ws-ind )        to lw-arquivo-xml-palm
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(984,73) : warning 1247 : Truncated MOVE. Source length (100) exceeds target length (67)
+                      move lt-arquivo ( ws-ind )   to ws-nm-arquivo-p
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1029,69) : warning 1247 : Truncated MOVE. Source length (100) exceeds target length (16)
+                 move lt-arquivo ( ws-ind )        to ws-nm-arquivo-pc
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1110,70) : warning 1247 : Truncated MOVE. Source length (100) exceeds target length (23)
+                 move lt-arquivo(ws-nr-ind-xml)    to wt-nm-arquivo-xml(ws-nr-ind-prox-xml)
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1226,91) : warning 1247 : Truncated MOVE. Source length (100) exceeds target length (50)
+                      move lt-arquivo(ws-nr-ind-p) to wt-nm-arquivo-p(ws-nr-ind-prox-p)
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1258,87) : warning 1247 : Truncated MOVE. Source length (100) exceeds target length (50)
+            move wt-nm-arquivo-p(ws-nr-ind-prox-p) to ws-nm-arquivo-p
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1416,69) : warning 1247 : Truncated MOVE. Source length (50) exceeds target length (16)
+            move wid-pd04915                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1702,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd90200                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1730,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd99800                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1738,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-pd09400                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1746,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move wid-wd99800                       to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1754,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
+            move ws-command-exec                   to rlbk
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1910,58) : warning 1247 : Truncated MOVE. Source length (255) exceeds target length (200)
+            move ws-command-exec                   to rlbk
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(1938,58) : warning 1247 : Truncated MOVE. Source length (255) exceeds target length (200)
+            move wid-pd99800 to whs-arquivo
+\\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\..\..\biblioteca\cpy\PCL99800.CPY(9,43) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)

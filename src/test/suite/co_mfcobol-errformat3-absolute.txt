@@ -1,0 +1,4 @@
+/src/non-portable.cpy(1,46) : information  COBCH1209 : COMP-5 is machine specific format. (future occurrences not indicated)
+c:\src\fizzbuzz.cbl(105,12) : warning COBCH1101 : No COBOL statement between periods.
+..\src\fizzbuzz.cbl(105,12) : warning COBCH1101 : No COBOL statement between periods.
+fizzbuzz.cbl(105,12) : warning COBCH1101 : No COBOL statement between periods.

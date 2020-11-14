@@ -1,0 +1,153 @@
+{
+    "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/mfu.tmLanguage.json",
+    "fileTypes": [
+        "mfu"
+    ],
+    "name": "mfu",
+    "patterns": [
+        {
+            "begin": "(^[ \\t]+)?(?=#)",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.whitespace.comment.leading.mfu"
+                }
+            },
+            "end": "(?!\\G)",
+            "patterns": [
+                {
+                    "begin": "#",
+                    "beginCaptures": [
+                        {
+                            "name": "punctuation.definition.comment.mfu"
+                        }
+                    ],
+                    "end": "\\n",
+                    "name": "comment.line.number-sign.mfu"
+                }
+            ]
+        },
+        {
+            "begin": "(^[ \\t]+)?(?=;)",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.whitespace.comment.leading.mfu"
+                }
+            },
+            "end": "(?!\\G)",
+            "patterns": [
+                {
+                    "begin": ";",
+                    "beginCaptures": [
+                        {
+                            "name": "punctuation.definition.comment.mfu"
+                        }
+                    ],
+                    "end": "\\n",
+                    "name": "comment.line.semicolon.mfu"
+                }
+            ]
+        },
+        {
+            "captures": {
+                "1": {
+                    "name": "punctuation.definition.entity.mfu"
+                }
+            },
+            "match": "^(\\[)(MFUT.*?)(\\])$",
+            "name": "entity.name.tag.mfu"
+        },
+        {
+            "captures": {
+                "1": {
+                    "name": "keyword.other.definition.mfu"
+                },
+                "2": {
+                    "name": "punctuation.definition.tag.mfu"
+                },
+                "3": {
+                    "name": "storage.mfu"
+                }
+            },
+            "match": "\\b(reportfile|fixture-filename|outdir|testcase|es-syscat|preferred-cwd|jcl-filename|source.filename|source.seqfilename)\\b\\s*(=)(.*)"
+        },
+        {
+            "captures": {
+                "1": {
+                    "name": "keyword.other.definition.mfu"
+                },
+                "2": {
+                    "name": "punctuation.definition.tag.mfu"
+                },
+                "3": {
+                    "name": "variable.parameter.mfu"
+                }
+            },
+            "match": "\\b(description|traits)\\b\\s*(=)(.*)"
+        },
+        {
+            "captures": {
+                "1": {
+                    "name": "keyword.other.definition.mfu"
+                },
+                "2": {
+                    "name": "punctuation.definition.tag.mfu"
+                }
+            },
+            "match": "\\b([a-zA-Z0-9_.-]+)\\b\\s*(=)"
+        },
+        {
+            "captures": {
+                "1": {
+                    "name": "punctuation.definition.entity.mfu"
+                }
+            },
+            "match": "^(\\[)(.*?)(\\])",
+            "name": "entity.name.variable.mfu"
+        },
+        {
+            "begin": "'",
+            "beginCaptures": [
+                {
+                    "name": "punctuation.definition.string.begin.mfu"
+                }
+            ],
+            "end": "'",
+            "endCaptures": [
+                {
+                    "name": "punctuation.definition.string.end.mfu"
+                }
+            ],
+            "name": "string.quoted.single.mfu",
+            "patterns": [
+                {
+                    "match": "\\\\.",
+                    "name": "constant.character.escape.mfu"
+                }
+            ]
+        },
+        {
+            "begin": "\"",
+            "beginCaptures": [
+                {
+                    "name": "punctuation.definition.string.begin.mfu"
+                }
+            ],
+            "end": "\"",
+            "endCaptures": [
+                {
+                    "name": "punctuation.definition.string.end.mfu"
+                }
+            ],
+            "name": "string.quoted.double.mfu"
+        },
+        {
+            "match" : "([0-9])+(s$|ms$|$)",
+            "name" : "constant.numeric.mfu"
+        },
+        {
+            "match" : "(?i:true|false|separate|isolate|printfile|noprintfile|nojunit|junit|markdown|nomarkdown|nunit|nonunit|core|debug|junit-attachments|timings-csv)",
+            "name" : "constant.language"
+        }
+    ],
+    "scopeName": "source.mfu"
+}

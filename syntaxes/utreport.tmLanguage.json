@@ -1,0 +1,145 @@
+{
+    "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/utreport.tmLanguage.json",
+    "scopeName": "source.utreport",
+    "fileTypes": [],
+    "name": "Unit Test Report",
+    "patterns": [
+        {
+            "match": "\"(.*?)\"",
+            "name": "string.quoted"
+        },
+        {
+            "match": "'(.*?)'",
+            "name": "string.quoted"
+        },
+        {
+            "match" : "(^|\\s+)(JCL|CAS|JES)..[0-9][0-9][0-9][0-9]I.*$",
+            "name" : "token.info-token"
+        },
+        {
+            "match" : "(^|\\s+)(JCL|CAS|JES)..[0-9][0-9][0-9][0-9]W.*$",
+            "name" : "token.warn-token"
+        },
+        {
+            "match" : "(^|\\s+)(JCL|CAS|JES)..[0-9][0-9][0-9][0-9]S.*$",
+            "name" : "token.debug-token emphasis"
+        },
+        {
+            "match" : "(^|\\s+)(JCL|CAS|JES)..[0-9][0-9][0-9][0-9]E.*$",
+            "name" : "token.error-token"
+        },
+        {
+            "match": "\\S+@\\S+\\.\\S+",
+            "name": "markup.bold"
+        },
+        {
+            "match": "\\b([0|1]?[0-9]|2[0-3])\\:[0-5][0-9](\\:[0-5][0-9])?( ?(?i:(a|p)m?))?( ?[+-]?[0-9]*)(?=\\s|$)",
+            "name": "constant.numeric.date"
+        },
+        {
+            "match": "([\\:|/])\\s+(?i:(failed))",
+            "captures": {
+                "1": {
+                    "name": "punctuation.accessor.cobol"
+                },
+                "2": {
+                    "name": "token.error-token"
+                }
+            },
+            "comment": " ::.. "
+        },
+        {
+            "match": "([\\:|/])\\s+(?i:(errored|error))",
+            "captures": {
+                "1": {
+                    "name": "punctuation.accessor.cobol"
+                },
+                "2": {
+                    "name": "invalid"
+                }
+            },
+            "comment": " ::.. "
+        },
+        {
+            "match": "([\\:|/])\\s+(?i:(passed|completed|information|info))",
+            "captures": {
+                "1": {
+                    "name": "punctuation.accessor.cobol"
+                },
+                "2": {
+                    "name": "token.info-token"
+                }
+            },
+            "comment": "info"
+        },
+
+        {
+            "match" : "(\\*\\*\\*\\*.*)$",
+            "name" : "comment.line"
+        },
+        {
+            "match": "(\\*\\-.*\\-\\*)",
+            "name": "comment.jsysmsg.line"
+        },
+        {
+            "match": "(\\/\\/\\*.*)$",
+            "name": "comment.jcl.line"
+        },
+        {
+            "match" : "(--->)",
+            "name" : "invalid"
+        },
+        {
+            "match" : "(?i:Micro Focus COBOL - mfurun Utility|Unit Testing Framework for.*)$",
+            "name" : "entity.name.section.markdown heading.1.markdown markup.heading.markdown"
+        },
+        {
+            "begin" : "(?i:Runtime error)",
+            "end" : "(^ )(?=[a-zA-z0-9])",
+            "patterns": [
+                {
+                  "match": ".",
+                  "name": "token.info-token"
+                }
+            ],
+            "name" : "source.utreport"
+        },
+        {
+            "match" : "(?i:Fixture filename|Test case|Test Run Summary)",
+            "name" : "entity.name.section.markdown heading.2.markdown markup.heading.markdown"
+        },
+        {
+            "match" : "(^  J.*:|^  [a-zA-Z].*:$)",
+            "name" : "entity.name.section.markdown heading.3.markdown markup.heading.markdown"
+        },
+        {
+            "match": "(\\s+[0-9]+\\s+)(//[A-Za-z0-9\\$\\#@\\.]*)\\s+([a-zA-Z0-9+\\-]*)\\s(.*)$",
+            "captures": {
+                "1": {
+                    "name" : "constant.numeric"
+                },
+                "2": {
+                    "name": "variable.other.jcl"
+                },
+                "3": {
+                    "name": "keyword.control.jcl"
+                },
+                "4": {
+                    "name": "meta.symbol.jcl"
+                }
+            }
+        },
+        {
+            "match": "(?:^|\\s+)([-+]*[0-9 ,\\.]+)(?:$|\\s+)",
+            "name": "constant.numeric"
+        },
+        {
+            "match" : "(?i:(^Micro Focus COBOL.*$|^Unit Testing Framework for.*$|^Test Run Summary$))",
+            "name" : "emphasis"
+        },
+        {
+            "match" : "(?i:(MFUT[a-zA-Z0-9_-]*))",
+            "name" : "entity.name.function"
+        }
+    ]
+}

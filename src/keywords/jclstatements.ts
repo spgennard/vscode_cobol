@@ -1,0 +1,19 @@
+export const jclStatements: string[] = [
+    "//*",
+    "CNTL",
+    "DD",
+    "ELSE",
+    "ENDCNTL",
+    "ENDIF",
+    "EXEC",
+    "IF",
+    "INCLUDE",
+    "JCLLIB",
+    "JOB",
+    "OUTPUT",
+    "PEND",
+    "PROC",
+    "SET",
+    "THEN",
+    "XMIT"
+];

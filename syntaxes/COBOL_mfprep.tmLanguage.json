@@ -1,0 +1,44 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL_mfprep.tmLanguage.json",
+  "fileTypes": [],
+  "name": "COBOL_MF_PREP",
+  "patterns": [
+    {
+      "match": "^\\s\\s(013 [0-9][0-9][0-9])(.*)$",
+      "captures" : {
+        "1" : {
+          "name": "constant.numeric.cobol_mfprep"
+        },
+        "2" : {
+          "name" : "token.info-token.source_mfprep"
+        }
+      }
+    },
+    {
+      "match": "^\\s\\s(017 001)(.*)$",
+      "captures" : {
+        "1" : {
+          "name": "constant.numeric.cobol_mfprep"
+        },
+        "2" : {
+          "name" : "invalid.illegal.source_mfprep"
+        }
+      }
+    },
+    {
+      "begin": "^\\s\\s(032 000)",
+      "name": "constant.numeric.cobol_mfprep",
+      "patterns": [
+        {
+          "include": "source.cobol"
+        }
+      ],
+      "end": "($)"
+    },
+    {
+      "match": "(.*$)",
+      "name": ""
+    }
+  ],
+  "scopeName": "source.cobol_mfprep"
+}

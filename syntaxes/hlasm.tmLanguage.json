@@ -1,0 +1,262 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/hlasm.tmLanguage.json",
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "hlasm",
+  "fileTypes": [
+    "hlasm",
+    "asm",
+    "mac",
+    "mlc"
+  ],
+  "patterns": [
+    {
+      "include": "#comment.full"
+    },
+    {
+      "include": "#line"
+    },
+    {
+      "include": "#the_line"
+    }
+  ],
+  "repository": {
+    "comment.full": {
+      "patterns": [
+        {
+          "match": "^(\\*.*$)|(^\\.\\*.*$)",
+          "name": "comment"
+        }
+      ]
+    },
+    "comment": {
+      "patterns": [
+        {
+          "match": "^(\\*.{,70})|(^\\.\\*.{,69})",
+          "name": "comment"
+        }
+      ]
+    },
+    "double.strings": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin"
+        }
+      },
+      "end": "(\"|$)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end"
+        }
+      },
+      "name": "string.quoted.double"
+    },
+    "char.strings": {
+      "match": "(([cC])|([cC][uU]))'.*'",
+      "name": "string.character"
+    },
+    "char.ln.strings": {
+      "match": "(([0-9]*)([cC][lL])|([cC][uU][lL]))([0-9]*)'.*'",
+      "name": "string.character"
+    },
+    "char.def.strings": {
+      "match": "(([cC][lL]([0-9]+))|([cC]([0-9]+))|([cC][uU])([0-9]+))",
+      "name": "string.character"
+    },
+    "hex.strings": {
+      "match": "([0-9]*([xX]|[fF]))'\\h*'",
+      "name": "constant.numeric.integer.hexadecimal"
+    },
+    "hex.ln.strings": {
+      "match": "([0-9]*([xX]|[xX][lL]))([0-9]*)'\\h*'",
+      "name": "constant.numeric.integer.hexadecimal"
+    },
+    "hex.strings.invalid": {
+      "match": "([xX])'.*'",
+      "name": "invalid.illegal.hexadecimal"
+    },
+    "single.strings": {
+      "match": "\\s('.*')",
+      "name": "string"
+    },
+    "label": {
+      "patterns": [
+        {
+          "match": "(^[0-9a-z@A-Z$#_\\$]+)",
+          "name": "entity.name.function"
+        }
+      ]
+    },
+    "general_instructions": {
+      "patterns": [
+        {
+          "match": "(^|\\b)(?i:a|ahi|ah|al|alr|ap|ar|axr|bal|balr|bas|basm|bassm|bc|bcr|bctr|bsm|bxh|bxle|c|cds|chi|ch|cl|clc|clcl|cli|clm|clr|cp|cr|cs|cvb|cvd|cxr|d|dp|dr|ed|edmk|ex|ic|icm|ipm|l|la|lcr|lhi|lh|lm|lnr|lpr|lr|lx|ltr|m|mh|mp|mr|mvc|mvcin|mvcl|mvi|mvn|mvo|mvz|n|nc|ni|nr|o|oc|oi|or|pack|s|sh|sl|sla|slda|sldl|sll|slr|sp|sr|sra|srda|srdl|srl|srp|st|stb|stc|spm|stcm|sth|stm|svc|tm|tr|trt|unpk|x|xc|xi|xr|zap)\\b",
+          "name": "keyword"
+        }
+      ]
+    },
+    "branch_instructions": {
+      "patterns": [
+        {
+          "match": "(^|\\b)(?i:b|bct|be|ber|bh|bhr|bl|blr|bm|bmr|bne|bner|bnh|bnhr|bnl|bnlr|bnm|bnmr|bno|bnor|bnp|bnpr|bnz|bnzr|bo|bor|bor|bp|bpr|br|bz|bz|bzr|nop|nopr)\\b",
+          "name": "keyword.control"
+        }
+      ]
+    },
+    "start_with_label": {
+      "match": "^([0-9a-z@A-Z$#_\\$]+)\\s+(\\w+)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#label"
+            }
+          ]
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#instructions"
+            },
+            {
+              "include": "#directives"
+            },
+            {
+              "include": "#macros"
+            }
+          ]
+        }
+      }
+    },
+    "start_with_no_label": {
+      "match": "^\\s+(\\w+)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#instructions"
+            },
+            {
+              "include": "#directives"
+            },
+            {
+              "include": "#macros"
+            }
+          ]
+        }
+      }
+    },
+    "directives": {
+      "patterns": [
+        {
+          "match": "\\b(?i:amode|com|copy|csect|dc|dsect|ds|drop|eject|end|entry|equ|ltorg|macro|mend|mexit|mnote|org|print|rmode|space|start|title|using)\\b",
+          "name": "keyword.other.directives"
+        }
+      ]
+    },
+    "parameters": {
+      "patterns": [
+        {
+          "match": "\\b(?i:blksize|dcb|ddname|dsorg|eodad|gen|id|lrecl|lv|macrf|nogen|pdata|recfm|record|ru|storage|synad)\\b",
+          "name": "variable.parameter"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "\\b(?i:and:eq:ge:gt:le:lt:ne:not:or)\\b",
+          "name": "keyword.operator"
+        }
+      ]
+    },
+    "macros": {
+      "patterns": [
+        {
+          "match": "(^|\\b|\\s+)(?i:actr|ago|aif|anop|chau|close|dcb|gbla|gblb|gblc|get|lcla|lclb|lclc|open|ppio|put|read|seta|setb|setc|snap|write|wto|wtor|wtorpc)\\b",
+          "name": "entity.name.function"
+        }
+      ]
+    },
+    "instructions": {
+      "patterns": [
+        {
+          "include": "#general_instructions"
+        },
+        {
+          "include": "#branch_instructions"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "include": "#char.strings"
+        },
+        {
+          "include": "#char.ln.strings"
+        },
+        {
+          "include": "#char.def.strings"
+        },
+        {
+          "include": "#hex.strings"
+        },
+        {
+          "include": "#hex.ln.strings"
+        },
+        {
+          "include": "#hex.strings.invalid"
+        },
+        {
+          "include": "#double.strings"
+        },
+        {
+          "include": "#single.strings"
+        }
+      ]
+    },
+    "the_line" : {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#start_with_label"
+        },
+        {
+          "include": "#start_with_no_label"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#parameters"
+        },
+        {
+          "include": "#constants"
+        }
+      ]
+    },
+    "line": {
+      "patterns": [
+        {
+          "match": "^(.{71,71})[ xX]([0-9]*$)",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#the_line"
+                }
+              ]
+            },
+            "2": {
+              "name": "comment.line.identification.sequence.field"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "scopeName": "source.hlasm"
+}

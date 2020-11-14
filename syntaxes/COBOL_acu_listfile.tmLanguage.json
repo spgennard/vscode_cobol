@@ -1,0 +1,60 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2020 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/COBOL_acu_listfile.tmLanguage.json",
+  "fileTypes": [],
+  "name": "COBOL_ACU_LISTFILE",
+  "patterns": [
+    {
+      "match": "(\\f)",
+      "name": "strong comment.line.form_feed.cobol_acu_listfile"
+    },
+    {
+      "match": ".*(ACUCOBOL-GT).*$",
+      "name": "comment.line.modern"
+    },
+    {
+      "match": "(^ccbl.*)",
+      "name": "comment.line.modern"
+    },
+    {
+      "match": "^\\s*([0-9]*)\\s*(\\*.*)",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.cobol"
+        },
+        "2": {
+          "name": "comment.line.cobol.modern"
+        }
+      }
+    },
+    {
+      "match": "(^\\*.*$)",
+      "name": "comment.line.modern"
+    },
+    {
+      "begin": "^CROSS-REFERENCE",
+      "patterns": [
+        {
+          "match": ".*(ACUCOBOL-GT).*$",
+          "name": "comment.line.modern"
+        }
+      ],
+      "name": "",
+      "end": "^STATISTICS"
+    },
+    {
+      "begin": "^\\s*([0-9]*)\\s\\s",
+      "name": "constant.numeric.cobol_acu_listfile",
+      "patterns": [
+        {
+          "include": "source.acucobol"
+        }
+      ],
+      "end": "($)"
+    },
+    {
+      "match": "(.*$)",
+      "name": ""
+    }
+  ],
+  "scopeName": "source.cobol_acu_listfile"
+}
