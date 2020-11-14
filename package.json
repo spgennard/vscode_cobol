@@ -61,7 +61,6 @@
         "onCommand:cobolplugin.revtab",
         "onCommand:cobolplugin.change_lang_to_acu",
         "onCommand:cobolplugin.change_lang_to_cobol",
-        "onCommand:cobolplugin.change_lang_to_gnucobol",
         "onCommand:cobolplugin.toggle_margin",
         "onCommand:cobolplugin.change_source_format",
         "onCommand:cobolplugin.dumpMetaData",

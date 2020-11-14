@@ -400,6 +400,10 @@ export function getCurrentContext(): ExtensionContext {
     return currentContext;
 }
 
+function isGnuCOBOLLanguagePresent(): boolean {
+    return extensions.getExtension("bitlang.gnucobol") !== undefined;
+}
+
 function flip_plaintext(doc: TextDocument) {
     if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
         const lcount = doc.lineCount;
@@ -419,7 +423,13 @@ function flip_plaintext(doc: TextDocument) {
             }
 
             if (firstLine.startsWith("GnuCOBOL ")) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_GNU_LISTFILE");
+                if (isGnuCOBOLLanguagePresent()) {
+                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_GNU_LISTFILE");
+                } else {
+                    logMessage(" Current source file has been detected as a 'GnuCOBOL' listing file but");
+                    logMessage("  the extension that provides 'GnuCOBOL' support is not present (bitlang.gnucobol)");
+                    logMessage("  install this extension if you want colorisation in the source file");
+                }
                 return;
             }
 
