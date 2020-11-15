@@ -1121,14 +1121,14 @@
             "view/item/context": [
                 {
                     "command": "cobolplugin.syntaxCheck",
-                    "when": "view == flat-source-view && viewItem == cobol",
+                    "when": "view == flat-source-view && viewItem == cobol"
                 }
             ],
             "explorer/context": [
                 {
                     "command": "cobolplugin.mfurunMenu",
                     "group": "navigation",
-                    "when": "filesExplorerFocus && resourceExtname == .mfu",
+                    "when": "filesExplorerFocus && resourceExtname == .mfu"
                 }
             ]
         },
