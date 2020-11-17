@@ -284,7 +284,6 @@ export function isSupportedLanguage(document: TextDocument): TextLanguage {
     switch (document.languageId.toLowerCase()) {
         case "entcobol":
         case "cobol":
-        case "gnucobol":
         case "acucobol":
             return TextLanguage.COBOL;
         case "jcl":

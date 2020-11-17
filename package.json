@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.10.19",
+    "version": "6.10.20",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1272,16 +1272,6 @@
                 "key": "alt+shift+m",
                 "command": "cobolplugin.toggle_margin",
                 "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "alt+shift+g",
-                "command": "cobolplugin.change_lang_to_gnucobol",
-                "when": "editorLangId == COBOL && !inSnippetMode"
-            },
-            {
-                "key": "alt+shift+g",
-                "command": "cobolplugin.change_lang_to_gnucobol",
-                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             }
         ],
         "snippets": [

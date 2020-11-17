@@ -586,14 +586,6 @@ export function activate(context: ExtensionContext): void {
 
         languages.setTextDocumentLanguage(act.document, "COBOL");
     });
-    const changeLanguageToGnuCOBOL = commands.registerCommand('cobolplugin.change_lang_to_gnucobol', function () {
-        const act = window.activeTextEditor;
-        if (act === null || act === undefined) {
-            return;
-        }
-
-        languages.setTextDocumentLanguage(act.document, "GnuCOBOL");
-    });
 
     const toggleCOBOLMargin = commands.registerCommand('cobolplugin.toggle_margin', function () {
         const act = window.activeTextEditor;
@@ -686,7 +678,6 @@ export function activate(context: ExtensionContext): void {
 
     context.subscriptions.push(changeLanguageToAcu);
     context.subscriptions.push(changeLanguageToCOBOL);
-    context.subscriptions.push(changeLanguageToGnuCOBOL);
 
     context.subscriptions.push(toggleCOBOLMargin);
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
