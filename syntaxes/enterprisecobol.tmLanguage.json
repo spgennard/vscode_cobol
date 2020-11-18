@@ -148,7 +148,7 @@
 			"name": "string.quoted.single.cobol"
 		},
 		{
-			"match": "(?i:id\\s+division|identification\\s+division|identification|entry|factory|method|environment\\s+division|environment|configuration\\s+section|configuration|decimal-point\\s+is|special-names|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|fd|rd|cd|sd|procedure\\s+division|procedure|division|references|debugging|end\\s+declaratives|declaratives|end\\s+factory|size|national-edited|national)(?=\\s|\\.)",
+			"match": "(?i:id\\s+division|identification\\s+division|identification|id|entry|factory|method|environment\\s+division|environment|configuration\\s+section|configuration|decimal-point\\s+is|special-names|currency\\s+sign|currency|repository|input-output\\s+section|input-output|file\\s+section|file-control|select|optional|i-o-control|data\\s+division|working-storage\\s+section|working-storage|section|local-storage|linkage\\s+section|linkage|fd|rd|cd|sd|procedure\\s+division|procedure|division|references|debugging|end\\s+declaratives|declaratives|end\\s+factory|size|national-edited|national)(?=\\s|\\.)",
 			"name": "keyword.identifiers.cobol"
 		},
 		{

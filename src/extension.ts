@@ -10,7 +10,7 @@ import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
 import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
 import { jclStatements } from "./keywords/jclstatements";
-import { cobolKeywords } from "./keywords/cobolKeywords";
+import { cobolKeywords, cobolProcedureKeywords, cobolRegisters, cobolStorageKeywords } from "./keywords/cobolKeywords";
 
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 
@@ -737,7 +737,9 @@ export function activate(context: ExtensionContext): void {
     const completionJCLItemProviderDisposable = languages.registerCompletionItemProvider(jclSelectors, completionJCLItemProvider);
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
-    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(cobolKeywords, true);
+    const allKeywords = cobolKeywords.concat(cobolStorageKeywords).concat(cobolRegisters).concat(cobolProcedureKeywords);
+    const allKeywordsUnique = [...new Set(allKeywords)];
+    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(allKeywordsUnique, true);
     const keywordProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 

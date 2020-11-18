@@ -51,7 +51,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				retKeys.push(key);
 			}
 
-			if (includeCamelCase) {
+			if (!this.isCOBOL && includeCamelCase) {
 				retKeys.push(camelize(key));
 			}
 
@@ -117,12 +117,5 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 
 
 		return this.getKeywordsGivenPartialWord(wordToComplete, 128);
-	}
-
-	private stringPad(input: string, padLength: number, padString: string): string {
-		const count = Math.max(0, padLength - input.length);
-		const padMultiple = Math.ceil(count / padString.length);
-		const paddingString = padString.repeat(padMultiple).substr(0, count);
-		return paddingString + input;
 	}
 }

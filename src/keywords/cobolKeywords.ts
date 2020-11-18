@@ -57,17 +57,19 @@ export const cobolKeywords: string[] = [
 	"common",
 	"communication",
 	"comp",
-	"comp-1",
+	"comp-0",
 	"comp-2",
 	"comp-3",
 	"comp-4",
 	"comp-5",
+	"comp-6",
 	"computational",
 	"computational-1",
 	"computational-2",
 	"computational-3",
 	"computational-4",
 	"computational-5",
+	"computational-6",
 	"compute",
 	"configuration",
 	"contains",
@@ -149,6 +151,8 @@ export const cobolKeywords: string[] = [
 	"ending",
 	"enter",
 	"entry",
+	"environment-name",
+	"environment-value",
 	"environment",
 	"eop",
 	"equals",
@@ -436,6 +440,7 @@ export const cobolKeywords: string[] = [
 export const cobolStorageKeywords: string[] = [
 	"external",
 	"conditional-value",
+	"boolean",
 	"binary-char",
 	"character",
 	"binary-short",
@@ -450,12 +455,16 @@ export const cobolStorageKeywords: string[] = [
 	"comp-3",
 	"comp-4",
 	"comp-5",
+	"comp-n",
+	"comp-x",
 	"computational",
 	"computational-1",
 	"computational-2",
 	"computational-3",
 	"computational-4",
 	"computational-5",
+	"computational-n",
+	"computational-x",
 	"low-value",
 	"low-values",
 	"pic",
@@ -472,6 +481,15 @@ export const cobolStorageKeywords: string[] = [
 	"zeros",
 	"occurs",
 	"property"
+];
+
+export const cobolRegisters: string[] = [
+	"debug-item",
+	"return-code",
+	"sort-return",
+	"when-compiled",
+	"xml-code",
+	"json-code"
 ];
 
 export const cobolProcedureKeywords: string[] = [
@@ -595,10 +613,10 @@ export const cobolProcedureKeywords: string[] = [
 ];
 
 
-
 export const cobolKeywordDictionary = new Map<string, string>();
 export const cobolProcedureKeywordDictionary = new Map<string, string>();
 export const cobolStorageKeywordDictionary = new Map<string, string>();
+export const cobolRegistersDictionary = new Map<string, string>();
 
 /* inline decl */
 for (const key of cobolKeywords) {
@@ -611,4 +629,8 @@ for (const key of cobolProcedureKeywords) {
 
 for (const key of cobolStorageKeywords) {
 	cobolStorageKeywordDictionary.set(key, key);
+}
+
+for (const key of cobolRegisters) {
+	cobolRegistersDictionary.set(key, key);
 }
