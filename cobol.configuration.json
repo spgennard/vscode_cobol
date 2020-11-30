@@ -40,8 +40,16 @@
 			"end-string"
 		],
 		[
+			"unstring",
+			"end-unstring"
+		],
+		[
 			"compute",
 			"end-compute"
+		],
+		[
+			"$if",
+			"$end"
 		]
 	],
 	"autoClosingPairs": [

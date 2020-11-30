@@ -85,7 +85,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const words: COBOLToken[] = tsearch.get(wordToComplete);
         const numberOfWordsInResults = words.length;
 
-        
+
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
@@ -112,7 +112,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             const uniqueRetKeys = retKeys.filter(function(elem, index, self) {
                 return index === self.indexOf(elem);
             })
-            
+
             for(const uniqueRetKey of uniqueRetKeys) {
                 items.push(new CompletionItem(uniqueRetKey, kind));
             }
@@ -209,6 +209,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 case "divide":
                 case "compute":
                 case "giving":
+                case "string":
+                case "unstring":
+                case "pointer":
+                case "named":
+                case "if":
                     {
                         const words = this.getConstantsOrVariables(document);
                         items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
