@@ -677,7 +677,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.tokensInOrder = sourceReferences.tokensInOrder;
         this.copyBooksUsed = sourceReferences.copyBooksUsed;
 
-        // set the source handler for the commentspackage
+        // set the source handler for the comment parsing
         sourceHandler.setCommentCallback(this);
 
         const state: ParseState = this.sourceReferences.state;
@@ -782,7 +782,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
 
-            /* if the source has an extension, then continue on reguardless */
+            /* if the source has an extension, then continue on.. */
             if (hasCOBOLExtension) {
                 sourceLooksLikeCOBOL = true;
                 /* otherwise, does it look like COBOL? */
@@ -792,7 +792,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
-                this.externalFeatures.logMessage(` Unabled to determine if ${filename} is COBOL after scanning ${maxLines} lines`);
+                this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_parse_line_limit setting)`);
                 return;
             }
 

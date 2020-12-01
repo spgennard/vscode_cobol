@@ -359,10 +359,11 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage(` Extension path    : ${thisExtension.extensionPath}`);
         logMessage(` Version           : ${thisExtension.packageJSON.version}`);
         logMessage(" Caching");
-        logMessage(`  Cache Strategy               : ${settings.cache_metadata}`);
-        logMessage(`  Cache directory              : ${VSCOBOLSourceScanner.getCacheDirectory()}`);
-        logMessage(` UNC paths disabled            : ${settings.disable_unc_copybooks_directories}`);
-        logMessage(` Parse copybook for references : ${settings.parse_copybooks_for_references}`);
+        logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+        logMessage(`  Cache directory  : ${VSCOBOLSourceScanner.getCacheDirectory()}`);
+        logMessage(` UNC paths disabled               : ${settings.disable_unc_copybooks_directories}`);
+        logMessage(` Parse copybook for references    : ${settings.parse_copybooks_for_references}`);
+        logMessage(` Editor maxTokenizationLineLength : ${settings.editor_maxTokenizationLineLength}`)
     }
 
     initExtensionSearchPaths(settings);
@@ -428,7 +429,7 @@ function flip_plaintext(doc: TextDocument) {
                 } else {
                     logMessage(" Current source file has been detected as a 'GnuCOBOL' listing file but");
                     logMessage("  the extension that provides 'GnuCOBOL' support is not present (bitlang.gnucobol)");
-                    logMessage("  install this extension if you want colorisation in the source file");
+                    logMessage("  install this extension if you want colorization in the source file");
                 }
                 return;
             }

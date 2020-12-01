@@ -545,6 +545,10 @@ The metadata cache does not have to be created on workspace startup but can be c
 
 The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
 
+## Tips
+
+- If you find you are not getting symbols in the outline view or peek/goto definition on anything is not functioning, please check the ``Output->COBOL`` panel as it may give you a reason, for example a line limit has been surpassed or the file is determined to be COBOL.
+
 ## Online resources
 
 - Online communities
