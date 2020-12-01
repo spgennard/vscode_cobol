@@ -360,7 +360,10 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
         logMessage(` Version           : ${thisExtension.packageJSON.version}`);
         logMessage(" Caching");
         logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
-        logMessage(`  Cache directory  : ${VSCOBOLSourceScanner.getCacheDirectory()}`);
+        const cacheDir = VSCOBOLSourceScanner.getCacheDirectory();
+        if (cacheDir !== undefined) {
+            logMessage(`  Cache directory  : ${cacheDir}`);
+        }
         logMessage(` UNC paths disabled               : ${settings.disable_unc_copybooks_directories}`);
         logMessage(` Parse copybook for references    : ${settings.parse_copybooks_for_references}`);
         logMessage(` Editor maxTokenizationLineLength : ${settings.editor_maxTokenizationLineLength}`)
@@ -623,7 +626,6 @@ export function activate(context: ExtensionContext): void {
             VSCOBOLSourceScanner.clearMetaData(settings, cacheDirectory);
         } else {
             logMessage("Metadata caching is turned off (or invalid)");
-
         }
     });
 
