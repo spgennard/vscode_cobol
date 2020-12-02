@@ -1589,7 +1589,7 @@
                 "name": "cobolit-cobc",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$cobolit-cobc",
                 "source": "COBOL-IT"
@@ -1598,7 +1598,7 @@
                 "name": "cobolit-note-cobc",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$cobolit-note-cobc",
                 "severity": "info",
@@ -1608,7 +1608,7 @@
                 "name": "acucobol-ccbl",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$acucobol-ccbl",
                 "source": "ACUCOBOL-GT"
@@ -1617,7 +1617,7 @@
                 "name": "acucobol-warning-ccbl",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$acucobol-warning-ccbl",
                 "source": "ACUCOBOL-GT"
@@ -1625,7 +1625,7 @@
             {
                 "name": "procobol-preprocessor",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$procobol-preprocessor",
                 "source": "Pro*COBOL",
