@@ -1474,7 +1474,7 @@
                 "name": "mfcobol-msbuild",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-msbuild",
                 "source": "MSBuild"
@@ -1492,8 +1492,7 @@
                 "name": "mfcobol-errformat3",
                 "owner": "cobol",
                 "fileLocation": [
-                    "relative",
-                    "${workspaceFolder}"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat3",
                 "source": "VC"
@@ -1502,8 +1501,7 @@
                 "name": "mfcobol-errformat3-info",
                 "owner": "cobol",
                 "fileLocation": [
-                    "relative",
-                    "${workspaceFolder}"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat3-info",
                 "severity": "info",
@@ -1534,7 +1532,7 @@
                 "name": "mfcobol-errformat2-netx-sx",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat2-netx-sx",
                 "source": "NETX/SX"
@@ -1543,7 +1541,7 @@
                 "name": "mfcobol-errformat2-copybook-netx-sx",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat2-copybook-netx-sx",
                 "source": "NETX/SX"
@@ -1552,7 +1550,7 @@
                 "name": "mfcobol-errformat3-netx-sx",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat3-netx-sx",
                 "source": "NETX/SX"
@@ -1561,7 +1559,7 @@
                 "name": "mfcobol-errformat2-copybook",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat2-copybook",
                 "source": "VC"
@@ -1570,7 +1568,7 @@
                 "name": "mfcobol-errformat2",
                 "owner": "cobol",
                 "fileLocation": [
-                    "absolute"
+                    "autoDetect"
                 ],
                 "pattern": "$mfcobol-errformat2",
                 "source": "VC"
