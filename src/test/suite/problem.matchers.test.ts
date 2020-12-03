@@ -57,11 +57,25 @@ suite('Issues Raised Test Suite', () => {
 
 						assert.ok(regExPatterns.length !== 0, `pattern regex is empty for ${patternName}`);
 
+						let passlevel = 50;
+
 						// console.log(`OK - Found test data for ${patternName}`);
 						const compilerOutputs = fs.readFileSync(possibleData);
 						let resultCount = 0;
 						let missingCount = 0;
-						for (const compilerOutput of compilerOutputs.toString().split("\n")) {
+						let lines = compilerOutputs.toString().split("\n");
+						const firstLine = lines.shift();
+						if (firstLine !== undefined) {
+							const possiblePassLevel = Number.parseInt(firstLine);
+							if (!isNaN(possiblePassLevel)) {
+								passlevel = possiblePassLevel;
+								console.log(` % pass level set @ ${passlevel}`);
+							} else {
+								lines = lines.splice(0,0, firstLine);
+								console.log(` % pass level set @ ${passlevel} (default)`);
+							}
+						}
+						for (const compilerOutput of lines) {
 							if (compilerOutput.length === 0) {
 								continue;
 							}
@@ -106,7 +120,7 @@ suite('Issues Raised Test Suite', () => {
 						const percenMatched = (resultCount / (resultCount + missingCount)) * 100;
 						const percenMatchedFixed = Number(percenMatched).toFixed(2);
 						// console.log(`${patternName} found ${resultCount} did not match ${missingCount}`);
-						if (percenMatched < 50) {
+						if (percenMatched < passlevel) {
 							assert.fail(`${patternName} failed to match enough lines in co_${patternName}.txt ${percenMatched}% (${resultCount}/${missingCount})
 							}})`);
 						} else {

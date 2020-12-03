@@ -1,6 +1,9 @@
-    39 01 ws-non-portable      pic 9(5) comp-5.
+100
 non-portable.cpy(1,46) : information  COBCH1209 : COMP-5 is machine specific format. (future occurrences not indicated)
-    40 PROCEDURE DIVIsSION.
 fizzbuzz.cbl(39,26) : warning COBCH1012 : DIVISION missing or misspelled. DIVISION assumed.
-   106     .
 fizzbuzz.cbl(105,12) : warning COBCH1101 : No COBOL statement between periods.
+ecm_errors.cbl(13,19) : warning COBEC1200 : WIBBLE is not a valid EXEC CICS command
+(1,0) : error COBDB0006 : Required DB software 'DB2INSTANCE' could not be found.SQL processing cannot continue.
+(1,0) : error COBCE0001 : xdbecm or dependant module not found
+ecm_errors.cbl(22,19) : error COBED0802 : Invalid statement - Following function is invalid: WIBBLE
+ecm_errors.cbl(17,19) : error COBES0100 : Incorrect SQL statement syntax near:

@@ -1,3 +1,8 @@
+100
 **    COBCH0301S Unrecognized verb  : /some/CODE.cob(1619,8,8)
 **    COBCH0348S Procedure name U040-ERR undeclared, line 25901 (first usage)  : /some/CODE.cob(398,33,23)
 **    COBCH0348S Procedure name C123-ERR undeclared, line 27136 (first usage)  : /some/CODE.cob(1633,30,20)
+**    COBEC1200E WIBBLE is not a valid EXEC CICS command    : ecm_errors.cbl(13,19,19)
+**    COBDB0006S Required DB software 'DB2INSTANCE' could not be found.SQL processing cannot continue.     : ecm_errors.cbl(1,0,0)
+**    COBCE0001S xdbecm or dependant module not found   : ecm_errors.cbl(1,0,0)
+**    COBES0100S Incorrect SQL statement syntax near:        : ecm_errors.cbl(17,19,19)
