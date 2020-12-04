@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.11.2",
+    "version": "6.11.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -1473,9 +1473,7 @@
             {
                 "name": "mfcobol-msbuild",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-msbuild",
                 "source": "MSBuild"
             },
@@ -1491,18 +1489,14 @@
             {
                 "name": "mfcobol-errformat3",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat3",
                 "source": "VC"
             },
             {
                 "name": "mfcobol-errformat3-info",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat3-info",
                 "severity": "info",
                 "source": "VC"
@@ -1531,45 +1525,35 @@
             {
                 "name": "mfcobol-errformat2-netx-sx",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat2-netx-sx",
                 "source": "NETX/SX"
             },
             {
                 "name": "mfcobol-errformat2-copybook-netx-sx",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat2-copybook-netx-sx",
                 "source": "NETX/SX"
             },
             {
                 "name": "mfcobol-errformat3-netx-sx",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat3-netx-sx",
                 "source": "NETX/SX"
             },
             {
                 "name": "mfcobol-errformat2-copybook",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat2-copybook",
                 "source": "VC"
             },
             {
                 "name": "mfcobol-errformat2",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$mfcobol-errformat2",
                 "source": "VC"
             },
@@ -1586,18 +1570,14 @@
             {
                 "name": "cobolit-cobc",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$cobolit-cobc",
                 "source": "COBOL-IT"
             },
             {
                 "name": "cobolit-note-cobc",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$cobolit-note-cobc",
                 "severity": "info",
                 "source": "COBOL-IT"
@@ -1605,26 +1585,20 @@
             {
                 "name": "acucobol-ccbl",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$acucobol-ccbl",
                 "source": "ACUCOBOL-GT"
             },
             {
                 "name": "acucobol-warning-ccbl",
                 "owner": "cobol",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$acucobol-warning-ccbl",
                 "source": "ACUCOBOL-GT"
             },
             {
                 "name": "procobol-preprocessor",
-                "fileLocation": [
-                    "autoDetect"
-                ],
+                "fileLocation": "autoDetect",
                 "pattern": "$procobol-preprocessor",
                 "source": "Pro*COBOL",
                 "owner": "cobol",
