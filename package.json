@@ -1604,6 +1604,17 @@
                 "owner": "cobol",
                 "severity": "error"
             }
+        ],
+        "taskDefinitions": [
+            {
+                "type" : "bldScript",
+                "properties": {
+                    "arguments" : {
+                        "type" : "string"
+                    }
+                },
+                "when": "config.coboleditor.experimental_features"
+            }
         ]
     },
     "scripts": {

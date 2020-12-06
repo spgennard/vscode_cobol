@@ -46,6 +46,7 @@ import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
 import { ESourceFormat } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
+import { BldScriptTaskProvider } from './bldTaskProvider';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -55,6 +56,8 @@ const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 
 let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
+
+let bldscriptTaskProvider: vscode.Disposable | undefined;
 
 export const ExternalFeatures = new VSExternalFeatures();
 
@@ -1085,6 +1088,8 @@ export function activate(context: ExtensionContext): void {
         logMessage(checkForExtensionConflictsMessage);
     }
 
+    bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
+
     openChangeLog();
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
@@ -1132,6 +1137,9 @@ function openChangeLog(): void {
     }
 }
 export async function deactivate(): Promise<void> {
+    if (bldscriptTaskProvider) {
+        bldscriptTaskProvider.dispose();
+    }
     await deactivateAsync();
 }
 
