@@ -1,9 +1,10 @@
-import path from 'path';
+import path, { dirname } from 'path';
 import fs from 'fs';
 import * as vscode from 'vscode';
 import { getWorkspaceFolders } from './cobolfolders';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLFileUtils } from './opencopybook';
+import { dir } from 'console';
 
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
@@ -23,13 +24,27 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		const settings = VSCOBOLConfiguration.get();
 
 		if (!settings.experimental_features) {
-			return this.bldScriptPromise;
+			return undefined;
 		}
 
+		const scriptFilename = this.getFileFromWorkspace();
+		if (scriptFilename === undefined) {
+			return undefined;
+
+		}
 		if (!this.bldScriptPromise) {
-			this.bldScriptPromise = getBldScriptTasks();
+			this.bldScriptPromise = getBldScriptTasks(scriptFilename);
 		}
 		return this.bldScriptPromise;
+	}
+
+	public static getSHEOptions(scriptName: string):vscode.ShellExecutionOptions {
+
+		const sheOpts : vscode.ShellExecutionOptions = {
+			cwd : dirname(scriptName)
+		};
+
+		return sheOpts;
 	}
 
 	public resolveTask(_task: vscode.Task): vscode.Task | undefined {
@@ -38,10 +53,13 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			return undefined;
 		}
 
+		const scriptFilename = this.getFileFromWorkspace();
+
 		// does this workspace have a bld.sh or bld.bat
-		if (!this.isFilePresent()) {
+		if (scriptFilename === undefined) {
 			return undefined;
 		}
+
 		const task = _task.definition.task;
 
 		if (task) {
@@ -49,13 +67,13 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const definition: BldScriptDefinition = <any>_task.definition;
 
-			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName} ${definition.arguments}`);
+			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptFilename));
 
 			return new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she);
 		}
 	}
 
-	private isFilePresent(): boolean {
+	private getFileFromWorkspace(): string|undefined {
 		const ws = getWorkspaceFolders();
 		if (ws !== undefined) {
 			for (const folder of ws) {
@@ -64,7 +82,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 
 					try {
 						if (fs.existsSync(fname)) {
-							return true;
+							return fname;
 						}
 					}
 					catch {
@@ -75,21 +93,21 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			}
 		}
 
-		return false;
+		return undefined;
 	}
 }
 
-async function getBldScriptTasks(): Promise<vscode.Task[]> {
+async function getBldScriptTasks(scriptName: string): Promise<vscode.Task[]> {
 	const result: vscode.Task[] = [];
 
-	const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName}`);
+	const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName}`, BldScriptTaskProvider.getSHEOptions(scriptName));
 
 	const taskDef: BldScriptDefinition = {
 		type: BldScriptTaskProvider.BldScriptType,
 		arguments: ""
 	};
 
-	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she);
+	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she );
 
 	result.push(task);
 	return result;
