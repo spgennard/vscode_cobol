@@ -46,7 +46,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			const retKeys = [];
 
 			//if the text is uppercase, the present the items as uppercase
-			let key = tag.key;
+			const key = tag.key;
 			if (includeAsIS) {
 				retKeys.push(key);
 			}
@@ -60,7 +60,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			}
 
 			if (includeLower) {
-				key = tag.key.toLowerCase();
+				retKeys.push(key.toLowerCase());
 			}
 
 			const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
@@ -105,17 +105,20 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			}
 		}
 
-		const lastSpace = lineBefore.lastIndexOf(" ");
-		if (lastSpace !== -1) {
-			lineBefore = lineBefore.substr(1 + lastSpace);
-		}
-		const prevWords = this.words.get(lineBefore);
-		if (prevWords.length !== 0) {
-			const items: CompletionItem[] = [];
-			return items;
-		}
+		// subjective code, checks to see if the previous word is know
+		//  tries to have "verb verb" but that can be problematic
+		//  so need to re-think it and remove it or replace it..
+		//
+		// const lastSpace = lineBefore.lastIndexOf(" ");
+		// if (lastSpace !== -1) {
+		// 	lineBefore = lineBefore.substr(1 + lastSpace);
+		// }
+		// const prevWords = this.words.get(lineBefore);
+		// if (prevWords.length !== 0) {
+		// 	const items: CompletionItem[] = [];
+		// 	return items;
+		// }
 
-
-		return this.getKeywordsGivenPartialWord(wordToComplete, 128);
+		return new CompletionList(this.getKeywordsGivenPartialWord(wordToComplete, 128));
 	}
 }
