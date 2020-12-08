@@ -51,7 +51,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				retKeys.push(key);
 			}
 
-			if (!this.isCOBOL && includeCamelCase) {
+			if (this.isCOBOL && includeCamelCase) {
 				retKeys.push(camelize(key));
 			}
 
@@ -119,6 +119,6 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		// 	return items;
 		// }
 
-		return new CompletionList(this.getKeywordsGivenPartialWord(wordToComplete, 128));
+		return this.getKeywordsGivenPartialWord(wordToComplete, 128);
 	}
 }
