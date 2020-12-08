@@ -4,8 +4,6 @@ import * as vscode from 'vscode';
 import { getWorkspaceFolders } from './cobolfolders';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLFileUtils } from './opencopybook';
-import { dir } from 'console';
-
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
 	arguments: string;
@@ -47,16 +45,33 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		return sheOpts;
 	}
 
+	public static getProblemMatchers(): string[] {
+		const matchers = [];
+		const envACUCOBOL = process.env["ACUCOBOL"];
+		const envCOBDIR = process.env["COBDIR"];
+
+		if (envACUCOBOL !== undefined) {
+			matchers.push("$acucobol-warning-ccbll");
+			matchers.push("$acucobol-ccbl");
+		}
+
+		if (envCOBDIR !== undefined) {
+			matchers.push("$mfcobol-errformat3");
+		}
+
+		return matchers;
+	}
+
 	public resolveTask(_task: vscode.Task): vscode.Task | undefined {
 		const settings = VSCOBOLConfiguration.get();
 		if (!settings.experimental_features) {
 			return undefined;
 		}
 
-		const scriptFilename = this.getFileFromWorkspace();
+		const scriptName = this.getFileFromWorkspace();
 
 		// does this workspace have a bld.sh or bld.bat
-		if (scriptFilename === undefined) {
+		if (scriptName === undefined) {
 			return undefined;
 		}
 
@@ -67,9 +82,12 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const definition: BldScriptDefinition = <any>_task.definition;
 
-			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptFilename));
-			const rtask = new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she);
-			rtask.detail = `Execute ${scriptFilename}`;
+			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptName));
+			const rtask = new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
+			const dname = path.dirname(scriptName);
+			const fname = `${scriptName.substr(1 + dname.length)} (in ${dname})`;
+			task.detail = `Execute ${fname}`;
+
 			return rtask;
 		}
 	}
@@ -108,8 +126,11 @@ async function getBldScriptTasks(scriptName: string): Promise<vscode.Task[]> {
 		arguments: ""
 	};
 
-	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she );
-	task.detail = `Execute ${scriptName}`;
+	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, "Build script", she, BldScriptTaskProvider.getProblemMatchers() );
+	const dname = path.dirname(scriptName);
+	const fname = scriptName.substr(1 + dname.length);
+	task.detail = `Execute ${fname}`;
+	task.group = vscode.TaskGroup.Build;
 	result.push(task);
 	return result;
 }
