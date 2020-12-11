@@ -51,7 +51,6 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		const envCOBDIR = process.env["COBDIR"];
 
 		if (envACUCOBOL !== undefined) {
-			matchers.push("$acucobol-warning-ccbl");
 			matchers.push("$acucobol-ccbl");
 		}
 
