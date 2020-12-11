@@ -49,6 +49,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		const matchers = [];
 		const envACUCOBOL = process.env["ACUCOBOL"];
 		const envCOBDIR = process.env["COBDIR"];
+		const envCOBOLIT = process.env["COBOLITDIR"];
 
 		if (envACUCOBOL !== undefined) {
 			matchers.push("$acucobol-ccbl");
@@ -56,6 +57,10 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 
 		if (envCOBDIR !== undefined) {
 			matchers.push("$mfcobol-errformat3");
+		}
+
+		if (envCOBOLIT !== undefined) {
+			matchers.push("$cobolit-cobc");
 		}
 
 		return matchers;
