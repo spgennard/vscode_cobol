@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
-import { cobolKeywordDictionary, cobolRegisters, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
+import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
