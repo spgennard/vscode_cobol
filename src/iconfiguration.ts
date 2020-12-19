@@ -40,6 +40,8 @@ export interface ICOBOLSettings {
     linter_unused_paragraphs_or_sections: boolean;
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
+    linter_ignore_section_before_entry: boolean;
+
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
     scan_comments_for_hints:boolean;
@@ -90,6 +92,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter_unused_paragraphs_or_sections: boolean;
     public linter_house_standards: boolean;
     public linter_house_standards_rules: string[];
+    public linter_ignore_section_before_entry: boolean;
     public ignore_unsafe_extensions: boolean;
     public coboldoc_workspace_folder: string;
     public program_extensions: string[];
@@ -156,5 +159,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.sourceview_include_pli_files = true;
         this.sourceview_include_doc_files = true;
         this.sourceview_include_script_files = true;
+        this.linter_ignore_section_before_entry = true;
     }
 }

@@ -523,6 +523,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
+    public sourceHandler: ISourceHandler;
     public filename: string;
     public lastModifiedTime = 0;
 
@@ -637,6 +638,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         const filename = sourceHandler.getFilename();
 
+        this.sourceHandler = sourceHandler;
         this.configHandler = configHandler;
         this.cacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);

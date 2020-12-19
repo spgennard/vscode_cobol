@@ -237,21 +237,31 @@ export class CobolLinterProvider {
 
             if (token.inProcedureDivision) {
                 if (sourceRefs.targetReferences.has(workLower) === false) {
-                    const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                        new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                    const d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
-                    d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
-                    d.tags = [vscode.DiagnosticTag.Unnecessary];
-
-                    if (diagRefs.has(token.filename)) {
-                        const arr = diagRefs.get(token.filename);
-                        if (arr !== undefined) {
-                            arr.push(d);
+                    let ignore = false;
+                    if (this.settings.linter_ignore_section_before_entry) {
+                        const nextLine = qp.sourceHandler.getLine(1 + token.startLine);
+                        if (nextLine?.toLocaleLowerCase().indexOf("entry") !== -1) {
+                            ignore = true;
                         }
-                    } else {
-                        const arr: vscode.Diagnostic[] = [];
-                        arr.push(d);
-                        diagRefs.set(token.filename, arr);
+                    }
+
+                    if (!ignore) {
+                        const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                            new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
+                        const d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
+                        d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
+                        d.tags = [vscode.DiagnosticTag.Unnecessary];
+
+                        if (diagRefs.has(token.filename)) {
+                            const arr = diagRefs.get(token.filename);
+                            if (arr !== undefined) {
+                                arr.push(d);
+                            }
+                        } else {
+                            const arr: vscode.Diagnostic[] = [];
+                            arr.push(d);
+                            diagRefs.set(token.filename, arr);
+                        }
                     }
                 }
             }

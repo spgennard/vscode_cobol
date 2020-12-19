@@ -11,7 +11,7 @@
     },
     {
       "match": "(\\s*)(?i:ILOBJECTIFY|TRICKLE|CONVERTRET|IDYSRCPATH|SPZERO)",
-      "name": "invalid.illegal.deprictated.dir"
+      "name": "invalid.illegal.depreciated.dir"
     },
     {
       "match": "(\\(.*\\))",
