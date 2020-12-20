@@ -779,6 +779,10 @@
       "name": "invalid.illegal.acu.cobol"
     },
     {
+      "match": "(?<![-_])(?i:actual|auto|automatic|based-storage|complex|connect|contained|core-index|db-access-control-key|db-data-name|db-exception|db-record-name|db-set-name|db-status|dead-lock|endcobol|end-disable|end-enable|end-send|end-transceive|eos|file-limits|file-limit|formatted|sort-status|usage-mode)(?=\\s|\\.|,|;|$)",
+      "name": "invalid.illegal.netcobol.cobol"
+    },
+    {
       "match": "(?<![-_])(?i:System-Info|Terminal-Info)(?![0-9A-Za-z_-])",
       "name": "support.type.cobol.acu strong"
     },
