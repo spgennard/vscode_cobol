@@ -477,7 +477,7 @@
       "name": "string.quoted.single.cobol"
     },
     {
-      "begin": "[zZ]\"",
+      "begin": "[gGzZ]\"",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.cobol"
@@ -492,7 +492,7 @@
       "name": "string.quoted.double.cobol"
     },
     {
-      "begin": "[zZ]'",
+      "begin": "[gGzZ]'",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.cobol"
@@ -507,7 +507,7 @@
       "name": "string.quoted.single.cobol"
     },
     {
-      "begin": "[nN]\"",
+      "begin": "[gGnN]\"",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.cobol"
@@ -522,7 +522,7 @@
       "name": "string.quoted.double.cobol"
     },
     {
-      "begin": "[nN]'",
+      "begin": "[gGnN]'",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.cobol"
