@@ -447,7 +447,7 @@ export const cobolFunctions: string[] = [
 	"char-national",
 	"char",
 	"combined-datetime",
-	"concatenate"
+	"concatenate",
 	"cos",
 	"current-date",
 	"date-of-integer",
@@ -511,7 +511,7 @@ export const cobolFunctions: string[] = [
 	"upper-case",
 	"variance",
 	"when-compiled",
-	"year-to-yyyy",
+	"year-to-yyyy"
 ];
 
 export const cobolStorageKeywords: string[] = [
@@ -548,7 +548,7 @@ export const cobolStorageKeywords: string[] = [
 	"occurs",
 	"pic",
 	"picture",
-	"property"
+	"property",
 	"redefines",
 	"sign",
 	"signed-int",
@@ -561,7 +561,7 @@ export const cobolStorageKeywords: string[] = [
 	"when",
 	"zero",
 	"zeroes",
-	"zeros",
+	"zeros"
 ];
 
 export const cobolRegisters: string[] = [
