@@ -567,6 +567,7 @@ export const cobolStorageKeywords: string[] = [
 export const cobolRegisters: string[] = [
 	"address-of",
 	"debug-item",
+	"jnienvptr",
 	"json-code",
 	"json-status",
 	"return-code",
