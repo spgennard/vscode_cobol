@@ -569,12 +569,29 @@ export const cobolStorageKeywords: string[] = [
 ];
 
 export const cobolRegisters: string[] = [
+	"address-of",
 	"debug-item",
+	"json-code",
+	"json-status",
 	"return-code",
+	"sort-control",
+	"sort-core-size",
+	"sort-file-size",
+	"sort-message",
+	"sort-mode-size",
 	"sort-return",
+	"tally",
 	"when-compiled",
 	"xml-code",
-	"json-code"
+	"xml-code",
+	"xml-event",
+	"xml-information",
+	"xml-namespace-prefix",
+	"xml-namespace",
+	"xml-nnamespace-prefix",
+	"xml-nnamespace",
+	"xml-ntext",
+	"xml-text"
 ];
 
 export const cobolProcedureKeywords: string[] = [
