@@ -14,7 +14,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 
 	private bldScriptPromise: Thenable<vscode.Task[]> | undefined = undefined;
 
-	public static scriptNames = COBOLFileUtils.isWin32 ?
+	private static scriptNames = COBOLFileUtils.isWin32 ?
 		["bld.bat", "build.bat"] :
 		["./bld.sh", "./build.sh"];
 
