@@ -10,14 +10,14 @@ interface BldScriptDefinition extends vscode.TaskDefinition {
 }
 
 export class BldScriptTaskProvider implements vscode.TaskProvider {
-	static BldScriptType = 'bldScript';
+	static scriptPlatform = COBOLFileUtils.isWin32 ? "Windows Batch" : "Unix Script";
+
+	static BldScriptType = 'COBOLBuildScript';
+	static BldSource = `${BldScriptTaskProvider.scriptPlatform} File`;
 
 	private bldScriptPromise: Thenable<vscode.Task[]> | undefined = undefined;
 
-	private static scriptNames = COBOLFileUtils.isWin32 ?
-		["bld.bat", "build.bat"] :
-		["./bld.sh", "./build.sh"];
-
+	private static scriptName = COBOLFileUtils.isWin32 ? "bld.bat" : "./bld.sh";
 	public static scriptPrefix = COBOLFileUtils.isWin32 ? "cmd.exe /c " : "";
 
 
@@ -42,14 +42,14 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 	public static getSHEOptions(scriptName: string): vscode.ShellExecutionOptions {
 
 		const sheOpts: vscode.ShellExecutionOptions = {
-			cwd: dirname(scriptName)
+			cwd: dirname(scriptName),
 		};
 
 		return sheOpts;
 	}
 
 	public static getProblemMatchers(): string[] {
-		const matchers = [];
+		const matchers = 	[];
 		const envACUCOBOL = process.env["ACUCOBOL"];
 		const envCOBDIR = process.env["COBDIR"];
 		const envCOBOLIT = process.env["COBOLITDIR"];
@@ -90,14 +90,15 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			const definition: BldScriptDefinition = <any>_task.definition;
 
 			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptName));
-			const rtask = new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
+			const rtask = new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldSource, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
 			const dname = path.dirname(scriptName);
 			const fname = `${scriptName.substr(1 + dname.length)} (in ${dname})`;
 			task.detail = `Execute ${fname}`;
 
 			return rtask;
-
 		}
+
+		return undefined;
 	}
 
 	private getFileFromWorkspace(): string | undefined {
@@ -105,20 +106,18 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		if (ws !== undefined) {
 			for (const folder of ws) {
 				if (folder.uri.scheme === 'file') {
-					for (const scriptName of BldScriptTaskProvider.scriptNames) {
-						const fname = path.join(folder.uri.fsPath, scriptName);
+					const scriptName = BldScriptTaskProvider.scriptName;
+					const fname = path.join(folder.uri.fsPath, scriptName);
 
-						try {
-							if (fs.existsSync(fname)) {
-								return fname;
-							}
-						}
-						catch {
-							// continue
+					try {
+						if (fs.existsSync(fname)) {
+							return fname;
 						}
 					}
+					catch {
+						// continue
+					}
 				}
-
 			}
 		}
 
@@ -136,7 +135,7 @@ async function getBldScriptTasks(scriptName: string): Promise<vscode.Task[]> {
 		arguments: ""
 	};
 
-	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, "Build script", she, BldScriptTaskProvider.getProblemMatchers());
+	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace,  BldScriptTaskProvider.BldSource, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
 	const dname = path.dirname(scriptName);
 	const fname = scriptName.substr(1 + dname.length);
 	task.detail = `Execute ${fname}`;
