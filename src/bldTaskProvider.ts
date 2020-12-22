@@ -14,8 +14,11 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 
 	private bldScriptPromise: Thenable<vscode.Task[]> | undefined = undefined;
 
-	public static scriptName = COBOLFileUtils.isWin32 ? "bld.bat" : "./bld.sh";
-	public static scriptPrefix =  COBOLFileUtils.isWin32 ? "cmd.exe /c " : "";
+	public static scriptNames = COBOLFileUtils.isWin32 ?
+		["bld.bat", "build.bat"] :
+		["./bld.sh", "./build.sh"];
+
+	public static scriptPrefix = COBOLFileUtils.isWin32 ? "cmd.exe /c " : "";
 
 
 	public provideTasks(): Thenable<vscode.Task[]> | undefined {
@@ -36,10 +39,10 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		return this.bldScriptPromise;
 	}
 
-	public static getSHEOptions(scriptName: string):vscode.ShellExecutionOptions {
+	public static getSHEOptions(scriptName: string): vscode.ShellExecutionOptions {
 
-		const sheOpts : vscode.ShellExecutionOptions = {
-			cwd : dirname(scriptName)
+		const sheOpts: vscode.ShellExecutionOptions = {
+			cwd: dirname(scriptName)
 		};
 
 		return sheOpts;
@@ -86,30 +89,33 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const definition: BldScriptDefinition = <any>_task.definition;
 
-			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptName));
+			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptName));
 			const rtask = new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
 			const dname = path.dirname(scriptName);
 			const fname = `${scriptName.substr(1 + dname.length)} (in ${dname})`;
 			task.detail = `Execute ${fname}`;
 
 			return rtask;
+
 		}
 	}
 
-	private getFileFromWorkspace(): string|undefined {
+	private getFileFromWorkspace(): string | undefined {
 		const ws = getWorkspaceFolders();
 		if (ws !== undefined) {
 			for (const folder of ws) {
 				if (folder.uri.scheme === 'file') {
-					const fname = path.join(folder.uri.fsPath, BldScriptTaskProvider.scriptName);
+					for (const scriptName of BldScriptTaskProvider.scriptNames) {
+						const fname = path.join(folder.uri.fsPath, scriptName);
 
-					try {
-						if (fs.existsSync(fname)) {
-							return fname;
+						try {
+							if (fs.existsSync(fname)) {
+								return fname;
+							}
 						}
-					}
-					catch {
-						// continue
+						catch {
+							// continue
+						}
 					}
 				}
 
@@ -123,14 +129,14 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 async function getBldScriptTasks(scriptName: string): Promise<vscode.Task[]> {
 	const result: vscode.Task[] = [];
 
-	const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${BldScriptTaskProvider.scriptName}`, BldScriptTaskProvider.getSHEOptions(scriptName));
+	const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${scriptName}`, BldScriptTaskProvider.getSHEOptions(scriptName));
 
 	const taskDef: BldScriptDefinition = {
 		type: BldScriptTaskProvider.BldScriptType,
 		arguments: ""
 	};
 
-	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, "Build script", she, BldScriptTaskProvider.getProblemMatchers() );
+	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldScriptType, "Build script", she, BldScriptTaskProvider.getProblemMatchers());
 	const dname = path.dirname(scriptName);
 	const fname = scriptName.substr(1 + dname.length);
 	task.detail = `Execute ${fname}`;
