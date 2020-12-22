@@ -503,7 +503,7 @@
                     "description": "Enable house standards rules",
                     "default": false
                 },
-                "coboleditor.linter_ignore_section_before_entry" : {
+                "coboleditor.linter_ignore_section_before_entry": {
                     "type": "boolean",
                     "title": "Do not warn on unused section before entry-point",
                     "description": "Do not issue a warning if a unused section occurs before a entry-point, as this is often used to stop code trickling through to the next statements.",

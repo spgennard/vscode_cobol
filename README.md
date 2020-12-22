@@ -576,7 +576,6 @@ The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
 
  - [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
  - [ALT] + [SHIFT] + [A]: Change to ACUCOBOL-GT Syntax
- - [ALT] + [SHIFT] + [O]: Change to OpenCOBOL Syntax
  - [ALT] + [SHIFT] + [M]: Toggle margins (overrides user/workspace settings)
 
 ## Contributors
@@ -586,3 +585,5 @@ I would like to thank the follow contributors for providing patches, fixes, kind
  - Ted John of Berkshire, UK
  - Kevin Abel of Lincoln, NE, USA
  - Simon Sobisch of Germany
+
+ NOTE: Some of the above contributions have now been moved into the GnuCOBOL extension.
