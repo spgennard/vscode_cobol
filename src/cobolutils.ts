@@ -26,8 +26,8 @@ export enum FoldAction {
 
 export class COBOLUtils {
 
-    public static inCopybookdirs(config: ICOBOLSettings, copybookdir:string) : boolean {
-        for(const ext of config.copybookdirs) {
+    public static inCopybookdirs(config: ICOBOLSettings, copybookdir: string): boolean {
+        for (const ext of config.copybookdirs) {
             if (ext === copybookdir) {
                 return true;
             }
@@ -36,7 +36,7 @@ export class COBOLUtils {
         return false;
     }
 
-    public migrateCopybooksToWorkspace():void {
+    public static migrateCopybooksToWorkspace(): void {
         const fileSearchDirectory = [];
         const settings = VSCOBOLConfiguration.get();
         const extsdir = settings.copybookdirs;
@@ -108,7 +108,7 @@ export class COBOLUtils {
 
     }
 
-    public extractSelectionToCopybook(activeTextEditor: vscode.TextEditor):void {
+    public static extractSelectionToCopybook(activeTextEditor: vscode.TextEditor): void {
         const sel = activeTextEditor.selection;
 
         const ran = new vscode.Range(sel.start, sel.end);
@@ -141,7 +141,7 @@ export class COBOLUtils {
 
     }
 
-    public extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean):void {
+    public static extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean): void {
         const sel = activeTextEditor.selection;
 
         const ran = new vscode.Range(sel.start, sel.end);
@@ -178,7 +178,7 @@ export class COBOLUtils {
 
     }
 
-    private pad(num: number, size: number): string {
+    private static pad(num: number, size: number): string {
         let s = num + "";
         while (s.length < size) {
             s = "0" + s;
@@ -186,7 +186,7 @@ export class COBOLUtils {
         return s;
     }
 
-    public getMFUnitAnsiColorConfig(): boolean {
+    public static getMFUnitAnsiColorConfig(): boolean {
         const editorConfig = workspace.getConfiguration('coboleditor');
         let expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
         if (expEnabled === undefined || expEnabled === null) {
@@ -195,7 +195,7 @@ export class COBOLUtils {
         return expEnabled;
     }
 
-    public resequenceColumnNumbers(activeEditor: vscode.TextEditor | undefined, startValue: number, increment: number): void {
+    public static resequenceColumnNumbers(activeEditor: vscode.TextEditor | undefined, startValue: number, increment: number): void {
         if (activeEditor === undefined) {
             return;
         }
@@ -212,7 +212,7 @@ export class COBOLUtils {
                 const startPos = new vscode.Position(l, 0);
                 const endPos = new vscode.Position(l, 6);
                 const range = new vscode.Range(startPos, endPos);
-                const padString = this.pad(startValue + (l * increment), 6);
+                const padString = COBOLUtils.pad(startValue + (l * increment), 6);
                 edits.replace(uri, range, padString);
             }
         }
@@ -220,7 +220,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    public removeColumnNumbers(activeEditor: vscode.TextEditor): void {
+    public static removeColumnNumbers(activeEditor: vscode.TextEditor): void {
         const edits = new vscode.WorkspaceEdit();
         const uri = activeEditor.document.uri;
 
@@ -239,7 +239,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    public RemoveIdentificationArea(activeEditor: vscode.TextEditor): void {
+    public static RemoveIdentificationArea(activeEditor: vscode.TextEditor): void {
         const edits = new vscode.WorkspaceEdit();
         const uri = activeEditor.document.uri;
 
@@ -258,7 +258,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    public RemoveComments(activeEditor: vscode.TextEditor): void {
+    public static RemoveComments(activeEditor: vscode.TextEditor): void {
         const uri = activeEditor.document.uri;
         const edits = new vscode.WorkspaceEdit();
         const delimiters: string[] = [];
@@ -302,21 +302,95 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    private isValidKeywordOrStorageKeyword(keyword: string): boolean {
+     private static isValidKeywordOrStorageKeyword(keyword: string): boolean {
         const keywordLower = keyword.toLowerCase();
-        const isKeyword=cobolKeywordDictionary.has(keywordLower);
+        const isKeyword = cobolKeywordDictionary.has(keywordLower);
         if (isKeyword) {
             return true;
         }
 
-        if(cobolStorageKeywordDictionary.has(keywordLower)) {
+        if (cobolStorageKeywordDictionary.has(keywordLower)) {
             return true;
         }
 
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle):void {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle): string {
+        let newtext = text;
+        const args: string[] = splitArgument(text, true);
+        const textLower = text.toLowerCase();
+        let lastPos = 0;
+        for (let ic = 0; ic < args.length; ic++) {
+            let arg = args[ic];
+            if (arg.endsWith(".")) {
+                arg = arg.substr(0, arg.length - 1);
+            }
+
+            const argLower = arg.toLowerCase();
+            const ipos = textLower.indexOf(argLower, lastPos);
+            let actionIt = false;
+
+            switch (action) {
+                case FoldAction.PerformTargets:
+                    actionIt = current.sections.has(argLower);
+                    if (actionIt === false) {
+                        actionIt = current.paragraphs.has(argLower);
+                    }
+                    break;
+
+                case FoldAction.ConstantsOrVariables:
+                    actionIt = current.constantsOrVariables.has(argLower);
+                    break;
+
+                case FoldAction.Keywords:
+                    actionIt = COBOLUtils.isValidKeywordOrStorageKeyword(argLower);
+                    break;
+            }
+
+            if (actionIt) {
+                switch (foldstyle) {
+                    case FoldStyle.LowerCase:
+                        {
+                            if (argLower !== arg) {
+                                const tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
+                                newtext = tmpline;
+                                lastPos += arg.length;
+                            }
+                        }
+                        break;
+                    case FoldStyle.UpperCase:
+                        {
+                            const argUpper = arg.toUpperCase();
+                            if (argUpper !== arg) {
+                                const tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
+                                newtext = tmpline;
+                                lastPos += arg.length;
+                            }
+                        }
+                        break;
+                    case FoldStyle.CamelCase:
+                        {
+                            const camelArg = camelize(arg);
+                            if (camelArg !== arg) {
+                                const tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
+                                newtext = tmpline;
+                                lastPos += arg.length;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        // has it changed?
+        if (newtext !== text) {
+            return newtext;
+        }
+        return text;
+    }
+
+    public static foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle): void {
         const uri = activeEditor.document.uri;
 
         const file = new VSCodeSourceHandler(activeEditor.document, false);
@@ -336,71 +410,7 @@ export class COBOLUtils {
                 break;      // eof
             }
 
-            let newtext = text;
-            const args: string[] = splitArgument(text, true);
-            const textLower = text.toLowerCase();
-            let lastPos = 0;
-            for (let ic = 0; ic < args.length; ic++) {
-                let arg = args[ic];
-                if (arg.endsWith(".")) {
-                    arg = arg.substr(0, arg.length - 1);
-                }
-
-                const argLower = arg.toLowerCase();
-                const ipos = textLower.indexOf(argLower, lastPos);
-                let actionIt = false;
-
-                switch (action) {
-                    case FoldAction.PerformTargets:
-                        actionIt = current.sections.has(argLower);
-                        if (actionIt === false) {
-                            actionIt = current.paragraphs.has(argLower);
-                        }
-                        break;
-
-                    case FoldAction.ConstantsOrVariables:
-                        actionIt = current.constantsOrVariables.has(argLower);
-                        break;
-
-                    case FoldAction.Keywords:
-                        actionIt = this.isValidKeywordOrStorageKeyword(argLower);
-                        break;
-                }
-
-                if (actionIt) {
-                    switch (foldstyle) {
-                        case FoldStyle.LowerCase:
-                            {
-                                if (argLower !== arg) {
-                                    const tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
-                                    newtext = tmpline;
-                                    lastPos += arg.length;
-                                }
-                            }
-                            break;
-                        case FoldStyle.UpperCase:
-                            {
-                                const argUpper = arg.toUpperCase();
-                                if (argUpper !== arg) {
-                                    const tmpline = newtext.substr(0, ipos) + argUpper + newtext.substr(ipos + arg.length);
-                                    newtext = tmpline;
-                                    lastPos += arg.length;
-                                }
-                            }
-                            break;
-                        case FoldStyle.CamelCase:
-                            {
-                                const camelArg = camelize(arg);
-                                if (camelArg !== arg) {
-                                    const tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
-                                    newtext = tmpline;
-                                    lastPos += arg.length;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
+            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle);
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {
