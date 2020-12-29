@@ -7,6 +7,12 @@ export enum outlineFlag {
     Skeleton = "skeleton"
 }
 
+export enum formatOnReturn {
+    Off = "off",
+    CamelCase = "camelcase",
+    UpperCase = "uppercase"
+}
+
 export interface ICOBOLSettings {
     experimental_features: boolean;
     enable_tabstop: boolean;
@@ -56,6 +62,7 @@ export interface ICOBOLSettings {
     sourceview_include_doc_files: boolean;
     sourceview_include_script_files: boolean;
 
+    format_on_return:formatOnReturn;
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
 }
@@ -107,7 +114,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public sourceview_include_pli_files: boolean;
     public sourceview_include_doc_files: boolean;
     public sourceview_include_script_files: boolean;
-
+    public format_on_return:formatOnReturn;
     public editor_maxTokenizationLineLength: number;
 
     public init_required = true;
@@ -160,5 +167,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.sourceview_include_doc_files = true;
         this.sourceview_include_script_files = true;
         this.linter_ignore_section_before_entry = true;
+        this.format_on_return = formatOnReturn.Off;
     }
 }

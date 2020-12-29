@@ -47,6 +47,7 @@ import { ESourceFormat } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
+import { COBOLCaseFormatter } from './caseformatter';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -678,6 +679,10 @@ export function activate(context: ExtensionContext): void {
     context.subscriptions.push(clearMetaData);
 
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
+    if (settings.experimental_features) {
+        context.subscriptions.push(COBOLCaseFormatter.register());
+    }
+
 
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 

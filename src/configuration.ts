@@ -1,7 +1,7 @@
 'use strict';
 
 import { workspace } from 'vscode';
-import { ICOBOLSettings, COBOLSettings, outlineFlag } from './iconfiguration';
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn } from './iconfiguration';
 import * as path from 'path';
 import { isDirectory } from './extension';
 import { CacheDirectoryStrategy } from './externalfeatures';
@@ -59,6 +59,8 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview_include_pli_files = getBoolean("sourceview_include_pli_files", true);
         vsconfig.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
         vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
+        vsconfig.format_on_return = workspace.getConfiguration('coboleditor').get<formatOnReturn>("format_on_return",formatOnReturn.Off);
+
         return vsconfig;
     }
 

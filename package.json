@@ -554,7 +554,18 @@
                     "type": "boolean",
                     "title": "Process metadata on file save",
                     "default": false
+                },
+                "coboleditor.format_on_return": {
+                    "enum": [
+                        "camelcase",
+                        "uppercase",
+                        "off"
+                    ],
+                    "default": "off",
+                    "markdownDescription": "Format line on return key (camelcase or uppercase)",
+                    "title": "Format line on return key (camelcase or uppercase)"
                 }
+
             }
         },
         "views": {
