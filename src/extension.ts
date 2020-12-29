@@ -410,8 +410,8 @@ export function getCurrentContext(): ExtensionContext {
 
 function flip_plaintext(doc: TextDocument) {
     if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
-        const lcount = doc.lineCount;
-        if (lcount >= 3) {
+        const lineCount = doc.lineCount;
+        if (lineCount >= 3) {
             const firstLine = doc.lineAt((0)).text;
             const secondLine = doc.lineAt(1).text;
 
@@ -760,9 +760,9 @@ export function activate(context: ExtensionContext): void {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document, position, token) {
             const txt = document.getText(document.getWordRangeAtPosition(position));
-            const txtTarger: CallTarget | undefined = getCallTarget(txt);
-            if (txtTarger !== undefined) {
-                return new Hover("### " + txtTarger.api + "\n" + txtTarger.description + "\n\n#### [More information?](" + txtTarger.url + ")");
+            const txtTarget: CallTarget | undefined = getCallTarget(txt);
+            if (txtTarget !== undefined) {
+                return new Hover("### " + txtTarget.api + "\n" + txtTarget.description + "\n\n#### [More information?](" + txtTarget.url + ")");
             }
         }
     });
@@ -1156,7 +1156,7 @@ export function logWarningMessage(message: string, ...parameters: any[]): void {
     const trimmedLeftCount = message.length - message.trimLeft().length;
     const spacesToLeft = " ".repeat(trimmedLeftCount);
 
-    // TODO: Could this be colorised?
+    // TODO: Could this be colorized?
     if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
         COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${util.format(message, parameters)}`);
     } else {

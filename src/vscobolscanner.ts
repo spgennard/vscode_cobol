@@ -52,7 +52,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 
     public processToken(token: COBOLToken): void {
-        // hident token should not be placed in the symbol table, as they from a different file
+        // a hide token should not be placed in the symbol table, as they from a different file
         if (token.ignoreInOutlineView) {
             return;
         }
@@ -254,7 +254,7 @@ export default class VSCOBOLSourceScanner {
 
     public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
         if (VSCobScanner.IsScannerActive(cacheDirectory)) {
-            window.showInformationMessage(" Unabled to clear metadata while caching is already in progress");
+            window.showInformationMessage(" Unable to clear metadata while caching is already in progress");
             return;
         }
 
@@ -332,12 +332,12 @@ export default class VSCOBOLSourceScanner {
         if (str === null || str.length === 0) {
             return undefined;
         }
-        
+
         // if on Windows replace ${HOME} with ${USERPROFILE}
         if (COBOLFileUtils.isWin32) {
             str = str.replace(/\$\{HOME\}/,'${USERPROFILE}');
         }
-        
+
         const replaced = str.replace(/\$\{([^%]+)\}/g, (_original, matched) => {
             const r = process.env[matched];
             return r ? r : ''
