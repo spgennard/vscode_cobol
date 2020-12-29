@@ -2,9 +2,9 @@
 
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult } from "vscode";
 
-export class DocComment {
+export class COBOLDocumentationCommentHandler {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static register():any {
+    static register(): any {
         const langPlusSchema = { scheme: 'file', language: 'COBOL' };
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {
@@ -18,21 +18,24 @@ export class DocComment {
 
                 const line = document.lineAt(position.line - 1);
                 if (line) {
+                    const lineTrimmed = line.text.trim();
 
-                    // micro focus xml doc
-                    if (line.text.trim().startsWith("*>>")) {
-                        return [
-                            // Insert *>> when RETURN is pressed
-                            TextEdit.insert(position, "*>> ")
-                        ];
-                    }
+                    if (lineTrimmed.length > 3) {
+                        // micro focus xml doc
+                        if (lineTrimmed.startsWith("*>>")) {
+                            return [
+                                // Insert *>> when RETURN is pressed
+                                TextEdit.insert(position, "*>> ")
+                            ];
+                        }
 
-                    // coboldoc
-                    if (line.text.trim().startsWith("*>**")) {
-                        return [
-                            // Insert *>> when RETURN is pressed
-                            TextEdit.insert(position, "*>> ")
-                        ];
+                        // // coboldoc
+                        // if (lineTrimmed.startsWith("*>**")) {
+                        //     return [
+                        //         // Insert *>> when RETURN is pressed
+                        //         TextEdit.insert(position, "*>> ")
+                        //     ];
+                        // }
                     }
                 }
                 return [];

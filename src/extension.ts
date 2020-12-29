@@ -5,7 +5,7 @@ import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
-import { DocComment } from './doccomment';
+import { COBOLDocumentationCommentHandler } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
 import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
 
@@ -677,7 +677,7 @@ export function activate(context: ExtensionContext): void {
     context.subscriptions.push(dumpMetadata);
     context.subscriptions.push(clearMetaData);
 
-    context.subscriptions.push(DocComment.register());
+    context.subscriptions.push(COBOLDocumentationCommentHandler.register());
 
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 
