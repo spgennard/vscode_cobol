@@ -46,7 +46,7 @@
         "onLanguage:cobol",
         "onLanguage:COBOL",
         "onLanguage:ACUCOBOL",
-        "onLanguage:entcobol",
+        "onLanguage:mfcobol",
         "onLanguage:JCL",
         "onLanguage:bms",
         "onLanguage:hlasm",
@@ -328,7 +328,7 @@
                 },
                 "coboleditor.experimental_features": {
                     "type": "boolean",
-                    "title": "Experimential features",
+                    "title": "Experimental features",
                     "default": false
                 },
                 "coboleditor.enable_tabstop": {
@@ -387,8 +387,8 @@
                 },
                 "coboleditor.sourceview": {
                     "type": "boolean",
-                    "title": "Enable experimential explorer source view",
-                    "description": "Enable experimential explorer source view",
+                    "title": "Enable experimental explorer source view",
+                    "description": "Enable experimental explorer source view",
                     "default": false
                 },
                 "coboleditor.sourceview_include_jcl_files": {

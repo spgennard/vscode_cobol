@@ -97,7 +97,7 @@ export class COBOLUtils {
             }
         }
 
-        // update copybookdirs with optiomized version
+        // update copybookdirs with optimized version
         if (updateCopybookdirs) {
             const editorConfig = workspace.getConfiguration('coboleditor');
             editorConfig.update('copybookdirs', fileSearchDirectory);
@@ -152,7 +152,7 @@ export class COBOLUtils {
         //        to find the best position..
 
         vscode.window.showInputBox({
-            prompt: para ? 'New paragrah name?' : 'New section name?',
+            prompt: para ? 'New paragraph name?' : 'New section name?',
             validateInput: (text: string): string | undefined => {
                 if (!text || text.indexOf(' ') !== -1) {
                     return 'Invalid paragraph or section';

@@ -211,14 +211,13 @@ export class COBOLToken {
 export class SourceReference {
     public fileIdentifer: number;
     public line: number;
-    public columnn: number;
+    public column: number;
 
     public constructor(fileIdentifer: number, line: number, column: number) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
-        this.columnn = column;
+        this.column = column;
     }
-
 }
 
 class Token {
@@ -904,7 +903,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
         }
 
-        // new divison
+        // new division
         if (tokenType === COBOLTokenStyle.Division && state.currentDivision !== COBOLToken.Null) {
             state.currentParagraph = COBOLToken.Null;
 

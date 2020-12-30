@@ -859,7 +859,6 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(removeColumnNumbersCommand);
 
-
     const makeKeywordsLowercaseCommands = vscode.commands.registerCommand('cobolplugin.makeKeywordsLowercase', () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
@@ -980,7 +979,6 @@ export function activate(context: ExtensionContext): void {
         }
     });
     context.subscriptions.push(extractSelectionToSectionCommand);
-
 
     const extractSelectionToCopybookCommand = vscode.commands.registerCommand('cobolplugin.extractSelectionToCopybook', () => {
         if (vscode.window.activeTextEditor) {
