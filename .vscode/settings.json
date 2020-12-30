@@ -98,6 +98,8 @@
         "copybookexts",
         "csdp",
         "ctoken",
+        "cvar",
+        "cvars",
         "ddir",
         "detab",
         "dirfile",

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import COBOLSourceScanner, { splitArgument, camelize } from './cobolsourcescanner';
+import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
@@ -316,7 +316,7 @@ export class COBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle): string {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean): string {
         let newtext = text;
         const args: string[] = splitArgument(text, true);
         const textLower = text.toLowerCase();
@@ -341,6 +341,16 @@ export class COBOLUtils {
 
                 case FoldAction.ConstantsOrVariables:
                     actionIt = current.constantsOrVariables.has(argLower);
+                    if (actionIt && foldConstantsToUpper) {
+                        const cvars = current.constantsOrVariables.get(argLower);
+                        if (cvars !== undefined) {
+                            for(const cvar of cvars) {
+                                if (cvar.tokenType === COBOLTokenStyle.Constant) {
+                                    foldstyle = FoldStyle.UpperCase;
+                                }
+                            }
+                        }
+                    }
                     break;
 
                 case FoldAction.Keywords:
@@ -400,6 +410,7 @@ export class COBOLUtils {
             return;
         }
 
+        const settings = VSCOBOLConfiguration.get();
         const edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (let l = 0; l < file.getLineCount(); l++) {
@@ -410,7 +421,7 @@ export class COBOLUtils {
                 break;      // eof
             }
 
-            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle);
+            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle, settings.format_constants_to_uppercase);
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {

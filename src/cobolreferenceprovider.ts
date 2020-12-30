@@ -32,7 +32,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
 
         const workLower = word.toLocaleLowerCase();
 
-        // cache current document, interatives search to be faster
+        // cache current document, so interactive searches can be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
             this.current = VSCOBOLSourceScanner.getCachedObject(document);
             if (this.current !== undefined) {

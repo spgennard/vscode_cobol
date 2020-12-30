@@ -247,6 +247,13 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                         locations.push(new vscode.Location(uri, srange));
                         break;
                     }
+                case COBOLTokenStyle.ConditionName:
+                    {
+                        const srange = new vscode.Position(token.startLine, token.startColumn);
+                        const uri = vscode.Uri.file(token.filename);
+                        locations.push(new vscode.Location(uri, srange));
+                        break;
+                    }
                 case COBOLTokenStyle.Variable:
                     {
                         const srange = new vscode.Position(token.startLine, token.startColumn);

@@ -43,6 +43,11 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                         this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     }
                     break;
+                case COBOLTokenStyle.ConditionName:
+                    if (this.parse_copybooks_for_references === false) {
+                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
+                    }
+                    break;
                 case COBOLTokenStyle.Variable:
                     if (this.parse_copybooks_for_references === false) {
                         this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));

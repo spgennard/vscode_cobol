@@ -32,6 +32,7 @@ export enum COBOLTokenStyle {
     Division = "Division",
     EntryPoint = "Entry",
     Variable = "Variable",
+    ConditionName = "ConditionName",
     Constant = "Constant",
     EndDelimiter = "EndDelimiter",
     Exec = "Exec",
@@ -1707,7 +1708,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                         if (pickUpThisField) {
                             if (this.isValidLiteral(currentLower)) {
-                                let style = prevToken === "78" ? COBOLTokenStyle.Constant : COBOLTokenStyle.Variable;
+                                let style = COBOLTokenStyle.Variable;
+                                if (prevToken === "78") {
+                                    style = COBOLTokenStyle.Constant;
+                                }
+                                if (prevToken === "88") {
+                                    style = COBOLTokenStyle.ConditionName;
+                                }
+
                                 let extraInfo = prevToken;
                                 if (prevToken === '01' || prevToken === '1') {
                                     if (nextTokenLower === 'redefines') {
