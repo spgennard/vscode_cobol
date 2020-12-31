@@ -683,11 +683,9 @@ export function activate(context: ExtensionContext): void {
         context.subscriptions.push(COBOLCaseFormatter.register());
     }
 
-
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 
     context.subscriptions.push(syntaxCheck);
-
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL_MF_LISTFILE' },
