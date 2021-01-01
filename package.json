@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "6.11.11",
+    "version": "7.0.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -82,6 +82,9 @@
         "onCommand:cobolplugin.makePerformTargetsCamelCase",
         "onCommand:cobolplugin.resequenceColumnNumbers",
         "view:flat-source-view",
+        "workspaceContains:.vscode_cobol",
+        "workspaceContains:bld.bat",
+        "workspaceContains:bld.sh",
         "workspaceContains:**/.cobol",
         "workspaceContains:**/.cob",
         "workspaceContains:**/.cbl",

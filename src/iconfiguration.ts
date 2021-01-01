@@ -143,7 +143,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_include_camelcase = false;
         this.intellisense_include_uppercase = false;
         this.intellisense_include_lowercase = false;
-        this.intellisense_item_limit = 0;
+        this.intellisense_item_limit = 30;
         this.process_metadata_cache_on_start = false;
         this.cache_metadata = CacheDirectoryStrategy.Off;
         this.cache_metadata_time_limit = 60000;
