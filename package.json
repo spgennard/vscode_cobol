@@ -568,7 +568,6 @@
                     "markdownDescription": "Format line on return key (camelcase or uppercase)",
                     "title": "Format line on return key (camelcase or uppercase)"
                 }
-
             }
         },
         "views": {
