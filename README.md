@@ -511,6 +511,20 @@ The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
 
    For example the editor line limit has been surpassed or the file fails to be identified as a COBOL source file.
 
+ - The colors in the editor can be changed on a per theme basis, for example:
+
+```json
+"editor.tokenColorCustomizations": {
+        "[Monokai]": {
+            "comments": "#229977"
+        }
+    }
+```
+
+Where *comments* is a token name, standard tokens can be found in the [textmate documentation](https://macromates.com/manual/en/language_grammars).
+
+Useful tokens that are often changed are: comment.line.cobol.newpage, keyword.operator.
+
 ## Complementary extensions
 
 ### [COBOL Language Dictionary - Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=bitlang.code-spell-checker-cobol)
