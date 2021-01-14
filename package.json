@@ -2,21 +2,20 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "7.0.0",
+    "version": "7.0.1",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
         "jcl",
         "pl/i",
         "pli",
-        "mvs",
         "mfcobol",
+        "mvs",
         "visualcobol",
         "serverexpress",
         "ocds",
         "cobol-it",
         "cobolit",
-        "entcobol",
         "ibmcobol",
         "bms",
         "mfu"
@@ -767,15 +766,6 @@
                 "configuration": "./pli.configuration.json"
             },
             {
-                "id": "entcobol",
-                "aliases": [
-                    "Enterprise COBOL for z/OS",
-                    "enterprisecobol"
-                ],
-                "extensions": [],
-                "configuration": "./enterprisecobol.configuration.json"
-            },
-            {
                 "id": "bms",
                 "extensions": [
                     ".bms"
@@ -888,11 +878,6 @@
                 "language": "pli",
                 "scopeName": "source.pli",
                 "path": "./syntaxes/PLI.tmLanguage.json"
-            },
-            {
-                "language": "entcobol",
-                "scopeName": "source.entcobol",
-                "path": "./syntaxes/enterprisecobol.tmLanguage.json"
             },
             {
                 "language": "bms",

@@ -690,8 +690,7 @@ export function activate(context: ExtensionContext): void {
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL_MF_LISTFILE' },
         { scheme: 'file', language: 'COBOL' },
-        { scheme: 'file', language: 'ACUCOBOL' },
-        { scheme: 'file', language: 'entcobol' }
+        { scheme: 'file', language: 'ACUCOBOL' }
     ];
 
     const copyBookProvider = languages.registerDefinitionProvider(allCobolSelectors, {
