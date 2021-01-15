@@ -134,8 +134,8 @@ for (const arg of args) {
                         const filesHandler = new FileSourceHandler(file, false);
                         const config = new COBOLSettings();
                         config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
-                        const symbolCacher = new COBOLSymbolTableEventHelper(config);
-                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(true), config.parse_copybooks_for_references, symbolCacher, features);
+                        const symbolCatcher = new COBOLSymbolTableEventHelper(config);
+                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(true), config.parse_copybooks_for_references, symbolCatcher, features);
                         if (qcp.callTargets.size > 0) {
                             stats.programsDefined++;
                             if (qcp.callTargets !== undefined) {
