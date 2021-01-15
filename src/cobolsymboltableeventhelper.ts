@@ -35,7 +35,6 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
             return;
         }
 
-
         if (this.parse_copybooks_for_references === false) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.Constant:

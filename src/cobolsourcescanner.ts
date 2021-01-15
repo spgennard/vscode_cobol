@@ -10,7 +10,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { config } from "process";
 
 
 export enum COBOLTokenStyle {
@@ -708,7 +709,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
         }
 
-
         if (this.sourceReferences.topLevel) {
             /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
             const lineLimit = configHandler.pre_parse_line_limit;
@@ -756,6 +756,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
 
+            let giveMetadataCacheWarning = false;
+
             // Do we have some sections?
             if (preParseState.sectionsInToken === 0 && preParseState.divisionsInToken === 0) {
                 /* if we have items that could be in a data division */
@@ -781,20 +783,35 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     this.ImplicitProgramId = "";
                     fakeDivision.ignoreInOutlineView = true;
                     this.sourceIsCopybook = true;
+                } else {
+                    giveMetadataCacheWarning = true;
                 }
+            }
+
+            // could it be COBOL (just by the comment area?)
+            if (!sourceLooksLikeCOBOL && sourceHandler.getCommentCount() > 0) {
+                sourceLooksLikeCOBOL = true;
+                giveMetadataCacheWarning = true;
+            }
+
+            if (giveMetadataCacheWarning) {
+                if (!configHandler.parse_copybooks_for_references && configHandler.cache_metadata !== CacheDirectoryStrategy.Off) {
+                    this.externalFeatures.logMessage(` Warning - Unable to determine context of ${filename}, this may affect metadata caching for this file`);
+                }
+            }
+
+            /* leave early */
+            if (sourceLooksLikeCOBOL === false) {
+                this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_parse_line_limit setting)`);
             }
 
             /* if the source has an extension, then continue on.. */
             if (hasCOBOLExtension) {
                 sourceLooksLikeCOBOL = true;
-                /* otherwise, does it look like COBOL? */
-            } else if (preParseState.sectionsInToken !== 0 || preParseState.divisionsInToken !== 0 || sourceHandler.getCommentCount() > 0) {
-                sourceLooksLikeCOBOL = true;
             }
 
-            /* leave early */
-            if (sourceLooksLikeCOBOL === false) {
-                this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_parse_line_limit setting)`);
+            // drop out early
+            if (!sourceLooksLikeCOBOL) {
                 return;
             }
 
@@ -934,9 +951,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (ctoken.startColumn !== 0) {
                     state.currentSection.endColumn = ctoken.startColumn - 1;
                 }
-                if (state.inProcedureDivision) {
-                    this.eventHandler.processToken(ctoken);
-                }
+            }
+            if (state.inProcedureDivision) {
+                this.eventHandler.processToken(ctoken);
             }
             this.tokensInOrder.push(ctoken);
 
@@ -1115,6 +1132,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 case "screen": state.sectionsInToken++;
                                     state.leaveEarly = true;
                                     break;
+                                case "input-output": state.sectionsInToken++;
+                                    state.leaveEarly = true;
+                                    break;
+                                default:
+                                    if (this.isValidProcedureKeyword(token.prevTokenLower) === false) {
+                                        state.procedureDivisionRelatedTokens++;
+                                    }
                             }
                         }
                         break;
@@ -1128,7 +1152,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 state.divisionsInToken++;
                                 state.leaveEarly = true;
                                 break;
-                            case "procedure": state.divisionsInToken++;
+                            case "procedure": 
+                                state.procedureDivisionRelatedTokens++;
                                 state.leaveEarly = true;
                                 break;
                         }
@@ -1254,7 +1279,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         state.currentProgramTarget.CallParameters = state.parameters;
                     }
 
-
                     continue;
                 }
 
@@ -1353,7 +1377,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             state.currentDivision.ignoreInOutlineView = true;
                         }
                     }
-
 
                     if (prevTokenLower === "working-storage" || prevTokenLower === "linkage" ||
                         prevTokenLower === "local-storage" || prevTokenLower === "file-control" ||
