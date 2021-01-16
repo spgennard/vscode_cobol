@@ -184,7 +184,8 @@ export class COBOLToken {
         this.tokenNameLower = this.tokenName.toLowerCase();
         this.startColumn = line.indexOf(this.tokenName);
         this.description = description;
-        this.endLine = this.endColumn = 0;
+        this.endLine = this.startLine;
+        this.endColumn = this.startColumn + this.tokenName.length;
         this.parentToken = parentToken;
         this.inProcedureDivision = inProcedureDivision;
         this.extraInformation = extraInformation;
@@ -414,6 +415,8 @@ class ParseState {
     pickFields: boolean;
     pickUpUsing: boolean;
     skipToDot: boolean;
+    endsWithDot: boolean;
+    prevEndsWithDot: boolean;
 
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
@@ -455,6 +458,8 @@ class ParseState {
         this.using = UsingState.BY_REF;
         this.parameters = [];
         this.entryPointCount = 0;
+        this.endsWithDot = false;
+        this.prevEndsWithDot = false;
     }
 }
 
@@ -752,7 +757,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 }
                 catch (e) {
-                    this.externalFeatures.logException("CobolQuickParse - Parse error : " + e, e);
+                    this.externalFeatures.logException("COBOLScannner - Parse error : " + e, e);
                 }
             }
 
@@ -855,7 +860,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                this.externalFeatures.logException("CobolQuickParse - Parse error", e);
+                this.externalFeatures.logException("COBOLScannner - Parse error", e);
             }
         }
 
@@ -886,11 +891,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 state.currentParagraph.endColumn = lineLength;
             }
 
-            this.addinMissingEndlings();
+            // this.addinMissingEndlings();
 
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
+                ctoken.endLine = sourceHandler.getLineCount();
+                ctoken.startLine = 0;
+                ctoken.endColumn = lineLength;
+                ctoken.ignoreInOutlineView = true;
                 state.currentProgramTarget.Token = ctoken;
+                this.tokensInOrder.pop();
+
                 this.callTargets.set(this.ImplicitProgramId, state.currentProgramTarget);
             }
 
@@ -907,7 +918,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
-        if (ctoken.ignoreInOutlineView) {
+        if (ctoken.ignoreInOutlineView || tokenType == COBOLTokenStyle.ImplicitProgramId) {
             this.tokensInOrder.push(ctoken);
             this.eventHandler.processToken(ctoken);
             return ctoken;
@@ -1094,7 +1105,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         let tokenCountPerLine = 0;
         do {
             try {
-                let endWithDot = false;
+                let endsWithDot = false;
 
                 let tcurrent: string = token.currentToken;
                 let tcurrentLower: string = token.currentTokenLower;
@@ -1103,8 +1114,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (tcurrent.endsWith(".")) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
-                    endWithDot = true;
-                    token.endsWithDot = endWithDot;
+                    endsWithDot = true;
+                    token.endsWithDot = endsWithDot;
                 } else {
                     token.endsWithDot = false;
                 }
@@ -1175,7 +1186,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                this.externalFeatures.logException("Cobolquickparse relaxedParseLineByLine line error: ", e);
+                this.externalFeatures.logException("COBOLScannner relaxedParseLineByLine line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1218,8 +1229,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         do {
             try {
-                let endWithDot = false;
-
                 let tcurrent: string = token.currentToken;
                 let tcurrentLower: string = token.currentTokenLower;
 
@@ -1237,18 +1246,23 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (tcurrent.endsWith(",")) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
+                    state.prevEndsWithDot = state.endsWithDot;
+                    state.endsWithDot = false;
                 } else if (tcurrent.endsWith(".")) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
-                    endWithDot = true;
-                    token.endsWithDot = endWithDot;
+                    state.prevEndsWithDot = state.endsWithDot;
+                    state.endsWithDot = true;
+                    token.endsWithDot = true;
                 } else {
+                    state.prevEndsWithDot = state.endsWithDot;
+                    state.endsWithDot = false;
                     token.endsWithDot = false;
                 }
 
                 // if pickUpUsing
                 if (state.pickUpUsing) {
-                    if (endWithDot) {
+                    if (state.endsWithDot) {
                         state.pickUpUsing = false;
                     }
 
@@ -1275,7 +1289,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             state.parameters.push(new COBOLParameter(state.using, tcurrent));
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
                     }
-                    if (endWithDot) {
+                    if (state.endsWithDot) {
                         state.currentProgramTarget.CallParameters = state.parameters;
                     }
 
@@ -1283,7 +1297,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 // if skiptodot and not the end of the statement.. swallow
-                if (state.skipToDot && endWithDot === false) {
+                if (state.skipToDot && state.endsWithDot === false) {
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
                         if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
@@ -1301,7 +1315,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 // reset
-                if (state.skipToDot && endWithDot === true) {
+                if (state.skipToDot && state.endsWithDot === true) {
                     state.skipToDot = false;
                     state.addReferencesDuringSkipToTag = false;
                 }
@@ -1326,8 +1340,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 /* finish processing end-exec */
                 if (currentLower === "end-exec") {
                     state.currentToken = COBOLToken.Null;
-                    endWithDot = true;
-                    token.endsWithDot = endWithDot;
+                    state.prevEndsWithDot = state.endsWithDot;
+                    state.endsWithDot = true;
+                    token.endsWithDot = state.endsWithDot;
                     continue;
                 }
 
@@ -1352,6 +1367,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     }
                     continue;
                 }
+
                 // handle sections)
                 if (state.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
                     if (prevTokenLower === "declare") {
@@ -1405,7 +1421,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         state.inProcedureDivision = true;
                         state.pickFields = false;
                         state.procedureDivision = state.currentDivision;
-                        if (endWithDot === false) {
+                        if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }
                         sourceHandler.setDumpAreaA(true);
@@ -1588,12 +1604,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     if (state.currentDivision !== COBOLToken.Null) {
                         state.currentDivision.endLine = lineNumber;
-                        state.currentDivision.endColumn = 0;
+                        // state.currentDivision.endColumn = 0;
                     }
 
                     if (state.currentSection !== COBOLToken.Null) {
                         state.currentSection.endLine = lineNumber;
-                        state.currentSection.endColumn = 0;
+                        // state.currentSection.endColumn = 0;
                     }
                     state.currentDivision = COBOLToken.Null;
                     state.currentSection = COBOLToken.Null;
@@ -1611,7 +1627,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 // copybook handling
-                if (prevTokenLower === "copy" && current.length !== 0) {
+                if (prevTokenLowerUntrimmed === "copy" && current.length !== 0) {
                     const trimmedCopyBook = this.trimLiteral(current);
                     // let newCopybook: boolean = false;
 
@@ -1679,7 +1695,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // we are in the procedure division
                 if (state.captureDivisions && state.currentDivision !== COBOLToken.Null &&
-                    state.currentDivision === state.procedureDivision && endWithDot) {
+                    state.currentDivision === state.procedureDivision && state.endsWithDot && state.prevEndsWithDot) {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         const beforeCurrent = line.substr(0, token.currentCol - 1).trim();
                         if (beforeCurrent.length === 0) {
@@ -1791,7 +1807,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                                 /* if spans multiple lines, skip to dot */
                                 if (this.sourceFormat !== ESourceFormat.fixed) {
-                                    if (endWithDot === false) {
+                                    if (state.endsWithDot === false) {
                                         state.skipToDot = true;
                                     }
                                 }
@@ -1855,7 +1871,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                this.externalFeatures.logException("Cobolquickparse line error: ", e);
+                this.externalFeatures.logException("COBOLScannner line error: ", e);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1863,16 +1879,16 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return token;
     }
 
-    private addinMissingEndlings() {
-        for (let i = 0; i < this.tokensInOrder.length; i++) {
-            const token = this.tokensInOrder[i];
+    // private addinMissingEndlings() {
+    //     for (let i = 0; i < this.tokensInOrder.length; i++) {
+    //         const token = this.tokensInOrder[i];
 
-            if (token.endLine === 0) {
-                token.endLine = token.startLine;
-                token.endColumn = token.startColumn + token.tokenName.length;
-            }
-        }
-    }
+    //         if (token.endLine === 0) {
+    //             token.endLine = token.startLine;
+    //             token.endColumn = token.startColumn + token.tokenName.length;
+    //         }
+    //     }
+    // }
 
     private cobolLintLiteral = "cobol-lint";
 
