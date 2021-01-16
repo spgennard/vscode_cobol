@@ -5,22 +5,35 @@ import { String } from 'typescript-string-operations';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { logMessage } from "./extension";
-
 import { ICOBOLSettings } from "./iconfiguration";
 import { InMemoryGlobalSymbolCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from './externalfeatures';
+import { window, workspace } from 'vscode';
+
+const myConsoleFile = '/tmp/output.txt';
+let myConsoleStream:fs.WriteStream;
+
+let myConsole: Console;
+
+function openLogFile() {
+    myConsoleStream = fs.createWriteStream(myConsoleFile);
+    myConsole = new console.Console(myConsoleStream);
+}
+function logMessage(message: string):void {
+    myConsole.log(message);
+}
 
 export class COBOLSourceScannerUtils {
 
     public static dumpMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
-
+        openLogFile();
         if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
             logMessage("Metadata is not enabled");
+            myConsoleStream.close();
+            workspace.openTextDocument(myConsoleFile);
             return;
         }
-
         logMessage("Metadata Dump");
         logMessage(" cache_metadata : " + settings.cache_metadata + "\n");
         logMessage(" cache folder             : " + cacheDirectory);
@@ -72,5 +85,7 @@ export class COBOLSourceScannerUtils {
         }
 
         logMessage("   Source FileName cache : " + InMemoryGlobalSymbolCache.sourceFilenameModified.size);
+        myConsoleStream.close();
+        workspace.openTextDocument(myConsoleFile).then(doc => window.showTextDocument(doc));
     }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, Hover, OutputChannel, extensions, tasks, ViewColumn } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window,  OutputChannel, extensions, tasks, ViewColumn } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -20,7 +20,7 @@ import * as vscode from "vscode";
 import os from 'os';
 
 import updateDecorations from './margindecorations';
-import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
+// import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
 import { GlobalCachesHelper } from "./globalcachehelper";
 import { COBOLFileUtils } from './opencopybook';
 
@@ -753,17 +753,17 @@ export function activate(context: ExtensionContext): void {
     // context.subscriptions.push(cobolCommentProviderDisposible);
 
     /* hover provider */
-    const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        provideHover(document, position, token) {
-            const txt = document.getText(document.getWordRangeAtPosition(position));
-            const txtTarget: CallTarget | undefined = getCallTarget(txt);
-            if (txtTarget !== undefined) {
-                return new Hover("### " + txtTarget.api + "\n" + txtTarget.description + "\n\n#### [More information?](" + txtTarget.url + ")");
-            }
-        }
-    });
-    context.subscriptions.push(disposable4hover_more_info);
+    // const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
+    //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //     provideHover(document: vscode.DocumentSelector, position: vscode.HoverProvider, token: vscode.CancellationToken) {
+    //         const txt = document.getText(document.getWordRangeAtPosition(position));
+    //         const txtTarget: CallTarget | undefined = getCallTarget(txt);
+    //         if (txtTarget !== undefined) {
+    //             return new Hover("### " + txtTarget.api + "\n" + txtTarget.description + "\n\n#### [More information?](" + txtTarget.url + ")");
+    //         }
+    //     }
+    // });
+    // context.subscriptions.push(disposable4hover_more_info);
 
     window.onDidChangeActiveTextEditor(editor => {
         if (!editor) {
