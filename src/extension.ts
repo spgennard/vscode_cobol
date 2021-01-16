@@ -1103,6 +1103,7 @@ function openChangeLog(): void {
     }
 }
 export async function deactivate(): Promise<void> {
+    COBOLSourceScannerUtils.cleanup();  // drop the tmp file
     if (bldscriptTaskProvider) {
         bldscriptTaskProvider.dispose();
     }

@@ -11,7 +11,11 @@ import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { window, workspace } from 'vscode';
 
-const myConsoleFile = '/tmp/output.txt';
+import uuid from 'uuid';
+import tempDirectory from 'temp-dir';
+
+const myConsoleFile = path.join(tempDirectory, "vscode_"+uuid.v4()) + ".txt";
+
 let myConsoleStream:fs.WriteStream;
 
 let myConsole: Console;
@@ -50,7 +54,8 @@ export class COBOLSourceScannerUtils {
             } else {
                 fileSymbol.forEach(function (value: COBOLFileSymbol) {
                     // lvalue 0-n-1 but terminal urls are 1-n
-                    logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum === undefined ? 1 : 1+value.lnum));
+                    // logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum === undefined ? 1 : 1+value.lnum));
+                    logMessage(String.Format(" {0} => {1}:{2}", i, value.filename, value.lnum === undefined ? 1 : 1+value.lnum));
                 });
             }
         }
@@ -87,5 +92,10 @@ export class COBOLSourceScannerUtils {
         logMessage("   Source FileName cache : " + InMemoryGlobalSymbolCache.sourceFilenameModified.size);
         myConsoleStream.close();
         workspace.openTextDocument(myConsoleFile).then(doc => window.showTextDocument(doc));
+        // fs.unlinkSync(myConsoleFile);
+    }
+
+    public static cleanup(): void {
+        fs.unlinkSync(myConsoleFile);
     }
 }
