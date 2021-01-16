@@ -793,6 +793,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
 
+            //any divs or left early?
+            if (preParseState.divisionsInToken !== 0 || preParseState.leaveEarly) {
+                sourceLooksLikeCOBOL = true;
+            }
+
             // could it be COBOL (just by the comment area?)
             if (!sourceLooksLikeCOBOL && sourceHandler.getCommentCount() > 0) {
                 sourceLooksLikeCOBOL = true;
