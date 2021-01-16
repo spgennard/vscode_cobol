@@ -1152,7 +1152,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 state.divisionsInToken++;
                                 state.leaveEarly = true;
                                 break;
-                            case "procedure": 
+                            case "procedure":
                                 state.procedureDivisionRelatedTokens++;
                                 state.leaveEarly = true;
                                 break;
@@ -1312,7 +1312,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 const nextToken = token.nextToken;
                 const nextTokenLower = token.nextTokenLower;
                 const prevToken = this.trimLiteral(token.prevToken);
-                const prevTokenLower = this.trimLiteral(token.prevTokenLower);
+                const prevTokenLowerUntrimmed = token.prevTokenLower.trim();
+                const prevTokenLower = this.trimLiteral(prevTokenLowerUntrimmed);
                 const nextPlusOneToken = token.nextPlusOneToken;
 
                 const prevPlusCurrent = token.prevToken + " " + current;
@@ -1415,7 +1416,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 // handle entries
-                if (prevTokenLower === "entry" && current.length !== 0) {
+                if (prevTokenLowerUntrimmed === "entry" && current.length !== 0) {
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
 

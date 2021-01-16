@@ -87,7 +87,7 @@ export class CobolLinterProvider {
         }
 
         /* has it changed? */
-        if (this.setupCOBOLQuickParse(document) === false) {
+        if (this.setupCOBOLScannner(document) === false) {
             return;
         }
 
@@ -268,7 +268,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private setupCOBOLQuickParse(document: vscode.TextDocument): boolean {
+    private setupCOBOLScannner(document: vscode.TextDocument): boolean {
         if (this.current !== undefined && this.current.filename !== document.fileName) {
             this.current = undefined;
         }
