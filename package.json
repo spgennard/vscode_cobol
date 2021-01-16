@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "7.0.2",
+    "version": "7.0.3",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -207,6 +207,7 @@
                     "uniqueItems": true
                 },
                 "coboleditor.ignorecolumn_b_onwards": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "boolean",
                     "title": "include column 72 onwards in parsing",
                     "default": true
@@ -221,7 +222,7 @@
                     "type": "boolean",
                     "markdownDescription": "fuzzy variable search (legacy compatibility)",
                     "title": "fuzzy variable search",
-                    "deprecationMessage": "Deprecated: functionality may be removed",
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "default": false
                 },
                 "coboleditor.enable_data_provider": {
@@ -231,6 +232,7 @@
                     "default": true
                 },
                 "coboleditor.cache_metadata": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "enum": [
                         "workspace",
                         "user_defined_directory",
@@ -269,6 +271,7 @@
                     "default": false
                 },
                 "coboleditor.margin": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "boolean",
                     "title": "apply margin shading",
                     "default": false
@@ -476,12 +479,13 @@
                     "type": "boolean",
                     "title": "Process metadata cache on startup",
                     "description": "Process metadata cache on extension load (default false)",
+                    "deprecationMessage": "This setting is depreciated and be removed in future releases",
                     "default": false
                 },
                 "coboleditor.parse_copybooks_for_references": {
                     "type": "boolean",
                     "title": "Parse copybook for reference",
-                    "description": "Parse copybook for reference [WARNING: use with care] (default false)",
+                    "description": "Parse copybook for reference (default false)",
                     "default": false
                 },
                 "coboleditor.workspacefolders_order": {
@@ -555,6 +559,7 @@
                 "coboleditor.process_metadata_cache_on_file_save": {
                     "type": "boolean",
                     "title": "Process metadata on file save",
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "default": false
                 },
                 "coboleditor.format_on_return": {
