@@ -96,6 +96,13 @@ export class COBOLSourceScannerUtils {
     }
 
     public static cleanup(): void {
-        fs.unlinkSync(myConsoleFile);
+        try {
+            if (fs.existsSync(myConsoleFile)) {
+                fs.unlinkSync(myConsoleFile);
+            }
+        }
+        catch {
+            //
+        }
     }
 }
