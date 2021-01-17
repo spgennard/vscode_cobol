@@ -15,7 +15,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        const sf: COBOLSourceScanner|undefined = VSCOBOLSourceScanner.getCachedObject(document);
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
@@ -109,11 +109,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 retKeys.push(camelize(key.tokenName));
             }
 
-            const uniqueRetKeys = retKeys.filter(function(elem, index, self) {
+            const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
             })
 
-            for(const uniqueRetKey of uniqueRetKeys) {
+            for (const uniqueRetKey of uniqueRetKeys) {
                 items.push(new CompletionItem(uniqueRetKey, kind));
             }
 
@@ -137,18 +137,20 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         const startTime = performance_now();
         let wordToComplete = '';
-        let lineBefore = "";
+        let wordBefore = "";
+        let wordBeforeLower = "";
+
         const range = document.getWordRangeAtPosition(position);
         if (range) {
-            wordToComplete = document.getText(new Range(range.start, position));
-            lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
-            const lastSpace = lineBefore.lastIndexOf(" ");
+            wordToComplete = document.getText(new Range(range.start, position)); wordBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trimEnd();
+            const lastSpace = wordBefore.lastIndexOf(" ");
             if (lastSpace !== -1) {
-                const lineOrg = lineBefore;
-                lineBefore = lineBefore.substr(1 + lastSpace);
-                if (lineBefore === "to") {
+                const lineOrg = wordBefore;
+                wordBefore = wordBefore.substr(1 + lastSpace);
+                wordBeforeLower = wordBefore.toLowerCase();
+                if (wordBeforeLower === "to") {
                     if (lineOrg.toLocaleLowerCase().indexOf("go") !== -1) {
-                        lineBefore = "goto";
+                        wordBefore = wordBeforeLower = "goto";
                     }
                 }
             }
@@ -156,14 +158,15 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             const currentLine: string = document.lineAt(position.line).text.trim();
             const lastSpace = currentLine.lastIndexOf(" ");
             if (lastSpace === -1) {
-                lineBefore = currentLine;
+                wordBefore = currentLine;
             } else {
-                lineBefore = currentLine.substr(1 + lastSpace);
+                wordBefore = currentLine.substr(1 + lastSpace);
             }
+            wordBeforeLower = wordBefore.toLowerCase();
         }
 
-        if (lineBefore.length !== 0) {
-            switch (lineBefore.toLocaleLowerCase()) {
+        if (wordBefore.length !== 0) {
+            switch (wordBeforeLower) {
                 case "perform":
                 case "goto":
                     {
@@ -198,22 +201,31 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     }
 
 
-                case "initialize":
-                case "set":
-                case "into":
-                case "to":
-                case "from":
                 case "add":
-                case "subtract":
-                case "multiply":
-                case "divide":
+                case "ascending":
                 case "compute":
+                case "corr":
+                case "corresponding":
+                case "descending":
+                case "divide":
+                case "from":
                 case "giving":
-                case "string":
-                case "unstring":
-                case "pointer":
-                case "named":
                 case "if":
+                case "initialize":
+                case "inspect":
+                case "into":
+                case "key":
+                case "multiply":
+                case "named":
+                case "pointer":
+                case "search":
+                case "set":
+                case "string":
+                case "subtract":
+                case "to":
+                case "unstring":
+                case "varying":
+                case "with":
                     {
                         const words = this.getConstantsOrVariables(document);
                         items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
