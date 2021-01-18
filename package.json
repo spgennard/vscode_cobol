@@ -213,6 +213,7 @@
                     "default": true
                 },
                 "coboleditor.copybooks_nested": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "boolean",
                     "markdownDescription": "nest copybooks in outline view (restart required)",
                     "title": "nest copybooks in outline view (restart require)",
@@ -248,24 +249,28 @@
                     ]
                 },
                 "coboleditor.cache_metadata_user_directory": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "string",
                     "markdownDescription": "User specific directory for the workspace metadata cache (directory has to exist)",
                     "title": "User specific directory for the workspace metadata cache (directory has to exist)",
                     "default": ""
                 },
                 "coboleditor.cache_metadata_time_limit": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "number",
                     "markdownDescription": "Limited the time to process the cache (on startup) in ms",
                     "title": "Limited the time to process the cache (on startup)",
                     "default": 30000
                 },
                 "coboleditor.cache_metadata_max_directory_scan_depth": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "number",
                     "markdownDescription": "Limited the depth of the metadata cache directory scan",
                     "title": "Limited the depth of the metadata cache directory scan",
                     "default": 32
                 },
                 "coboleditor.cache_metadata_show_progress_messages": {
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "boolean",
                     "markdownDescription": "Show log message during meta data processing",
                     "default": false
