@@ -83,6 +83,38 @@
 		"description": "COPY REPLACING",
 		"scope": "cobol,acucobol"
 	},
+	"delimited": {
+		"prefix": "delimited by size",
+		"body" : [
+			"delimited by size"
+		],
+		"description": "delimited by size (string)",
+		"scope": "cobol,acucobol"
+	},
+	"DELIMITED": {
+		"prefix": "DELIMITED BY SIZE",
+		"body" : [
+			"DELIMITED BY SIZE"
+		],
+		"description": "DELIMITED BY SIZE (string)",
+		"scope": "cobol,acucobol"
+	},
+	"delimited_space": {
+		"prefix": "delimited by space",
+		"body" : [
+			"delimited by space"
+		],
+		"description": "delimited by size (string)",
+		"scope": "cobol,acucobol"
+	},
+	"DELIMITED_SPACE": {
+		"prefix": "DELIMITED BY SPACE",
+		"body" : [
+			"DELIMITED BY SPACE"
+		],
+		"description": "DELIMITED BY SPACE (string)",
+		"scope": "cobol,acucobol"
+	},
 	"divide": {
 		"prefix": "divide",
 		"body": [
