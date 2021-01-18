@@ -806,14 +806,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             if (giveMetadataCacheWarning) {
                 if (!configHandler.parse_copybooks_for_references && configHandler.cache_metadata !== CacheDirectoryStrategy.Off) {
-                    this.externalFeatures.logMessage(` Warning - Unable to determine context of ${filename}, this may affect metadata caching for this file`);
+                    this.externalFeatures.logMessage(` Warning: Unable to determine context of ${filename} - this may affect metadata caching for this file`);
                 }
             }
 
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
                 if (sourceHandler.getLineCount() > maxLines) {
-                    this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_parse_line_limit setting)`);
+                    this.externalFeatures.logMessage(` Warning: Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_parse_line_limit setting)`);
                 } else {
                     this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
                 }
