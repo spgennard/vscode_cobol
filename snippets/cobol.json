@@ -567,6 +567,22 @@
 		"description": "Minimum template",
 		"scope": "cobol"
 	},
+	"END PROGRAM": {
+		"prefix": "END PROGRAM",
+		"body": [
+			"END PROGRAM ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
+		],
+		"description": "END PROGRAM prg.",
+		"scope": "cobol"
+	},
+	"end program": {
+		"prefix": "end program",
+		"body": [
+			"end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
+		],
+		"description": "end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
+		"scope": "cobol"
+	},
 	"property": {
 		"prefix": "property",
 		"body": [
@@ -2164,7 +2180,7 @@
 		"scope": "cobol"
 	},
 	"PROGRAM-ID": {
-		"prefix": "PROGRAM ID.",
+		"prefix": "PROGRAM-ID. PRG.",
 		"body": [
 			"PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/${1:/upcase}/}}.",
 			"$0"
@@ -2172,7 +2188,7 @@
 		"scope": "cobol"
 	},
 	"program-id": {
-		"prefix": "program id. ",
+		"prefix": "program-id. prg.",
 		"body": [
 			"program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"$0"
