@@ -88,6 +88,13 @@ Changelog for spgennard vscode_cobol.
   
 
   
+**tweak gen-changelog**
+
+
+
+[875bf522efe40f4](https://github.com/spgennard/vscode_cobol/commit/875bf522efe40f4) *2021-01-20 22:02:02*
+
+  
 **change log is broken, so remove until I can resolve the issue**
 
 
