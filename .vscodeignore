@@ -19,6 +19,8 @@ publishit.sh
 bld_cobscanner.sh
 justpublish.sh
 publishit2gitonly.sh
+gen_changelog.sh
+rm_git_release.sh
 tsconfig.json
 tslint.json
 webpack.config.js
