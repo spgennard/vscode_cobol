@@ -7,7 +7,7 @@ npx git-changelog-command-line --to-ref refs/heads/main \
 --no-issue-name "" -std -tec "
 # Changelog
 
-Changelog for {{ownerName}} {{repoName}}.
+Changelog for {{ownerName}}/{{repoName}}.
 
 {{#tags}}
 ## {{name}}
