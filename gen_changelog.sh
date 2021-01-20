@@ -1,8 +1,10 @@
 # exit on error
 set -e
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
-
-npx git-changelog-command-line --to-ref refs/heads/main --ignore-commits-without-issue -std -tec "
+# --ignore-commits-without-issue
+npx git-changelog-command-line --to-ref refs/heads/main \
+--ignore-pattern "^\[maven-release-plugin\].*|^\[Gradle Release Plugin\].*|^Merge.*|^bump.*" \
+--no-issue-name "" -std -tec "
 # Changelog
 
 Changelog for {{ownerName}} {{repoName}}.
