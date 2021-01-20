@@ -1,10 +1,28 @@
 
 # Changelog
 
-Changelog for spgennard vscode_cobol.
+Changelog for spgennard/vscode_cobol.
 
 
 ## Unreleased
+ 
+  
+  
+### 
+  
+
+  
+**tweak**
+
+
+
+[14bce46d1b590a2](https://github.com/spgennard/vscode_cobol/commit/14bce46d1b590a2) *2021-01-20 22:06:34*
+
+  
+
+ 
+
+## 7.0.10
  
   
    
@@ -86,6 +104,13 @@ Changelog for spgennard vscode_cobol.
   
 ### 
   
+
+  
+**Update CHANGELOG.md**
+
+
+
+[834837e40295b22](https://github.com/spgennard/vscode_cobol/commit/834837e40295b22) *2021-01-20 22:03:28*
 
   
 **tweak gen-changelog**
