@@ -9,6 +9,24 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**tidy ignore extra .md**
+
+
+* [6eaef5c942053b2](https://github.com/spgennard/vscode_cobol/commit/6eaef5c942053b2) *2021-01-20 22:29:14*
+
+  
+**tidy up build**
+
+
+* [138ff44f03e6366](https://github.com/spgennard/vscode_cobol/commit/138ff44f03e6366) *2021-01-20 22:27:06*
+
+  
+**tweak the format**
+
+
+* [f4a73c1276d25f7](https://github.com/spgennard/vscode_cobol/commit/f4a73c1276d25f7) *2021-01-20 22:20:19*
+
+  
 **update**
 
 
