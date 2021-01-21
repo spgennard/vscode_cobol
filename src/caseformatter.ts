@@ -53,6 +53,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
         }
         return [];
     }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static register(): any {
         const langPlusSchema = [
