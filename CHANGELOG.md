@@ -9,6 +9,26 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**add in missing acucobol**
+
+
+* [0989dd45e76c550](https://github.com/spgennard/vscode_cobol/commit/0989dd45e76c550) *2021-01-21 21:44:08*
+
+  
+
+ 
+
+## 7.0.11
+ 
+  
+
+  
+**Update CHANGELOG.md**
+
+
+* [2d4b18de951b018](https://github.com/spgennard/vscode_cobol/commit/2d4b18de951b018) *2021-01-20 22:44:18*
+
+  
 **tidy ignore extra .md**
 
 
