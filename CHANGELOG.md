@@ -9,6 +9,12 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**fix script**
+
+
+* [ee4154f87f5ee1c](https://github.com/spgennard/vscode_cobol/commit/ee4154f87f5ee1c) *2021-01-22 23:52:44*
+
+  
 **update vscode engine**
 
 
