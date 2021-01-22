@@ -9,6 +9,28 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**Move away from using uuid, as it seems to cause a clash on Windows,**
+
+
+ * other platforms are okay.
+
+* [e5c4d9365b465fe](https://github.com/spgennard/vscode_cobol/commit/e5c4d9365b465fe) *2021-01-22 18:21:55*
+
+  
+
+ 
+
+## 7.0.12
+ 
+  
+
+  
+**Update CHANGELOG.md**
+
+
+* [bef35f968d337d9](https://github.com/spgennard/vscode_cobol/commit/bef35f968d337d9) *2021-01-21 22:15:13*
+
+  
 **add in missing acucobol**
 
 

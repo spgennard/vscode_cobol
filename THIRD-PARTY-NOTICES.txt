@@ -1,0 +1,81 @@
+@types/uuid@8.3.0 [license(s): MIT]
+├── package.json:  MIT
+└── license files: MIT
+
+balanced-match@1.0.0 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+brace-expansion@1.1.11 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+concat-map@0.0.1 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+hasharray@1.1.1 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+he@1.2.0 [license(s): MIT]
+└── package.json:  MIT
+
+jclass@1.2.1 [license(s): MIT]
+└── package.json:  MIT
+
+lzjs@1.3.0 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+minimatch@3.0.4 [license(s): ISC]
+├── package.json:  ISC
+└── license files: ISC
+
+minimist@1.2.5 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+mkdirp@0.5.5 [license(s): MIT]
+├── package.json:  MIT
+└── readme files: MIT
+
+n-readlines@1.0.1 [license(s): MIT]
+├── package.json:  MIT
+└── license files: MIT
+
+node-html-parser@1.4.8 [license(s): MIT]
+└── package.json:  MIT
+
+performance-now@2.1.0 [license(s): MIT]
+└── package.json:  MIT
+
+properties-reader@2.1.1 [license(s): MIT]
+├── package.json:  MIT
+└── license files: MIT
+
+temp-dir@2.0.0 [license(s): MIT]
+├── package.json:  MIT
+├── license files: MIT
+└── readme files: MIT
+
+trie-search@1.3.4 [license(s): MIT]
+├── package.json:  MIT
+└── readme files: MIT
+
+typescript-string-operations@1.4.1 [license(s): MIT]
+├── package.json:  MIT
+└── license files: MIT
+
+uuid@8.3.2 [license(s): MIT]
+├── package.json:  MIT
+└── license files: MIT
+
+LICENSES: ISC, MIT, SEE LICENSE IN LICENSE
+
