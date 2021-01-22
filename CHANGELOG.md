@@ -4,9 +4,15 @@
 Changelog for spgennardvscode_cobol.
 
 
-## Unreleased
+## 7.0.13
  
   
+
+  
+**Update CHANGELOG.md**
+
+
+* [45dd4c967e28b82](https://github.com/spgennard/vscode_cobol/commit/45dd4c967e28b82) *2021-01-22 23:53:05*
 
   
 **fix script**
