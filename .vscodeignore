@@ -20,6 +20,7 @@ bld_cobscanner.sh
 justpublish.sh
 publishit2gitonly.sh
 gen_changelog.sh
+gen_third_party.sh
 rm_git_release.sh
 tsconfig.json
 tslint.json
