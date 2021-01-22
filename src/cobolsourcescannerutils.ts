@@ -11,10 +11,9 @@ import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { window, workspace } from 'vscode';
 
-import uuid from 'uuid';
 import tempDirectory from 'temp-dir';
 
-const myConsoleFile = path.join(tempDirectory, "vscode_"+uuid.v4()) + ".txt";
+const myConsoleFile = path.join(tempDirectory, "vscode_"+process.pid) + ".txt";
 
 let myConsoleStream:fs.WriteStream;
 
