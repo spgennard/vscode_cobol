@@ -9,6 +9,32 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**update vscode engine**
+
+
+* [d0c97428a433000](https://github.com/spgennard/vscode_cobol/commit/d0c97428a433000) *2021-01-22 19:51:57*
+
+  
+**update packages, remove html parser as it is not used (was for the**
+
+
+ * failed coboldoc support)
+
+* [5bd399ab925a3fe](https://github.com/spgennard/vscode_cobol/commit/5bd399ab925a3fe) *2021-01-22 19:48:34*
+
+  
+**add gen_third_party.sh to the ignore file**
+
+
+* [d36d037f56db90b](https://github.com/spgennard/vscode_cobol/commit/d36d037f56db90b) *2021-01-22 19:43:41*
+
+  
+**add third party notices**
+
+
+* [d8e03d1011a0564](https://github.com/spgennard/vscode_cobol/commit/d8e03d1011a0564) *2021-01-22 18:42:40*
+
+  
 **Move away from using uuid, as it seems to cause a clash on Windows,**
 
 
