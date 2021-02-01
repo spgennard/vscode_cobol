@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "7.0.14",
+    "version": "7.1.0",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
@@ -44,6 +44,7 @@
         "onLanguage:plaintext",
         "onLanguage:cobol",
         "onLanguage:COBOL",
+        "onLanguage:COBOLIT",
         "onLanguage:ACUCOBOL",
         "onLanguage:mfcobol",
         "onLanguage:JCL",
@@ -730,6 +731,11 @@
                 "configuration": "./cobol.configuration.json"
             },
             {
+                "id": "COBOLIT",
+                "extensions": [],
+                "configuration": "./cobolit.configuration.json"
+            },
+            {
                 "id": "JCL",
                 "extensions": [
                     ".jcl",
@@ -867,6 +873,16 @@
                 "embeddedLanguages": {
                     "meta.embedded.block.sql": "sql",
                     "meta.embedded.block.html": "html"
+                }
+            },
+            {
+                "language": "COBOLIT",
+                "scopeName": "source.cobolit",
+                "path": "./syntaxes/COBOLIT.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.sql": "text",
+                    "meta.embedded.block.html": "text",
+                    "meta.embedded.block.java": "text"
                 }
             },
             {
@@ -1157,6 +1173,11 @@
                 "when": "editorTextFocus && editorLangId == ACUCOBOL"
             },
             {
+                "key": "ctrl+k ctrl+j",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
+            },
+            {
                 "key": "ctrl+alt+p",
                 "command": "cobolplugin.move2pd",
                 "when": "editorTextFocus && editorLangId == COBOL"
@@ -1165,6 +1186,11 @@
                 "key": "ctrl+alt+p",
                 "command": "cobolplugin.move2pd",
                 "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+alt+p",
+                "command": "cobolplugin.move2pd",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
             },
             {
                 "key": "ctrl+alt+w",
@@ -1177,6 +1203,11 @@
                 "when": "editorTextFocus && editorLangId == ACUCOBOL"
             },
             {
+                "key": "ctrl+alt+w",
+                "command": "cobolplugin.move2ws",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
+            },
+            {
                 "key": "ctrl+alt+d",
                 "command": "cobolplugin.move2dd",
                 "when": "editorTextFocus && editorLangId == COBOL"
@@ -1185,6 +1216,11 @@
                 "key": "ctrl+alt+d",
                 "command": "cobolplugin.move2dd",
                 "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+alt+d",
+                "command": "cobolplugin.move2dd",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
             },
             {
                 "key": "ctrl+alt+.",
@@ -1205,6 +1241,17 @@
                 "key": "ctrl+alt+,",
                 "command": "cobolplugin.move2anybackwards",
                 "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+
+            {
+                "key": "ctrl+alt+.",
+                "command": "cobolplugin.move2anyforward",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
+            },
+            {
+                "key": "ctrl+alt+,",
+                "command": "cobolplugin.move2anybackwards",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
             },
             {
                 "key": "tab",
@@ -1227,6 +1274,16 @@
                 "when": "editorLangId == ACUCOBOL && !inSnippetMode"
             },
             {
+                "key": "tab",
+                "command": "cobolplugin.tab",
+                "when": "editorLangId == COBOLIT && !inSnippetMode"
+            },
+            {
+                "key": "shift+tab",
+                "command": "cobolplugin.revtab",
+                "when": "editorLangId == COBOLIT && !inSnippetMode"
+            },
+            {
                 "key": "ctrl+/",
                 "command": "cobolplugin.commentline",
                 "when": "editorTextFocus && editorLangId == COBOL"
@@ -1235,6 +1292,11 @@
                 "key": "ctrl+/",
                 "command": "cobolplugin.commentline",
                 "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "ctrl+/",
+                "command": "cobolplugin.commentline",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
             },
             {
                 "key": "alt+shift+a",
@@ -1250,6 +1312,16 @@
                 "key": "alt+shift+m",
                 "command": "cobolplugin.toggle_margin",
                 "when": "editorTextFocus && editorLangId == COBOL"
+            },
+            {
+                "key": "alt+shift+m",
+                "command": "cobolplugin.toggle_margin",
+                "when": "editorTextFocus && editorLangId == ACUCOBOL"
+            },
+            {
+                "key": "alt+shift+m",
+                "command": "cobolplugin.toggle_margin",
+                "when": "editorTextFocus && editorLangId == COBOLIT"
             }
         ],
         "snippets": [

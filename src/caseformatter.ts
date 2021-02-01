@@ -58,6 +58,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
     static register(): any {
         const langPlusSchema = [
             { scheme: 'file', language: 'COBOL' },
+            { scheme: 'file', language: 'COBOLIT' },
             { scheme: 'file', language: 'ACUCOBOL' }
         ];
 

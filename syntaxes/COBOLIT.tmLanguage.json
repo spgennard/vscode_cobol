@@ -1,0 +1,91 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2021 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/master/syntaxes/GNUCOBOL.tmLanguage.json",
+  "fileTypes": [],
+  "name": "COBOLIT",
+  "patterns": [
+    {
+      "begin": "(?i:EXEC\\s+CICS)",
+      "name": "invalid.illegal.cobol",
+      "patterns": [
+        {
+          "match": "\\:([a-zA-Z\\-])*",
+          "name": "variable.cobol"
+        }
+      ],
+      "end": "(?i:END-EXEC|end\\s*exec)"
+    },
+    {
+      "begin": "(?i:EXEC\\s*ADO)",
+      "name": "invalid.illegal.cobol",
+      "patterns": [
+        {
+          "match": "\\:([a-zA-Z\\-])*",
+          "name": "variable.cobol"
+        }
+      ],
+      "end": "(?i:END-EXEC|end\\s*exec)"
+    },
+    {
+      "begin": "(?i:EXEC\\s*HTML)",
+      "name": "invalid.illegal.cobol",
+      "patterns": [
+        {
+          "match": "\\:([a-zA-Z\\-])*",
+          "name": "variable.cobol"
+        }
+      ],
+      "end": "(?i:END-EXEC|end\\s*exec)"
+    },
+    {
+      "match": "(?i:invoke|end-invoke|class-id|end\\s+class|property|try|catch|end\\s+property|exit\\+smethod|method-id|end\\s+method|create|ready|trace|reset|instance|delegate|exception-object|async-void|async-value|async|yielding|await|params|byte)(?=\\s+|\\.|,|\\))",
+      "name": "invalid.illegal.cobol"
+    },
+    {
+      "match": "(?:^|\\s)((?i)\\$\\s*set)(?:$|\\s.*$)",
+      "name": "invalid.illegal.cobol"
+    },
+    {
+      "match": "(?:^|\\s)(?i:.*>>SOURCE)(?:$|\\s.*$)",
+      "name": "comment.line.set.cobol"
+    },
+    {
+      "match": "(>>(\\s*)(?i:if|else|elif|end-if|define|evaluate|when|end-evaluate|display|call-convention).*)(\\*>.*)$",
+      "captures": {
+        "1": {
+          "name": "meta.preprocessor.iso2002"
+        },
+        "2": {
+          "name": "comment.line.meta.cobol"
+        }
+      }
+    },
+    {
+      "match": ">>\\s*(?i:if|else|end-if|define|evaluate|when|end-evaluate|display|call-convention).*$",
+      "name": "meta.preprocessor.iso2002"
+    },
+    {
+      "match": ">>\\s*(?i:turn|page|listing|leap-seconds|d).*$",
+      "name": "meta.preprocessor"
+    },
+    {
+      "match": "(\\s|^)(?i)(?i:thread-local|extension|active-class|aligned|anycase|attribute|b-and|b-or|b-not|b-xor|bit|capacity|chain|conversion|end-chain|float-binary-128|float-binary-32|float-binary-64|float-extended|float-infinity|float-not-a-number|indirect|intermediate|left-justify|pic\\s*n|picture\\s*n|prefixed|raise|raising|right-justify|rounding|standrd-binary|standard-decimal|symbol|trailing-sign|zero-fil|boolean-of-integer|char-national|display-of|exception-file-n|exception-location-n|formatted-current-date|formatted-date|formatted-datetime|formatted-time|integer-of-boolean|integer-of-formatted-date|length-an|locale-compare|national-of|standard-compare|test-formatted-datetime|test-numval-c|test-numval-f|display\\s*message.*)(?=\\s|\\.|$)",
+      "name": "invalid.illegal.cobol"
+    },
+    {
+      "match": "(?<![-_])(?i:record-position|modify|inquire|title|event|center|label-offset|cell|help-id|cells|push-button|list-box|label|default-font|id|no-tab|unsorted|color|height|width|bind|thread|erase|modeless|scroll|system|menu|title-bar|wrap|destroy|resizeable|user-gray|large-font|newline|3-d|data-columns|display-columns|alignment|separation|cursor-frame-width|divider-color|drag-color|heading-color|heading-divider-color|num-rows|record-data|tiled-headings|vpadding|centered-headings|column-headings|self-act|cancel-button|vscroll|report-composer|clsid|primary-interface|active-x-control|default-interface|default-source|auto-minimize|auto-resize|resource|engraved|initial-state|frame|acuactivexcontrol|activex-res|grid|box|message)(?=\\s|\\.|,|$)",
+      "name": "invalid.illegal.acucobol"
+    },
+    {
+      "match": "(?<![-_])(?i:active-class|aligned|anycase|b-and|b-not|b-or|b-xor|bit|boolean|chain|class-id|end-chain|eo|exception-object|expands|factory|float-binary-128|float-binary-32|float-binary-64|float-extended|float-infinity|float-not-a-number|format|function-pointer|get|group-usage|implements|inherits|interface-id|interface|invoke|lc_all|lc_collate|lc_ctype|lc_messages|lc_monetary|lc-numeric|lc_time|left-justify|method-id|method|none|object-reference|override|prefixed|prototype|raise|raising|relation|right-justify|self|sources|space-fill|statement|strong|super|symbol|trailing-sign|typedef|universal|utf-16|utf-8|val-status|valid|validate-status|zero-fil)",
+      "name": "invalid.illegal.not_implemented.gnucobol"
+    },
+    {
+      "match": "(?<![-_])(?i:boolean-of-integer|char-national|display-of|exception-file-n|exception-location-n|integer-of-boolean|national-of|standard-compare)",
+      "name": "invalid.illegal.not_implemented.gnucobol"
+    },
+    {
+        "include" : "source.cobol"
+    }
+  ],
+  "scopeName": "source.cobolit"
+}
