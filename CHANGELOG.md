@@ -4,6 +4,26 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.1.0
+ 
+  
+
+  
+**introduce cobolit as a seperate language**
+
+
+* [9c0f1b27f819540](https://github.com/spgennard/vscode_cobol/commit/9c0f1b27f819540) *2021-02-01 22:29:39*
+
+  
+**Update CHANGELOG.md**
+
+
+* [ff3fc85af4e332c](https://github.com/spgennard/vscode_cobol/commit/ff3fc85af4e332c) *2021-01-22 23:58:31*
+
+  
+
+ 
+
 ## 7.0.13
  
   
