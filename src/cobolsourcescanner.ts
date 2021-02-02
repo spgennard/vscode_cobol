@@ -11,8 +11,6 @@ import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { config } from "process";
-
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -417,6 +415,7 @@ class ParseState {
     skipToDot: boolean;
     endsWithDot: boolean;
     prevEndsWithDot: boolean;
+    currentLineIsComment: boolean;
 
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
@@ -460,6 +459,7 @@ class ParseState {
         this.entryPointCount = 0;
         this.endsWithDot = false;
         this.prevEndsWithDot = false;
+        this.currentLineIsComment = false;
     }
 }
 
@@ -850,16 +850,24 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
+                state.currentLineIsComment = false;
                 line = sourceHandler.getLine(l);
 
+                // eof
                 if (line === undefined) {
                     break;
+                }
+
+                // don't process line
+                if (line.length === 0 && state.currentLineIsComment) {
+                    continue;
                 }
 
                 line = line.trimRight();
 
                 // don't parse a empty line
                 if (line.length > 0) {
+
                     if (prevToken.endsWithDot === false) {
                         prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
                     }
@@ -1903,10 +1911,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
 
+        this.sourceReferences.state.currentLineIsComment = true;
+
         // should consider other inline comments (aka terminal) and fixed position comments
         const startOfComment: number = commentLine.indexOf("*>");
 
         if (startOfComment !== undefined && startOfComment !== -1) {
+            const trimmedLine = commentLine.substring(0, startOfComment).trimRight();
+            if (trimmedLine.length !== 0) {
+                // we still have something to process
+                this.sourceReferences.state.currentLineIsComment = false;
+            }
 
             // if (this.commentTagStyle === CobolTagStyle.unknown) {
             //     // is it a coboldoc?
