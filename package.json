@@ -978,7 +978,7 @@
                 "title": "Toggle margin"
             },
             {
-                "command": "cobolplugin.checkWorkspaceForMissingCopybookDirs",
+                "command": "cobolplugin.checkworkspaceformissingcopybookdirs",
                 "category": "COBOL",
                 "title": "Check workspace folders recursively for potential copybook directories",
                 "enablement": "!isWeb"
@@ -987,19 +987,19 @@
                 "command": "cobolplugin.processAllFilesInWorkspace",
                 "category": "COBOL",
                 "title": "Process files in workspace for metadata",
-                "enablement": "!isWeb"
+                "enablement": "!isWeb && config.cache_metadata != off"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
                 "category": "COBOL",
                 "title": "Dump metadata for diagnostic",
-                "enablement": "!isWeb"
+                "enablement": "!isWeb  && config.cache_metadata != off"
             },
             {
                 "command": "cobolplugin.clearMetaData",
                 "category": "COBOL",
                 "title": "Clear metadata",
-                "enablement": "!isWeb"
+                "enablement": "!isWeb && config.cache_metadata != off"
             },
             {
                 "command": "cobolplugin.syntaxCheck",

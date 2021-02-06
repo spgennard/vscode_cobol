@@ -110,5 +110,34 @@
 			"end": "^\\s*\\$end-region\\b"
 		}
 	},
-	"wordPattern": "([#a-zA-Z0-9_-]+|[a-zA-Z0-9_-]+)"
+	"wordPattern": "([#a-zA-Z0-9_-]+|[a-zA-Z0-9_-]+)",
+	"onEnterRules": [
+		{
+			"beforeText": "^\\s*[cC][aA][lL][lL].*[uU][sS][iI][nN][gG]$",
+			"endTest": "^\\s*[eE][nN][dD]-[cC][aA][lL][lL]$",
+			"action": {
+				"indent": "indent"
+			}
+		},
+		{
+			"beforeText": "^\\s*[eE][nN][dD]-[cC][aA][lL][lL]$",
+			"action": {
+				"indent": "none"
+			}
+		},
+		{
+			"beforeText": "^\\s*[eE][vV][aA][lL][uU][aA][tT][eE].*$",
+			"endTest": "^\\s*[eE][nN][dD]-[eE][vV][aA][lL][uU][aA][tT][eE]$",
+			"action": {
+				"indent": "indent",
+				"appendText" : "when "
+			}
+		},
+		{
+			"beforeText": "^\\s*[eE][nN][dD]-[eE][vV][aA][lL][uU][aA][tT][eE]$",
+			"action": {
+				"indent": "none"
+			}
+		}
+	]
 }

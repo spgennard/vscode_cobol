@@ -474,18 +474,6 @@ For example, to ensure you use utf8 for all you files use:
 }
 ```
 
-## coboleditor.experimental_features
-
-Currently I have only one is active experimental feature and this is "hover" support for known APIs.
-
-This currently includes most of the *Micro Focus COBOL Library API* (CBL_) and a subset of ILE date APIs.
-
-This can be activated by setting the flag ```coboleditor.experimental_features``` in the preferences -> settings panel.
-
-and looks like:
-
- ![hover](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/hover.png)
-
 ## Scanning and caching
 
 COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "Go to definition".
