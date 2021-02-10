@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
+import { String } from 'typescript-string-operations';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
@@ -11,6 +12,7 @@ import { COBOLFileUtils } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
+import { COBOLFileSymbol, InMemoryGlobalSymbolCache } from './cobolglobalcache';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -25,6 +27,64 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
+    static getCopybookGlobPattern(config: ICOBOLSettings): string {
+        let globString = "*.{";
+        for (const ext of config.copybookexts) {
+            if (ext.length !== 0) {
+                if (globString.endsWith("{")) {
+                    globString += ext;
+                } else {
+                    globString += "," + ext;
+                }
+            }
+        }
+
+        globString += "}";
+
+        return globString;
+    }
+
+    static async setupCommand() {
+        const config = VSCOBOLConfiguration.get();
+        const globPattern = COBOLUtils.getCopybookGlobPattern(config);
+        logMessage(`Glob pattern ${globPattern}`);
+
+        await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[] ) => {
+            uris.forEach((uri: vscode.Uri) => {
+                const fullPath = uri.fsPath;
+                const dirName = path.dirname(fullPath);
+                const fileName = fullPath.substr(dirName.length+1);
+                const fileNameNoExt = path.basename(fileName, path.extname(fileName));
+                const c: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExt);
+                if (c === undefined) {
+                    logMessage(` Missing ${fileNameNoExt} in ${fullPath}`);
+                }
+                // logMessage(`path is ${uri.fsPath}`);
+            });
+        });
+        // var pathString = path.dirname(str);
+        // var fileNameStringWithExtention = path.basename(str);
+
+
+
+
+
+
+        // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
+        //     const fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
+        //     if (fileSymbol === undefined) {
+        //         logMessage("  " + i + " => empty");
+        //     } else {
+        //         fileSymbol.forEach(function (value: COBOLFileSymbol) {
+        //             // lvalue 0-n-1 but terminal urls are 1-n
+        //             // logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum === undefined ? 1 : 1+value.lnum));
+        //             logMessage(String.Format(" {0} => {1}:{2}", i, value.filename, value.lnum === undefined ? 1 : 1 + value.lnum));
+        //         });
+        //     }
+        // }
+        // throw new Error('Method not implemented.');
+    }
 
     public static inCopybookdirs(config: ICOBOLSettings, copybookdir: string): boolean {
         for (const ext of config.copybookdirs) {
@@ -302,7 +362,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-     private static isValidKeywordOrStorageKeyword(keyword: string): boolean {
+    private static isValidKeywordOrStorageKeyword(keyword: string): boolean {
         const keywordLower = keyword.toLowerCase();
         const isKeyword = cobolKeywordDictionary.has(keywordLower);
         if (isKeyword) {
@@ -344,7 +404,7 @@ export class COBOLUtils {
                     if (actionIt && foldConstantsToUpper) {
                         const cvars = current.constantsOrVariables.get(argLower);
                         if (cvars !== undefined) {
-                            for(const cvar of cvars) {
+                            for (const cvar of cvars) {
                                 if (cvar.tokenType === COBOLTokenStyle.Constant) {
                                     foldstyle = FoldStyle.UpperCase;
                                 }

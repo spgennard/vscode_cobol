@@ -1010,6 +1010,10 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(showCOBOLChannel);
 
+    const setupCommand = vscode.commands.registerCommand('cobolplugin.setup', () => {
+        COBOLUtils.setupCommand();
+    });
+    context.subscriptions.push(setupCommand);
 
     const resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {

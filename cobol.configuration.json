@@ -129,8 +129,7 @@
 			"beforeText": "^\\s*[eE][vV][aA][lL][uU][aA][tT][eE].*$",
 			"endTest": "^\\s*[eE][nN][dD]-[eE][vV][aA][lL][uU][aA][tT][eE]$",
 			"action": {
-				"indent": "indent",
-				"appendText" : "when "
+				"indent": "indent"
 			}
 		},
 		{
