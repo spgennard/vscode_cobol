@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
-import { String } from 'typescript-string-operations';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
@@ -55,7 +54,8 @@ export class COBOLUtils {
                 const dirName = path.dirname(fullPath);
                 const fileName = fullPath.substr(dirName.length+1);
                 const fileNameNoExt = path.basename(fileName, path.extname(fileName));
-                const c: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExt);
+                const fileNameNoExtLower = fileNameNoExt.toLowerCase();
+                const c: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
                 if (c === undefined) {
                     logMessage(` Missing ${fileNameNoExt} in ${fullPath}`);
                 }
@@ -65,7 +65,8 @@ export class COBOLUtils {
         // var pathString = path.dirname(str);
         // var fileNameStringWithExtention = path.basename(str);
 
-
+        InMemoryGlobalSymbolCache.isDirty=true;
+        COBOLUtils.saveGlobalCacheToWorkspace();
 
 
 
@@ -84,6 +85,28 @@ export class COBOLUtils {
         //     }
         // }
         // throw new Error('Method not implemented.');
+    }
+
+    public static saveGlobalCacheToWorkspace(): void {
+        if (InMemoryGlobalSymbolCache.isDirty) {
+            const symbols:string[] = [];
+
+            for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
+                const fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
+                if (fileSymbol !== undefined) {
+                    fileSymbol.forEach(function (value: COBOLFileSymbol) {
+                        const dirName = path.dirname(value.filename);
+                        const fileName = value.filename.substr(dirName.length+1);
+                        symbols.push(`${i},${fileName},${value.lnum}`);
+                    });
+                }
+            }
+
+            const editorConfig = vscode.workspace.getConfiguration('coboleditor');
+            editorConfig.update('metadata_callable_symbols', symbols);
+
+            InMemoryGlobalSymbolCache.isDirty = false;
+        }
     }
 
     public static inCopybookdirs(config: ICOBOLSettings, copybookdir: string): boolean {

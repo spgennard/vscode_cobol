@@ -66,6 +66,8 @@ export interface ICOBOLSettings {
     format_on_return:formatOnReturn;
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
+
+    metadata_callable_symbols: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -118,8 +120,8 @@ export class COBOLSettings implements ICOBOLSettings {
     public format_on_return:formatOnReturn;
     public editor_maxTokenizationLineLength: number;
     public format_constants_to_uppercase: boolean;
-
     public init_required = true;
+    public metadata_callable_symbols: string[];
 
     constructor() {
         this.experimental_features = false;
@@ -171,5 +173,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_ignore_section_before_entry = true;
         this.format_on_return = formatOnReturn.Off;
         this.format_constants_to_uppercase = true;
+        this.metadata_callable_symbols = [];
     }
 }

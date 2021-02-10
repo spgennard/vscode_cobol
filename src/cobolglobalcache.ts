@@ -32,14 +32,13 @@ export class COBOLSymbolTable {
         return Object.assign(new COBOLSymbolTable(), d);
     }
 }
-
 export class COBOLFileSymbol {
-    public filename: string | undefined;
-    public lnum: number | undefined;
+    public filename: string;
+    public lnum: number;
 
     public constructor(symbol?: string, lineNumber?: number) {
-        this.filename = symbol;
-        this.lnum = lineNumber;
+        this.filename = symbol === undefined ? "" : symbol;
+        this.lnum = lineNumber === undefined ? 0 : lineNumber;
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types

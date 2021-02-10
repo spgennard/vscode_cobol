@@ -577,6 +577,21 @@
                     "default": "off",
                     "markdownDescription": "Format line on return key (camelcase or uppercase)",
                     "title": "Format line on return key (camelcase or uppercase)"
+                },
+                "coboleditor.metadata_callable_symbols": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "callablesymbol",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "internal metadata symbol"
+                            }
+                        }
+                    },
+                    "default": [],
+                    "uniqueItems": true
                 }
             }
         },

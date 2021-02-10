@@ -26,7 +26,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
     }
 
     public processToken(token: COBOLToken): void {
-        // hident token should not be placed in the symbol table, as they from a different file
+        // hidden token should not be placed in the symbol table, as they from a different file
         if (token.ignoreInOutlineView) {
             return;
         }

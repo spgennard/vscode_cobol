@@ -11,7 +11,6 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public logMessage(message: string): void {
         if (process.send) {
             process.send(message);
-
         }
         console.log(message);
 

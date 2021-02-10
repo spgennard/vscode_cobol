@@ -73,7 +73,6 @@ export class GlobalCachesHelper {
         }
     }
 
-
     private static addSymbolToCache(srcfilename: string, symbolUnchanged: string, lineNumber: number, symbolsCache: Map<string, COBOLFileSymbol[]>) {
         const symbol = symbolUnchanged.toLowerCase();
         if (symbolsCache.has(symbol)) {
