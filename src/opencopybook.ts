@@ -4,7 +4,7 @@ import { Range, TextDocument, Definition, Position, CancellationToken, Uri } fro
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, COBOLStatUtils} from './extension';
+import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
 
@@ -156,6 +156,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     readonly callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly classRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     readonly methodRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+    readonly oraIncDirectives = ["#oraincfld{", "#oraincfldpro{", "#oraincfldproind{", "#oraincupdate{", "#oraincstru{", "#oraincstruind{", "#oraincppp2stru{", "#oraincstru2ppp{", "#oraincfld2{", "#oraincstrutab{", "#oraincstrutabind{", "#oraincstru2tstru{", "#orainctstru2stru{", "#oraincstrupoz{", "#oraincflddyn{", "#oraincflddyn2{", "#oraincsprvar{", "#dodaj{"];
 
     public provideDefinition(document: vscode.TextDocument,
         position: vscode.Position,
@@ -283,6 +284,80 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                 }
             }
         }
+
+        const includePos = str.toLowerCase().indexOf("#include");
+        if (includePos !== -1) {
+            const noIncludeStr = str.substr(8 + includePos).trimLeft();
+            const spacePos = noIncludeStr.indexOf(" ");
+            let justIncludeArg = noIncludeStr;
+            if (spacePos !== -1) {
+                justIncludeArg = justIncludeArg.substr(0, spacePos).trim();
+            }
+
+            // remove trailing .
+            if (justIncludeArg.endsWith(".")) {
+                justIncludeArg = justIncludeArg.substr(0, justIncludeArg.length - 1);
+                justIncludeArg = justIncludeArg.trim();
+            }
+
+            // remove double quote
+            if (justIncludeArg.startsWith('"') && justIncludeArg.endsWith('"')) {
+                justIncludeArg = justIncludeArg.substr(1, justIncludeArg.length - 2);
+                justIncludeArg = justIncludeArg.trim();
+                return justIncludeArg;
+            }
+
+            // remove single quote
+            if (justIncludeArg.startsWith('\'') && justIncludeArg.endsWith('\'')) {
+                justIncludeArg = justIncludeArg.substr(1, justIncludeArg.length - 2);
+                justIncludeArg = justIncludeArg.trim();
+            }
+
+            return justIncludeArg;
+        }
+
+        let i: number;
+        for (i = 0; i < this.oraIncDirectives.length; i++) {
+            if (str.includes(this.oraIncDirectives[i])) {
+                break;
+            }
+        }
+        if (i < this.oraIncDirectives.length) {
+            const noOraincstruStr = str.substr(this.oraIncDirectives[i].length).trimLeft();
+            const spacePos = noOraincstruStr.indexOf(",");
+            let justOraincstruArg = noOraincstruStr;
+            if (spacePos !== -1) {
+                justOraincstruArg = justOraincstruArg.substr(0, spacePos).trim();
+            }
+
+            // remove trailing .
+            if (justOraincstruArg.endsWith(".")) {
+                justOraincstruArg = justOraincstruArg.substr(0, justOraincstruArg.length - 1);
+                justOraincstruArg = justOraincstruArg.trim();
+            }
+
+            // remove trailing .
+            if (justOraincstruArg.endsWith("}")) {
+                justOraincstruArg = justOraincstruArg.substr(0, justOraincstruArg.length - 1);
+                justOraincstruArg = justOraincstruArg.trim();
+            }
+
+            // remove double quote
+            if (justOraincstruArg.startsWith('"') && justOraincstruArg.endsWith('"')) {
+                justOraincstruArg = justOraincstruArg.substr(1, justOraincstruArg.length - 2);
+                justOraincstruArg = justOraincstruArg.trim();
+                return justOraincstruArg;
+            }
+
+            // remove single quote
+            if (justOraincstruArg.startsWith('\'') && justOraincstruArg.endsWith('\'')) {
+                justOraincstruArg = justOraincstruArg.substr(1, justOraincstruArg.length - 2);
+                justOraincstruArg = justOraincstruArg.trim();
+            }
+
+            return justOraincstruArg;
+        }
+
         return undefined;
     }
 

@@ -30,6 +30,7 @@ export enum COBOLTokenStyle {
     Paragraph = "Paragraph",
     Division = "Division",
     EntryPoint = "Entry",
+    CallPoint = "Call",
     Variable = "Variable",
     ConditionName = "ConditionName",
     Constant = "Constant",
@@ -138,6 +139,21 @@ export function splitArgument(input: string, splitBrackets: boolean): string[] {
             }
 
         }
+
+        /* skip { } space */
+        if ((c === '{') || (c === '}')) {
+            if (cArg.length !== 0) {
+                ret.push(cArg);
+                cArg = "";
+            }
+            while ((c === '{') || (c === '}')) {
+                i++;
+                c = cArg.charAt(i);
+            }
+            i--;
+            continue;
+        }
+
         cArg += c;
     }
 
@@ -429,6 +445,9 @@ class ParseState {
     parameters: COBOLParameter[];
 
     entryPointCount: number;
+    callPointCount: number;
+    macroFrom?: string;
+    macroTo?: string;
 
     constructor() {
         this.currentDivision = COBOLToken.Null;
@@ -457,9 +476,12 @@ class ParseState {
         this.using = UsingState.BY_REF;
         this.parameters = [];
         this.entryPointCount = 0;
+        this.callPointCount = 0;
         this.endsWithDot = false;
         this.prevEndsWithDot = false;
         this.currentLineIsComment = false;
+        this.macroFrom = undefined;
+        this.macroTo = undefined;
     }
 }
 
@@ -569,6 +591,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     readonly copybookNestedInSection: boolean;
 
     readonly configHandler: ICOBOLSettings;
+    readonly oraIncForScan = ["#oraincstru", "#oraincstrutab", "#dodaj"];
 
     parseHint_OnOpenFiles: string[] = [];
     parseHint_WorkingStorageFiles: string[] = [];
@@ -620,7 +643,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         parentSource: COBOLSourceScanner,
         parse_copybooks_for_references: boolean,
         eventHandler: ICOBOLSourceScannerEvents,
-        externalFeatures: IExternalFeatures
+        externalFeatures: IExternalFeatures,
+        oraIncPrefixFrom?: string,
+        oraIncPrefixTo?: string,
+        levelChangeTo?: string
 
     ): COBOLSourceScanner {
 
@@ -633,14 +659,20 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             sharedSource,
             parse_copybooks_for_references,
             eventHandler,
-            externalFeatures);
+            externalFeatures,
+            oraIncPrefixFrom,
+            oraIncPrefixTo,
+            levelChangeTo);
     }
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
         cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
         sourceEventHandler: ICOBOLSourceScannerEvents,
-        externalFeatures: IExternalFeatures) {
+        externalFeatures: IExternalFeatures,
+        oraIncPrefixFrom?: string,
+        oraIncPrefixTo?: string,
+        levelChangeTo?: string) {
 
         const filename = sourceHandler.getFilename();
 
@@ -847,6 +879,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         let line: string | undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
+        let firstParsedLine = true;
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
@@ -867,6 +900,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // don't parse a empty line
                 if (line.length > 0) {
+                    if (firstParsedLine && !oraIncPrefixFrom && oraIncPrefixTo && !levelChangeTo) {
+                        //very specific. Out #orainc... directives don't declare 01 level. As a consequence plugin was getting lost and generated wronk Outline.
+                        // This is repaired by this inserted line of 01 level variable. It always looks like "01 ipk-pozycja." in our generated source code.
+                        // l-1 will never be lower then 0 because we always have at least one comment line in the beginning of the file.
+                        prevToken = this.parseLineByLine(sourceHandler, l - 1, Token.Blank, "01 " + oraIncPrefixTo + "pozycja.");
+                        firstParsedLine = false;
+                    }
+                    line = this.parseOraIncStru(line, oraIncPrefixFrom?.toLowerCase(), oraIncPrefixTo?.toLowerCase(), levelChangeTo);
 
                     if (prevToken.endsWithDot === false) {
                         prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
@@ -1090,8 +1131,18 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             literalTrimmed = literalTrimmed.substr(1, literalTrimmed.length - 1);
         }
 
+        /* remove { */
+        if (literalTrimmed[0] === "{") {
+            literalTrimmed = literalTrimmed.substr(1, literalTrimmed.length - 1);
+        }
+
         /* remove  */
         if (literalTrimmed.endsWith(")")) {
+            literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
+        }
+
+        /* remove  */
+        if (literalTrimmed.endsWith("}")) {
             literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
         }
 
@@ -1239,6 +1290,48 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
     }
 
+    private parseOraIncStru(line: string, oraIncPrefixFrom: string | undefined, oraIncPrefixTo: string | undefined, levelChangeTo: string | undefined): string {
+        if (!oraIncPrefixTo) {
+            return line;
+        }
+
+        if (levelChangeTo) {
+            // Very specific. #dodaj is sth like copy, only used in #include. #dodaj is not used in #orainc. #dodaj is not used with #macro.
+            line = line.replace("89 ", levelChangeTo + " ").replace("XYZ-", oraIncPrefixTo).toLowerCase();
+        }
+        else {
+            if (!oraIncPrefixFrom) {
+                line = line.toLowerCase();
+                // This is oraincstru, no prefix to change from, only prefix that has to be appended to line.
+                if (line.includes('88')) {
+                    // 88 fields have '88' in the line and dot in the end. Prefix must be appended between 88 and variable name
+                    let line_arr = line.split(" ");
+                    let bylo_88 = false;
+                    for (var i = 0; i < line_arr.length; i++) {
+                        if (line_arr[i] === "88") {
+                            bylo_88 = true;
+                            continue;
+                        }
+                        if (line_arr[i].length > 0 && bylo_88) {
+                            line_arr[i] = oraIncPrefixTo + line_arr[i];
+                            break;
+                        }
+                    }
+                    line = line_arr.join(' ');
+                } else {
+                    // Rest of the variables doens't have level number, neither dot in the end. All declared at the same level, level 01 is generated automatically at the beginning.
+                    line = '05 ' + oraIncPrefixTo + line + '.';
+                }
+            }
+            else {
+                // This is #include with #macro
+                line = line.toLowerCase();
+                line = line.replace(oraIncPrefixFrom, oraIncPrefixTo);
+            }
+        }
+        return line;
+    }
+
     private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
         const token = new Token(line, prevToken);
 
@@ -1348,6 +1441,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 const nextPlusOneToken = token.nextPlusOneToken;
 
                 const prevPlusCurrent = token.prevToken + " " + current;
+
+                if (currentLower === "#macro") {
+                    let x = nextTokenLower.split(',');
+                    state.macroFrom = x[0];
+                    state.macroTo = x[1];
+                    continue;
+                }
+
+                if (currentLower === "#unmacro") {
+                    state.macroFrom = undefined;
+                    state.macroTo = undefined;
+                    continue;
+                }
 
                 if (currentLower === "exec") {
                     state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, prevToken, "", state.currentDivision);
@@ -1643,6 +1749,129 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     continue;
                 }
 
+                if (prevTokenLowerUntrimmed === "call") {
+                    const trimmedCurrent = this.trimLiteral(current);
+                    const trimmedCurrentWithExt = this.trimLiteral(current) + '.pre';
+                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.CallPoint, 0, line, trimmedCurrentWithExt, prevPlusCurrent, state.currentDivision);
+
+                    state.callPointCount++;
+                    state.parameters = [];
+                    ctoken.filename = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCurrentWithExt, ctoken.extraInformation, this.configHandler);
+
+                    this.callTargets.set(trimmedCurrent, new CallTargetInformation(ctoken, true, []));
+                    state.pickUpUsing = true;
+                    continue;
+                }
+
+                if (prevTokenLowerUntrimmed === "#include" && current.length !== 0) {
+                    const trimmedCopyBook = this.trimLiteral(current);
+                    const copyBookPrefixFrom = state.macroFrom;
+                    const copyBookPrefixTo = state.macroTo;
+                    const trimmedCopyBookWithPrefix = trimmedCopyBook + '.' + copyBookPrefixTo;
+                    let copyToken: COBOLToken = COBOLToken.Null;
+                    if (this.copybookNestedInSection) {
+                        if (state.currentSection !== COBOLToken.Null) {
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentSection);
+                        } else {
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
+                        }
+                    } else {
+                        copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
+                    }
+                    if (this.copyBooksUsed.has(trimmedCopyBookWithPrefix) === false) {
+                        const copybookToken = new COBOLCopybookToken(copyToken, false);
+                        this.copyBooksUsed.set(trimmedCopyBookWithPrefix, copybookToken);
+
+                        if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
+                            const filenameForMap = fileName + '.' + copyBookPrefixTo;
+                            if (fileName.length > 0) {
+                                if (this.copyBooksUsed.has(filenameForMap) === false) {
+
+                                    // move the source version of the copybook
+                                    this.copyBooksUsed.delete(trimmedCopyBook);
+
+                                    // add the specific version
+                                    this.copyBooksUsed.set(filenameForMap, copybookToken);
+                                    const qfile = new FileSourceHandler(fileName, false);
+                                    const currentTopLevel = this.sourceReferences.topLevel;
+                                    const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
+                                    state.ignoreInOutlineView = true;
+                                    this.sourceReferences.topLevel = false;
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, copyBookPrefixFrom, copyBookPrefixTo);
+                                    // const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
+                                    this.sourceReferences.topLevel = currentTopLevel;
+                                    state.ignoreInOutlineView = currentIgnoreInOutlineView;
+
+                                    copybookToken.parsed = true;
+                                }
+                            } else {
+                                const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
+                                this.diagWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
+                            }
+                        }
+                    }
+                    continue;
+                }
+
+                if (this.oraIncForScan.includes(prevTokenLowerUntrimmed) && current.length !== 0) {
+                    let oraIncData = this.trimLiteral(current).split(',');
+                    // Here trimmedCopyBook will be sth like "zmozipko.ora,ipk-". It is done on purpose. We use multiple inclusions of the same copybooks, but use prefixes so the variable names differ.
+                    // If used only "zmozipko.ora", second occurance of copybook would not be saved because copyBooksUsed would already have "zmozipko.ora". As a consequance variables from second and next inclusions
+                    // of the same copybook wouldn't be saved as variables.
+                    const trimmedCopyBook = oraIncData[0];
+                    const copyBookPrefixFrom = undefined;
+                    const copyBookPrefixTo = oraIncData.length > 1 ? oraIncData[1] : undefined;
+                    const copyBookLevelChange = oraIncData.length > 2 && prevTokenLowerUntrimmed === "#dodaj" ? oraIncData[2] : undefined;
+                    const trimmedCopyBookWithPrefix = trimmedCopyBook + '.' + copyBookPrefixTo;
+                    let copyToken: COBOLToken = COBOLToken.Null;
+                    if (this.copybookNestedInSection) {
+                        if (state.currentSection !== COBOLToken.Null) {
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentSection);
+                        } else {
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
+                        }
+                    } else {
+                        copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
+                    }
+                    if (this.copyBooksUsed.has(trimmedCopyBookWithPrefix) === false) {
+                        const copybookToken = new COBOLCopybookToken(copyToken, false);
+                        this.copyBooksUsed.set(trimmedCopyBookWithPrefix, copybookToken);
+
+                        if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.configHandler);
+                            const filenameForMap = fileName + '.' + copyBookPrefixTo;
+                            if (fileName.length > 0) {
+                                if (this.copyBooksUsed.has(filenameForMap) === false) {
+
+                                    // move the source version of the copybook
+                                    this.copyBooksUsed.delete(trimmedCopyBookWithPrefix);
+
+                                    // add the specific version
+                                    this.copyBooksUsed.set(filenameForMap, copybookToken);
+                                    const qfile = new FileSourceHandler(fileName, false);
+                                    const currentTopLevel = this.sourceReferences.topLevel;
+                                    const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
+                                    state.ignoreInOutlineView = true;
+                                    this.sourceReferences.topLevel = false;
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, copyBookPrefixFrom, copyBookPrefixTo, copyBookLevelChange);
+                                    // const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
+                                    this.sourceReferences.topLevel = currentTopLevel;
+                                    state.ignoreInOutlineView = currentIgnoreInOutlineView;
+
+                                    copybookToken.parsed = true;
+                                }
+                            } else {
+                                const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
+                                this.diagWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
+                            }
+                        }
+                    }
+                    continue;
+                }
+
                 // copybook handling
                 if (prevTokenLowerUntrimmed === "copy" && current.length !== 0) {
                     const trimmedCopyBook = this.trimLiteral(current);
@@ -1793,7 +2022,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                                 const ctoken = this.newCOBOLToken(style, lineNumber, line, trimToken, trimToken, state.currentDivision, extraInfo);
                                 if (!isFiller) {
-                                    this.addVariableOrConstant(currentLower, ctoken);
+                                    // We use variables ended with "varying" keyword, it generates two variables in the source code, they are used by Oracle ProCOBOL to handle varchar2 fields
+                                    if (line.includes("varying")) {
+                                        this.addVariableOrConstant(currentLower + '-arr', ctoken);
+                                        this.addVariableOrConstant(currentLower + '-len', ctoken);
+                                    }
+                                    else {
+                                        this.addVariableOrConstant(currentLower, ctoken);
+                                    }
                                 }
 
                                 // place the 88 under the 01 item
