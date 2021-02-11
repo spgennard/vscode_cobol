@@ -11,6 +11,7 @@ export class ScanData {
     public Files: string[] = [];
     public Directories: string[] = [];
     public showStats = true;
+    public symbols: string[] = [];
 }
 
 export class ScanStats {
@@ -31,10 +32,12 @@ export class ScanStats {
 export class ScanDataHelper {
     public static readonly scanFilename = "cobscanner.json";
 
-    public static save(cacheDirectory: string, st: ScanData): void {
+    public static save(cacheDirectory: string, st: ScanData): string {
         const fn = path.join(cacheDirectory,ScanDataHelper.scanFilename);
 
         fs.writeFileSync(fn, JSON.stringify(st));
+
+        return fn;
     }
 
     public static load(fn: string) : ScanData {
