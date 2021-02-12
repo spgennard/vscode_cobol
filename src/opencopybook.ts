@@ -4,7 +4,7 @@ import { Range, TextDocument, Definition, Position, CancellationToken, Uri } fro
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
+import { getCombinedCopyBookSearchPath, COBOLStatUtils} from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
 

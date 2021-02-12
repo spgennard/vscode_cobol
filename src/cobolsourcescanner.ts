@@ -903,8 +903,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (firstParsedLine && !oraIncPrefixFrom && oraIncPrefixTo && !levelChangeTo) {
                         //very specific. Out #orainc... directives don't declare 01 level. As a consequence plugin was getting lost and generated wronk Outline.
                         // This is repaired by this inserted line of 01 level variable. It always looks like "01 ipk-pozycja." in our generated source code.
-                        // l-1 will never be lower then 0 because we always have at least one comment line in the beginning of the file.
-                        prevToken = this.parseLineByLine(sourceHandler, l - 1, Token.Blank, "01 " + oraIncPrefixTo + "pozycja.");
+                        prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, "01 " + oraIncPrefixTo + "pozycja.");
                         firstParsedLine = false;
                     }
                     line = this.parseOraIncStru(line, oraIncPrefixFrom?.toLowerCase(), oraIncPrefixTo?.toLowerCase(), levelChangeTo);
