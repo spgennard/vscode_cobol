@@ -44,10 +44,9 @@ export class COBOLUtils {
         return globString;
     }
 
-    static async setupCommand() {
+    static async populateDefaultCallableSymbols():Promise<void> {
         const config = VSCOBOLConfiguration.get();
         const globPattern = COBOLUtils.getCopybookGlobPattern(config);
-        logMessage(`Glob pattern ${globPattern}`);
 
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[] ) => {
             uris.forEach((uri: vscode.Uri) => {
@@ -58,24 +57,11 @@ export class COBOLUtils {
                 const fileNameNoExtLower = fileNameNoExt.toLowerCase();
                 const c: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
                 if (c === undefined) {
-                    logMessage(` Missing ${fileNameNoExt} in ${fullPath}`);
-                    GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower, 0);
+                    GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower, 1);
                 }
-                // logMessage(`path is ${uri.fsPath}`);
             });
         });
-
-        InMemoryGlobalSymbolCache.isDirty=true;
         COBOLUtils.saveGlobalCacheToWorkspace();
-    }
-
-    public static loadGlobalCacheFromArray(symbols:string[]):void {
-        for(const symbol of symbols) {
-            const symbolValues = symbol.split(",");
-            if (symbolValues.length === 3) {
-                GlobalCachesHelper.addSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
-            }
-        }
     }
 
     public static saveGlobalCacheToWorkspace(): void {

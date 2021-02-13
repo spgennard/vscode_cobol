@@ -127,7 +127,6 @@ export class VSCobScanner {
                         logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
                     }
                 } else {
-                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
                     progressStatusBarItem.hide();
                 }
             });

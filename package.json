@@ -1117,11 +1117,6 @@
                 "command": "cobolplugin.showCOBOLChannel",
                 "category": "COBOL",
                 "title": "Show COBOL Channel"
-            },
-            {
-                "command": "cobolplugin.setup",
-                "category": "COBOL",
-                "title": "Setup"
             }
         ],
         "menus": {

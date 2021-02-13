@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
+import { GlobalCachesHelper } from "./globalcachehelper";
+
 export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
@@ -56,6 +58,17 @@ export class COBOLSymbol {
 
     static fromJSON(d: any): COBOLSymbol {
         return Object.assign(new COBOLSymbol(), d);
+    }
+}
+
+export class COBOLGlobalSymbolCacheHelper {
+    public static loadGlobalCacheFromArray(symbols: string[]): void {
+        for (const symbol of symbols) {
+            const symbolValues = symbol.split(",");
+            if (symbolValues.length === 3) {
+                GlobalCachesHelper.addSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
+            }
+        }
     }
 }
 

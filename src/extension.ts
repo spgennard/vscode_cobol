@@ -20,8 +20,6 @@ import * as vscode from "vscode";
 import os from 'os';
 
 import updateDecorations from './margindecorations';
-// import { getCallTarget, CallTarget } from './keywords/cobolCallTargets';
-import { GlobalCachesHelper } from "./globalcachehelper";
 import { COBOLFileUtils } from './opencopybook';
 
 import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
@@ -48,6 +46,7 @@ import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
+import { COBOLGlobalSymbolCacheHelper } from './cobolglobalcache';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -479,7 +478,7 @@ export function activate(context: ExtensionContext): void {
         clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
         setupSourceViewTree(settings, true);
-        COBOLUtils.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
+        COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -490,7 +489,7 @@ export function activate(context: ExtensionContext): void {
     const cobolfixer = new CobolLinterActionFixer();
     initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings);
-    COBOLUtils.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
+    COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
@@ -1012,11 +1011,6 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(showCOBOLChannel);
 
-    const setupCommand = vscode.commands.registerCommand('cobolplugin.setup', () => {
-        COBOLUtils.setupCommand();
-    });
-    context.subscriptions.push(setupCommand);
-
     const resequenceColumnNumbersCommands = vscode.commands.registerCommand('cobolplugin.resequenceColumnNumbers', () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
@@ -1051,19 +1045,16 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(resequenceColumnNumbersCommands);
 
-    /* load the cache if we can */
-    const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-    if (cacheDirectory !== undefined && cacheDirectory.length > 0) {
-        GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
-    }
-
-    if (checkForExtensionConflictsMessage.length !== 0) {
-        logMessage(checkForExtensionConflictsMessage);
-    }
-
     bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
 
-    openChangeLog();
+    //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
+    const ws = workspace.getWorkspaceFolder;
+
+    if (ws && settings.metadata_callable_symbols.length === 0) {
+        async () => {
+            await COBOLUtils.populateDefaultCallableSymbols();
+        }
+    }
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false);
@@ -1071,6 +1062,13 @@ export function activate(context: ExtensionContext): void {
             return;
         });
     }
+
+    // display the message
+    if (checkForExtensionConflictsMessage.length !== 0) {
+        logMessage(checkForExtensionConflictsMessage);
+    }
+
+    openChangeLog();
 }
 
 export function enableMarginStatusBar(formatStyle: ESourceFormat): void {
@@ -1084,13 +1082,8 @@ export function hideMarginStatusBar(): void {
 }
 
 export async function deactivateAsync(): Promise<void> {
-    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-        if (cacheDirectory !== undefined) {
-            GlobalCachesHelper.saveGlobalCache(cacheDirectory);
-            formatStatusBarItem.dispose();
-        }
-    }
+    COBOLUtils.saveGlobalCacheToWorkspace();
+    formatStatusBarItem.dispose();
 }
 
 function openChangeLog(): void {

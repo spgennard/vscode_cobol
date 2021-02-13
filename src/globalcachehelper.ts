@@ -35,44 +35,6 @@ export class GlobalCachesHelper {
         return false;
     }
 
-    public static loadGlobalSymbolCache(cacheDirectory: string): boolean {
-
-        const fn: string = path.join(cacheDirectory, globalSymbolFilename);
-        const fnStat = GlobalCachesHelper.isFileT(fn);
-        if (fnStat[0]) {
-            const stat4cache: fs.Stats = fs.statSync(fn);
-            if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
-                try {
-                    const str: string = fs.readFileSync(fn).toString();
-                    const cachableTable: COBOLGlobalSymbolTable = JSON.parse(lzjs.decompress(str), reviver);
-                    InMemoryGlobalSymbolCache.callableSymbols = cachableTable.callableSymbols;
-                    InMemoryGlobalSymbolCache.sourceFilenameModified = cachableTable.sourceFilenameModified;
-                    InMemoryGlobalSymbolCache.lastModifiedTime = stat4cache.mtimeMs;
-                    InMemoryGlobalSymbolCache.isDirty = false;
-                    return true;
-                }
-                catch (e) {
-                    try {
-                        fs.unlinkSync(fn);
-                    }
-                    catch {
-                        //continue
-                    }
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static saveGlobalCache(cacheDirectory: string): void {
-        if (InMemoryGlobalSymbolCache.isDirty) {
-            const fnGlobalSymbolFilename: string = path.join(cacheDirectory, globalSymbolFilename);
-            fs.writeFileSync(fnGlobalSymbolFilename, lzjs.compress(JSON.stringify(InMemoryGlobalSymbolCache, replacer)));
-            InMemoryGlobalSymbolCache.isDirty = false;
-        }
-    }
-
     private static addSymbolToCache(srcfilename: string, symbolUnchanged: string, lineNumber: number, symbolsCache: Map<string, COBOLFileSymbol[]>) {
         const symbol = symbolUnchanged.toLowerCase();
         if (symbolsCache.has(symbol)) {

@@ -46,7 +46,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
-            GlobalCachesHelper.loadGlobalSymbolCache(this.qp.cacheDirectory);
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
         }
     }

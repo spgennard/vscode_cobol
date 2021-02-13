@@ -5,14 +5,14 @@ import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
 import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
-import { GlobalCachesHelper } from "./globalcachehelper";
 import { COBOLSettings } from "./iconfiguration";
 
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import { Hash } from "crypto";
 import path from "path";
-import { InMemoryGlobalSymbolCache } from "./cobolglobalcache";
+import { COBOLGlobalSymbolCacheHelper, InMemoryGlobalSymbolCache } from "./cobolglobalcache";
+import { COBOLUtils } from "./cobolutils";
 
 const args = process.argv.slice(2);
 const features: IExternalFeatures = ConsoleExternalFeatures.Default;
@@ -101,7 +101,7 @@ for (const arg of args) {
             stats.maxDirectoryDepth = scanData.maxDirectoryDepth;
             stats.fileCount = scanData.fileCount;
 
-            GlobalCachesHelper.loadGlobalSymbolCache(scanData.cacheDirectory);
+            COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(scanData.symbols);
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {
                     features.logMessage(` Directories scanned   : ${stats.directoriesScanned}`);
@@ -174,9 +174,7 @@ for (const arg of args) {
                     if (features.logTimedMessage(end, completedMessage) === false) {
                         features.logMessage(completedMessage);
                     }
-
                 }
-                GlobalCachesHelper.saveGlobalCache(scanData.cacheDirectory);
             }
         }
         catch (e) {
