@@ -5,6 +5,7 @@ import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDi
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
+import { GlobalCachesHelper } from "./globalcachehelper";
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { COBOLFileUtils } from './opencopybook';
@@ -58,6 +59,7 @@ export class COBOLUtils {
                 const c: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
                 if (c === undefined) {
                     logMessage(` Missing ${fileNameNoExt} in ${fullPath}`);
+                    GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower, 0);
                 }
                 // logMessage(`path is ${uri.fsPath}`);
             });
@@ -67,8 +69,6 @@ export class COBOLUtils {
 
         InMemoryGlobalSymbolCache.isDirty=true;
         COBOLUtils.saveGlobalCacheToWorkspace();
-
-
 
 
         // // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -710,15 +710,15 @@ export function activate(context: ExtensionContext): void {
     });
     context.subscriptions.push(sourcedefProvider);
 
-    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
-        const sourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
+    //if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+        const cachedSourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
                 const csdp = new CachedCOBOLSourceDefinition();
                 return csdp.provideDefinition(doc, pos, ct);
             }
         });
-        context.subscriptions.push(sourcedefProvider);
-    }
+        context.subscriptions.push(cachedSourcedefProvider);
+    //}
 
     context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors, cobolfixer));

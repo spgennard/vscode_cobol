@@ -29,6 +29,8 @@ export class ScanStats {
     showMessage = false;
 }
 
+export const COBSCANNER_STATUS = '@@STATUS';
+
 export class ScanDataHelper {
     public static readonly scanFilename = "cobscanner.json";
 

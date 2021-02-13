@@ -7,6 +7,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
+import { COBOLUtils } from './cobolutils';
 
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
@@ -25,9 +26,9 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         const locations: vscode.Location[] = [];
         const config = VSCOBOLConfiguration.get();
 
-        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
-            return locations;
-        }
+        // if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
+        //     return locations;
+        // }
 
         const theline = document.lineAt(position).text;
 
@@ -36,22 +37,19 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
             if (qcp === undefined) {
                 return locations;
             }
-            const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
             const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
             const word = wordRange ? document.getText(wordRange) : '';
-            if (cacheDirectory !== undefined && word !== "") {
+            if (word !== "") {
                 const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
                 const wordLower = word.toLocaleLowerCase();
-                if (img.callableSymbols.has(wordLower) === false) {
-                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
-                }
                 if (img.callableSymbols.has(wordLower)) {
                     const symbols = img.callableSymbols.get(wordLower);
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                if (this.getLocationGivenFile(symbol.filename, symbol.lnum, locations)) {
+                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename,"",config);
+                                if (this.getLocationGivenFile(fullFilename, 1+symbol.lnum, locations)) {
                                     return locations;
                                 }
                             }
@@ -171,6 +169,8 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
 
             return locations;
         }
+
+        return locations;
     }
 
     private getLocationGivenFile(filename: string, linnumber: number, locations: vscode.Location[]): boolean {

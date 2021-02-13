@@ -1,6 +1,6 @@
 import COBOLSourceScanner, { SharedSourceReferences } from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
-import { ScanDataHelper, ScanStats } from "./cobscannerdata";
+import { COBSCANNER_STATUS, ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
 import { IExternalFeatures } from "./externalfeatures";
@@ -125,7 +125,7 @@ for (const arg of args) {
                     fCount++; fSendCount++;
                     if (fSendCount === fSendOn) {
                         if (process.send) {
-                            process.send(`@@STATUS ${fCount} ${scanData.Files.length}`);
+                            process.send(`${COBSCANNER_STATUS} ${fCount} ${scanData.Files.length}`);
                         }
                         fSendCount = 0;
                     }

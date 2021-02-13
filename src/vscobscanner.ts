@@ -2,7 +2,7 @@ import path from "path";
 import fs from 'fs';
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -135,7 +135,7 @@ export class VSCobScanner {
             let prevPercent = 0;
             child.on('message', (msg) => {
                 const message = msg as string;
-                if (message.startsWith("@@STATUS")) {
+                if (message.startsWith(COBSCANNER_STATUS)) {
                     const args = message.split(" ");
                     progressStatusBarItem.show();
                     const a1 = Number.parseInt(args[1]);
