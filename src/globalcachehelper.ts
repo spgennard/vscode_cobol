@@ -101,19 +101,6 @@ export class GlobalCachesHelper {
         return;
     }
 
-    public static addClassSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
-        const symbolsCache = InMemoryGlobalSymbolCache.classSymbols;
-
-        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
-    }
-
-
-    public static addMethodSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
-        const symbolsCache = InMemoryGlobalSymbolCache.methodSymbols;
-        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
-    }
-
-
     public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
         const symbolsCache = InMemoryGlobalSymbolCache.callableSymbols;
         GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);

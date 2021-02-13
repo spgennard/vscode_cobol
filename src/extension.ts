@@ -479,6 +479,7 @@ export function activate(context: ExtensionContext): void {
         clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
         setupSourceViewTree(settings, true);
+        COBOLUtils.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -489,6 +490,7 @@ export function activate(context: ExtensionContext): void {
     const cobolfixer = new CobolLinterActionFixer();
     initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings);
+    COBOLUtils.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);

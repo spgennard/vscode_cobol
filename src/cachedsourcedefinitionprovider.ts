@@ -33,10 +33,6 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         const theline = document.lineAt(position).text;
 
         if (theline.match(/.*(call|cancel|chain).*$/i)) {
-            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
-            if (qcp === undefined) {
-                return locations;
-            }
             const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
             const word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
@@ -49,34 +45,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
                                 const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename,"",config);
-                                if (this.getLocationGivenFile(fullFilename, 1+symbol.lnum, locations)) {
-                                    return locations;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
-            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
-            if (qcp === undefined) {
-                return locations;
-            }
-
-            const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
-            const word = wordRange ? document.getText(wordRange) : '';
-            if (word !== "") {
-                const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
-                const wordLower = word.toLocaleLowerCase();
-                if (img.classSymbols.has(wordLower)) {
-                    const symbols = img.classSymbols.get(wordLower);
-                    if (symbols !== undefined) {
-                        for (let i = 0; i < symbols.length; i++) {
-                            const symbol = symbols[i];
-                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                if (this.getLocationGivenFile(symbol.filename, symbol.lnum, locations)) {
+                                if (this.getLocationGivenFile(fullFilename, symbol.lnum, locations)) {
                                     return locations;
                                 }
                             }

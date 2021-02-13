@@ -76,16 +76,16 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.EnumId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.ClassId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.MethodId:
-                GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
         }
     }

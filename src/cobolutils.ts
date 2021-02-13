@@ -64,27 +64,18 @@ export class COBOLUtils {
                 // logMessage(`path is ${uri.fsPath}`);
             });
         });
-        // var pathString = path.dirname(str);
-        // var fileNameStringWithExtention = path.basename(str);
 
         InMemoryGlobalSymbolCache.isDirty=true;
         COBOLUtils.saveGlobalCacheToWorkspace();
+    }
 
-
-        // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        // for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
-        //     const fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
-        //     if (fileSymbol === undefined) {
-        //         logMessage("  " + i + " => empty");
-        //     } else {
-        //         fileSymbol.forEach(function (value: COBOLFileSymbol) {
-        //             // lvalue 0-n-1 but terminal urls are 1-n
-        //             // logMessage(String.Format(" {0} => {1}:{2}", i.padEnd(40), value.filename, value.lnum === undefined ? 1 : 1+value.lnum));
-        //             logMessage(String.Format(" {0} => {1}:{2}", i, value.filename, value.lnum === undefined ? 1 : 1 + value.lnum));
-        //         });
-        //     }
-        // }
-        // throw new Error('Method not implemented.');
+    public static loadGlobalCacheFromArray(symbols:string[]):void {
+        for(const symbol of symbols) {
+            const symbolValues = symbol.split(",");
+            if (symbolValues.length === 3) {
+                GlobalCachesHelper.addSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
+            }
+        }
     }
 
     public static saveGlobalCacheToWorkspace(): void {

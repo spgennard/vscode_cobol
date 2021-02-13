@@ -5,8 +5,6 @@ export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
     public isDirty = false;
-    public classSymbols = new Map<string, COBOLFileSymbol[]>();
-    public methodSymbols = new Map<string, COBOLFileSymbol[]>();
     public sourceFilenameModified = new Map<string, number>();
 
     // eslint-disable-next-line @typescript-eslint/ban-types
