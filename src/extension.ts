@@ -490,6 +490,7 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
         activateLogChannelAndPaths(true, settings);
         setupSourceViewTree(settings, true);
         COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
+        COBOLGlobalSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -501,6 +502,7 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
     initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings);
     COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
+    COBOLGlobalSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
