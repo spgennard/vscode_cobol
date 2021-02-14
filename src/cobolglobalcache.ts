@@ -82,5 +82,5 @@ export class COBOLGlobalSymbolCacheHelper {
     }
 }
 
-export const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
+export const InMemoryFileSymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
 export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();

@@ -47,6 +47,7 @@ import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLGlobalSymbolCacheHelper } from './cobolglobalcache';
+import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -721,7 +722,7 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
     });
     context.subscriptions.push(sourcedefProvider);
 
-    //if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
         const cachedSourcedefProvider = languages.registerDefinitionProvider(allCobolSelectors, {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
                 const csdp = new CachedCOBOLSourceDefinition();
@@ -729,7 +730,15 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
             }
         });
         context.subscriptions.push(cachedSourcedefProvider);
-    //}
+    }
+
+    const COBOLCallTargetProviderProvider = languages.registerDefinitionProvider(allCobolSelectors, {
+        provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
+            const csdp = new COBOLCallTargetProvider();
+            return csdp.provideDefinition(doc, pos, ct);
+        }
+    });
+    context.subscriptions.push(COBOLCallTargetProviderProvider);
 
     context.subscriptions.push(languages.registerReferenceProvider(allCobolSelectors, new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(allCobolSelectors, cobolfixer));
@@ -1060,7 +1069,7 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
     //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
     const ws = workspace.getWorkspaceFolder;
 
-    if (ws && settings.metadata_symbols.length === 0) {
+    if (ws !== undefined) {
         const pm = COBOLUtils.populateDefaultCallableSymbols();
         pm.then(() => {
             return;

@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 
 import { Hash } from "crypto";
-import { COBOLSymbol, COBOLSymbolTable, InMemoryGlobalSymbolCache, InMemorySymbolCache } from './cobolglobalcache';
+import { COBOLSymbol, COBOLSymbolTable, InMemoryFileSymbolCache } from './cobolglobalcache';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -77,64 +77,10 @@ export class COBOLSymbolTableHelper {
         fs.writeFileSync(fn, lzjs.compress(JSON.stringify(st, replacer)));
     }
 
-    public static cacheUpdateRequired(cacheDirectory: string, nfilename: string): boolean {
-        const filename = path.normalize(nfilename);
-
-        const cachedMtime = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
-        if (cachedMtime !== undefined) {
-            try {
-                const stat4src = fs.statSync(filename);
-                if (cachedMtime < stat4src.mtimeMs) {
-                    return true;
-                }
-            }
-            catch (e) {
-                //
-            }
-            return false;
-        }
-
-        // check memory first
-        if (InMemorySymbolCache.has(filename)) {
-            const cachedTable: COBOLSymbolTable | undefined = InMemorySymbolCache.get(filename);
-            if (cachedTable !== undefined) {
-                try {
-                    /* is the cache table still valid? */
-                    const stat4src = fs.statSync(filename);
-                    if (stat4src.mtimeMs === cachedTable.lastModifiedTime) {
-                        return false;
-                    }
-                }
-                catch (e) {
-                    //
-                }
-                return true;
-            }
-        }
-
-        const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        const fnStat = COBOLSymbolTableHelper.isFileT(fn);
-        if (fnStat[0]) {
-            try {
-                const stat4cache = fnStat[1];
-                const stat4src = fs.statSync(filename);
-                if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
-                    return true;
-                }
-            }
-            catch (e) {
-                //
-            }
-            return false;
-        }
-
-        return true;
-    }
-
     public static getSymbolTableGivenFile(cacheDirectory: string, nfilename: string): COBOLSymbolTable | undefined {
         const filename = path.normalize(nfilename);
-        if (InMemorySymbolCache.has(filename)) {
-            const cachedTable: COBOLSymbolTable | undefined = InMemorySymbolCache.get(filename);
+        if (InMemoryFileSymbolCache.has(filename)) {
+            const cachedTable: COBOLSymbolTable | undefined = InMemoryFileSymbolCache.get(filename);
             if (cachedTable !== undefined) {
                 /* is the cache table still valid? */
                 try {
@@ -146,7 +92,7 @@ export class COBOLSymbolTableHelper {
                 catch (e) {
                     //
                 }
-                InMemorySymbolCache.delete(filename);       /* drop the invalid cache */
+                InMemoryFileSymbolCache.delete(filename);       /* drop the invalid cache */
             }
         }
 
@@ -178,7 +124,7 @@ export class COBOLSymbolTableHelper {
             const str: string = fs.readFileSync(fn).toString();
             try {
                 const cachableTable = JSON.parse(lzjs.decompress(str), reviver);
-                InMemorySymbolCache.set(filename, cachableTable);
+                InMemoryFileSymbolCache.set(filename, cachableTable);
                 return cachableTable;
             } catch {
                 try {
