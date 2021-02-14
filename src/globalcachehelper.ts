@@ -20,6 +20,24 @@ export class GlobalCachesHelper {
         return [false, undefined];
     }
 
+    private static removeAllProgramSymbols(srcfilename: string, symbolsCache: Map<string, COBOLFileSymbol[]>): void {
+        for (const [key] of symbolsCache) {
+            const symbolList: COBOLFileSymbol[] | undefined = symbolsCache.get(key);
+            if (symbolList !== undefined) {
+                const newSymbols:COBOLFileSymbol[] = [];
+                for (let i = 0; i < symbolList.length; i++) {
+                    if (symbolList[i].filename !== srcfilename) {
+                        newSymbols.push(symbolList[i]);
+                    }
+                }
+
+                if (newSymbols.length !== symbolList.length) {
+                    symbolsCache.set(key, newSymbols);
+                }
+            }
+        }
+    }
+
     private static addSymbolToCache(srcfilename: string, symbolUnchanged: string, lineNumber: number, symbolsCache: Map<string, COBOLFileSymbol[]>) {
         const symbol = symbolUnchanged.toLowerCase();
         if (symbolsCache.has(symbol)) {
@@ -67,12 +85,12 @@ export class GlobalCachesHelper {
         return;
     }
 
-    public static getFilenameWithoutPath(fullPath: string):string {
+    public static getFilenameWithoutPath(fullPath: string): string {
         const lastSlash = fullPath.lastIndexOf(path.sep);
         if (lastSlash === -1) {
             return fullPath;
         }
-        return fullPath.substr(1+lastSlash);
+        return fullPath.substr(1 + lastSlash);
     }
 
     public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber = 1): void {
@@ -83,6 +101,11 @@ export class GlobalCachesHelper {
     public static addEntryPoint(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
         GlobalCachesHelper.addSymbolToCache(
             GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
+    }
+
+    public static removeAllProgramEntryPoints(srcfilename: string):void {
+        GlobalCachesHelper.removeAllProgramSymbols(GlobalCachesHelper.getFilenameWithoutPath(srcfilename),
+        InMemoryGlobalSymbolCache.entryPoints);
     }
 
     public static getGlobalSymbolCache(): COBOLGlobalSymbolTable {

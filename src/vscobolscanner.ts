@@ -32,12 +32,12 @@ export class VSScanStats extends ScanStats {
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
     private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
+    private config: ICOBOLSettings;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public constructor(config: ICOBOLSettings) {
-        //
+        this.config = config;
     }
-
 
     public start(qp: ICOBOLSourceScanner): void {
         this.qp = qp;
@@ -47,6 +47,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+            GlobalCachesHelper.removeAllProgramEntryPoints(this.st?.fileName)
         }
     }
 
@@ -86,7 +87,9 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 
     public finish(): void {
-        if (this.st !== undefined && this.qp !== undefined) {
+        if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
+            this.qp !== undefined &&
+            this.st !== undefined) {
             COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
         }
         COBOLUtils.saveGlobalCacheToWorkspace();

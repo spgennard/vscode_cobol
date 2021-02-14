@@ -3,14 +3,17 @@ import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEv
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
+import { CacheDirectoryStrategy } from "./externalfeatures";
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
     private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
     private parse_copybooks_for_references: boolean;
+    private config: ICOBOLSettings;
 
     public constructor(config: ICOBOLSettings) {
+        this.config = config;
         this.parse_copybooks_for_references = config.parse_copybooks_for_references;
     }
 
@@ -23,6 +26,8 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
         }
+
+        GlobalCachesHelper.removeAllProgramEntryPoints(this.st?.fileName);
     }
 
     public processToken(token: COBOLToken): void {
@@ -92,7 +97,8 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
 
     public finish(): void {
         if (this.st !== undefined && this.qp !== undefined) {
-            if (this.parse_copybooks_for_references === false) {
+            if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
+                this.parse_copybooks_for_references === false) {
                 COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
             }
         }
