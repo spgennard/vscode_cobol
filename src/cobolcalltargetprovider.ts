@@ -39,44 +39,38 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
                                 const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename,"",config);
-                                if (this.getLocationGivenFile(fullFilename, symbol.lnum, locations)) {
-                                    return locations;
-                                }
+                                this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
                             }
                         }
                     }
                 }
+                if (img.entryPoints.has(wordLower)) {
+                    const symbols = img.entryPoints.get(wordLower);
+                    if (symbols !== undefined) {
+                        for (let i = 0; i < symbols.length; i++) {
+                            const symbol = symbols[i];
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename,"",config);
+                                this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
         return locations;
     }
 
-    private getLocationGivenFile(filename: string, linnumber: number, locations: vscode.Location[]): boolean {
+    private getLocationGivenFile(filename: string, linnumber: number, locations: vscode.Location[]): void {
         const uri = vscode.Uri.file(filename);
-
-        // just do it quickly
-        // if (this.enableUrlOpenBodge === false) {
         const loc = new vscode.Location(
             uri,
             new vscode.Position(linnumber, 0)
         );
         locations.push(loc);
-        return false;
-        // }
-        // else {
-        //     const l = linnumber;
-        //     vscode.workspace
-        //         .openTextDocument(uri)
-        //         .then(vscode.window.showTextDocument)
-        //         .then(() => {
-        //             const a = vscode.window.activeTextEditor;
-        //             if (a !== undefined) {
-        //                 a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
-        //             }
-        //         });
-        //     return true;
-        // }
+
     }
 
 }
