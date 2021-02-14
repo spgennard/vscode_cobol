@@ -73,7 +73,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.EntryPoint:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                GlobalCachesHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
                 // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);

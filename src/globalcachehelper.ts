@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { COBOLFileSymbol, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable } from './cobolglobalcache';
+import path from 'path';
 
 export class GlobalCachesHelper {
     private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
@@ -26,18 +27,36 @@ export class GlobalCachesHelper {
 
             /* search the list of COBOLFileSymbols */
             if (symbolList !== undefined) {
-                let found = false;
+                let foundCount = 0;
+                let foundLast = 0;
+                let foundLastNonFileSymbol = -1;
                 for (let i = 0; i < symbolList.length; i++) {
-                    if (symbolList[i].filename === srcfilename && symbolList[i].lnum === lineNumber) {
-                        found = true;
-                        break;
+                    if (symbolList[i].filename === srcfilename) {
+                        foundLast = i;
+                        foundCount++;
+
+                        // remember last non file line number
+                        if (symbolList[i].lnum !== 1) {
+                            foundLastNonFileSymbol = i;
+                        }
                     }
                 }
                 // not found?
-                if (found === false) {
+                if (foundCount === 0) {
                     symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
                     InMemoryGlobalSymbolCache.isDirty = true;
+                    return;
                 }
+                // if we have only one symbol, then we can update it
+                if (foundCount === 1) {
+                    symbolList[foundLast].lnum = lineNumber;
+                } else {
+                    // if we have multiple, never update the filename symbol which has a line number of 1
+                    if (foundLastNonFileSymbol !== -1) {
+                        symbolList[foundLastNonFileSymbol].lnum = lineNumber;
+                    }
+                }
+
                 return;
             }
         }
@@ -48,12 +67,22 @@ export class GlobalCachesHelper {
         return;
     }
 
-    public static addSymbol(srcfilename: string, symbolUnchanged: string,  lineNumber = 1): void {
-        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);
+    public static getFilenameWithoutPath(fullPath: string):string {
+        const lastSlash = fullPath.lastIndexOf(path.sep);
+        if (lastSlash === -1) {
+            return fullPath;
+        }
+        return fullPath.substr(1+lastSlash);
+    }
+
+    public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber = 1): void {
+        GlobalCachesHelper.addSymbolToCache(
+            GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);
     }
 
     public static addEntryPoint(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
-        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
+        GlobalCachesHelper.addSymbolToCache(
+            GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
     public static getGlobalSymbolCache(): COBOLGlobalSymbolTable {

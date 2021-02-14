@@ -565,7 +565,6 @@
                 "coboleditor.process_metadata_cache_on_file_save": {
                     "type": "boolean",
                     "title": "Process metadata on file save",
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "default": false
                 },
                 "coboleditor.format_on_return": {

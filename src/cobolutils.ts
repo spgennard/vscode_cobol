@@ -51,8 +51,7 @@ export class COBOLUtils {
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[] ) => {
             uris.forEach((uri: vscode.Uri) => {
                 const fullPath = uri.fsPath;
-                const dirName = path.dirname(fullPath);
-                const fileName = fullPath.substr(dirName.length+1);
+                const fileName = GlobalCachesHelper.getFilenameWithoutPath(fullPath);
                 const fileNameNoExt = path.basename(fileName, path.extname(fileName));
                 const fileNameNoExtLower = fileNameNoExt.toLowerCase();
                 const c = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
@@ -63,6 +62,8 @@ export class COBOLUtils {
         });
         COBOLUtils.saveGlobalCacheToWorkspace();
     }
+
+
 
     public static saveGlobalCacheToWorkspace(): void {
         if (InMemoryGlobalSymbolCache.isDirty) {
