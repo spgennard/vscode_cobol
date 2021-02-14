@@ -7,7 +7,6 @@ import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSymbol, COBOLGlobalSymbolTable, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
-import { COBOLUtils } from './cobolutils';
 
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,

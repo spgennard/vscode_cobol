@@ -578,7 +578,7 @@
                     "markdownDescription": "Format line on return key (camelcase or uppercase)",
                     "title": "Format line on return key (camelcase or uppercase)"
                 },
-                "coboleditor.metadata_callable_symbols": {
+                "coboleditor.metadata_symbols": {
                     "type": "array",
                     "items": {
                         "type": "string",
@@ -587,6 +587,21 @@
                             "copybook": {
                                 "type": "string",
                                 "description": "internal metadata symbol"
+                            }
+                        }
+                    },
+                    "default": [],
+                    "uniqueItems": true
+                },
+                "coboleditor.metadata_entrypoints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "entypoints",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "internal metadata entypoints"
                             }
                         }
                     },

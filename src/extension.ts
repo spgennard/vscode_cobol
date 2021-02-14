@@ -59,6 +59,7 @@ let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
 
 let bldscriptTaskProvider: vscode.Disposable | undefined;
 
+
 export const ExternalFeatures = new VSExternalFeatures();
 
 export function getCombinedCopyBookSearchPath(): string[] {
@@ -461,8 +462,17 @@ function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
     }
 
 }
+export interface COBOLApi {
+    hi():void;
+}
 
-export function activate(context: ExtensionContext): void {
+export class Api implements COBOLApi {
+    hi(): void {
+        logMessage("Hello from another extension");
+    }
+}
+
+export async function activate(context: ExtensionContext): Promise<Api>  {
     currentContext = context;
 
     // re-init if something gets installed or removed
@@ -478,7 +488,7 @@ export function activate(context: ExtensionContext): void {
         clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
         setupSourceViewTree(settings, true);
-        COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
+        COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -489,7 +499,7 @@ export function activate(context: ExtensionContext): void {
     const cobolfixer = new CobolLinterActionFixer();
     initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings);
-    COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_callable_symbols);
+    COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
@@ -1050,10 +1060,11 @@ export function activate(context: ExtensionContext): void {
     //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
     const ws = workspace.getWorkspaceFolder;
 
-    if (ws && settings.metadata_callable_symbols.length === 0) {
-        async () => {
-            await COBOLUtils.populateDefaultCallableSymbols();
-        }
+    if (ws && settings.metadata_symbols.length === 0) {
+        const pm = COBOLUtils.populateDefaultCallableSymbols();
+        pm.then(() => {
+            return;
+        });
     }
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
@@ -1069,6 +1080,9 @@ export function activate(context: ExtensionContext): void {
     }
 
     openChangeLog();
+
+    const api = new Api();
+    return api;
 }
 
 export function enableMarginStatusBar(formatStyle: ESourceFormat): void {

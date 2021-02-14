@@ -9,8 +9,6 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
-import { GlobalCachesHelper } from "./globalcachehelper";
-import { config } from "process";
 
 class ScanStats {
     parentPid = 0;
@@ -42,7 +40,8 @@ export class VSCobScanner {
             sf.Files.push(fsPath);
             sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
             sf.showMessage = settings.cache_metadata_show_progress_messages;
-            sf.symbols = settings.metadata_callable_symbols;
+            sf.symbols = settings.metadata_symbols;
+            sf.entrypoints = settings.metadata_entrypoints;
             await this.forkScanner(sf, "OnSave");
         }
     }
@@ -220,7 +219,8 @@ export class VSCobScanner {
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
         sf.showMessage = settings.cache_metadata_show_progress_messages;
-        sf.symbols = settings.metadata_callable_symbols;
+        sf.symbols = settings.metadata_symbols;
+        sf.entrypoints = settings.metadata_entrypoints;
         for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
         }

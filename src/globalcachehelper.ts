@@ -2,9 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const lzjs = require('lzjs');
 import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable } from './cobolglobalcache';
-import { replacer, reviver } from './cobolglobalcache_file';
 
 export class GlobalCachesHelper {
     private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
@@ -54,6 +52,7 @@ export class GlobalCachesHelper {
                     symbolList.push(new COBOLFileSymbol(srcfilename, lineNumber));
                     InMemoryGlobalSymbolCache.isDirty = true;
                 }
+                return;
             }
         }
         const symbolList = [];

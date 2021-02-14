@@ -55,7 +55,7 @@ export class COBOLUtils {
                 const fileName = fullPath.substr(dirName.length+1);
                 const fileNameNoExt = path.basename(fileName, path.extname(fileName));
                 const fileNameNoExtLower = fileNameNoExt.toLowerCase();
-                const c: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
+                const c = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
                 if (c === undefined) {
                     GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower, 1);
                 }
@@ -67,20 +67,20 @@ export class COBOLUtils {
     public static saveGlobalCacheToWorkspace(): void {
         if (InMemoryGlobalSymbolCache.isDirty) {
             const symbols:string[] = [];
+            const entrypoints:string[] = [];
 
             for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
-                const fileSymbol: COBOLFileSymbol[] | undefined = InMemoryGlobalSymbolCache.callableSymbols.get(i);
+                const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
                 if (fileSymbol !== undefined) {
                     fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                        const dirName = path.dirname(value.filename);
-                        const fileName = value.filename.substr(dirName.length+1);
-                        symbols.push(`${i},${fileName},${value.lnum}`);
+                        symbols.push(`${i},${value.filename},${value.lnum}`);
                     });
                 }
             }
 
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-            editorConfig.update('metadata_callable_symbols', symbols);
+            editorConfig.update('metadata_symbols', symbols);
+            editorConfig.update('metadata_entrypoints', entrypoints);
 
             InMemoryGlobalSymbolCache.isDirty = false;
         }

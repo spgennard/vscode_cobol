@@ -12,6 +12,7 @@ export class ScanData {
     public Directories: string[] = [];
     public showStats = true;
     public symbols: string[] = [];
+    public entrypoints: string[] = [];
 }
 
 export class ScanStats {
