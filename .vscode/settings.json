@@ -138,6 +138,7 @@
         "jclstatements",
         "keywordprovider",
         "langid",
+        "linenumber",
         "listfile",
         "lnum",
         "lvalue",

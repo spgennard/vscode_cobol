@@ -6,6 +6,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
+import { logException } from './extension';
 
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
@@ -27,14 +28,15 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
             return locations;
         }
 
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        if (cacheDirectory === undefined) {
+            return locations;
+        }
+
         const theline = document.lineAt(position).text;
         let qcp: COBOLSourceScanner | undefined = undefined;
 
         if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-            const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-            if (cacheDirectory === undefined) {
-                return locations;
-            }
             qcp = VSCOBOLSourceScanner.getCachedObject(document);
             if (qcp === undefined) {
                 return locations;
@@ -54,16 +56,13 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                             if (symbolTable !== undefined) {
                                 const symbol: COBOLSymbol | undefined = symbolTable.labelSymbols.get(wordLower);
                                 if (symbol !== undefined && symbol.lnum !== undefined) {
-                                    if (this.getLocationGivenFile(fileName, symbol.lnum, locations)) {
-                                        return locations;
-                                    }
+                                    this.getLocationGivenFile(fileName, symbol.lnum, locations);
                                 }
                             }
                         }
                     }
                     catch (fe) {
-                        console.log(fe.message);
-                        console.log(fe.stacktrace);
+                        logException(fe.message, fe);
                     }
                 }
             }
@@ -74,14 +73,13 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
          * for variables
          */
         if (qcp === undefined) {
-            qcp= VSCOBOLSourceScanner.getCachedObject(document);
+            qcp = VSCOBOLSourceScanner.getCachedObject(document);
         }
 
         if (qcp === undefined) {
             return locations;
         }
 
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         const wordRange = document.getWordRangeAtPosition(position, this.variableRegEx);
         const word = wordRange ? document.getText(wordRange) : '';
         const wordLower = word.toLowerCase();
@@ -96,49 +94,28 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                         if (symbolTable !== undefined) {
                             const symbol: COBOLSymbol | undefined = symbolTable.variableSymbols.get(wordLower);
                             if (symbol !== undefined && symbol.lnum !== undefined) {
-                                if (this.getLocationGivenFile(fileName, symbol.lnum, locations)) {
-                                    return locations;
-                                }
+                                this.getLocationGivenFile(fileName, symbol.lnum, locations);
                             }
                         }
                     }
                 }
-                catch
-                {
-                    // should not happen but if it does, continue on to the next copybook reference
+                catch (fe) {
+                    logException(fe.message, fe);
                 }
             }
-            return locations;
         }
 
         return locations;
     }
 
-    private getLocationGivenFile(filename: string, linenumber: number, locations: vscode.Location[]): boolean {
+    private getLocationGivenFile(filename: string, linenumber: number, locations: vscode.Location[]): void {
         const uri = vscode.Uri.file(filename);
 
-        // just do it quickly
-        // if (this.enableUrlOpenBodge === false) {
         const loc = new vscode.Location(
             uri,
             new vscode.Position(linenumber, 0)
         );
         locations.push(loc);
-        return false;
-        // }
-        // else {
-        //     const l = linenumber;
-        //     vscode.workspace
-        //         .openTextDocument(uri)
-        //         .then(vscode.window.showTextDocument)
-        //         .then(() => {
-        //             const a = vscode.window.activeTextEditor;
-        //             if (a !== undefined) {
-        //                 a.selection = new vscode.Selection(new vscode.Position(l, 0), new vscode.Position(l, 0));
-        //             }
-        //         });
-        //     return true;
-        // }
     }
 
 }
