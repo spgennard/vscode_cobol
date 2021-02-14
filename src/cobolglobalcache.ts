@@ -66,15 +66,21 @@ export class COBOLGlobalSymbolCacheHelper {
     public static loadGlobalCacheFromArray(symbols: string[]): void {
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
+            if (symbolValues.length === 2) {
+                GlobalCachesHelper.addSymbol(symbolValues[1], symbolValues[0]);
+            }
+        }
+    }
+
+    public static loadGlobalEntryCacheFromArray(symbols: string[]): void {
+        for (const symbol of symbols) {
+            const symbolValues = symbol.split(",");
             if (symbolValues.length === 3) {
-                GlobalCachesHelper.addSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
+                GlobalCachesHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
             }
         }
     }
 }
-
-export const globalSymbolFilename = "globalsymbols.sym";
-export const fileSymbolFilename = "filesymbols.sym";
 
 export const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
 export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();

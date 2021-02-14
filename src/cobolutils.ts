@@ -57,7 +57,7 @@ export class COBOLUtils {
                 const fileNameNoExtLower = fileNameNoExt.toLowerCase();
                 const c = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
                 if (c === undefined) {
-                    GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower, 1);
+                    GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower);
                 }
             });
         });
@@ -73,11 +73,19 @@ export class COBOLUtils {
                 const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
                 if (fileSymbol !== undefined) {
                     fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                        symbols.push(`${i},${value.filename},${value.lnum}`);
+                        symbols.push(`${i},${value.filename}`);
                     });
                 }
             }
 
+            for (const [i] of InMemoryGlobalSymbolCache.entryPoints.entries()) {
+                const fileSymbol = InMemoryGlobalSymbolCache.entryPoints.get(i);
+                if (fileSymbol !== undefined) {
+                    fileSymbol.forEach(function (value: COBOLFileSymbol) {
+                        entrypoints.push(`${i},${value.filename},${value.lnum}`);
+                    });
+                }
+            }
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update('metadata_symbols', symbols);
             editorConfig.update('metadata_entrypoints', entrypoints);

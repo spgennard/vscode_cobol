@@ -87,11 +87,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 
     public finish(): void {
         if (this.st !== undefined && this.qp !== undefined) {
-            if (GlobalCachesHelper.isGlobalSymbolCacheLoadRequired(this.qp.cacheDirectory)) {
-                //this.features.logMessage(" WARNING: Cache was updated unexpectedly");
-            } else {
-                COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
-            }
+            COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
         }
     }
 }

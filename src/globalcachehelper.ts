@@ -1,8 +1,7 @@
 import * as fs from 'fs';
-import * as path from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-import { COBOLFileSymbol, globalSymbolFilename, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable } from './cobolglobalcache';
+import { COBOLFileSymbol, InMemoryGlobalSymbolCache, COBOLGlobalSymbolTable } from './cobolglobalcache';
 
 export class GlobalCachesHelper {
     private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
@@ -18,19 +17,6 @@ export class GlobalCachesHelper {
             return [false, undefined];
         }
         return [false, undefined];
-    }
-
-    public static isGlobalSymbolCacheLoadRequired(cacheDirectory: string): boolean {
-        const fn: string = path.join(cacheDirectory, globalSymbolFilename);
-        const fnStat = GlobalCachesHelper.isFileT(fn);
-        if (fnStat[0]) {
-            const stat4cache: fs.Stats = fs.statSync(fn);
-            if (stat4cache.mtimeMs !== InMemoryGlobalSymbolCache.lastModifiedTime) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static addSymbolToCache(srcfilename: string, symbolUnchanged: string, lineNumber: number, symbolsCache: Map<string, COBOLFileSymbol[]>) {
@@ -62,9 +48,12 @@ export class GlobalCachesHelper {
         return;
     }
 
-    public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
-        const symbolsCache = InMemoryGlobalSymbolCache.callableSymbols;
-        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, symbolsCache);
+    public static addSymbol(srcfilename: string, symbolUnchanged: string,  lineNumber = 1): void {
+        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);
+    }
+
+    public static addEntryPoint(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
+        GlobalCachesHelper.addSymbolToCache(srcfilename, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
     public static getGlobalSymbolCache(): COBOLGlobalSymbolTable {
