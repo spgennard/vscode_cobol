@@ -5,6 +5,7 @@ import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage, logTimeThreshold } from './extension';
+import { InMemoryGlobalSymbolCache } from './cobolglobalcache';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -85,7 +86,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const words: COBOLToken[] = tsearch.get(wordToComplete);
         const numberOfWordsInResults = words.length;
 
-
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
@@ -139,6 +139,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         let wordToComplete = '';
         let wordBefore = "";
         let wordBeforeLower = "";
+        const currentLine: string = document.lineAt(position.line).text.trim();
 
         const range = document.getWordRangeAtPosition(position);
         if (range) {
@@ -155,7 +156,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 }
             }
         } else {
-            const currentLine: string = document.lineAt(position.line).text.trim();
             const lastSpace = currentLine.lastIndexOf(" ");
             if (lastSpace === -1) {
                 wordBefore = currentLine;
@@ -166,71 +166,81 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         }
 
         if (wordBefore.length !== 0) {
-            switch (wordBeforeLower) {
-                case "perform":
-                case "goto":
-                    {
-                        const words = this.getPerformTargets(document);
-                        items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
-                        break;
-                    }
+            if (wordBeforeLower.startsWith("\"") && wordBeforeLower.endsWith("\"")) {
+                if (currentLine.toLowerCase().indexOf("call") !== -1) {
+                    items = this.getCallTargets();
+                }
+                if (currentLine.toLowerCase().indexOf("cancel") !== -1) {
+                    items = this.getCallTargets();
+                }
+            }
+            else {
+                switch (wordBeforeLower) {
+                    case "perform":
+                    case "goto":
+                        {
+                            const words = this.getPerformTargets(document);
+                            items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
+                            break;
+                        }
 
-                case "move":
-                    {
-                        const words = this.getConstantsOrVariables(document);
+                    case "move":
+                        {
+                            const words = this.getConstantsOrVariables(document);
 
-                        // TODO:
-                        //
-                        // if (this.iconfig.intellisense_include_uppercase &&
-                        //     words.indexOf("SPACE") === -1) {
-                        //     words.push("SPACE");
-                        //     words.push("SPACES");
-                        //     words.push("LOW-VALUES");
-                        //     words.push("HIGH-VALUES");
-                        // }
+                            // TODO:
+                            //
+                            // if (this.iconfig.intellisense_include_uppercase &&
+                            //     words.indexOf("SPACE") === -1) {
+                            //     words.push("SPACE");
+                            //     words.push("SPACES");
+                            //     words.push("LOW-VALUES");
+                            //     words.push("HIGH-VALUES");
+                            // }
 
-                        // if (words.hasWord("space") === false) {
-                        //     words.addWord("space");
-                        //     words.addWord("spaces");
-                        //     words.addWord("low-values");
-                        //     words.addWord("high-values");
-                        // }
+                            // if (words.hasWord("space") === false) {
+                            //     words.addWord("space");
+                            //     words.addWord("spaces");
+                            //     words.addWord("low-values");
+                            //     words.addWord("high-values");
+                            // }
 
-                        items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
-                        break;
-                    }
+                            items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                            break;
+                        }
 
 
-                case "add":
-                case "ascending":
-                case "compute":
-                case "corr":
-                case "corresponding":
-                case "descending":
-                case "divide":
-                case "from":
-                case "giving":
-                case "if":
-                case "initialize":
-                case "inspect":
-                case "into":
-                case "key":
-                case "multiply":
-                case "named":
-                case "pointer":
-                case "search":
-                case "set":
-                case "string":
-                case "subtract":
-                case "to":
-                case "unstring":
-                case "varying":
-                case "with":
-                    {
-                        const words = this.getConstantsOrVariables(document);
-                        items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
-                        break;
-                    }
+                    case "add":
+                    case "ascending":
+                    case "compute":
+                    case "corr":
+                    case "corresponding":
+                    case "descending":
+                    case "divide":
+                    case "from":
+                    case "giving":
+                    case "if":
+                    case "initialize":
+                    case "inspect":
+                    case "into":
+                    case "key":
+                    case "multiply":
+                    case "named":
+                    case "pointer":
+                    case "search":
+                    case "set":
+                    case "string":
+                    case "subtract":
+                    case "to":
+                    case "unstring":
+                    case "varying":
+                    case "with":
+                        {
+                            const words = this.getConstantsOrVariables(document);
+                            items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                            break;
+                        }
+                }
             }
         }
 
@@ -240,6 +250,21 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }
         return items;
+    }
+
+    private getCallTargets(): CompletionItem[] {
+        const targets: CompletionItem[] = [];
+
+        for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
+            targets.push(new CompletionItem(`${i}`, CompletionItemKind.Function));
+        }
+
+        for (const [i] of InMemoryGlobalSymbolCache.entryPoints.entries()) {
+            targets.push(new CompletionItem(`${i}`, CompletionItemKind.Function));
+        }
+
+        return targets;
+
     }
 
 }
