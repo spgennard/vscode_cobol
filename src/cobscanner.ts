@@ -11,8 +11,8 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import { Hash } from "crypto";
 import path from "path";
-import { COBOLGlobalSymbolCacheHelper, InMemoryGlobalSymbolCache } from "./cobolglobalcache";
-import { COBOLUtils } from "./cobolutils";
+
+import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache } from "./cobolworkspacecache";
 
 const args = process.argv.slice(2);
 const features: IExternalFeatures = ConsoleExternalFeatures.Default;
@@ -101,7 +101,7 @@ for (const arg of args) {
             stats.maxDirectoryDepth = scanData.maxDirectoryDepth;
             stats.fileCount = scanData.fileCount;
 
-            COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(scanData.symbols);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.symbols);
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {
                     features.logMessage(` Directories scanned   : ${stats.directoriesScanned}`);

@@ -12,7 +12,8 @@ import { COBOLFileUtils } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
-import { COBOLFileSymbol, InMemoryGlobalSymbolCache } from './cobolglobalcache';
+import { COBOLFileSymbol } from './cobolglobalcache';
+import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache } from './cobolworkspacecache';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -56,7 +57,7 @@ export class COBOLUtils {
                 const fileNameNoExtLower = fileNameNoExt.toLowerCase();
                 const c = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
                 if (c === undefined) {
-                    GlobalCachesHelper.addSymbol(fileName, fileNameNoExtLower);
+                    COBOLWorkspaceSymbolCacheHelper.addSymbol(fileName, fileNameNoExtLower);
                 }
             });
         });

@@ -4,6 +4,7 @@ import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from "./externalfeatures";
+import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
@@ -27,7 +28,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
         }
 
-        GlobalCachesHelper.removeAllProgramEntryPoints(this.st?.fileName);
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);
     }
 
     public processToken(token: COBOLToken): void {
@@ -72,13 +73,13 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
 
         switch (token.tokenType) {
             case COBOLTokenStyle.ImplicitProgramId:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.ProgramId:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.EntryPoint:
-                GlobalCachesHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
                 // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);

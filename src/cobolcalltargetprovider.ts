@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 
-import { GlobalCachesHelper } from "./globalcachehelper";
 import { VSCOBOLConfiguration } from './configuration';
 import {  COBOLGlobalSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
+import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
 
 export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
@@ -30,7 +30,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
             const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
             const word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
-                const img: COBOLGlobalSymbolTable = GlobalCachesHelper.getGlobalSymbolCache();
+                const img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCache;
                 const wordLower = word.toLocaleLowerCase();
                 if (img.callableSymbols.has(wordLower)) {
                     const symbols = img.callableSymbols.get(wordLower);

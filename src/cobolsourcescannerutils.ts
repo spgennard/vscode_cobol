@@ -6,12 +6,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { InMemoryGlobalSymbolCache, COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLFileSymbol } from "./cobolglobalcache";
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { window, workspace } from 'vscode';
 
 import tempDirectory from 'temp-dir';
+import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
 
 const myConsoleFile = path.join(tempDirectory, "vscode_"+process.pid) + ".txt";
 

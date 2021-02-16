@@ -46,8 +46,8 @@ import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
-import { COBOLGlobalSymbolCacheHelper } from './cobolglobalcache';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
+import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -489,8 +489,8 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
         clearCOBOLCache();
         activateLogChannelAndPaths(true, settings);
         setupSourceViewTree(settings, true);
-        COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
-        COBOLGlobalSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
+        COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
+        COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -501,8 +501,8 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
     const cobolfixer = new CobolLinterActionFixer();
     initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings);
-    COBOLGlobalSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
-    COBOLGlobalSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);

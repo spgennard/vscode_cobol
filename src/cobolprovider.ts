@@ -5,7 +5,8 @@ import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage, logTimeThreshold } from './extension';
-import { InMemoryGlobalSymbolCache } from './cobolglobalcache';
+import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
+
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -166,7 +167,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         }
 
         if (wordBefore.length !== 0) {
-            if (wordBeforeLower.startsWith("\"") && wordBeforeLower.endsWith("\"")) {
+            if ((wordBeforeLower.startsWith("'") && wordBeforeLower.endsWith("'")) ||
+                (wordBeforeLower.startsWith("\"") && wordBeforeLower.endsWith("\""))
+            ) {
                 if (currentLine.toLowerCase().indexOf("call") !== -1) {
                     items = this.getCallTargets();
                 }

@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { GlobalCachesHelper } from "./globalcachehelper";
-
 export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
@@ -33,6 +31,7 @@ export class COBOLSymbolTable {
         return Object.assign(new COBOLSymbolTable(), d);
     }
 }
+
 export class COBOLFileSymbol {
     public filename: string;
     public lnum: number;
@@ -62,25 +61,4 @@ export class COBOLSymbol {
     }
 }
 
-export class COBOLGlobalSymbolCacheHelper {
-    public static loadGlobalCacheFromArray(symbols: string[]): void {
-        for (const symbol of symbols) {
-            const symbolValues = symbol.split(",");
-            if (symbolValues.length === 2) {
-                GlobalCachesHelper.addSymbol(symbolValues[1], symbolValues[0]);
-            }
-        }
-    }
-
-    public static loadGlobalEntryCacheFromArray(symbols: string[]): void {
-        for (const symbol of symbols) {
-            const symbolValues = symbol.split(",");
-            if (symbolValues.length === 3) {
-                GlobalCachesHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
-            }
-        }
-    }
-}
-
 export const InMemoryFileSymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
-export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
