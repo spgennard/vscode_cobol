@@ -1308,9 +1308,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // This is oraincstru, no prefix to change from, only prefix that has to be appended to line.
                 if (line.includes('88')) {
                     // 88 fields have '88' in the line and dot in the end. Prefix must be appended between 88 and variable name
-                    let line_arr = line.split(" ");
+                    const line_arr = line.split(" ");
                     let bylo_88 = false;
-                    for (var i = 0; i < line_arr.length; i++) {
+                    for (let i = 0; i < line_arr.length; i++) {
                         if (line_arr[i] === "88") {
                             bylo_88 = true;
                             continue;
@@ -1446,7 +1446,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 const prevPlusCurrent = token.prevToken + " " + current;
 
                 if (currentLower === "#macro") {
-                    let x = nextTokenLower.split(',');
+                    const x = nextTokenLower.split(',');
                     state.macroFrom = x[0];
                     state.macroTo = x[1];
                     continue;
@@ -1755,7 +1755,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (prevTokenLowerUntrimmed === "call") {
                     const trimmedCurrent = this.trimLiteral(current);
                     const trimmedCurrentWithExt = this.trimLiteral(current) + '.pre';
-                    let ctoken = this.newCOBOLToken(COBOLTokenStyle.CallPoint, 0, line, trimmedCurrentWithExt, prevPlusCurrent, state.currentDivision);
+                    const ctoken = this.newCOBOLToken(COBOLTokenStyle.CallPoint, 0, line, trimmedCurrentWithExt, prevPlusCurrent, state.currentDivision);
 
                     state.callPointCount++;
                     state.parameters = [];
@@ -1819,7 +1819,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 if (this.oraIncForScan.includes(prevTokenLowerUntrimmed) && current.length !== 0) {
-                    let oraIncData = this.trimLiteral(current).split(',');
+                    const oraIncData = this.trimLiteral(current).split(',');
                     // Here trimmedCopyBook will be sth like "zmozipko.ora,ipk-". It is done on purpose. We use multiple inclusions of the same copybooks, but use prefixes so the variable names differ.
                     // If used only "zmozipko.ora", second occurance of copybook would not be saved because copyBooksUsed would already have "zmozipko.ora". As a consequance variables from second and next inclusions
                     // of the same copybook wouldn't be saved as variables.
