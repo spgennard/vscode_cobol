@@ -3,6 +3,7 @@ export interface ICommentCallback {
 }
 
 export default interface ISourceHandler {
+    getUriAsString(): string;
     getLineCount(): number;
     getCommentCount(): number;
     resetCommentCount():void;

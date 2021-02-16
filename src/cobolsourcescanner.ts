@@ -5,12 +5,28 @@ import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKe
 
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol } from "./cobolglobalcache";
-
+import { COBOLPreprocessor } from './cobapi';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+
+export class COBOLPreprocessorHelper {
+    public static sourceScanner: COBOLPreprocessor[] = [];
+
+     public static actionStart(id: string):void {
+        for(const p of COBOLPreprocessorHelper.sourceScanner) {
+            p.start(id);
+        }
+    }
+
+    public static actioEnd(id: string):void {
+        for(const p of COBOLPreprocessorHelper.sourceScanner) {
+            p.end(id);
+        }
+    }
+}
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -529,6 +545,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
 }
 
 export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
+    public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
     public lastModifiedTime = 0;
@@ -645,6 +662,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         const filename = sourceHandler.getFilename();
 
         this.sourceHandler = sourceHandler;
+        this.id = sourceHandler.getUriAsString();
         this.configHandler = configHandler;
         this.cacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);
@@ -848,6 +866,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 break;
         }
 
+        // inform any pre-processors.
+        COBOLPreprocessorHelper.actionStart(this.id);
         let line: string | undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
@@ -928,6 +948,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
             this.eventHandler.finish();
         }
+
+        // inform any pre-processors
+        COBOLPreprocessorHelper.actioEnd(this.id);
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,

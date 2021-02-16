@@ -5,7 +5,9 @@ import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 import fs from 'fs';
+
 import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
+import { pathToFileURL, URL } from 'url';
 
 export class FileSourceHandler implements ISourceHandler {
     document: string;
@@ -47,6 +49,10 @@ export class FileSourceHandler implements ISourceHandler {
         if (this.commentCallback !== undefined) {
             this.commentCallback.processComment(line, this.getFilename(), lineNumber);
         }
+    }
+
+    getUriAsString(): string {
+        return pathToFileURL(this.getFilename()).href;
     }
 
     getLineCount(): number {

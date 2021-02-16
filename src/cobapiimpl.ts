@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { COBOLApi } from "./cobapi";
+import { COBOLApi, COBOLPreprocessor } from "./cobapi";
+import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 import { logMessage } from "./extension";
 
 export class CobApi implements COBOLApi {
-    logWarningMessage(message: string, ...parameters: any[]): void {
-        logMessage("[Extension]: "+message,parameters);
+    registerPreprocessor(callback: COBOLPreprocessor): boolean {
+        COBOLPreprocessorHelper.sourceScanner.push(callback);
+        return false;
+    }
+
+    logWarningMessage(message: string): void {
+        logMessage(`[Extension]: ${message}]`);
     }
 }

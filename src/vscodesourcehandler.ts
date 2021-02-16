@@ -17,6 +17,10 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCallback = commentCallback;
     }
 
+    getUriAsString(): string {
+        return this.document.uri.toString();
+    }
+
     getLineCount(): number {
         return this.document.lineCount;
     }
