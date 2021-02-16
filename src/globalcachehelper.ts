@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import path from 'path';
 import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';

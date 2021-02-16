@@ -463,15 +463,6 @@ function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
     }
 
 }
-export interface COBOLApi {
-    hi():void;
-}
-
-export class Api implements COBOLApi {
-    hi(): void {
-        logMessage("Hello from another extension");
-    }
-}
 
 export async function activate(context: ExtensionContext): Promise<Api>  {
     currentContext = context;
