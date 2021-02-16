@@ -48,6 +48,7 @@ import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
+import { CobApi } from './cobapiimpl';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -464,7 +465,7 @@ function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
 
 }
 
-export async function activate(context: ExtensionContext): Promise<Api>  {
+export async function activate(context: ExtensionContext): Promise<CobApi>  {
     currentContext = context;
 
     // re-init if something gets installed or removed
@@ -1083,7 +1084,7 @@ export async function activate(context: ExtensionContext): Promise<Api>  {
 
     openChangeLog();
 
-    const api = new Api();
+    const api = new CobApi();
     return api;
 }
 

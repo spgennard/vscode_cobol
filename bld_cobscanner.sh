@@ -16,6 +16,8 @@ cp ./out/filesourcehandler.js cobscanner/
 cp ./out/cobolglobalcache.js cobscanner/
 cp ./out/cobolsourcescanner.js cobscanner/
 cp ./out/cobolworkspacecache.js cobscanner/
+cp ./out/cobapi.js cobscanner/
+cp ./out/cobapiimpl.js cobscanner/
 cp -r ./out/keywords cobscanner/
 
 cd cobscanner
