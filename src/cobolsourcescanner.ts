@@ -742,7 +742,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             } else {
                 this.eventHandler = sourceEventHandler;
                 this.eventHandler.start(this);
-                // this.eventHandler = new COBOLSymbolTableHelper(configHandler, this);
+            }
+        } else {
+            if (this.sourceReferences.topLevel) {
+                this.eventHandler = sourceEventHandler;
+                this.eventHandler.start(this);
             }
         }
 

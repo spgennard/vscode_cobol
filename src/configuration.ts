@@ -60,7 +60,8 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
         vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         vsconfig.format_on_return = workspace.getConfiguration('coboleditor').get<formatOnReturn>("format_on_return",formatOnReturn.Off);
-        vsconfig.metadata_callable_symbols = getMetadata_callable_symbols();
+        vsconfig.metadata_symbols = getmetadata_symbols();
+        vsconfig.metadata_entrypoints = getmetadata_entrypoints();
         return vsconfig;
     }
 
@@ -324,11 +325,21 @@ function getlinter_house_standards_rules(): string[] {
     return standards;
 }
 
-function getMetadata_callable_symbols(): string[] {
+function getmetadata_symbols(): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
-    let symbols = editorConfig.get<string[]>('metadata_callable_symbols');
+    let symbols = editorConfig.get<string[]>('metadata_symbols');
     if (!symbols || (symbols !== null && symbols.length === 0)) {
         symbols = [];
     }
     return symbols;
+}
+
+
+function getmetadata_entrypoints(): string[] {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let entrypoints = editorConfig.get<string[]>('metadata_entrypoints');
+    if (!entrypoints || (entrypoints !== null && entrypoints.length === 0)) {
+        entrypoints = [];
+    }
+    return entrypoints;
 }

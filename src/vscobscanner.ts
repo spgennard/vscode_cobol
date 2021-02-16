@@ -2,14 +2,13 @@ import path from "path";
 import fs from 'fs';
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
-import { GlobalCachesHelper } from "./globalcachehelper";
 
 class ScanStats {
     parentPid = 0;
@@ -41,6 +40,8 @@ export class VSCobScanner {
             sf.Files.push(fsPath);
             sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
             sf.showMessage = settings.cache_metadata_show_progress_messages;
+            sf.symbols = settings.metadata_symbols;
+            sf.entrypoints = settings.metadata_entrypoints;
             await this.forkScanner(sf, "OnSave");
         }
     }
@@ -125,7 +126,6 @@ export class VSCobScanner {
                         logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
                     }
                 } else {
-                    GlobalCachesHelper.loadGlobalSymbolCache(cacheDirectory);
                     progressStatusBarItem.hide();
                 }
             });
@@ -133,7 +133,7 @@ export class VSCobScanner {
             let prevPercent = 0;
             child.on('message', (msg) => {
                 const message = msg as string;
-                if (message.startsWith("@@STATUS")) {
+                if (message.startsWith(COBSCANNER_STATUS)) {
                     const args = message.split(" ");
                     progressStatusBarItem.show();
                     const a1 = Number.parseInt(args[1]);
@@ -219,6 +219,8 @@ export class VSCobScanner {
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
         sf.showMessage = settings.cache_metadata_show_progress_messages;
+        sf.symbols = settings.metadata_symbols;
+        sf.entrypoints = settings.metadata_entrypoints;
         for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
         }

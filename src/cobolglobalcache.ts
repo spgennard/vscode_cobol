@@ -4,9 +4,8 @@
 export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
+    public entryPoints = new Map<string, COBOLFileSymbol[]>();
     public isDirty = false;
-    public classSymbols = new Map<string, COBOLFileSymbol[]>();
-    public methodSymbols = new Map<string, COBOLFileSymbol[]>();
     public sourceFilenameModified = new Map<string, number>();
 
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -32,6 +31,7 @@ export class COBOLSymbolTable {
         return Object.assign(new COBOLSymbolTable(), d);
     }
 }
+
 export class COBOLFileSymbol {
     public filename: string;
     public lnum: number;
@@ -61,8 +61,4 @@ export class COBOLSymbol {
     }
 }
 
-export const globalSymbolFilename = "globalsymbols.sym";
-export const fileSymbolFilename = "filesymbols.sym";
-
-export const InMemorySymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();
-export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
+export const InMemoryFileSymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();

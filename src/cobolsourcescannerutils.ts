@@ -6,12 +6,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { InMemoryGlobalSymbolCache, globalSymbolFilename, fileSymbolFilename, COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLFileSymbol } from "./cobolglobalcache";
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { window, workspace } from 'vscode';
 
 import tempDirectory from 'temp-dir';
+import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
 
 const myConsoleFile = path.join(tempDirectory, "vscode_"+process.pid) + ".txt";
 
@@ -64,7 +65,12 @@ export class COBOLSourceScannerUtils {
             logMessage("Paragraphs/Sections in file :");
 
             for (const file of fs.readdirSync(cacheDirectory)) {
-                if (file !== globalSymbolFilename && file !== fileSymbolFilename && file.endsWith(".sym")) {
+                // ignore legacy sym files
+                if (file === "globalsymbols.sym" || file === "filesymbols.sym") {
+                    continue;
+                }
+
+                if (file.endsWith(".sym")) {
                     const symTable = COBOLSymbolTableHelper.getSymbolTable_direct(path.join(cacheDirectory, file));
                     if (symTable !== undefined) {
                         if (!(symTable.labelSymbols.size === 0 && symTable.variableSymbols.size === 0)) {

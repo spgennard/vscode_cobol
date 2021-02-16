@@ -11,12 +11,13 @@ import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
-import { COBOLSymbolTable, InMemoryGlobalSymbolCache } from "./cobolglobalcache";
+import { COBOLSymbolTable } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
 import { COBOLFileUtils } from "./opencopybook";
+import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache } from "./cobolworkspacecache";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -32,12 +33,12 @@ export class VSScanStats extends ScanStats {
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
     private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
+    private config: ICOBOLSettings;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public constructor(config: ICOBOLSettings) {
-        //
+        this.config = config;
     }
-
 
     public start(qp: ICOBOLSourceScanner): void {
         this.qp = qp;
@@ -46,8 +47,8 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
-            GlobalCachesHelper.loadGlobalSymbolCache(this.qp.cacheDirectory);
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+            COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
         }
     }
 
@@ -63,37 +64,36 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 
         switch (token.tokenType) {
             case COBOLTokenStyle.ImplicitProgramId:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.ProgramId:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.EntryPoint:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.EnumId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.ClassId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.MethodId:
-                GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
         }
     }
 
     public finish(): void {
-        if (this.st !== undefined && this.qp !== undefined) {
-            if (GlobalCachesHelper.isGlobalSymbolCacheLoadRequired(this.qp.cacheDirectory)) {
-                //this.features.logMessage(" WARNING: Cache was updated unexpectedly");
-            } else {
-                COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
-            }
+        if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
+            this.qp !== undefined &&
+            this.st !== undefined) {
+            COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
         }
+        COBOLUtils.saveGlobalCacheToWorkspace();
     }
 }
 
@@ -230,7 +230,7 @@ export default class VSCOBOLSourceScanner {
     private static wipeCacheDirectory(cacheDirectory: string) {
         clearCOBOLCache();
         InMemoryGlobalSymbolCache.callableSymbols.clear();
-        InMemoryGlobalSymbolCache.classSymbols.clear();
+        // InMemoryGlobalSymbolCache.classSymbols.clear();
         InMemoryGlobalSymbolCache.isDirty = false;
 
         for (const file of fs.readdirSync(cacheDirectory)) {

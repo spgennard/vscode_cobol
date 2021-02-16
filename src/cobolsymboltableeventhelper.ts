@@ -3,14 +3,18 @@ import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEv
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
+import { CacheDirectoryStrategy } from "./externalfeatures";
+import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
     private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
     private parse_copybooks_for_references: boolean;
+    private config: ICOBOLSettings;
 
     public constructor(config: ICOBOLSettings) {
+        this.config = config;
         this.parse_copybooks_for_references = config.parse_copybooks_for_references;
     }
 
@@ -23,6 +27,8 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
         }
+
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);
     }
 
     public processToken(token: COBOLToken): void {
@@ -67,32 +73,33 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
 
         switch (token.tokenType) {
             case COBOLTokenStyle.ImplicitProgramId:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.ProgramId:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.EntryPoint:
-                GlobalCachesHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.EnumId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.ClassId:
-                GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
             case COBOLTokenStyle.MethodId:
-                GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
+                // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
         }
     }
 
     public finish(): void {
         if (this.st !== undefined && this.qp !== undefined) {
-            if (this.parse_copybooks_for_references === false) {
+            if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
+                this.parse_copybooks_for_references === false) {
                 COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
             }
         }
