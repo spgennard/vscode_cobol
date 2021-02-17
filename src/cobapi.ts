@@ -1,7 +1,7 @@
 
 export interface COBOLPreprocessor {
     start(source:string):void;
-    process(line:string): string[];
+    process(source:string, line:string): string[];
     end(source:string):void;
 }
 

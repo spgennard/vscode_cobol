@@ -15,14 +15,35 @@ import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExt
 export class COBOLPreprocessorHelper {
     public static sourceScanner: COBOLPreprocessor[] = [];
 
-     public static actionStart(id: string):void {
-        for(const p of COBOLPreprocessorHelper.sourceScanner) {
+    public static isActive(): boolean {
+        return this.sourceScanner.length !== 0;
+    }
+
+    public static actionStart(id: string): void {
+        for (const p of COBOLPreprocessorHelper.sourceScanner) {
             p.start(id);
         }
     }
 
-    public static actioEnd(id: string):void {
-        for(const p of COBOLPreprocessorHelper.sourceScanner) {
+    public static actionProcess(id: string, orgLine: string): string[] {
+        let lines: string[] = [orgLine];
+
+        for (const p of COBOLPreprocessorHelper.sourceScanner) {
+            const allLines: string[] = [];
+            for (const line of lines) {
+                const plines = p.process(id, line);
+                for (const pline of plines) {
+                    allLines.push(pline);
+                }
+            }
+            lines = allLines;
+        }
+
+        return lines;
+    }
+
+    public static actionEnd(id: string): void {
+        for (const p of COBOLPreprocessorHelper.sourceScanner) {
             p.end(id);
         }
     }
@@ -872,6 +893,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
+        const isPreProcessorsActive = COBOLPreprocessorHelper.isActive();
+
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 state.currentLineIsComment = false;
@@ -891,12 +914,23 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // don't parse a empty line
                 if (line.length > 0) {
-
-                    if (prevToken.endsWithDot === false) {
-                        prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
-                    }
-                    else {
-                        prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, line);
+                    if (isPreProcessorsActive) {
+                        const preProcLines = COBOLPreprocessorHelper.actionProcess(this.id,line);
+                        for(const preProcLine of preProcLines) {
+                            if (prevToken.endsWithDot === false) {
+                                prevToken = this.parseLineByLine(sourceHandler, l, prevToken, preProcLine);
+                            }
+                            else {
+                                prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, preProcLine);
+                            }
+                        }
+                    } else {
+                        if (prevToken.endsWithDot === false) {
+                            prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
+                        }
+                        else {
+                            prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, line);
+                        }
                     }
                 }
             }
@@ -950,7 +984,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         // inform any pre-processors
-        COBOLPreprocessorHelper.actioEnd(this.id);
+        COBOLPreprocessorHelper.actionEnd(this.id);
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
