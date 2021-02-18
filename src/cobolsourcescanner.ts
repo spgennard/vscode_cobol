@@ -11,10 +11,9 @@ import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { logException } from "./extension";
-import { features } from "process";
 
 export class COBOLPreprocessorHelper {
+    public static ownerId: string[] = [];
     public static sourceScanner: COBOLPreprocessor[] = [];
 
     public static isActive(): boolean {
@@ -23,19 +22,27 @@ export class COBOLPreprocessorHelper {
 
     public static actionStart(id: string): void {
         for (const p of COBOLPreprocessorHelper.sourceScanner) {
-            p.start(id);
+            try {
+                p.start(id);
+            } catch (e) {
+                //
+            }
         }
     }
 
     public static actionProcess(id: string, orgLine: string): string[] {
         let lines: string[] = [orgLine];
-
         for (const p of COBOLPreprocessorHelper.sourceScanner) {
             const allLines: string[] = [];
             for (const line of lines) {
-                const plines = p.process(id, line);
-                for (const pline of plines) {
-                    allLines.push(pline);
+                try {
+                    const plines = p.process(id, line);
+                    for (const pline of plines) {
+                        allLines.push(pline);
+                    }
+                }
+                catch (e) {
+                    //
                 }
             }
             lines = allLines;
@@ -46,7 +53,11 @@ export class COBOLPreprocessorHelper {
 
     public static actionEnd(id: string): void {
         for (const p of COBOLPreprocessorHelper.sourceScanner) {
-            p.end(id);
+            try {
+                p.end(id);
+            } catch (e) {
+                //
+            }
         }
     }
 }

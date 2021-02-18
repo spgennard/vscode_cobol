@@ -1,3 +1,6 @@
+export interface COBOLPreprocessorHandle {
+    id: string;
+}
 
 export interface COBOLPreprocessor {
     start(source:string):void;
@@ -6,7 +9,6 @@ export interface COBOLPreprocessor {
 }
 
 export interface COBOLApi {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    logWarningMessage(message: string):void;
-    registerPreprocessor(callback:COBOLPreprocessor): boolean;
+    logWarningMessage(handle:COBOLPreprocessorHandle, message: string):void;
+    registerPreprocessor(owner:string, callback:COBOLPreprocessor): COBOLPreprocessorHandle;
 }
