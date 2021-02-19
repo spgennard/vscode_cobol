@@ -2,9 +2,14 @@ export interface COBOLPreprocessorHandle {
     id: string;
 }
 
+export interface COBOLPreprocessorOutput {
+    addLine(line: string):void;
+    addLines(lines: string[]):void;
+}
+
 export interface COBOLPreprocessor {
     start(source:string):void;
-    process(source:string, line:string): string[];
+    process(source:string, line:string, output:COBOLPreprocessorOutput): boolean;
     end(source:string):void;
 }
 

@@ -11,6 +11,7 @@ import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { CobApiOutput } from "./cobapiimpl";
 
 export class COBOLPreprocessorHelper {
     public static ownerId: string[] = [];
@@ -31,21 +32,30 @@ export class COBOLPreprocessorHelper {
     }
 
     public static actionProcess(id: string, orgLine: string): string[] {
-        let lines: string[] = [orgLine];
+        const lines: string[] = [orgLine];
+
         for (const p of COBOLPreprocessorHelper.sourceScanner) {
+            let processedLines = false;
             const allLines: string[] = [];
             for (const line of lines) {
                 try {
-                    const plines = p.process(id, line);
-                    for (const pline of plines) {
-                        allLines.push(pline);
+                    const poutput = new CobApiOutput();
+                    if (p.process(id, line, poutput)) {
+                        processedLines=true;
+                        for (const pline of poutput.lines) {
+                            allLines.push(pline);
+                        }
                     }
                 }
                 catch (e) {
                     //
                 }
             }
-            lines = allLines;
+
+            // the preproc has done something, stop now
+            if (processedLines) {
+                return allLines;
+            }
         }
 
         return lines;

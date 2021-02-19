@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle } from "./cobapi";
+import { COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle, COBOLPreprocessorOutput } from "./cobapi";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { logMessage } from "./extension";
+import { IExternalFeatures } from "./externalfeatures";
 
 export class CobApiHandle implements COBOLPreprocessorHandle {
     id: string;
@@ -13,7 +13,27 @@ export class CobApiHandle implements COBOLPreprocessorHandle {
     }
 }
 
+export class CobApiOutput implements COBOLPreprocessorOutput {
+    public lines: string[] = [];
+
+    addLine(line: string): void {
+        this.lines.push(line);
+    }
+
+    addLines(lines: string[]): void {
+        for (const line of lines) {
+            this.lines.push(line);
+        }
+    }
+}
+
 export class CobApi implements COBOLApi {
+    private externalFeatures: IExternalFeatures;
+
+    constructor(externalFeatures: IExternalFeatures) {
+        this.externalFeatures = externalFeatures;
+    }
+
     registerPreprocessor(ownerid:string, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
         COBOLPreprocessorHelper.ownerId.push(ownerid);
         COBOLPreprocessorHelper.sourceScanner.push(callback);
@@ -23,6 +43,6 @@ export class CobApi implements COBOLApi {
     }
 
     logWarningMessage(handle: COBOLPreprocessorHandle, message: string): void {
-        logMessage(`[${handle.id}]: ${message}`);
+        this.externalFeatures.logMessage(`[${handle.id}]: ${message}`);
     }
 }

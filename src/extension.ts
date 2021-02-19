@@ -1084,7 +1084,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
 
     openChangeLog();
 
-    const api = new CobApi();
+    const api = new CobApi(ExternalFeatures);
     return api;
 }
 
