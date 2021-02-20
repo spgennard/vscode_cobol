@@ -31,19 +31,25 @@ export class COBOLPreprocessorHelper {
         }
     }
 
-    public static actionProcess(id: string, orgLine: string): string[] {
+    public static actionProcess(id: string, orgLine: string, allLines: string[], copybooks: string[]): boolean {
         const lines: string[] = [orgLine];
 
         for (const p of COBOLPreprocessorHelper.sourceScanner) {
             let processedLines = false;
-            const allLines: string[] = [];
             for (const line of lines) {
                 try {
                     const poutput = new CobApiOutput();
                     if (p.process(id, line, poutput)) {
-                        processedLines=true;
+                        processedLines = true;
                         for (const pline of poutput.lines) {
                             allLines.push(pline);
+                        }
+                        for (const [internalCopybook, visible] of poutput.copyBooks) {
+                            if (!visible) {
+                                allLines.push(`copy "${internalCopybook}"`);
+                            } else {
+                                copybooks.push(internalCopybook);
+                            }
                         }
                     }
                 }
@@ -54,11 +60,11 @@ export class COBOLPreprocessorHelper {
 
             // the preproc has done something, stop now
             if (processedLines) {
-                return allLines;
+                return true;
             }
         }
 
-        return lines;
+        return false;
     }
 
     public static actionEnd(id: string): void {
@@ -938,16 +944,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // don't parse a empty line
                 if (line.length > 0) {
                     let preProcLines: string[] = [];
+                    const copybooks: string[] = [];
 
                     if (isPreProcessorsActive) {
                         try {
-                            preProcLines = COBOLPreprocessorHelper.actionProcess(this.id, line);
-                            if (preProcLines.length === 1 && preProcLines[0] === line) {
+                            if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks)) {
                                 preProcLines = [];
                             }
-                            // else {
-                            //     state.ignoreInOutlineView = true;
-                            // }
                         } catch (e) {
                             externalFeatures.logException("pp", e);
                         }
@@ -959,22 +962,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         state.ignoreInOutlineView = true;
                         for (const preProcLine of preProcLines) {
                             if (preProcLine !== null && preProcLine !== undefined && preProcLine.trimLeft().length !== 0) {
-                                if (prevToken.endsWithDot === false) {
-                                    prevToken = this.parseLineByLine(sourceHandler, l, prevToken, preProcLine);
-                                }
-                                else {
-                                    prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, preProcLine);
-                                }
+                                const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
+                                prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, preProcLine);
                             }
                         }
+
                         state.ignoreInOutlineView = currentOutlineView;
+                        for(const copybook of copybooks) {
+                            const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
+                            prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, `copy "${copybook}".`);
+                        }
                     } else {
-                        if (prevToken.endsWithDot === false) {
-                            prevToken = this.parseLineByLine(sourceHandler, l, prevToken, line);
-                        }
-                        else {
-                            prevToken = this.parseLineByLine(sourceHandler, l, Token.Blank, line);
-                        }
+                        const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
+                        prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, line);
                     }
                 }
             }

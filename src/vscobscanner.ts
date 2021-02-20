@@ -2,13 +2,15 @@ import path from "path";
 import fs from 'fs';
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_SENDEP, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
+import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
+import { COBOLUtils } from "./cobolutils";
 
 class ScanStats {
     parentPid = 0;
@@ -70,7 +72,7 @@ export class VSCobScanner {
         }
     }
 
-    private static removeScannerFile(cacheDirectory: string):void {
+    private static removeScannerFile(cacheDirectory: string): void {
         const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
         try {
             fs.unlinkSync(jsonFile);
@@ -128,21 +130,41 @@ export class VSCobScanner {
                 } else {
                     progressStatusBarItem.hide();
                 }
+                COBOLUtils.saveGlobalCacheToWorkspace();
             });
 
             let prevPercent = 0;
             child.on('message', (msg) => {
                 const message = msg as string;
-                if (message.startsWith(COBSCANNER_STATUS)) {
-                    const args = message.split(" ");
-                    progressStatusBarItem.show();
-                    const a1 = Number.parseInt(args[1]);
-                    const a2 = Number.parseInt(args[2]);
-                    const percent = ((a1 / a2) * 100) | 0;
-                    if (prevPercent !== percent) {
-                        progressStatusBarItem.text = `Processing metadata: ${percent}%`;
-                        prevPercent = percent;
+                if (message.startsWith("@@")) {
+                    if (message.startsWith(COBSCANNER_STATUS)) {
+                        const args = message.split(" ");
+                        progressStatusBarItem.show();
+                        const a1 = Number.parseInt(args[1]);
+                        const a2 = Number.parseInt(args[2]);
+                        const percent = ((a1 / a2) * 100) | 0;
+                        if (prevPercent !== percent) {
+                            progressStatusBarItem.text = `Processing metadata: ${percent}%`;
+                            prevPercent = percent;
+                        }
                     }
+                    else if (message.startsWith(COBSCANNER_SENDEP)) {
+                        const args = message.split(",");
+                        const tokenName = args[1];
+                        const tokenLine = Number.parseInt(args[2]);
+                        const tokenFilename = args[3];
+                        COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename,tokenName, tokenLine);
+                    }
+                    else if (message.startsWith(COBSCANNER_SENDPRGID)) {
+                        const args = message.split(",");
+                        const tokenName = args[1];
+                        const tokenLine = Number.parseInt(args[2]);
+                        const tokenFilename = args[3];
+                        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
+                        COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename,tokenName, tokenLine);
+                    }
+
+
                 } else {
                     logMessage(msg as string);
                 }

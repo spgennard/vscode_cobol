@@ -5,6 +5,7 @@ import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
+import { COBSCANNER_SENDEP, COBSCANNER_SENDPRGID } from "./cobscannerdata";
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
@@ -76,10 +77,14 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.ProgramId:
-                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                if (process.send) {
+                    process.send(`${COBSCANNER_SENDPRGID},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
                 break;
             case COBOLTokenStyle.EntryPoint:
-                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
+                if (process.send) {
+                    process.send(`${COBSCANNER_SENDEP},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
                 break;
             case COBOLTokenStyle.InterfaceId:
                 // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);

@@ -15,6 +15,7 @@ export class CobApiHandle implements COBOLPreprocessorHandle {
 
 export class CobApiOutput implements COBOLPreprocessorOutput {
     public lines: string[] = [];
+    public copyBooks = new Map<string, boolean>();
 
     addLine(line: string): void {
         this.lines.push(line);
@@ -24,6 +25,10 @@ export class CobApiOutput implements COBOLPreprocessorOutput {
         for (const line of lines) {
             this.lines.push(line);
         }
+    }
+
+    addCopybook(visible:boolean, copybookName: string):void {
+        this.copyBooks.set(copybookName, visible);
     }
 }
 

@@ -5,6 +5,7 @@ export interface COBOLPreprocessorHandle {
 export interface COBOLPreprocessorOutput {
     addLine(line: string):void;
     addLines(lines: string[]):void;
+    addCopybook(visible:boolean, copybookName: string):void;
 }
 
 export interface COBOLPreprocessor {
