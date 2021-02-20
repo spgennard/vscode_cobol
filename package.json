@@ -1016,19 +1016,19 @@
                 "command": "cobolplugin.processAllFilesInWorkspace",
                 "category": "COBOL",
                 "title": "Process files in workspace for metadata",
-                "enablement": "!isWeb && config.cache_metadata != off"
+                "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
             },
             {
                 "command": "cobolplugin.dumpMetaData",
                 "category": "COBOL",
                 "title": "Dump metadata for diagnostic",
-                "enablement": "!isWeb  && config.cache_metadata != off"
+                "enablement": "!isWeb  && config.coboleditor.cache_metadata != off"
             },
             {
                 "command": "cobolplugin.clearMetaData",
                 "category": "COBOL",
                 "title": "Clear metadata",
-                "enablement": "!isWeb && config.cache_metadata != off"
+                "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
             },
             {
                 "command": "cobolplugin.syntaxCheck",
