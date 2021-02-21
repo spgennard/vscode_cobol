@@ -787,7 +787,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         if (this.sourceReferences.topLevel) {
-            /* if we have an extension, then don't do a relaxed parse to determiune if it is COBOL or not */
+            /* if we have an extension, then don't do a relaxed parse to determine if it is COBOL or not */
             const lineLimit = configHandler.pre_parse_line_limit;
             const maxLinesInFile = sourceHandler.getLineCount();
             let maxLines = maxLinesInFile;
@@ -1623,7 +1623,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // handle interface-id
                 if (prevTokenLower === "interface-id" && current.length !== 0) {
-                    state.currentClass = this.newCOBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
+                    state.currentClass = this.  newCOBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
 
                     state.pickFields = true;
                     state.captureDivisions = false;

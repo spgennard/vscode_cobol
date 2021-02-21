@@ -5,7 +5,7 @@ import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
-import { COBSCANNER_SENDEP, COBSCANNER_SENDPRGID } from "./cobscannerdata";
+import { COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID } from "./cobscannerdata";
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
@@ -87,13 +87,20 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 }
                 break;
             case COBOLTokenStyle.InterfaceId:
-                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                if (process.send) {
+                    process.send(`${COBSCANNER_SENDINTERFACE},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
                 break;
             case COBOLTokenStyle.EnumId:
-                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                if (process.send) {
+                    process.send(`${COBSCANNER_SENDENUM},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
                 break;
             case COBOLTokenStyle.ClassId:
-                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                if (process.send) {
+                    process.send(`${COBSCANNER_SENDCLASS},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
+                break;
                 break;
             case COBOLTokenStyle.MethodId:
                 // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);

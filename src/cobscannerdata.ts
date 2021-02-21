@@ -34,6 +34,9 @@ export class ScanStats {
 export const COBSCANNER_STATUS = '@@STATUS';
 export const COBSCANNER_SENDPRGID = '@@SEND.PRGID';
 export const COBSCANNER_SENDEP = '@@SEND.EP';
+export const COBSCANNER_SENDINTERFACE = "@@SEND.INTID";
+export const COBSCANNER_SENDENUM = "@@SEND.ENUMID";
+export const COBSCANNER_SENDCLASS = "@@SEND.CLASSID";
 
 export class ScanDataHelper {
     public static readonly scanFilename = "cobscanner.json";

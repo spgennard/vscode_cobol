@@ -2,14 +2,14 @@ import path from "path";
 import fs from 'fs';
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { COBSCANNER_SENDEP, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
-import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
+import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
 
 class ScanStats {
@@ -165,8 +165,27 @@ export class VSCobScanner {
                         COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
                         COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename,tokenName, tokenLine);
                     }
-
-
+                    else if (message.startsWith(COBSCANNER_SENDCLASS)) {
+                        const args = message.split(",");
+                        const tokenName = args[1];
+                        const tokenLine = Number.parseInt(args[2]);
+                        const tokenFilename = args[3];
+                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename,tokenName, tokenLine, TypeCategory.ClassId);
+                    }
+                    else if (message.startsWith(COBSCANNER_SENDINTERFACE)) {
+                        const args = message.split(",");
+                        const tokenName = args[1];
+                        const tokenLine = Number.parseInt(args[2]);
+                        const tokenFilename = args[3];
+                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename,tokenName, tokenLine, TypeCategory.InterfaceId);
+                    }
+                    else if (message.startsWith(COBSCANNER_SENDENUM)) {
+                        const args = message.split(",");
+                        const tokenName = args[1];
+                        const tokenLine = Number.parseInt(args[2]);
+                        const tokenFilename = args[3];
+                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename,tokenName, tokenLine, TypeCategory.EnumId);
+                    }
                 } else {
                     logMessage(msg as string);
                 }
