@@ -17,7 +17,7 @@ import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
 import { COBOLFileUtils } from "./opencopybook";
-import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache } from "./cobolworkspacecache";
+import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache, TypeCategory } from "./cobolworkspacecache";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -49,6 +49,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
             COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
+            COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
         }
     }
 
@@ -73,13 +74,13 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
                 COBOLWorkspaceSymbolCacheHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
-                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName,token.tokenName, token.startLine, TypeCategory.InterfaceId);
                 break;
             case COBOLTokenStyle.EnumId:
-                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName,token.tokenName, token.startLine, TypeCategory.EnumId);
                 break;
             case COBOLTokenStyle.ClassId:
-                // GlobalCachesHelper.addClassSymbol(this.st.fileName, token.tokenName, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName,token.tokenName, token.startLine, TypeCategory.ClassId);
                 break;
             case COBOLTokenStyle.MethodId:
                 // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);

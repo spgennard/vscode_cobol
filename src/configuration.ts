@@ -62,6 +62,7 @@ export class VSCOBOLConfiguration {
         vsconfig.format_on_return = workspace.getConfiguration('coboleditor').get<formatOnReturn>("format_on_return",formatOnReturn.Off);
         vsconfig.metadata_symbols = getmetadata_symbols();
         vsconfig.metadata_entrypoints = getmetadata_entrypoints();
+        vsconfig.metadata_types = getmetadata_types();
         return vsconfig;
     }
 
@@ -342,4 +343,13 @@ function getmetadata_entrypoints(): string[] {
         entrypoints = [];
     }
     return entrypoints;
+}
+
+function getmetadata_types(): string[] {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let metadata_types = editorConfig.get<string[]>('metadata_types');
+    if (!metadata_types || (metadata_types !== null && metadata_types.length === 0)) {
+        metadata_types = [];
+    }
+    return metadata_types;
 }

@@ -4,6 +4,13 @@
 import { COBOLFileSymbol, COBOLGlobalSymbolTable } from "./cobolglobalcache";
 import { GlobalCachesHelper } from "./globalcachehelper";
 
+
+export enum TypeCategory{
+    ClassId="T",
+    InterfaceId="I",
+    EnumId="E"
+}
+
 export class COBOLWorkspaceSymbolCacheHelper {
     private static removeAllProgramSymbols(srcfilename: string, symbolsCache: Map<string, COBOLFileSymbol[]>): void {
         for (const [key] of symbolsCache) {
@@ -53,10 +60,12 @@ export class COBOLWorkspaceSymbolCacheHelper {
                 // if we have only one symbol, then we can update it
                 if (foundCount === 1) {
                     symbolList[foundLast].lnum = lineNumber;
+                    InMemoryGlobalSymbolCache.isDirty = true;
                 } else {
                     // if we have multiple, never update the filename symbol which has a line number of 1
                     if (foundLastNonFileSymbol !== -1) {
                         symbolList[foundLastNonFileSymbol].lnum = lineNumber;
+                        InMemoryGlobalSymbolCache.isDirty = true;
                     }
                 }
 
@@ -80,9 +89,28 @@ export class COBOLWorkspaceSymbolCacheHelper {
             GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
+
+    public static addClass(srcfilename: string, symbolUnchanged: string, lineNumber: number, category: TypeCategory): void {
+        let map: Map<string, COBOLFileSymbol[]> = InMemoryGlobalSymbolCache.types;
+
+        switch(category) {
+            case TypeCategory.ClassId : map = InMemoryGlobalSymbolCache.types; break;
+            case TypeCategory.InterfaceId : map = InMemoryGlobalSymbolCache.interfaces; break;
+            case TypeCategory.EnumId : map = InMemoryGlobalSymbolCache.enums; break;
+        }
+
+        COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
+            GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, map);
+    }
+
     public static removeAllProgramEntryPoints(srcfilename: string):void {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(GlobalCachesHelper.getFilenameWithoutPath(srcfilename),
         InMemoryGlobalSymbolCache.entryPoints);
+    }
+
+    public static removeAllTypes(srcfilename: string):void {
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(GlobalCachesHelper.getFilenameWithoutPath(srcfilename),
+        InMemoryGlobalSymbolCache.types);
     }
 
     public static loadGlobalCacheFromArray(symbols: string[]): void {
@@ -102,6 +130,23 @@ export class COBOLWorkspaceSymbolCacheHelper {
             }
         }
     }
+
+    public static loadGlobalTypesCacheFromArray(symbols: string[]): void {
+        for (const symbol of symbols) {
+            const symbolValues = symbol.split(",");
+            if (symbolValues.length === 4) {
+                let cat = TypeCategory.ClassId;
+                switch (symbolValues[0]) {
+                    case "I" : cat = TypeCategory.InterfaceId; break;
+                    case "T" : cat = TypeCategory.ClassId; break;
+                    case "E" : cat = TypeCategory.EnumId; break;
+                }
+                COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3]), cat);
+            }
+        }
+    }
+
+
 }
 
 export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();

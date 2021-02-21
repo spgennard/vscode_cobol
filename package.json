@@ -606,6 +606,21 @@
                     },
                     "default": [],
                     "uniqueItems": true
+                },
+                "coboleditor.metadata_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "types",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "internal metadata entypoints"
+                            }
+                        }
+                    },
+                    "default": [],
+                    "uniqueItems": true
                 }
             }
         },

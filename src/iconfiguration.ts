@@ -69,6 +69,7 @@ export interface ICOBOLSettings {
 
     metadata_symbols: string[];
     metadata_entrypoints: string[];
+    metadata_types: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -124,6 +125,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public init_required = true;
     public metadata_symbols: string[];
     public metadata_entrypoints: string[];
+    public metadata_types: string[];
 
     constructor() {
         this.experimental_features = false;
@@ -177,5 +179,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.format_constants_to_uppercase = true;
         this.metadata_symbols = [];
         this.metadata_entrypoints = [];
+        this.metadata_types = [];
     }
 }

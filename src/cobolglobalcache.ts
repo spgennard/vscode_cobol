@@ -5,6 +5,9 @@ export class COBOLGlobalSymbolTable {
     public lastModifiedTime = 0;
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
     public entryPoints = new Map<string, COBOLFileSymbol[]>();
+    public types = new Map<string, COBOLFileSymbol[]>();
+    public interfaces = new Map<string, COBOLFileSymbol[]>();
+    public enums =  new Map<string, COBOLFileSymbol[]>();
     public isDirty = false;
     public sourceFilenameModified = new Map<string, number>();
 

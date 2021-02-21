@@ -13,6 +13,7 @@ export class ScanData {
     public showStats = true;
     public symbols: string[] = [];
     public entrypoints: string[] = [];
+    public types: string[] = [];
 }
 
 export class ScanStats {

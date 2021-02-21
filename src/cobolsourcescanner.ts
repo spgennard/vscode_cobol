@@ -1599,7 +1599,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // handle "end class, enum, valuetype"
                 if (state.currentClass !== COBOLToken.Null && prevTokenLower === "end" &&
-                    (currentLower === "class" || currentLower === "enum" || currentLower === "valuetype")) {
+                    (currentLower === "class" || currentLower === "enum" || currentLower === "valuetype" || currentLower === "interface")) {
                     state.currentClass.endLine = lineNumber;
                     state.currentClass.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
 

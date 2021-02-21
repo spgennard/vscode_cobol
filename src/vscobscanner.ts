@@ -44,6 +44,7 @@ export class VSCobScanner {
             sf.showMessage = settings.cache_metadata_show_progress_messages;
             sf.symbols = settings.metadata_symbols;
             sf.entrypoints = settings.metadata_entrypoints;
+            sf.types = settings.metadata_types;
             await this.forkScanner(sf, "OnSave");
         }
     }
@@ -161,6 +162,7 @@ export class VSCobScanner {
                         const tokenLine = Number.parseInt(args[2]);
                         const tokenFilename = args[3];
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
+                        COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
                         COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename,tokenName, tokenLine);
                     }
 

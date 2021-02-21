@@ -65,11 +65,22 @@ export class COBOLUtils {
     }
 
 
+    private static typeToArray(types: string[], prefix: string, typeMap: Map<string, COBOLFileSymbol[]>) {
+        for (const [i] of typeMap.entries()) {
+            const fileSymbol = typeMap.get(i);
+            if (fileSymbol !== undefined) {
+                fileSymbol.forEach(function (value: COBOLFileSymbol) {
+                    types.push(`${prefix},${i},${value.filename},${value.lnum}`);
+                });
+            }
+        }
+    }
 
     public static saveGlobalCacheToWorkspace(): void {
         if (InMemoryGlobalSymbolCache.isDirty) {
             const symbols:string[] = [];
             const entrypoints:string[] = [];
+            const types: string[] = [];
 
             for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
                 const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
@@ -88,10 +99,15 @@ export class COBOLUtils {
                     });
                 }
             }
+
+            COBOLUtils.typeToArray(types, "T",InMemoryGlobalSymbolCache.types);
+            COBOLUtils.typeToArray(types, "I",InMemoryGlobalSymbolCache.interfaces);
+            COBOLUtils.typeToArray(types, "E",InMemoryGlobalSymbolCache.enums);
+
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update('metadata_symbols', symbols);
             editorConfig.update('metadata_entrypoints', entrypoints);
-
+            editorConfig.update('metadata_types', types);
             InMemoryGlobalSymbolCache.isDirty = false;
         }
     }
