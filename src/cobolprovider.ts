@@ -1,4 +1,4 @@
-import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
+import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range, SymbolInformation } from 'vscode';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
@@ -128,6 +128,24 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     }
 
+    private getTypes(wordToComplete: string): CompletionItem[] {
+        const items: CompletionItem[] = [];
+
+        for(const [type] of InMemoryGlobalSymbolCache.types) {
+            items.push(new CompletionItem(type, CompletionItemKind.Class));
+        }
+
+        for(const [type] of InMemoryGlobalSymbolCache.interfaces) {
+            items.push(new CompletionItem(type, CompletionItemKind.Interface));
+        }
+
+        for(const [type] of InMemoryGlobalSymbolCache.enums) {
+            items.push(new CompletionItem(type, CompletionItemKind.Enum));
+        }
+
+        return items;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         let items: CompletionItem[] = [];
@@ -179,6 +197,10 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
             else {
                 switch (wordBeforeLower) {
+                    case "type": {
+                        items = this.getTypes(wordToComplete);
+                        break;
+                    }
                     case "perform":
                     case "goto":
                         {
