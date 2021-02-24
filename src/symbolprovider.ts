@@ -126,6 +126,9 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                         case COBOLTokenStyle.CopyBookIn:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
                             break;
+                        case COBOLTokenStyle.File:
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
+                            break;
                         case COBOLTokenStyle.Declaratives:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;

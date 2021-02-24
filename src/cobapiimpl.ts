@@ -2,6 +2,7 @@
 import { COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle, COBOLPreprocessorOutput } from "./cobapi";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 import { IExternalFeatures } from "./externalfeatures";
+import { clearCOBOLCache } from "./vscobolscanner";
 
 export class CobApiHandle implements COBOLPreprocessorHandle {
     id: string;
@@ -15,7 +16,7 @@ export class CobApiHandle implements COBOLPreprocessorHandle {
 
 export class CobApiOutput implements COBOLPreprocessorOutput {
     public lines: string[] = [];
-    public copyBooks = new Map<string, boolean>();
+    public externalFiles = new Map<string,string>();
 
     addLine(line: string): void {
         this.lines.push(line);
@@ -27,8 +28,8 @@ export class CobApiOutput implements COBOLPreprocessorOutput {
         }
     }
 
-    addCopybook(visible:boolean, copybookName: string):void {
-        this.copyBooks.set(copybookName, visible);
+    addFileSymbol(symbol:string, copybookName: string):void {
+        this.externalFiles.set(symbol,copybookName);
     }
 }
 
@@ -42,9 +43,7 @@ export class CobApi implements COBOLApi {
     registerPreprocessor(ownerid:string, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
         COBOLPreprocessorHelper.ownerId.push(ownerid);
         COBOLPreprocessorHelper.sourceScanner.push(callback);
-        const handle = new CobApiHandle(ownerid,callback);
-        this.logWarningMessage(handle, "is active");
-        return handle;
+        return new CobApiHandle(ownerid,callback);
     }
 
     logWarningMessage(handle: COBOLPreprocessorHandle, message: string): void {

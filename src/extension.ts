@@ -626,6 +626,10 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         }
     });
 
+    const clearInternalCaches = commands.registerCommand('cobolplugin.clearCache', function () {
+        VSCOBOLSourceScanner.clearCache(settings);
+    });
+
     const syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
         tasks.fetchTasks().then((fetchedTasks) => {
             for (const task of fetchedTasks) {
@@ -685,6 +689,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
 
     context.subscriptions.push(dumpMetadata);
     context.subscriptions.push(clearMetaData);
+    context.subscriptions.push(clearInternalCaches);
 
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
     if (settings.experimental_features) {

@@ -31,7 +31,7 @@ export class COBOLPreprocessorHelper {
         }
     }
 
-    public static actionProcess(id: string, orgLine: string, allLines: string[], copybooks: string[]): boolean {
+    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string,string>): boolean {
         const lines: string[] = [orgLine];
 
         for (const p of COBOLPreprocessorHelper.sourceScanner) {
@@ -44,12 +44,8 @@ export class COBOLPreprocessorHelper {
                         for (const pline of poutput.lines) {
                             allLines.push(pline);
                         }
-                        for (const [internalCopybook, visible] of poutput.copyBooks) {
-                            if (!visible) {
-                                allLines.push(`copy "${internalCopybook}"`);
-                            } else {
-                                copybooks.push(internalCopybook);
-                            }
+                        for (const [symbol,internalCopybook] of poutput.externalFiles) {
+                            externalFiles.set(symbol,internalCopybook);
                         }
                     }
                 }
@@ -81,6 +77,7 @@ export class COBOLPreprocessorHelper {
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
     CopyBookIn = "CopybookIn",
+    File = "File",
     ProgramId = "Program-Id",
     ImplicitProgramId = "ImplicitProgramId-Id",
     FunctionId = "Function-Id",
@@ -944,7 +941,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // don't parse a empty line
                 if (line.length > 0) {
                     let preProcLines: string[] = [];
-                    const copybooks: string[] = [];
+                    const copybooks = new Map<string, string>();
 
                     if (isPreProcessorsActive) {
                         try {
@@ -968,9 +965,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         }
 
                         state.ignoreInOutlineView = currentOutlineView;
-                        for(const copybook of copybooks) {
-                            const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
-                            prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, `copy "${copybook}".`);
+                        for(const [symbol,copybook] of copybooks) {
+                            this.newCOBOLToken(COBOLTokenStyle.File,l,line,symbol,copybook,state.currentDivision);
                         }
                     } else {
                         const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;

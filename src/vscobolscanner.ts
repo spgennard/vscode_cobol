@@ -1,5 +1,5 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { FileType, TextDocument, Uri, window, workspace } from 'vscode';
+import { commands, FileType, TextDocument, Uri, window, workspace } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { GlobalCachesHelper } from "./globalcachehelper";
 
@@ -24,7 +24,14 @@ const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSour
 
 export function clearCOBOLCache(): void {
     InMemoryCache.clear();
+    InMemoryGlobalSymbolCache.callableSymbols.clear();
+    InMemoryGlobalSymbolCache.entryPoints.clear();
+    InMemoryGlobalSymbolCache.enums.clear();
+    InMemoryGlobalSymbolCache.interfaces.clear();
+    InMemoryGlobalSymbolCache.types.clear();
+    InMemoryGlobalSymbolCache.isDirty = false;
 }
+
 
 export class VSScanStats extends ScanStats {
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
@@ -99,6 +106,12 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 }
 
 export default class VSCOBOLSourceScanner {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    static clearCache(settings: ICOBOLSettings):void {
+        logMessage("Clearing internal cache");
+        clearCOBOLCache();
+        // commands.executeCommand("workbench.action.reloadWindow");
+    }
 
     private static readonly MAX_MEM_CACHE_SIZE = 30;
 
@@ -230,9 +243,7 @@ export default class VSCOBOLSourceScanner {
 
     private static wipeCacheDirectory(cacheDirectory: string) {
         clearCOBOLCache();
-        InMemoryGlobalSymbolCache.callableSymbols.clear();
-        // InMemoryGlobalSymbolCache.classSymbols.clear();
-        InMemoryGlobalSymbolCache.isDirty = false;
+
 
         for (const file of fs.readdirSync(cacheDirectory)) {
             if (file.endsWith(".sym")) {

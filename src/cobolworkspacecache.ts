@@ -145,8 +145,6 @@ export class COBOLWorkspaceSymbolCacheHelper {
             }
         }
     }
-
-
 }
 
 export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();
