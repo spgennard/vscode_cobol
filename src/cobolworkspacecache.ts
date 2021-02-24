@@ -113,7 +113,11 @@ export class COBOLWorkspaceSymbolCacheHelper {
         InMemoryGlobalSymbolCache.types);
     }
 
-    public static loadGlobalCacheFromArray(symbols: string[]): void {
+    public static loadGlobalCacheFromArray(symbols: string[], clear:boolean): void {
+        if (clear) {
+            InMemoryGlobalSymbolCache.callableSymbols.clear();
+        }
+
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
             if (symbolValues.length === 2) {
@@ -122,7 +126,11 @@ export class COBOLWorkspaceSymbolCacheHelper {
         }
     }
 
-    public static loadGlobalEntryCacheFromArray(symbols: string[]): void {
+    public static loadGlobalEntryCacheFromArray(symbols: string[], clear:boolean): void {
+        if (clear) {
+            InMemoryGlobalSymbolCache.callableSymbols.entries();
+        }
+
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
             if (symbolValues.length === 3) {
@@ -131,7 +139,13 @@ export class COBOLWorkspaceSymbolCacheHelper {
         }
     }
 
-    public static loadGlobalTypesCacheFromArray(symbols: string[]): void {
+    public static loadGlobalTypesCacheFromArray(symbols: string[], clear:boolean): void {
+        if (clear) {
+            InMemoryGlobalSymbolCache.enums.clear();
+            InMemoryGlobalSymbolCache.interfaces.clear();
+            InMemoryGlobalSymbolCache.types.clear();
+        }
+
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
             if (symbolValues.length === 4) {

@@ -24,11 +24,6 @@ const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSour
 
 export function clearCOBOLCache(): void {
     InMemoryCache.clear();
-    InMemoryGlobalSymbolCache.callableSymbols.clear();
-    InMemoryGlobalSymbolCache.entryPoints.clear();
-    InMemoryGlobalSymbolCache.enums.clear();
-    InMemoryGlobalSymbolCache.interfaces.clear();
-    InMemoryGlobalSymbolCache.types.clear();
     InMemoryGlobalSymbolCache.isDirty = false;
 }
 

@@ -486,14 +486,22 @@ export async function activate(context: ExtensionContext): Promise<CobApi> {
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-            clearCOBOLCache();
             if (!md_syms && !md_eps && !md_types) {
+                clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
                 setupSourceViewTree(settings, true);
             }
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_types);
+            if (md_syms) {
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols,true);
+            }
+
+            if (md_eps) {
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints,true);
+            }
+
+            if (md_types) {
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types,true);
+            }
         }
     });
     context.subscriptions.push(onDidChangeConfiguration);
@@ -505,9 +513,9 @@ export async function activate(context: ExtensionContext): Promise<CobApi> {
     const cobolfixer = new CobolLinterActionFixer();
     initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings, false);
-    COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
-    COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
-    COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types);
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols, false);
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints, false);
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types, false);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
