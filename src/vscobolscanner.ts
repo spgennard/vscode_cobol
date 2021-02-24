@@ -1,5 +1,5 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { commands, FileType, TextDocument, Uri, window, workspace } from 'vscode';
+import { FileType, TextDocument, Uri, window, workspace } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { GlobalCachesHelper } from "./globalcachehelper";
 

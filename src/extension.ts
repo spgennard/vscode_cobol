@@ -1,6 +1,6 @@
 'use strict';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window,  OutputChannel, extensions, tasks, ViewColumn } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, OutputChannel, extensions, tasks, ViewColumn, ConfigurationChangeEvent } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -165,12 +165,12 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
                 let okay2Continue = false;
                 for (const blessed_extension of blessed_extensions) {
                     if (blessed_extension === ext.packageJSON.id) {
-                        okay2Continue= true;
+                        okay2Continue = true;
                     }
                 }
                 for (const known_problem_extension of known_problem_extensions) {
                     if (known_problem_extension === ext.packageJSON.id) {
-                        grab_info_for_ext=ext;
+                        grab_info_for_ext = ext;
                         reason = "debugger support is problematic with this extension";
                         okay2Continue = true;
                     }
@@ -348,11 +348,13 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 }
 
-function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
-    if (hide) {
-        COBOLOutputChannel.hide();
-    } else {
-        logChannelSetPreserveFocus(true);
+function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
+    if (!quiet) {
+        if (hide) {
+            COBOLOutputChannel.hide();
+        } else {
+            logChannelSetPreserveFocus(true);
+        }
     }
     COBOLOutputChannel.clear();
 
@@ -465,25 +467,34 @@ function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
 
 }
 
-export async function activate(context: ExtensionContext): Promise<CobApi>  {
+export async function activate(context: ExtensionContext): Promise<CobApi> {
     currentContext = context;
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-        activateLogChannelAndPaths(true, settings);
+        activateLogChannelAndPaths(true, settings, false);
     });
     context.subscriptions.push(onExtChange);
 
 
-    const onDidChangeConfiguration = workspace.onDidChangeConfiguration(() => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-        clearCOBOLCache();
-        activateLogChannelAndPaths(true, settings);
-        setupSourceViewTree(settings, true);
-        COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
-        COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
-        COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_types);
+    const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
+        const updated = event.affectsConfiguration(`coboleditor`);
+        const md_syms = event.affectsConfiguration("coboleditor.metadata_symbols");
+        const md_eps = event.affectsConfiguration("coboleditor.metadata_entrypoints");
+        const md_types = event.affectsConfiguration("coboleditor.metadata_types");
+
+        if (updated) {
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+            clearCOBOLCache();
+            if (!md_syms && !md_eps && !md_types) {
+                activateLogChannelAndPaths(true, settings, true);
+                setupSourceViewTree(settings, true);
+            }
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_types);
+        }
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
@@ -493,7 +504,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
     initExtensionSearchPaths(settings);
-    activateLogChannelAndPaths(true, settings);
+    activateLogChannelAndPaths(true, settings, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types);
@@ -541,7 +552,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (window.activeTextEditor !== undefined) {
             const langid = window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 if (settings.line_comment) {
                     commenter.processCommentLine();
                 } else {
@@ -645,7 +656,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-        activateLogChannelAndPaths(false, settings);
+        activateLogChannelAndPaths(false, settings, true);
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 
@@ -860,7 +871,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.RemoveIdentificationArea(vscode.window.activeTextEditor);
             }
         }
@@ -871,7 +882,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.removeColumnNumbers(vscode.window.activeTextEditor);
             }
         }
@@ -882,7 +893,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase);
             }
         }
@@ -893,7 +904,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.UpperCase);
             }
         }
@@ -904,7 +915,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase);
             }
         }
@@ -915,7 +926,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase);
             }
         }
@@ -926,7 +937,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase);
             }
         }
@@ -937,7 +948,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.CamelCase);
             }
         }
@@ -948,7 +959,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.LowerCase);
             }
         }
@@ -959,7 +970,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.UpperCase);
             }
         }
@@ -970,7 +981,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.foldToken(vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.CamelCase);
             }
         }
@@ -981,7 +992,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.extractSelectionTo(vscode.window.activeTextEditor, true);
             }
         }
@@ -992,7 +1003,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.extractSelectionTo(vscode.window.activeTextEditor, false);
             }
         }
@@ -1003,7 +1014,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
                 COBOLUtils.extractSelectionToCopybook(vscode.window.activeTextEditor);
             }
         }
@@ -1035,7 +1046,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi>  {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
-            if (langid === 'COBOL' ||  langid === 'ACUCOBOL' || langid === 'COBOLIT') {
+            if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
 
                 vscode.window.showInputBox({
                     prompt: 'Enter start line number and increment',

@@ -223,6 +223,7 @@
         "srange",
         "srcfilename",
         "symbolprovider",
+        "syms",
         "tabstopper",
         "tcurrent",
         "theline",
