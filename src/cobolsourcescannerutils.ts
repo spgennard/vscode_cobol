@@ -12,7 +12,7 @@ import { CacheDirectoryStrategy } from './externalfeatures';
 import { window, workspace } from 'vscode';
 
 import tempDirectory from 'temp-dir';
-import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
+import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 
 const myConsoleFile = path.join(tempDirectory, "vscode_"+process.pid) + ".txt";
 

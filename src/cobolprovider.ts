@@ -5,8 +5,7 @@ import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage, logTimeThreshold } from './extension';
-import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
-
+import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 

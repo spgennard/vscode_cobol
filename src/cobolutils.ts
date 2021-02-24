@@ -5,7 +5,7 @@ import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDi
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
-import { GlobalCachesHelper } from "./globalcachehelper";
+import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { COBOLFileUtils } from './opencopybook';
@@ -13,7 +13,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLFileSymbol } from './cobolglobalcache';
-import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache } from './cobolworkspacecache';
+import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -52,7 +52,7 @@ export class COBOLUtils {
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[] ) => {
             uris.forEach((uri: vscode.Uri) => {
                 const fullPath = uri.fsPath;
-                const fileName = GlobalCachesHelper.getFilenameWithoutPath(fullPath);
+                const fileName = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullPath);
                 const fileNameNoExt = path.basename(fileName, path.extname(fileName));
                 const fileNameNoExtLower = fileNameNoExt.toLowerCase();
                 const c = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);

@@ -4,9 +4,11 @@ import { Range, TextDocument, Definition, Position, CancellationToken, Uri } fro
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'process';
-import { getCombinedCopyBookSearchPath, COBOLStatUtils} from './extension';
+import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
+import { InMemoryGlobalSymbolCache } from './globalcachehelper';
+import { COBOLFileSymbol } from './cobolglobalcache';
 
 
 export class COBOLFileUtils {
@@ -169,8 +171,19 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         const line = doc.lineAt(pos);
         const text = line.text;
         const textLower = text.toLowerCase().replace("\t", " ");
-        const filename = this.extractCopyBoolFilename(text);
+        let filename = this.extractCopyBoolFilename(text);
         let inPos = -1;
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (activeTextEditor && filename === undefined) {
+            const sel = activeTextEditor.selection;
+
+            const ran = new vscode.Range(sel.start, sel.end);
+            const textSelection = activeTextEditor.document.getText(ran);
+            if (textSelection !== undefined) {
+                filename = textSelection.trim();
+            }
+        }
 
         // leave asap
         if (filename === undefined) {
@@ -213,6 +226,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         }
 
         return [];
+
     }
 
     public static expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {

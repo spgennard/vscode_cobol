@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { COBOLFileSymbol, COBOLGlobalSymbolTable } from "./cobolglobalcache";
-import { GlobalCachesHelper } from "./globalcachehelper";
+import { COBOLFileSymbol } from "./cobolglobalcache";
+import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 
 export enum TypeCategory{
@@ -81,12 +81,12 @@ export class COBOLWorkspaceSymbolCacheHelper {
 
     public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber = 1): void {
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
-            GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);
+            InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);
     }
 
     public static addEntryPoint(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
-            GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
+            InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
 
@@ -100,16 +100,16 @@ export class COBOLWorkspaceSymbolCacheHelper {
         }
 
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
-            GlobalCachesHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, map);
+            InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, map);
     }
 
     public static removeAllProgramEntryPoints(srcfilename: string):void {
-        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(GlobalCachesHelper.getFilenameWithoutPath(srcfilename),
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
         InMemoryGlobalSymbolCache.entryPoints);
     }
 
     public static removeAllTypes(srcfilename: string):void {
-        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(GlobalCachesHelper.getFilenameWithoutPath(srcfilename),
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
         InMemoryGlobalSymbolCache.types);
     }
 
@@ -160,5 +160,3 @@ export class COBOLWorkspaceSymbolCacheHelper {
         }
     }
 }
-
-export const InMemoryGlobalSymbolCache: COBOLGlobalSymbolTable = new COBOLGlobalSymbolTable();

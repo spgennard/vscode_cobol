@@ -1,8 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import path from 'path';
-import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
+import { COBOLGlobalSymbolTable } from './cobolglobalcache';
 
-export class GlobalCachesHelper {
+export const InMemoryGlobalSymbolCache = new COBOLGlobalSymbolTable();
+
+export class InMemoryGlobalCacheHelper {
+
+
     public static getFilenameWithoutPath(fullPath: string): string {
         const lastSlash = fullPath.lastIndexOf(path.sep);
         if (lastSlash === -1) {

@@ -1,7 +1,7 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { FileType, TextDocument, Uri, window, workspace } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
-import { GlobalCachesHelper } from "./globalcachehelper";
+import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -17,7 +17,7 @@ import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
 import { COBOLFileUtils } from "./opencopybook";
-import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache, TypeCategory } from "./cobolworkspacecache";
+import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -49,7 +49,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
-            GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
             COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
             COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
         }
@@ -66,6 +66,9 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         }
 
         switch (token.tokenType) {
+            case COBOLTokenStyle.File:
+                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                break;
             case COBOLTokenStyle.ImplicitProgramId:
                 COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;

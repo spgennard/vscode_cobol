@@ -12,7 +12,8 @@ import * as fs from 'fs';
 import { Hash } from "crypto";
 import path from "path";
 
-import { COBOLWorkspaceSymbolCacheHelper, InMemoryGlobalSymbolCache } from "./cobolworkspacecache";
+import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
+import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 const args = process.argv.slice(2);
 const features: IExternalFeatures = ConsoleExternalFeatures.Default;

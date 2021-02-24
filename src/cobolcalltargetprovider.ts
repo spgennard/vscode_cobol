@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { VSCOBOLConfiguration } from './configuration';
 import {  COBOLGlobalSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
-import { InMemoryGlobalSymbolCache } from './cobolworkspacecache';
+import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 
 export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,

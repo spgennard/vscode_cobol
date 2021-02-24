@@ -1,4 +1,4 @@
-import { GlobalCachesHelper } from "./globalcachehelper";
+import { InMemoryGlobalCacheHelper } from "./globalcachehelper";
 import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./cobolsourcescanner";
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
@@ -26,7 +26,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
-            GlobalCachesHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
         }
 
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);
