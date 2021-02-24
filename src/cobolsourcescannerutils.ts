@@ -41,7 +41,6 @@ export class COBOLSourceScannerUtils {
         logMessage("Metadata Dump");
         logMessage(" cache_metadata : " + settings.cache_metadata + "\n");
         logMessage(" cache folder             : " + cacheDirectory);
-        logMessage(" Last modified            : " + InMemoryGlobalSymbolCache.lastModifiedTime);
         logMessage(" Dirty flag               : " + InMemoryGlobalSymbolCache.isDirty);
         logMessage("");
         logMessage("Global symbols            : (made lowercase)");
@@ -94,7 +93,6 @@ export class COBOLSourceScannerUtils {
             logMessage("Paragraphs/Sections in file : none (parse_copybooks_for_references set)");
         }
 
-        logMessage("   Source FileName cache : " + InMemoryGlobalSymbolCache.sourceFilenameModified.size);
         myConsoleStream.close();
         workspace.openTextDocument(myConsoleFile).then(doc => window.showTextDocument(doc));
         // fs.unlinkSync(myConsoleFile);

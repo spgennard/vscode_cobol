@@ -101,7 +101,8 @@ for (const arg of args) {
             stats.maxDirectoryDepth = scanData.maxDirectoryDepth;
             stats.fileCount = scanData.fileCount;
 
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.symbols);
+            // TODO: add in other metadata items
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.symbols,true);
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {
                     features.logMessage(` Directories scanned   : ${stats.directoriesScanned}`);
