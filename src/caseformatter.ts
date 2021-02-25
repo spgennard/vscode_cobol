@@ -31,7 +31,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
         }
 
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (current === undefined) {
             return;
         }

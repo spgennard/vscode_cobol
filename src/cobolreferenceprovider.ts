@@ -1,6 +1,7 @@
 
 import * as vscode from 'vscode';
 import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolsourcescanner';
+import { VSCOBOLConfiguration } from './configuration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 
 const wordRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
@@ -31,10 +32,10 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         }
 
         const workLower = word.toLocaleLowerCase();
-
+        const settings = VSCOBOLConfiguration.get();
         // cache current document, so interactive searches can be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSCOBOLSourceScanner.getCachedObject(document);
+            this.current = VSCOBOLSourceScanner.getCachedObject(document, settings);
             if (this.current !== undefined) {
                 this.sourceRefs = this.current.sourceReferences;
                 this.currentVersion = document.version;

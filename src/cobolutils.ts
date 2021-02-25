@@ -489,14 +489,14 @@ export class COBOLUtils {
     public static foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle): void {
         const uri = activeEditor.document.uri;
 
+        const settings = VSCOBOLConfiguration.get();
         const file = new VSCodeSourceHandler(activeEditor.document, false);
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
             logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
             return;
         }
 
-        const settings = VSCOBOLConfiguration.get();
         const edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (let l = 0; l < file.getLineCount(); l++) {

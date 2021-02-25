@@ -113,10 +113,8 @@ export default class VSCOBOLSourceScanner {
 
     private static readonly MAX_MEM_CACHE_SIZE = 30;
 
-    public static getCachedObject(document: TextDocument): COBOLSourceScanner | undefined {
-        const fileName: string = document.fileName;
-        const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
-        const config = VSCOBOLConfiguration.get();
+    public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
+        // const config = VSCOBOLConfiguration.get();
 
         // file is too large to parse
         if (document.lineCount > config.editor_maxTokenizationLineLength) {
@@ -124,6 +122,7 @@ export default class VSCOBOLSourceScanner {
             return undefined;
         }
 
+        const fileName: string = document.fileName;
         let cachedObject = InMemoryCache.get(fileName);
         if (cachedObject !== undefined) {
             if (cachedObject.sourceHandler.getDocumentVersionId()!== document.version) {
@@ -135,6 +134,7 @@ export default class VSCOBOLSourceScanner {
         /* grab, the file parse it can cache it */
         if (cachedObject === undefined) {
             try {
+                const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
                 const startTime = performance_now();
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
                     cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),

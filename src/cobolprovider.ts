@@ -6,6 +6,8 @@ import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage, logTimeThreshold } from './extension';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
+import { settings } from 'cluster';
+import { config } from 'process';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -16,7 +18,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
-        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document);
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.iconfig);
 
         if (sf !== undefined) {
             if (sf.cpPerformTargets === undefined) {
@@ -45,8 +47,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         return new TrieSearch('tokenName');
     }
 
-    private getConstantsOrVariables(document: TextDocument): TrieSearch {
-        const sf = VSCOBOLSourceScanner.getCachedObject(document);
+    private getConstantsOrVariables(document: TextDocument, settings: ICOBOLSettings): TrieSearch {
+        const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
 
         if (sf !== undefined) {
             if (sf.cpConstantsOrVars === undefined) {
@@ -210,7 +212,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
                     case "move":
                         {
-                            const words = this.getConstantsOrVariables(document);
+                            const words = this.getConstantsOrVariables(document,this.iconfig);
 
                             // TODO:
                             //
@@ -260,7 +262,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "varying":
                     case "with":
                         {
-                            const words = this.getConstantsOrVariables(document);
+                            const words = this.getConstantsOrVariables(document, this.iconfig);
                             items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
                             break;
                         }

@@ -7,9 +7,6 @@ import * as process from 'process';
 import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
-import { InMemoryGlobalSymbolCache } from './globalcachehelper';
-import { COBOLFileSymbol } from './cobolglobalcache';
-
 
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";

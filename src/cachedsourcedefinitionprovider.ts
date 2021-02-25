@@ -37,7 +37,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         let qcp: COBOLSourceScanner | undefined = undefined;
 
         if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-            qcp = VSCOBOLSourceScanner.getCachedObject(document);
+            qcp = VSCOBOLSourceScanner.getCachedObject(document, config);
             if (qcp === undefined) {
                 return locations;
             }
@@ -73,7 +73,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
          * for variables
          */
         if (qcp === undefined) {
-            qcp = VSCOBOLSourceScanner.getCachedObject(document);
+            qcp = VSCOBOLSourceScanner.getCachedObject(document, config);
         }
 
         if (qcp === undefined) {
