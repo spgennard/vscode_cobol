@@ -8,6 +8,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
     commentCallback?: ICommentCallback;
+    lineCount: number;
+    documentVersionId: number;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -15,6 +17,12 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.dumpAreaBOnwards = false;
         this.commentCount = 0;
         this.commentCallback = commentCallback;
+        this.lineCount = this.document.lineCount;
+        this.documentVersionId = this.document.version;
+    }
+
+    getDocumentVersionId(): number {
+        return this.documentVersionId;
     }
 
     getUriAsString(): string {
@@ -22,7 +30,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     }
 
     getLineCount(): number {
-        return this.document.lineCount;
+        return this.lineCount;
     }
 
     getCommentCount(): number {
@@ -39,7 +47,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
     getLine(lineNumber: number): string|undefined {
 
-        if (lineNumber >= this.document.lineCount) {
+        if (lineNumber >= this.lineCount) {
             return undefined;
         }
 

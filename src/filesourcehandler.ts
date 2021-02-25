@@ -16,6 +16,7 @@ export class FileSourceHandler implements ISourceHandler {
     lines: string[];
     commentCount: number;
     commentCallback?: ICommentCallback;
+    documentVersionId: number;
 
     public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
         this.document = document;
@@ -31,6 +32,7 @@ export class FileSourceHandler implements ISourceHandler {
         const docstat = fs.statSync(document);
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
+        this.documentVersionId = docstat.mtimeMs;
         const startTime = features.performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
@@ -43,6 +45,9 @@ export class FileSourceHandler implements ISourceHandler {
             features.logException("File failed! (" + document + ")", e);
         }
 
+    }
+    getDocumentVersionId(): number {
+        return this.documentVersionId;
     }
 
     private sendCommentCallback(line: string, lineNumber:number) {

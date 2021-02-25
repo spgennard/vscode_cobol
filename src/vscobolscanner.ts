@@ -79,13 +79,13 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
                 COBOLWorkspaceSymbolCacheHelper.addEntryPoint(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.InterfaceId:
-                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName,token.tokenName, token.startLine, TypeCategory.InterfaceId);
+                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName, token.tokenName, token.startLine, TypeCategory.InterfaceId);
                 break;
             case COBOLTokenStyle.EnumId:
-                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName,token.tokenName, token.startLine, TypeCategory.EnumId);
+                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName, token.tokenName, token.startLine, TypeCategory.EnumId);
                 break;
             case COBOLTokenStyle.ClassId:
-                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName,token.tokenName, token.startLine, TypeCategory.ClassId);
+                COBOLWorkspaceSymbolCacheHelper.addClass(this.st.fileName, token.tokenName, token.startLine, TypeCategory.ClassId);
                 break;
             case COBOLTokenStyle.MethodId:
                 // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
@@ -105,7 +105,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 
 export default class VSCOBOLSourceScanner {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    static clearCache(settings: ICOBOLSettings):void {
+    static clearCache(settings: ICOBOLSettings): void {
         logMessage("Clearing internal cache");
         clearCOBOLCache();
         // commands.executeCommand("workbench.action.reloadWindow");
@@ -124,13 +124,16 @@ export default class VSCOBOLSourceScanner {
             return undefined;
         }
 
-        /* if the document is edited, drop the in cached object */
-        if (document.isDirty) {
-            InMemoryCache.delete(fileName);
+        let cachedObject = InMemoryCache.get(fileName);
+        if (cachedObject !== undefined) {
+            if (cachedObject.sourceHandler.getDocumentVersionId()!== document.version) {
+                InMemoryCache.delete(fileName);
+                cachedObject = undefined;
+            }
         }
 
         /* grab, the file parse it can cache it */
-        if (InMemoryCache.has(fileName) === false) {
+        if (cachedObject === undefined) {
             try {
                 const startTime = performance_now();
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
@@ -164,7 +167,7 @@ export default class VSCOBOLSourceScanner {
             }
         }
 
-        return InMemoryCache.get(fileName);
+        return cachedObject;
     }
 
     public static async checkWorkspaceForMissingCopybookDirs(): Promise<void> {
@@ -345,7 +348,7 @@ export default class VSCOBOLSourceScanner {
 
         // if on Windows replace ${HOME} with ${USERPROFILE}
         if (COBOLFileUtils.isWin32) {
-            str = str.replace(/\$\{HOME\}/,'${USERPROFILE}');
+            str = str.replace(/\$\{HOME\}/, '${USERPROFILE}');
         }
 
         const replaced = str.replace(/\$\{([^%]+)\}/g, (_original, matched) => {

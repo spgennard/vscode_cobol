@@ -1051,10 +1051,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         // new division
-        if (tokenType === COBOLTokenStyle.Division && state.currentDivision !== COBOLToken.Null) {
-            state.currentParagraph = COBOLToken.Null;
+        if (tokenType === COBOLTokenStyle.Division) {// && state.currentDivision !== COBOLToken.Null) {
 
+            state.currentParagraph = COBOLToken.Null;
             state.currentDivision.endLine = startLine;
+            // state.currentDivision.endLine = parentToken !== undefined ? parentToken.endLine : startLine;
             if (ctoken.startColumn !== 0) {
                 state.currentDivision.endColumn = ctoken.startColumn - 1;
             }
@@ -1567,6 +1568,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     const trimmedCurrent = this.trimLiteral(current);
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, trimmedCurrent, prevPlusCurrent, state.currentDivision);
                     state.programs.push(ctoken);
+                    if (state.currentDivision !== COBOLToken.Null) {
+                        state.currentDivision.endLine = ctoken.endLine;
+                        state.currentDivision.endColumn = ctoken.endColumn;
+                    }
                     if (trimmedCurrent.indexOf(" ") === -1 && token.isTokenPresent("external") === false) {
                         state.parameters = [];
                         state.currentProgramTarget = new CallTargetInformation(ctoken, false, []);
