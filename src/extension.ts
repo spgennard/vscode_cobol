@@ -711,9 +711,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi> {
     context.subscriptions.push(clearInternalCaches);
 
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
-    if (settings.experimental_features) {
-        context.subscriptions.push(COBOLCaseFormatter.register());
-    }
+    context.subscriptions.push(COBOLCaseFormatter.register());
 
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 

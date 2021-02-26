@@ -2,7 +2,6 @@ import path, { dirname } from 'path';
 import fs from 'fs';
 import * as vscode from 'vscode';
 import { getWorkspaceFolders } from './cobolfolders';
-import { VSCOBOLConfiguration } from './configuration';
 import { COBOLFileUtils } from './opencopybook';
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
@@ -22,12 +21,6 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 
 
 	public provideTasks(): Thenable<vscode.Task[]> | undefined {
-		const settings = VSCOBOLConfiguration.get();
-
-		if (!settings.experimental_features) {
-			return undefined;
-		}
-
 		const scriptFilename = this.getFileFromWorkspace();
 		if (scriptFilename === undefined) {
 			return undefined;
@@ -70,11 +63,6 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 	}
 
 	public resolveTask(_task: vscode.Task): vscode.Task | undefined {
-		const settings = VSCOBOLConfiguration.get();
-		if (!settings.experimental_features) {
-			return undefined;
-		}
-
 		const scriptName = this.getFileFromWorkspace();
 
 		// does this workspace have a bld.sh or bld.bat
