@@ -516,6 +516,82 @@ export const cobolFunctions: string[] = [
 	"year-to-yyyy"
 ];
 
+export const acuKeywords: string[] = [
+	"3-d",
+	"active-x-control",
+	"activex-res",
+	"acuactivexcontrol",
+	"alignment",
+	"auto-minimize",
+	"auto-resize",
+	"bind",
+	"box",
+	"cancel-button",
+	"cell",
+	"cells",
+	"center",
+	"centered-headings",
+	"clsid",
+	"color",
+	"column-headings",
+	"cursor-frame-width",
+	"data-columns",
+	"default-font",
+	"default-interface",
+	"default-source",
+	"destroy",
+	"display-columns",
+	"divider-color",
+	"drag-color",
+	"engraved",
+	"erase",
+	"event",
+	"frame",
+	"grid",
+	"heading-color",
+	"heading-divider-color",
+	"height",
+	"help-id",
+	"id",
+	"initial-state",
+	"inquire",
+	"label-offset",
+	"label",
+	"large-font",
+	"list-box",
+	"menu",
+	"message",
+	"modeless",
+	"modify",
+	"newline",
+	"no-tab",
+	"num-rows",
+	"primary-interface",
+	"push-button",
+	"radio-button",
+	"page-layout-screen",
+	"entry-field",
+	"record-data",
+	"record-position",
+	"report-composer",
+	"resizeable",
+	"resource",
+	"scroll",
+	"self-act",
+	"separation",
+	"system",
+	"thread",
+	"tiled-headings",
+	"title-bar",
+	"title",
+	"unsorted",
+	"user-gray",
+	"vpadding",
+	"vscroll",
+	"width",
+	"wrap"
+];
+
 export const cobolStorageKeywords: string[] = [
 	"binary-char",
 	"binary-double",
@@ -949,6 +1025,10 @@ export const cobolRegistersDictionary = new Map<string, string>();
 
 /* inline decl */
 for (const key of cobolKeywords) {
+	cobolKeywordDictionary.set(key, key);
+}
+
+for (const key of acuKeywords) {
 	cobolKeywordDictionary.set(key, key);
 }
 
