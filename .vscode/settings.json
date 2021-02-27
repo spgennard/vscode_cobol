@@ -206,6 +206,7 @@
         "possilexmltags",
         "poutput",
         "preproc",
+        "preprocessors",
         "procobol",
         "ptref",
         "qcpd",

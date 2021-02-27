@@ -2,15 +2,45 @@
 import { COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle, COBOLPreprocessorOutput } from "./cobapi";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 import { IExternalFeatures } from "./externalfeatures";
-import { clearCOBOLCache } from "./vscobolscanner";
 
 export class CobApiHandle implements COBOLPreprocessorHandle {
     id: string;
+    description: string;
+    packageJson: any;
+    bugReportUrl: string;
+    bugReportEmail: string;
     callback: COBOLPreprocessor;
+    info: string;
 
-    constructor(id: string, callback:COBOLPreprocessor) {
-        this.id = id;
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    constructor(packageJson: any, callback:COBOLPreprocessor) {
+        this.packageJson = packageJson;
         this.callback = callback;
+        if (packageJson.name !== undefined && packageJson.publisher !== undefined) {
+            this.id = `${packageJson.publisher}.${packageJson.name}`;
+        } else {
+            this.id = "";
+        }
+
+        if (packageJson.description !== undefined) {
+            this.description = `${packageJson.description}`;
+        } else {
+            this.description = "";
+        }
+
+        if (packageJson.bugs !== undefined && packageJson.bugs.url !== undefined) {
+            this.bugReportUrl = `${packageJson.bugs.url}`;
+        } else {
+            this.bugReportUrl = "";
+        }
+
+        if (packageJson.bugs !== undefined && packageJson.bugs.email !== undefined) {
+            this.bugReportEmail = `${packageJson.bugs.email}`;
+        } else {
+            this.bugReportEmail = "";
+        }
+
+        this.info = `${this.id}`;
     }
 }
 
@@ -40,13 +70,30 @@ export class CobApi implements COBOLApi {
         this.externalFeatures = externalFeatures;
     }
 
-    registerPreprocessor(ownerid:string, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
-        COBOLPreprocessorHelper.ownerId.push(ownerid);
-        COBOLPreprocessorHelper.sourceScanner.push(callback);
-        return new CobApiHandle(ownerid,callback);
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    registerPreprocessor(packageJSON:any, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
+        if (packageJSON === undefined || callback === undefined) {
+            throw new Error("Invalid argument (registerPreprocessor)");
+        }
+        const handle = new CobApiHandle(packageJSON,callback);
+        if (handle.id.length === 0) {
+            throw new Error("Invalid packageJSON, no id present (registerPreprocessor)");
+        }
+
+        if (handle.bugReportEmail.length === 0) {
+            throw new Error("Invalid packageJSON, no bug email address present (registerPreprocessor)");
+        }
+
+        if (handle.bugReportUrl.length === 0) {
+            throw new Error("Invalid packageJSON, no bug url present to report issue (registerPreprocessor)");
+        }
+
+        COBOLPreprocessorHelper.preprocessors.set(handle, callback);
+
+        return handle;
     }
 
     logWarningMessage(handle: COBOLPreprocessorHandle, message: string): void {
-        this.externalFeatures.logMessage(`[${handle.id}]: ${message}`);
+        this.externalFeatures.logMessage(`[${handle.info}]: ${message}`);
     }
 }

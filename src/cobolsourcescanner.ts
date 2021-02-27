@@ -5,24 +5,23 @@ import { acuKeywords, cobolKeywordDictionary, cobolProcedureKeywordDictionary, c
 
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol } from "./cobolglobalcache";
-import { COBOLPreprocessor } from './cobapi';
+import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from './cobapi';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { CobApiOutput } from "./cobapiimpl";
+import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
 
 export class COBOLPreprocessorHelper {
-    public static ownerId: string[] = [];
-    public static sourceScanner: COBOLPreprocessor[] = [];
+    public static preprocessors = new Map<CobApiHandle, COBOLPreprocessor>();
 
     public static isActive(): boolean {
-        return this.sourceScanner.length !== 0;
+        return this.preprocessors.size !== 0;
     }
 
     public static actionStart(id: string): void {
-        for (const p of COBOLPreprocessorHelper.sourceScanner) {
+        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
                 p.start(id);
             } catch (e) {
@@ -30,16 +29,15 @@ export class COBOLPreprocessorHelper {
             }
         }
     }
-
-    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string,string>): boolean {
+    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string,string>, callbacks:COBOLPreprocessorCallbacks): boolean {
         const lines: string[] = [orgLine];
 
-        for (const p of COBOLPreprocessorHelper.sourceScanner) {
+        for (const [handle,p] of COBOLPreprocessorHelper.preprocessors) {
             let processedLines = false;
             for (const line of lines) {
                 try {
                     const poutput = new CobApiOutput();
-                    if (p.process(id, line, poutput)) {
+                    if (p.process(id, line, poutput, callbacks)) {
                         processedLines = true;
                         for (const pline of poutput.lines) {
                             allLines.push(pline);
@@ -64,7 +62,7 @@ export class COBOLPreprocessorHelper {
     }
 
     public static actionEnd(id: string): void {
-        for (const p of COBOLPreprocessorHelper.sourceScanner) {
+        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
                 p.end(id);
             } catch (e) {
@@ -591,7 +589,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
     }
 }
 
-export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
+export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner, COBOLPreprocessorCallbacks {
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
@@ -945,7 +943,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     if (isPreProcessorsActive) {
                         try {
-                            if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks)) {
+                            if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks,this)) {
                                 preProcLines = [];
                             }
                         } catch (e) {
@@ -1025,6 +1023,20 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         // inform any pre-processors
         COBOLPreprocessorHelper.actionEnd(this.id);
+    }
+
+    public getCurrentDivision(): string {
+        return this.sourceReferences.state.currentDivision.tokenName;
+    }
+
+    public getCurrentSection(): string {
+        return this.sourceReferences.state.currentSection.tokenName;
+    }
+
+    public getCopyFilename(copybook: string, inInfo: string):string {
+        const trimmedCopyBook = copybook.trim();
+
+        return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
@@ -2091,10 +2103,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             // }
 
             // const comment = commentLine.substring(2 + startOfComment).trim();
-            const startOfCOBOLint: number = commentLine.indexOf(this.cobolLintLiteral);
+            const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
 
-            if (startOfCOBOLint !== -1) {
-                const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLint).trim();
+            if (startOfCOBOLLint !== -1) {
+                const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLLint).trim();
                 let args = commentCommandArgs.split(" ");
                 const command = args[0];
                 args = args.slice(1);
