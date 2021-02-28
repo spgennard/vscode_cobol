@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle, COBOLPreprocessorOutput } from "./cobapi";
+import { COBAPIConstants, COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle, COBOLPreprocessorOutput } from "./cobapi";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 import { IExternalFeatures } from "./externalfeatures";
 
@@ -71,7 +71,8 @@ export class CobApi implements COBOLApi {
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    registerPreprocessor(packageJSON:any, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
+    registerPreprocessor(interface_version:number, packageJSON:any, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
+
         if (packageJSON === undefined || callback === undefined) {
             throw new Error("Invalid argument (registerPreprocessor)");
         }
@@ -86,6 +87,12 @@ export class CobApi implements COBOLApi {
 
         if (handle.bugReportUrl.length === 0) {
             throw new Error("Invalid packageJSON, no bug url present to report issue (registerPreprocessor)");
+        }
+
+        if (interface_version !== COBAPIConstants.COB_API_INTERFACE_VERSION) {
+            const messageForInfo = `Interface version requested is out of date, please contact ${handle.bugReportEmail} @ ${handle.bugReportUrl}\n` +
+                          `for an updated of extension ${handle.id}`;
+            throw new Error(messageForInfo);
         }
 
         COBOLPreprocessorHelper.preprocessors.set(handle, callback);

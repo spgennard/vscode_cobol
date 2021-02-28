@@ -1,3 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export class COBAPIConstants {
+    public static COB_API_INTERFACE_VERSION = 1;
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface COBOLPreprocessorHandle {
     packageJson: any;
@@ -24,6 +31,7 @@ export interface COBOLPreprocessor {
 
 export interface COBOLApi {
     logWarningMessage(handle:COBOLPreprocessorHandle, message: string):void;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    registerPreprocessor(packageJson: any, callback:COBOLPreprocessor): COBOLPreprocessorHandle;
+    registerPreprocessor(interface_version:number, packageJson: any, callback:COBOLPreprocessor): COBOLPreprocessorHandle;
 }
