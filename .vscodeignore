@@ -17,6 +17,7 @@ src/
 arc/
 publishit.sh
 bld_cobscanner.sh
+bld_cobscanner_and_sdk.sh
 justpublish.sh
 publishit2gitonly.sh
 gen_changelog.sh

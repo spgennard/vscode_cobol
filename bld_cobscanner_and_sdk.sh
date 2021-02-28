@@ -40,3 +40,6 @@ else
  exit 1
 fi
 rm package.json package-lock.json
+
+cd ../src
+zip ../sdk.zip cobapi.ts
