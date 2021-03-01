@@ -18,6 +18,7 @@ import { ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
 import { COBOLFileUtils } from "./opencopybook";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
+import { VSPreProc } from "./vspreproc";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -134,6 +135,13 @@ export default class VSCOBOLSourceScanner {
         /* grab, the file parse it can cache it */
         if (cachedObject === undefined) {
             try {
+                // we have to delay the setup of the pp to avoid a race condition on startup.
+                //   eg: if the ext depends on this but its exports are queried before it has
+                //        completed the activation.. it just does not work
+                if (config.preprocessor_extensions.length !== 0) {
+                    VSPreProc.registerPreProcessors(config);
+                }
+
                 const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
                 const startTime = performance_now();
                 const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,

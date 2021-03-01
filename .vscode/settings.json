@@ -248,9 +248,13 @@
         "vscodesourcehandler",
         "vsconfig",
         "vsexternalfeatures",
+        "vspreproc",
         "workspacefolder",
         "workspacefolders",
         "yyyyddd",
         "yyyymmdd"
+    ],
+    "coboleditor.preprocessor_extensions": [
+        "wibble.mycobol"
     ]
 }

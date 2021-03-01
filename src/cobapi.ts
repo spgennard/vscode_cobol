@@ -1,13 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export class COBAPIConstants {
     public static COB_API_INTERFACE_VERSION = 2;
+}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export interface COBOLPreprocessorHandle {
+    packageJson: any;
+    info: string;
+
+    logWarningMessage(message: string):void;
 }
 
 export interface COBOLPreprocessorCallbacks {
     getCurrentDivision(): string;
     getCurrentSection(): string;
     getCopyFilename(copybook: string, inInfo: string):string;
+
 }
 
 export interface COBOLPreprocessorOutput {
@@ -17,13 +26,10 @@ export interface COBOLPreprocessorOutput {
 }
 
 export interface COBOLPreprocessor {
-    start(source:string):void;
-    process(source:string, line:string, output:COBOLPreprocessorOutput, callbacks:COBOLPreprocessorCallbacks): boolean;
+    start(source:string, handle: COBOLPreprocessorHandle, callbacks:COBOLPreprocessorCallbacks):void;
+    process(source:string, line:string, output:COBOLPreprocessorOutput): boolean;
     end(source:string):void;
-}
 
-export interface COBOLApi {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    registerPreprocessor(interface_version:number, packageJson: any): void;
-    logWarningMessage(message: string):void;
+    getPackageJson(): any;
+
 }

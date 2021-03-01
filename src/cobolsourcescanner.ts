@@ -15,35 +15,36 @@ import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
 
 export class COBOLPreprocessorHelper {
     public static preprocessors = new Map<CobApiHandle, COBOLPreprocessor>();
+    public static preprocessorsExts = new Map<string, CobApiHandle>();
 
     public static isActive(): boolean {
         return this.preprocessors.size !== 0;
     }
 
-    public static actionStart(id: string): void {
+    public static actionStart(id: string, callbacks: COBOLPreprocessorCallbacks): void {
         for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
-                p.start(id);
+                p.start(id, handle, callbacks);
             } catch (e) {
                 //
             }
         }
     }
-    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string,string>, callbacks:COBOLPreprocessorCallbacks): boolean {
+    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): boolean {
         const lines: string[] = [orgLine];
 
-        for (const [handle,p] of COBOLPreprocessorHelper.preprocessors) {
+        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             let processedLines = false;
             for (const line of lines) {
                 try {
                     const poutput = new CobApiOutput();
-                    if (p.process(id, line, poutput, callbacks)) {
+                    if (p.process(id, line, poutput)) {
                         processedLines = true;
                         for (const pline of poutput.lines) {
                             allLines.push(pline);
                         }
-                        for (const [symbol,internalCopybook] of poutput.externalFiles) {
-                            externalFiles.set(symbol,internalCopybook);
+                        for (const [symbol, internalCopybook] of poutput.externalFiles) {
+                            externalFiles.set(symbol, internalCopybook);
                         }
                     }
                 }
@@ -912,7 +913,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         // inform any pre-processors.
-        COBOLPreprocessorHelper.actionStart(this.id);
+        COBOLPreprocessorHelper.actionStart(this.id, this);
         let line: string | undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
@@ -943,7 +944,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     if (isPreProcessorsActive) {
                         try {
-                            if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks,this)) {
+                            if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks, this)) {
                                 preProcLines = [];
                             }
                         } catch (e) {
@@ -963,8 +964,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         }
 
                         state.ignoreInOutlineView = currentOutlineView;
-                        for(const [symbol,copybook] of copybooks) {
-                            this.newCOBOLToken(COBOLTokenStyle.File,l,line,symbol,copybook,state.currentDivision);
+                        for (const [symbol, copybook] of copybooks) {
+                            this.newCOBOLToken(COBOLTokenStyle.File, l, line, symbol, copybook, state.currentDivision);
                         }
                     } else {
                         const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
@@ -1033,7 +1034,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return this.sourceReferences.state.currentSection.tokenName;
     }
 
-    public getCopyFilename(copybook: string, inInfo: string):string {
+    public getCopyFilename(copybook: string, inInfo: string): string {
         const trimmedCopyBook = copybook.trim();
 
         return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
@@ -1636,7 +1637,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // handle interface-id
                 if (prevTokenLower === "interface-id" && current.length !== 0) {
-                    state.currentClass = this.  newCOBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
+                    state.currentClass = this.newCOBOLToken(COBOLTokenStyle.InterfaceId, lineNumber, line, this.trimLiteral(current), prevPlusCurrent, state.currentDivision);
 
                     state.pickFields = true;
                     state.captureDivisions = false;

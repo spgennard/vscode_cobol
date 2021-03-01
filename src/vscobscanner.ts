@@ -11,6 +11,9 @@ import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
+import { CobApiHandle } from "./cobapiimpl";
+import { COBOLPreprocessor } from "./cobapi";
+import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 
 class ScanStats {
     parentPid = 0;
@@ -353,4 +356,6 @@ export class VSCobScanner {
 
         return true;
     }
+
+
 }
