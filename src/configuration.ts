@@ -63,6 +63,7 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_symbols = getmetadata_symbols();
         vsconfig.metadata_entrypoints = getmetadata_entrypoints();
         vsconfig.metadata_types = getmetadata_types();
+        vsconfig.preprocessor_extensions = getpreprocessor_extensions();
         return vsconfig;
     }
 

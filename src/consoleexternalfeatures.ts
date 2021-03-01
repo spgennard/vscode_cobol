@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import ISourceHandler from "./isourcehandler";
 
 import util from 'util';
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLPreprocessor } from "./cobapi";
 
 export class ConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ConsoleExternalFeatures();
@@ -58,5 +60,10 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return ESourceFormat.unknown;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public getCOBOLPreprocessor(packageJSON:any): COBOLPreprocessor|undefined {
+        return undefined;
     }
 }

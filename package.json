@@ -621,7 +621,23 @@
                     },
                     "default": [],
                     "uniqueItems": true
+                },
+                "coboleditor.preprocessor_extensions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "types",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "internal preprocessor extensions"
+                            }
+                        }
+                    },
+                    "default": [],
+                    "uniqueItems": true
                 }
+
             }
         },
         "views": {

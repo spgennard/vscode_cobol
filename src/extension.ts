@@ -474,6 +474,7 @@ export async function activate(context: ExtensionContext): Promise<CobApi> {
     const onExtChange = vscode.extensions.onDidChange(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         activateLogChannelAndPaths(true, settings, false);
+        logMessage("extensions changed");
     });
     context.subscriptions.push(onExtChange);
 

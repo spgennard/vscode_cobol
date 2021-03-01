@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import ISourceHandler from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLPreprocessor } from "./cobapi";
 
 export interface IExternalFeatures {
     logMessage(message: string): void;
@@ -10,6 +11,8 @@ export interface IExternalFeatures {
     performance_now(): number;
     expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string;
     getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getCOBOLPreprocessor(packageJSON:any): COBOLPreprocessor|undefined;
 }
 
 export enum ESourceFormat {
@@ -59,5 +62,10 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return ESourceFormat.unknown;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public getCOBOLPreprocessor(packageJSON:any): COBOLPreprocessor|undefined {
+        return undefined;
     }
 }

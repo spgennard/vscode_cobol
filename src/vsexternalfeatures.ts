@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { extensions } from "vscode";
+import { COBOLPreprocessor } from "./cobapi";
+import { CobApiHandle } from "./cobapiimpl";
 import { logException, logMessage, logTimedMessage, performance_now } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -29,5 +34,19 @@ export class VSExternalFeatures implements IExternalFeatures{
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return getCOBOLSourceFormat(doc,config);
+    }
+
+    public getCOBOLPreprocessor(packageJSON:any): COBOLPreprocessor|undefined {
+        const handle = new CobApiHandle(packageJSON);
+
+        const preprocexp = extensions.getExtension(handle.id);
+        if (preprocexp?.exports === undefined) {
+            const messageForInfo = `Interface version requested is out of date, please contact ${handle.bugReportEmail} @ ${handle.bugReportUrl}\n` +
+                          `for an updated of extension ${handle.id}\n` +
+                          "No export found";
+            throw new Error(messageForInfo);
+        }
+
+        return preprocexp.exports as COBOLPreprocessor;
     }
 }

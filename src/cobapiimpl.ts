@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { COBAPIConstants, COBOLApi, COBOLPreprocessor, COBOLPreprocessorHandle, COBOLPreprocessorOutput } from "./cobapi";
+// import { extensions } from "vscode";
+import { COBAPIConstants, COBOLApi, COBOLPreprocessor, COBOLPreprocessorOutput } from "./cobapi";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 import { IExternalFeatures } from "./externalfeatures";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export interface COBOLPreprocessorHandle {
+    packageJson: any;
+    info: string;
+}
 
 export class CobApiHandle implements COBOLPreprocessorHandle {
     id: string;
@@ -9,13 +16,12 @@ export class CobApiHandle implements COBOLPreprocessorHandle {
     packageJson: any;
     bugReportUrl: string;
     bugReportEmail: string;
-    callback: COBOLPreprocessor;
+    callback: COBOLPreprocessor|undefined = undefined;
     info: string;
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    constructor(packageJson: any, callback:COBOLPreprocessor) {
+    constructor(packageJson: any) {
         this.packageJson = packageJson;
-        this.callback = callback;
         if (packageJson.name !== undefined && packageJson.publisher !== undefined) {
             this.id = `${packageJson.publisher}.${packageJson.name}`;
         } else {
@@ -65,42 +71,45 @@ export class CobApiOutput implements COBOLPreprocessorOutput {
 
 export class CobApi implements COBOLApi {
     private externalFeatures: IExternalFeatures;
+    private handle: CobApiHandle|undefined;
 
     constructor(externalFeatures: IExternalFeatures) {
         this.externalFeatures = externalFeatures;
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    registerPreprocessor(interface_version:number, packageJSON:any, callback: COBOLPreprocessor): COBOLPreprocessorHandle {
+    registerPreprocessor(interface_version:number, packageJSON:any):void {
 
-        if (packageJSON === undefined || callback === undefined) {
+        if (packageJSON === undefined) {
             throw new Error("Invalid argument (registerPreprocessor)");
         }
-        const handle = new CobApiHandle(packageJSON,callback);
-        if (handle.id.length === 0) {
+
+        this.handle = new CobApiHandle(packageJSON);
+        if (this.handle.id.length === 0) {
             throw new Error("Invalid packageJSON, no id present (registerPreprocessor)");
         }
 
-        if (handle.bugReportEmail.length === 0) {
+        if (this.handle.bugReportEmail.length === 0) {
             throw new Error("Invalid packageJSON, no bug email address present (registerPreprocessor)");
         }
 
-        if (handle.bugReportUrl.length === 0) {
+        if (this.handle.bugReportUrl.length === 0) {
             throw new Error("Invalid packageJSON, no bug url present to report issue (registerPreprocessor)");
         }
 
         if (interface_version !== COBAPIConstants.COB_API_INTERFACE_VERSION) {
-            const messageForInfo = `Interface version requested is out of date, please contact ${handle.bugReportEmail} @ ${handle.bugReportUrl}\n` +
-                          `for an updated of extension ${handle.id}`;
+            const messageForInfo = `Interface version requested is out of date, please contact ${this.handle.bugReportEmail} @ ${this.handle.bugReportUrl}\n` +
+                          `for an updated of extension ${this.handle.id}`;
             throw new Error(messageForInfo);
         }
 
-        COBOLPreprocessorHelper.preprocessors.set(handle, callback);
-
-        return handle;
+        const pp = this.externalFeatures.getCOBOLPreprocessor(packageJSON) as COBOLPreprocessor
+        COBOLPreprocessorHelper.preprocessors.set(this.handle, pp);
     }
 
-    logWarningMessage(handle: COBOLPreprocessorHandle, message: string): void {
-        this.externalFeatures.logMessage(`[${handle.info}]: ${message}`);
+    logWarningMessage(message: string): void {
+        if (this.handle !== undefined) {
+            this.externalFeatures.logMessage(`[${this.handle.info}]: ${message}`);
+        }
     }
 }
