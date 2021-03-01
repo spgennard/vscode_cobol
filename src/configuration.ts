@@ -354,3 +354,12 @@ function getmetadata_types(): string[] {
     }
     return metadata_types;
 }
+
+function getpreprocessor_extensions(): string[] {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    let preprocessor_extensions = editorConfig.get<string[]>('preprocessor_extensions');
+    if (!preprocessor_extensions || (preprocessor_extensions !== null && preprocessor_extensions.length === 0)) {
+        preprocessor_extensions = [];
+    }
+    return preprocessor_extensions;
+}
