@@ -627,7 +627,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
 
-    const dumpMetadata = commands.registerCommand('cobolplugin.dumpMetaData', function () {
+    const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);

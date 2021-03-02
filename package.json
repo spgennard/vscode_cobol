@@ -62,7 +62,7 @@
         "onCommand:cobolplugin.change_lang_to_cobol",
         "onCommand:cobolplugin.toggle_margin",
         "onCommand:cobolplugin.change_source_format",
-        "onCommand:cobolplugin.dumpMetaData",
+        "onCommand:cobolplugin.deprecated.dumpMetaData",
         "onCommand:cobolplugin.clearMetaData",
         "onCommand:cobolplugin.syntaxCheck",
         "onCommand:cobolplugin.deprecated.processAllFilesInWorkspace",
@@ -1051,7 +1051,7 @@
                 "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
             },
             {
-                "command": "cobolplugin.dumpMetaData",
+                "command": "cobolplugin.deprecated.dumpMetaData",
                 "category": "COBOL",
                 "title": "Dump metadata for diagnostic",
                 "enablement": "!isWeb  && config.coboleditor.cache_metadata != off"
