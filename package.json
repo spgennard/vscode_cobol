@@ -65,7 +65,7 @@
         "onCommand:cobolplugin.dumpMetaData",
         "onCommand:cobolplugin.clearMetaData",
         "onCommand:cobolplugin.syntaxCheck",
-        "onCommand:cobolplugin.processAllFilesInWorkspace",
+        "onCommand:cobolplugin.deprecated.processAllFilesInWorkspace",
         "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
         "onCommand:cobolplugin.mfurunMenu",
         "onCommand:cobolplugin.removeAllComments",
@@ -1045,7 +1045,7 @@
                 "enablement": "!isWeb"
             },
             {
-                "command": "cobolplugin.processAllFilesInWorkspace",
+                "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
                 "category": "COBOL",
                 "title": "Process files in workspace for metadata",
                 "enablement": "!isWeb && config.coboleditor.cache_metadata != off"

@@ -11,9 +11,6 @@ import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
-import { CobApiHandle } from "./cobapiimpl";
-import { COBOLPreprocessor } from "./cobapi";
-import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 
 class ScanStats {
     parentPid = 0;
@@ -157,7 +154,7 @@ export class VSCobScanner {
                         const tokenName = args[1];
                         const tokenLine = Number.parseInt(args[2]);
                         const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename,tokenName, tokenLine);
+                        COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename, tokenName, tokenLine);
                     }
                     else if (message.startsWith(COBSCANNER_SENDPRGID)) {
                         const args = message.split(",");
@@ -166,28 +163,28 @@ export class VSCobScanner {
                         const tokenFilename = args[3];
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                         COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
-                        COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename,tokenName, tokenLine);
+                        COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename, tokenName, tokenLine);
                     }
                     else if (message.startsWith(COBSCANNER_SENDCLASS)) {
                         const args = message.split(",");
                         const tokenName = args[1];
                         const tokenLine = Number.parseInt(args[2]);
                         const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename,tokenName, tokenLine, TypeCategory.ClassId);
+                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.ClassId);
                     }
                     else if (message.startsWith(COBSCANNER_SENDINTERFACE)) {
                         const args = message.split(",");
                         const tokenName = args[1];
                         const tokenLine = Number.parseInt(args[2]);
                         const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename,tokenName, tokenLine, TypeCategory.InterfaceId);
+                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.InterfaceId);
                     }
                     else if (message.startsWith(COBSCANNER_SENDENUM)) {
                         const args = message.split(",");
                         const tokenName = args[1];
                         const tokenLine = Number.parseInt(args[2]);
                         const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename,tokenName, tokenLine, TypeCategory.EnumId);
+                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.EnumId);
                     }
                 } else {
                     logMessage(msg as string);
@@ -209,22 +206,26 @@ export class VSCobScanner {
         }
     }
 
-    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
-        const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
-        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
-            logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
-            return;
-        }
+    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean, deprecatedMode: boolean): Promise<void> {
 
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-        if (cacheDirectory !== undefined && VSCobScanner.IsScannerActive(cacheDirectory)) {
-            if (!viaCommand) {
-                logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
-                VSCobScanner.removeScannerFile(cacheDirectory);
-                logMessage(` - lock file released`);
-            } else {
-                logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
+        const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
+
+        if (deprecatedMode) {
+            if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
+                logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
                 return;
+            }
+
+            const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+            if (cacheDirectory !== undefined && VSCobScanner.IsScannerActive(cacheDirectory)) {
+                if (!viaCommand) {
+                    logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
+                    VSCobScanner.removeScannerFile(cacheDirectory);
+                    logMessage(` - lock file released`);
+                } else {
+                    logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
+                    return;
+                }
             }
         }
 

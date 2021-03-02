@@ -48,7 +48,6 @@ import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
-import { VSPreProc } from './vspreproc';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -623,8 +622,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
     });
 
-    const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true);
+    const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspace', async () => {
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true);
     });
 
 
@@ -1100,7 +1099,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
-        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false);
+        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, true);
         pm.then(() => {
             return;
         });
