@@ -636,7 +636,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
     });
 
-    const clearMetaData = commands.registerCommand('cobolplugin.clearMetaData', function () {
+    const clearMetaData = commands.registerCommand('cobolplugin.deprecated.clearMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             VSCOBOLSourceScanner.clearMetaData(settings, cacheDirectory);
