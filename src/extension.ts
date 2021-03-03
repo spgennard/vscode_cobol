@@ -622,10 +622,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
     });
 
-    const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspace', async () => {
+    const processAllFilesInWorkspaceOutOfProcessDeprecated = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspace', async () => {
         await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true);
     });
 
+    const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false);
+    });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
@@ -704,6 +707,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     context.subscriptions.push(toggleCOBOLMargin);
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
+    context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessDeprecated);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);
 
     context.subscriptions.push(dumpMetadata);

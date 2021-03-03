@@ -1063,6 +1063,12 @@
                 "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
             },
             {
+                "command": "cobolplugin.processAllFilesInWorkspace",
+                "category": "COBOL",
+                "title": "Scan source files in workspace for metadata",
+                "enablement": "!isWeb && config.coboleditor.cache_metadata == off"
+            },
+            {
                 "command": "cobolplugin.clearCache",
                 "category": "COBOL",
                 "title": "Clear internal cache",

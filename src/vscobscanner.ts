@@ -99,7 +99,7 @@ export class VSCobScanner {
         return this.isAlive(VSCobScanner.activePid);
     }
 
-    public static async forkScanner(sf: ScanData, reason: string): Promise<void> {
+    public static async forkScanner(sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
         const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
         if (cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
@@ -272,7 +272,7 @@ export class VSCobScanner {
             sf.Directories.push(uri.fsPath);
         }
 
-        await VSCobScanner.forkScanner(sf, msgViaCommand);
+        await VSCobScanner.forkScanner(sf, msgViaCommand, deprecatedMode);
     }
 
     private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {
