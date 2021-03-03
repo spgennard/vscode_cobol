@@ -622,6 +622,21 @@
                     "default": [],
                     "uniqueItems": true
                 },
+                "coboleditor.metadata_files": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "title": "types",
+                        "properties": {
+                            "copybook": {
+                                "type": "string",
+                                "description": "internal metadata files"
+                            }
+                        }
+                    },
+                    "default": [],
+                    "uniqueItems": true
+                },
                 "coboleditor.preprocessor_extensions": {
                     "type": "array",
                     "items": {

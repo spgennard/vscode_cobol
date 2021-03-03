@@ -23,4 +23,14 @@ export class InMemoryGlobalCacheHelper {
             InMemoryGlobalSymbolCache.sourceFilenameModified.set(filename, lastModified);
         }
     }
+
+    public static getSourceFilenameModifiedTable(): string[] {
+
+        const filenames:string[] = [];
+        for(const [filename,lastModified] of InMemoryGlobalSymbolCache.sourceFilenameModified) {
+            filenames.push(`${filename},${lastModified}`);
+        }
+
+        return filenames;
+    }
 }

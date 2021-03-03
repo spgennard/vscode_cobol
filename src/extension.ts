@@ -483,6 +483,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_syms = event.affectsConfiguration("coboleditor.metadata_symbols");
         const md_eps = event.affectsConfiguration("coboleditor.metadata_entrypoints");
         const md_types = event.affectsConfiguration("coboleditor.metadata_types");
+        const md_metadata_files = event.affectsConfiguration("coboleditor.metadata_files");
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
@@ -502,6 +503,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
             if (md_types) {
                 COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types,true);
             }
+
+            if (md_metadata_files) {
+                //TODO md_metadata_files
+            }
         }
     });
     context.subscriptions.push(onDidChangeConfiguration);
@@ -516,6 +521,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types, false);
+    //TODO md_metadata_files
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);

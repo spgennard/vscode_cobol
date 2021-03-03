@@ -108,6 +108,9 @@ export class COBOLUtils {
             editorConfig.update('metadata_symbols', symbols);
             editorConfig.update('metadata_entrypoints', entrypoints);
             editorConfig.update('metadata_types', types);
+
+            //TODO md_metadata_files
+
             InMemoryGlobalSymbolCache.isDirty = false;
         }
     }

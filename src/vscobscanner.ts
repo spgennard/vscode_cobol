@@ -47,6 +47,7 @@ export class VSCobScanner {
             sf.symbols = settings.metadata_symbols;
             sf.entrypoints = settings.metadata_entrypoints;
             sf.types = settings.metadata_types;
+            //TODO md_metadata_files
             await this.forkScanner(sf, "OnSave", true);
         }
     }
