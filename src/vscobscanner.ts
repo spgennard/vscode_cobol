@@ -11,6 +11,8 @@ import VSCOBOLSourceScanner from "./vscobolscanner";
 import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
+import tempDirectory from 'temp-dir';
+
 
 class ScanStats {
     parentPid = 0;
@@ -45,7 +47,7 @@ export class VSCobScanner {
             sf.symbols = settings.metadata_symbols;
             sf.entrypoints = settings.metadata_entrypoints;
             sf.types = settings.metadata_types;
-            await this.forkScanner(sf, "OnSave");
+            await this.forkScanner(sf, "OnSave", true);
         }
     }
 
@@ -100,106 +102,115 @@ export class VSCobScanner {
     }
 
     public static async forkScanner(sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-        if (cacheDirectory !== undefined) {
+        let cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+
+        if (deprecatedMode && cacheDirectory !== undefined) {
             sf.cacheDirectory = cacheDirectory;
-            ScanDataHelper.save(cacheDirectory, sf);
+        } else {
+            cacheDirectory = tempDirectory;
+        }
 
-            const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
-            const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+        ScanDataHelper.save(cacheDirectory, sf);
 
-            const options: ForkOptions = {
-                stdio: [0, 1, 2, "ipc"],
-                cwd: VSCobScanner.scannerBinDir
-            };
+        const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
+        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
 
-            const child = fork(jcobscanner_js, [jsonFile], options);
+        const options: ForkOptions = {
+            stdio: [0, 1, 2, "ipc"],
+            cwd: VSCobScanner.scannerBinDir
+        };
 
-            VSCobScanner.activePid = child.pid;
+        const child = fork(jcobscanner_js, [jsonFile], options);
+        if (child == undefined) {
+            return;
+        }
 
-            child.on('error', err => {
+        VSCobScanner.activePid = child.pid;
+
+        child.on('error', err => {
+            if (cacheDirectory !== undefined) {
                 VSCobScanner.removeScannerFile(cacheDirectory);
-                logException(`Fork caused ${reason}`, err);
-            });
+            }
+            logException(`Fork caused ${reason}`, err);
+        });
 
-            child.on('exit', code => {
-                VSCobScanner.activePid = 0;
-                if (code !== 0) {
-                    if (sf.showMessage) {
-                        logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
-                    }
-                } else {
-                    progressStatusBarItem.hide();
+        child.on('exit', code => {
+            VSCobScanner.activePid = 0;
+            if (code !== 0) {
+                if (sf.showMessage) {
+                    logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
                 }
-                COBOLUtils.saveGlobalCacheToWorkspace();
-            });
+            } else {
+                progressStatusBarItem.hide();
+            }
+            COBOLUtils.saveGlobalCacheToWorkspace();
+        });
 
-            let prevPercent = 0;
-            child.on('message', (msg) => {
-                const message = msg as string;
-                if (message.startsWith("@@")) {
-                    if (message.startsWith(COBSCANNER_STATUS)) {
-                        const args = message.split(" ");
-                        progressStatusBarItem.show();
-                        const a1 = Number.parseInt(args[1]);
-                        const a2 = Number.parseInt(args[2]);
-                        const percent = ((a1 / a2) * 100) | 0;
-                        if (prevPercent !== percent) {
-                            progressStatusBarItem.text = `Processing metadata: ${percent}%`;
-                            prevPercent = percent;
-                        }
+        let prevPercent = 0;
+        child.on('message', (msg) => {
+            const message = msg as string;
+            if (message.startsWith("@@")) {
+                if (message.startsWith(COBSCANNER_STATUS)) {
+                    const args = message.split(" ");
+                    progressStatusBarItem.show();
+                    const a1 = Number.parseInt(args[1]);
+                    const a2 = Number.parseInt(args[2]);
+                    const percent = ((a1 / a2) * 100) | 0;
+                    if (prevPercent !== percent) {
+                        progressStatusBarItem.text = `Processing metadata: ${percent}%`;
+                        prevPercent = percent;
                     }
-                    else if (message.startsWith(COBSCANNER_SENDEP)) {
-                        const args = message.split(",");
-                        const tokenName = args[1];
-                        const tokenLine = Number.parseInt(args[2]);
-                        const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename, tokenName, tokenLine);
-                    }
-                    else if (message.startsWith(COBSCANNER_SENDPRGID)) {
-                        const args = message.split(",");
-                        const tokenName = args[1];
-                        const tokenLine = Number.parseInt(args[2]);
-                        const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
-                        COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
-                        COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename, tokenName, tokenLine);
-                    }
-                    else if (message.startsWith(COBSCANNER_SENDCLASS)) {
-                        const args = message.split(",");
-                        const tokenName = args[1];
-                        const tokenLine = Number.parseInt(args[2]);
-                        const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.ClassId);
-                    }
-                    else if (message.startsWith(COBSCANNER_SENDINTERFACE)) {
-                        const args = message.split(",");
-                        const tokenName = args[1];
-                        const tokenLine = Number.parseInt(args[2]);
-                        const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.InterfaceId);
-                    }
-                    else if (message.startsWith(COBSCANNER_SENDENUM)) {
-                        const args = message.split(",");
-                        const tokenName = args[1];
-                        const tokenLine = Number.parseInt(args[2]);
-                        const tokenFilename = args[3];
-                        COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.EnumId);
-                    }
-                } else {
-                    logMessage(msg as string);
                 }
-            });
+                else if (message.startsWith(COBSCANNER_SENDEP)) {
+                    const args = message.split(",");
+                    const tokenName = args[1];
+                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenFilename = args[3];
+                    COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename, tokenName, tokenLine);
+                }
+                else if (message.startsWith(COBSCANNER_SENDPRGID)) {
+                    const args = message.split(",");
+                    const tokenName = args[1];
+                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenFilename = args[3];
+                    COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
+                    COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
+                    COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename, tokenName, tokenLine);
+                }
+                else if (message.startsWith(COBSCANNER_SENDCLASS)) {
+                    const args = message.split(",");
+                    const tokenName = args[1];
+                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenFilename = args[3];
+                    COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.ClassId);
+                }
+                else if (message.startsWith(COBSCANNER_SENDINTERFACE)) {
+                    const args = message.split(",");
+                    const tokenName = args[1];
+                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenFilename = args[3];
+                    COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.InterfaceId);
+                }
+                else if (message.startsWith(COBSCANNER_SENDENUM)) {
+                    const args = message.split(",");
+                    const tokenName = args[1];
+                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenFilename = args[3];
+                    COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.EnumId);
+                }
+            } else {
+                logMessage(msg as string);
+            }
+        });
 
-            if (child.stdout !== null) {
-                for await (const data of child.stdout) {
-                    // compress the output
-                    const lines: string = data.toString();
-                    for (const line of lines.split("\n")) {
-                        const lineTrimmed = line.trim();
-                        if (lineTrimmed.length !== 0) {
-                            logMessage(` ${line}`);
-                        }
+        if (child.stdout !== null) {
+            for await (const data of child.stdout) {
+                // compress the output
+                const lines: string = data.toString();
+                for (const line of lines.split("\n")) {
+                    const lineTrimmed = line.trim();
+                    if (lineTrimmed.length !== 0) {
+                        logMessage(` ${line}`);
                     }
                 }
             }
