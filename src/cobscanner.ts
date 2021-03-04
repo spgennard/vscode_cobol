@@ -103,7 +103,11 @@ for (const arg of args) {
             stats.fileCount = scanData.fileCount;
 
             // TODO: add in other metadata items
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.symbols,true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.md_symbols,true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(scanData.md_entrypoints,true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(scanData.md_types,true);
+            COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(scanData.md_metadata_files, true);
+
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {
                     features.logMessage(` Directories scanned   : ${stats.directoriesScanned}`);

@@ -2,7 +2,7 @@ import path from "path";
 import fs from 'fs';
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_ADDFILE, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -12,6 +12,7 @@ import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
+import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 
 class ScanStats {
@@ -39,15 +40,16 @@ export class VSCobScanner {
         }
 
         if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
+            COBOLUtils.saveGlobalCacheToWorkspace(false);
             const sf = new ScanData();
             sf.showStats = false;
             sf.Files.push(fsPath);
             sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
             sf.showMessage = settings.cache_metadata_show_progress_messages;
-            sf.symbols = settings.metadata_symbols;
-            sf.entrypoints = settings.metadata_entrypoints;
-            sf.types = settings.metadata_types;
-            //TODO md_metadata_files
+            sf.md_symbols = settings.metadata_symbols;
+            sf.md_entrypoints = settings.metadata_entrypoints;
+            sf.md_types = settings.metadata_types;
+            sf.md_metadata_files = settings.metadata_files;
             await this.forkScanner(sf, "OnSave", true);
         }
     }
@@ -144,6 +146,7 @@ export class VSCobScanner {
             } else {
                 progressStatusBarItem.hide();
             }
+            InMemoryGlobalSymbolCache.isDirty = true;   // always update
             COBOLUtils.saveGlobalCacheToWorkspace();
         });
 
@@ -198,6 +201,13 @@ export class VSCobScanner {
                     const tokenLine = Number.parseInt(args[2]);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.EnumId);
+                } else if (message.startsWith(COBSCANNER_ADDFILE)) {
+                    const args = message.split(",");
+                    const tokenFilename = args[1];
+                    const ms = Number.parseInt(args[2]);
+
+                    InMemoryGlobalCacheHelper.addFilename(tokenFilename, ms);
+                    COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                 }
             } else {
                 logMessage(msg as string);
@@ -270,6 +280,7 @@ export class VSCobScanner {
 
         }
 
+        COBOLUtils.saveGlobalCacheToWorkspace(false);
         const sf = new ScanData();
         sf.directoriesScanned = stats.directoriesScanned;
         sf.maxDirectoryDepth = stats.maxDirectoryDepth;
@@ -278,8 +289,9 @@ export class VSCobScanner {
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
         sf.showMessage = settings.cache_metadata_show_progress_messages;
-        sf.symbols = settings.metadata_symbols;
-        sf.entrypoints = settings.metadata_entrypoints;
+        sf.md_symbols = settings.metadata_symbols;
+        sf.md_entrypoints = settings.metadata_entrypoints;
+        sf.md_metadata_files = settings.metadata_files;
         for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
         }

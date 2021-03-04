@@ -5,9 +5,6 @@ import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { ICOBOLSettings } from './iconfiguration';
-import { settings } from 'cluster';
-
-
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 

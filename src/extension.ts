@@ -505,7 +505,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (md_metadata_files) {
-                //TODO md_metadata_files
+                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings.metadata_files, true);
             }
         }
     });
@@ -521,7 +521,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types, false);
-    //TODO md_metadata_files
+    COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings.metadata_files, false);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);

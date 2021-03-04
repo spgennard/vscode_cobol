@@ -11,9 +11,10 @@ export class ScanData {
     public Files: string[] = [];
     public Directories: string[] = [];
     public showStats = true;
-    public symbols: string[] = [];
-    public entrypoints: string[] = [];
-    public types: string[] = [];
+    public md_symbols: string[] = [];
+    public md_entrypoints: string[] = [];
+    public md_types: string[] = [];
+    public md_metadata_files: string[] = [];
 }
 
 export class ScanStats {
@@ -37,6 +38,7 @@ export const COBSCANNER_SENDEP = '@@SEND.EP';
 export const COBSCANNER_SENDINTERFACE = "@@SEND.INTID";
 export const COBSCANNER_SENDENUM = "@@SEND.ENUMID";
 export const COBSCANNER_SENDCLASS = "@@SEND.CLASSID";
+export const COBSCANNER_ADDFILE = "@@SEND.FILES";
 
 export class ScanDataHelper {
     public static readonly scanFilename = "cobscanner.json";

@@ -76,11 +76,19 @@ export class COBOLUtils {
         }
     }
 
-    public static saveGlobalCacheToWorkspace(): void {
+    public static saveGlobalCacheToWorkspace(update = true): void {
         if (InMemoryGlobalSymbolCache.isDirty) {
-            const symbols:string[] = [];
-            const entrypoints:string[] = [];
-            const types: string[] = [];
+            const config = VSCOBOLConfiguration.get();
+
+            const symbols:string[] = config.metadata_symbols;
+            const entrypoints:string[] = config.metadata_entrypoints;
+            const types: string[] = config.metadata_types;
+            const files: string[] = config.metadata_files;
+
+            symbols.length = 0;
+            entrypoints.length = 0;
+            types.length = 0;
+            files.length = 0;
 
             for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
                 const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
@@ -104,12 +112,20 @@ export class COBOLUtils {
             COBOLUtils.typeToArray(types, "I",InMemoryGlobalSymbolCache.interfaces);
             COBOLUtils.typeToArray(types, "E",InMemoryGlobalSymbolCache.enums);
 
-            const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-            editorConfig.update('metadata_symbols', symbols);
-            editorConfig.update('metadata_entrypoints', entrypoints);
-            editorConfig.update('metadata_types', types);
+            for(const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
+                const ms = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
+                if (ms !== undefined) {
+                    files.push(`${fileName},${ms}`);
+                }
+            }
 
-            //TODO md_metadata_files
+            if (update) {
+                const editorConfig = vscode.workspace.getConfiguration('coboleditor');
+                editorConfig.update('metadata_symbols', symbols);
+                editorConfig.update('metadata_entrypoints', entrypoints);
+                editorConfig.update('metadata_types', types);
+                editorConfig.update('metadata_files', files);
+            }
 
             InMemoryGlobalSymbolCache.isDirty = false;
         }

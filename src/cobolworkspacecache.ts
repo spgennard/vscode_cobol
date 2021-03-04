@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLFileSymbol, InMemoryFileSymbolCache } from "./cobolglobalcache";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 
@@ -156,6 +156,20 @@ export class COBOLWorkspaceSymbolCacheHelper {
                     case "E" : cat = TypeCategory.EnumId; break;
                 }
                 COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3]), cat);
+            }
+        }
+    }
+
+    public static loadFileCacheFromArray(files: string[], clear:boolean): void {
+        if (clear) {
+            InMemoryGlobalSymbolCache.sourceFilenameModified.clear();
+        }
+
+        for (const symbol of files) {
+            const fileValues = symbol.split(",");
+            if (fileValues.length === 2) {
+                const ms = Number.parseInt(fileValues[1]);
+                InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],ms);
             }
         }
     }

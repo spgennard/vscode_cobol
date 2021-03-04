@@ -5,7 +5,7 @@ import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
-import { COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID } from "./cobscannerdata";
+import { COBSCANNER_ADDFILE, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID } from "./cobscannerdata";
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
@@ -27,6 +27,9 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+            if (process.send !== undefined) {
+                process.send(`${COBSCANNER_ADDFILE},${this.st?.fileName},${this.st?.lastModifiedTime}`);
+            }
         }
 
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);

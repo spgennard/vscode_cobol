@@ -1,4 +1,4 @@
-import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range, SymbolInformation } from 'vscode';
+import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
@@ -6,8 +6,6 @@ import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
 import { performance_now, logMessage, logTimeThreshold } from './extension';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
-import { settings } from 'cluster';
-import { config } from 'process';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 

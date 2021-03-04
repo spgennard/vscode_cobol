@@ -7,7 +7,7 @@ const lineByLine = require('n-readlines');
 import fs from 'fs';
 
 import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
-import { pathToFileURL, URL } from 'url';
+import { pathToFileURL } from 'url';
 
 export class FileSourceHandler implements ISourceHandler {
     document: string;
