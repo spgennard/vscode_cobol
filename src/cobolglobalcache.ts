@@ -10,7 +10,7 @@ export class COBOLGlobalSymbolTable {
     public enums =  new Map<string, COBOLFileSymbol[]>();
 
     public isDirty = false;
-    public sourceFilenameModified = new Map<string, number>();
+    public sourceFilenameModified = new Map<string, BigInt>();
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     static fromJSON(d: Object): COBOLGlobalSymbolTable {
@@ -19,7 +19,7 @@ export class COBOLGlobalSymbolTable {
 }
 
 export class COBOLSymbolTable {
-    public lastModifiedTime = 0;
+    public lastModifiedTime:BigInt = BigInt("0");
     public fileName = "";
 
     public variableSymbols: Map<string, COBOLSymbol>;

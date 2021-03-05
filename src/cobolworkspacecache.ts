@@ -134,7 +134,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
             if (symbolValues.length === 3) {
-                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
+                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2],10));
             }
         }
     }
@@ -155,7 +155,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
                     case "T" : cat = TypeCategory.ClassId; break;
                     case "E" : cat = TypeCategory.EnumId; break;
                 }
-                COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3]), cat);
+                COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3],10), cat);
             }
         }
     }
@@ -168,7 +168,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         for (const symbol of files) {
             const fileValues = symbol.split(",");
             if (fileValues.length === 2) {
-                const ms = Number.parseInt(fileValues[1]);
+                const ms = BigInt(fileValues[1]);
                 InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],ms);
             }
         }

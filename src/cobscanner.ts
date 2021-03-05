@@ -27,10 +27,10 @@ class Utils {
         Utils.msleep(n * 1000);
     }
 
-    private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
+    private static isFileT(sdir: string): [boolean, fs.BigIntStats | undefined] {
         try {
             if (fs.existsSync(sdir)) {
-                const f = fs.statSync(sdir);
+                const f = fs.statSync(sdir, { bigint: true } );
                 if (f && f.isFile()) {
                     return [true, f];
                 }
@@ -52,8 +52,9 @@ class Utils {
         const filename = path.normalize(nfilename);
 
         const cachedMtime = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
+        features.logMessage(`cacheUpdateRequired(${nfilename} = ${cachedMtime})`);
         if (cachedMtime !== undefined) {
-            const stat4src = fs.statSync(filename);
+            const stat4src = fs.statSync(filename, { bigint:true });
             if (cachedMtime < stat4src.mtimeMs) {
                 return true;
             }
@@ -64,7 +65,7 @@ class Utils {
         const fnStat = Utils.isFileT(fn);
         if (fnStat[0]) {
             const stat4cache = fnStat[1];
-            const stat4src = fs.statSync(filename);
+            const stat4src = fs.statSync(filename, { bigint: true });
             if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
                 return true;
             }
@@ -149,9 +150,9 @@ for (const arg of args) {
                             }
                         }
 
-                        // if (scanData.showMessage) {
-                        //     features.logMessage(`  Parse completed: ${file}`);
-                        // }
+                        if (scanData.showMessage) {
+                            features.logMessage(`  Parse completed: ${file}`);
+                        }
                         stats.filesScanned++;
                     } else {
                         stats.filesUptodate++;

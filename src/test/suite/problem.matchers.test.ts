@@ -66,7 +66,7 @@ suite('Issues Raised Test Suite', () => {
 						let lines = compilerOutputs.toString().split("\n");
 						const firstLine = lines.shift();
 						if (firstLine !== undefined) {
-							const possiblePassLevel = Number.parseInt(firstLine);
+							const possiblePassLevel = Number.parseInt(firstLine,10);
 							if (!isNaN(possiblePassLevel)) {
 								passlevel = possiblePassLevel;
 								console.log(` % pass level set @ ${passlevel}`);

@@ -564,7 +564,7 @@ export interface ICOBOLSourceScannerEvents {
 
 export interface ICOBOLSourceScanner {
     filename: string;
-    lastModifiedTime: number;
+    lastModifiedTime: BigInt;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
     // tokensInOrder: COBOLToken[];
     cacheDirectory: string;
@@ -594,7 +594,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
-    public lastModifiedTime = 0;
+    public lastModifiedTime = BigInt(0);
 
     public tokensInOrder: COBOLToken[] = [];
 
@@ -758,7 +758,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         state.copyBooksUsed.set(this.filename, COBOLToken.Null);
         if (this.sourceReferences.topLevel) {
             try {
-                const stat: fs.Stats = fs.statSync(this.filename);
+                const stat: fs.BigIntStats = fs.statSync(this.filename, {bigint: true});
                 this.lastModifiedTime = stat.mtimeMs;
             }
             catch (e) {
@@ -1253,7 +1253,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 if (tokenCountPerLine === 1) {
-                    const tokenAsNumber = Number.parseInt(tcurrent);
+                    const tokenAsNumber = Number.parseInt(tcurrent,10);
                     if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
                         state.numberTokensInHeader++;
                         continue;

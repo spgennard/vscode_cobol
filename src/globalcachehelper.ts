@@ -15,7 +15,7 @@ export class InMemoryGlobalCacheHelper {
         return fullPath.substr(1 + lastSlash);
     }
 
-    public static addFilename(filename: string, lastModified: number): void {
+    public static addFilename(filename: string, lastModified: BigInt): void {
         if (InMemoryGlobalSymbolCache.sourceFilenameModified.has(filename)) {
             InMemoryGlobalSymbolCache.sourceFilenameModified.delete(filename);
             InMemoryGlobalSymbolCache.sourceFilenameModified.set(filename, lastModified);

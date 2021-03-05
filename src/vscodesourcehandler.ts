@@ -9,7 +9,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     dumpAreaBOnwards: boolean;
     commentCallback?: ICommentCallback;
     lineCount: number;
-    documentVersionId: number;
+    documentVersionId: BigInt;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -18,10 +18,10 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCount = 0;
         this.commentCallback = commentCallback;
         this.lineCount = this.document.lineCount;
-        this.documentVersionId = this.document.version;
+        this.documentVersionId = BigInt(this.document.version);
     }
 
-    getDocumentVersionId(): number {
+    getDocumentVersionId(): BigInt {
         return this.documentVersionId;
     }
 

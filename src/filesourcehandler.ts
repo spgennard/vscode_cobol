@@ -16,7 +16,7 @@ export class FileSourceHandler implements ISourceHandler {
     lines: string[];
     commentCount: number;
     commentCallback?: ICommentCallback;
-    documentVersionId: number;
+    documentVersionId: BigInt;
 
     public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
         this.document = document;
@@ -29,7 +29,7 @@ export class FileSourceHandler implements ISourceHandler {
         if (features === undefined) {
             features = EmptyExternalFeature.Default;
         }
-        const docstat = fs.statSync(document);
+        const docstat = fs.statSync(document, {bigint:true});
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
         this.documentVersionId = docstat.mtimeMs;
@@ -46,7 +46,7 @@ export class FileSourceHandler implements ISourceHandler {
         }
 
     }
-    getDocumentVersionId(): number {
+    getDocumentVersionId(): BigInt {
         return this.documentVersionId;
     }
 

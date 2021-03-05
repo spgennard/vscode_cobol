@@ -12,5 +12,5 @@ export default interface ISourceHandler {
     setDumpAreaBOnwards(flag: boolean): void;
     getFilename(): string;
     setCommentCallback(commentCallback: ICommentCallback):void;
-    getDocumentVersionId(): number;
+    getDocumentVersionId(): BigInt;
 }

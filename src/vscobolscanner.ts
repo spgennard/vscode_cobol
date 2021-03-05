@@ -126,7 +126,7 @@ export default class VSCOBOLSourceScanner {
         const fileName: string = document.fileName;
         let cachedObject = InMemoryCache.get(fileName);
         if (cachedObject !== undefined) {
-            if (cachedObject.sourceHandler.getDocumentVersionId()!== document.version) {
+            if (cachedObject.sourceHandler.getDocumentVersionId() !== BigInt(document.version)) {
                 InMemoryCache.delete(fileName);
                 cachedObject = undefined;
             }

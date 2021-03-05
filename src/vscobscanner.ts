@@ -157,8 +157,8 @@ export class VSCobScanner {
                 if (message.startsWith(COBSCANNER_STATUS)) {
                     const args = message.split(" ");
                     progressStatusBarItem.show();
-                    const a1 = Number.parseInt(args[1]);
-                    const a2 = Number.parseInt(args[2]);
+                    const a1 = Number.parseInt(args[1],10);
+                    const a2 = Number.parseInt(args[2],10);
                     const percent = ((a1 / a2) * 100) | 0;
                     if (prevPercent !== percent) {
                         progressStatusBarItem.text = `Processing metadata: ${percent}%`;
@@ -168,14 +168,14 @@ export class VSCobScanner {
                 else if (message.startsWith(COBSCANNER_SENDEP)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenLine = Number.parseInt(args[2],10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename, tokenName, tokenLine);
                 }
                 else if (message.startsWith(COBSCANNER_SENDPRGID)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenLine = Number.parseInt(args[2],10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                     COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
@@ -184,27 +184,27 @@ export class VSCobScanner {
                 else if (message.startsWith(COBSCANNER_SENDCLASS)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenLine = Number.parseInt(args[2],10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.ClassId);
                 }
                 else if (message.startsWith(COBSCANNER_SENDINTERFACE)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenLine = Number.parseInt(args[2],10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.InterfaceId);
                 }
                 else if (message.startsWith(COBSCANNER_SENDENUM)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2]);
+                    const tokenLine = Number.parseInt(args[2],10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.EnumId);
                 } else if (message.startsWith(COBSCANNER_ADDFILE)) {
                     const args = message.split(",");
                     const tokenFilename = args[1];
-                    const ms = Number.parseInt(args[2]);
+                    const ms = BigInt(args[2]);
 
                     InMemoryGlobalCacheHelper.addFilename(tokenFilename, ms);
                     COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);

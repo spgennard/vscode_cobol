@@ -69,7 +69,7 @@ export function getCombinedCopyBookSearchPath(): string[] {
 
 export function isDirectory(sdir: string): boolean {
     try {
-        const f = fs.statSync(sdir);
+        const f = fs.statSync(sdir, {bigint:true});
         if (f && f.isDirectory()) {
             return true;
         }
@@ -487,7 +487,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-            if (!md_syms && !md_eps && !md_types) {
+            if (!md_syms && !md_eps && !md_types && !md_metadata_files) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
                 setupSourceViewTree(settings, true);
@@ -1083,8 +1083,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
                         return;
                     }
                     const values: string[] = value.split(" ");
-                    const startValue: number = Number.parseInt(values[0]);
-                    const incrementValue: number = Number.parseInt(values[1]);
+                    const startValue: number = Number.parseInt(values[0],10);
+                    const incrementValue: number = Number.parseInt(values[1],10);
                     if (startValue >= 0 && incrementValue >= 1) {
                         COBOLUtils.resequenceColumnNumbers(vscode.window.activeTextEditor, startValue, incrementValue);
                     } else {

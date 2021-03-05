@@ -45,11 +45,11 @@ function logMessage(mesg: string) {
 
 export class COBOLSymbolTableHelper {
 
-    private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
+    private static isFileT(sdir: string): [boolean, fs.BigIntStats | undefined] {
         try {
             if (fs.existsSync(sdir)) {
                 try {
-                    const f = fs.statSync(sdir);
+                    const f = fs.statSync(sdir, { bigint: true });
                     if (f && f.isFile()) {
                         return [true, f];
                     }
@@ -84,7 +84,7 @@ export class COBOLSymbolTableHelper {
             if (cachedTable !== undefined) {
                 /* is the cache table still valid? */
                 try {
-                    const stat4src = fs.statSync(filename);
+                    const stat4src = fs.statSync(filename, { bigint: true });
                     if (stat4src.mtimeMs === cachedTable.lastModifiedTime) {
                         return cachedTable;
                     }
