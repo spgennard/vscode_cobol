@@ -20,18 +20,33 @@ export class VSPreProc {
         }
     }
 
-    public static getCOBOLPreprocessor(extensionName: string): COBOLPreprocessor | undefined {
-        try {
-            const preprocexp = extensions.getExtension(extensionName);
-            if (preprocexp?.exports === undefined) {
-                throw new Error(`${extensionName} has no exports`);
-            }
+    private static msleep(n: number) {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+    }
 
-            return preprocexp.exports as COBOLPreprocessor;
+
+    public static getCOBOLPreprocessor(extensionName: string): COBOLPreprocessor | undefined {
+        let retryCount = 4;
+        let failedExtension = "";
+        while (retryCount > 0) {
+            try {
+                const preprocexp = extensions.getExtension(extensionName);
+                if (preprocexp?.exports === undefined) {
+                    throw new Error(`${extensionName} has no exports`);
+                }
+
+                return preprocexp.exports as COBOLPreprocessor;
+            }
+            catch {
+                failedExtension = extensionName;
+                return undefined;
+            }
+            this.msleep(50);
+            retryCount--;
         }
-        catch {
-            return undefined;
-        }
+
+        ExternalFeatures.logMessage(`Unable to find ${failedExtension} in a timely fashion`);
+        return undefined;
     }
 
 }

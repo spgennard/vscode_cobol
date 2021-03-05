@@ -127,7 +127,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     }
 
-    private getTypes(wordToComplete: string): CompletionItem[] {
+    private getAllTypes(): CompletionItem[] {
         const items: CompletionItem[] = [];
 
         for(const [type] of InMemoryGlobalSymbolCache.types) {
@@ -197,7 +197,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             else {
                 switch (wordBeforeLower) {
                     case "type": {
-                        items = this.getTypes(wordToComplete);
+                        items = this.getAllTypes();
                         break;
                     }
                     case "perform":
