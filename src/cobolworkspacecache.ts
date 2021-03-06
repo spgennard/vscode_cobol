@@ -167,12 +167,6 @@ export class COBOLWorkspaceSymbolCacheHelper {
 
         for (const symbol of files) {
             const fileValues = symbol.split(",");
-            if (fileValues.length === 2) {
-                const ms = BigInt(fileValues[1]);
-                const cws = new COBOLWorkspaceFile(ms,fileValues[0]);
-                InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],cws);
-            }
-
             if (fileValues.length === 3) {
                 const ms = BigInt(fileValues[1]);
                 const cws = new COBOLWorkspaceFile(ms,fileValues[2]);
