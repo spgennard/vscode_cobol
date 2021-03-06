@@ -13,4 +13,5 @@ export default interface ISourceHandler {
     getFilename(): string;
     setCommentCallback(commentCallback: ICommentCallback):void;
     getDocumentVersionId(): BigInt;
+    getIsSourceInWorkSpace(): boolean;
 }

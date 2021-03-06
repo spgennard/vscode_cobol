@@ -10,6 +10,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     commentCallback?: ICommentCallback;
     lineCount: number;
     documentVersionId: BigInt;
+    isSourceInWorkSpace: boolean;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -19,6 +20,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCallback = commentCallback;
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
+
+        this.isSourceInWorkSpace = true; // FIXME
     }
 
     getDocumentVersionId(): BigInt {
@@ -120,5 +123,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
     resetCommentCount():void {
         this.commentCount = 0;
+    }
+
+    getIsSourceInWorkSpace():boolean {
+        return this.isSourceInWorkSpace;
     }
 }

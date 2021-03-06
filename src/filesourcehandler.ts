@@ -17,6 +17,7 @@ export class FileSourceHandler implements ISourceHandler {
     commentCount: number;
     commentCallback?: ICommentCallback;
     documentVersionId: BigInt;
+    isSourceInWorkspace: boolean;
 
     public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
         this.document = document;
@@ -25,7 +26,7 @@ export class FileSourceHandler implements ISourceHandler {
         this.dumpAreaBOnwards = false;
         this.lines = [];
         this.commentCount = 0;
-
+        this.isSourceInWorkspace = false;
         if (features === undefined) {
             features = EmptyExternalFeature.Default;
         }
@@ -146,5 +147,9 @@ export class FileSourceHandler implements ISourceHandler {
 
     resetCommentCount(): void {
         this.commentCount = 0;
+    }
+
+    getIsSourceInWorkSpace(): boolean {
+        return this.isSourceInWorkspace;
     }
 }

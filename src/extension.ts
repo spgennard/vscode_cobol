@@ -69,7 +69,7 @@ export function getCombinedCopyBookSearchPath(): string[] {
 
 export function isDirectory(sdir: string): boolean {
     try {
-        const f = fs.statSync(sdir, {bigint:true});
+        const f = fs.statSync(sdir, { bigint: true });
         if (f && f.isDirectory()) {
             return true;
         }
@@ -130,6 +130,33 @@ export class COBOLStatUtils {
         }
 
         return false;
+    }
+
+    public static getShortWorkspaceFilename(ddir: string): string | undefined {
+        const ws = getWorkspaceFolders();
+        if (workspace === undefined || ws === undefined) {
+            return undefined;
+        }
+
+        const fullPath = path.normalize(ddir);
+        let bestShortName = "";
+        for (const folder of ws) {
+            if (folder.uri.scheme === 'file') {
+                const folderPath = folder.uri.path;
+                if (fullPath.startsWith(folderPath)) {
+                    const possibleShortPath = fullPath.substr(folderPath.length);
+                    if (bestShortName.length === 0) {
+                        bestShortName = possibleShortPath;
+                    } else {
+                        if (possibleShortPath.length < possibleShortPath.length) {
+                            bestShortName = possibleShortPath;
+                        }
+                    }
+                }
+            }
+        }
+
+        return bestShortName.length === 0 ? undefined : bestShortName;
     }
 }
 
@@ -493,15 +520,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 setupSourceViewTree(settings, true);
             }
             if (md_syms) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols,true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols, true);
             }
 
             if (md_eps) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints,true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints, true);
             }
 
             if (md_types) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types,true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types, true);
             }
 
             if (md_metadata_files) {
@@ -779,9 +806,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(completionJCLItemProviderDisposable);
 
     const allKeywords = cobolKeywords.concat(cobolStorageKeywords)
-                                     .concat(cobolRegisters)
-                                     .concat(cobolProcedureKeywords)
-                                     .concat(acuKeywords);
+        .concat(cobolRegisters)
+        .concat(cobolProcedureKeywords)
+        .concat(acuKeywords);
 
     const allKeywordsUnique = [...new Set(allKeywords)];
     const keywordProvider = new KeywordAutocompleteCompletionItemProvider(allKeywordsUnique, true);
@@ -1083,8 +1110,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
                         return;
                     }
                     const values: string[] = value.split(" ");
-                    const startValue: number = Number.parseInt(values[0],10);
-                    const incrementValue: number = Number.parseInt(values[1],10);
+                    const startValue: number = Number.parseInt(values[0], 10);
+                    const incrementValue: number = Number.parseInt(values[1], 10);
                     if (startValue >= 0 && incrementValue >= 1) {
                         COBOLUtils.resequenceColumnNumbers(vscode.window.activeTextEditor, startValue, incrementValue);
                     } else {

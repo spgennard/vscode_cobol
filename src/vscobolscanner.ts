@@ -50,8 +50,8 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
-            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
             COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
+            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
             COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
         }
     }
@@ -144,10 +144,12 @@ export default class VSCOBOLSourceScanner {
 
                 const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
                 const startTime = performance_now();
-                const qcpd = new COBOLSourceScanner(new VSCodeSourceHandler(document, false), config,
+                const sourceHandler = new VSCodeSourceHandler(document, false);
+                const cacheData = sourceHandler.getIsSourceInWorkSpace();
+                const qcpd = new COBOLSourceScanner(sourceHandler, config,
                     cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
                     config.parse_copybooks_for_references,
-                    config.process_metadata_cache_on_file_save ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
+                    cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);
 
                 logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);

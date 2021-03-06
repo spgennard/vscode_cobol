@@ -32,5 +32,4 @@ export class VSExternalFeatures implements IExternalFeatures{
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return getCOBOLSourceFormat(doc,config);
     }
-
 }
