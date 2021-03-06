@@ -26,7 +26,8 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
-            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, this.st?.lastModifiedTime);
+            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
+
             if (process.send !== undefined) {
                 process.send(`${COBSCANNER_ADDFILE},${this.st?.fileName},${this.st?.lastModifiedTime}`);
             }

@@ -13,6 +13,7 @@ import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacec
 import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
+import { COBOLWorkspaceFile } from "./cobolglobalcache";
 
 
 class ScanStats {
@@ -205,8 +206,9 @@ export class VSCobScanner {
                     const args = message.split(",");
                     const tokenFilename = args[1];
                     const ms = BigInt(args[2]);
-
-                    InMemoryGlobalCacheHelper.addFilename(tokenFilename, ms);
+                    const shortFilename = args[3];
+                    const cws = new COBOLWorkspaceFile(ms, shortFilename);
+                    InMemoryGlobalCacheHelper.addFilename(tokenFilename, cws);
                     COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                 }
             } else {

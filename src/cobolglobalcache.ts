@@ -1,6 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
+export class COBOLWorkspaceFile {
+    lastModifiedTime:BigInt;
+    workspaceFilename: string;
+
+    constructor(lastModifiedTime:BigInt, workspaceFilename: string) {
+        this.lastModifiedTime = lastModifiedTime;
+        this.workspaceFilename = workspaceFilename;
+    }
+}
+
 export class COBOLGlobalSymbolTable {
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
     public entryPoints = new Map<string, COBOLFileSymbol[]>();
@@ -10,7 +20,7 @@ export class COBOLGlobalSymbolTable {
     public enums =  new Map<string, COBOLFileSymbol[]>();
 
     public isDirty = false;
-    public sourceFilenameModified = new Map<string, BigInt>();
+    public sourceFilenameModified = new Map<string, COBOLWorkspaceFile>();
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     static fromJSON(d: Object): COBOLGlobalSymbolTable {

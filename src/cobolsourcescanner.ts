@@ -4,7 +4,7 @@ import ISourceHandler, { ICommentCallback } from "./isourcehandler";
 import { acuKeywords, cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
-import { COBOLFileSymbol } from "./cobolglobalcache";
+import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from './cobapi';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -568,6 +568,7 @@ export interface ICOBOLSourceScanner {
     copyBooksUsed: Map<string, COBOLCopybookToken>;
     // tokensInOrder: COBOLToken[];
     cacheDirectory: string;
+    workspaceFile: COBOLWorkspaceFile;
 }
 
 export interface ICOBOLLogger {
@@ -623,6 +624,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
     public sourceIsCopybook = false;
+
+    public workspaceFile: COBOLWorkspaceFile;
 
     // public commentDocStyle: CobolDocStyle = CobolDocStyle.unknown;
     // public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
@@ -713,7 +716,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.cacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
-
         this.parse_copybooks_for_references = parse_copybooks_for_references;
         this.eventHandler = sourceEventHandler;
         this.externalFeatures = externalFeatures;
@@ -765,6 +767,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 //
             }
         }
+
+        this.workspaceFile = new COBOLWorkspaceFile(this.lastModifiedTime, sourceHandler.getShortWorkspaceFilename());
 
         // setup the event handler
         if (cacheDirectory !== null && cacheDirectory.length > 0) {

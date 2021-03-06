@@ -51,7 +51,8 @@ class Utils {
     public static cacheUpdateRequired(cacheDirectory: string, nfilename: string): boolean {
         const filename = path.normalize(nfilename);
 
-        const cachedMtime = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
+        const cachedMtimeWS = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
+        const cachedMtime = cachedMtimeWS?.lastModifiedTime;
         features.logMessage(`cacheUpdateRequired(${nfilename} = ${cachedMtime})`);
         if (cachedMtime !== undefined) {
             const stat4src = fs.statSync(filename, { bigint:true });

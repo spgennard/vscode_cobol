@@ -1,6 +1,7 @@
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import * as vscode from 'vscode';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
+import { COBOLStatUtils } from './extension';
 
 export class VSCodeSourceHandler implements ISourceHandler {
     commentCount: number;
@@ -11,6 +12,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     lineCount: number;
     documentVersionId: BigInt;
     isSourceInWorkSpace: boolean;
+    shortWorkspaceFilename: string;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -20,8 +22,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCallback = commentCallback;
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
-
-        this.isSourceInWorkSpace = true; // FIXME
+        const workspaceFilename = COBOLStatUtils.getShortWorkspaceFilename(document.fileName);
+        this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
+        this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
     }
 
     getDocumentVersionId(): BigInt {
@@ -127,5 +130,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
     getIsSourceInWorkSpace():boolean {
         return this.isSourceInWorkSpace;
+    }
+
+    getShortWorkspaceFilename(): string {
+        return this.shortWorkspaceFilename;
     }
 }

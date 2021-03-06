@@ -27,6 +27,7 @@ export class FileSourceHandler implements ISourceHandler {
         this.lines = [];
         this.commentCount = 0;
         this.isSourceInWorkspace = false;
+
         if (features === undefined) {
             features = EmptyExternalFeature.Default;
         }
@@ -45,8 +46,8 @@ export class FileSourceHandler implements ISourceHandler {
         catch (e) {
             features.logException("File failed! (" + document + ")", e);
         }
-
     }
+
     getDocumentVersionId(): BigInt {
         return this.documentVersionId;
     }
@@ -151,5 +152,9 @@ export class FileSourceHandler implements ISourceHandler {
 
     getIsSourceInWorkSpace(): boolean {
         return this.isSourceInWorkspace;
+    }
+
+    getShortWorkspaceFilename(): string {
+        return "";
     }
 }

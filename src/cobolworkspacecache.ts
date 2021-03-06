@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { COBOLFileSymbol, InMemoryFileSymbolCache } from "./cobolglobalcache";
+import { COBOLFileSymbol, COBOLWorkspaceFile, InMemoryFileSymbolCache } from "./cobolglobalcache";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 
@@ -169,7 +169,14 @@ export class COBOLWorkspaceSymbolCacheHelper {
             const fileValues = symbol.split(",");
             if (fileValues.length === 2) {
                 const ms = BigInt(fileValues[1]);
-                InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],ms);
+                const cws = new COBOLWorkspaceFile(ms,fileValues[0]);
+                InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],cws);
+            }
+
+            if (fileValues.length === 3) {
+                const ms = BigInt(fileValues[1]);
+                const cws = new COBOLWorkspaceFile(ms,fileValues[2]);
+                InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],cws);
             }
         }
     }

@@ -113,9 +113,9 @@ export class COBOLUtils {
             COBOLUtils.typeToArray(types, "E",InMemoryGlobalSymbolCache.enums);
 
             for(const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
-                const ms = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
-                if (ms !== undefined) {
-                    files.push(`${fileName},${ms}`);
+                const cws = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
+                if (cws !== undefined) {
+                    files.push(`${fileName},${cws.lastModifiedTime},${cws.workspaceFilename}`);
                 }
             }
 
