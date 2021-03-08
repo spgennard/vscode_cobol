@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import ISourceHandler from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLPreprocessor } from "./cobapi";
 
 export interface IExternalFeatures {
     logMessage(message: string): void;
@@ -13,6 +12,7 @@ export interface IExternalFeatures {
     performance_now(): number;
     expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string;
     getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat;
+    getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
 }
 
 export enum ESourceFormat {
@@ -62,5 +62,9 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return ESourceFormat.unknown;
+    }
+
+    public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
+        return undefined;
     }
 }

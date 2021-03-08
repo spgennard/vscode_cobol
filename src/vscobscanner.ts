@@ -4,7 +4,7 @@ import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
+import { COBOLStatUtils, logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
@@ -158,8 +158,8 @@ export class VSCobScanner {
                 if (message.startsWith(COBSCANNER_STATUS)) {
                     const args = message.split(" ");
                     progressStatusBarItem.show();
-                    const a1 = Number.parseInt(args[1],10);
-                    const a2 = Number.parseInt(args[2],10);
+                    const a1 = Number.parseInt(args[1], 10);
+                    const a2 = Number.parseInt(args[2], 10);
                     const percent = ((a1 / a2) * 100) | 0;
                     if (prevPercent !== percent) {
                         progressStatusBarItem.text = `Processing metadata: ${percent}%`;
@@ -169,14 +169,14 @@ export class VSCobScanner {
                 else if (message.startsWith(COBSCANNER_SENDEP)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2],10);
+                    const tokenLine = Number.parseInt(args[2], 10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addEntryPoint(tokenFilename, tokenName, tokenLine);
                 }
                 else if (message.startsWith(COBSCANNER_SENDPRGID)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2],10);
+                    const tokenLine = Number.parseInt(args[2], 10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                     COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
@@ -185,31 +185,35 @@ export class VSCobScanner {
                 else if (message.startsWith(COBSCANNER_SENDCLASS)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2],10);
+                    const tokenLine = Number.parseInt(args[2], 10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.ClassId);
                 }
                 else if (message.startsWith(COBSCANNER_SENDINTERFACE)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2],10);
+                    const tokenLine = Number.parseInt(args[2], 10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.InterfaceId);
                 }
                 else if (message.startsWith(COBSCANNER_SENDENUM)) {
                     const args = message.split(",");
                     const tokenName = args[1];
-                    const tokenLine = Number.parseInt(args[2],10);
+                    const tokenLine = Number.parseInt(args[2], 10);
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addClass(tokenFilename, tokenName, tokenLine, TypeCategory.EnumId);
                 } else if (message.startsWith(COBSCANNER_ADDFILE)) {
                     const args = message.split(",");
-                    const tokenFilename = args[1];
-                    const ms = BigInt(args[2]);
-                    const shortFilename = args[3];
-                    const cws = new COBOLWorkspaceFile(ms, shortFilename);
-                    InMemoryGlobalCacheHelper.addFilename(tokenFilename, cws);
-                    COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
+                    const ms = BigInt(args[1]);
+                    const fullFilename = args[2];
+                    const shortFilename = COBOLStatUtils.getShortWorkspaceFilename(fullFilename);
+                    if (shortFilename !== undefined) {
+                        const cws = new COBOLWorkspaceFile(ms, shortFilename);
+                        if (fullFilename !== undefined) {
+                            InMemoryGlobalCacheHelper.addFilename(fullFilename, cws);
+                            COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
+                        }
+                    }
                 }
             } else {
                 logMessage(msg as string);
@@ -296,6 +300,14 @@ export class VSCobScanner {
         sf.md_metadata_files = settings.metadata_files;
         for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
+        }
+
+        if (ws !== undefined) {
+            for (const f of ws) {
+                if (f !== undefined && f.uri.scheme === 'file') {
+                    sf.workspaceFolders.push(f.uri.fsPath);
+                }
+            }
         }
 
         await VSCobScanner.forkScanner(sf, msgViaCommand, deprecatedMode);

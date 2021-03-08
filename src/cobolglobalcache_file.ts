@@ -9,7 +9,7 @@ import { COBOLSymbol, COBOLSymbolTable, InMemoryFileSymbolCache } from './cobolg
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
 
-// JSON callbacks to Map to something that can be serialised
+// JSON callbacks to Map to something that can be serialized
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function replacer(this: any, key: any, value: any): any {
     const originalObject = this[key];
@@ -123,9 +123,9 @@ export class COBOLSymbolTableHelper {
 
             const str: string = fs.readFileSync(fn).toString();
             try {
-                const cachableTable = JSON.parse(lzjs.decompress(str), reviver);
-                InMemoryFileSymbolCache.set(filename, cachableTable);
-                return cachableTable;
+                const cacheableTable = JSON.parse(lzjs.decompress(str), reviver);
+                InMemoryFileSymbolCache.set(filename, cacheableTable);
+                return cacheableTable;
             } catch {
                 try {
                     fs.unlinkSync(fn);

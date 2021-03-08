@@ -63,6 +63,8 @@ let bldscriptTaskProvider: vscode.Disposable | undefined;
 
 export const ExternalFeatures = new VSExternalFeatures();
 
+export const currentHostInformation = `${os.hostname()}/${os.userInfo().username}`;
+
 export function getCombinedCopyBookSearchPath(): string[] {
     return fileSearchDirectory;
 }
@@ -130,6 +132,27 @@ export class COBOLStatUtils {
         }
 
         return false;
+    }
+
+    public static getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
+        const ws = getWorkspaceFolders();
+        if (workspace === undefined || ws === undefined) {
+            return undefined;
+        }
+        for (const folder of ws) {
+            if (folder.uri.scheme === 'file') {
+                const folderPath = folder.uri.path;
+                const possibleFile = path.join(folderPath, sdir);
+                if (COBOLStatUtils.isFile(possibleFile)) {
+                    const stat4src = fs.statSync(possibleFile, { bigint:true });
+                    if (sdirMs === stat4src.mtimeMs) {
+                        return possibleFile;
+                    }
+                }
+            }
+        }
+
+        return undefined;
     }
 
     public static getShortWorkspaceFilename(ddir: string): string | undefined {
@@ -532,7 +555,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (md_metadata_files) {
-                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings.metadata_files, true);
+                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(ExternalFeatures, settings.metadata_files,true);
             }
         }
     });
@@ -548,7 +571,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings.metadata_types, false);
-    COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings.metadata_files, false);
+    COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(ExternalFeatures, settings.metadata_files, false);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);

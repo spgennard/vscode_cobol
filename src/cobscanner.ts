@@ -3,7 +3,6 @@ import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBSCANNER_STATUS, ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
-import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings } from "./iconfiguration";
 
@@ -16,7 +15,7 @@ import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 const args = process.argv.slice(2);
-const features: IExternalFeatures = ConsoleExternalFeatures.Default;
+const features = ConsoleExternalFeatures.Default;
 
 class Utils {
     private static msleep(n: number) {
@@ -53,7 +52,7 @@ class Utils {
 
         const cachedMtimeWS = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
         const cachedMtime = cachedMtimeWS?.lastModifiedTime;
-        features.logMessage(`cacheUpdateRequired(${nfilename} = ${cachedMtime})`);
+        // features.logMessage(`cacheUpdateRequired(${nfilename} = ${cachedMtime})`);
         if (cachedMtime !== undefined) {
             const stat4src = fs.statSync(filename, { bigint:true });
             if (cachedMtime < stat4src.mtimeMs) {
@@ -97,6 +96,7 @@ for (const arg of args) {
         try {
             lastJsonFile = arg;
             const scanData = ScanDataHelper.load(arg);
+            features.setWorkspaceFolders(scanData.workspaceFolders);
             const aborted = false;
             const stats = new ScanStats();
             stats.start = Utils.performance_now();
@@ -108,7 +108,7 @@ for (const arg of args) {
             COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.md_symbols,true);
             COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(scanData.md_entrypoints,true);
             COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(scanData.md_types,true);
-            COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(scanData.md_metadata_files, true);
+            COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(features,scanData.md_metadata_files, true);
 
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {

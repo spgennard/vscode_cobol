@@ -15,6 +15,7 @@ export class ScanData {
     public md_entrypoints: string[] = [];
     public md_types: string[] = [];
     public md_metadata_files: string[] = [];
+    public workspaceFolders: string[] = [];
 }
 
 export class ScanStats {

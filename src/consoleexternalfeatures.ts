@@ -4,11 +4,27 @@ import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import ISourceHandler from "./isourcehandler";
 
 import util from 'util';
+import path from 'path';
+import fs from 'fs';
+
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class ConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ConsoleExternalFeatures();
 
+    public workspaceFolders: string[] = [];
+
+    private static isFile(sdir: string): boolean {
+        try {
+            if (fs.existsSync(sdir)) {
+                return true;
+            }
+        }
+        catch {
+            return false;
+        }
+        return false;
+    }
 
     public logMessage(message: string): void {
         if (process.send) {
@@ -60,5 +76,23 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         return ESourceFormat.unknown;
+    }
+
+    public setWorkspaceFolders(folders: string[]) {
+        this.workspaceFolders = folders;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
+        for (const folder of this.workspaceFolders) {
+            const possibleFile = path.join(folder, sdir);
+            if (ConsoleExternalFeatures.isFile(possibleFile)) {
+                const stat4src = fs.statSync(possibleFile, { bigint: true });
+                if (sdirMs === stat4src.mtimeMs) {
+                    return possibleFile;
+                }
+            }
+        }
+
+        return undefined;
     }
 }

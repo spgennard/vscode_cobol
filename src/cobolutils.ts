@@ -115,7 +115,7 @@ export class COBOLUtils {
             for(const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
                 const cws = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
                 if (cws !== undefined) {
-                    files.push(`${fileName},${cws.lastModifiedTime},${cws.workspaceFilename}`);
+                    files.push(`${cws.lastModifiedTime},${cws.workspaceFilename}`);
                 }
             }
 

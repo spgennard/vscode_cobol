@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { COBOLFileSymbol, COBOLWorkspaceFile, InMemoryFileSymbolCache } from "./cobolglobalcache";
+import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
+import { IExternalFeatures } from "./externalfeatures";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 
-export enum TypeCategory{
-    ClassId="T",
-    InterfaceId="I",
-    EnumId="E"
+export enum TypeCategory {
+    ClassId = "T",
+    InterfaceId = "I",
+    EnumId = "E"
 }
 
 export class COBOLWorkspaceSymbolCacheHelper {
@@ -16,7 +17,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         for (const [key] of symbolsCache) {
             const symbolList: COBOLFileSymbol[] | undefined = symbolsCache.get(key);
             if (symbolList !== undefined) {
-                const newSymbols:COBOLFileSymbol[] = [];
+                const newSymbols: COBOLFileSymbol[] = [];
                 for (let i = 0; i < symbolList.length; i++) {
                     if (symbolList[i].filename !== srcfilename) {
                         newSymbols.push(symbolList[i]);
@@ -93,27 +94,27 @@ export class COBOLWorkspaceSymbolCacheHelper {
     public static addClass(srcfilename: string, symbolUnchanged: string, lineNumber: number, category: TypeCategory): void {
         let map: Map<string, COBOLFileSymbol[]> = InMemoryGlobalSymbolCache.types;
 
-        switch(category) {
-            case TypeCategory.ClassId : map = InMemoryGlobalSymbolCache.types; break;
-            case TypeCategory.InterfaceId : map = InMemoryGlobalSymbolCache.interfaces; break;
-            case TypeCategory.EnumId : map = InMemoryGlobalSymbolCache.enums; break;
+        switch (category) {
+            case TypeCategory.ClassId: map = InMemoryGlobalSymbolCache.types; break;
+            case TypeCategory.InterfaceId: map = InMemoryGlobalSymbolCache.interfaces; break;
+            case TypeCategory.EnumId: map = InMemoryGlobalSymbolCache.enums; break;
         }
 
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
             InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, map);
     }
 
-    public static removeAllProgramEntryPoints(srcfilename: string):void {
+    public static removeAllProgramEntryPoints(srcfilename: string): void {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
-        InMemoryGlobalSymbolCache.entryPoints);
+            InMemoryGlobalSymbolCache.entryPoints);
     }
 
-    public static removeAllTypes(srcfilename: string):void {
+    public static removeAllTypes(srcfilename: string): void {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
-        InMemoryGlobalSymbolCache.types);
+            InMemoryGlobalSymbolCache.types);
     }
 
-    public static loadGlobalCacheFromArray(symbols: string[], clear:boolean): void {
+    public static loadGlobalCacheFromArray(symbols: string[], clear: boolean): void {
         if (clear) {
             InMemoryGlobalSymbolCache.callableSymbols.clear();
         }
@@ -126,7 +127,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         }
     }
 
-    public static loadGlobalEntryCacheFromArray(symbols: string[], clear:boolean): void {
+    public static loadGlobalEntryCacheFromArray(symbols: string[], clear: boolean): void {
         if (clear) {
             InMemoryGlobalSymbolCache.callableSymbols.entries();
         }
@@ -134,12 +135,12 @@ export class COBOLWorkspaceSymbolCacheHelper {
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
             if (symbolValues.length === 3) {
-                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2],10));
+                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2], 10));
             }
         }
     }
 
-    public static loadGlobalTypesCacheFromArray(symbols: string[], clear:boolean): void {
+    public static loadGlobalTypesCacheFromArray(symbols: string[], clear: boolean): void {
         if (clear) {
             InMemoryGlobalSymbolCache.enums.clear();
             InMemoryGlobalSymbolCache.interfaces.clear();
@@ -151,26 +152,32 @@ export class COBOLWorkspaceSymbolCacheHelper {
             if (symbolValues.length === 4) {
                 let cat = TypeCategory.ClassId;
                 switch (symbolValues[0]) {
-                    case "I" : cat = TypeCategory.InterfaceId; break;
-                    case "T" : cat = TypeCategory.ClassId; break;
-                    case "E" : cat = TypeCategory.EnumId; break;
+                    case "I": cat = TypeCategory.InterfaceId; break;
+                    case "T": cat = TypeCategory.ClassId; break;
+                    case "E": cat = TypeCategory.EnumId; break;
                 }
-                COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3],10), cat);
+                COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3], 10), cat);
             }
         }
     }
 
-    public static loadFileCacheFromArray(files: string[], clear:boolean): void {
+    public static loadFileCacheFromArray(externalFeatures: IExternalFeatures, files: string[], clear: boolean): void {
         if (clear) {
             InMemoryGlobalSymbolCache.sourceFilenameModified.clear();
         }
 
         for (const symbol of files) {
             const fileValues = symbol.split(",");
-            if (fileValues.length === 3) {
-                const ms = BigInt(fileValues[1]);
-                const cws = new COBOLWorkspaceFile(ms,fileValues[2]);
-                InMemoryGlobalSymbolCache.sourceFilenameModified.set(fileValues[0],cws);
+            if (fileValues.length === 2) {
+                const ms = BigInt(fileValues[0]);
+                const cws = new COBOLWorkspaceFile(ms, fileValues[1]);
+                const fullDir = externalFeatures.getFullWorkspaceFilename(fileValues[1], ms);
+                if (fullDir !== undefined) {
+                    InMemoryGlobalSymbolCache.sourceFilenameModified.set(fullDir as string, cws);
+                } else {
+                    COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(fileValues[1]);
+                    COBOLWorkspaceSymbolCacheHelper.removeAllTypes(fileValues[1]);
+                }
             }
         }
     }

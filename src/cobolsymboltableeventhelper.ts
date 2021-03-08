@@ -29,7 +29,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
             InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
 
             if (process.send !== undefined) {
-                process.send(`${COBSCANNER_ADDFILE},${this.st?.fileName},${this.st?.lastModifiedTime}`);
+                process.send(`${COBSCANNER_ADDFILE},${this.st?.lastModifiedTime},${this.st?.fileName}`);
             }
         }
 

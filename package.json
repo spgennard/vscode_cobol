@@ -652,7 +652,6 @@
                     "default": [],
                     "uniqueItems": true
                 }
-
             }
         },
         "views": {

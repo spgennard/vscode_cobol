@@ -63,7 +63,7 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_symbols = getmetadata_symbols();
         vsconfig.metadata_entrypoints = getmetadata_entrypoints();
         vsconfig.metadata_types = getmetadata_types();
-        vsconfig.metadata_files = getmetadata_files();
+        vsconfig.metadata_files = getmetadata_files(vsconfig);
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
         return vsconfig;
     }
@@ -356,12 +356,13 @@ function getmetadata_types(): string[] {
     return metadata_types;
 }
 
-function getmetadata_files(): string[] {
+function getmetadata_files(config:ICOBOLSettings): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
     let metadata_files = editorConfig.get<string[]>('metadata_files');
     if (!metadata_files || (metadata_files !== null && metadata_files.length === 0)) {
         metadata_files = [];
     }
+
     return metadata_files;
 }
 
