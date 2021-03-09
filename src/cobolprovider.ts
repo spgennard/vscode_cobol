@@ -86,12 +86,19 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const words: COBOLToken[] = tsearch.get(wordToComplete);
         const numberOfWordsInResults = words.length;
 
+        const workMap = new Map<string,string>();
+
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
             //if the text is uppercase, the present the items as uppercase
             const key: COBOLToken = words[c];
             const retKeys = [];
+
+            if (workMap.has(key.tokenNameLower)) {
+                continue;
+            }
+            workMap.set(key.tokenNameLower, key.tokenNameLower);
 
             if (includeAsIS) {
                 retKeys.push((key.tokenName));
@@ -127,19 +134,51 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
     }
 
-    private getAllTypes(): CompletionItem[] {
+    private getAllTypes(workToComplete: string): CompletionItem[] {
+        const startsWith = workToComplete.length != 0;
         const items: CompletionItem[] = [];
+        const itemMap = new Map<string, CompletionItem>();
 
-        for(const [type] of InMemoryGlobalSymbolCache.types) {
-            items.push(new CompletionItem(type, CompletionItemKind.Class));
+        for (const [type] of InMemoryGlobalSymbolCache.types) {
+            if (itemMap.has(type) === false) {
+                continue;
+            }
+
+            if (startsWith) {
+                if (type.startsWith(workToComplete)) {
+                    items.push(new CompletionItem(type, CompletionItemKind.Class));
+                }
+            } else {
+                items.push(new CompletionItem(type, CompletionItemKind.Class));
+            }
         }
 
-        for(const [type] of InMemoryGlobalSymbolCache.interfaces) {
-            items.push(new CompletionItem(type, CompletionItemKind.Interface));
+        for (const [type] of InMemoryGlobalSymbolCache.interfaces) {
+            if (itemMap.has(type) === false) {
+                continue;
+            }
+
+            if (startsWith) {
+                if (type.startsWith(workToComplete)) {
+                    items.push(new CompletionItem(type, CompletionItemKind.Interface));
+                }
+            } else {
+                items.push(new CompletionItem(type, CompletionItemKind.Interface));
+            }
+
         }
 
-        for(const [type] of InMemoryGlobalSymbolCache.enums) {
-            items.push(new CompletionItem(type, CompletionItemKind.Enum));
+        for (const [type] of InMemoryGlobalSymbolCache.enums) {
+            if (itemMap.has(type) === false) {
+                continue;
+            }
+            if (startsWith) {
+                if (type.startsWith(workToComplete)) {
+                    items.push(new CompletionItem(type, CompletionItemKind.Enum));
+                }
+            } else {
+                items.push(new CompletionItem(type, CompletionItemKind.Enum));
+            }
         }
 
         return items;
@@ -197,7 +236,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             else {
                 switch (wordBeforeLower) {
                     case "type": {
-                        items = this.getAllTypes();
+                        items = this.getAllTypes(wordToComplete);
                         break;
                     }
                     case "perform":
@@ -210,7 +249,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
                     case "move":
                         {
-                            const words = this.getConstantsOrVariables(document,this.iconfig);
+                            const words = this.getConstantsOrVariables(document, this.iconfig);
 
                             // TODO:
                             //

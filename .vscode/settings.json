@@ -268,5 +268,11 @@
     ],
     "coboleditor.preprocessor_extensions": [
         "wibble.mycobol"
-    ]
+    ],
+    "coboleditor.metadata_symbols": [
+        "a,a.cbl"
+    ],
+    "coboleditor.metadata_entrypoints": [],
+    "coboleditor.metadata_types": [],
+    "coboleditor.metadata_files": []
 }

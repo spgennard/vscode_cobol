@@ -12,15 +12,19 @@ const lzjs = require('lzjs');
 // JSON callbacks to Map to something that can be serialized
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function replacer(this: any, key: any, value: any): any {
+    if (typeof value === 'bigint') {
+        return value.toString();
+    }
+
     const originalObject = this[key];
     if (originalObject instanceof Map) {
         return {
             dataType: 'Map',
             value: Array.from(originalObject.entries()), // or with spread: value: [...originalObject]
         };
-    } else {
-        return value;
-    }
+    } 
+
+    return value;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

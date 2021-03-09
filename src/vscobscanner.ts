@@ -106,18 +106,10 @@ export class VSCobScanner {
     }
 
     public static async forkScanner(sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
-        let cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
-
-        if (deprecatedMode && cacheDirectory !== undefined) {
-            sf.cacheDirectory = cacheDirectory;
-        } else {
-            cacheDirectory = tempDirectory;
-        }
-
-        ScanDataHelper.save(cacheDirectory, sf);
+        ScanDataHelper.save(tempDirectory, sf);
 
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
-        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+        const jsonFile = path.join(tempDirectory, ScanDataHelper.scanFilename);
 
         const options: ForkOptions = {
             stdio: [0, 1, 2, "ipc"],
@@ -132,8 +124,8 @@ export class VSCobScanner {
         VSCobScanner.activePid = child.pid;
 
         child.on('error', err => {
-            if (cacheDirectory !== undefined) {
-                VSCobScanner.removeScannerFile(cacheDirectory);
+            if (tempDirectory !== undefined) {
+                VSCobScanner.removeScannerFile(tempDirectory);
             }
             logException(`Fork caused ${reason}`, err);
         });
