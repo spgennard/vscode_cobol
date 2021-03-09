@@ -2,11 +2,12 @@ import { extensions } from "vscode";
 import { COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { ExternalFeatures } from "./extension";
+import { dumpPreProcInfo, ExternalFeatures } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
     public static registerPreProcessors(settings: ICOBOLSettings): void {
+        let show = false;
         for (const extName of settings.preprocessor_extensions) {
             if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
                 continue;
@@ -16,7 +17,12 @@ export class VSPreProc {
                 const handle = new CobApiHandle(pp.getPackageJson(), ExternalFeatures);
                 COBOLPreprocessorHelper.preprocessors.set(handle, pp);
                 COBOLPreprocessorHelper.preprocessorsExts.set(extName, handle);
+                show = true;
             }
+        }
+
+        if (show) {
+            dumpPreProcInfo(settings);
         }
     }
 

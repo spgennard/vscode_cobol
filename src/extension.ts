@@ -29,7 +29,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceviewtree';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
-import { ICOBOLSettings } from './iconfiguration';
+import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require('properties-reader');
@@ -433,22 +433,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage("----------------------------------------------------------------------");
         }
 
-        for (const extName of settings.preprocessor_extensions) {
-            if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
-                const activePreProc = COBOLPreprocessorHelper.preprocessorsExts.get(extName);
-
-                if (activePreProc !== undefined) {
-                    logMessage(` Active preprocessor              : ${activePreProc.id}`);
-                    logMessage(`                                  : ${activePreProc.description}`);
-                    logMessage(`                                  : ${activePreProc.bugReportEmail}`);
-                    logMessage(`                                  : ${activePreProc.bugReportUrl}`);
-                }
-                continue;
-            }
-            logMessage('');
-            logMessage(` Failed to load preprocessor      : ${extName}`);
-            logMessage('');
-        }
+        dumpPreProcInfo(settings);
 
     }
 
@@ -480,6 +465,25 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         }
 
         logMessage("");
+    }
+}
+
+export function dumpPreProcInfo(settings: COBOLSettings): void {
+    for (const extName of settings.preprocessor_extensions) {
+        if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
+            const activePreProc = COBOLPreprocessorHelper.preprocessorsExts.get(extName);
+
+            if (activePreProc !== undefined) {
+                logMessage(` Active preprocessor              : ${activePreProc.id}`);
+                logMessage(`                                  : ${activePreProc.description}`);
+                logMessage(`                                  : ${activePreProc.bugReportEmail}`);
+                logMessage(`                                  : ${activePreProc.bugReportUrl}`);
+            }
+            continue;
+        }
+        logMessage('');
+        logMessage(` Registered preprocessor          : ${extName}`);
+        logMessage('');
     }
 }
 
