@@ -48,6 +48,7 @@ import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
+import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -144,7 +145,7 @@ export class COBOLStatUtils {
                 const folderPath = folder.uri.path;
                 const possibleFile = path.join(folderPath, sdir);
                 if (COBOLStatUtils.isFile(possibleFile)) {
-                    const stat4src = fs.statSync(possibleFile, { bigint:true });
+                    const stat4src = fs.statSync(possibleFile, { bigint: true });
                     if (sdirMs === stat4src.mtimeMs) {
                         return possibleFile;
                     }
@@ -167,7 +168,7 @@ export class COBOLStatUtils {
             if (folder.uri.scheme === 'file') {
                 const folderPath = folder.uri.path;
                 if (fullPath.startsWith(folderPath)) {
-                    const possibleShortPath = fullPath.substr(1+folderPath.length);
+                    const possibleShortPath = fullPath.substr(1 + folderPath.length);
                     if (bestShortName.length === 0) {
                         bestShortName = possibleShortPath;
                     } else {
@@ -409,21 +410,46 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
     if (thisExtension !== undefined) {
-        logMessage(`VSCode version : ${vscode.version}`);
-        logMessage(` Platform          : ${os.platform}`);
-        logMessage(` Architecture      : ${os.arch}`);
+        logMessage(`VSCode version                    : ${vscode.version}`);
+        logMessage(` Platform                         : ${os.platform}`);
+        logMessage(` Architecture                     : ${os.arch}`);
         logMessage("Extension Information:");
-        logMessage(` Extension path    : ${thisExtension.extensionPath}`);
-        logMessage(` Version           : ${thisExtension.packageJSON.version}`);
-        logMessage(" Caching");
-        logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
-        const cacheDir = VSCOBOLSourceScanner.getCacheDirectory();
-        if (cacheDir !== undefined) {
-            logMessage(`  Cache directory  : ${cacheDir}`);
-        }
+        logMessage(` Extension path                   : ${thisExtension.extensionPath}`);
+        logMessage(` Version                          : ${thisExtension.packageJSON.version}`);
         logMessage(` UNC paths disabled               : ${settings.disable_unc_copybooks_directories}`);
         logMessage(` Parse copybook for references    : ${settings.parse_copybooks_for_references}`);
         logMessage(` Editor maxTokenizationLineLength : ${settings.editor_maxTokenizationLineLength}`)
+
+        if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+            logMessage("----------------------------------------------------------------------");
+            logMessage(" Deprecated Features settings");
+            logMessage("");
+            logMessage(" Caching");
+            logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+            const cacheDir = VSCOBOLSourceScanner.getCacheDirectory();
+            if (cacheDir !== undefined) {
+                logMessage(`  Cache directory  : ${cacheDir}`);
+            }
+            logMessage("----------------------------------------------------------------------");
+        }
+
+        for (const extName of settings.preprocessor_extensions) {
+            if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
+                const activePreProc = COBOLPreprocessorHelper.preprocessorsExts.get(extName);
+
+                if (activePreProc !== undefined) {
+                    logMessage(` Active preprocessor              : ${activePreProc.id}`);
+                    logMessage(`                                  : ${activePreProc.description}`);
+                    logMessage(`                                  : ${activePreProc.bugReportEmail}`);
+                    logMessage(`                                  : ${activePreProc.bugReportUrl}`);
+                }
+                continue;
+            }
+            logMessage('');
+            logMessage(` Failed to load preprocessor      : ${extName}`);
+            logMessage('');
+        }
+
     }
 
     initExtensionSearchPaths(settings);
@@ -555,7 +581,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (md_metadata_files) {
-                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(ExternalFeatures, settings.metadata_files,true);
+                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(ExternalFeatures, settings.metadata_files, true);
             }
         }
     });
