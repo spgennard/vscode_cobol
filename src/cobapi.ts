@@ -16,7 +16,6 @@ export interface COBOLPreprocessorCallbacks {
     getCurrentDivision(): string;
     getCurrentSection(): string;
     getCopyFilename(copybook: string, inInfo: string):string;
-
 }
 
 export interface COBOLPreprocessorOutput {
@@ -27,6 +26,8 @@ export interface COBOLPreprocessorOutput {
 
 export interface COBOLPreprocessor {
     start(source:string, handle: COBOLPreprocessorHandle, callbacks:COBOLPreprocessorCallbacks):void;
+    startDivision(source:string, divisionName: string):void;
+    startSection(source:string, sectionName: string):void;
     process(source:string, line:string, output:COBOLPreprocessorOutput): boolean;
     end(source:string):void;
 

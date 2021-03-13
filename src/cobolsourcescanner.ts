@@ -21,6 +21,26 @@ export class COBOLPreprocessorHelper {
         return this.preprocessors.size !== 0;
     }
 
+    public static actionStartSection(source:string, divisionName: string):void {
+        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
+            try {
+                p.startSection(source,divisionName);
+            } catch (e) {
+                //
+            }
+        }
+    }
+
+    public static actionStartDivision(source:string, divisionName: string):void {
+        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
+            try {
+                p.startDivision(source,divisionName);
+            } catch (e) {
+                //
+            }
+        }
+    }
+
     public static actionStart(id: string, callbacks: COBOLPreprocessorCallbacks): void {
         for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
@@ -30,6 +50,7 @@ export class COBOLPreprocessorHelper {
             }
         }
     }
+
     public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): boolean {
         const lines: string[] = [orgLine];
 
@@ -647,6 +668,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     private externalFeatures: IExternalFeatures;
 
+    private isPreProcessorsActive = false;
+
     public static ParseUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
@@ -922,7 +945,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
-        const isPreProcessorsActive = COBOLPreprocessorHelper.isActive();
+        this.isPreProcessorsActive = COBOLPreprocessorHelper.isActive();
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
@@ -946,7 +969,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     let preProcLines: string[] = [];
                     const copybooks = new Map<string, string>();
 
-                    if (isPreProcessorsActive) {
+                    if (this.isPreProcessorsActive) {
                         try {
                             if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks, this)) {
                                 preProcLines = [];
@@ -1027,7 +1050,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         // inform any pre-processors
-        COBOLPreprocessorHelper.actionEnd(this.id);
+        if (this.isPreProcessorsActive) {
+            COBOLPreprocessorHelper.actionEnd(this.id);
+        }
     }
 
     public getCurrentDivision(): string {
@@ -1087,6 +1112,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             this.tokensInOrder.push(ctoken);
             this.eventHandler.processToken(ctoken);
 
+            if (this.isPreProcessorsActive) {
+                COBOLPreprocessorHelper.actionStartDivision(this.filename, ctoken.tokenName);
+            }
             return ctoken;
         }
 
@@ -1103,6 +1131,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 this.eventHandler.processToken(ctoken);
             }
             this.tokensInOrder.push(ctoken);
+
+            if (this.isPreProcessorsActive) {
+                COBOLPreprocessorHelper.actionStartSection(this.filename, ctoken.tokenName);
+            }
 
             return ctoken;
         }

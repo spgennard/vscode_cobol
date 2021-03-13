@@ -1188,16 +1188,16 @@ export async function activate(context: ExtensionContext): Promise<void> {
         });
     }
 
+    // display the message
+    if (checkForExtensionConflictsMessage.length !== 0) {
+        logMessage(checkForExtensionConflictsMessage);
+    }
+
     if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
         const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, true);
         pm.then(() => {
             return;
         });
-    }
-
-    // display the message
-    if (checkForExtensionConflictsMessage.length !== 0) {
-        logMessage(checkForExtensionConflictsMessage);
     }
 
     openChangeLog();
