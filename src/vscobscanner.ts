@@ -14,6 +14,7 @@ import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
+import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 
 
 class ScanStats {
@@ -38,6 +39,12 @@ export class VSCobScanner {
         // handle when parsed
         if (settings.parse_copybooks_for_references) {
             return;
+        }
+
+        // cleanup old sym files
+        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
         }
 
         if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
@@ -229,6 +236,7 @@ export class VSCobScanner {
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean, deprecatedMode: boolean): Promise<void> {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
+        const settings = VSCOBOLConfiguration.get();
 
         if (deprecatedMode) {
             if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
@@ -238,6 +246,7 @@ export class VSCobScanner {
 
             const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
             if (cacheDirectory !== undefined && VSCobScanner.IsScannerActive(cacheDirectory)) {
+                COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
                 if (!viaCommand) {
                     logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
                     VSCobScanner.removeScannerFile(cacheDirectory);
@@ -249,7 +258,6 @@ export class VSCobScanner {
             }
         }
 
-        const settings = VSCOBOLConfiguration.get();
         const ws = getWorkspaceFolders();
         const stats = new ScanStats();
         const files: string[] = [];
