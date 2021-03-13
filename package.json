@@ -433,6 +433,12 @@
                     "description": "Include Script Files in source view",
                     "default": true
                 },
+                "coboleditor.sourceview_include_object_files": {
+                    "type": "boolean",
+                    "title": "Include Object Files in source view",
+                    "description": "Include Object Files in source view",
+                    "default": true
+                },
                 "coboleditor.line_comment": {
                     "type": "boolean",
                     "title": "Replace standard comment in/out with COBOL specific",

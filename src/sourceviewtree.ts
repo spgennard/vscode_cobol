@@ -16,6 +16,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private hlasmItem: SourceItem;
     private documentItem: SourceItem;
     private scriptItem: SourceItem;
+    private objectItem: SourceItem;
 
     private topLevelItems: SourceItem[] = [];
 
@@ -24,8 +25,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private jclItems = new Map<string, SourceFolderItem>();
     private pliItems = new Map<string, SourceFolderItem>();
     private hlasmItems = new Map<string, SourceFolderItem>();
-    private documentIems = new Map<string, SourceFolderItem>();
+    private documentItems = new Map<string, SourceFolderItem>();
     private scriptItems = new Map<string, SourceFolderItem>();
+    private objectItems = new Map<string, SourceFolderItem>();
 
     private settings: ICOBOLSettings;
 
@@ -39,6 +41,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.pliItem = new SourceFolderItem("PL/I");
         this.documentItem = new SourceFolderItem("Documents");
         this.scriptItem = new SourceFolderItem("Scripts");
+        this.objectItem = new SourceFolderItem("Objects");
 
         this.topLevelItems.push(this.cobolItem);
         this.topLevelItems.push(this.copyBookItem);
@@ -61,6 +64,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
         if (config.sourceview_include_script_files) {
             this.topLevelItems.push(this.scriptItem);
+        }
+
+        if (config.sourceview_include_object_files) {
+            this.topLevelItems.push(this.objectItem);
         }
 
         const folders = getWorkspaceFolders();
@@ -136,6 +143,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this._onDidChangeTreeData.fire(this.hlasmItem);
         this._onDidChangeTreeData.fire(this.documentItem);
         this._onDidChangeTreeData.fire(this.scriptItem);
+        this._onDidChangeTreeData.fire(this.objectItem);
     }
 
 
@@ -199,8 +207,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "md":
                 case "txt":
                 case "html":
-                    if (this.documentIems.has(fsp) === false) {
-                        this.documentIems.set(fsp, this.newSourceItem("document", base, file, 0));
+                    if (this.documentItems.has(fsp) === false) {
+                        this.documentItems.set(fsp, this.newSourceItem("document", base, file, 0));
                     }
                     break;
                 case "sh":
@@ -209,6 +217,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                         this.scriptItems.set(fsp, this.newSourceItem("scripts", base, file, 0));
                     }
                     break;
+                case "int":
+                case "gnt":
+                case "acu":
+                    if (this.objectItems.has(fsp) === undefined) {
+                        this.objectItems.set(fsp, this.newSourceItem("objects", base, file, 0));
+                    }
+                break;
             }
         }
     }
@@ -227,8 +242,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.setTreeState(this.jclItems, this.jclItem);
         this.setTreeState(this.hlasmItems, this.hlasmItem);
         this.setTreeState(this.pliItems, this.pliItem);
-        this.setTreeState(this.documentIems, this.documentItem);
+        this.setTreeState(this.documentItems, this.documentItem);
         this.setTreeState(this.scriptItems, this.scriptItem);
+        this.setTreeState(this.objectItems, this.objectItem);
 
         this.refreshAll();
     }
@@ -253,8 +269,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.jclItems.delete(f);
         this.hlasmItems.delete(f);
         this.pliItems.delete(f);
-        this.documentIems.delete(f);
+        this.documentItems.delete(f);
         this.scriptItems.delete(f);
+        this.objectItems.delete(f);
         this.refreshItems();
     }
 
@@ -278,8 +295,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "JCL": rtn = this.getItemsFromMap(this.jclItems); break;
                 case "PL/I": rtn = this.getItemsFromMap(this.pliItems); break;
                 case "HLASM": rtn = this.getItemsFromMap(this.hlasmItems); break;
-                case "Documents": rtn = this.getItemsFromMap(this.documentIems); break;
+                case "Documents": rtn = this.getItemsFromMap(this.documentItems); break;
                 case "Scripts": rtn = this.getItemsFromMap(this.scriptItems); break;
+                case "Objects": rtn = this.getItemsFromMap(this.objectItems); break;
             }
 
 

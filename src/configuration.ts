@@ -59,6 +59,7 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview_include_pli_files = getBoolean("sourceview_include_pli_files", true);
         vsconfig.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
         vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
+        vsconfig.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
         vsconfig.format_on_return = workspace.getConfiguration('coboleditor').get<formatOnReturn>("format_on_return",formatOnReturn.Off);
         vsconfig.metadata_symbols = getmetadata_symbols();
         vsconfig.metadata_entrypoints = getmetadata_entrypoints();

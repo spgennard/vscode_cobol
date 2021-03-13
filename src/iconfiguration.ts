@@ -61,6 +61,7 @@ export interface ICOBOLSettings {
     sourceview_include_pli_files: boolean;
     sourceview_include_doc_files: boolean;
     sourceview_include_script_files: boolean;
+    sourceview_include_object_files: boolean;
 
     format_constants_to_uppercase: boolean;
     format_on_return:formatOnReturn;
@@ -122,6 +123,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public sourceview_include_pli_files: boolean;
     public sourceview_include_doc_files: boolean;
     public sourceview_include_script_files: boolean;
+    public sourceview_include_object_files: boolean;
     public format_on_return:formatOnReturn;
     public editor_maxTokenizationLineLength: number;
     public format_constants_to_uppercase: boolean;
@@ -180,6 +182,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.sourceview_include_pli_files = true;
         this.sourceview_include_doc_files = true;
         this.sourceview_include_script_files = true;
+        this.sourceview_include_object_files = true;
         this.linter_ignore_section_before_entry = true;
         this.format_on_return = formatOnReturn.Off;
         this.format_constants_to_uppercase = true;
