@@ -116,7 +116,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
         let actionCommand = "vscode.open";
         if (ext === 'acu' || ext === 'int' || ext === 'gnt') {
-            actionCommand = "cobolplugin.runCommand";
+            actionCommand = "";
         }
         return {
             arguments: [

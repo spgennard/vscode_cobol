@@ -550,6 +550,50 @@ function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
 
 }
 
+function actionSourceViewItemfunction (si:SourceItem, debug: boolean) {
+    if (commandTerminal === undefined) {
+        commandTerminal = vscode.window.createTerminal(commandTerminalName);
+    }
+
+    let prefRunner = "";
+    let prefRunnerDebug = "";
+    let fsPath = "";
+    if (si !== undefined && si.uri !== undefined) {
+        fsPath = si.uri.path as string;
+    }
+
+    if (COBOLFileUtils.isWin32) {
+        if (fsPath.endsWith("acu")) {
+            prefRunner = "wrun32";
+            prefRunnerDebug = debug ? "-d " : "";
+        }
+        if (fsPath.endsWith("int")) {
+            prefRunner = "runw";
+            prefRunnerDebug = debug ? "-d " : "(+A) ";
+        }
+        if (fsPath.endsWith("gnt")) {
+            prefRunnerDebug = debug ? "-d " : "(+A) ";
+        }
+
+    } else {
+        if (fsPath.endsWith("acu")) {
+            prefRunner = "runcbl";
+            prefRunnerDebug = debug ? "-d " : "";
+        }
+
+        // todo consider adding threaded version, cobmode
+        if (fsPath.endsWith("int")) {
+            prefRunnerDebug = debug ? "-d " : "(+A) ";
+        }
+        if (fsPath.endsWith("gnt")) {
+            prefRunnerDebug = debug ? "-d " : "(+A) ";
+        }
+    }
+
+    commandTerminal.show(true);
+    commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+}
+
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
 
@@ -962,79 +1006,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
     const disposable4debugterminal = vscode.commands.registerCommand('cobolplugin.runDebugCommand', function (si:SourceItem) {
-        if (commandTerminal === undefined) {
-            commandTerminal = vscode.window.createTerminal(commandTerminalName);
-        }
-
-        let prefRunner = "";
-        let fsPath = "";
-        if (si !== undefined && si.uri !== undefined) {
-            fsPath = si.uri.path as string;
-        }
-
-        if (COBOLFileUtils.isWin32) {
-            if (fsPath.endsWith("acu")) {
-                prefRunner = "wrun32 -d";
-            }
-            if (fsPath.endsWith("int")) {
-                prefRunner = "runw (+A)";
-            }
-            if (fsPath.endsWith("gnt")) {
-                prefRunner = "runw (+A)";
-            }
-
-        } else {
-            if (fsPath.endsWith("acu")) {
-                prefRunner = "runcbl -d";
-            }
-
-            // todo consider adding threaded version, cobmode
-            if (fsPath.endsWith("int")) {
-                prefRunner = "cobrun (+A) ";
-            }
-            if (fsPath.endsWith("gnt")) {
-                prefRunner = "cobrun (+A)";
-            }
-        }
-
-        commandTerminal.show(true);
-        commandTerminal.sendText(`${prefRunner} ${fsPath}`);
+        actionSourceViewItemfunction(si,true);
     });
     context.subscriptions.push(disposable4debugterminal);
 
-    const disposable4terminal = vscode.commands.registerCommand('cobolplugin.runCommand', function (fileUri: vscode.Uri) {
-        if (commandTerminal === undefined) {
-            commandTerminal = vscode.window.createTerminal(commandTerminalName);
-        }
-
-        let prefRunner = "";
-        if (COBOLFileUtils.isWin32) {
-            if (fileUri.fsPath.endsWith("acu")) {
-                prefRunner = "wrun32";
-            }
-            if (fileUri.fsPath.endsWith("int")) {
-                prefRunner = "runw";
-            }
-            if (fileUri.fsPath.endsWith("gnt")) {
-                prefRunner = "runw";
-            }
-
-        } else {
-            if (fileUri.fsPath.endsWith("acu")) {
-                prefRunner = "runcbl";
-            }
-
-            // todo consider adding threaded version, cobmode
-            if (fileUri.fsPath.endsWith("int")) {
-                prefRunner = "cobrun";
-            }
-            if (fileUri.fsPath.endsWith("gnt")) {
-                prefRunner = "cobrun";
-            }
-        }
-
-        commandTerminal.show(true);
-        commandTerminal.sendText(`${prefRunner} ${fileUri.fsPath}`);
+    const disposable4terminal = vscode.commands.registerCommand('cobolplugin.runCommand', function (si: SourceItem) {
+        actionSourceViewItemfunction(si,false);
     });
     context.subscriptions.push(disposable4terminal);
 

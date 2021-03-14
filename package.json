@@ -1109,7 +1109,7 @@
             {
                 "command": "cobolplugin.runCommand",
                 "category": "COBOL",
-                "title": "Run Command",
+                "title": "Execute",
                 "enablement": "!isWeb"
             },
             {
@@ -1258,10 +1258,13 @@
                     "when": "view == flat-source-view && viewItem == cobol"
                 },
                 {
+                    "command": "cobolplugin.runCommand",
+                    "when": "view == flat-source-view && viewItem == objects"
+                },
+                {
                     "command": "cobolplugin.runDebugCommand",
                     "when": "view == flat-source-view && viewItem == objects"
                 }
-
             ],
             "explorer/context": [
                 {
