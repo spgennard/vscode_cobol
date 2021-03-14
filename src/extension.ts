@@ -566,27 +566,17 @@ function actionSourceViewItemfunction (si:SourceItem, debug: boolean) {
         if (fsPath.endsWith("acu")) {
             prefRunner = "wrun32";
             prefRunnerDebug = debug ? "-d " : "";
+        } else if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+            prefRunner = "cobrun";
+            prefRunnerDebug = debug ? "(+A) " : "";
         }
-        if (fsPath.endsWith("int")) {
-            prefRunner = "runw";
-            prefRunnerDebug = debug ? "-d " : "(+A) ";
-        }
-        if (fsPath.endsWith("gnt")) {
-            prefRunnerDebug = debug ? "-d " : "(+A) ";
-        }
-
     } else {
-        if (fsPath.endsWith("acu")) {
+        // todo consider adding threaded version, cobmode
+        if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+            prefRunner = debug ? "anim" : "cobrun";
+        } else if (fsPath.endsWith("acu")) {
             prefRunner = "runcbl";
             prefRunnerDebug = debug ? "-d " : "";
-        }
-
-        // todo consider adding threaded version, cobmode
-        if (fsPath.endsWith("int")) {
-            prefRunnerDebug = debug ? "-d " : "(+A) ";
-        }
-        if (fsPath.endsWith("gnt")) {
-            prefRunnerDebug = debug ? "-d " : "(+A) ";
         }
     }
 
