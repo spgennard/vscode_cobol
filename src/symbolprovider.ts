@@ -3,6 +3,7 @@ import { COBOLTokenStyle, splitArgument } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { outlineFlag } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
+import { VSPreProc } from './vspreproc';
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
@@ -83,6 +84,11 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
         if (outlineLevel === outlineFlag.Off) {
             return symbols;
         }
+
+        if (VSPreProc.areAllrPreProcessorsReady(settings) === false) {
+            return symbols;
+        }
+
 
         const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
 

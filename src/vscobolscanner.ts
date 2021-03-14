@@ -139,7 +139,9 @@ export default class VSCOBOLSourceScanner {
                 //   eg: if the ext depends on this but its exports are queried before it has
                 //        completed the activation.. it just does not work
                 if (config.preprocessor_extensions.length !== 0) {
-                    VSPreProc.registerPreProcessors(config);
+                    if (VSPreProc.registerPreProcessors(config) === false) {
+                        return undefined;
+                    }
                 }
 
                 const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();

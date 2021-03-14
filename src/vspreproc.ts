@@ -6,8 +6,13 @@ import { dumpPreProcInfo, ExternalFeatures } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
-    public static registerPreProcessors(settings: ICOBOLSettings): void {
+    public static areAllPreProcessorsReady(settings: ICOBOLSettings): boolean {
+        return VSPreProc.registerPreProcessors(settings);
+    }
+
+    public static registerPreProcessors(settings: ICOBOLSettings): boolean {
         let show = false;
+        let failed = false;
         for (const extName of settings.preprocessor_extensions) {
             if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
                 continue;
@@ -18,12 +23,16 @@ export class VSPreProc {
                 COBOLPreprocessorHelper.preprocessors.set(handle, pp);
                 COBOLPreprocessorHelper.preprocessorsExts.set(extName, handle);
                 show = true;
+            } else {
+                failed = true;
             }
         }
 
         if (show) {
             dumpPreProcInfo(settings);
         }
+
+        return !failed;
     }
 
     private static msleep(n: number) {
@@ -32,27 +41,21 @@ export class VSPreProc {
 
 
     public static getCOBOLPreprocessor(extensionName: string): COBOLPreprocessor | undefined {
-        let retryCount = 4;
-        let failedExtension = "";
-        while (retryCount > 0) {
-            try {
-                const preprocexp = extensions.getExtension(extensionName);
-                if (preprocexp?.exports === undefined) {
-                    throw new Error(`${extensionName} has no exports`);
-                }
-
-                return preprocexp.exports as COBOLPreprocessor;
-            }
-            catch {
-                failedExtension = extensionName;
-                return undefined;
-            }
-            this.msleep(50);
-            retryCount--;
+        const preprocexp = extensions.getExtension(extensionName);
+        if (preprocexp === undefined) {
+            return preprocexp;
         }
 
-        ExternalFeatures.logMessage(`Unable to find ${failedExtension} in a timely fashion`);
-        return undefined;
+        try {
+            if (preprocexp?.exports === undefined) {
+                return undefined;
+            }
+
+            return preprocexp.exports as COBOLPreprocessor;
+        }
+        catch {
+            return undefined;
+        }
     }
 
 }
