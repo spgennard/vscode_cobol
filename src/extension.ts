@@ -49,7 +49,8 @@ import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { COBOLPreprocessorHelper } from './cobolsourcescanner';
-import { config } from 'process';
+import { Url } from 'url';
+import { SourceItem } from './sourceItem';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -958,6 +959,48 @@ export async function activate(context: ExtensionContext): Promise<void> {
             fileUri.fsPath);
     });
     context.subscriptions.push(disposable4mfurun);
+
+
+    const disposable4debugterminal = vscode.commands.registerCommand('cobolplugin.runDebugCommand', function (si:SourceItem) {
+        if (commandTerminal === undefined) {
+            commandTerminal = vscode.window.createTerminal(commandTerminalName);
+        }
+
+        let prefRunner = "";
+        let fsPath = "";
+        if (si !== undefined && si.uri !== undefined) {
+            fsPath = si.uri.path as string;
+        }
+
+        if (COBOLFileUtils.isWin32) {
+            if (fsPath.endsWith("acu")) {
+                prefRunner = "wrun32 -d";
+            }
+            if (fsPath.endsWith("int")) {
+                prefRunner = "runw (+A)";
+            }
+            if (fsPath.endsWith("gnt")) {
+                prefRunner = "runw (+A)";
+            }
+
+        } else {
+            if (fsPath.endsWith("acu")) {
+                prefRunner = "runcbl -d";
+            }
+
+            // todo consider adding threaded version, cobmode
+            if (fsPath.endsWith("int")) {
+                prefRunner = "cobrun (+A) ";
+            }
+            if (fsPath.endsWith("gnt")) {
+                prefRunner = "cobrun (+A)";
+            }
+        }
+
+        commandTerminal.show(true);
+        commandTerminal.sendText(`${prefRunner} ${fsPath}`);
+    });
+    context.subscriptions.push(disposable4debugterminal);
 
     const disposable4terminal = vscode.commands.registerCommand('cobolplugin.runCommand', function (fileUri: vscode.Uri) {
         if (commandTerminal === undefined) {

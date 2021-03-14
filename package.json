@@ -1113,6 +1113,12 @@
                 "enablement": "!isWeb"
             },
             {
+                "command": "cobolplugin.runDebugCommand",
+                "category": "COBOL",
+                "title": "Debug",
+                "enablement": "!isWeb"
+            },
+            {
                 "command": "cobolplugin.removeAllComments",
                 "category": "COBOL",
                 "title": "Remove COBOL Comments"
@@ -1250,7 +1256,12 @@
                 {
                     "command": "cobolplugin.syntaxCheck",
                     "when": "view == flat-source-view && viewItem == cobol"
+                },
+                {
+                    "command": "cobolplugin.runDebugCommand",
+                    "when": "view == flat-source-view && viewItem == objects"
                 }
+
             ],
             "explorer/context": [
                 {
@@ -1760,8 +1771,7 @@
                     "arguments": {
                         "type": "string"
                     }
-                },
-                "when": "config.coboleditor.experimental_features"
+                }
             }
         ]
     },
