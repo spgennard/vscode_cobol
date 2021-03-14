@@ -111,22 +111,26 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.refreshItems();
     }
 
-    private getCommand(fileUri: vscode.Uri): vscode.Command | undefined {
+    private getCommand(fileUri: vscode.Uri, ext: string): vscode.Command | undefined {
         const location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
+        let actionCommand = "vscode.open";
+        if (ext === 'acu' || ext === 'int' || ext === 'gnt') {
+            actionCommand = "cobolplugin.runCommand";
+        }
         return {
             arguments: [
                 fileUri,
                 { selection: location },
             ],
-            command: "vscode.open",
+            command: actionCommand,
             title: "Open",
         };
     }
 
-    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number): SourceItem {
+    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number, ext:string): SourceItem {
         const item = new SourceItem(label, file, lnum);
-        item.command = this.getCommand(file);
+        item.command = this.getCommand(file,ext);
         item.contextValue = contextValue;
         item.tooltip = file.fsPath;
         return item;
@@ -152,7 +156,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             if (validExtension.length > 0 && ext === validExtension) {
                 const f = file.fsPath;
                 if (items.has(f) === false) {
-                    items.set(f, this.newSourceItem(sourceItem, base, file, 0));
+                    items.set(f, this.newSourceItem(sourceItem, base, file, 0, validExtension));
                     return true;
                 }
             }
@@ -170,14 +174,15 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             this.addExtensionIfInList(ext.toLowerCase(), file, this.settings.copybookexts, "copybook", base, this.copyBookItems);
 
             const fsp = file.fsPath;
-            switch (ext.toLowerCase()) {
+            const extLower = ext.toLowerCase();
+            switch (extLower) {
                 case "jcl":
                 case "job":
                 case "cntl":
                 case "prc":
                 case "proc":
                     if (this.jclItems.has(fsp) === false) {
-                        this.jclItems.set(fsp, this.newSourceItem("jcl", base, file, 0));
+                        this.jclItems.set(fsp, this.newSourceItem("jcl", base, file, 0,extLower));
                     }
                     break;
                 case "hlasm":
@@ -188,7 +193,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "mlc":
                 case "asmmac":
                     if (this.hlasmItems.has(fsp) === false) {
-                        this.hlasmItems.set(fsp, this.newSourceItem("hlasm", base, file, 0));
+                        this.hlasmItems.set(fsp, this.newSourceItem("hlasm", base, file, 0,extLower));
                     }
                     break;
 
@@ -200,7 +205,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "pcx":
                 case "inc":
                     if (this.pliItems.has(fsp) === false) {
-                        this.pliItems.set(fsp, this.newSourceItem("pli", base, file, 0));
+                        this.pliItems.set(fsp, this.newSourceItem("pli", base, file, 0,extLower));
                     }
                     break;
 
@@ -208,20 +213,20 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "txt":
                 case "html":
                     if (this.documentItems.has(fsp) === false) {
-                        this.documentItems.set(fsp, this.newSourceItem("document", base, file, 0));
+                        this.documentItems.set(fsp, this.newSourceItem("document", base, file, 0,extLower));
                     }
                     break;
                 case "sh":
                 case "bat":
-                    if (this.scriptItems.has(fsp) === undefined) {
-                        this.scriptItems.set(fsp, this.newSourceItem("scripts", base, file, 0));
+                    if (this.scriptItems.has(fsp) === false) {
+                        this.scriptItems.set(fsp, this.newSourceItem("scripts", base, file, 0,extLower));
                     }
                     break;
                 case "int":
                 case "gnt":
                 case "acu":
-                    if (this.objectItems.has(fsp) === undefined) {
-                        this.objectItems.set(fsp, this.newSourceItem("objects", base, file, 0));
+                    if (this.objectItems.has(fsp) === false) {
+                        this.objectItems.set(fsp, this.newSourceItem("objects", base, file, 0,extLower));
                     }
                 break;
             }

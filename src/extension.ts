@@ -41,7 +41,7 @@ import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
-import { ESourceFormat } from './externalfeatures';
+import { CacheDirectoryStrategy, ESourceFormat } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
@@ -49,6 +49,7 @@ import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { COBOLPreprocessorHelper } from './cobolsourcescanner';
+import { config } from 'process';
 
 let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -188,7 +189,9 @@ export class COBOLStatUtils {
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
+let commandTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
+const commandTerminalName = "COBOL Application";
 
 
 const blessed_extensions: string[] = [
@@ -939,7 +942,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     // Open context menu on current file
-    const disposable = vscode.commands.registerCommand('cobolplugin.mfurunMenu', function (fileUri) {
+    const disposable4mfurun = vscode.commands.registerCommand('cobolplugin.mfurunMenu', function (fileUri) {
 
         if (unitTestTerminal === undefined) {
             unitTestTerminal = vscode.window.createTerminal(terminalName);
@@ -954,8 +957,45 @@ export async function activate(context: ExtensionContext): Promise<void> {
             (enableAnsiColor ? " -dc:ansi " : " ") +
             fileUri.fsPath);
     });
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable4mfurun);
 
+    const disposable4terminal = vscode.commands.registerCommand('cobolplugin.runCommand', function (fileUri: vscode.Uri) {
+        if (commandTerminal === undefined) {
+            commandTerminal = vscode.window.createTerminal(commandTerminalName);
+        }
+
+        let prefRunner = "";
+        if (COBOLFileUtils.isWin32) {
+            if (fileUri.fsPath.endsWith("acu")) {
+                prefRunner = "wrun32";
+            }
+            if (fileUri.fsPath.endsWith("int")) {
+                prefRunner = "runw";
+            }
+            if (fileUri.fsPath.endsWith("gnt")) {
+                prefRunner = "runw";
+            }
+
+        } else {
+            if (fileUri.fsPath.endsWith("acu")) {
+                prefRunner = "runcbl";
+            }
+
+            // todo consider adding threaded version, cobmode
+            if (fileUri.fsPath.endsWith("int")) {
+                prefRunner = "cobrun";
+            }
+            if (fileUri.fsPath.endsWith("gnt")) {
+                prefRunner = "cobrun";
+            }
+        }
+
+        commandTerminal.show(true);
+        commandTerminal.sendText(`${prefRunner} ${fileUri.fsPath}`);
+    });
+    context.subscriptions.push(disposable4terminal);
+
+    //
     const removeAllCommentsCommand = vscode.commands.registerCommand('cobolplugin.removeAllComments', () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
@@ -1193,8 +1233,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
         logMessage(checkForExtensionConflictsMessage);
     }
 
-    if (VSCOBOLConfiguration.get().process_metadata_cache_on_start) {
-        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, true);
+    if (settings.process_metadata_cache_on_start) {
+        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
+        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, depMode);
         pm.then(() => {
             return;
         });

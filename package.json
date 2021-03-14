@@ -492,7 +492,6 @@
                     "type": "boolean",
                     "title": "Process metadata cache on startup",
                     "description": "Process metadata cache on extension load (default false)",
-                    "deprecationMessage": "This setting is depreciated and be removed in future releases",
                     "default": false
                 },
                 "coboleditor.parse_copybooks_for_references": {
@@ -1105,6 +1104,12 @@
                 "command": "cobolplugin.mfurunMenu",
                 "category": "COBOL",
                 "title": "Run UnitTest",
+                "enablement": "!isWeb"
+            },
+            {
+                "command": "cobolplugin.runCommand",
+                "category": "COBOL",
+                "title": "Run Command",
                 "enablement": "!isWeb"
             },
             {
