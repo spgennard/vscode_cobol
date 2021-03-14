@@ -49,7 +49,6 @@ import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { COBOLPreprocessorHelper } from './cobolsourcescanner';
-import { Url } from 'url';
 import { SourceItem } from './sourceItem';
 
 let formatStatusBarItem: StatusBarItem;
@@ -550,7 +549,7 @@ function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
 
 }
 
-function actionSourceViewItemfunction (si:SourceItem, debug: boolean) {
+function actionSourceViewItemFunction (si:SourceItem, debug: boolean) {
     if (commandTerminal === undefined) {
         commandTerminal = vscode.window.createTerminal(commandTerminalName);
     }
@@ -996,12 +995,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
     const disposable4debugterminal = vscode.commands.registerCommand('cobolplugin.runDebugCommand', function (si:SourceItem) {
-        actionSourceViewItemfunction(si,true);
+        actionSourceViewItemFunction(si,true);
     });
     context.subscriptions.push(disposable4debugterminal);
 
     const disposable4terminal = vscode.commands.registerCommand('cobolplugin.runCommand', function (si: SourceItem) {
-        actionSourceViewItemfunction(si,false);
+        actionSourceViewItemFunction(si,false);
     });
     context.subscriptions.push(disposable4terminal);
 

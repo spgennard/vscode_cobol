@@ -112,6 +112,7 @@ export class VSCobScanner {
         return this.isAlive(VSCobScanner.activePid);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async forkScanner(sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
         ScanDataHelper.save(tempDirectory, sf);
 

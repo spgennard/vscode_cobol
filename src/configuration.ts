@@ -357,6 +357,7 @@ function getmetadata_types(): string[] {
     return metadata_types;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getmetadata_files(config:ICOBOLSettings): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
     let metadata_files = editorConfig.get<string[]>('metadata_files');
