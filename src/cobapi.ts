@@ -32,5 +32,6 @@ export interface COBOLPreprocessor {
     end(source:string):void;
 
     getPackageJson(): any;
+    getImplementedVersion(): number;
 
 }

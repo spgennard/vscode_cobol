@@ -1,8 +1,8 @@
 import { extensions } from "vscode";
-import { COBOLPreprocessor } from "./cobapi";
+import { COBAPIConstants, COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { dumpPreProcInfo, ExternalFeatures } from "./extension";
+import { dumpPreProcInfo, ExternalFeatures, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
@@ -17,13 +17,30 @@ export class VSPreProc {
             if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
                 continue;
             }
-            const pp = VSPreProc.getCOBOLPreprocessor(extName);
-            if (pp !== undefined) {
-                const handle = new CobApiHandle(pp.getPackageJson(), ExternalFeatures);
-                COBOLPreprocessorHelper.preprocessors.set(handle, pp);
-                COBOLPreprocessorHelper.preprocessorsExts.set(extName, handle);
-                show = true;
-            } else {
+            try {
+                const pp = VSPreProc.getCOBOLPreprocessor(extName);
+                if (pp !== undefined) {
+                    const handle = new CobApiHandle(pp.getPackageJson(), ExternalFeatures);
+                    try {
+                        if (pp.getImplementedVersion() !== COBAPIConstants.COB_API_INTERFACE_VERSION) {
+                            failed = true;
+                            settings.preprocessor_extensions = [];      // brutal
+                            logMessage(` WARNING: PreProcessors disable due to ${extName} implementing a old version of the interface`);
+                        } else {
+                            COBOLPreprocessorHelper.preprocessors.set(handle, pp);
+                            COBOLPreprocessorHelper.preprocessorsExts.set(extName, handle);
+                            show = true;
+                        }
+                    } catch {
+                        failed = true;
+                        settings.preprocessor_extensions = []; // brutal
+                        logMessage(` WARNING: PreProcessors disable due to ${extName} causing an error during initialization`);
+                    }
+                } else {
+                    failed = true;
+                }
+            }
+            catch {
                 failed = true;
             }
         }
