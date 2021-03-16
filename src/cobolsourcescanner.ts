@@ -96,7 +96,7 @@ export class COBOLPreprocessorHelper {
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
-    CopyBookIn = "CopybookIn",
+    CopyBookInOrOf = "CopybookInOrOf",
     File = "File",
     ProgramId = "Program-Id",
     ImplicitProgramId = "ImplicitProgramId-Id",
@@ -1804,17 +1804,21 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     // let newCopybook: boolean = false;
 
                     let copyToken: COBOLToken = COBOLToken.Null;
-                    if (nextTokenLower === 'in' && nextPlusOneToken.length !== 0) {
+                    const isIn = nextTokenLower === 'in';
+                    const isOf = nextTokenLower === 'of';
+
+                    if (nextPlusOneToken.length !== 0 && (isIn || isOf)) {
                         const nextPlusOneTokenTrimmed = this.trimLiteral(nextPlusOneToken);
-                        const desc: string = prevPlusCurrent + " in " + nextPlusOneTokenTrimmed;
+                        const middleDesc = isIn ? " in " : " of ";
+                        const desc: string = prevPlusCurrent + middleDesc + nextPlusOneTokenTrimmed;
                         if (this.copybookNestedInSection) {
                             if (state.currentSection !== COBOLToken.Null) {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, state.currentSection, nextPlusOneTokenTrimmed);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, prevPlusCurrent, desc, state.currentSection, nextPlusOneTokenTrimmed);
                             } else {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
                             }
                         } else {
-                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookIn, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
                         }
                     }
                     else {
