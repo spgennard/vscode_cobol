@@ -1032,8 +1032,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 state.currentParagraph.endColumn = lineLength;
             }
 
-            // this.addinMissingEndlings();
-
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
                 ctoken.endLine = sourceHandler.getLineCount();
@@ -1464,7 +1462,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     continue;
                 }
 
-                // if skiptodot and not the end of the statement.. swallow
+                // if skipToDot and not the end of the statement.. swallow
                 if (state.skipToDot && state.endsWithDot === false) {
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
@@ -2054,17 +2052,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         return token;
     }
-
-    // private addinMissingEndlings() {
-    //     for (let i = 0; i < this.tokensInOrder.length; i++) {
-    //         const token = this.tokensInOrder[i];
-
-    //         if (token.endLine === 0) {
-    //             token.endLine = token.startLine;
-    //             token.endColumn = token.startColumn + token.tokenName.length;
-    //         }
-    //     }
-    // }
 
     private cobolLintLiteral = "cobol-lint";
 
