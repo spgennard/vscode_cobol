@@ -353,63 +353,9 @@ For example to enforce all working-storage items must start with ws and local-st
     ]
 ```
 
-### Metadata caching location
+### Metadata caching
 
-#### Recommend use
-
-By default the metadata caching is turned off but it can be turned on via the ```coboleditor.cache_metadata``` setting.
-
-This setting, allows you to specific where the metdata caching files are stored.
-
-The recommendation setting for the metadata caching is the ```workspace``` option.   This setting creates a .vscode_cobol directory that contains all the metadata files within the workspace folder.
-
-This directory should be excluded from source code control system.
-
-Example configuration:
-
-```json
-    "coboleditor.cache_metadata": "workspace"
-```
-
-#### Advanced use
-
-If the user wants to specific where the metdata caching directory is to be located, the ```user_defined_directory``` setting can be used.
-
-The user will also be required to set the ```coboleditor.cache_metadata_user_directory``` setting to point to the directory on disk.
-
-Each workspace is required to be in a seperate directory.
-
-The user should avoid using a network based directory, as this will adversely affect performance.
-
-For example:
-```json
-    "coboleditor.cache_metadata": "user_defined_directory",
-    "coboleditor.cache_metadata_user_directory" : "${HOME}/.vscode_cobol/myworkspace"
-```
-
-Remember to create the directory structure, for example, on Linux:
-
-```bash
-mkdir $HOME/.vscode_cobol
-mkdir $HOME/.vscode_cobol/myworkspace
-```
-
-and Windows:
-
-```dos
-mkdir %USERPROFILE%\.vscode_cobol
-mkdir %USERPROFILE%\.vscode_cobol\myworkspace
-```
-
-In the above example, the environment variable HOME is expanded, on Windows ${HOME} is replaced with ${USERPROFILE} to allow a workspace to be portable between Windows, Linux and Mac OSX.
-
-NOTE: The creation of the directory is left to developer, as specific permissions on the directory may be required.
-
-### Metadata caching "storagepath" setting
-
-In some versions of the extension the ```coboleditor.cache_metadata``` had a ```storagepath``` option.   This option would store the metadata in an area located for the extension by vscode itself.
-
-This at first seemed a reason thing todo but overtime issues with disk space creep and shared permissions on directories in hosted environments came to light and as the average user will not want to look inside vscode storagepath area to maintain the disk space or correct the permissions it was decided to removed it in favour of the above documented mechanisms.
+By default the metadata caching is turned on and is stored in the current workspace but it can be turned off via the ```coboleditor.maintain_metadata_cache``` setting.
 
 ## Pre-Processor support for "hidden" source code
 
@@ -473,25 +419,6 @@ For example, to ensure you use utf8 for all you files use:
     }
 }
 ```
-
-## Scanning and caching
-
-COBOL source code can be complex and enabling/disabling the caching will make the editor experience more responsive but will reduce the information available to the extension, which has an impact on features such as "find all references", "Go to definition".
-
-If you do not have caching enabled, my recommendation is to use "file searches" to locate the required source information.
-
-If "cache_metadata" is enabled then navigating between source files becomes easier, if this is not a requirement then enabling is not a requirement!
-
-| Settings                        | Description of use                                                                                                                        |
-|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| process_metadata_cache_on_start | Scan all files in the workspace and located copybooks                                                                                     |
-| cache_metadata != off           | Caches data from scanned source, including entry-points & classes                                                                         |
-| parse_copybooks_for_references  | Scan for any copybooks when editing.     Helps with "Go to definition" and "find all references. Does not require metadata caching enabled |
-
-The metadata cache does not have to be created on workspace startup but can be created at will by using the "COBOL: Process files in workspace for metadata" command.
-
-The command "COBOL: Clear metadata" can be used to remove the on-disk cache.
-
 
 ## Tips
 
