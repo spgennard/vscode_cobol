@@ -72,6 +72,7 @@ export interface ICOBOLSettings {
     metadata_entrypoints: string[];
     metadata_types: string[];
     metadata_files: string[];
+    maintain_metadata_cache: boolean;
 
     preprocessor_extensions:string[];
 }
@@ -132,7 +133,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public metadata_entrypoints: string[];
     public metadata_types: string[];
     public metadata_files: string[];
-
+    public maintain_metadata_cache: boolean;
     public preprocessor_extensions: string[];
 
     constructor() {
@@ -191,5 +192,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.metadata_types = [];
         this.preprocessor_extensions = [];
         this.metadata_files = [];
+        this.maintain_metadata_cache = true;
     }
 }

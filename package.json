@@ -643,6 +643,11 @@
                     "default": [],
                     "uniqueItems": true
                 },
+                "coboleditor.maintain_metadata_cache": {
+                    "type": "boolean",
+                    "title": "Maintain Metadata Cache",
+                    "default": true
+                },
                 "coboleditor.preprocessor_extensions": {
                     "type": "array",
                     "items": {

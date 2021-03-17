@@ -53,6 +53,7 @@ export class VSCOBOLConfiguration {
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
         vsconfig.cache_metadata_user_directory = getString("cache_metadata_user_directory", "");
         vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration('editor').get<number>("maxTokenizationLineLength",20000);
+
         vsconfig.sourceview = getBoolean("sourceview", false);
         vsconfig.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
         vsconfig.sourceview_include_hlasm_files = getBoolean("sourceview_include_hlasm_files", true);
@@ -61,10 +62,13 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         vsconfig.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
         vsconfig.format_on_return = workspace.getConfiguration('coboleditor').get<formatOnReturn>("format_on_return",formatOnReturn.Off);
-        vsconfig.metadata_symbols = getmetadata_symbols();
-        vsconfig.metadata_entrypoints = getmetadata_entrypoints();
-        vsconfig.metadata_types = getmetadata_types();
+
+        vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
+        vsconfig.metadata_symbols = getmetadata_symbols(vsconfig);
+        vsconfig.metadata_entrypoints = getmetadata_entrypoints(vsconfig);
+        vsconfig.metadata_types = getmetadata_types(vsconfig);
         vsconfig.metadata_files = getmetadata_files(vsconfig);
+
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
         return vsconfig;
     }
@@ -329,7 +333,10 @@ function getlinter_house_standards_rules(): string[] {
     return standards;
 }
 
-function getmetadata_symbols(): string[] {
+function getmetadata_symbols(settings: ICOBOLSettings): string[] {
+    if (settings.maintain_metadata_cache === false) {
+        return [];
+    }
     const editorConfig = workspace.getConfiguration('coboleditor');
     let symbols = editorConfig.get<string[]>('metadata_symbols');
     if (!symbols || (symbols !== null && symbols.length === 0)) {
@@ -339,7 +346,10 @@ function getmetadata_symbols(): string[] {
 }
 
 
-function getmetadata_entrypoints(): string[] {
+function getmetadata_entrypoints(settings: ICOBOLSettings): string[] {
+    if (settings.maintain_metadata_cache === false) {
+        return [];
+    }
     const editorConfig = workspace.getConfiguration('coboleditor');
     let entrypoints = editorConfig.get<string[]>('metadata_entrypoints');
     if (!entrypoints || (entrypoints !== null && entrypoints.length === 0)) {
@@ -348,7 +358,10 @@ function getmetadata_entrypoints(): string[] {
     return entrypoints;
 }
 
-function getmetadata_types(): string[] {
+function getmetadata_types(settings: ICOBOLSettings): string[] {
+    if (settings.maintain_metadata_cache === false) {
+        return [];
+    }
     const editorConfig = workspace.getConfiguration('coboleditor');
     let metadata_types = editorConfig.get<string[]>('metadata_types');
     if (!metadata_types || (metadata_types !== null && metadata_types.length === 0)) {
@@ -359,6 +372,10 @@ function getmetadata_types(): string[] {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getmetadata_files(config:ICOBOLSettings): string[] {
+    if (config.maintain_metadata_cache === false) {
+        return [];
+    }
+
     const editorConfig = workspace.getConfiguration('coboleditor');
     let metadata_files = editorConfig.get<string[]>('metadata_files');
     if (!metadata_files || (metadata_files !== null && metadata_files.length === 0)) {
