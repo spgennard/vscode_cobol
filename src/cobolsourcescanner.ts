@@ -245,8 +245,6 @@ export class COBOLToken {
     public endColumn: number;
     public inProcedureDivision: boolean;
     public extraInformation: string;
-    public skipToEnd: boolean;
-    public endOfSkip: boolean;
     public inSection: COBOLToken;
 
     static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined, false, "");
@@ -272,17 +270,6 @@ export class COBOLToken {
         this.extraInformation = extraInformation;
         this.inSection = COBOLToken.Null;
 
-        this.skipToEnd = false;
-        this.endOfSkip = false;
-
-        switch (tokenType) {
-            case COBOLTokenStyle.FunctionId:
-                this.skipToEnd = true;
-                break;
-            case COBOLTokenStyle.EndFunctionId:
-                this.endOfSkip = true;
-                break;
-        }
         if (this.tokenName.length !== 0) {
             /* ensure we don't have any odd start columns */
             if (this.startColumn < 0) {
