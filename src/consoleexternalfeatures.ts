@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import ISourceHandler from "./isourcehandler";
-
 import util from 'util';
 import path from 'path';
 import fs from 'fs';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import ISourceHandler from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class ConsoleExternalFeatures implements IExternalFeatures {

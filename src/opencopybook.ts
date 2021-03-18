@@ -1,9 +1,9 @@
 'use strict';
 
-import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from 'vscode';
-import * as vscode from 'vscode';
 import * as path from 'path';
-import * as process from 'process';
+
+import * as vscode from 'vscode';
+import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from 'vscode';
 import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';

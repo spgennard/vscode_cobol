@@ -3,9 +3,6 @@ import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBSCANNER_STATUS, ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
-import { FileSourceHandler } from "./filesourcehandler";
-import { COBOLSettings } from "./iconfiguration";
-
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import { Hash } from "crypto";
@@ -13,6 +10,8 @@ import path from "path";
 
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
+import { FileSourceHandler } from "./filesourcehandler";
+import { COBOLSettings } from "./iconfiguration";
 
 const args = process.argv.slice(2);
 const features = ConsoleExternalFeatures.Default;

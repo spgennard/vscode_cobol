@@ -1,8 +1,9 @@
 'use strict';
 
+import * as path from 'path';
+
 import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn } from './iconfiguration';
-import * as path from 'path';
 import { isDirectory } from './extension';
 import { CacheDirectoryStrategy } from './externalfeatures';
 

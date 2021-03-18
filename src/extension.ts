@@ -1,23 +1,21 @@
 'use strict';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as vscode from "vscode";
+import os from 'os';
 
 import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, OutputChannel, extensions, tasks, ViewColumn, ConfigurationChangeEvent } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
 import * as commenter from './commenter';
+
 import { COBOLDocumentationCommentHandler } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
 import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
-
 import { jclStatements } from "./keywords/jclstatements";
 import { acuKeywords, cobolKeywords, cobolProcedureKeywords, cobolRegisters, cobolStorageKeywords } from "./keywords/cobolKeywords";
-
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
-
-import * as path from 'path';
-import * as fs from 'fs';
-import * as vscode from "vscode";
-import os from 'os';
 
 import updateDecorations from './margindecorations';
 import { COBOLFileUtils } from './opencopybook';

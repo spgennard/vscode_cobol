@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { workspace } from 'vscode';
+import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
 import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
@@ -7,7 +7,6 @@ import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { writeFileSync } from 'fs';
-import path from 'path';
 import { COBOLFileUtils } from './opencopybook';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
@@ -152,7 +151,7 @@ export class COBOLUtils {
 
             if (COBOLFileUtils.isDirectPath(ddir)) {
                 const ws = getWorkspaceFolders();
-                if (workspace !== undefined && ws !== undefined) {
+                if (vscode.workspace !== undefined && ws !== undefined) {
                     if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
@@ -204,7 +203,7 @@ export class COBOLUtils {
 
         // update copybookdirs with optimized version
         if (updateCopybookdirs) {
-            const editorConfig = workspace.getConfiguration('coboleditor');
+            const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update('copybookdirs', fileSearchDirectory);
             logMessage("Copybook settings and workspace has been updated.");
         } else {
@@ -292,7 +291,7 @@ export class COBOLUtils {
     }
 
     public static getMFUnitAnsiColorConfig(): boolean {
-        const editorConfig = workspace.getConfiguration('coboleditor');
+        const editorConfig = vscode.workspace.getConfiguration('coboleditor');
         let expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;

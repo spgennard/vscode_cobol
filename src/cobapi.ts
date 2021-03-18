@@ -4,6 +4,7 @@
 export class COBAPIConstants {
     public static COB_API_INTERFACE_VERSION = 2;
 }
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface COBOLPreprocessorHandle {
     packageJson: any;

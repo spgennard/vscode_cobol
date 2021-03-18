@@ -1,5 +1,5 @@
-import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import * as vscode from 'vscode';
+import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { COBOLStatUtils } from './extension';
 

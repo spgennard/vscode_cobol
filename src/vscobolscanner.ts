@@ -1,10 +1,10 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { FileType, TextDocument, Uri, window, workspace } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
-
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { logMessage, logException, logTimedMessage, isDirectory, performance_now, logChannelSetPreserveFocus, ExternalFeatures } from "./extension";
 import { VSCOBOLConfiguration } from "./configuration";

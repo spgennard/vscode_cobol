@@ -21,6 +21,7 @@ function openLogFile() {
     myConsoleStream = fs.createWriteStream(myConsoleFile);
     myConsole = new console.Console(myConsoleStream);
 }
+
 function logMessage(message: string): void {
     myConsole.log(message);
 }

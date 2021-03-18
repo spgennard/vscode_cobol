@@ -1,10 +1,11 @@
+import fs from 'fs';
+
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
 // let detab = require('detab');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
-import fs from 'fs';
 
 import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
