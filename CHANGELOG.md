@@ -25,6 +25,18 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**comment out step**
+
+
+* [600923d7470bc69](https://github.com/spgennard/vscode_cobol/commit/600923d7470bc69) *2021-03-18 00:51:27*
+
+  
+**Update CHANGELOG.md**
+
+
+* [514c4565ebd4916](https://github.com/spgennard/vscode_cobol/commit/514c4565ebd4916) *2021-03-18 00:49:20*
+
+  
 **prep**
 
 
