@@ -105,13 +105,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 }
 
 export default class VSCOBOLSourceScanner {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    static clearCache(settings: ICOBOLSettings): void {
-        logMessage("Clearing internal cache");
-        clearCOBOLCache();
-        // commands.executeCommand("workbench.action.reloadWindow");
-    }
-
     private static readonly MAX_MEM_CACHE_SIZE = 30;
 
     public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {

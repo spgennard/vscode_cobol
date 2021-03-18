@@ -1094,12 +1094,6 @@
                 "enablement": "!isWeb && config.coboleditor.cache_metadata == off"
             },
             {
-                "command": "cobolplugin.clearCache",
-                "category": "COBOL",
-                "title": "Clear internal cache",
-                "enablement": "!isWeb"
-            },
-            {
                 "command": "cobolplugin.syntaxCheck",
                 "category": "COBOL",
                 "title": "Compile: Syntax Check",

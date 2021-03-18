@@ -590,10 +590,12 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
     start(qp: ICOBOLSourceScanner): void {
         return;
     }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     processToken(token: COBOLToken): void {
         return;
     }
+
     finish(): void {
         return;
     }

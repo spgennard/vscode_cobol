@@ -22,7 +22,7 @@ export function replacer(this: any, key: any, value: any): any {
             dataType: 'Map',
             value: Array.from(originalObject.entries()), // or with spread: value: [...originalObject]
         };
-    } 
+    }
 
     return value;
 }
@@ -157,5 +157,6 @@ export class COBOLSymbolTableHelper {
             logMessage(`Symbol file removed ${nfilename}`);
         }
     }
+
 
 }
