@@ -4,6 +4,546 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.18
+ 
+  
+   
+### GitHub [#268](https://github.com/spgennard/vscode_cobol/issues/268) Syntax highligh wrong for &#x60;WHEN 78 MOVE&#x60;  
+   
+   
+  
+
+  
+**Syntax highligh wrong for `WHEN 78 MOVE` Fix #268**
+
+
+* [983da5c6f0b67f5](https://github.com/spgennard/vscode_cobol/commit/983da5c6f0b67f5) *2021-03-05 21:35:38*
+
+  
+
+ 
+  
+
+  
+**prep**
+
+
+* [50a1ce945d69316](https://github.com/spgennard/vscode_cobol/commit/50a1ce945d69316) *2021-03-18 00:48:47*
+
+  
+**remove docs for depreciated caching**
+
+
+* [cbf09e63d19b5e7](https://github.com/spgennard/vscode_cobol/commit/cbf09e63d19b5e7) *2021-03-17 21:28:41*
+
+  
+**allow metadata caching to be turned off**
+
+
+* [e5efa673f81e45d](https://github.com/spgennard/vscode_cobol/commit/e5efa673f81e45d) *2021-03-17 21:13:46*
+
+  
+**tidy up**
+
+
+* [6d650c54d7a06d3](https://github.com/spgennard/vscode_cobol/commit/6d650c54d7a06d3) *2021-03-16 22:29:57*
+
+  
+**add "of" support to copybook open**
+
+
+* [0797b896119a5db](https://github.com/spgennard/vscode_cobol/commit/0797b896119a5db) *2021-03-16 21:40:08*
+
+  
+**add support for hp cobol "COPY text-name [OF|IN] library-name"**
+
+
+* [e3465c60e39fda9](https://github.com/spgennard/vscode_cobol/commit/e3465c60e39fda9) *2021-03-16 21:24:26*
+
+  
+**add version number**
+
+
+* [7c820bf4a199555](https://github.com/spgennard/vscode_cobol/commit/7c820bf4a199555) *2021-03-15 18:10:20*
+
+  
+**update deps & tidy**
+
+
+* [ada4c833f064384](https://github.com/spgennard/vscode_cobol/commit/ada4c833f064384) *2021-03-14 23:55:50*
+
+  
+**use same terminology**
+
+
+* [9ae9b82ebae3240](https://github.com/spgennard/vscode_cobol/commit/9ae9b82ebae3240) *2021-03-14 21:46:00*
+
+  
+**make execute/debug submenus**
+
+
+* [726204d32b36621](https://github.com/spgennard/vscode_cobol/commit/726204d32b36621) *2021-03-14 21:19:32*
+
+  
+**add debug submenu**
+
+
+* [054abd25fbbfbb0](https://github.com/spgennard/vscode_cobol/commit/054abd25fbbfbb0) *2021-03-14 20:47:25*
+
+  
+**fix bug in sourceview**
+
+
+* [40a6c44f0eaeb13](https://github.com/spgennard/vscode_cobol/commit/40a6c44f0eaeb13) *2021-03-14 18:26:56*
+
+  
+**do not process anything until all pp are ready**
+
+
+* [6c48cc97cefc140](https://github.com/spgennard/vscode_cobol/commit/6c48cc97cefc140) *2021-03-14 00:12:45*
+
+  
+**wire in the global sym file cleanup code**
+
+
+* [cc6b77cda11da71](https://github.com/spgennard/vscode_cobol/commit/cc6b77cda11da71) *2021-03-13 18:45:26*
+
+  
+**add objects (untested)**
+
+
+* [ff6210c4c474b9c](https://github.com/spgennard/vscode_cobol/commit/ff6210c4c474b9c) *2021-03-13 09:56:14*
+
+  
+**continue work with pp**
+
+
+* [75fb1c39ccaba1e](https://github.com/spgennard/vscode_cobol/commit/75fb1c39ccaba1e) *2021-03-13 09:31:12*
+
+  
+**show pp info after the pp has been activated**
+
+
+* [b432d1c87fe811f](https://github.com/spgennard/vscode_cobol/commit/b432d1c87fe811f) *2021-03-09 23:41:49*
+
+  
+**inc release number**
+
+
+* [83991c4a8990186](https://github.com/spgennard/vscode_cobol/commit/83991c4a8990186) *2021-03-09 23:30:10*
+
+  
+**add some diagnostics for the pp into the output channel on startup**
+
+
+* [80e658c36013e47](https://github.com/spgennard/vscode_cobol/commit/80e658c36013e47) *2021-03-09 23:28:35*
+
+  
+**fix serialisation issue with bigint**
+
+
+* [2cda4ad46fc9ad7](https://github.com/spgennard/vscode_cobol/commit/2cda4ad46fc9ad7) *2021-03-09 18:50:54*
+
+  
+**continue background work on workspace caching**
+
+
+ * - make workspace entries portable
+
+* [c42fdcea60a2857](https://github.com/spgennard/vscode_cobol/commit/c42fdcea60a2857) *2021-03-08 23:50:54*
+
+  
+**don't need this now**
+
+
+* [b6adafc4c50182d](https://github.com/spgennard/vscode_cobol/commit/b6adafc4c50182d) *2021-03-06 22:40:35*
+
+  
+**move to using one obj that will eventually contain portable/non-portable**
+
+
+ * filename information
+
+* [f8f5fa410b0ce34](https://github.com/spgennard/vscode_cobol/commit/f8f5fa410b0ce34) *2021-03-06 21:52:01*
+
+  
+**continue work on workspace cache**
+
+
+* [8bcd74c96346699](https://github.com/spgennard/vscode_cobol/commit/8bcd74c96346699) *2021-03-06 13:02:45*
+
+  
+**retry on extension lookup, as it maybe still starting up**
+
+
+* [d4fac48ff6e3ef9](https://github.com/spgennard/vscode_cobol/commit/d4fac48ff6e3ef9) *2021-03-05 22:25:22*
+
+  
+**move to using bigint stats**
+
+
+* [a8681fe865ef6d9](https://github.com/spgennard/vscode_cobol/commit/a8681fe865ef6d9) *2021-03-05 00:54:32*
+
+  
+**add in the file cache**
+
+
+* [5852fe23317a57d](https://github.com/spgennard/vscode_cobol/commit/5852fe23317a57d) *2021-03-04 22:28:17*
+
+  
+**start to add in the filename cache**
+
+
+* [db3dd1e249102f5](https://github.com/spgennard/vscode_cobol/commit/db3dd1e249102f5) *2021-03-03 23:59:36*
+
+  
+**use a temp area if no cache directory is available**
+
+
+* [648f259e15e3125](https://github.com/spgennard/vscode_cobol/commit/648f259e15e3125) *2021-03-03 23:08:56*
+
+  
+**start the process of re-introducing the workspace external process cache**
+
+
+ * - does not work at the moment :-(
+
+* [5e62e0e3667a84c](https://github.com/spgennard/vscode_cobol/commit/5e62e0e3667a84c) *2021-03-03 08:52:10*
+
+  
+**continue the renaming**
+
+
+* [b5f7b7e910b13bf](https://github.com/spgennard/vscode_cobol/commit/b5f7b7e910b13bf) *2021-03-02 22:54:28*
+
+  
+**rename command to make it clear it is deprecated**
+
+
+* [e756e207888dc49](https://github.com/spgennard/vscode_cobol/commit/e756e207888dc49) *2021-03-02 22:50:32*
+
+  
+**move command to cobolplugin.deprecated.processAllFilesInWorkspace**
+
+
+* [a4565fd764e3b88](https://github.com/spgennard/vscode_cobol/commit/a4565fd764e3b88) *2021-03-02 22:48:09*
+
+  
+**add missing file**
+
+
+* [a27bdde72719749](https://github.com/spgennard/vscode_cobol/commit/a27bdde72719749) *2021-03-02 10:10:27*
+
+  
+**move to new pp activation model**
+
+
+* [e4e9180cb207e01](https://github.com/spgennard/vscode_cobol/commit/e4e9180cb207e01) *2021-03-01 23:20:29*
+
+  
+**add missing method**
+
+
+* [1ff9efcc0f9e0de](https://github.com/spgennard/vscode_cobol/commit/1ff9efcc0f9e0de) *2021-03-01 19:19:49*
+
+  
+**start to rework the pp to be enabled by a list of extensions,**
+
+
+ * hopefully allow them to be full active at the same time as this ext.
+
+* [ac1a4a39880c1c3](https://github.com/spgennard/vscode_cobol/commit/ac1a4a39880c1c3) *2021-03-01 01:13:36*
+
+  
+**handle in version num**
+
+
+* [e5bf5bb58168336](https://github.com/spgennard/vscode_cobol/commit/e5bf5bb58168336) *2021-02-28 21:26:51*
+
+  
+**update to include sdk.zip in build**
+
+
+* [456c2eb5de00e69](https://github.com/spgennard/vscode_cobol/commit/456c2eb5de00e69) *2021-02-28 10:47:06*
+
+  
+**continue work on pp**
+
+
+ * - alter start to include packageJson of package registering
+
+ * so more detailed error handling/information can be generated
+
+ * later
+
+ * - add callback interface for extra info used while pp&#x27;ing
+
+* [92f33162051180b](https://github.com/spgennard/vscode_cobol/commit/92f33162051180b) *2021-02-27 22:58:42*
+
+  
+**couple of teaks for the acucobol dialect**
+
+
+* [81910bf458aa206](https://github.com/spgennard/vscode_cobol/commit/81910bf458aa206) *2021-02-26 23:03:19*
+
+  
+**flip a couple of things out of experimental status**
+
+
+* [f8285bd22704849](https://github.com/spgennard/vscode_cobol/commit/f8285bd22704849) *2021-02-26 22:37:27*
+
+  
+**add file-control as a end-del for a remark**
+
+
+* [5ed0348ff0a311b](https://github.com/spgennard/vscode_cobol/commit/5ed0348ff0a311b) *2021-02-26 21:34:22*
+
+  
+**optimise use of settings obj**
+
+
+* [dceae0ae7c5fdc5](https://github.com/spgennard/vscode_cobol/commit/dceae0ae7c5fdc5) *2021-02-25 23:21:18*
+
+  
+**add version id, for better comparison, use ms for files**
+
+
+* [e9df9bbe5fb0ee1](https://github.com/spgennard/vscode_cobol/commit/e9df9bbe5fb0ee1) *2021-02-25 23:06:21*
+
+  
+**add support for handling a external file system for gotodef (alias of**
+
+
+ * prg-id)
+
+* [88fa796a871cfc9](https://github.com/spgennard/vscode_cobol/commit/88fa796a871cfc9) *2021-02-24 22:58:40*
+
+  
+**remove message & remove unused field**
+
+
+* [c34679314f09e12](https://github.com/spgennard/vscode_cobol/commit/c34679314f09e12) *2021-02-24 08:25:52*
+
+  
+**only clear specific parts of the cache**
+
+
+* [3a8ce26caaa1cb9](https://github.com/spgennard/vscode_cobol/commit/3a8ce26caaa1cb9) *2021-02-24 08:14:41*
+
+  
+**reduce refresh rate of config update**
+
+
+* [5cb0296b11935d3](https://github.com/spgennard/vscode_cobol/commit/5cb0296b11935d3) *2021-02-24 01:16:56*
+
+  
+**add clear internal memory cache cmd**
+
+
+ * continue work on pp
+
+* [f6e25eb5a45d889](https://github.com/spgennard/vscode_cobol/commit/f6e25eb5a45d889) *2021-02-24 00:32:13*
+
+  
+**add crudge type back in**
+
+
+* [752b62a9ffd7e2a](https://github.com/spgennard/vscode_cobol/commit/752b62a9ffd7e2a) *2021-02-21 22:16:51*
+
+  
+**add more scanner callbacks**
+
+
+* [3e75ff4fc700a6e](https://github.com/spgennard/vscode_cobol/commit/3e75ff4fc700a6e) *2021-02-21 22:01:36*
+
+  
+**add types**
+
+
+* [27f26f38f718f22](https://github.com/spgennard/vscode_cobol/commit/27f26f38f718f22) *2021-02-21 20:54:45*
+
+  
+**fix bug in use of config.**
+
+
+* [ba72cca006aeff0](https://github.com/spgennard/vscode_cobol/commit/ba72cca006aeff0) *2021-02-20 23:08:03*
+
+  
+**add more pp support**
+
+
+ * add cross process support for ep/prg&#x27;s to scanner
+
+* [e9257cbb298008a](https://github.com/spgennard/vscode_cobol/commit/e9257cbb298008a) *2021-02-20 23:02:00*
+
+  
+**continue tweaking the pp interface**
+
+
+* [c45a91d56b11e6a](https://github.com/spgennard/vscode_cobol/commit/c45a91d56b11e6a) *2021-02-19 00:22:26*
+
+  
+**add more of the pp interface**
+
+
+* [141de11f75fe099](https://github.com/spgennard/vscode_cobol/commit/141de11f75fe099) *2021-02-18 00:06:51*
+
+  
+**continue work on pp**
+
+
+* [ae8219c29389a98](https://github.com/spgennard/vscode_cobol/commit/ae8219c29389a98) *2021-02-17 21:23:16*
+
+  
+**put a crudge process method in place**
+
+
+* [61e61c7552d2f37](https://github.com/spgennard/vscode_cobol/commit/61e61c7552d2f37) *2021-02-17 00:57:40*
+
+  
+**start to put a framework in place for a external preprocessor interface**
+
+
+* [9328c33ae1b75f5](https://github.com/spgennard/vscode_cobol/commit/9328c33ae1b75f5) *2021-02-16 22:43:07*
+
+  
+**change name to cob*api*ts**
+
+
+* [798ca9c67c78f02](https://github.com/spgennard/vscode_cobol/commit/798ca9c67c78f02) *2021-02-16 20:32:48*
+
+  
+**start the api experiment**
+
+
+* [ae82ce969849563](https://github.com/spgennard/vscode_cobol/commit/ae82ce969849563) *2021-02-16 19:39:32*
+
+  
+**continue breaking out the globals**
+
+
+* [b64e943dcb48469](https://github.com/spgennard/vscode_cobol/commit/b64e943dcb48469) *2021-02-16 08:03:50*
+
+  
+**add simple call/cancel targets**
+
+
+* [429739d9af5633d](https://github.com/spgennard/vscode_cobol/commit/429739d9af5633d) *2021-02-15 00:10:18*
+
+  
+**start to wrire back in ep data into the provider**
+
+
+* [1fce6b3383352e5](https://github.com/spgennard/vscode_cobol/commit/1fce6b3383352e5) *2021-02-14 23:35:18*
+
+  
+**load ep data on activation**
+
+
+* [693d848b82cd433](https://github.com/spgennard/vscode_cobol/commit/693d848b82cd433) *2021-02-14 23:28:45*
+
+  
+**remvoe all entry-point symbols before parsing program**
+
+
+* [1e6e2fa26ca1028](https://github.com/spgennard/vscode_cobol/commit/1e6e2fa26ca1028) *2021-02-14 23:07:37*
+
+  
+**add more of the entrypoint support**
+
+
+* [75b8a52d1dbcfdf](https://github.com/spgennard/vscode_cobol/commit/75b8a52d1dbcfdf) *2021-02-14 21:40:29*
+
+  
+**tidy up code**
+
+
+* [2e028e974d170a4](https://github.com/spgennard/vscode_cobol/commit/2e028e974d170a4) *2021-02-14 18:42:28*
+
+  
+**move external sym providers into sep file`**
+
+
+* [a39083750693591](https://github.com/spgennard/vscode_cobol/commit/a39083750693591) *2021-02-14 16:23:10*
+
+  
+**continue to remove references to the non-file sym files**
+
+
+* [c98fed423437da1](https://github.com/spgennard/vscode_cobol/commit/c98fed423437da1) *2021-02-14 14:33:08*
+
+  
+**wip - control work workspace metadata**
+
+
+* [44029b614d1eb0c](https://github.com/spgennard/vscode_cobol/commit/44029b614d1eb0c) *2021-02-14 13:56:33*
+
+  
+**add symbol load/setup**
+
+
+* [2cfaffad681c80c](https://github.com/spgennard/vscode_cobol/commit/2cfaffad681c80c) *2021-02-13 20:58:59*
+
+  
+**start to re-wire the symbol use**
+
+
+* [40ed5a3703c3f36](https://github.com/spgennard/vscode_cobol/commit/40ed5a3703c3f36) *2021-02-13 16:37:05*
+
+  
+**not ready but don't want to loose it**
+
+
+* [d10782b106ccf98](https://github.com/spgennard/vscode_cobol/commit/d10782b106ccf98) *2021-02-13 13:07:11*
+
+  
+**continue work moving to workspace move**
+
+
+* [b250adb9c097649](https://github.com/spgennard/vscode_cobol/commit/b250adb9c097649) *2021-02-13 13:05:50*
+
+  
+**pass symbols into scanner**
+
+
+* [e58fab8a07a235d](https://github.com/spgennard/vscode_cobol/commit/e58fab8a07a235d) *2021-02-11 22:16:34*
+
+  
+**create metadata area in workspace for global symbols**
+
+
+* [1798cbc6f376430](https://github.com/spgennard/vscode_cobol/commit/1798cbc6f376430) *2021-02-10 23:20:24*
+
+  
+**move to next month**
+
+
+* [612e736d662af91](https://github.com/spgennard/vscode_cobol/commit/612e736d662af91) *2021-02-10 09:02:49*
+
+  
+**just incase commit**
+
+
+* [ac4ebc8e1dffe75](https://github.com/spgennard/vscode_cobol/commit/ac4ebc8e1dffe75) *2021-02-10 09:02:11*
+
+  
+**add onEnterRules for call/evaluate**
+
+
+ * remove experimental example from readme, as it is not present
+
+* [6d4ec8acd856414](https://github.com/spgennard/vscode_cobol/commit/6d4ec8acd856414) *2021-02-06 20:27:58*
+
+  
+**Update CHANGELOG.md**
+
+
+* [4202bf784dff20b](https://github.com/spgennard/vscode_cobol/commit/4202bf784dff20b) *2021-02-02 23:47:39*
+
+  
+
+ 
+
 ## 7.1.1
  
   
