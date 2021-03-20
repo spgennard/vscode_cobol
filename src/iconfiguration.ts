@@ -14,7 +14,6 @@ export enum formatOnReturn {
 }
 
 export interface ICOBOLSettings {
-    experimental_features: boolean;
     enable_tabstop: boolean;
     pre_parse_line_limit: number;
     ignorecolumn_b_onwards: boolean;
@@ -81,7 +80,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public tabstops: number[];
     public copybookexts: string[];
     public copybooks_nested: boolean;
-    public experimental_features: boolean;
     public enable_tabstop: boolean;
     public pre_parse_line_limit: number;
     public ignorecolumn_b_onwards: boolean;
@@ -137,7 +135,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public preprocessor_extensions: string[];
 
     constructor() {
-        this.experimental_features = false;
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
         this.ignorecolumn_b_onwards = false;

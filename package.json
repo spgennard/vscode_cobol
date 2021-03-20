@@ -207,6 +207,12 @@
                     "description": "COBOL CopyBook directories to search into",
                     "uniqueItems": true
                 },
+                "coboleditor.process_metadata_cache_on_file_save": {
+                    "type": "boolean",
+                    "title": "Process metadata on file save",
+                    "default": false,
+                    "deprecationMessage": "This setting is depreciated and may be removed in future releases"
+                },
                 "coboleditor.ignorecolumn_b_onwards": {
                     "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "boolean",
@@ -226,12 +232,6 @@
                     "title": "fuzzy variable search",
                     "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "default": false
-                },
-                "coboleditor.enable_data_provider": {
-                    "type": "boolean",
-                    "markdownDescription": "Enabled data/field completion provider",
-                    "title": "Enabled data/field completion provider",
-                    "default": true
                 },
                 "coboleditor.cache_metadata": {
                     "deprecationMessage": "This setting is depreciated and may be removed in future releases",
@@ -277,10 +277,15 @@
                     "default": false
                 },
                 "coboleditor.margin": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
                     "type": "boolean",
                     "title": "apply margin shading",
                     "default": false
+                },
+                "coboleditor.enable_data_provider": {
+                    "type": "boolean",
+                    "markdownDescription": "Enabled data/field completion provider",
+                    "title": "Enabled data/field completion provider",
+                    "default": true
                 },
                 "jcleditor.margin": {
                     "type": "boolean",
@@ -336,11 +341,6 @@
                         }
                     ],
                     "description": "An array of filenames/patterns and its associated source format"
-                },
-                "coboleditor.experimental_features": {
-                    "type": "boolean",
-                    "title": "Experimental features",
-                    "default": false
                 },
                 "coboleditor.enable_tabstop": {
                     "type": "boolean",
@@ -566,11 +566,6 @@
                     "type": "string",
                     "description": "Comment token used for processing source code dependencies, for example extra copybooks",
                     "default": "source-dependency"
-                },
-                "coboleditor.process_metadata_cache_on_file_save": {
-                    "type": "boolean",
-                    "title": "Process metadata on file save",
-                    "default": false
                 },
                 "coboleditor.format_on_return": {
                     "enum": [
