@@ -988,12 +988,16 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
     const disposable4debugterminal = vscode.commands.registerCommand('cobolplugin.runDebugCommand', function (si:SourceItem) {
-        actionSourceViewItemFunction(si,true);
+        if (si !== undefined) {
+            actionSourceViewItemFunction(si,true);
+        }
     });
     context.subscriptions.push(disposable4debugterminal);
 
     const disposable4terminal = vscode.commands.registerCommand('cobolplugin.runCommand', function (si: SourceItem) {
-        actionSourceViewItemFunction(si,false);
+        if (si !== undefined) {
+            actionSourceViewItemFunction(si,false);
+        }
     });
     context.subscriptions.push(disposable4terminal);
 
