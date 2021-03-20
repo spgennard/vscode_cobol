@@ -641,6 +641,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
+
     const move2pdCommand = commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
     });
@@ -769,19 +770,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
     });
 
-    const syntaxCheck = commands.registerCommand('cobolplugin.syntaxCheck', function () {
-        tasks.fetchTasks().then((fetchedTasks) => {
-            for (const task of fetchedTasks) {
-                if (task.name.startsWith("cobol-syntax-check")) {
-                    tasks.executeTask(task);
-                }
-            }
-        }, (reason) => {
-            logMessage(`Syntax check failed due to ${reason}`);
-        });
-    });
-
-
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         activateLogChannelAndPaths(false, settings, true);
@@ -834,8 +822,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(COBOLCaseFormatter.register());
 
     context.subscriptions.push(insertIgnoreCommentLineCommand);
-
-    context.subscriptions.push(syntaxCheck);
 
     const allCobolSelectors = [
         { scheme: 'file', language: 'COBOL_MF_LISTFILE' },

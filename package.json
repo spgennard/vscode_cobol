@@ -65,7 +65,6 @@
         "onCommand:cobolplugin.change_source_format",
         "onCommand:cobolplugin.deprecated.dumpMetaData",
         "onCommand:cobolplugin.deprecated.clearMetaData",
-        "onCommand:cobolplugin.syntaxCheck",
         "onCommand:cobolplugin.deprecated.processAllFilesInWorkspace",
         "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
         "onCommand:cobolplugin.mfurunMenu",
@@ -1102,12 +1101,6 @@
                 "enablement": "!isWeb && config.coboleditor.cache_metadata == off"
             },
             {
-                "command": "cobolplugin.syntaxCheck",
-                "category": "COBOL",
-                "title": "Compile: Syntax Check",
-                "enablement": "!isWeb && config.coboleditor.sourceview"
-            },
-            {
                 "command": "cobolplugin.mfurunMenu",
                 "category": "COBOL",
                 "title": "Run UnitTest",
@@ -1273,10 +1266,6 @@
                 }
             ],
             "view/item/context": [
-                {
-                    "command": "cobolplugin.syntaxCheck",
-                    "when": "view == flat-source-view && viewItem == cobol"
-                },
                 {
                     "command": "cobolplugin.runCommand",
                     "when": "view == flat-source-view && viewItem == objects"
