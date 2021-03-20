@@ -1016,42 +1016,50 @@
             {
                 "command": "cobolplugin.move2pd",
                 "category": "COBOL",
-                "title": "Go to Procedure Division"
+                "title": "Go to Procedure Division",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.move2ws",
                 "category": "COBOL",
-                "title": "Go to Working-Storage Section"
+                "title": "Go to Working-Storage Section",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.move2dd",
                 "category": "COBOL",
-                "title": "Go to Data Division"
+                "title": "Go to Data Division",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.move2anyforward",
                 "category": "COBOL",
-                "title": "Go to next Section/Division"
+                "title": "Go to next Section/Division",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.move2anybackwards",
                 "category": "COBOL",
-                "title": "Move to Previous Section/Division"
+                "title": "Move to Previous Section/Division",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.tab",
                 "category": "COBOL",
-                "title": "Insert a tab"
+                "title": "Insert a tab",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.revtab",
                 "category": "COBOL",
-                "title": "Remove a tab"
+                "title": "Remove a tab",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.commentline",
                 "category": "COBOL",
-                "title": "Comment line"
+                "title": "Comment line",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.change_lang_to_acu",
@@ -1097,13 +1105,13 @@
                 "command": "cobolplugin.syntaxCheck",
                 "category": "COBOL",
                 "title": "Compile: Syntax Check",
-                "enablement": "!isWeb"
+                "enablement": "!isWeb && config.coboleditor.sourceview"
             },
             {
                 "command": "cobolplugin.mfurunMenu",
                 "category": "COBOL",
                 "title": "Run UnitTest",
-                "enablement": "!isWeb"
+                "enablement": "!isWeb && filesExplorerFocus"
             },
             {
                 "command": "cobolplugin.runCommand",
@@ -1120,32 +1128,38 @@
             {
                 "command": "cobolplugin.removeAllComments",
                 "category": "COBOL",
-                "title": "Remove COBOL Comments"
+                "title": "Remove COBOL Comments",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.removeIdentificationArea",
                 "category": "COBOL",
-                "title": "Remove COBOL Identification Area"
+                "title": "Remove COBOL Identification Area",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.removeColumnNumbers",
                 "category": "COBOL",
-                "title": "Remove Column Numbers"
+                "title": "Remove Column Numbers",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.resequenceColumnNumbers",
                 "category": "COBOL",
-                "title": "Re-sequence Column Numbers"
+                "title": "Re-sequence Column Numbers",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makeKeywordsLowercase",
                 "category": "COBOL",
-                "title": "Make keywords lowercase"
+                "title": "Make keywords lowercase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makeKeywordsUppercase",
                 "category": "COBOL",
-                "title": "Make keywords uppercase"
+                "title": "Make keywords uppercase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makeKeywordsCamelCase",
@@ -1155,7 +1169,8 @@
             {
                 "command": "cobolplugin.makeFieldsLowercase",
                 "category": "COBOL",
-                "title": "Make fields lowercase"
+                "title": "Make fields lowercase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makeFieldsUppercase",
@@ -1165,32 +1180,38 @@
             {
                 "command": "cobolplugin.makeFieldsCamelCase",
                 "category": "COBOL",
-                "title": "Make fields camelcase"
+                "title": "Make fields camelcase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makePerformTargetsLowerCase",
                 "category": "COBOL",
-                "title": "Make perform targets lowercase"
+                "title": "Make perform targets lowercase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makePerformTargetsUpperCase",
                 "category": "COBOL",
-                "title": "Make perform targets uppercase"
+                "title": "Make perform targets uppercase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.makePerformTargetsCamelCase",
                 "category": "COBOL",
-                "title": "Make perform targets camelcase"
+                "title": "Make perform targets camelcase",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.extractSelectionToParagraph",
                 "category": "COBOL",
-                "title": "Extract selection to paragraph"
+                "title": "Extract selection to paragraph",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.extractSelectionToSection",
                 "category": "COBOL",
-                "title": "Extract selection to section"
+                "title": "Extract selection to section",
+                "enablement": "editorFocus"
             },
             {
                 "command": "cobolplugin.extractSelectionToCopybook",
