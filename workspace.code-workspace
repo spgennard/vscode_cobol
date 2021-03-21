@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"[COBOL]": {
+			"editor.semanticHighlighting.enabled": false,
+			"files.autoGuessEncoding": false,
+			"editor.snippetSuggestions": "bottom",
+			"editor.renderIndentGuides": false,
+			"editor.autoIndent": "advanced",
+			"editor.insertSpaces": true,
+			"editor.formatOnType": true,
+			"editor.rulers": [
+				6,
+				7,
+				11,
+				72
+			],
+			"editor.detectIndentation": false,
+			"editor.useTabStops": false,
+			"editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
+		},
+		"coboleditor.preprocessor_extensions": [
+		],
+		"coboleditor.metadata_symbols": [
+			"a,a.cbl"
+		],
+		"coboleditor.metadata_entrypoints": [],
+		"coboleditor.metadata_types": [],
+		"coboleditor.metadata_files": []
+	}
+}
