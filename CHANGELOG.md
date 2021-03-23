@@ -9,6 +9,12 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**Update CHANGELOG.md**
+
+
+* [e00b9ea3c0c5b5d](https://github.com/spgennard/vscode_cobol/commit/e00b9ea3c0c5b5d) *2021-03-23 20:12:38*
+
+  
 **prep for delivery**
 
 
