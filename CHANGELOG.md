@@ -4,6 +4,92 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.23
+ 
+  
+
+  
+**prep for delivery**
+
+
+* [927df70963b3ebf](https://github.com/spgennard/vscode_cobol/commit/927df70963b3ebf) *2021-03-23 20:12:05*
+
+  
+**avoid using meta.symbol.cobol, as it is not friendly to some themes**
+
+
+ * add config for alias, simplify lang use
+
+* [c7491479d1395ea](https://github.com/spgennard/vscode_cobol/commit/c7491479d1395ea) *2021-03-23 18:05:24*
+
+  
+**add lowercase cobol, so "alias" is configure the same way as the**
+
+
+ * uppercase one
+
+* [ef3a4071c43f405](https://github.com/spgennard/vscode_cobol/commit/ef3a4071c43f405) *2021-03-21 16:19:39*
+
+  
+**remove experimental_features, as it is not currently used**
+
+
+* [2e6e168c8e8d85e](https://github.com/spgennard/vscode_cobol/commit/2e6e168c8e8d85e) *2021-03-20 23:00:44*
+
+  
+**(from experimental feature)**
+
+
+ * - drop syntax task, as it does not work as good as I hoped it would
+
+* [959b45f7455daa0](https://github.com/spgennard/vscode_cobol/commit/959b45f7455daa0) *2021-03-20 22:09:31*
+
+  
+**restrict commands to the right focus time**
+
+
+* [3a80f438bbac038](https://github.com/spgennard/vscode_cobol/commit/3a80f438bbac038) *2021-03-20 12:01:20*
+
+  
+**fix enablement of command**
+
+
+* [722fea3983ad6df](https://github.com/spgennard/vscode_cobol/commit/722fea3983ad6df) *2021-03-20 11:55:29*
+
+  
+**a little tidy up**
+
+
+* [ac106e7eefed71b](https://github.com/spgennard/vscode_cobol/commit/ac106e7eefed71b) *2021-03-18 23:12:57*
+
+  
+**remove unused code**
+
+
+* [1a774f69b45e97a](https://github.com/spgennard/vscode_cobol/commit/1a774f69b45e97a) *2021-03-18 22:59:32*
+
+  
+**remove unused flags**
+
+
+* [12092b6dab15a55](https://github.com/spgennard/vscode_cobol/commit/12092b6dab15a55) *2021-03-18 22:03:46*
+
+  
+**package updates**
+
+
+* [efc4695015392da](https://github.com/spgennard/vscode_cobol/commit/efc4695015392da) *2021-03-18 00:54:50*
+
+  
+**Update CHANGELOG.md**
+
+
+* [0557fd3c3fce459](https://github.com/spgennard/vscode_cobol/commit/0557fd3c3fce459) *2021-03-18 00:52:10*
+
+  
+
+ 
+
 ## 7.3.18
  
   
