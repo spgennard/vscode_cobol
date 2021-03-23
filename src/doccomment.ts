@@ -5,9 +5,9 @@ import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit
 export class COBOLDocumentationCommentHandler {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static register(): any {
-        const langPlusSchema = { scheme: 'file', language: 'COBOL' };
+        const langPlusSchemas = [{ scheme: 'file', language: 'COBOL' }];
 
-        return languages.registerOnTypeFormattingEditProvider(langPlusSchema, {
+        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 

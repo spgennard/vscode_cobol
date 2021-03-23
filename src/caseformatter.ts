@@ -56,13 +56,13 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static register(): any {
-        const langPlusSchema = [
+        const langPlusSchemas = [
             { scheme: 'file', language: 'COBOL' },
             { scheme: 'file', language: 'COBOLIT' },
             { scheme: 'file', language: 'ACUCOBOL' }
         ];
 
-        return languages.registerOnTypeFormattingEditProvider(langPlusSchema, new COBOLCaseFormatter(), '\n');
+        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLCaseFormatter(), '\n');
 
     }
 }

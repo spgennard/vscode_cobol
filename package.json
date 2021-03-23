@@ -779,8 +779,7 @@
                 "id": "COBOL",
                 "aliases": [
                     "COBOL",
-                    "Cobol",
-                    "cobol"
+                    "Cobol"
                 ],
                 "filenames": [
                     "SQLCA"
@@ -811,6 +810,37 @@
                 ],
                 "configuration": "./cobol.configuration.json"
             },
+            {
+                "id": "cobol",
+                "filenames": [
+                    "SQLCA"
+                ],
+                "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
+                "extensions": [
+                    ".cobol",
+                    ".cbl",
+                    ".cblsrce",
+                    ".lks",
+                    ".pdv",
+                    ".cpy",
+                    ".copybook",
+                    ".cobcopy",
+                    ".fd",
+                    ".sel",
+                    ".scb",
+                    ".spb",
+                    ".scbl",
+                    ".cob",
+                    ".dds",
+                    ".def",
+                    ".src",
+                    ".ss",
+                    ".wks",
+                    ".bib",
+                    ".pco"
+                ],
+                "configuration": "./cobol.configuration.json"
+            },            
             {
                 "id": "COBOL_MF_LISTFILE",
                 "extensions": [],
@@ -925,6 +955,16 @@
         "grammars": [
             {
                 "language": "COBOL",
+                "scopeName": "source.cobol",
+                "path": "./syntaxes/COBOL.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.sql": "sql",
+                    "meta.embedded.block.html": "html",
+                    "meta.embedded.block.java": "java"
+                }
+            },
+            {
+                "language": "cobol",
                 "scopeName": "source.cobol",
                 "path": "./syntaxes/COBOL.tmLanguage.json",
                 "embeddedLanguages": {
