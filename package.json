@@ -2,7 +2,7 @@
     "name": "cobol",
     "displayName": "COBOL",
     "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "7.3.18",
+    "version": "7.3.23",
     "publisher": "bitlang",
     "keywords": [
         "cobol",
