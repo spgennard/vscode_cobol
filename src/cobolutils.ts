@@ -44,11 +44,11 @@ export class COBOLUtils {
         return globString;
     }
 
-    static async populateDefaultCallableSymbols():Promise<void> {
+    static async populateDefaultCallableSymbols(): Promise<void> {
         const config = VSCOBOLConfiguration.get();
         const globPattern = COBOLUtils.getCopybookGlobPattern(config);
 
-        await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[] ) => {
+        await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
             uris.forEach((uri: vscode.Uri) => {
                 const fullPath = uri.fsPath;
                 const fileName = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullPath);
@@ -75,9 +75,9 @@ export class COBOLUtils {
         }
     }
 
-    public static saveGlobalCacheToWorkspace(settings:ICOBOLSettings, update = true): void {
+    public static saveGlobalCacheToWorkspace(settings: ICOBOLSettings, update = true): void {
         // only update if we have a workspace
-        
+
         if (getWorkspaceFolders() === undefined) {
             return;
         }
@@ -89,8 +89,8 @@ export class COBOLUtils {
 
         if (InMemoryGlobalSymbolCache.isDirty) {
 
-            const symbols:string[] = settings.metadata_symbols;
-            const entrypoints:string[] = settings.metadata_entrypoints;
+            const symbols: string[] = settings.metadata_symbols;
+            const entrypoints: string[] = settings.metadata_entrypoints;
             const types: string[] = settings.metadata_types;
             const files: string[] = settings.metadata_files;
 
@@ -117,11 +117,11 @@ export class COBOLUtils {
                 }
             }
 
-            COBOLUtils.typeToArray(types, "T",InMemoryGlobalSymbolCache.types);
-            COBOLUtils.typeToArray(types, "I",InMemoryGlobalSymbolCache.interfaces);
-            COBOLUtils.typeToArray(types, "E",InMemoryGlobalSymbolCache.enums);
+            COBOLUtils.typeToArray(types, "T", InMemoryGlobalSymbolCache.types);
+            COBOLUtils.typeToArray(types, "I", InMemoryGlobalSymbolCache.interfaces);
+            COBOLUtils.typeToArray(types, "E", InMemoryGlobalSymbolCache.enums);
 
-            for(const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
+            for (const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
                 const cws = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
                 if (cws !== undefined) {
                     files.push(`${cws.lastModifiedTime},${cws.workspaceFilename}`);
@@ -129,14 +129,17 @@ export class COBOLUtils {
             }
 
             if (update) {
-                const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-                editorConfig.update('metadata_symbols', symbols, false);
-                editorConfig.update('metadata_entrypoints', entrypoints,false);
-                editorConfig.update('metadata_types', types, false);
-                editorConfig.update('metadata_files', files, false);
+                try {
+                    const editorConfig = vscode.workspace.getConfiguration('coboleditor');
+                    editorConfig.update('metadata_symbols', symbols, false);
+                    editorConfig.update('metadata_entrypoints', entrypoints, false);
+                    editorConfig.update('metadata_types', types, false);
+                    editorConfig.update('metadata_files', files, false);
+                    InMemoryGlobalSymbolCache.isDirty = false;
+                } catch (e) {
+                    logException("Failed to update metadata", e);
+                }
             }
-
-            InMemoryGlobalSymbolCache.isDirty = false;
         }
     }
 
