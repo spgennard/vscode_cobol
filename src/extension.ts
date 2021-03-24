@@ -39,7 +39,7 @@ import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
-import { CacheDirectoryStrategy, ESourceFormat } from './externalfeatures';
+import { CacheDirectoryStrategy } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
@@ -49,7 +49,6 @@ import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 import { SourceItem } from './sourceItem';
 
-let formatStatusBarItem: StatusBarItem;
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
 let currentContext: ExtensionContext;
@@ -954,11 +953,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         linter.updateLinter(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
-    formatStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right);
-    formatStatusBarItem.command = "cobolplugin.change_source_format";
-    formatStatusBarItem.show();
-    context.subscriptions.push(formatStatusBarItem);
-
     progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
     progressStatusBarItem.hide();
     context.subscriptions.push(progressStatusBarItem);
@@ -1250,19 +1244,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     openChangeLog();
 }
 
-export function enableMarginStatusBar(formatStyle: ESourceFormat): void {
-    formatStatusBarItem.text = "Source:" + formatStyle.toString();
-    formatStatusBarItem.show();
-}
-
-
-export function hideMarginStatusBar(): void {
-    formatStatusBarItem.hide();
-}
-
 export async function deactivateAsync(): Promise<void> {
     COBOLUtils.saveGlobalCacheToWorkspace(VSCOBOLConfiguration.get());
-    formatStatusBarItem.dispose();
 }
 
 function openChangeLog(): void {

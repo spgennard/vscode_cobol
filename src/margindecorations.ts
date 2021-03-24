@@ -1,7 +1,7 @@
 'use strict';
 
 import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, ExtensionContext } from 'vscode';
-import { getCurrentContext, enableMarginStatusBar, hideMarginStatusBar } from './extension';
+import { getCurrentContext } from './extension';
 import minimatch from 'minimatch';
 import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
@@ -297,7 +297,6 @@ export function isSupportedLanguage(document: TextDocument): TextLanguage {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default async function updateDecorations(activeTextEditor: TextEditor | undefined) {
     if (!activeTextEditor) {
-        hideMarginStatusBar();
         return;
     }
 
@@ -307,7 +306,6 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
     const textLanguage: TextLanguage = isSupportedLanguage(doc);
 
     if (textLanguage === TextLanguage.Unknown) {
-        hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
@@ -316,7 +314,6 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
 
     /* is it enabled? (COBOL) */
     if (textLanguage === TextLanguage.COBOL && !enabledViaWorkspace4cobol) {
-        hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
@@ -325,7 +322,6 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
 
     /* is it enabled? (COBOL) */
     if (textLanguage === TextLanguage.JCL && !enabledViaWorkspace4jcl) {
-        hideMarginStatusBar();
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
@@ -333,7 +329,6 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
     if (textLanguage === TextLanguage.COBOL) {
         /* does it include sourceformat"free"? */
         let sourceformatStyle: ESourceFormat = getSourceFormat(doc, VSCOBOLConfiguration.get());
-        enableMarginStatusBar(sourceformatStyle);
 
         if (enabledViaWorkspace4cobol) {
             sourceformatStyle = ESourceFormat.fixed;
