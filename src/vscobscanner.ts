@@ -49,7 +49,7 @@ export class VSCobScanner {
         }
 
         if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
-            COBOLUtils.saveGlobalCacheToWorkspace(false);
+            COBOLUtils.saveGlobalCacheToWorkspace(settings,false);
             const sf = new ScanData();
             sf.showStats = false;
             sf.Files.push(fsPath);
@@ -59,7 +59,7 @@ export class VSCobScanner {
             sf.md_entrypoints = settings.metadata_entrypoints;
             sf.md_types = settings.metadata_types;
             sf.md_metadata_files = settings.metadata_files;
-            await this.forkScanner(sf, "OnSave", true);
+            await this.forkScanner(settings, sf, "OnSave", true);
         }
     }
 
@@ -114,7 +114,7 @@ export class VSCobScanner {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static async forkScanner(sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
+    public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
         ScanDataHelper.save(tempDirectory, sf);
 
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
@@ -148,8 +148,7 @@ export class VSCobScanner {
             } else {
                 progressStatusBarItem.hide();
             }
-            InMemoryGlobalSymbolCache.isDirty = true;   // always update
-            COBOLUtils.saveGlobalCacheToWorkspace();
+            COBOLUtils.saveGlobalCacheToWorkspace(settings);
         });
 
         let prevPercent = 0;
@@ -288,7 +287,7 @@ export class VSCobScanner {
 
         }
 
-        COBOLUtils.saveGlobalCacheToWorkspace(false);
+        COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
         const sf = new ScanData();
         sf.directoriesScanned = stats.directoriesScanned;
         sf.maxDirectoryDepth = stats.maxDirectoryDepth;
@@ -312,7 +311,7 @@ export class VSCobScanner {
             }
         }
 
-        await VSCobScanner.forkScanner(sf, msgViaCommand, deprecatedMode);
+        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, deprecatedMode);
     }
 
     private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {
