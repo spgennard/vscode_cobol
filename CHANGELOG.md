@@ -4,6 +4,40 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.24.1
+ 
+  
+
+  
+**tweaks**
+
+
+* [1488097c331263a](https://github.com/spgennard/vscode_cobol/commit/1488097c331263a) *2021-03-24 21:44:24*
+
+  
+**use of support.variable.cobol, was too gready, it colourised too much**
+
+
+ * remove margin statusbar as it is pointless
+
+* [fc054d1a70a6d93](https://github.com/spgennard/vscode_cobol/commit/fc054d1a70a6d93) *2021-03-24 21:05:16*
+
+  
+**protect update and log exception**
+
+
+* [c3c3d035b58b424](https://github.com/spgennard/vscode_cobol/commit/c3c3d035b58b424) *2021-03-24 18:57:05*
+
+  
+**Update CHANGELOG.md**
+
+
+* [87ec5038aaee75a](https://github.com/spgennard/vscode_cobol/commit/87ec5038aaee75a) *2021-03-24 18:38:49*
+
+  
+
+ 
+
 ## 7.3.24
  
   
