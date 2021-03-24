@@ -785,7 +785,7 @@
       "name": "keyword.operator.cobol"
     },
     {
-      "match": "(?i:not\\s+at\\s+end)",
+      "match": "(?i:not\\s+at\\s+end)(?![0-9A-Za-z_-])",
       "name": "keyword.verbs.cobol"
     },
     {
