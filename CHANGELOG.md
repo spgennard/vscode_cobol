@@ -4,7 +4,43 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.24
+ 
+  
+
+  
+**update**
+
+
+* [38b11be6778dba7](https://github.com/spgennard/vscode_cobol/commit/38b11be6778dba7) *2021-03-24 21:46:49*
+
+  
+**Update CHANGELOG.md**
+
+
+* [37e9d91624eab6b](https://github.com/spgennard/vscode_cobol/commit/37e9d91624eab6b) *2021-03-24 21:45:01*
+
+  
+
+ 
+
 ## 7.3.24.1
+ 
+  
+   
+### GitHub [#270](https://github.com/spgennard/vscode_cobol/issues/270) 7.3.23 is forcibly changing &#x60;.vscode/settings.json&#x60;  
+   
+   
+  
+
+  
+**Tweak update() to happen on a workspace and if enabled Fix #270**
+
+
+* [bd5c88b913911a8](https://github.com/spgennard/vscode_cobol/commit/bd5c88b913911a8) *2021-03-24 18:22:42*
+
+  
+
  
   
 
@@ -33,30 +69,6 @@ Changelog for spgennardvscode_cobol.
 
 
 * [87ec5038aaee75a](https://github.com/spgennard/vscode_cobol/commit/87ec5038aaee75a) *2021-03-24 18:38:49*
-
-  
-
- 
-
-## 7.3.24
- 
-  
-   
-### GitHub [#270](https://github.com/spgennard/vscode_cobol/issues/270) 7.3.23 is forcibly changing &#x60;.vscode/settings.json&#x60;  
-   
-   
-  
-
-  
-**Tweak update() to happen on a workspace and if enabled Fix #270**
-
-
-* [bd5c88b913911a8](https://github.com/spgennard/vscode_cobol/commit/bd5c88b913911a8) *2021-03-24 18:22:42*
-
-  
-
- 
-  
 
   
 **prep**
