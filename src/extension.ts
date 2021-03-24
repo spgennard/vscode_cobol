@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as vscode from "vscode";
 import os from 'os';
 
-import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, OutputChannel, extensions, tasks, ViewColumn, ConfigurationChangeEvent } from 'vscode';
+import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, OutputChannel, extensions, ViewColumn, ConfigurationChangeEvent } from 'vscode';
 import * as cobolProgram from './cobolprogram';
 import * as tabstopper from './tabstopper';
 import * as opencopybook from './opencopybook';
@@ -1261,7 +1261,7 @@ export function hideMarginStatusBar(): void {
 }
 
 export async function deactivateAsync(): Promise<void> {
-    COBOLUtils.saveGlobalCacheToWorkspace();
+    COBOLUtils.saveGlobalCacheToWorkspace(VSCOBOLConfiguration.get());
     formatStatusBarItem.dispose();
 }
 

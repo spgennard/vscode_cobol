@@ -104,6 +104,11 @@ export class COBOLWorkspaceSymbolCacheHelper {
             InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, map);
     }
 
+    public static removeAllPrograms(srcfilename: string): void {
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
+            InMemoryGlobalSymbolCache.callableSymbols);
+    }
+    
     public static removeAllProgramEntryPoints(srcfilename: string): void {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
             InMemoryGlobalSymbolCache.entryPoints);
