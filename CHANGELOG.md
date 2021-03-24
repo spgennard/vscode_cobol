@@ -4,6 +4,48 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.24
+ 
+  
+   
+### GitHub [#270](https://github.com/spgennard/vscode_cobol/issues/270) 7.3.23 is forcibly changing &#x60;.vscode/settings.json&#x60;  
+   
+   
+  
+
+  
+**Tweak update() to happen on a workspace and if enabled Fix #270**
+
+
+* [bd5c88b913911a8](https://github.com/spgennard/vscode_cobol/commit/bd5c88b913911a8) *2021-03-24 18:22:42*
+
+  
+
+ 
+  
+
+  
+**prep**
+
+
+* [cfaac98c7158747](https://github.com/spgennard/vscode_cobol/commit/cfaac98c7158747) *2021-03-24 18:37:57*
+
+  
+**enusre alias "cobol" works as well as "COBOL"**
+
+
+* [3d00b2ab363df3d](https://github.com/spgennard/vscode_cobol/commit/3d00b2ab363df3d) *2021-03-24 17:30:39*
+
+  
+**Update CHANGELOG.md**
+
+
+* [09ae55eae068fae](https://github.com/spgennard/vscode_cobol/commit/09ae55eae068fae) *2021-03-23 23:35:39*
+
+  
+
+ 
+
 ## 7.3.23
  
   
