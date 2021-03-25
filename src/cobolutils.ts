@@ -77,8 +77,12 @@ export class COBOLUtils {
 
     public static saveGlobalCacheToWorkspace(settings: ICOBOLSettings, update = true): void {
         // only update if we have a workspace
-
         if (getWorkspaceFolders() === undefined) {
+            return;
+        }
+
+        // unless we say we want single folder support, never apply an update to it
+        if (settings.maintain_metadata_cache_single_folder == false && vscode.workspace.workspaceFile === undefined) {
             return;
         }
 

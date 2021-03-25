@@ -13,7 +13,7 @@ import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
-import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
+import { InMemoryGlobalCacheHelper } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 

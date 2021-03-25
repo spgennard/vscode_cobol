@@ -642,6 +642,11 @@
                     "title": "Maintain Metadata Cache",
                     "default": true
                 },
+                "coboleditor.maintain_metadata_cache_single_folder": {
+                    "type": "boolean",
+                    "title": "Maintain Metadata Cache when using single folder",
+                    "default": false
+                },
                 "coboleditor.preprocessor_extensions": {
                     "type": "array",
                     "items": {
