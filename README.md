@@ -355,7 +355,9 @@ For example to enforce all working-storage items must start with ws and local-st
 
 ### Metadata caching
 
-By default the metadata caching is turned on and is stored in the current workspace but it can be turned off via the ```coboleditor.maintain_metadata_cache``` setting.
+By default the metadata caching is turned on and is stored in the current code workspace but it can be turned off via the ```coboleditor.maintain_metadata_cache``` setting.
+
+Metadata is stored in your code workspace file but can also be stored in your single folder settings file by enabling the ```coboleditor.maintain_metadata_cache_single_folder``` setting.
 
 ## Pre-Processor support for "hidden" source code
 
