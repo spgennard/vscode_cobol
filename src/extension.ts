@@ -208,9 +208,10 @@ const commandTerminalName = "COBOL Application";
 
 
 const blessed_extensions: string[] = [
-    "bitlang.cobol",
     "HCLTechnologies.hclappscancodesweep",      // code scanner
 ];
+
+let blessed_extension_active = false;
 
 const known_problem_extensions: string[] = [
     "OlegKunitsyn.gnucobol-debug",              // debugger
@@ -229,21 +230,24 @@ function checkForExtensionConflicts(settings: ICOBOLSettings): string {
 
     for (const ext of extensions.all) {
         if (ext !== undefined && ext.packageJSON !== undefined) {
+            let continue_now = blessed_extension_active;
             if (ext.packageJSON.id !== undefined) {
-                let okay2Continue = false;
+                if (ext.packageJSON.id === 'bitlang.cobol') {
+                    continue;
+                }
                 for (const blessed_extension of blessed_extensions) {
                     if (blessed_extension === ext.packageJSON.id) {
-                        okay2Continue = true;
+                        blessed_extension_active = continue_now = true;
                     }
                 }
                 for (const known_problem_extension of known_problem_extensions) {
                     if (known_problem_extension === ext.packageJSON.id) {
                         grab_info_for_ext = ext;
                         reason = "debugger support is problematic with this extension";
-                        okay2Continue = true;
+                        continue_now = true;
                     }
                 }
-                if (okay2Continue) {
+                if (continue_now) {
                     continue;
                 }
             }
@@ -514,7 +518,8 @@ export function getCurrentContext(): ExtensionContext {
 }
 
 function flip_plaintext(doc: TextDocument) {
-    if (doc.languageId === 'cobol') {
+    const settings = VSCOBOLConfiguration.get();
+    if ((blessed_extension_active || settings.ignore_unsafe_extensions) && doc.languageId === 'cobol') {
         vscode.languages.setTextDocumentLanguage(doc, "COBOL");
         return;
     }
