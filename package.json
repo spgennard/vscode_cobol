@@ -82,15 +82,14 @@
         "onCommand:cobolplugin.makePerformTargetsCamelCase",
         "onCommand:cobolplugin.resequenceColumnNumbers",
         "view:flat-source-view",
-        "workspaceContains:.vscode_cobol",
         "workspaceContains:bld.bat",
         "workspaceContains:bld.sh",
-        "workspaceContains:**/.cobol",
-        "workspaceContains:**/.cob",
-        "workspaceContains:**/.cbl",
-        "workspaceContains:**/.cpy",
-        "workspaceContains:**/.md",
-        "workspaceContains:**/.jcl"
+        "workspaceContains:**/*.cobol",
+        "workspaceContains:**/*.cob",
+        "workspaceContains:**/*.cbl",
+        "workspaceContains:**/*.cpy",
+        "workspaceContains:**/*.md",
+        "workspaceContains:**/*.jcl"
     ],
     "main": "./dist/extension",
     "license": "SEE LICENSE IN LICENSE",
@@ -782,10 +781,6 @@
             },
             {
                 "id": "COBOL",
-                "aliases": [
-                    "COBOL",
-                    "Cobol"
-                ],
                 "filenames": [
                     "SQLCA"
                 ],
@@ -1184,38 +1179,32 @@
             {
                 "command": "cobolplugin.removeAllComments",
                 "category": "COBOL",
-                "title": "Remove COBOL Comments",
-                "enablement": "editorFocus"
+                "title": "Remove COBOL Comments"
             },
             {
                 "command": "cobolplugin.removeIdentificationArea",
                 "category": "COBOL",
-                "title": "Remove COBOL Identification Area",
-                "enablement": "editorFocus"
+                "title": "Remove COBOL Identification Area"
             },
             {
                 "command": "cobolplugin.removeColumnNumbers",
                 "category": "COBOL",
-                "title": "Remove Column Numbers",
-                "enablement": "editorFocus"
+                "title": "Remove Column Numbers"
             },
             {
                 "command": "cobolplugin.resequenceColumnNumbers",
                 "category": "COBOL",
-                "title": "Re-sequence Column Numbers",
-                "enablement": "editorFocus"
+                "title": "Re-sequence Column Numbers"
             },
             {
                 "command": "cobolplugin.makeKeywordsLowercase",
                 "category": "COBOL",
-                "title": "Make keywords lowercase",
-                "enablement": "editorFocus"
+                "title": "Make keywords lowercase"
             },
             {
                 "command": "cobolplugin.makeKeywordsUppercase",
                 "category": "COBOL",
-                "title": "Make keywords uppercase",
-                "enablement": "editorFocus"
+                "title": "Make keywords uppercase"
             },
             {
                 "command": "cobolplugin.makeKeywordsCamelCase",
@@ -1225,8 +1214,7 @@
             {
                 "command": "cobolplugin.makeFieldsLowercase",
                 "category": "COBOL",
-                "title": "Make fields lowercase",
-                "enablement": "editorFocus"
+                "title": "Make fields lowercase"
             },
             {
                 "command": "cobolplugin.makeFieldsUppercase",
@@ -1236,26 +1224,22 @@
             {
                 "command": "cobolplugin.makeFieldsCamelCase",
                 "category": "COBOL",
-                "title": "Make fields camelcase",
-                "enablement": "editorFocus"
+                "title": "Make fields camelcase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsLowerCase",
                 "category": "COBOL",
-                "title": "Make perform targets lowercase",
-                "enablement": "editorFocus"
+                "title": "Make perform targets lowercase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsUpperCase",
                 "category": "COBOL",
-                "title": "Make perform targets uppercase",
-                "enablement": "editorFocus"
+                "title": "Make perform targets uppercase"
             },
             {
                 "command": "cobolplugin.makePerformTargetsCamelCase",
                 "category": "COBOL",
-                "title": "Make perform targets camelcase",
-                "enablement": "editorFocus"
+                "title": "Make perform targets camelcase"
             },
             {
                 "command": "cobolplugin.extractSelectionToParagraph",
