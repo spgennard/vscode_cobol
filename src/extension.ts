@@ -517,6 +517,10 @@ export function getCurrentContext(): ExtensionContext {
 }
 
 function flip_plaintext(doc: TextDocument) {
+    if (doc === undefined) {
+        return;
+    }
+
     const settings = VSCOBOLConfiguration.get();
     if ((blessed_extension_active || settings.ignore_unsafe_extensions) && doc.languageId === 'cobol') {
         vscode.languages.setTextDocumentLanguage(doc, "COBOL");
