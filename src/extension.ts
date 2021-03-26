@@ -514,6 +514,11 @@ export function getCurrentContext(): ExtensionContext {
 }
 
 function flip_plaintext(doc: TextDocument) {
+    if (doc.languageId === 'cobol') {
+        vscode.languages.setTextDocumentLanguage(doc, "COBOL");
+        return;
+    }
+
     if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
         const lineCount = doc.lineCount;
         if (lineCount >= 3) {
