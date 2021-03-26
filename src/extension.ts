@@ -64,13 +64,12 @@ export function getAllCobolSelectors(): vscode.DocumentSelector {
         { scheme: 'file', language: 'COBOL_MF_LISTFILE' },
         { scheme: 'file', language: 'COBOL' },
         { scheme: 'file', language: 'COBOLIT' },
-        { scheme: 'file', language: 'ACUCOBOL' },
-        { scheme: 'file', language: 'cobol' }       // alias
+        { scheme: 'file', language: 'ACUCOBOL' }    // alias
     ];
 }
 
 export function isKnownCOBOLLanguageId(langid: string): boolean {
-    if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT' || langid === 'cobol') {
+    if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
         return true;
     }
     return false
