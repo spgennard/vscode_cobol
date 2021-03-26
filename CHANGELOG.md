@@ -9,6 +9,30 @@ Changelog for spgennardvscode_cobol.
   
 
   
+**resort to changing the document type rather than having an alias lang**
+
+
+* [193083ec12e3804](https://github.com/spgennard/vscode_cobol/commit/193083ec12e3804) *2021-03-26 18:04:39*
+
+  
+**remove aliases and ensure enablements are correct**
+
+
+* [2955204dac02728](https://github.com/spgennard/vscode_cobol/commit/2955204dac02728) *2021-03-26 17:02:54*
+
+  
+**package updates**
+
+
+* [5e89ce0f1e841be](https://github.com/spgennard/vscode_cobol/commit/5e89ce0f1e841be) *2021-03-26 09:23:14*
+
+  
+**Update CHANGELOG.md**
+
+
+* [2ee8521b9842643](https://github.com/spgennard/vscode_cobol/commit/2ee8521b9842643) *2021-03-26 09:13:08*
+
+  
 **update readme:**
 
 
