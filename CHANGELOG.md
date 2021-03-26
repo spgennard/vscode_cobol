@@ -4,6 +4,32 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.26
+ 
+  
+
+  
+**update readme:**
+
+
+* [b542a9c8362a23e](https://github.com/spgennard/vscode_cobol/commit/b542a9c8362a23e) *2021-03-25 21:34:18*
+
+  
+**add some control about how a "single folder" workspace is updated**
+
+
+* [10bc18869f248d2](https://github.com/spgennard/vscode_cobol/commit/10bc18869f248d2) *2021-03-25 08:42:05*
+
+  
+**Update CHANGELOG.md**
+
+
+* [2ac7f891360c290](https://github.com/spgennard/vscode_cobol/commit/2ac7f891360c290) *2021-03-25 07:57:04*
+
+  
+
+ 
+
 ## 7.3.25
  
   
