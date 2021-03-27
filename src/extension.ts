@@ -48,6 +48,7 @@ import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 import { SourceItem } from './sourceItem';
+import { VSSemanticProvider } from './vssemanticprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -59,6 +60,7 @@ let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
 
 let bldscriptTaskProvider: vscode.Disposable | undefined;
 
+
 export function getAllCobolSelectors(): vscode.DocumentSelector {
     return [
         { scheme: 'file', language: 'COBOL_MF_LISTFILE' },
@@ -67,6 +69,7 @@ export function getAllCobolSelectors(): vscode.DocumentSelector {
         { scheme: 'file', language: 'ACUCOBOL' }    // alias
     ];
 }
+
 
 export function isKnownCOBOLLanguageId(langid: string): boolean {
     if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
@@ -1231,6 +1234,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(resequenceColumnNumbersCommands);
 
     bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
+    context.subscriptions.push(bldscriptTaskProvider);
+
+    const provider = VSSemanticProvider.provider();
+    vscode.languages.registerDocumentSemanticTokensProvider(getAllCobolSelectors(), provider, VSSemanticProvider.getLegend());
 
     //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
     const ws = workspace.getWorkspaceFolder;

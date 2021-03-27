@@ -89,7 +89,6 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
             return symbols;
         }
 
-
         const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
 
         if (sf === undefined) {

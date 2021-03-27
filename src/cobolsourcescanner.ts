@@ -283,11 +283,13 @@ export class SourceReference {
     public fileIdentifer: number;
     public line: number;
     public column: number;
+    public length: number;
 
-    public constructor(fileIdentifer: number, line: number, column: number) {
+    public constructor(fileIdentifer: number, line: number, column: number, length: number) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
         this.column = column;
+        this.length = length;
     }
 }
 
@@ -1353,13 +1355,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         if (referencesMap.has(lowerCaseVariable)) {
             const sourceRefs: SourceReference[] | undefined = referencesMap.get(lowerCaseVariable);
             if (sourceRefs !== undefined) {
-                sourceRefs.push(new SourceReference(this.sourceFileId, line, column));
+                sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length));
                 return;
             }
         }
 
         const sourceRefs: SourceReference[] = [];
-        sourceRefs.push(new SourceReference(this.sourceFileId, line, column));
+        sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length));
         referencesMap.set(lowerCaseVariable, sourceRefs);
     }
 
