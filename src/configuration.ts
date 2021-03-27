@@ -69,6 +69,7 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_types = getmetadata_types(vsconfig);
         vsconfig.metadata_files = getmetadata_files(vsconfig);
 
+        vsconfig.enable_semantic_token_provider = getBoolean('enable_semantic_token_provider', false);
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
         return vsconfig;
     }

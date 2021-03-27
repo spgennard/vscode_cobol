@@ -75,6 +75,8 @@ export interface ICOBOLSettings {
     maintain_metadata_cache_single_folder: boolean;
 
     preprocessor_extensions:string[];
+
+    enable_semantic_token_provider: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -137,6 +139,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     public preprocessor_extensions: string[];
 
+    public enable_semantic_token_provider:boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
@@ -194,5 +198,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.metadata_files = [];
         this.maintain_metadata_cache = true;
         this.maintain_metadata_cache_single_folder = false;
+        this.enable_semantic_token_provider = false;
     }
 }
