@@ -446,7 +446,10 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         logMessage(` UNC paths disabled               : ${settings.disable_unc_copybooks_directories}`);
         logMessage(` Parse copybook for references    : ${settings.parse_copybooks_for_references}`);
         logMessage(` Editor maxTokenizationLineLength : ${settings.editor_maxTokenizationLineLength}`)
-        logMessage(` Active workspacefile             : ${vscode.workspace.workspaceFile}`);
+        logMessage(` Semantic token provider enabled  : ${settings.enable_semantic_token_provider}`);
+        if (vscode.workspace.workspaceFile !== undefined) {
+            logMessage(` Active workspacefile             : ${vscode.workspace.workspaceFile}`);
+        }
 
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
             logMessage("----------------------------------------------------------------------");

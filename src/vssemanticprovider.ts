@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import COBOLSourceScanner, { COBOLTokenStyle } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
+import { logException } from './extension';
 import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 
@@ -39,47 +40,63 @@ export class VSSemanticProvider {
         }
 
         for (const [key, token] of qcp.sections) {
-            if (token.inProcedureDivision) {
-                tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                    'function',
-                    ['declaration']
-                );
+            try {
+                if (token.inProcedureDivision) {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                        'function'
+                    );
+                }
+            } catch (e) {
+                logException("SemanticProvider: sections", e);
             }
         }
         for (const [key, token] of qcp.paragraphs) {
-            if (token.inProcedureDivision) {
-                tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                    'function'
-                );
+            try {
+                if (token.inProcedureDivision) {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                        'function'
+                    );
+                }
+            } catch (e) {
+                logException("SemanticProvider: paragraphs", e);
             }
         }
 
         for (const [key, sourceRefs] of qcp.sourceReferences.targetReferences) {
-            for (const sourceRef of sourceRefs) {
-                tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
-                    'function'
-                );
+            try {
+                for (const sourceRef of sourceRefs) {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                        'function'
+                    );
+                }
+            } catch (e) {
+                logException("SemanticProvider: targetReferences", e);
             }
 
         }
 
         for (const [key, tokens] of qcp.constantsOrVariables) {
+
             for (const token of tokens) {
-                if (token.tokenType === COBOLTokenStyle.Constant) {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                        'variable',
-                        ['declaration', 'readonly']
-                    );
-                } else {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                        'variable',
-                        ['declaration']
-                    );
+                try {
+                    if (token.tokenType === COBOLTokenStyle.Constant) {
+                        tokensBuilder.push(
+                            new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                            'variable',
+                            ['declaration', 'readonly']
+                        );
+                    } else {
+                        tokensBuilder.push(
+                            new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                            'variable',
+                            ['declaration']
+                        );
+                    }
+                } catch (e) {
+                    logException("SemanticProvider: constantsOrVariables", e);
                 }
             }
         }
@@ -87,18 +104,22 @@ export class VSSemanticProvider {
         for (const [key, sourceRefs] of qcp.sourceReferences.constantsOrVariablesReferences) {
             //
             for (const sourceRef of sourceRefs) {
-                if (sourceRef.tokenStyle === COBOLTokenStyle.Constant) {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
-                        'variable',
-                        ['readonly']
-                    );
+                try {
+                    if (sourceRef.tokenStyle === COBOLTokenStyle.Constant) {
+                        tokensBuilder.push(
+                            new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                            'variable',
+                            ['readonly']
+                        );
 
-                } else {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
-                        'variable'
-                    );
+                    } else {
+                        tokensBuilder.push(
+                            new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                            'variable'
+                        );
+                    }
+                } catch (e) {
+                    logException("SemanticProvider: sourceRefs", e);
                 }
             }
         }
