@@ -4,6 +4,62 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.27
+ 
+  
+
+  
+**add some bullet proofing**
+
+
+* [ffd5a5010abff8c](https://github.com/spgennard/vscode_cobol/commit/ffd5a5010abff8c) *2021-03-27 14:30:00*
+
+  
+**expand sourceref to include tokentype**
+
+
+* [a66f91d67af0a4f](https://github.com/spgennard/vscode_cobol/commit/a66f91d67af0a4f) *2021-03-27 12:33:17*
+
+  
+**add variables into semantic provider & config option**
+
+
+* [2eeb7bfd63b6130](https://github.com/spgennard/vscode_cobol/commit/2eeb7bfd63b6130) *2021-03-27 10:29:46*
+
+  
+**add the section/paragrams as "label"/declaration semantic tokens**
+
+
+* [99fbe95c459faf6](https://github.com/spgennard/vscode_cobol/commit/99fbe95c459faf6) *2021-03-27 01:15:10*
+
+  
+**make it safer**
+
+
+* [d23aad6f8ef8633](https://github.com/spgennard/vscode_cobol/commit/d23aad6f8ef8633) *2021-03-26 20:00:22*
+
+  
+**drop alias**
+
+
+* [e0b6825b61df2ff](https://github.com/spgennard/vscode_cobol/commit/e0b6825b61df2ff) *2021-03-26 19:58:26*
+
+  
+**tweak logic on how to flip to the COBOL lang id**
+
+
+* [d910312de183a85](https://github.com/spgennard/vscode_cobol/commit/d910312de183a85) *2021-03-26 18:51:53*
+
+  
+**Update CHANGELOG.md**
+
+
+* [6ccf760a62c0fad](https://github.com/spgennard/vscode_cobol/commit/6ccf760a62c0fad) *2021-03-26 18:05:39*
+
+  
+
+ 
+
 ## 7.3.26
  
   
