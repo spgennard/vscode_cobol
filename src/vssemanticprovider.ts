@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import COBOLSourceScanner from './cobolsourcescanner';
+import COBOLSourceScanner, { COBOLTokenStyle } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
@@ -41,7 +41,7 @@ export class VSSemanticProvider {
         for (const [key, token] of qcp.sections) {
             if (token.inProcedureDivision) {
                 tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn+token.tokenName.length)),
+                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
                     'function',
                     ['declaration']
                 );
@@ -50,16 +50,16 @@ export class VSSemanticProvider {
         for (const [key, token] of qcp.paragraphs) {
             if (token.inProcedureDivision) {
                 tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn+token.tokenName.length)),
+                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
                     'function'
                 );
             }
         }
 
         for (const [key, sourceRefs] of qcp.sourceReferences.targetReferences) {
-            for(const sourceRef of sourceRefs) {
+            for (const sourceRef of sourceRefs) {
                 tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column+sourceRef.length)),
+                    new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
                     'function'
                 );
             }
@@ -67,23 +67,39 @@ export class VSSemanticProvider {
         }
 
         for (const [key, tokens] of qcp.constantsOrVariables) {
-            for(const token of tokens) {
-                tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn+token.tokenName.length)),
-                    'variable',
-                    ['declaration']
-                );
+            for (const token of tokens) {
+                if (token.tokenType === COBOLTokenStyle.Constant) {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                        'variable',
+                        ['declaration', 'readonly']
+                    );
+                } else {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                        'variable',
+                        ['declaration']
+                    );
+                }
             }
         }
 
         for (const [key, sourceRefs] of qcp.sourceReferences.constantsOrVariablesReferences) {
             //
             for (const sourceRef of sourceRefs) {
-                tokensBuilder.push(
-                    new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column+sourceRef.length)),
-                    'variable'
-                );
+                if (sourceRef.tokenStyle === COBOLTokenStyle.Constant) {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                        'variable',
+                        ['readonly']
+                    );
 
+                } else {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                        'variable'
+                    );
+                }
             }
         }
 

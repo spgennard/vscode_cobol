@@ -21,20 +21,20 @@ export class COBOLPreprocessorHelper {
         return this.preprocessors.size !== 0;
     }
 
-    public static actionStartSection(source:string, divisionName: string):void {
+    public static actionStartSection(source: string, divisionName: string): void {
         for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
-                p.startSection(source,divisionName);
+                p.startSection(source, divisionName);
             } catch (e) {
                 //
             }
         }
     }
 
-    public static actionStartDivision(source:string, divisionName: string):void {
+    public static actionStartDivision(source: string, divisionName: string): void {
         for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
-                p.startDivision(source,divisionName);
+                p.startDivision(source, divisionName);
             } catch (e) {
                 //
             }
@@ -116,6 +116,7 @@ export enum COBOLTokenStyle {
     Variable = "Variable",
     ConditionName = "ConditionName",
     Constant = "Constant",
+    Union = "Union",
     EndDelimiter = "EndDelimiter",
     Exec = "Exec",
     EndExec = "EndExec",
@@ -284,12 +285,14 @@ export class SourceReference {
     public line: number;
     public column: number;
     public length: number;
+    public tokenStyle: COBOLTokenStyle;
 
-    public constructor(fileIdentifer: number, line: number, column: number, length: number) {
+    public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
         this.column = column;
         this.length = length;
+        this.tokenStyle = tokenStyle;
     }
 }
 
@@ -774,7 +777,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         state.copyBooksUsed.set(this.filename, COBOLToken.Null);
         if (this.sourceReferences.topLevel) {
             try {
-                const stat: fs.BigIntStats = fs.statSync(this.filename, {bigint: true});
+                const stat: fs.BigIntStats = fs.statSync(this.filename, { bigint: true });
                 this.lastModifiedTime = stat.mtimeMs;
             }
             catch (e) {
@@ -1278,7 +1281,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 if (tokenCountPerLine === 1) {
-                    const tokenAsNumber = Number.parseInt(tcurrent,10);
+                    const tokenAsNumber = Number.parseInt(tcurrent, 10);
                     if (tokenAsNumber !== undefined && (!isNaN(tokenAsNumber))) {
                         state.numberTokensInHeader++;
                         continue;
@@ -1351,17 +1354,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return token;
     }
 
-    private addReference(referencesMap: Map<string, SourceReference[]>, lowerCaseVariable: string, line: number, column: number) {
+    private addReference(referencesMap: Map<string, SourceReference[]>, lowerCaseVariable: string, line: number, column: number, tokenStyle: COBOLTokenStyle) {
         if (referencesMap.has(lowerCaseVariable)) {
             const sourceRefs: SourceReference[] | undefined = referencesMap.get(lowerCaseVariable);
             if (sourceRefs !== undefined) {
-                sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length));
+                sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
                 return;
             }
         }
 
         const sourceRefs: SourceReference[] = [];
-        sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length));
+        sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
         referencesMap.set(lowerCaseVariable, sourceRefs);
     }
 
@@ -1422,7 +1425,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (state.endsWithDot) {
                         state.pickUpUsing = false;
                     }
-
+                    let isReadonly = false;
                     switch (tcurrentLower) {
                         case "using":
                             state.using = UsingState.BY_REF;
@@ -1433,6 +1436,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             state.using = UsingState.BY_REF;
                             break;
                         case "value":
+                            isReadonly = true;
                             state.using = UsingState.BY_VALUE;
                             break;
                         case "returning":
@@ -1441,7 +1445,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         default:
                             if (this.sourceReferences !== undefined) {
                                 // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.targetReferences, tcurrentLower, lineNumber, token.currentCol);
+                                this.addReference(this.sourceReferences.targetReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                             }
                             state.parameters.push(new COBOLParameter(state.using, tcurrent));
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
@@ -1460,7 +1464,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
                             if (this.sourceReferences !== undefined) {
                                 // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.targetReferences, trimToken, lineNumber, token.currentCol);
+                                this.addReference(this.sourceReferences.targetReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                             }
                         }
                         if (token.prevTokenLower === 'to' && this.isValidKeyword(tcurrentLower) === false) {
@@ -1935,7 +1939,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                         style = COBOLTokenStyle.Constant;
                                     }
                                     if (token.isTokenPresent("redefines")) {
-                                        style = COBOLTokenStyle.Constant;
+                                        style = COBOLTokenStyle.Union;
                                     }
                                 }
 
@@ -2022,15 +2026,18 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
                             /* go nn, could be "move xx to nn" or "go to nn" */
                             if (this.constantsOrVariables.has(trimmedCurrentLower) === false && this.isValidKeyword(trimmedCurrentLower) === false) {
-                                this.addReference(this.sourceReferences.targetReferences, trimmedCurrentLower, lineNumber, token.currentCol);
+                                this.addReference(this.sourceReferences.targetReferences, trimmedCurrentLower, lineNumber, token.currentCol,COBOLTokenStyle.Paragraph);
                                 continue;
                             }
                         }
 
+                        const varTokens = this.constantsOrVariables.get(trimmedCurrentLower);
                         /* is this a reference to a variable? */
-                        if (this.constantsOrVariables.has(trimmedCurrentLower) === true) {
-                            this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol);
-                            continue;
+                        if (varTokens !== undefined) {
+                            for (const varToken of varTokens) {
+                                this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol, varToken.tokenType);
+                                continue;
+                            }
                         }
                     }
                 }

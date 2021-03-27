@@ -192,11 +192,17 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                                 }
                             }
                             break;
-                        case COBOLTokenStyle.ConditionName :
+                        case COBOLTokenStyle.ConditionName:
                             if (includeVars === false) {
                                 break;
                             }
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.TypeParameter, container, lrange));
+                            break;
+                        case COBOLTokenStyle.Union:
+                            if (includeVars === false) {
+                                break;
+                            }
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
                             break;
                         case COBOLTokenStyle.Constant:
                             if (includeVars === false) {
