@@ -73,7 +73,7 @@ export class FileSourceHandler implements ISourceHandler {
 
     private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
-    getLine(lineNumber: number): string | undefined {
+    getLine(lineNumber: number, raw:boolean): string | undefined {
         let line:string|undefined=undefined;
 
         try {
@@ -82,6 +82,10 @@ export class FileSourceHandler implements ISourceHandler {
             }
 
             line = this.lines[lineNumber];
+
+            if (raw) {
+                return line;
+            }
 
             const startComment = line.indexOf("*>");
             if (startComment !== -1) {

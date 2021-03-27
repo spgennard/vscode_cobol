@@ -85,13 +85,14 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
-export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings) : ESourceFormat {
+export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
 
     if (config.fileformat_strategy === "always_fixed") {
         return ESourceFormat.fixed;
     }
 
     let linesWithJustNumbers = 0;
+    let linesWithIdenticalAreaB = 0;
     const maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
     let defFormat = ESourceFormat.unknown;
 
@@ -101,14 +102,17 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
     }
 
     const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
-
+    let prevRightMargin = "";
+    let fixedCommentLines = 0;
     for (let i = 0; i < maxLines; i++) {
-        const lineText = doc.getLine(i);
+        const lineText = doc.getLine(i, true);
         if (lineText === undefined) {
             break;
         }
         const line = lineText.toLocaleLowerCase();
-
+        if (line.length > 7 && line[6] === '*') {
+            fixedCommentLines++;
+        }
         // acu
         if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
             if (line.startsWith("*") || line.startsWith("|") || line.startsWith("\\D")) {
@@ -135,10 +139,22 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
 
         // does it contain a inline comments? no
         if (pos4sourceformat_after === 0) {
-            if (line.length > 72) {
-                const rightMargin = line.substr(72).trim();
-                if (isNumber(rightMargin)) {
-                    linesWithJustNumbers++;
+            if (line.length > 80) {
+                defFormat = ESourceFormat.variable;
+                continue;
+            } else {
+                if (line.length > 72) {
+                    const rightMargin = line.substr(72).trim();
+
+                    if (prevRightMargin === rightMargin) {
+                        linesWithIdenticalAreaB++;
+                    } else {
+                        if (isNumber(rightMargin)) {
+                            linesWithJustNumbers++;
+                        }
+                    }
+
+                    prevRightMargin = rightMargin;
                 }
             }
             continue;
@@ -159,7 +175,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config:ICOBOLSettings)
     }
 
     //it might well be...
-    if (linesWithJustNumbers > 7) {
+    if (linesWithJustNumbers > 7 || linesWithIdenticalAreaB > 7 || fixedCommentLines + linesWithIdenticalAreaB > 7) {
         return ESourceFormat.fixed;
     }
 

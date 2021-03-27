@@ -646,7 +646,6 @@
                     "title": "Maintain Metadata Cache when using single folder",
                     "default": false
                 },
-
                 "coboleditor.enable_semantic_token_provider": {
                     "type": "boolean",
                     "title": "Enable experimental semantic token provider",

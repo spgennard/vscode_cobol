@@ -535,7 +535,7 @@ export class COBOLUtils {
         const edits = new vscode.WorkspaceEdit();
         // traverse all the lines
         for (let l = 0; l < file.getLineCount(); l++) {
-            const lineAt = file.getLine(l);
+            const lineAt = file.getLine(l, false);
             const text = lineAt;
 
             if (text === undefined) {

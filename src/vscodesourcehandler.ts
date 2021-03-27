@@ -51,7 +51,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
     }
 
-    getLine(lineNumber: number): string|undefined {
+    getLine(lineNumber: number, raw: boolean): string|undefined {
 
         if (lineNumber >= this.lineCount) {
             return undefined;
@@ -60,6 +60,10 @@ export class VSCodeSourceHandler implements ISourceHandler {
         const lineText = this.document.lineAt(lineNumber);
 
         let line = lineText.text;
+
+        if (raw) {
+            return line;
+        }
 
         const startComment = line.indexOf("*>");
         if (startComment !== -1) {

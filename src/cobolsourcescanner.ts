@@ -821,7 +821,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 try {
-                    line = sourceHandler.getLine(l);
+                    line = sourceHandler.getLine(l, false);
                     if (line === undefined) {
                         break; // eof
                     }
@@ -929,7 +929,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 break;
             case ESourceFormat.variable: sourceHandler.setDumpAreaBOnwards(false);
                 break;
-            case ESourceFormat.fixed: sourceHandler.setDumpAreaBOnwards(true);
+            case ESourceFormat.fixed:
+                sourceHandler.setDumpAreaA(true);
+                sourceHandler.setDumpAreaBOnwards(true);
                 break;
         }
 
@@ -944,7 +946,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 state.currentLineIsComment = false;
-                line = sourceHandler.getLine(l);
+                line = sourceHandler.getLine(l, false);
 
                 // eof
                 if (line === undefined) {
@@ -1561,8 +1563,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         prevTokenLower === 'file' || prevTokenLower === "screen") {
                         state.pickFields = true;
                         state.inProcedureDivision = false;
-                        // sourceHandler.setDumpAreaA(false);
-                        // sourceHandler.setDumpAreaBOnwards(false);
                     }
 
                     state.currentSection = this.newCOBOLToken(COBOLTokenStyle.Section, lineNumber, line, prevToken, prevPlusCurrent, state.currentDivision);
@@ -1585,8 +1585,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }
-                        sourceHandler.setDumpAreaA(true);
-                        sourceHandler.setDumpAreaBOnwards(false);
                     }
 
                     continue;
@@ -1867,20 +1865,20 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     state.currentDivision === state.procedureDivision && state.endsWithDot && state.prevEndsWithDot) {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         const beforeCurrent = line.substr(0, token.currentCol - 1).trim();
-                        if (beforeCurrent.length === 0) {
-                            const c = tcurrent;
-                            if (c.length !== 0) {
-                                if (this.isParagraph(c)) {
-                                    if (state.currentSection !== COBOLToken.Null) {
-                                        const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentSection);
-                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
-                                    } else {
-                                        const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentDivision);
-                                        this.paragraphs.set(newToken.tokenNameLower, newToken);
-                                    }
+                        // if (beforeCurrent.length === 0) {
+                        const c = tcurrent;
+                        if (c.length !== 0) {
+                            if (this.isParagraph(c)) {
+                                if (state.currentSection !== COBOLToken.Null) {
+                                    const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentSection);
+                                    this.paragraphs.set(newToken.tokenNameLower, newToken);
+                                } else {
+                                    const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentDivision);
+                                    this.paragraphs.set(newToken.tokenNameLower, newToken);
                                 }
                             }
                         }
+                        // }
                     }
                 }
 
@@ -2019,6 +2017,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (this.parseReferences && this.sourceReferences !== undefined) {
                     if (state.inProcedureDivision) {
                         const trimmedCurrentLower = this.trimLiteral(currentLower);
+                        // not interested in literals
+                        if (currentLower !== trimmedCurrentLower) {
+                            continue;
+                        }
+
                         if (this.isNumber(trimmedCurrentLower) === true) {
                             continue;
                         }
@@ -2026,7 +2029,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
                             /* go nn, could be "move xx to nn" or "go to nn" */
                             if (this.constantsOrVariables.has(trimmedCurrentLower) === false && this.isValidKeyword(trimmedCurrentLower) === false) {
-                                this.addReference(this.sourceReferences.targetReferences, trimmedCurrentLower, lineNumber, token.currentCol,COBOLTokenStyle.Paragraph);
+                                this.addReference(this.sourceReferences.targetReferences, trimmedCurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Paragraph);
                                 continue;
                             }
                         }
