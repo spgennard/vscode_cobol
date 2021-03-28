@@ -4,6 +4,30 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.3.28
+ 
+  
+
+  
+**make the determination of fixed file format better**
+
+
+ * don&#x27;t register interest in tokens that are literals
+
+ * (long standing silent bug)
+
+* [c2a6a3b2d8de0e8](https://github.com/spgennard/vscode_cobol/commit/c2a6a3b2d8de0e8) *2021-03-27 17:17:09*
+
+  
+**Update CHANGELOG.md**
+
+
+* [a6bea1e5e193a2a](https://github.com/spgennard/vscode_cobol/commit/a6bea1e5e193a2a) *2021-03-27 14:30:36*
+
+  
+
+ 
+
 ## 7.3.27
  
   
