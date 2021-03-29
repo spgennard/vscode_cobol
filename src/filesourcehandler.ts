@@ -10,6 +10,7 @@ const lineByLine = require('n-readlines');
 import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
 
+
 export class FileSourceHandler implements ISourceHandler {
     document: string;
     dumpNumbersInAreaA: boolean;

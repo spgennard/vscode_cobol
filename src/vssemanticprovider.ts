@@ -41,24 +41,26 @@ export class VSSemanticProvider {
 
         for (const [key, token] of qcp.sections) {
             try {
-                if (token.inProcedureDivision) {
+                if (token.ignoreInOutlineView === false && token.inProcedureDivision) {
                     tokensBuilder.push(
                         new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
                         'function'
                     );
                 }
+
             } catch (e) {
                 logException("SemanticProvider: sections", e);
             }
         }
         for (const [key, token] of qcp.paragraphs) {
             try {
-                if (token.inProcedureDivision) {
+                if (token.ignoreInOutlineView === false && token.inProcedureDivision) {
                     tokensBuilder.push(
                         new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
                         'function'
                     );
                 }
+
             } catch (e) {
                 logException("SemanticProvider: paragraphs", e);
             }
@@ -81,22 +83,24 @@ export class VSSemanticProvider {
         for (const [key, tokens] of qcp.constantsOrVariables) {
 
             for (const token of tokens) {
-                try {
-                    if (token.tokenType === COBOLTokenStyle.Constant) {
-                        tokensBuilder.push(
-                            new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                            'variable',
-                            ['declaration', 'readonly']
-                        );
-                    } else {
-                        tokensBuilder.push(
-                            new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                            'variable',
-                            ['declaration']
-                        );
+                if (token.ignoreInOutlineView === false) {
+                    try {
+                        if (token.tokenType === COBOLTokenStyle.Constant) {
+                            tokensBuilder.push(
+                                new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                                'variable',
+                                ['declaration', 'readonly']
+                            );
+                        } else {
+                            tokensBuilder.push(
+                                new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
+                                'variable',
+                                ['declaration']
+                            );
+                        }
+                    } catch (e) {
+                        logException("SemanticProvider: constantsOrVariables", e);
                     }
-                } catch (e) {
-                    logException("SemanticProvider: constantsOrVariables", e);
                 }
             }
         }

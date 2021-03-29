@@ -2038,7 +2038,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         /* is this a reference to a variable? */
                         if (varTokens !== undefined) {
                             for (const varToken of varTokens) {
-                                this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol, varToken.tokenType);
+                                if (varToken.ignoreInOutlineView === false) {
+                                    this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol, varToken.tokenType);
+                                }
                                 continue;
                             }
                         }
