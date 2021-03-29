@@ -239,6 +239,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         items = this.getAllTypes(wordToComplete);
                         break;
                     }
+                    case "thru":
+                    case "through":
                     case "perform":
                     case "goto":
                         {

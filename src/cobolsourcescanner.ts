@@ -1517,19 +1517,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (prevTokenLower === "end" && currentLower === "declaratives") {
                     state.declaratives.endLine = lineNumber;
                     state.declaratives.endColumn = line.indexOf(tcurrent);
-                    this.tokensInOrder.push(state.declaratives);
+                    // this.tokensInOrder.push(state.declaratives);
                     state.inDeclaratives = false;
                     state.declaratives = COBOLToken.Null;
                     continue;
                 }
 
                 // only include sections in the declaratives area
-                if (state.inDeclaratives) {
-                    if (currentLower === 'section') {
-                        this.newCOBOLToken(COBOLTokenStyle.DeclarativesSection, lineNumber, line, prevToken, prevToken, state.currentDivision);
-                    }
-                    continue;
-                }
+                // if (state.inDeclaratives) {
+                //     if (currentLower === 'section') {
+                //         this.newCOBOLToken(COBOLTokenStyle.DeclarativesSection, lineNumber, line, prevToken, prevToken, state.currentDivision);
+                //     }
+                //     continue;
+                // }
 
                 // handle sections)
                 if (state.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
@@ -1785,7 +1785,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (currentLower === "declaratives") {
                     state.declaratives = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, prevToken, current, state.currentDivision);
                     state.inDeclaratives = true;
-                    this.tokensInOrder.pop();       /* only interested it at the end */
+                    // this.tokensInOrder.pop();       /* only interested it at the end */
                     continue;
                 }
 
@@ -2026,7 +2026,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             continue;
                         }
 
-                        if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto") {
+                        if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto" ||
+                            prevTokenLower === 'thru' || prevTokenLower === 'through') {
                             /* go nn, could be "move xx to nn" or "go to nn" */
                             if (this.constantsOrVariables.has(trimmedCurrentLower) === false && this.isValidKeyword(trimmedCurrentLower) === false) {
                                 this.addReference(this.sourceReferences.targetReferences, trimmedCurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Paragraph);

@@ -58,12 +58,12 @@ export class VSPreProc {
 
 
     public static getCOBOLPreprocessor(extensionName: string): COBOLPreprocessor | undefined {
-        const preprocexp = extensions.getExtension(extensionName);
-        if (preprocexp === undefined) {
-            return preprocexp;
-        }
-
         try {
+            const preprocexp = extensions.getExtension(extensionName);
+            if (preprocexp === undefined) {
+                return preprocexp;
+            }
+
             if (preprocexp?.exports === undefined) {
                 return undefined;
             }

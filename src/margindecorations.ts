@@ -118,15 +118,18 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
 
     const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
     let prevRightMargin = "";
-    let fixedCommentLines = 0;
+    let validFixedLines = 0;
     for (let i = 0; i < maxLines; i++) {
+
         const lineText = doc.getLine(i, true);
         if (lineText === undefined) {
             break;
         }
+
         const line = lineText.toLocaleLowerCase();
-        if (line.length > 7 && line[6] === '*') {
-            fixedCommentLines++;
+        const validFixedLine = isValidFixedLine(line);
+        if (validFixedLine) {
+            validFixedLines++;
         }
         // acu
         if (defFormat === ESourceFormat.unknown && checkForTerminalFormat) {
@@ -194,8 +197,12 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         }
     }
 
+    if (validFixedLines == maxLines) {
+        return ESourceFormat.fixed;
+    }
+
     //it might well be...
-    if (linesWithJustNumbers > 7 || linesWithIdenticalAreaB > 7 || fixedCommentLines + linesWithIdenticalAreaB > 7) {
+    if (linesWithJustNumbers > 7 || linesWithIdenticalAreaB > 7) {
         return ESourceFormat.fixed;
     }
 
@@ -252,18 +259,14 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
         return;
     }
 
-    const enabledViaWorkspace4cobol: boolean = isEnabledViaWorkspace4cobol();
-
     /* is it enabled? (COBOL) */
-    if (textLanguage === TextLanguage.COBOL && !enabledViaWorkspace4cobol) {
+    if (textLanguage === TextLanguage.COBOL && !isEnabledViaWorkspace4cobol) {
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
 
-    const enabledViaWorkspace4jcl: boolean = isEnabledViaWorkspace4jcl();
-
     /* is it enabled? (COBOL) */
-    if (textLanguage === TextLanguage.JCL && !enabledViaWorkspace4jcl) {
+    if (textLanguage === TextLanguage.JCL && !isEnabledViaWorkspace4jcl) {
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
@@ -271,6 +274,7 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
     if (textLanguage === TextLanguage.COBOL) {
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, VSCOBOLConfiguration.get());
         if (gcp === undefined) {
+            activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
             return;
         }
 
