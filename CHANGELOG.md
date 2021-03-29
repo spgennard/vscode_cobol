@@ -3,6 +3,25 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.3.30
+
+**try to make the pp activation more robust**
+
+* [acf35cd52cb98a1](https://github.com/spgennard/vscode_cobol/commit/acf35cd52cb98a1) *2021-03-29 22:39:58*
+
+**add late sourcereference cat, as it is not a 2 pass scanner**
+
+* [5e97ee306462fc1](https://github.com/spgennard/vscode_cobol/commit/5e97ee306462fc1) *2021-03-29 20:39:32*
+
+**update packages**
+
+* [60bbfd49b69a8fc](https://github.com/spgennard/vscode_cobol/commit/60bbfd49b69a8fc) *2021-03-29 16:34:39*
+
+**Update CHANGELOG.md**
+
+* [408b29b94bce0e7](https://github.com/spgennard/vscode_cobol/commit/408b29b94bce0e7) *2021-03-29 16:27:12*
+
+
 ## 7.3.29
 
 **prepare for delivery**
