@@ -2,10 +2,11 @@ import { extensions } from "vscode";
 import { COBAPIConstants, COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { dumpPreProcInfo, ExternalFeatures, logMessage } from "./extension";
+import { dumpPreProcInfo, ExternalFeatures, logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
+
     public static areAllPreProcessorsReady(settings: ICOBOLSettings): boolean {
         return VSPreProc.registerPreProcessors(settings);
     }
@@ -13,6 +14,8 @@ export class VSPreProc {
     public static registerPreProcessors(settings: ICOBOLSettings): boolean {
         let show = false;
         let failed = false;
+        let clear = false;
+
         for (const extName of settings.preprocessor_extensions) {
             if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
                 continue;
@@ -32,21 +35,26 @@ export class VSPreProc {
                             show = true;
                         }
                     } catch {
-                        failed = true;
-                        settings.preprocessor_extensions = []; // brutal
+                        clear = true;
                         logMessage(` WARNING: PreProcessors disable due to ${extName} causing an error during initialization`);
                     }
                 } else {
-                    failed = true;
+                    logMessage(` WARNING: PreProcessors ${extName} not found, continuing without it`);
+                    clear = true;
                 }
             }
-            catch {
+            catch(e){
                 failed = true;
+                logException(`Unable to get preprocessor : ${extName}`,e);
             }
         }
 
         if (show) {
             dumpPreProcInfo(settings);
+        }
+
+        if (clear) {
+            settings.preprocessor_extensions = [];      // brutal
         }
 
         return !failed;
