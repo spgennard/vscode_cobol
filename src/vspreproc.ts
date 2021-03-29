@@ -1,4 +1,4 @@
-import { extensions } from "vscode";
+import { Extension, extensions } from "vscode";
 import { COBAPIConstants, COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
@@ -21,7 +21,20 @@ export class VSPreProc {
                 continue;
             }
             try {
-                const pp = VSPreProc.getCOBOLPreprocessor(extName);
+                const ppExt = VSPreProc.getExtension(extName);
+                if (ppExt === undefined) {
+                    logMessage(` WARNING: PreProcessors ${extName} not found, continuing without it`);
+                    clear = true;
+                    break;
+                }
+
+                // leave early because the extenion is not ready
+                if (ppExt.isActive === false) {
+                    failed = true;
+                    break;
+                }
+
+                const pp = VSPreProc.getCOBOLPreprocessor(ppExt, extName);
                 if (pp !== undefined) {
                     const handle = new CobApiHandle(pp.getPackageJson(), ExternalFeatures);
                     try {
@@ -43,9 +56,9 @@ export class VSPreProc {
                     clear = true;
                 }
             }
-            catch(e){
+            catch (e) {
                 failed = true;
-                logException(`Unable to get preprocessor : ${extName}`,e);
+                logException(`Unable to get preprocessor : ${extName}`, e);
             }
         }
 
@@ -64,21 +77,26 @@ export class VSPreProc {
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
     }
 
-
-    public static getCOBOLPreprocessor(extensionName: string): COBOLPreprocessor | undefined {
-        try {
-            const preprocexp = extensions.getExtension(extensionName);
-            if (preprocexp === undefined) {
-                return preprocexp;
+    private static getExtension(extensionName: string): Extension<any> | undefined {
+        for (const x of extensions.all) {
+            if (x.id === extensionName) {
+                return x;
             }
+        }
+        return undefined;
+    }
+
+    public static getCOBOLPreprocessor(preprocexp: Extension<any>, extensionName: string): COBOLPreprocessor | undefined {
+        try {
 
             if (preprocexp?.exports === undefined) {
                 return undefined;
             }
-
+            logMessage(`Extension ${preprocexp.id} is found, Active=${preprocexp.isActive}`);
             return preprocexp.exports as COBOLPreprocessor;
         }
-        catch {
+        catch (e) {
+            logMessage(`getCOBOLPreprocessor(${extensionName})`, e);
             return undefined;
         }
     }
