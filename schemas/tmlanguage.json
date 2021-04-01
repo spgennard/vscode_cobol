@@ -149,14 +149,11 @@
       "anyOf": [
         {
           "type": "string",
-          "pattern": "^([\\w0-9]|\\$\\d+)+(\\.([\\w0-9-]|\\$\\d+)+)*$"
+          "pattern": "^(([\\w0-9]|\\$\\d+)+(\\.([\\w0-9-]|\\$\\d+)+)*)|(([\\w0-9\\.]*)\\s+([\\w0-9-\\.]*))$"
         },
         {
           "type": "string",
           "enum": [
-            "begin",
-            "end",
-            "while",
             "comment",
             "comment.block",
             "comment.block.documentation",
