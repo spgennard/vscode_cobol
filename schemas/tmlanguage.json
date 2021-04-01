@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema#",
-  "id": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "id": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
   "$ref": "#/definitions/root",
   "definitions": {
     "root": {
@@ -154,6 +154,9 @@
         {
           "type": "string",
           "enum": [
+            "begin",
+            "end",
+            "while",
             "comment",
             "comment.block",
             "comment.block.documentation",
