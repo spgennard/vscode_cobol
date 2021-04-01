@@ -1,5 +1,6 @@
 {
   "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2021 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/COBOL_acu_listfile.tmLanguage.json",
+  "$schema" : "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
   "fileTypes": [],
   "name": "COBOL_ACU_LISTFILE",
   "patterns": [
@@ -38,7 +39,6 @@
           "name": "comment.line.modern"
         }
       ],
-      "name": "",
       "end": "^STATISTICS"
     },
     {
@@ -52,8 +52,7 @@
       "end": "($)"
     },
     {
-      "match": "(.*$)",
-      "name": ""
+      "match": "(.*$)"
     }
   ],
   "scopeName": "source.cobol_acu_listfile"

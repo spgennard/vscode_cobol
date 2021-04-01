@@ -1,5 +1,6 @@
 {
     "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2021 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/mfu.tmLanguage.json",
+    "$schema" : "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
     "fileTypes": [
         "mfu"
     ],
@@ -16,11 +17,11 @@
             "patterns": [
                 {
                     "begin": "#",
-                    "beginCaptures": [
-                        {
+                    "beginCaptures": {
+                        "1": {
                             "name": "punctuation.definition.comment.mfu"
                         }
-                    ],
+                    },
                     "end": "\\n",
                     "name": "comment.line.number-sign.mfu"
                 }
@@ -37,11 +38,11 @@
             "patterns": [
                 {
                     "begin": ";",
-                    "beginCaptures": [
-                        {
+                    "beginCaptures": {
+                        "1": {
                             "name": "punctuation.definition.comment.mfu"
                         }
-                    ],
+                    },
                     "end": "\\n",
                     "name": "comment.line.semicolon.mfu"
                 }
@@ -106,17 +107,17 @@
         },
         {
             "begin": "'",
-            "beginCaptures": [
-                {
+            "beginCaptures": {
+                "1": {
                     "name": "punctuation.definition.string.begin.mfu"
                 }
-            ],
+            },
             "end": "'",
-            "endCaptures": [
-                {
+            "endCaptures": {
+                "1": {
                     "name": "punctuation.definition.string.end.mfu"
                 }
-            ],
+            },
             "name": "string.quoted.single.mfu",
             "patterns": [
                 {
@@ -127,17 +128,17 @@
         },
         {
             "begin": "\"",
-            "beginCaptures": [
-                {
+            "beginCaptures": {
+                "1" : {
                     "name": "punctuation.definition.string.begin.mfu"
                 }
-            ],
+            },
             "end": "\"",
-            "endCaptures": [
-                {
+            "endCaptures": {
+                "1" : {
                     "name": "punctuation.definition.string.end.mfu"
                 }
-            ],
+            },
             "name": "string.quoted.double.mfu"
         },
         {
