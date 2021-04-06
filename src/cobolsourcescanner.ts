@@ -303,6 +303,7 @@ class Token {
 
     private lineTokens: string[] = [];
     private lineLowerTokens: string[] = [];
+    private isLiteral: boolean[] = [];
     private tokenIndex = 0;
 
     public currentToken = "";
@@ -322,7 +323,13 @@ class Token {
 
     public constructor(line: string, previousToken?: Token) {
         this.line = line;
-        this.setupLine();
+        this.lineTokens = splitArgument(this.line, false);
+        this.lineLowerTokens = [];
+        for (let c = 0; c < this.lineTokens.length; c++) {
+            this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
+        }
+        this.tokenIndex = 0;
+        this.setupToken();
 
         if (previousToken !== undefined) {
             // wire in previous token into this token
@@ -336,16 +343,6 @@ class Token {
     }
 
     public static Blank = new Token("", undefined);
-
-    private setupLine() {
-        this.lineTokens = splitArgument(this.line, false);
-        this.lineLowerTokens = [];
-        for (let c = 0; c < this.lineTokens.length; c++) {
-            this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
-        }
-        this.tokenIndex = 0;
-        this.setupToken();
-    }
 
     private setupToken() {
         this.prevToken = this.currentToken;
@@ -1047,10 +1044,11 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 this.callTargets.set(this.ImplicitProgramId, state.currentProgramTarget);
             }
 
+            // setup references for unknown forward references
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
-                if (this.sections.has(strRef)) {
+                if (this.isVisibleSection(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences);
-                } else if (this.paragraphs.has(strRef)) {
+                } else if (this.isVisibleParagraph(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences);
                 } else if (this.constantsOrVariables.has(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences);
@@ -1066,6 +1064,22 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         if (this.isPreProcessorsActive) {
             COBOLPreprocessorHelper.actionEnd(this.id);
         }
+    }
+
+    private isVisibleSection(sectionName: string): boolean {
+        const foundSectionToken = this.sections.get(sectionName);
+        if (foundSectionToken === undefined) {
+            return false;
+        }
+        return !foundSectionToken.ignoreInOutlineView;
+    }
+
+    private isVisibleParagraph(paragrapName: string): boolean {
+        const foundParagraph = this.paragraphs.get(paragrapName);
+        if (foundParagraph === undefined) {
+            return false;
+        }
+        return !foundParagraph.ignoreInOutlineView;
     }
 
     private transferReference(symbol: string, symbolRefs: SourceReference[], transferReference: Map<string, SourceReference[]>): void {
@@ -1353,16 +1367,23 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         /* remove end . */
-        if (literalTrimmed.endsWith(".")) {
+        let lastChar = literalTrimmed[literalTrimmed.length - 1];
+        if (lastChar === ".") {
             literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
         }
 
-        if (literalTrimmed[0] === "\"" && literalTrimmed.endsWith("\"")) {
+        // too small
+        if (literalTrimmed.length < 2) {
+            return false;
+        }
+
+        lastChar = literalTrimmed[literalTrimmed.length - 1];
+        if (literalTrimmed[0] === "\"" && lastChar === "\"") {
             return true;
         }
 
         /* remove quotes */
-        if (literalTrimmed[0] === "'" && literalTrimmed.endsWith("'")) {
+        if (literalTrimmed[0] === "'" && lastChar === "'") {
             return true;
         }
 
@@ -2123,8 +2144,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 /* add reference when perform is used */
                 if (this.parseReferences && this.sourceReferences !== undefined) {
                     if (state.inProcedureDivision) {
-                        const isQuotedLiteral = this.isQuotedLiteral(currentLower);
-                        if (isQuotedLiteral) {
+                        // not interested in literals
+                        if (this.isQuotedLiteral(currentLower)) {
                             continue;
                         }
 
@@ -2134,51 +2155,67 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                         // if the token contain '(' or ')' then it must be a variable reference
                         if (this.containsIndex(currentLower) === false) {
+
                             if (prevTokenLower === 'perform' || prevTokenLower === "to" || prevTokenLower === "goto" ||
                                 prevTokenLower === 'thru' || prevTokenLower === 'through') {
 
                                 /* go nn, could be "move xx to nn" or "go to nn" */
-                                if (this.isValidKeyword(currentLower) === false) {
-                                    let sourceStyle = COBOLTokenStyle.Unknown;
-                                    let sharedReferences = this.sourceReferences.unknownReferences;
-                                    if (this.constantsOrVariables.has(currentLower)) {
-                                        sourceStyle = COBOLTokenStyle.Variable;
-                                        sharedReferences = this.sourceReferences.constantsOrVariablesReferences;
-                                    } else if (this.sections.has(currentLower)) {
-                                        sourceStyle = COBOLTokenStyle.Section;
-                                        this.sourceReferences.targetReferences
-                                        sharedReferences = this.sourceReferences.targetReferences;
-                                    } else if (this.paragraphs.has(currentLower)) {
-                                        sourceStyle = COBOLTokenStyle.Paragraph;
-                                        sharedReferences = this.sourceReferences.targetReferences;
-                                        this.sourceReferences.targetReferences
-                                    }
-                                    this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
-                                    continue;
+                                let sourceStyle = COBOLTokenStyle.Unknown;
+                                let sharedReferences = this.sourceReferences.unknownReferences;
+                                if (this.isVisibleSection(currentLower)) {
+                                    sourceStyle = COBOLTokenStyle.Section;
+                                    this.sourceReferences.targetReferences
+                                    sharedReferences = this.sourceReferences.targetReferences;
+                                } else if (this.isVisibleParagraph(currentLower)) {
+                                    sourceStyle = COBOLTokenStyle.Paragraph;
+                                    sharedReferences = this.sourceReferences.targetReferences;
+                                    this.sourceReferences.targetReferences
                                 }
+
+                                this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
+                                continue;
                             }
-                        } else {
-                            for (const [pos, trimmedCurrentLower] of this.trimVariableToMap(currentLower)) {
 
-                                if (this.isNumber(trimmedCurrentLower) === true || this.isValidKeyword(trimmedCurrentLower) === true) {
-                                    continue;
-                                }
+                            const varTokens = this.constantsOrVariables.get(currentLower);
 
-                                const varTokens = this.constantsOrVariables.get(trimmedCurrentLower);
-                                /* is this a reference to a variable? */
-                                if (varTokens !== undefined) {
-                                    for (const varToken of varTokens) {
-                                        if (varToken.ignoreInOutlineView === false) {
-                                            this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, COBOLTokenStyle.Variable);
-                                        }
+                            /* is this a reference to a variable? */
+                            if (varTokens !== undefined) {
+                                for (const varToken of varTokens) {
+                                    if (varToken.ignoreInOutlineView === false) {
+                                        this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                                         continue;
                                     }
-                                } else {
-                                    this.addReference(this.sourceReferences.unknownReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, COBOLTokenStyle.Unknown);
                                 }
+                            } else {
+                                this.addReference(this.sourceReferences.unknownReferences, currentLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                            }
+
+                            continue;
+                        }
+
+                        // traverse map of possible variables that could be indexes etc.. a bit messy but works
+                        for (const [pos, trimmedCurrentLower] of this.trimVariableToMap(currentLower)) {
+
+                            if (this.isNumber(trimmedCurrentLower) === true || this.isValidKeyword(trimmedCurrentLower) === true) {
+                                continue;
+                            }
+
+                            const varTokens = this.constantsOrVariables.get(trimmedCurrentLower);
+
+                            /* is this a reference to a variable? */
+                            if (varTokens !== undefined) {
+                                for (const varToken of varTokens) {
+                                    if (varToken.ignoreInOutlineView === false) {
+                                        this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, COBOLTokenStyle.Variable);
+                                        continue;
+                                    }
+                                }
+                            } else {
+                                this.addReference(this.sourceReferences.unknownReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, COBOLTokenStyle.Unknown);
                             }
                         }
                     }
+
                 }
             }
             catch (e) {

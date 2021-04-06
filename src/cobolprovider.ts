@@ -300,6 +300,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "unstring":
                     case "varying":
                     case "with":
+                    case "display":
                         {
                             const words = this.getConstantsOrVariables(document, this.iconfig);
                             items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
