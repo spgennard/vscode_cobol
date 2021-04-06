@@ -3,6 +3,33 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.6
+
+**continue work on references & prepare del**
+
+* [63192c2c40666c4](https://github.com/spgennard/vscode_cobol/commit/63192c2c40666c4) *2021-04-06 21:34:26*
+
+**include schema and fix bugs shown up**
+
+* [426c34961276862](https://github.com/spgennard/vscode_cobol/commit/426c34961276862) *2021-04-01 16:19:06*
+
+**relax string to allow space for name elements**
+
+* [f21fc6770c8f74c](https://github.com/spgennard/vscode_cobol/commit/f21fc6770c8f74c) *2021-04-01 16:15:02*
+
+**tweaks**
+
+* [f30cd82aa4e13f7](https://github.com/spgennard/vscode_cobol/commit/f30cd82aa4e13f7) *2021-04-01 15:56:58*
+
+**add schema**
+
+* [533b802b3613dd4](https://github.com/spgennard/vscode_cobol/commit/533b802b3613dd4) *2021-04-01 15:44:01*
+
+**Update CHANGELOG.md**
+
+* [ae683af882412f9](https://github.com/spgennard/vscode_cobol/commit/ae683af882412f9) *2021-03-29 22:49:29*
+
+
 ## 7.3.30
 
 **try to make the pp activation more robust**
