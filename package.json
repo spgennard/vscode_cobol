@@ -1,1874 +1,1878 @@
 {
-    "name": "cobol",
-    "displayName": "COBOL",
-    "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-    "version": "7.4.6",
-    "publisher": "bitlang",
-    "keywords": [
-        "cobol",
-        "jcl",
-        "pl/i",
-        "pli",
-        "mfcobol",
-        "mvs",
-        "visualcobol",
-        "serverexpress",
-        "ocds",
-        "cobol-it",
-        "cobolit",
-        "ibmcobol",
-        "bms",
-        "mfu"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/spgennard/vscode_cobol"
-    },
-    "bugs": {
-        "email": "stephen@gennard.net"
-    },
-    "engines": {
-        "vscode": "^1.54.0"
-    },
-    "extensionKind": [
-        "workspace"
-    ],
-    "icon": "images/cobol.png",
-    "categories": [
-        "Programming Languages",
-        "Snippets",
-        "Other"
-    ],
-    "activationEvents": [
-        "onStartupFinished",
-        "onFileSystem:file",
-        "onLanguage:plaintext",
-        "onLanguage:cobol",
-        "onLanguage:COBOL",
-        "onLanguage:COBOLIT",
-        "onLanguage:ACUCOBOL",
-        "onLanguage:mfcobol",
-        "onLanguage:JCL",
-        "onLanguage:bms",
-        "onLanguage:hlasm",
-        "onLanguage:mfu",
-        "onCommand:cobolplugin.move2pd",
-        "onCommand:cobolplugin.move2ws",
-        "onCommand:cobolplugin.move2dd",
-        "onCommand:cobolplugin.move2anyforward",
-        "onCommand:cobolplugin.move2anybackwards",
-        "onCommand:cobolplugin.tab",
-        "onCommand:cobolplugin.revtab",
-        "onCommand:cobolplugin.change_lang_to_acu",
-        "onCommand:cobolplugin.change_lang_to_cobol",
-        "onCommand:cobolplugin.toggle_margin",
-        "onCommand:cobolplugin.change_source_format",
-        "onCommand:cobolplugin.deprecated.dumpMetaData",
-        "onCommand:cobolplugin.deprecated.clearMetaData",
-        "onCommand:cobolplugin.deprecated.processAllFilesInWorkspace",
-        "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
-        "onCommand:cobolplugin.mfurunMenu",
-        "onCommand:cobolplugin.removeAllComments",
-        "onCommand:cobolplugin.removeIdentificationArea",
-        "onCommand:cobolplugin.makeKeywordsLowercase",
-        "onCommand:cobolplugin.makeKeywordsUppercase",
-        "onCommand:cobolplugin.makeKeywordsCamelCase",
-        "onCommand:cobolplugin.makeFieldsLowercase",
-        "onCommand:cobolplugin.makeFieldsUppercase",
-        "onCommand:cobolplugin.makeFieldsCamelCase",
-        "onCommand:cobolplugin.removeColumnNumbers",
-        "onCommand:cobolplugin.makePerformTargetsLowerCase",
-        "onCommand:cobolplugin.makePerformTargetsUpperCase",
-        "onCommand:cobolplugin.makePerformTargetsCamelCase",
-        "onCommand:cobolplugin.resequenceColumnNumbers",
-        "view:flat-source-view",
-        "workspaceContains:bld.bat",
-        "workspaceContains:bld.sh",
-        "workspaceContains:**/*.cobol",
-        "workspaceContains:**/*.cob",
-        "workspaceContains:**/*.cbl",
-        "workspaceContains:**/*.cpy",
-        "workspaceContains:**/*.md",
-        "workspaceContains:**/*.jcl"
-    ],
-    "main": "./dist/extension",
-    "license": "SEE LICENSE IN LICENSE",
-    "homepage": "https://github.com/spgennard/vscode_cobol",
-    "author": {
-        "name": "Stephen Gennard",
-        "email": "stephen@gennard.net"
-    },
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "COBOL configuration",
+  "name": "cobol",
+  "displayName": "COBOL",
+  "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
+  "version": "7.4.7",
+  "publisher": "bitlang",
+  "keywords": [
+    "cobol",
+    "jcl",
+    "pl/i",
+    "pli",
+    "mfcobol",
+    "mvs",
+    "visualcobol",
+    "serverexpress",
+    "ocds",
+    "cobol-it",
+    "cobolit",
+    "ibmcobol",
+    "bms",
+    "mfu"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spgennard/vscode_cobol"
+  },
+  "bugs": {
+    "email": "stephen@gennard.net"
+  },
+  "engines": {
+    "vscode": "^1.54.0"
+  },
+  "extensionKind": [
+    "workspace"
+  ],
+  "icon": "images/cobol.png",
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onFileSystem:file",
+    "onLanguage:plaintext",
+    "onLanguage:cobol",
+    "onLanguage:COBOL",
+    "onLanguage:COBOLIT",
+    "onLanguage:ACUCOBOL",
+    "onLanguage:mfcobol",
+    "onLanguage:JCL",
+    "onLanguage:bms",
+    "onLanguage:hlasm",
+    "onLanguage:mfu",
+    "onCommand:cobolplugin.move2pd",
+    "onCommand:cobolplugin.move2ws",
+    "onCommand:cobolplugin.move2dd",
+    "onCommand:cobolplugin.move2anyforward",
+    "onCommand:cobolplugin.move2anybackwards",
+    "onCommand:cobolplugin.tab",
+    "onCommand:cobolplugin.revtab",
+    "onCommand:cobolplugin.change_lang_to_acu",
+    "onCommand:cobolplugin.change_lang_to_cobol",
+    "onCommand:cobolplugin.toggle_margin",
+    "onCommand:cobolplugin.change_source_format",
+    "onCommand:cobolplugin.deprecated.dumpMetaData",
+    "onCommand:cobolplugin.deprecated.clearMetaData",
+    "onCommand:cobolplugin.deprecated.processAllFilesInWorkspace",
+    "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
+    "onCommand:cobolplugin.mfurunMenu",
+    "onCommand:cobolplugin.removeAllComments",
+    "onCommand:cobolplugin.removeIdentificationArea",
+    "onCommand:cobolplugin.makeKeywordsLowercase",
+    "onCommand:cobolplugin.makeKeywordsUppercase",
+    "onCommand:cobolplugin.makeKeywordsCamelCase",
+    "onCommand:cobolplugin.makeFieldsLowercase",
+    "onCommand:cobolplugin.makeFieldsUppercase",
+    "onCommand:cobolplugin.makeFieldsCamelCase",
+    "onCommand:cobolplugin.removeColumnNumbers",
+    "onCommand:cobolplugin.makePerformTargetsLowerCase",
+    "onCommand:cobolplugin.makePerformTargetsUpperCase",
+    "onCommand:cobolplugin.makePerformTargetsCamelCase",
+    "onCommand:cobolplugin.resequenceColumnNumbers",
+    "view:flat-source-view",
+    "workspaceContains:bld.bat",
+    "workspaceContains:bld.sh",
+    "workspaceContains:**/*.cobol",
+    "workspaceContains:**/*.cob",
+    "workspaceContains:**/*.cbl",
+    "workspaceContains:**/*.cpy",
+    "workspaceContains:**/*.md",
+    "workspaceContains:**/*.jcl"
+  ],
+  "main": "./dist/extension",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/spgennard/vscode_cobol",
+  "author": {
+    "name": "Stephen Gennard",
+    "email": "stephen@gennard.net"
+  },
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "COBOL configuration",
+      "properties": {
+        "coboleditor.tabstops": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "title": "tabstops",
             "properties": {
-                "coboleditor.tabstops": {
-                    "type": "array",
-                    "items": {
-                        "type": "number",
-                        "title": "tabstops",
-                        "properties": {
-                            "tabstop": {
-                                "type": "number",
-                                "description": "tabstop"
-                            }
-                        }
-                    },
-                    "default": [
-                        0,
-                        7,
-                        11,
-                        15,
-                        19,
-                        23,
-                        27,
-                        31,
-                        35,
-                        39,
-                        43,
-                        47,
-                        51,
-                        55,
-                        59,
-                        63,
-                        67,
-                        71,
-                        75,
-                        79
-                    ],
-                    "description": "COBOL tabstops"
-                },
-                "coboleditor.copybookexts": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "copybookextension",
-                        "properties": {
-                            "tabstop": {
-                                "type": "string",
-                                "description": "copybookextension"
-                            }
-                        }
-                    },
-                    "default": [
-                        "cpy",
-                        "scr",
-                        "CPY",
-                        "SCR",
-                        "cbl",
-                        "CBL",
-                        "ccp",
-                        "dds",
-                        "ss",
-                        "wks"
-                    ],
-                    "markdownDescription": "COBOL CopyBook file name extensions",
-                    "description": "COBOL CopyBook Extensions",
-                    "uniqueItems": true
-                },
-                "coboleditor.program_extensions": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "program_extensions",
-                        "properties": {
-                            "tabstop": {
-                                "type": "string",
-                                "description": "program_extension"
-                            }
-                        }
-                    },
-                    "default": [
-                        "cbl",
-                        "CBL",
-                        "cobol",
-                        "scbl",
-                        "pco"
-                    ],
-                    "markdownDescription": "COBOL Program file name extensions",
-                    "description": "COBOL Program Extensions",
-                    "uniqueItems": true
-                },
-                "coboleditor.copybookdirs": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "copybookdirs",
-                        "properties": {
-                            "tabstop": {
-                                "type": "string",
-                                "description": "copybookdir"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "description": "COBOL CopyBook directories to search into",
-                    "uniqueItems": true
-                },
-                "coboleditor.process_metadata_cache_on_file_save": {
-                    "type": "boolean",
-                    "title": "Process metadata on file save",
-                    "default": false,
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases"
-                },
-                "coboleditor.ignorecolumn_b_onwards": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "type": "boolean",
-                    "title": "include column 72 onwards in parsing",
-                    "default": true
-                },
-                "coboleditor.copybooks_nested": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "type": "boolean",
-                    "markdownDescription": "nest copybooks in outline view (restart required)",
-                    "title": "nest copybooks in outline view (restart require)",
-                    "default": false
-                },
-                "coboleditor.fuzzy_variable_search": {
-                    "type": "boolean",
-                    "markdownDescription": "fuzzy variable search (legacy compatibility)",
-                    "title": "fuzzy variable search",
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "default": false
-                },
-                "coboleditor.cache_metadata": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "enum": [
-                        "workspace",
-                        "user_defined_directory",
-                        "off"
-                    ],
-                    "default": "off",
-                    "markdownDescription": "Cache directory location",
-                    "title": "Cache directory location",
-                    "enumDescriptions": [
-                        "Cache directory in workspace",
-                        "User Defined Directory",
-                        "Do not do any caching"
-                    ]
-                },
-                "coboleditor.cache_metadata_user_directory": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "type": "string",
-                    "markdownDescription": "User specific directory for the workspace metadata cache (directory has to exist)",
-                    "title": "User specific directory for the workspace metadata cache (directory has to exist)",
-                    "default": ""
-                },
-                "coboleditor.cache_metadata_time_limit": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "type": "number",
-                    "markdownDescription": "Limited the time to process the cache (on startup) in ms",
-                    "title": "Limited the time to process the cache (on startup)",
-                    "default": 30000
-                },
-                "coboleditor.cache_metadata_max_directory_scan_depth": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "type": "number",
-                    "markdownDescription": "Limited the depth of the metadata cache directory scan",
-                    "title": "Limited the depth of the metadata cache directory scan",
-                    "default": 32
-                },
-                "coboleditor.cache_metadata_show_progress_messages": {
-                    "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-                    "type": "boolean",
-                    "markdownDescription": "Show log message during meta data processing",
-                    "default": false
-                },
-                "coboleditor.margin": {
-                    "type": "boolean",
-                    "title": "apply margin shading",
-                    "default": false
-                },
-                "coboleditor.enable_data_provider": {
-                    "type": "boolean",
-                    "markdownDescription": "Enabled data/field completion provider",
-                    "title": "Enabled data/field completion provider",
-                    "default": true
-                },
-                "jcleditor.margin": {
-                    "type": "boolean",
-                    "title": "apply margin shading",
-                    "default": true
-                },
-                "coboleditor.fileformat_strategy": {
-                    "enum": [
-                        "always_fixed",
-                        "normal"
-                    ],
-                    "default": "normal",
-                    "markdownDescription": "File format strategy",
-                    "title": "always_fixed or normal",
-                    "enumDescriptions": [
-                        "Assume source code if fixed format",
-                        "Determine source code format or configure it"
-                    ]
-                },
-                "coboleditor.fileformat": {
-                    "type": "array",
-                    "markdownDescription": "Default configuration for file format. [Read more...](https://github.com/spgennard/vscode_cobol#coboleditorfileformat)",
-                    "items": {
-                        "type": "object",
-                        "title": "List of properties to match file format",
-                        "properties": {
-                            "pattern": {
-                                "type": "string",
-                                "description": "Filename or pattern"
-                            },
-                            "sourceformat": {
-                                "type": "string",
-                                "description": "sourceformat",
-                                "enum": [
-                                    "free",
-                                    "fixed",
-                                    "variable",
-                                    "terminal"
-                                ],
-                                "enumDescriptions": [
-                                    "source code format free (no margins",
-                                    "source code format fixed (classic COBOL margins)",
-                                    "source code format variable (no right margin)",
-                                    "source code format terminal (ACU COBOL/RM)"
-                                ]
-                            }
-                        }
-                    },
-                    "default": [
-                        {
-                            "pattern": "**/FIXED*.cbl",
-                            "sourceformat": "fixed"
-                        }
-                    ],
-                    "description": "An array of filenames/patterns and its associated source format"
-                },
-                "coboleditor.enable_tabstop": {
-                    "type": "boolean",
-                    "title": "Enable COBOL tab/detab key",
-                    "default": true
-                },
-                "coboleditor.comment_line": {
-                    "type": "boolean",
-                    "title": "Enable COBOL comment key",
-                    "default": true
-                },
-                "coboleditor.outline": {
-                    "markdownDescription": "Configure or disable outline view for COBOL",
-                    "type": "string",
-                    "description": "on=everything, partial=no paragraphs, skeleton=basic structure and off",
-                    "enum": [
-                        "on",
-                        "partial",
-                        "skeleton",
-                        "off"
-                    ],
-                    "enumDescriptions": [
-                        "Scans everything in the source (can be costly)",
-                        "Scans everything expect paragraphs",
-                        "Scans very little but might be enough for basic navigation",
-                        "No source scanning is done"
-                    ],
-                    "default": "on"
-                },
-                "coboleditor.pre_parse_line_limit": {
-                    "type": "number",
-                    "title": "Set pre-parse line limit",
-                    "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
-                    "default": 25,
-                    "minimum": 5,
-                    "maximum": 255
-                },
-                "coboleditor.linter": {
-                    "type": "boolean",
-                    "title": "Enable basic linting",
-                    "description": "Enable basic linting (limited to sections/paragraph use)",
-                    "default": false
-                },
-                "coboleditor.linter_mark_as_information": {
-                    "type": "boolean",
-                    "title": "Mark all linter problems as information",
-                    "description": "Mark all linter problems as information (false is hint)",
-                    "default": true
-                },
-                "coboleditor.linter_unused_paragraphs_or_sections": {
-                    "type": "boolean",
-                    "title": "Enable basic linting",
-                    "description": "Enable basic linting (limited to sections/paragraph use)",
-                    "default": true
-                },
-                "coboleditor.sourceview": {
-                    "type": "boolean",
-                    "title": "Enable experimental explorer source view",
-                    "description": "Enable experimental explorer source view",
-                    "default": false
-                },
-                "coboleditor.sourceview_include_jcl_files": {
-                    "type": "boolean",
-                    "title": "Include JCL Files in source view",
-                    "description": "Include JCL Files in source view",
-                    "default": true
-                },
-                "coboleditor.sourceview_include_hlasm_files": {
-                    "type": "boolean",
-                    "title": "Include HLASM Files in source view",
-                    "description": "Include HLASM Files in source view",
-                    "default": true
-                },
-                "coboleditor.sourceview_include_pli_files": {
-                    "type": "boolean",
-                    "title": "Include PL/I Files in source view",
-                    "description": "Include PL/I Files in source view",
-                    "default": true
-                },
-                "coboleditor.sourceview_include_doc_files": {
-                    "type": "boolean",
-                    "title": "Include Documentation Files in source view",
-                    "description": "Include Documentation Files in source view",
-                    "default": true
-                },
-                "coboleditor.sourceview_include_script_files": {
-                    "type": "boolean",
-                    "title": "Include Script Files in source view",
-                    "description": "Include Script Files in source view",
-                    "default": true
-                },
-                "coboleditor.sourceview_include_object_files": {
-                    "type": "boolean",
-                    "title": "Include Object Files in source view",
-                    "description": "Include Object Files in source view",
-                    "default": true
-                },
-                "coboleditor.line_comment": {
-                    "type": "boolean",
-                    "title": "Replace standard comment in/out with COBOL specific",
-                    "description": "Replace standard comment in/out with COBOL specific",
-                    "default": true
-                },
-                "coboleditor.mfunit.diagnostic.color": {
-                    "type": "boolean",
-                    "title": "Enable ANSI color",
-                    "description": "Enable ANSI color when using the Micro Focus Unit Testing Framework (mfunit) in terminal",
-                    "default": true
-                },
-                "coboleditor.disable_unc_copybooks_directories": {
-                    "type": "boolean",
-                    "title": "Disable UNC Copybooks",
-                    "description": "Disable UNC Copybooks (default false)",
-                    "default": false
-                },
-                "coboleditor.intellisense_include_unchanged": {
-                    "type": "boolean",
-                    "title": "Include result unchanged in intellisense results",
-                    "description": "Include result unchanged in intellisense results (default true)",
-                    "default": true
-                },
-                "coboleditor.intellisense_include_camelcase": {
-                    "type": "boolean",
-                    "title": "Include camelcase in intellisense results",
-                    "description": "Include camelcase in intellisense results (default false)",
-                    "default": false
-                },
-                "coboleditor.intellisense_include_uppercase": {
-                    "type": "boolean",
-                    "title": "Include uppercase results in intellisense results",
-                    "description": "Include uppercase results in intellisense results (default false)",
-                    "default": false
-                },
-                "coboleditor.intellisense_include_lowercase": {
-                    "type": "boolean",
-                    "title": "Include lowercase results in intellisense results",
-                    "description": "Include lowercase results in intellisense results (default false)",
-                    "default": false
-                },
-                "coboleditor.intellisense_item_limit": {
-                    "type": "number",
-                    "title": "Max number of items to return",
-                    "description": "Max number of items to return (default 120)",
-                    "default": 120,
-                    "minItems": 30
-                },
-                "coboleditor.process_metadata_cache_on_start": {
-                    "type": "boolean",
-                    "title": "Process metadata cache on startup",
-                    "description": "Process metadata cache on extension load (default false)",
-                    "default": false
-                },
-                "coboleditor.parse_copybooks_for_references": {
-                    "type": "boolean",
-                    "title": "Parse copybook for reference",
-                    "description": "Parse copybook for reference (default false)",
-                    "default": false
-                },
-                "coboleditor.workspacefolders_order": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "workspacefolders",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "workspacefolder"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "uniqueItems": true
-                },
-                "coboleditor.linter_house_standards": {
-                    "type": "boolean",
-                    "title": "Enable house standards rules",
-                    "description": "Enable house standards rules",
-                    "default": false
-                },
-                "coboleditor.linter_ignore_section_before_entry": {
-                    "type": "boolean",
-                    "title": "Do not warn on unused section before entry-point",
-                    "description": "Do not issue a warning if a unused section occurs before a entry-point, as this is often used to stop code trickling through to the next statements.",
-                    "default": true
-                },
-                "coboleditor.linter_house_standards_rules": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "Data division section rules",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "rule (regex)"
-                            }
-                        }
-                    },
-                    "default": [
-                        "file=.*",
-                        "thread-local=.*",
-                        "working-storage=.*",
-                        "object-storage=.*",
-                        "local-storage=.*",
-                        "linkage=.*",
-                        "communication=.*",
-                        "report=.*",
-                        "screen=.*"
-                    ],
-                    "uniqueItems": true
-                },
-                "coboleditor.ignore_unsafe_extensions": {
-                    "type": "boolean",
-                    "title": "Turn off unsafe extension check",
-                    "description": "Turn off unsafe extension check",
-                    "default": false
-                },
-                "coboleditor.scan_comments_for_hints": {
-                    "type": "boolean",
-                    "description": "Process scanner hints embedded in comments",
-                    "default": false
-                },
-                "coboleditor.scan_comment_copybook_token": {
-                    "type": "string",
-                    "description": "Comment token used for processing source code dependencies, for example extra copybooks",
-                    "default": "source-dependency"
-                },
-                "coboleditor.format_on_return": {
-                    "enum": [
-                        "camelcase",
-                        "uppercase",
-                        "off"
-                    ],
-                    "default": "off",
-                    "markdownDescription": "Format line on return key (camelcase or uppercase)",
-                    "title": "Format line on return key (camelcase or uppercase)"
-                },
-                "coboleditor.metadata_symbols": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "callablesymbol",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "internal metadata symbol"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "uniqueItems": true
-                },
-                "coboleditor.metadata_entrypoints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "entypoints",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "internal metadata entypoints"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "uniqueItems": true
-                },
-                "coboleditor.metadata_types": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "types",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "internal metadata entypoints"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "uniqueItems": true
-                },
-                "coboleditor.metadata_files": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "types",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "internal metadata files"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "uniqueItems": true
-                },
-                "coboleditor.maintain_metadata_cache": {
-                    "type": "boolean",
-                    "title": "Maintain Metadata Cache",
-                    "default": true
-                },
-                "coboleditor.maintain_metadata_cache_single_folder": {
-                    "type": "boolean",
-                    "title": "Maintain Metadata Cache when using single folder",
-                    "default": false
-                },
-                "coboleditor.enable_semantic_token_provider": {
-                    "type": "boolean",
-                    "title": "Enable experimental semantic token provider",
-                    "default": false
-                },
-                "coboleditor.preprocessor_extensions": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "title": "types",
-                        "properties": {
-                            "copybook": {
-                                "type": "string",
-                                "description": "internal preprocessor extensions"
-                            }
-                        }
-                    },
-                    "default": [],
-                    "uniqueItems": true
-                }
+              "tabstop": {
+                "type": "number",
+                "description": "tabstop"
+              }
             }
+          },
+          "default": [
+            0,
+            7,
+            11,
+            15,
+            19,
+            23,
+            27,
+            31,
+            35,
+            39,
+            43,
+            47,
+            51,
+            55,
+            59,
+            63,
+            67,
+            71,
+            75,
+            79
+          ],
+          "description": "COBOL tabstops"
         },
-        "views": {
-            "explorer": [
-                {
-                    "id": "flat-source-view",
-                    "name": "Source View",
-                    "when": "config.coboleditor.sourceview"
-                }
-            ]
+        "coboleditor.copybookexts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "copybookextension",
+            "properties": {
+              "tabstop": {
+                "type": "string",
+                "description": "copybookextension"
+              }
+            }
+          },
+          "default": [
+            "cpy",
+            "scr",
+            "CPY",
+            "SCR",
+            "cbl",
+            "CBL",
+            "ccp",
+            "dds",
+            "ss",
+            "wks"
+          ],
+          "markdownDescription": "COBOL CopyBook file name extensions",
+          "description": "COBOL CopyBook Extensions",
+          "uniqueItems": true
         },
-        "configurationDefaults": {
-            "[COBOL]": {
-                "editor.semanticHighlighting.enabled": false,
-                "files.autoGuessEncoding": false,
-                "editor.snippetSuggestions": "bottom",
-                "editor.renderIndentGuides": false,
-                "editor.autoIndent": "advanced",
-                "editor.insertSpaces": true,
-                "editor.formatOnType": true,
-                "editor.rulers": [
-                    6,
-                    7,
-                    11,
-                    72
+        "coboleditor.program_extensions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "program_extensions",
+            "properties": {
+              "tabstop": {
+                "type": "string",
+                "description": "program_extension"
+              }
+            }
+          },
+          "default": [
+            "cbl",
+            "CBL",
+            "cobol",
+            "scbl",
+            "pco"
+          ],
+          "markdownDescription": "COBOL Program file name extensions",
+          "description": "COBOL Program Extensions",
+          "uniqueItems": true
+        },
+        "coboleditor.copybookdirs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "copybookdirs",
+            "properties": {
+              "tabstop": {
+                "type": "string",
+                "description": "copybookdir"
+              }
+            }
+          },
+          "default": [],
+          "description": "COBOL CopyBook directories to search into",
+          "uniqueItems": true
+        },
+        "coboleditor.process_metadata_cache_on_file_save": {
+          "type": "boolean",
+          "title": "Process metadata on file save",
+          "default": false,
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases"
+        },
+        "coboleditor.ignorecolumn_b_onwards": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "boolean",
+          "title": "include column 72 onwards in parsing",
+          "default": true
+        },
+        "coboleditor.copybooks_nested": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "boolean",
+          "markdownDescription": "nest copybooks in outline view (restart required)",
+          "title": "nest copybooks in outline view (restart require)",
+          "default": false
+        },
+        "coboleditor.fuzzy_variable_search": {
+          "type": "boolean",
+          "markdownDescription": "fuzzy variable search (legacy compatibility)",
+          "title": "fuzzy variable search",
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "default": false
+        },
+        "coboleditor.cache_metadata": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "enum": [
+            "workspace",
+            "user_defined_directory",
+            "off"
+          ],
+          "default": "off",
+          "markdownDescription": "Cache directory location",
+          "title": "Cache directory location",
+          "enumDescriptions": [
+            "Cache directory in workspace",
+            "User Defined Directory",
+            "Do not do any caching"
+          ]
+        },
+        "coboleditor.cache_metadata_user_directory": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "string",
+          "markdownDescription": "User specific directory for the workspace metadata cache (directory has to exist)",
+          "title": "User specific directory for the workspace metadata cache (directory has to exist)",
+          "default": ""
+        },
+        "coboleditor.cache_metadata_time_limit": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "number",
+          "markdownDescription": "Limited the time to process the cache (on startup) in ms",
+          "title": "Limited the time to process the cache (on startup)",
+          "default": 30000
+        },
+        "coboleditor.cache_metadata_max_directory_scan_depth": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "number",
+          "markdownDescription": "Limited the depth of the metadata cache directory scan",
+          "title": "Limited the depth of the metadata cache directory scan",
+          "default": 32
+        },
+        "coboleditor.cache_metadata_show_progress_messages": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "boolean",
+          "markdownDescription": "Show log message during meta data processing",
+          "default": false
+        },
+        "coboleditor.margin": {
+          "type": "boolean",
+          "title": "apply margin shading",
+          "default": false
+        },
+        "coboleditor.enable_data_provider": {
+          "type": "boolean",
+          "markdownDescription": "Enabled data/field completion provider",
+          "title": "Enabled data/field completion provider",
+          "default": true
+        },
+        "jcleditor.margin": {
+          "type": "boolean",
+          "title": "apply margin shading",
+          "default": true
+        },
+        "coboleditor.fileformat_strategy": {
+          "enum": [
+            "always_fixed",
+            "normal"
+          ],
+          "default": "normal",
+          "markdownDescription": "File format strategy",
+          "title": "always_fixed or normal",
+          "enumDescriptions": [
+            "Assume source code if fixed format",
+            "Determine source code format or configure it"
+          ]
+        },
+        "coboleditor.fileformat": {
+          "type": "array",
+          "markdownDescription": "Default configuration for file format. [Read more...](https://github.com/spgennard/vscode_cobol#coboleditorfileformat)",
+          "items": {
+            "type": "object",
+            "title": "List of properties to match file format",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Filename or pattern"
+              },
+              "sourceformat": {
+                "type": "string",
+                "description": "sourceformat",
+                "enum": [
+                  "free",
+                  "fixed",
+                  "variable",
+                  "terminal"
                 ],
-                "editor.detectIndentation": false,
-                "editor.useTabStops": false,
-                "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
-            },
-            "[ACUCOBOL]": {
-                "editor.semanticHighlighting.enabled": false,
-                "editor.insertSpaces": true,
-                "editor.renderIndentGuides": false,
-                "files.autoGuessEncoding": false,
-                "editor.autoIndent": "full",
-                "editor.formatOnType": false,
-                "editor.rulers": [
-                    6,
-                    7,
-                    72
-                ],
-                "editor.detectIndentation": false,
-                "editor.wordSeparators": "`~!#$%^&*()=+[{]}\\|;:'\",.<>/?"
-            },
-            "[dir]": {
-                "editor.semanticHighlighting.enabled": false,
-                "editor.insertSpaces": true,
-                "editor.renderIndentGuides": false,
-                "files.autoGuessEncoding": false,
-                "editor.autoIndent": "keep",
-                "editor.formatOnType": false,
-                "editor.rulers": [],
-                "editor.detectIndentation": false,
-                "editor.wordSeparators": "`~!@#$%^&*()=[{]}\\|;:'\",<>/?"
-            },
-            "[JCL]": {
-                "editor.semanticHighlighting.enabled": false,
-                "files.autoGuessEncoding": false,
-                "editor.renderIndentGuides": false,
-                "editor.detectIndentation": false,
-                "editor.formatOnType": false,
-                "editor.autoIndent": "full",
-                "editor.rulers": [
-                    71,
-                    72,
-                    80
+                "enumDescriptions": [
+                  "source code format free (no margins",
+                  "source code format fixed (classic COBOL margins)",
+                  "source code format variable (no right margin)",
+                  "source code format terminal (ACU COBOL/RM)"
                 ]
-            },
-            "[hlasm]": {
-                "editor.semanticHighlighting.enabled": false,
-                "editor.rulers": [
-                    0,
-                    9,
-                    15,
-                    71,
-                    72,
-                    80
-                ],
-                "editor.renderIndentGuides": false
+              }
             }
+          },
+          "default": [
+            {
+              "pattern": "**/FIXED*.cbl",
+              "sourceformat": "fixed"
+            }
+          ],
+          "description": "An array of filenames/patterns and its associated source format"
         },
-        "languages": [
-            {
-                "id": "ACUCOBOL",
-                "aliases": [
-                    "ACUCOBOL",
-                    "acucobol"
-                ],
-                "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.bench.).*$",
-                "extensions": [
-                    ".evt",
-                    ".prd",
-                    ".wrk",
-                    ".mnu",
-                    ".def",
-                    ".sl"
-                ],
-                "configuration": "./acucobol.configuration.json"
-            },
-            {
-                "id": "COBOL",
-                "filenames": [
-                    "SQLCA"
-                ],
-                "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
-                "extensions": [
-                    ".cobol",
-                    ".cbl",
-                    ".cblsrce",
-                    ".lks",
-                    ".pdv",
-                    ".cpy",
-                    ".copybook",
-                    ".cobcopy",
-                    ".fd",
-                    ".sel",
-                    ".scb",
-                    ".spb",
-                    ".scbl",
-                    ".cob",
-                    ".dds",
-                    ".def",
-                    ".src",
-                    ".ss",
-                    ".wks",
-                    ".bib",
-                    ".pco"
-                ],
-                "configuration": "./cobol.configuration.json"
-            },
-            {
-                "id": "COBOL_MF_LISTFILE",
-                "extensions": [],
-                "configuration": "./cobol.configuration.json"
-            },
-            {
-                "id": "COBOL_PCOB_LISTFILE",
-                "extensions": [],
-                "configuration": "./cobol.configuration.json"
-            },
-            {
-                "id": "COBOL_ACU_LISTFILE",
-                "extensions": [],
-                "configuration": "./cobol.configuration.json"
-            },
-            {
-                "id": "COBOL_MF_PREP",
-                "extensions": [
-                    ".prep"
-                ],
-                "configuration": "./cobol.configuration.json"
-            },
-            {
-                "id": "COBOLIT",
-                "extensions": [],
-                "configuration": "./cobolit.configuration.json"
-            },
-            {
-                "id": "JCL",
-                "extensions": [
-                    ".jcl",
-                    ".job",
-                    ".cntl",
-                    ".prc",
-                    ".proc"
-                ],
-                "configuration": "./jcl.configuration.json"
-            },
-            {
-                "id": "jcl",
-                "extensions": [
-                    ".jcl",
-                    ".job",
-                    ".cntl",
-                    ".prc",
-                    ".proc"
-                ],
-                "configuration": "./jcl.configuration.json"
-            },
-            {
-                "id": "dir",
-                "extensions": [
-                    ".dir"
-                ],
-                "aliases": [
-                    "dirfile",
-                    "dir"
-                ],
-                "configuration": "./dir.configuration.json"
-            },
-            {
-                "id": "pli",
-                "extensions": [
-                    ".pl1",
-                    ".pli",
-                    ".plinc",
-                    ".pc",
-                    ".pci",
-                    ".pcx",
-                    ".inc"
-                ],
-                "configuration": "./pli.configuration.json"
-            },
-            {
-                "id": "bms",
-                "extensions": [
-                    ".bms"
-                ],
-                "aliases": []
-            },
-            {
-                "id": "hlasm",
-                "extensions": [
-                    ".hlasm",
-                    ".asm",
-                    ".mac",
-                    ".mlc"
-                ],
-                "aliases": []
-            },
-            {
-                "id": "mfu",
-                "aliases": [
-                    "mfunit"
-                ],
-                "extensions": [
-                    "mfu"
-                ],
-                "configuration": "./mfu-configuration.json"
-            },
-            {
-                "id": "utreport",
-                "aliases": [
-                    "Unit Test Report"
-                ],
-                "filenamePatterns": [
-                    "*-report.txt"
-                ],
-                "configuration": "./language-configuration.json"
-            }
-        ],
-        "grammars": [
-            {
-                "language": "COBOL",
-                "scopeName": "source.cobol",
-                "path": "./syntaxes/COBOL.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "sql",
-                    "meta.embedded.block.html": "html",
-                    "meta.embedded.block.java": "java"
-                }
-            },
-            {
-                "language": "COBOL_MF_LISTFILE",
-                "scopeName": "source.cobol_mf_listfile",
-                "path": "./syntaxes/COBOL_mf_listfile.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "sql",
-                    "meta.embedded.block.html": "html"
-                }
-            },
-            {
-                "language": "COBOL_MF_PREP",
-                "scopeName": "source.cobol_mfprep",
-                "path": "./syntaxes/COBOL_mfprep.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "sql",
-                    "meta.embedded.block.html": "html"
-                }
-            },
-            {
-                "language": "COBOL_ACU_LISTFILE",
-                "scopeName": "source.cobol_acu_listfile",
-                "path": "./syntaxes/COBOL_acu_listfile.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "sql",
-                    "meta.embedded.block.html": "html"
-                }
-            },
-            {
-                "language": "COBOL_PCOB_LISTFILE",
-                "scopeName": "source.cobol_pcob_listfile",
-                "path": "./syntaxes/COBOL_pcob_listfile.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "sql",
-                    "meta.embedded.block.html": "html"
-                }
-            },
-            {
-                "language": "ACUCOBOL",
-                "scopeName": "source.acucobol",
-                "path": "./syntaxes/ACUCOBOL.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "sql",
-                    "meta.embedded.block.html": "html"
-                }
-            },
-            {
-                "language": "COBOLIT",
-                "scopeName": "source.cobolit",
-                "path": "./syntaxes/COBOLIT.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.embedded.block.sql": "text",
-                    "meta.embedded.block.html": "text",
-                    "meta.embedded.block.java": "text"
-                }
-            },
-            {
-                "language": "JCL",
-                "scopeName": "source.jcl",
-                "path": "./syntaxes/jcl.tmLanguage.json"
-            },
-            {
-                "language": "jcl",
-                "scopeName": "source.jcl",
-                "path": "./syntaxes/jcl.tmLanguage.json"
-            },
-            {
-                "language": "dir",
-                "scopeName": "source.dir",
-                "path": "./syntaxes/dir.tmLanguage.json"
-            },
-            {
-                "language": "pli",
-                "scopeName": "source.pli",
-                "path": "./syntaxes/PLI.tmLanguage.json"
-            },
-            {
-                "language": "bms",
-                "scopeName": "source.bms",
-                "path": "./syntaxes/bms.tmLanguage.json"
-            },
-            {
-                "language": "hlasm",
-                "scopeName": "source.hlasm",
-                "path": "./syntaxes/hlasm.tmLanguage.json"
-            },
-            {
-                "language": "mfu",
-                "scopeName": "source.mfu",
-                "path": "./syntaxes/mfu.tmLanguage.json"
-            },
-            {
-                "language": "utreport",
-                "scopeName": "source.utreport",
-                "path": "./syntaxes/utreport.tmLanguage.json"
-            }
-        ],
-        "commands": [
-            {
-                "command": "cobolplugin.move2pd",
-                "category": "COBOL",
-                "title": "Go to Procedure Division",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.move2ws",
-                "category": "COBOL",
-                "title": "Go to Working-Storage Section",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.move2dd",
-                "category": "COBOL",
-                "title": "Go to Data Division",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.move2anyforward",
-                "category": "COBOL",
-                "title": "Go to next Section/Division",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.move2anybackwards",
-                "category": "COBOL",
-                "title": "Move to Previous Section/Division",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.tab",
-                "category": "COBOL",
-                "title": "Insert a tab",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.revtab",
-                "category": "COBOL",
-                "title": "Remove a tab",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.commentline",
-                "category": "COBOL",
-                "title": "Comment line",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.change_lang_to_acu",
-                "category": "COBOL",
-                "title": "Select ACUCOBOL-GT language"
-            },
-            {
-                "command": "cobolplugin.toggle_margin",
-                "category": "COBOL",
-                "title": "Toggle margin"
-            },
-            {
-                "command": "cobolplugin.checkworkspaceformissingcopybookdirs",
-                "category": "COBOL",
-                "title": "Check workspace folders recursively for potential copybook directories",
-                "enablement": "!isWeb"
-            },
-            {
-                "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
-                "category": "COBOL",
-                "title": "Process files in workspace for metadata",
-                "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
-            },
-            {
-                "command": "cobolplugin.deprecated.dumpMetaData",
-                "category": "COBOL",
-                "title": "Dump metadata for diagnostic",
-                "enablement": "!isWeb  && config.coboleditor.cache_metadata != off"
-            },
-            {
-                "command": "cobolplugin.deprecated.clearMetaData",
-                "category": "COBOL",
-                "title": "Clear metadata",
-                "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
-            },
-            {
-                "command": "cobolplugin.processAllFilesInWorkspace",
-                "category": "COBOL",
-                "title": "Scan source files in workspace for metadata",
-                "enablement": "!isWeb && config.coboleditor.cache_metadata == off"
-            },
-            {
-                "command": "cobolplugin.mfurunMenu",
-                "category": "COBOL",
-                "title": "Run UnitTest",
-                "enablement": "!isWeb && filesExplorerFocus"
-            },
-            {
-                "command": "cobolplugin.runCommand",
-                "category": "COBOL",
-                "title": "Run Without Debugging",
-                "enablement": "!isWeb && config.coboleditor.sourceview && !editorFocus && focusedView == flat-source-view"
-            },
-            {
-                "command": "cobolplugin.runDebugCommand",
-                "category": "COBOL",
-                "title": "Start Debugging",
-                "enablement": "!isWeb && config.coboleditor.sourceview && !editorFocus && focusedView == flat-source-view"
-            },
-            {
-                "command": "cobolplugin.removeAllComments",
-                "category": "COBOL",
-                "title": "Remove COBOL Comments"
-            },
-            {
-                "command": "cobolplugin.removeIdentificationArea",
-                "category": "COBOL",
-                "title": "Remove COBOL Identification Area"
-            },
-            {
-                "command": "cobolplugin.removeColumnNumbers",
-                "category": "COBOL",
-                "title": "Remove Column Numbers"
-            },
-            {
-                "command": "cobolplugin.resequenceColumnNumbers",
-                "category": "COBOL",
-                "title": "Re-sequence Column Numbers"
-            },
-            {
-                "command": "cobolplugin.makeKeywordsLowercase",
-                "category": "COBOL",
-                "title": "Make keywords lowercase"
-            },
-            {
-                "command": "cobolplugin.makeKeywordsUppercase",
-                "category": "COBOL",
-                "title": "Make keywords uppercase"
-            },
-            {
-                "command": "cobolplugin.makeKeywordsCamelCase",
-                "category": "COBOL",
-                "title": "Make keywords camelcase"
-            },
-            {
-                "command": "cobolplugin.makeFieldsLowercase",
-                "category": "COBOL",
-                "title": "Make fields lowercase"
-            },
-            {
-                "command": "cobolplugin.makeFieldsUppercase",
-                "category": "COBOL",
-                "title": "Make fields uppercase"
-            },
-            {
-                "command": "cobolplugin.makeFieldsCamelCase",
-                "category": "COBOL",
-                "title": "Make fields camelcase"
-            },
-            {
-                "command": "cobolplugin.makePerformTargetsLowerCase",
-                "category": "COBOL",
-                "title": "Make perform targets lowercase"
-            },
-            {
-                "command": "cobolplugin.makePerformTargetsUpperCase",
-                "category": "COBOL",
-                "title": "Make perform targets uppercase"
-            },
-            {
-                "command": "cobolplugin.makePerformTargetsCamelCase",
-                "category": "COBOL",
-                "title": "Make perform targets camelcase"
-            },
-            {
-                "command": "cobolplugin.extractSelectionToParagraph",
-                "category": "COBOL",
-                "title": "Extract selection to paragraph",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.extractSelectionToSection",
-                "category": "COBOL",
-                "title": "Extract selection to section",
-                "enablement": "editorFocus"
-            },
-            {
-                "command": "cobolplugin.extractSelectionToCopybook",
-                "category": "COBOL",
-                "title": "Extract selection to copybook"
-            },
-            {
-                "command": "cobolplugin.migrateCopybooksToWorkspace",
-                "category": "COBOL",
-                "title": "Migrate copybook settings to workspace (for performance)"
-            },
-            {
-                "command": "cobolplugin.showCOBOLChannel",
-                "category": "COBOL",
-                "title": "Show COBOL Channel"
-            }
-        ],
-        "menus": {
-            "editor/context": [
-                {
-                    "command": "cobolplugin.move2dd",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.move2ws",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.move2pd",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.move2anyforward",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.move2anybackwards",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.extractSelectionToParagraph",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.extractSelectionToSection",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
-                },
-                {
-                    "command": "cobolplugin.extractSelectionToCopybook",
-                    "group": "cobolplugin",
-                    "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
-                }
-            ],
-            "view/item/context": [
-                {
-                    "command": "cobolplugin.runCommand",
-                    "when": "view == flat-source-view && viewItem == objects"
-                },
-                {
-                    "command": "cobolplugin.runDebugCommand",
-                    "when": "view == flat-source-view && viewItem == objects"
-                }
-            ],
-            "explorer/context": [
-                {
-                    "command": "cobolplugin.mfurunMenu",
-                    "group": "navigation",
-                    "when": "filesExplorerFocus && resourceExtname == .mfu"
-                }
-            ]
+        "coboleditor.enable_tabstop": {
+          "type": "boolean",
+          "title": "Enable COBOL tab/detab key",
+          "default": true
         },
-        "keybindings": [
-            {
-                "key": "ctrl+k ctrl+j",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+k ctrl+j",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+k ctrl+j",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+k ctrl+j",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "ctrl+alt+p",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+alt+p",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+alt+p",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+alt+p",
-                "command": "cobolplugin.move2pd",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "ctrl+alt+w",
-                "command": "cobolplugin.move2ws",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+alt+w",
-                "command": "cobolplugin.move2ws",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+alt+w",
-                "command": "cobolplugin.move2ws",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+alt+w",
-                "command": "cobolplugin.move2ws",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "ctrl+alt+d",
-                "command": "cobolplugin.move2dd",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+alt+d",
-                "command": "cobolplugin.move2dd",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+alt+d",
-                "command": "cobolplugin.move2dd",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+alt+d",
-                "command": "cobolplugin.move2dd",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "ctrl+alt+.",
-                "command": "cobolplugin.move2anyforward",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+alt+.",
-                "command": "cobolplugin.move2anyforward",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+alt+,",
-                "command": "cobolplugin.move2anybackwards",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+alt+,",
-                "command": "cobolplugin.move2anybackwards",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+alt+.",
-                "command": "cobolplugin.move2anyforward",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+alt+,",
-                "command": "cobolplugin.move2anybackwards",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+alt+.",
-                "command": "cobolplugin.move2anyforward",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "ctrl+alt+,",
-                "command": "cobolplugin.move2anybackwards",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "tab",
-                "command": "cobolplugin.tab",
-                "when": "editorLangId == cobol && !inSnippetMode"
-            },
-            {
-                "key": "tab",
-                "command": "cobolplugin.tab",
-                "when": "editorLangId == COBOL && !inSnippetMode"
-            },
-            {
-                "key": "shift+tab",
-                "command": "cobolplugin.revtab",
-                "when": "editorLangId == cobol && !inSnippetMode"
-            },
-            {
-                "key": "shift+tab",
-                "command": "cobolplugin.revtab",
-                "when": "editorLangId == COBOL && !inSnippetMode"
-            },
-            {
-                "key": "tab",
-                "command": "cobolplugin.tab",
-                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "shift+tab",
-                "command": "cobolplugin.revtab",
-                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "tab",
-                "command": "cobolplugin.tab",
-                "when": "editorLangId == COBOLIT && !inSnippetMode"
-            },
-            {
-                "key": "shift+tab",
-                "command": "cobolplugin.revtab",
-                "when": "editorLangId == COBOLIT && !inSnippetMode"
-            },
-            {
-                "key": "ctrl+/",
-                "command": "cobolplugin.commentline",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "ctrl+/",
-                "command": "cobolplugin.commentline",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "ctrl+/",
-                "command": "cobolplugin.commentline",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "ctrl+/",
-                "command": "cobolplugin.commentline",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
-            },
-            {
-                "key": "alt+shift+a",
-                "command": "cobolplugin.change_lang_to_acu",
-                "when": "editorLangId == COBOL && !inSnippetMode"
-            },
-            {
-                "key": "alt+shift+c",
-                "command": "cobolplugin.change_lang_to_cobol",
-                "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-            },
-            {
-                "key": "alt+shift+m",
-                "command": "cobolplugin.toggle_margin",
-                "when": "editorTextFocus && editorLangId == cobol"
-            },
-            {
-                "key": "alt+shift+m",
-                "command": "cobolplugin.toggle_margin",
-                "when": "editorTextFocus && editorLangId == COBOL"
-            },
-            {
-                "key": "alt+shift+m",
-                "command": "cobolplugin.toggle_margin",
-                "when": "editorTextFocus && editorLangId == ACUCOBOL"
-            },
-            {
-                "key": "alt+shift+m",
-                "command": "cobolplugin.toggle_margin",
-                "when": "editorTextFocus && editorLangId == COBOLIT"
+        "coboleditor.comment_line": {
+          "type": "boolean",
+          "title": "Enable COBOL comment key",
+          "default": true
+        },
+        "coboleditor.outline": {
+          "markdownDescription": "Configure or disable outline view for COBOL",
+          "type": "string",
+          "description": "on=everything, partial=no paragraphs, skeleton=basic structure and off",
+          "enum": [
+            "on",
+            "partial",
+            "skeleton",
+            "off"
+          ],
+          "enumDescriptions": [
+            "Scans everything in the source (can be costly)",
+            "Scans everything expect paragraphs",
+            "Scans very little but might be enough for basic navigation",
+            "No source scanning is done"
+          ],
+          "default": "on"
+        },
+        "coboleditor.pre_parse_line_limit": {
+          "type": "number",
+          "title": "Set pre-parse line limit",
+          "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
+          "default": 25,
+          "minimum": 5,
+          "maximum": 255
+        },
+        "coboleditor.linter": {
+          "type": "boolean",
+          "title": "Enable basic linting",
+          "description": "Enable basic linting (limited to sections/paragraph use)",
+          "default": false
+        },
+        "coboleditor.linter_mark_as_information": {
+          "type": "boolean",
+          "title": "Mark all linter problems as information",
+          "description": "Mark all linter problems as information (false is hint)",
+          "default": true
+        },
+        "coboleditor.linter_unused_paragraphs_or_sections": {
+          "type": "boolean",
+          "title": "Enable basic linting",
+          "description": "Enable basic linting (limited to sections/paragraph use)",
+          "default": true
+        },
+        "coboleditor.sourceview": {
+          "type": "boolean",
+          "title": "Enable experimental explorer source view",
+          "description": "Enable experimental explorer source view",
+          "default": false
+        },
+        "coboleditor.sourceview_include_jcl_files": {
+          "type": "boolean",
+          "title": "Include JCL Files in source view",
+          "description": "Include JCL Files in source view",
+          "default": true
+        },
+        "coboleditor.sourceview_include_hlasm_files": {
+          "type": "boolean",
+          "title": "Include HLASM Files in source view",
+          "description": "Include HLASM Files in source view",
+          "default": true
+        },
+        "coboleditor.sourceview_include_pli_files": {
+          "type": "boolean",
+          "title": "Include PL/I Files in source view",
+          "description": "Include PL/I Files in source view",
+          "default": true
+        },
+        "coboleditor.sourceview_include_doc_files": {
+          "type": "boolean",
+          "title": "Include Documentation Files in source view",
+          "description": "Include Documentation Files in source view",
+          "default": true
+        },
+        "coboleditor.sourceview_include_script_files": {
+          "type": "boolean",
+          "title": "Include Script Files in source view",
+          "description": "Include Script Files in source view",
+          "default": true
+        },
+        "coboleditor.sourceview_include_object_files": {
+          "type": "boolean",
+          "title": "Include Object Files in source view",
+          "description": "Include Object Files in source view",
+          "default": true
+        },
+        "coboleditor.line_comment": {
+          "type": "boolean",
+          "title": "Replace standard comment in/out with COBOL specific",
+          "description": "Replace standard comment in/out with COBOL specific",
+          "default": true
+        },
+        "coboleditor.mfunit.diagnostic.color": {
+          "type": "boolean",
+          "title": "Enable ANSI color",
+          "description": "Enable ANSI color when using the Micro Focus Unit Testing Framework (mfunit) in terminal",
+          "default": true
+        },
+        "coboleditor.disable_unc_copybooks_directories": {
+          "type": "boolean",
+          "title": "Disable UNC Copybooks",
+          "description": "Disable UNC Copybooks (default false)",
+          "default": false
+        },
+        "coboleditor.intellisense_include_unchanged": {
+          "type": "boolean",
+          "title": "Include result unchanged in intellisense results",
+          "description": "Include result unchanged in intellisense results (default true)",
+          "default": true
+        },
+        "coboleditor.intellisense_include_camelcase": {
+          "type": "boolean",
+          "title": "Include camelcase in intellisense results",
+          "description": "Include camelcase in intellisense results (default false)",
+          "default": false
+        },
+        "coboleditor.intellisense_include_uppercase": {
+          "type": "boolean",
+          "title": "Include uppercase results in intellisense results",
+          "description": "Include uppercase results in intellisense results (default false)",
+          "default": false
+        },
+        "coboleditor.intellisense_include_lowercase": {
+          "type": "boolean",
+          "title": "Include lowercase results in intellisense results",
+          "description": "Include lowercase results in intellisense results (default false)",
+          "default": false
+        },
+        "coboleditor.intellisense_item_limit": {
+          "type": "number",
+          "title": "Max number of items to return",
+          "description": "Max number of items to return (default 120)",
+          "default": 120,
+          "minItems": 30
+        },
+        "coboleditor.process_metadata_cache_on_start": {
+          "type": "boolean",
+          "title": "Process metadata cache on startup",
+          "description": "Process metadata cache on extension load (default false)",
+          "default": false
+        },
+        "coboleditor.parse_copybooks_for_references": {
+          "type": "boolean",
+          "title": "Parse copybook for reference",
+          "description": "Parse copybook for reference (default false)",
+          "default": false
+        },
+        "coboleditor.workspacefolders_order": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "workspacefolders",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "workspacefolder"
+              }
             }
+          },
+          "default": [],
+          "uniqueItems": true
+        },
+        "coboleditor.linter_house_standards": {
+          "type": "boolean",
+          "title": "Enable house standards rules",
+          "description": "Enable house standards rules",
+          "default": false
+        },
+        "coboleditor.linter_ignore_section_before_entry": {
+          "type": "boolean",
+          "title": "Do not warn on unused section before entry-point",
+          "description": "Do not issue a warning if a unused section occurs before a entry-point, as this is often used to stop code trickling through to the next statements.",
+          "default": true
+        },
+        "coboleditor.linter_house_standards_rules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "Data division section rules",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "rule (regex)"
+              }
+            }
+          },
+          "default": [
+            "file=.*",
+            "thread-local=.*",
+            "working-storage=.*",
+            "object-storage=.*",
+            "local-storage=.*",
+            "linkage=.*",
+            "communication=.*",
+            "report=.*",
+            "screen=.*"
+          ],
+          "uniqueItems": true
+        },
+        "coboleditor.ignore_unsafe_extensions": {
+          "type": "boolean",
+          "title": "Turn off unsafe extension check",
+          "description": "Turn off unsafe extension check",
+          "default": false
+        },
+        "coboleditor.scan_comments_for_hints": {
+          "type": "boolean",
+          "description": "Process scanner hints embedded in comments",
+          "default": false
+        },
+        "coboleditor.scan_comment_copybook_token": {
+          "type": "string",
+          "description": "Comment token used for processing source code dependencies, for example extra copybooks",
+          "default": "source-dependency"
+        },
+        "coboleditor.format_on_return": {
+          "enum": [
+            "camelcase",
+            "uppercase",
+            "off"
+          ],
+          "default": "off",
+          "markdownDescription": "Format line on return key (camelcase or uppercase)",
+          "title": "Format line on return key (camelcase or uppercase)"
+        },
+        "coboleditor.metadata_symbols": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "callablesymbol",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "internal metadata symbol"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
+        },
+        "coboleditor.metadata_entrypoints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "entypoints",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "internal metadata entypoints"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
+        },
+        "coboleditor.metadata_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "types",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "internal metadata entypoints"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
+        },
+        "coboleditor.metadata_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "types",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "internal metadata files"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
+        },
+        "coboleditor.maintain_metadata_cache": {
+          "type": "boolean",
+          "title": "Maintain Metadata Cache",
+          "default": true
+        },
+        "coboleditor.maintain_metadata_cache_single_folder": {
+          "type": "boolean",
+          "title": "Maintain Metadata Cache when using single folder",
+          "default": false
+        },
+        "coboleditor.enable_semantic_token_provider": {
+          "type": "boolean",
+          "title": "Enable experimental semantic token provider",
+          "default": false
+        },
+        "coboleditor.preprocessor_extensions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "types",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "internal preprocessor extensions"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "flat-source-view",
+          "name": "Source View",
+          "when": "config.coboleditor.sourceview"
+        }
+      ]
+    },
+    "configurationDefaults": {
+      "[COBOL]": {
+        "editor.semanticHighlighting.enabled": false,
+        "files.autoGuessEncoding": false,
+        "editor.snippetSuggestions": "bottom",
+        "editor.renderIndentGuides": false,
+        "editor.autoIndent": "advanced",
+        "editor.insertSpaces": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+          6,
+          7,
+          11,
+          72
         ],
-        "snippets": [
-            {
-                "language": "COBOL",
-                "path": "./snippets/cobol.json"
-            },
-            {
-                "language": "ACUCOBOL",
-                "path": "./snippets/cobol.json"
-            },
-            {
-                "language": "dir",
-                "path": "./snippets/dir.json"
-            },
-            {
-                "language": "JCL",
-                "path": "./snippets/jcl.json"
-            },
-            {
-                "language": "jcl",
-                "path": "./snippets/jcl.json"
-            }
+        "editor.detectIndentation": false,
+        "editor.useTabStops": false,
+        "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
+      },
+      "[ACUCOBOL]": {
+        "editor.semanticHighlighting.enabled": false,
+        "editor.insertSpaces": true,
+        "editor.renderIndentGuides": false,
+        "files.autoGuessEncoding": false,
+        "editor.autoIndent": "full",
+        "editor.formatOnType": false,
+        "editor.rulers": [
+          6,
+          7,
+          72
         ],
-        "problemPatterns": [
-            {
-                "name": "mfcobol-msbuild",
-                "regexp": "^.*(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "severity": 4,
-                "message": 5
-            },
-            {
-                "name": "mfcobol-errformat2-netx-sx",
-                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
-                "code": 1,
-                "severity": 2,
-                "message": 3,
-                "file": 4,
-                "line": 5,
-                "column": 6
-            },
-            {
-                "name": "mfcobol-errformat2-copybook-netx-sx",
-                "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):[^,]+,(.*)\\((\\d+),(\\d+).*\\).*$",
-                "code": 1,
-                "severity": 2,
-                "message": 3,
-                "file": 4,
-                "line": 5,
-                "column": 6
-            },
-            {
-                "name": "mfcobol-errformat3-netx-sx",
-                "regexp": "^(.*)\\((\\d+),(\\d+)\\)\\s+:\\s+(unrecoverable|severe|error|warning|information)\\s+(\\d+)\\s+:\\s+(.*)$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "severity": 4,
-                "code": 5,
-                "message": 6
-            },
-            {
-                "name": "mfcobol-errformat2",
-                "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+),(\\d+),.*\\)$",
-                "code": 1,
-                "severity": 2,
-                "message": 3,
-                "file": 4,
-                "line": 5,
-                "column": 6
-            },
-            {
-                "name": "mfcobol-errformat2-copybook",
-                "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]+,(\\S.*)\\((\\d+),(\\d+),.*\\).*$",
-                "code": 1,
-                "severity": 2,
-                "message": 3,
-                "file": 4,
-                "line": 5,
-                "column": 6
-            },
-            {
-                "name": "mfcobol-errformat2-basefn",
-                "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
-                "code": 1,
-                "severity": 2,
-                "message": 3,
-                "file": 4,
-                "line": 5,
-                "column": 6
-            },
-            {
-                "name": "mfcobol-errformat3-absolute",
-                "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "severity": 4,
-                "code": 5,
-                "message": 6
-            },
-            {
-                "name": "mfcobol-errformat3",
-                "regexp": "(.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "severity": 4,
-                "code": 5,
-                "message": 6
-            },
-            {
-                "name": "mfcobol-errformat3-info",
-                "regexp": "(.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "code": 5,
-                "message": 6
-            },
-            {
-                "name": "mfcobol-errformat3-basefn",
-                "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "severity": 4,
-                "code": 5,
-                "message": 6
-            },
-            {
-                "name": "mfcobol-errformat3-info-basefn",
-                "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
-                "file": 1,
-                "line": 2,
-                "column": 3,
-                "code": 4,
-                "message": 6
-            },
-            {
-                "name": "cobolit-cobc",
-                "regexp": "^(.*):(\\d+): ([eE]rror|[wW]arning):\\s+(.*)$",
-                "file": 1,
-                "line": 2,
-                "severity": 3,
-                "message": 4
-            },
-            {
-                "name": "cobolit-note-cobc",
-                "regexp": "^(.*):(\\d+): ([nN]ote:|[wW]arning: ->)\\s+(.*)$",
-                "file": 1,
-                "line": 2,
-                "message": 4
-            },
-            {
-                "name": "acucobol-ccbl",
-                "regexp": "^(.*),\\sline\\s(\\d+):\\s(.*)$",
-                "file": 1,
-                "line": 2,
-                "message": 3,
-                "loop": true
-            },
-            {
-                "name": "acucobol-warning-ccbl",
-                "regexp": "^(.*),\\sline\\s(\\d+):\\s(Warning|warning):\\s(.*)$",
-                "file": 1,
-                "line": 2,
-                "severity": 3,
-                "message": 4,
-                "loop": true
-            },
-            {
-                "name": "procobol-preprocessor",
-                "patterns": [
-                    {
-                        "regexp": "^Error at line (\\d+), column (\\d+) in file (.*)$",
-                        "line": 1,
-                        "column": 2,
-                        "file": 3
-                    },
-                    {
-                        "regexp": "^(.*)$"
-                    },
-                    {
-                        "regexp": "^(.*)$"
-                    },
-                    {
-                        "regexp": "^(\\s+\\d+\\s+)?([^:]*):\\s+(.*)$",
-                        "message": 3,
-                        "code": 2
-                    }
-                ]
-            }
-        ],
-        "problemMatchers": [
-            {
-                "name": "mfcobol-msbuild",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-msbuild",
-                "source": "MSBuild"
-            },
-            {
-                "name": "mfcobol-errformat3-absolute",
-                "owner": "cobol",
-                "fileLocation": [
-                    "absolute"
-                ],
-                "pattern": "$mfcobol-errformat3-absolute",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat3",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat3",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat3-info",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat3-info",
-                "severity": "info",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat3-basefn",
-                "owner": "cobol",
-                "fileLocation": [
-                    "relative",
-                    "${workspaceFolder}"
-                ],
-                "pattern": "$mfcobol-errformat3-basefn",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat3-info-basefn",
-                "owner": "cobol",
-                "fileLocation": [
-                    "relative",
-                    "${workspaceFolder}"
-                ],
-                "severity": "info",
-                "pattern": "$mfcobol-errformat3-info-basefn",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat2-netx-sx",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat2-netx-sx",
-                "source": "NETX/SX"
-            },
-            {
-                "name": "mfcobol-errformat2-copybook-netx-sx",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat2-copybook-netx-sx",
-                "source": "NETX/SX"
-            },
-            {
-                "name": "mfcobol-errformat3-netx-sx",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat3-netx-sx",
-                "source": "NETX/SX"
-            },
-            {
-                "name": "mfcobol-errformat2-copybook",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat2-copybook",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat2",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$mfcobol-errformat2",
-                "source": "VC"
-            },
-            {
-                "name": "mfcobol-errformat2-basefn",
-                "owner": "cobol",
-                "fileLocation": [
-                    "relative",
-                    "${workspaceFolder}"
-                ],
-                "pattern": "$mfcobol-errformat2-basefn",
-                "source": "VC"
-            },
-            {
-                "name": "cobolit-cobc",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$cobolit-cobc",
-                "source": "COBOL-IT"
-            },
-            {
-                "name": "cobolit-note-cobc",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$cobolit-note-cobc",
-                "severity": "info",
-                "source": "COBOL-IT"
-            },
-            {
-                "name": "acucobol-ccbl",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$acucobol-ccbl",
-                "source": "ACUCOBOL-GT"
-            },
-            {
-                "name": "acucobol-warning-ccbl",
-                "owner": "cobol",
-                "fileLocation": "autoDetect",
-                "pattern": "$acucobol-warning-ccbl",
-                "source": "ACUCOBOL-GT"
-            },
-            {
-                "name": "procobol-preprocessor",
-                "fileLocation": "autoDetect",
-                "pattern": "$procobol-preprocessor",
-                "source": "Pro*COBOL",
-                "owner": "cobol",
-                "severity": "error"
-            }
-        ],
-        "taskDefinitions": [
-            {
-                "type": "COBOLBuildScript",
-                "properties": {
-                    "arguments": {
-                        "type": "string"
-                    }
-                }
-            }
+        "editor.detectIndentation": false,
+        "editor.wordSeparators": "`~!#$%^&*()=+[{]}\\|;:'\",.<>/?"
+      },
+      "[dir]": {
+        "editor.semanticHighlighting.enabled": false,
+        "editor.insertSpaces": true,
+        "editor.renderIndentGuides": false,
+        "files.autoGuessEncoding": false,
+        "editor.autoIndent": "keep",
+        "editor.formatOnType": false,
+        "editor.rulers": [],
+        "editor.detectIndentation": false,
+        "editor.wordSeparators": "`~!@#$%^&*()=[{]}\\|;:'\",<>/?"
+      },
+      "[JCL]": {
+        "editor.semanticHighlighting.enabled": false,
+        "files.autoGuessEncoding": false,
+        "editor.renderIndentGuides": false,
+        "editor.detectIndentation": false,
+        "editor.formatOnType": false,
+        "editor.autoIndent": "full",
+        "editor.rulers": [
+          71,
+          72,
+          80
         ]
+      },
+      "[hlasm]": {
+        "editor.semanticHighlighting.enabled": false,
+        "editor.rulers": [
+          0,
+          9,
+          15,
+          71,
+          72,
+          80
+        ],
+        "editor.renderIndentGuides": false
+      }
     },
-    "scripts": {
-        "vscode:prepublish": "npm run compile && webpack --mode production",
-        "webpack": "npm run compile && webpack --mode development",
-        "webpack-dev-not-used": "webpack --mode development --watch",
-        "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
-        "test-compile": "tsc -p ./",
-        "watch": "tsc -b -w",
-        "lint": "eslint src --ext ts",
-        "pretest": "npm run compile",
-        "test": "node ./out/test/runTest.js"
+    "languages": [
+      {
+        "id": "ACUCOBOL",
+        "aliases": [
+          "ACUCOBOL",
+          "acucobol"
+        ],
+        "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.bench.).*$",
+        "extensions": [
+          ".evt",
+          ".prd",
+          ".wrk",
+          ".mnu",
+          ".def",
+          ".sl"
+        ],
+        "configuration": "./acucobol.configuration.json"
+      },
+      {
+        "id": "COBOL",
+        "filenames": [
+          "SQLCA"
+        ],
+        "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
+        "extensions": [
+          ".cobol",
+          ".cbl",
+          ".cblsrce",
+          ".lks",
+          ".pdv",
+          ".cpy",
+          ".copybook",
+          ".cobcopy",
+          ".fd",
+          ".sel",
+          ".scb",
+          ".spb",
+          ".scbl",
+          ".cob",
+          ".dds",
+          ".def",
+          ".src",
+          ".ss",
+          ".wks",
+          ".bib",
+          ".pco"
+        ],
+        "configuration": "./cobol.configuration.json"
+      },
+      {
+        "id": "COBOL_MF_LISTFILE",
+        "extensions": [],
+        "configuration": "./cobol.configuration.json"
+      },
+      {
+        "id": "COBOL_PCOB_LISTFILE",
+        "extensions": [],
+        "configuration": "./cobol.configuration.json"
+      },
+      {
+        "id": "COBOL_ACU_LISTFILE",
+        "extensions": [],
+        "configuration": "./cobol.configuration.json"
+      },
+      {
+        "id": "COBOL_MF_PREP",
+        "extensions": [
+          ".prep"
+        ],
+        "configuration": "./cobol.configuration.json"
+      },
+      {
+        "id": "COBOLIT",
+        "extensions": [],
+        "configuration": "./cobolit.configuration.json"
+      },
+      {
+        "id": "JCL",
+        "extensions": [
+          ".jcl",
+          ".job",
+          ".cntl",
+          ".prc",
+          ".proc"
+        ],
+        "configuration": "./jcl.configuration.json"
+      },
+      {
+        "id": "jcl",
+        "extensions": [
+          ".jcl",
+          ".job",
+          ".cntl",
+          ".prc",
+          ".proc"
+        ],
+        "configuration": "./jcl.configuration.json"
+      },
+      {
+        "id": "dir",
+        "extensions": [
+          ".dir"
+        ],
+        "aliases": [
+          "dirfile",
+          "dir"
+        ],
+        "configuration": "./dir.configuration.json"
+      },
+      {
+        "id": "pli",
+        "extensions": [
+          ".pl1",
+          ".pli",
+          ".plinc",
+          ".pc",
+          ".pci",
+          ".pcx",
+          ".inc"
+        ],
+        "configuration": "./pli.configuration.json"
+      },
+      {
+        "id": "bms",
+        "extensions": [
+          ".bms"
+        ],
+        "aliases": []
+      },
+      {
+        "id": "hlasm",
+        "extensions": [
+          ".hlasm",
+          ".asm",
+          ".mac",
+          ".mlc"
+        ],
+        "aliases": []
+      },
+      {
+        "id": "mfu",
+        "aliases": [
+          "mfunit"
+        ],
+        "extensions": [
+          "mfu"
+        ],
+        "configuration": "./mfu-configuration.json"
+      },
+      {
+        "id": "utreport",
+        "aliases": [
+          "Unit Test Report"
+        ],
+        "filenamePatterns": [
+          "*-report.txt"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "COBOL",
+        "scopeName": "source.cobol",
+        "path": "./syntaxes/COBOL.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html",
+          "meta.embedded.block.java": "java"
+        }
+      },
+      {
+        "language": "COBOL_MF_LISTFILE",
+        "scopeName": "source.cobol_mf_listfile",
+        "path": "./syntaxes/COBOL_mf_listfile.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html"
+        }
+      },
+      {
+        "language": "COBOL_MF_PREP",
+        "scopeName": "source.cobol_mfprep",
+        "path": "./syntaxes/COBOL_mfprep.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html"
+        }
+      },
+      {
+        "language": "COBOL_ACU_LISTFILE",
+        "scopeName": "source.cobol_acu_listfile",
+        "path": "./syntaxes/COBOL_acu_listfile.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html"
+        }
+      },
+      {
+        "language": "COBOL_PCOB_LISTFILE",
+        "scopeName": "source.cobol_pcob_listfile",
+        "path": "./syntaxes/COBOL_pcob_listfile.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html"
+        }
+      },
+      {
+        "language": "ACUCOBOL",
+        "scopeName": "source.acucobol",
+        "path": "./syntaxes/ACUCOBOL.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html"
+        }
+      },
+      {
+        "language": "COBOLIT",
+        "scopeName": "source.cobolit",
+        "path": "./syntaxes/COBOLIT.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "text",
+          "meta.embedded.block.html": "text",
+          "meta.embedded.block.java": "text"
+        }
+      },
+      {
+        "language": "JCL",
+        "scopeName": "source.jcl",
+        "path": "./syntaxes/jcl.tmLanguage.json"
+      },
+      {
+        "language": "jcl",
+        "scopeName": "source.jcl",
+        "path": "./syntaxes/jcl.tmLanguage.json"
+      },
+      {
+        "language": "dir",
+        "scopeName": "source.dir",
+        "path": "./syntaxes/dir.tmLanguage.json"
+      },
+      {
+        "language": "pli",
+        "scopeName": "source.pli",
+        "path": "./syntaxes/PLI.tmLanguage.json"
+      },
+      {
+        "language": "bms",
+        "scopeName": "source.bms",
+        "path": "./syntaxes/bms.tmLanguage.json"
+      },
+      {
+        "language": "hlasm",
+        "scopeName": "source.hlasm",
+        "path": "./syntaxes/hlasm.tmLanguage.json"
+      },
+      {
+        "language": "mfu",
+        "scopeName": "source.mfu",
+        "path": "./syntaxes/mfu.tmLanguage.json"
+      },
+      {
+        "language": "utreport",
+        "scopeName": "source.utreport",
+        "path": "./syntaxes/utreport.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "cobolplugin.move2pd",
+        "category": "COBOL",
+        "title": "Go to Procedure Division",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.move2ws",
+        "category": "COBOL",
+        "title": "Go to Working-Storage Section",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.move2dd",
+        "category": "COBOL",
+        "title": "Go to Data Division",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.move2anyforward",
+        "category": "COBOL",
+        "title": "Go to next Section/Division",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.move2anybackwards",
+        "category": "COBOL",
+        "title": "Move to Previous Section/Division",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.tab",
+        "category": "COBOL",
+        "title": "Insert a tab",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.revtab",
+        "category": "COBOL",
+        "title": "Remove a tab",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.commentline",
+        "category": "COBOL",
+        "title": "Comment line",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.change_lang_to_acu",
+        "category": "COBOL",
+        "title": "Select ACUCOBOL-GT language"
+      },
+      {
+        "command": "cobolplugin.toggle_margin",
+        "category": "COBOL",
+        "title": "Toggle margin"
+      },
+      {
+        "command": "cobolplugin.checkworkspaceformissingcopybookdirs",
+        "category": "COBOL",
+        "title": "Check workspace folders recursively for potential copybook directories",
+        "enablement": "!isWeb"
+      },
+      {
+        "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
+        "category": "COBOL",
+        "title": "Process files in workspace for metadata",
+        "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
+      },
+      {
+        "command": "cobolplugin.deprecated.dumpMetaData",
+        "category": "COBOL",
+        "title": "Dump metadata for diagnostic",
+        "enablement": "!isWeb  && config.coboleditor.cache_metadata != off"
+      },
+      {
+        "command": "cobolplugin.deprecated.clearMetaData",
+        "category": "COBOL",
+        "title": "Clear metadata",
+        "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
+      },
+      {
+        "command": "cobolplugin.processAllFilesInWorkspace",
+        "category": "COBOL",
+        "title": "Scan source files in workspace for metadata",
+        "enablement": "!isWeb && config.coboleditor.cache_metadata == off"
+      },
+      {
+        "command": "cobolplugin.mfurunMenu",
+        "category": "COBOL",
+        "title": "Run UnitTest",
+        "enablement": "!isWeb && filesExplorerFocus"
+      },
+      {
+        "command": "cobolplugin.runCommand",
+        "category": "COBOL",
+        "title": "Run Without Debugging",
+        "enablement": "!isWeb && config.coboleditor.sourceview && !editorFocus && focusedView == flat-source-view"
+      },
+      {
+        "command": "cobolplugin.runDebugCommand",
+        "category": "COBOL",
+        "title": "Start Debugging",
+        "enablement": "!isWeb && config.coboleditor.sourceview && !editorFocus && focusedView == flat-source-view"
+      },
+      {
+        "command": "cobolplugin.removeAllComments",
+        "category": "COBOL",
+        "title": "Remove COBOL Comments"
+      },
+      {
+        "command": "cobolplugin.removeIdentificationArea",
+        "category": "COBOL",
+        "title": "Remove COBOL Identification Area"
+      },
+      {
+        "command": "cobolplugin.removeColumnNumbers",
+        "category": "COBOL",
+        "title": "Remove Column Numbers"
+      },
+      {
+        "command": "cobolplugin.resequenceColumnNumbers",
+        "category": "COBOL",
+        "title": "Re-sequence Column Numbers"
+      },
+      {
+        "command": "cobolplugin.makeKeywordsLowercase",
+        "category": "COBOL",
+        "title": "Make keywords lowercase"
+      },
+      {
+        "command": "cobolplugin.makeKeywordsUppercase",
+        "category": "COBOL",
+        "title": "Make keywords uppercase"
+      },
+      {
+        "command": "cobolplugin.makeKeywordsCamelCase",
+        "category": "COBOL",
+        "title": "Make keywords camelcase"
+      },
+      {
+        "command": "cobolplugin.makeFieldsLowercase",
+        "category": "COBOL",
+        "title": "Make fields lowercase"
+      },
+      {
+        "command": "cobolplugin.makeFieldsUppercase",
+        "category": "COBOL",
+        "title": "Make fields uppercase"
+      },
+      {
+        "command": "cobolplugin.makeFieldsCamelCase",
+        "category": "COBOL",
+        "title": "Make fields camelcase"
+      },
+      {
+        "command": "cobolplugin.makePerformTargetsLowerCase",
+        "category": "COBOL",
+        "title": "Make perform targets lowercase"
+      },
+      {
+        "command": "cobolplugin.makePerformTargetsUpperCase",
+        "category": "COBOL",
+        "title": "Make perform targets uppercase"
+      },
+      {
+        "command": "cobolplugin.makePerformTargetsCamelCase",
+        "category": "COBOL",
+        "title": "Make perform targets camelcase"
+      },
+      {
+        "command": "cobolplugin.extractSelectionToParagraph",
+        "category": "COBOL",
+        "title": "Extract selection to paragraph",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.extractSelectionToSection",
+        "category": "COBOL",
+        "title": "Extract selection to section",
+        "enablement": "editorFocus"
+      },
+      {
+        "command": "cobolplugin.extractSelectionToCopybook",
+        "category": "COBOL",
+        "title": "Extract selection to copybook"
+      },
+      {
+        "command": "cobolplugin.migrateCopybooksToWorkspace",
+        "category": "COBOL",
+        "title": "Migrate copybook settings to workspace (for performance)"
+      },
+      {
+        "command": "cobolplugin.showCOBOLChannel",
+        "category": "COBOL",
+        "title": "Show COBOL Channel"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "cobolplugin.move2dd",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.move2ws",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.move2pd",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.move2anyforward",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.move2anybackwards",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.extractSelectionToParagraph",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.extractSelectionToSection",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.extractSelectionToCopybook",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "cobolplugin.runCommand",
+          "when": "view == flat-source-view && viewItem == objects"
+        },
+        {
+          "command": "cobolplugin.runDebugCommand",
+          "when": "view == flat-source-view && viewItem == objects"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "cobolplugin.mfurunMenu",
+          "group": "navigation",
+          "when": "filesExplorerFocus && resourceExtname == .mfu"
+        }
+      ]
     },
-    "devDependencies": {
-        "@types/glob": "^7.1.3",
-        "@types/minimatch": "^3.0.4",
-        "@types/mocha": "^8.2.2",
-        "@types/node": "^14.14.37",
-        "@types/vscode": "^1.54.0",
-        "@typescript-eslint/eslint-plugin": "^4.21.0",
-        "@typescript-eslint/parser": "^4.21.0",
-        "depcheck": "^1.4.0",
-        "eslint": "^7.23.0",
-        "glob": "^7.1.6",
-        "mocha": "^8.3.2",
-        "ts-loader": "^8.1.0",
-        "typescript": "^4.2.3",
-        "vsce": "^1.87.1",
-        "vscode-test": "^1.5.2",
-        "webpack": "^5.30.0",
-        "webpack-cli": "^4.6.0"
-    },
-    "dependencies": {
-        "lzjs": "1.3.0",
-        "minimatch": "^3.0.4",
-        "n-readlines": "^1.0.1",
-        "performance-now": "2.1.0",
-        "properties-reader": "^2.2.0",
-        "trie-search": "^1.3.4",
-        "typescript-string-operations": "^1.4.1",
-        "temp-dir": "^2.0.0"
-    },
-    "extensionDependencies": []
+    "keybindings": [
+      {
+        "key": "ctrl+k ctrl+j",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+k ctrl+j",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+k ctrl+j",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+k ctrl+j",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "ctrl+alt+p",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+alt+p",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+alt+p",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+alt+p",
+        "command": "cobolplugin.move2pd",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "ctrl+alt+w",
+        "command": "cobolplugin.move2ws",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+alt+w",
+        "command": "cobolplugin.move2ws",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+alt+w",
+        "command": "cobolplugin.move2ws",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+alt+w",
+        "command": "cobolplugin.move2ws",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "ctrl+alt+d",
+        "command": "cobolplugin.move2dd",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+alt+d",
+        "command": "cobolplugin.move2dd",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+alt+d",
+        "command": "cobolplugin.move2dd",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+alt+d",
+        "command": "cobolplugin.move2dd",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "ctrl+alt+.",
+        "command": "cobolplugin.move2anyforward",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+alt+.",
+        "command": "cobolplugin.move2anyforward",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+alt+,",
+        "command": "cobolplugin.move2anybackwards",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+alt+,",
+        "command": "cobolplugin.move2anybackwards",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+alt+.",
+        "command": "cobolplugin.move2anyforward",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+alt+,",
+        "command": "cobolplugin.move2anybackwards",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+alt+.",
+        "command": "cobolplugin.move2anyforward",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "ctrl+alt+,",
+        "command": "cobolplugin.move2anybackwards",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "tab",
+        "command": "cobolplugin.tab",
+        "when": "editorLangId == cobol && !inSnippetMode"
+      },
+      {
+        "key": "tab",
+        "command": "cobolplugin.tab",
+        "when": "editorLangId == COBOL && !inSnippetMode"
+      },
+      {
+        "key": "shift+tab",
+        "command": "cobolplugin.revtab",
+        "when": "editorLangId == cobol && !inSnippetMode"
+      },
+      {
+        "key": "shift+tab",
+        "command": "cobolplugin.revtab",
+        "when": "editorLangId == COBOL && !inSnippetMode"
+      },
+      {
+        "key": "tab",
+        "command": "cobolplugin.tab",
+        "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+      },
+      {
+        "key": "shift+tab",
+        "command": "cobolplugin.revtab",
+        "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+      },
+      {
+        "key": "tab",
+        "command": "cobolplugin.tab",
+        "when": "editorLangId == COBOLIT && !inSnippetMode"
+      },
+      {
+        "key": "shift+tab",
+        "command": "cobolplugin.revtab",
+        "when": "editorLangId == COBOLIT && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+/",
+        "command": "cobolplugin.commentline",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "ctrl+/",
+        "command": "cobolplugin.commentline",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "ctrl+/",
+        "command": "cobolplugin.commentline",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "ctrl+/",
+        "command": "cobolplugin.commentline",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      },
+      {
+        "key": "alt+shift+a",
+        "command": "cobolplugin.change_lang_to_acu",
+        "when": "editorLangId == COBOL && !inSnippetMode"
+      },
+      {
+        "key": "alt+shift+c",
+        "command": "cobolplugin.change_lang_to_cobol",
+        "when": "editorLangId == ACUCOBOL && !inSnippetMode"
+      },
+      {
+        "key": "alt+shift+m",
+        "command": "cobolplugin.toggle_margin",
+        "when": "editorTextFocus && editorLangId == cobol"
+      },
+      {
+        "key": "alt+shift+m",
+        "command": "cobolplugin.toggle_margin",
+        "when": "editorTextFocus && editorLangId == COBOL"
+      },
+      {
+        "key": "alt+shift+m",
+        "command": "cobolplugin.toggle_margin",
+        "when": "editorTextFocus && editorLangId == ACUCOBOL"
+      },
+      {
+        "key": "alt+shift+m",
+        "command": "cobolplugin.toggle_margin",
+        "when": "editorTextFocus && editorLangId == COBOLIT"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "COBOL",
+        "path": "./snippets/cobol.json"
+      },
+      {
+        "language": "ACUCOBOL",
+        "path": "./snippets/cobol.json"
+      },
+      {
+        "language": "dir",
+        "path": "./snippets/dir.json"
+      },
+      {
+        "language": "JCL",
+        "path": "./snippets/jcl.json"
+      },
+      {
+        "language": "jcl",
+        "path": "./snippets/jcl.json"
+      }
+    ],
+    "problemPatterns": [
+      {
+        "name": "mfcobol-msbuild",
+        "regexp": "^.*(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "message": 5
+      },
+      {
+        "name": "mfcobol-errformat2-netx-sx",
+        "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+        "code": 1,
+        "severity": 2,
+        "message": 3,
+        "file": 4,
+        "line": 5,
+        "column": 6
+      },
+      {
+        "name": "mfcobol-errformat2-copybook-netx-sx",
+        "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):[^,]+,(.*)\\((\\d+),(\\d+).*\\).*$",
+        "code": 1,
+        "severity": 2,
+        "message": 3,
+        "file": 4,
+        "line": 5,
+        "column": 6
+      },
+      {
+        "name": "mfcobol-errformat3-netx-sx",
+        "regexp": "^(.*)\\((\\d+),(\\d+)\\)\\s+:\\s+(unrecoverable|severe|error|warning|information)\\s+(\\d+)\\s+:\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "code": 5,
+        "message": 6
+      },
+      {
+        "name": "mfcobol-errformat2",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+),(\\d+),.*\\)$",
+        "code": 1,
+        "severity": 2,
+        "message": 3,
+        "file": 4,
+        "line": 5,
+        "column": 6
+      },
+      {
+        "name": "mfcobol-errformat2-copybook",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]+,(\\S.*)\\((\\d+),(\\d+),.*\\).*$",
+        "code": 1,
+        "severity": 2,
+        "message": 3,
+        "file": 4,
+        "line": 5,
+        "column": 6
+      },
+      {
+        "name": "mfcobol-errformat2-basefn",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
+        "code": 1,
+        "severity": 2,
+        "message": 3,
+        "file": 4,
+        "line": 5,
+        "column": 6
+      },
+      {
+        "name": "mfcobol-errformat3-absolute",
+        "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "code": 5,
+        "message": 6
+      },
+      {
+        "name": "mfcobol-errformat3",
+        "regexp": "(.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "code": 5,
+        "message": 6
+      },
+      {
+        "name": "mfcobol-errformat3-info",
+        "regexp": "(.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "code": 5,
+        "message": 6
+      },
+      {
+        "name": "mfcobol-errformat3-basefn",
+        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "code": 5,
+        "message": 6
+      },
+      {
+        "name": "mfcobol-errformat3-info-basefn",
+        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "code": 4,
+        "message": 6
+      },
+      {
+        "name": "cobolit-cobc",
+        "regexp": "^(.*):(\\d+): ([eE]rror|[wW]arning):\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "severity": 3,
+        "message": 4
+      },
+      {
+        "name": "cobolit-note-cobc",
+        "regexp": "^(.*):(\\d+): ([nN]ote:|[wW]arning: ->)\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "message": 4
+      },
+      {
+        "name": "acucobol-ccbl",
+        "regexp": "^(.*),\\sline\\s(\\d+):\\s(.*)$",
+        "file": 1,
+        "line": 2,
+        "message": 3,
+        "loop": true
+      },
+      {
+        "name": "acucobol-warning-ccbl",
+        "regexp": "^(.*),\\sline\\s(\\d+):\\s(Warning|warning):\\s(.*)$",
+        "file": 1,
+        "line": 2,
+        "severity": 3,
+        "message": 4,
+        "loop": true
+      },
+      {
+        "name": "procobol-preprocessor",
+        "patterns": [
+          {
+            "regexp": "^Error at line (\\d+), column (\\d+) in file (.*)$",
+            "line": 1,
+            "column": 2,
+            "file": 3
+          },
+          {
+            "regexp": "^(.*)$"
+          },
+          {
+            "regexp": "^(.*)$"
+          },
+          {
+            "regexp": "^(\\s+\\d+\\s+)?([^:]*):\\s+(.*)$",
+            "message": 3,
+            "code": 2
+          }
+        ]
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "mfcobol-msbuild",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-msbuild",
+        "source": "MSBuild"
+      },
+      {
+        "name": "mfcobol-errformat3-absolute",
+        "owner": "cobol",
+        "fileLocation": [
+          "absolute"
+        ],
+        "pattern": "$mfcobol-errformat3-absolute",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat3",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat3",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat3-info",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat3-info",
+        "severity": "info",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat3-basefn",
+        "owner": "cobol",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": "$mfcobol-errformat3-basefn",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat3-info-basefn",
+        "owner": "cobol",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "severity": "info",
+        "pattern": "$mfcobol-errformat3-info-basefn",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat2-netx-sx",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat2-netx-sx",
+        "source": "NETX/SX"
+      },
+      {
+        "name": "mfcobol-errformat2-copybook-netx-sx",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat2-copybook-netx-sx",
+        "source": "NETX/SX"
+      },
+      {
+        "name": "mfcobol-errformat3-netx-sx",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat3-netx-sx",
+        "source": "NETX/SX"
+      },
+      {
+        "name": "mfcobol-errformat2-copybook",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat2-copybook",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat2",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$mfcobol-errformat2",
+        "source": "VC"
+      },
+      {
+        "name": "mfcobol-errformat2-basefn",
+        "owner": "cobol",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": "$mfcobol-errformat2-basefn",
+        "source": "VC"
+      },
+      {
+        "name": "cobolit-cobc",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$cobolit-cobc",
+        "source": "COBOL-IT"
+      },
+      {
+        "name": "cobolit-note-cobc",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$cobolit-note-cobc",
+        "severity": "info",
+        "source": "COBOL-IT"
+      },
+      {
+        "name": "acucobol-ccbl",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$acucobol-ccbl",
+        "source": "ACUCOBOL-GT"
+      },
+      {
+        "name": "acucobol-warning-ccbl",
+        "owner": "cobol",
+        "fileLocation": "autoDetect",
+        "pattern": "$acucobol-warning-ccbl",
+        "source": "ACUCOBOL-GT"
+      },
+      {
+        "name": "procobol-preprocessor",
+        "fileLocation": "autoDetect",
+        "pattern": "$procobol-preprocessor",
+        "source": "Pro*COBOL",
+        "owner": "cobol",
+        "severity": "error"
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "COBOLBuildScript",
+        "properties": {
+          "arguments": {
+            "type": "string"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile && webpack --mode production",
+    "webpack": "npm run compile && webpack --mode development",
+    "webpack-dev-not-used": "webpack --mode development --watch",
+    "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
+    "test-compile": "tsc -p ./",
+    "watch": "tsc -b -w",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "prepublish": "npe private false",
+    "postpublish": "npe private true"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.3",
+    "@types/minimatch": "^3.0.4",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.37",
+    "@types/vscode": "^1.54.0",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "depcheck": "^1.4.0",
+    "eslint": "^7.23.0",
+    "glob": "^7.1.6",
+    "mocha": "^8.3.2",
+    "ts-loader": "^8.1.0",
+    "typescript": "^4.2.3",
+    "vsce": "^1.87.1",
+    "vscode-test": "^1.5.2",
+    "webpack": "^5.30.0",
+    "webpack-cli": "^4.6.0",
+    "npe": "^1.1.3"
+  },
+  "dependencies": {
+    "lzjs": "1.3.0",
+    "minimatch": "^3.0.4",
+    "n-readlines": "^1.0.1",
+    "performance-now": "2.1.0",
+    "properties-reader": "^2.2.0",
+    "trie-search": "^1.3.4",
+    "typescript-string-operations": "^1.4.1",
+    "temp-dir": "^2.0.0"
+  },
+  "extensionDependencies": [],
+  "private": true
 }
