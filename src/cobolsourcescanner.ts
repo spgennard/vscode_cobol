@@ -1588,13 +1588,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 // if skipToDot and not the end of the statement.. swallow
-                if (state.skipToDot && state.endsWithDot === false) {
+                if (state.skipToDot) {
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
                         if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
                             if (this.sourceReferences !== undefined) {
                                 // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.targetReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
+                                this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
                             }
                         }
                         if (token.prevTokenLower === 'to' && this.isValidKeyword(tcurrentLower) === false) {
@@ -1602,15 +1602,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             this.addVariableOrConstant(trimToken, variableToken);
                         }
                     }
+                    //reset
+                    if (state.endsWithDot === true) {
+                        state.skipToDot = false;
+                        state.addReferencesDuringSkipToTag = false;
+                    }
                     continue;
                 }
-
-                // reset
-                if (state.skipToDot && state.endsWithDot === true) {
-                    state.skipToDot = false;
-                    state.addReferencesDuringSkipToTag = false;
-                }
-
 
                 const current: string = tcurrent;
                 const currentLower: string = tcurrentLower;
@@ -2101,9 +2099,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 }
 
                                 /* if spans multiple lines, skip to dot */
-                                if (this.sourceFormat !== ESourceFormat.fixed) {
-                                    if (state.endsWithDot === false) {
-                                        state.skipToDot = true;
+                                if (state.endsWithDot === false) {
+                                    state.skipToDot = true;
+                                    if (prevToken === '66') {
+                                        state.addReferencesDuringSkipToTag = true;
                                     }
                                 }
                             }
