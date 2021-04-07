@@ -3,6 +3,29 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.7
+
+**wire up**
+
+* [995db58506cb220](https://github.com/spgennard/vscode_cobol/commit/995db58506cb220) *2021-04-07 20:00:07*
+
+**prepare for delivery**
+
+* [ecb9561f2365de3](https://github.com/spgennard/vscode_cobol/commit/ecb9561f2365de3) *2021-04-07 19:51:31*
+
+**add some support for references in level 66 lines**
+
+* [d54f82131d9b27a](https://github.com/spgennard/vscode_cobol/commit/d54f82131d9b27a) *2021-04-07 17:50:00*
+
+**version updates**
+
+* [94adc043512acdd](https://github.com/spgennard/vscode_cobol/commit/94adc043512acdd) *2021-04-06 21:40:40*
+
+**Update CHANGELOG.md**
+
+* [6eb6ca8f4e917d0](https://github.com/spgennard/vscode_cobol/commit/6eb6ca8f4e917d0) *2021-04-06 21:35:35*
+
+
 ## 7.4.6
 
 **continue work on references & prepare del**
