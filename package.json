@@ -3,7 +3,7 @@
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
   "version": "7.4.7",
-  "publisher": "",
+  "publisher": "bitlang",
   "keywords": [
     "cobol",
     "jcl",
@@ -1834,7 +1834,7 @@
     "vscode:prepublish": "npm run beforepublish && npm run compile && webpack --mode production",
     "webpack": "npm run compile && webpack --mode development",
     "webpack-dev-not-used": "webpack --mode development --watch",
-    "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
+    "compile": "npm run beforepublish && tsc -b && ./bld_cobscanner_and_sdk.sh",
     "test-compile": "tsc -p ./",
     "watch": "tsc -b -w",
     "lint": "eslint src --ext ts",
