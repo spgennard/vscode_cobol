@@ -343,10 +343,11 @@ let messageBoxDone = false;
 function initExtensionSearchPaths(config: ICOBOLSettings, checkForConflicts: boolean) {
 
     if (checkForConflicts) {
+        checkForExtensionConflictsMessage = "";
         checkForExtensionConflictsMessage = checkForExtensionConflicts(config);
         if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
             messageBoxDone = true;
-            window.showInformationMessage("COBOL Extension that has found duplicate or conflicting functionality\n\nSee View->Output->COBOL for more information", { modal: true });
+            window.showInformationMessage("COBOL Extension that has found duplicate or conflicting functionality", { modal: true });
         }
     } else {
         checkForExtensionConflictsMessage = "";
@@ -437,18 +438,32 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
     if (thisExtension !== undefined) {
-        logMessage(`VSCode version                    : ${vscode.version}`);
-        logMessage(` Platform                         : ${os.platform}`);
-        logMessage(` Architecture                     : ${os.arch}`);
+        logMessage(`VSCode version                      : ${vscode.version}`);
+        logMessage(` Platform                           : ${os.platform}`);
+        logMessage(` Architecture                       : ${os.arch}`);
         logMessage("Extension Information:");
-        logMessage(` Extension path                   : ${thisExtension.extensionPath}`);
-        logMessage(` Version                          : ${thisExtension.packageJSON.version}`);
-        logMessage(` UNC paths disabled               : ${settings.disable_unc_copybooks_directories}`);
-        logMessage(` Parse copybook for references    : ${settings.parse_copybooks_for_references}`);
-        logMessage(` Editor maxTokenizationLineLength : ${settings.editor_maxTokenizationLineLength}`)
-        logMessage(` Semantic token provider enabled  : ${settings.enable_semantic_token_provider}`);
+        logMessage(` Extension path                     : ${thisExtension.extensionPath}`);
+        logMessage(` Version                            : ${thisExtension.packageJSON.version}`);
+        logMessage(` UNC paths disabled                 : ${settings.disable_unc_copybooks_directories}`);
+        logMessage(` Parse copybook for references      : ${settings.parse_copybooks_for_references}`);
+        logMessage(` Editor maxTokenizationLineLength   : ${settings.editor_maxTokenizationLineLength}`)
+        logMessage(` Semantic token provider enabled    : ${settings.enable_semantic_token_provider}`);
+        try {
+            const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting').get<number>("enabled");
+            logMessage(` editor.semanticHighlighting.enabled: ${editor_semanticHighlighting_enabled}`);
+        } catch
+        {
+            //
+        }
+        try {
+            const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
+            logMessage(` workbench color theme              : ${workbench_theme}`);
+        } catch
+        {
+            //
+        }
         if (vscode.workspace.workspaceFile !== undefined) {
-            logMessage(` Active workspacefile             : ${vscode.workspace.workspaceFile}`);
+            logMessage(` Active workspacefile               : ${vscode.workspace.workspaceFile}`);
         }
 
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
@@ -456,7 +471,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage(" Deprecated Features settings");
             logMessage("");
             logMessage(" Caching");
-            logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+            logMessage(`  Cache Strategy                    : ${settings.cache_metadata}`);
             const cacheDir = VSCOBOLSourceScanner.getCacheDirectory();
             if (cacheDir !== undefined) {
                 logMessage(`  Cache directory  : ${cacheDir}`);
@@ -639,7 +654,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_eps = event.affectsConfiguration("coboleditor.metadata_entrypoints");
         const md_types = event.affectsConfiguration("coboleditor.metadata_types");
         const md_metadata_files = event.affectsConfiguration("coboleditor.metadata_files");
-
+        const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files) {
@@ -661,6 +676,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (md_metadata_files) {
                 COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(ExternalFeatures, settings.metadata_files, true);
+            }
+
+            if (enable_semantic_token_provider) {
+                vscode.window.showInformationMessage("The configuration setting 'coboleditor.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session");
             }
         }
     });
@@ -1257,6 +1276,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         logMessage(checkForExtensionConflictsMessage);
     }
 
+    const v = vscode.window.activeColorTheme;
+    v.kind;
     if (settings.process_metadata_cache_on_start) {
         const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
         const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, depMode);
