@@ -437,8 +437,16 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     COBOLOutputChannel.clear();
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
+
     if (thisExtension !== undefined) {
-        logMessage(`VSCode version                      : ${vscode.version}`);
+        if (vscode.env.uriScheme !== 'vscode') {
+            logMessage("----------------------------------------------------------------------");
+            logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
+            logMessage("----------------------------------------------------------------------");
+            logMessage(`Version                             : ${vscode.version}`);
+        } else {
+            logMessage(`VSCode version                      : ${vscode.version}`);
+        }
         logMessage(` Platform                           : ${os.platform}`);
         logMessage(` Architecture                       : ${os.arch}`);
         logMessage("Extension Information:");
