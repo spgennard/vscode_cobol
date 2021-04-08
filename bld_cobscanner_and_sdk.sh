@@ -1,4 +1,10 @@
 set +e
+if [ "x${OVSX_PATH}${OVSX_USERNAME}${OVSX_REGISTRY_URL}${OVSX_PASSWORD}" != "x" ]; then
+	echo Sorry cannot do anything due to OVSX_ env being set
+	exit 1
+fi
+
+
 #git config core.hooksPath .githooks
 
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
