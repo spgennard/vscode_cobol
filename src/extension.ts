@@ -443,35 +443,44 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage("----------------------------------------------------------------------");
             logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
             logMessage("----------------------------------------------------------------------");
-            logMessage(`Version                             : ${vscode.version}`);
+            logMessage(`Version                                     : ${vscode.version}`);
         } else {
-            logMessage(`VSCode version                      : ${vscode.version}`);
+            logMessage(`VSCode version                              : ${vscode.version}`);
         }
-        logMessage(` Platform                           : ${os.platform}`);
-        logMessage(` Architecture                       : ${os.arch}`);
+        logMessage(` Platform                                   : ${os.platform}`);
+        logMessage(` Architecture                               : ${os.arch}`);
         logMessage("Extension Information:");
-        logMessage(` Extension path                     : ${thisExtension.extensionPath}`);
-        logMessage(` Version                            : ${thisExtension.packageJSON.version}`);
-        logMessage(` UNC paths disabled                 : ${settings.disable_unc_copybooks_directories}`);
-        logMessage(` Parse copybook for references      : ${settings.parse_copybooks_for_references}`);
-        logMessage(` Editor maxTokenizationLineLength   : ${settings.editor_maxTokenizationLineLength}`)
-        logMessage(` Semantic token provider enabled    : ${settings.enable_semantic_token_provider}`);
+        logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
+        logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);
+        logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
+        logMessage(` Parse copybook for references              : ${settings.parse_copybooks_for_references}`);
+        logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`)
+        logMessage(` Semantic token provider enabled            : ${settings.enable_semantic_token_provider}`);
         try {
             const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting').get<number>("enabled");
-            logMessage(` editor.semanticHighlighting.enabled: ${editor_semanticHighlighting_enabled}`);
+            logMessage(` editor.semanticHighlighting.enabled        : ${editor_semanticHighlighting_enabled}`);
+        } catch
+        {
+            //
+        }
+
+        try {
+            const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
+            { languageId: 'COBOL'}).get<number>("enabled");
+            logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
         } catch
         {
             //
         }
         try {
             const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
-            logMessage(` workbench color theme              : ${workbench_theme}`);
+            logMessage(` workbench color theme                      : ${workbench_theme}`);
         } catch
         {
             //
         }
         if (vscode.workspace.workspaceFile !== undefined) {
-            logMessage(` Active workspacefile               : ${vscode.workspace.workspaceFile}`);
+            logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
         }
 
         if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
@@ -479,7 +488,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage(" Deprecated Features settings");
             logMessage("");
             logMessage(" Caching");
-            logMessage(`  Cache Strategy                    : ${settings.cache_metadata}`);
+            logMessage(`  Cache Strategy                            : ${settings.cache_metadata}`);
             const cacheDir = VSCOBOLSourceScanner.getCacheDirectory();
             if (cacheDir !== undefined) {
                 logMessage(`  Cache directory  : ${cacheDir}`);
@@ -1284,8 +1293,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         logMessage(checkForExtensionConflictsMessage);
     }
 
-    const v = vscode.window.activeColorTheme;
-    v.kind;
     if (settings.process_metadata_cache_on_start) {
         const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
         const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, depMode);
