@@ -3,6 +3,53 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.8
+
+**add extra diag messages**
+
+* [28463c6608dcdb3](https://github.com/spgennard/vscode_cobol/commit/28463c6608dcdb3) *2021-04-08 22:55:00*
+
+**delivery it**
+
+* [6f9730f74eedce6](https://github.com/spgennard/vscode_cobol/commit/6f9730f74eedce6) *2021-04-08 22:16:23*
+
+**add warning message for untested environments**
+
+* [47511c466e974cf](https://github.com/spgennard/vscode_cobol/commit/47511c466e974cf) *2021-04-08 22:15:56*
+
+**ensure OVSX envs are not set**
+
+* [b140ac573d04970](https://github.com/spgennard/vscode_cobol/commit/b140ac573d04970) *2021-04-08 21:37:07*
+
+**update**
+
+* [c070aa4d1b8bddc](https://github.com/spgennard/vscode_cobol/commit/c070aa4d1b8bddc) *2021-04-08 20:53:56*
+
+**tidy and add a warning message**
+
+* [6a0d01881c74516](https://github.com/spgennard/vscode_cobol/commit/6a0d01881c74516) *2021-04-08 18:32:50*
+
+**don't blank but set it something bad**
+
+* [85933ffacd596f9](https://github.com/spgennard/vscode_cobol/commit/85933ffacd596f9) *2021-04-07 21:07:15*
+
+**tweak package.json to ensure publisher is set before hand**
+
+* [93aa195fe6850a2](https://github.com/spgennard/vscode_cobol/commit/93aa195fe6850a2) *2021-04-07 21:04:48*
+
+**add pre-commit hooks**
+
+* [7660bb2dbea8126](https://github.com/spgennard/vscode_cobol/commit/7660bb2dbea8126) *2021-04-07 21:00:51*
+
+**add pre-commit hook**
+
+* [cdf164f3cf54263](https://github.com/spgennard/vscode_cobol/commit/cdf164f3cf54263) *2021-04-07 20:56:19*
+
+**Update CHANGELOG.md**
+
+* [872bdf248d15729](https://github.com/spgennard/vscode_cobol/commit/872bdf248d15729) *2021-04-07 20:35:47*
+
+
 ## 7.4.7
 
 **prep**
