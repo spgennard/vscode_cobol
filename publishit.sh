@@ -13,9 +13,9 @@ git push
 git clean -fdx
 npm install
 git push
-npm run beforepublish
+#npm run beforepublish
 vsce publish
-npm run afterpublish
+#npm run afterpublish
 rm -f *.vsix
 #vsce package
 #COMMIT_LOG=$(git log -1 --format='%ci %H %s')
