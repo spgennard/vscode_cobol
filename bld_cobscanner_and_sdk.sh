@@ -1,5 +1,5 @@
 set +e
-git config core.hooksPath .githooks
+#git config core.hooksPath .githooks
 
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
