@@ -5,6 +5,14 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.4.8
 
+**comment out unused lines**
+
+* [d1c974eb1ac064a](https://github.com/spgennard/vscode_cobol/commit/d1c974eb1ac064a) *2021-04-08 22:58:19*
+
+**Update CHANGELOG.md**
+
+* [67ef83e93a293fc](https://github.com/spgennard/vscode_cobol/commit/67ef83e93a293fc) *2021-04-08 22:55:29*
+
 **add extra diag messages**
 
 * [28463c6608dcdb3](https://github.com/spgennard/vscode_cobol/commit/28463c6608dcdb3) *2021-04-08 22:55:00*
