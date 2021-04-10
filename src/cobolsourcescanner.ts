@@ -1591,12 +1591,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (state.skipToDot) {
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
-                        if ((this.isValidKeyword(tcurrentLower) === false) && (this.isValidLiteral(tcurrentLower))) {
-                            if (this.sourceReferences !== undefined) {
-                                // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                        if (this.isValidLiteral(tcurrentLower)) {
+                            if (token.prevTokenLower === 'value' || (this.isValidKeyword(tcurrentLower) === false)) {
+                                if (this.sourceReferences !== undefined) {
+                                    // no forward validation can be done, as this is a one pass scanner
+                                    this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                                }
                             }
                         }
+
                         if (token.prevTokenLower === 'to' && this.isValidKeyword(tcurrentLower) === false) {
                             const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, token.prevToken);
                             this.addVariableOrConstant(trimToken, variableToken);
@@ -2101,9 +2104,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 /* if spans multiple lines, skip to dot */
                                 if (state.endsWithDot === false) {
                                     state.skipToDot = true;
-                                    if (prevToken === '66') {
-                                        state.addReferencesDuringSkipToTag = true;
-                                    }
+                                    state.addReferencesDuringSkipToTag = true;
                                 }
                             }
                         }
