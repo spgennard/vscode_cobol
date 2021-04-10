@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
-  "version": "7.4.8",
+  "version": "7.4.10",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -679,7 +679,7 @@
     },
     "configurationDefaults": {
       "[COBOL]": {
-        "editor.semanticHighlighting.enabled": false,
+        "editor.semanticHighlighting.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
         "editor.renderIndentGuides": false,
@@ -697,7 +697,7 @@
         "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[ACUCOBOL]": {
-        "editor.semanticHighlighting.enabled": false,
+        "editor.semanticHighlighting.enabled": true,
         "editor.insertSpaces": true,
         "editor.renderIndentGuides": false,
         "files.autoGuessEncoding": false,
