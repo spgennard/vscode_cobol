@@ -3,6 +3,25 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.10
+
+**prep for delivery**
+
+* [d6d80b609c90066](https://github.com/spgennard/vscode_cobol/commit/d6d80b609c90066) *2021-04-10 20:35:37*
+
+**remove unused var**
+
+* [816bfcb6539ca96](https://github.com/spgennard/vscode_cobol/commit/816bfcb6539ca96) *2021-04-10 20:22:49*
+
+**remove duplicate find from source definition when "call xx" is found**
+
+* [e3ff120999928c9](https://github.com/spgennard/vscode_cobol/commit/e3ff120999928c9) *2021-04-10 20:20:29*
+
+**Update CHANGELOG.md**
+
+* [14000fac19d8502](https://github.com/spgennard/vscode_cobol/commit/14000fac19d8502) *2021-04-08 22:58:51*
+
+
 ## 7.4.8
 
 **comment out unused lines**
