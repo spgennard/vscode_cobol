@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { logMessage } from './extension';
-import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken, CallTargetInformation } from './cobolsourcescanner';
+import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from './cobolsourcescanner';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
@@ -65,18 +65,6 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             }
         }
 
-        if (theline.match(/.*(call|cancel|chain).*$/i)) {
-            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
-            if (qcp === undefined) {
-                return locations;
-            }
-            loc = this.getCallTarget(document, qcp, position);
-            if (loc !== undefined) {
-                locations.push(loc);
-                return locations;
-            }
-        }
-
         /* is it a known variable? */
         if (this.getVariableInCurrentDocument(locations, document, position,settings)) {
             return locations;
@@ -95,27 +83,6 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         return locations;
-    }
-
-
-    private getCallTarget(document: vscode.TextDocument, sf: COBOLSourceScanner, position: vscode.Position): vscode.Location | undefined {
-        const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
-        if (word === "") {
-            return undefined;
-        }
-
-        const workLower = word.toLowerCase();
-        if (sf.callTargets.has(workLower)) {
-            const targetInfo: CallTargetInformation | undefined = sf.callTargets.get(workLower);
-            if (targetInfo !== undefined) {
-                const token = targetInfo.Token;
-                const srange = new vscode.Position(token.startLine, token.startColumn);
-                const uri = vscode.Uri.file(token.filename);
-                return new vscode.Location(uri, srange);
-            }
-        }
-        return undefined;
     }
 
     private getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {

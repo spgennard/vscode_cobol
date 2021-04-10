@@ -20,10 +20,6 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
         const locations: vscode.Location[] = [];
         const config = VSCOBOLConfiguration.get();
 
-        // if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
-        //     return locations;
-        // }
-
         const theline = document.lineAt(position).text;
 
         if (theline.match(/.*(call|cancel|chain).*$/i)) {
