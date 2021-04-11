@@ -3,6 +3,33 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.11
+
+**tidy up**
+
+* [0a50a985be0ef2a](https://github.com/spgennard/vscode_cobol/commit/0a50a985be0ef2a) *2021-04-11 20:24:51*
+
+**ensure we don't get duplicate interface, enums in the cache**
+
+* [430c3d25811f8a3](https://github.com/spgennard/vscode_cobol/commit/430c3d25811f8a3) *2021-04-11 20:20:22*
+
+**tweak $set and tidy up COBOL/Messages on startup**
+
+* [3b3a8fb9a86f61c](https://github.com/spgennard/vscode_cobol/commit/3b3a8fb9a86f61c) *2021-04-11 19:56:28*
+
+**more updates for $set and readonly semantic colouring**
+
+* [533c8bca06bfdc4](https://github.com/spgennard/vscode_cobol/commit/533c8bca06bfdc4) *2021-04-11 11:39:25*
+
+**pickup variables for references in value clauses**
+
+* [4f0395372233dd5](https://github.com/spgennard/vscode_cobol/commit/4f0395372233dd5) *2021-04-10 22:20:17*
+
+**Update CHANGELOG.md**
+
+* [9478b604bbd5a8a](https://github.com/spgennard/vscode_cobol/commit/9478b604bbd5a8a) *2021-04-10 20:36:05*
+
+
 ## 7.4.10
 
 **prep for delivery**
