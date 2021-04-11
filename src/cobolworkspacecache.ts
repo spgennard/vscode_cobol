@@ -25,7 +25,11 @@ export class COBOLWorkspaceSymbolCacheHelper {
                 }
 
                 if (newSymbols.length !== symbolList.length) {
-                    symbolsCache.set(key, newSymbols);
+                    if (newSymbols.length !== 0) {
+                        symbolsCache.set(key, newSymbols);
+                    } else {
+                        symbolsCache.delete(key);
+                    }
                 }
             }
         }
@@ -108,7 +112,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
             InMemoryGlobalSymbolCache.callableSymbols);
     }
-    
+
     public static removeAllProgramEntryPoints(srcfilename: string): void {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
             InMemoryGlobalSymbolCache.entryPoints);
@@ -117,6 +121,10 @@ export class COBOLWorkspaceSymbolCacheHelper {
     public static removeAllTypes(srcfilename: string): void {
         COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
             InMemoryGlobalSymbolCache.types);
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
+            InMemoryGlobalSymbolCache.enums);
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramSymbols(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename),
+            InMemoryGlobalSymbolCache.interfaces);            
     }
 
     public static loadGlobalCacheFromArray(symbols: string[], clear: boolean): void {
