@@ -746,6 +746,9 @@
           80
         ],
         "editor.renderIndentGuides": false
+      },
+      "[sql]": {
+        "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
       }
     },
     "languages": [

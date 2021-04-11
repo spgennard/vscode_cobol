@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ISourceHandler, { ICommentCallback } from "./isourcehandler";
-import { acuKeywords, cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
+import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
@@ -12,7 +12,6 @@ import * as path from 'path';
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
-import { features } from "node:process";
 
 export class COBOLPreprocessorHelper {
     public static preprocessors = new Map<CobApiHandle, COBOLPreprocessor>();
@@ -1047,13 +1046,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             // setup references for unknown forward references
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
                 if (this.isVisibleSection(strRef)) {
-                    this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences);
+                    this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Section);
                 } else if (this.isVisibleParagraph(strRef)) {
-                    this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences);
-                } else if (this.constantsOrVariables.has(strRef)) {
-                    this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences);
+                    this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Paragraph);
                 } else {
-                    //
+                    const possibleTokens = this.constantsOrVariables.get(strRef);
+                    if (possibleTokens !== undefined) {
+                        for (const token of possibleTokens) {
+                            this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, token.tokenType);
+                            continue;
+                        }
+                    }
                 }
             }
             this.sourceReferences.unknownReferences.clear();
@@ -1082,15 +1085,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return !foundParagraph.ignoreInOutlineView;
     }
 
-    private transferReference(symbol: string, symbolRefs: SourceReference[], transferReference: Map<string, SourceReference[]>): void {
-        if (transferReference.has(symbol)) {
-            const refList = transferReference.get(symbol);
-            if (refList !== undefined) {
-                for (const sourceRef of symbolRefs) {
-                    refList.push(sourceRef);
-                }
+    private transferReference(symbol: string, symbolRefs: SourceReference[], transferReference: Map<string, SourceReference[]>, tokenStyle: COBOLTokenStyle): void {
+        const refList = transferReference.get(symbol);
+        if (refList !== undefined) {
+            for (const sourceRef of symbolRefs) {
+                sourceRef.tokenStyle = tokenStyle;
+                refList.push(sourceRef);
             }
         } else {
+            for (const sourceRef of symbolRefs) {
+                sourceRef.tokenStyle = tokenStyle;
+            }
             transferReference.set(symbol, symbolRefs);
         }
     }
@@ -1574,10 +1579,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             break;
                         default:
                             if (this.sourceReferences !== undefined) {
-                                // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.constantsOrVariablesReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
+                                if (this.isValidKeyword(tcurrentLower) === false) {
+                                    // no forward validation can be done, as this is a one pass scanner
+                                    this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                                    state.parameters.push(new COBOLParameter(state.using, tcurrent));
+                                }
                             }
-                            state.parameters.push(new COBOLParameter(state.using, tcurrent));
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
                     }
                     if (state.endsWithDot) {
@@ -2182,7 +2189,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             if (varTokens !== undefined) {
                                 for (const varToken of varTokens) {
                                     if (varToken.ignoreInOutlineView === false) {
-                                        this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
+                                        this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, varToken.tokenType);
                                         continue;
                                     }
                                 }
