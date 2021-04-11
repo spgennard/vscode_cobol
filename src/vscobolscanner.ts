@@ -52,8 +52,8 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             COBOLWorkspaceSymbolCacheHelper.removeAllPrograms(this.st?.fileName);
             COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
-            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
             COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
+            InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
         }
     }
 

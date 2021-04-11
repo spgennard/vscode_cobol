@@ -32,8 +32,10 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 process.send(`${COBSCANNER_ADDFILE},${this.st?.lastModifiedTime},${this.st?.fileName}`);
             }
         }
-
-        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);
+        COBOLWorkspaceSymbolCacheHelper.removeAllPrograms(this.st?.fileName);
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
+        COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
+        InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
     }
 
     public processToken(token: COBOLToken): void {
