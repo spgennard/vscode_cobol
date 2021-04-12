@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.12
+
+**continue work on forward references**
+
+* [5d907713dc95a5b](https://github.com/spgennard/vscode_cobol/commit/5d907713dc95a5b) *2021-04-12 20:13:37*
+
+**restrict picking up of forward references**
+
+* [c719f11449f712d](https://github.com/spgennard/vscode_cobol/commit/c719f11449f712d) *2021-04-12 19:02:35*
+
+**Update CHANGELOG.md**
+
+* [d3258bfaf9e3265](https://github.com/spgennard/vscode_cobol/commit/d3258bfaf9e3265) *2021-04-11 21:23:44*
+
+
 ## 7.4.11
 
 **tidy up**
