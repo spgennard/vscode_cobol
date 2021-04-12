@@ -77,6 +77,7 @@ export class VSPreProc {
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private static getExtension(extensionName: string): Extension<any> | undefined {
         for (const x of extensions.all) {
             if (x.id === extensionName) {
@@ -86,6 +87,7 @@ export class VSPreProc {
         return undefined;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static getCOBOLPreprocessor(preprocexp: Extension<any>, extensionName: string): COBOLPreprocessor | undefined {
         try {
 
