@@ -1507,12 +1507,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
     private addReference(referencesMap: Map<string, SourceReference[]>, lowerCaseVariable: string, line: number, column: number, tokenStyle: COBOLTokenStyle) {
-        if (referencesMap.has(lowerCaseVariable)) {
-            const sourceRefs: SourceReference[] | undefined = referencesMap.get(lowerCaseVariable);
-            if (sourceRefs !== undefined) {
-                sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
-                return;
-            }
+        const lowerCaseVariableRefs = referencesMap.get(lowerCaseVariable);
+        if (lowerCaseVariableRefs !== undefined) {
+            lowerCaseVariableRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
+            return;
         }
 
         const sourceRefs: SourceReference[] = [];
@@ -1521,12 +1519,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
     private addVariableOrConstant(lowerCaseVariable: string, token: COBOLToken) {
-        if (this.constantsOrVariables.has(lowerCaseVariable)) {
-            const tokens: COBOLToken[] | undefined = this.constantsOrVariables.get(lowerCaseVariable);
-            if (tokens !== undefined) {
-                tokens.push(token);
-                return;
-            }
+        const constantsOrVariablesToken = this.constantsOrVariables.get(lowerCaseVariable);
+        if (constantsOrVariablesToken !== undefined) {
+            constantsOrVariablesToken.push(token);
+            return;
         }
 
         const tokens: COBOLToken[] = [];
@@ -1643,7 +1639,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 const prevToken = this.trimLiteral(token.prevToken);
                 const prevTokenLowerUntrimmed = token.prevTokenLower.trim();
                 const prevTokenLower = this.trimLiteral(prevTokenLowerUntrimmed);
-                const nextPlusOneToken = token.nextPlusOneToken;
 
                 const prevPlusCurrent = token.prevToken + " " + current;
 
@@ -1770,11 +1765,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         this.callTargets.set(trimmedCurrent, state.currentProgramTarget);
                     }
                     this.ImplicitProgramId = "";        /* don't need it */
-
-                    // So we don't have any division?
-                    // if (this.currentDivision === COBOLToken.Null) {
-                    //     this.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Identification Division", "Identification","Identification Division (Optional)", this.currentDivision);
-                    // }
                     continue;
                 }
 
@@ -1853,6 +1843,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     const style = currentLowerTrim === "new" ? COBOLTokenStyle.Constructor : COBOLTokenStyle.MethodId;
 
                     if (nextTokenLower === "property") {
+                        const nextPlusOneToken = token.nextPlusOneToken;
                         const trimmedProperty = this.trimLiteral(nextPlusOneToken);
                         state.currentMethod = this.newCOBOLToken(COBOLTokenStyle.Property, lineNumber, line, trimmedProperty, nextToken + " " + nextPlusOneToken, state.currentDivision);
                         this.methods.set(trimmedProperty, state.currentMethod);
@@ -1949,6 +1940,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     let copyToken: COBOLToken = COBOLToken.Null;
                     const isIn = nextTokenLower === 'in';
                     const isOf = nextTokenLower === 'of';
+                    const nextPlusOneToken = token.nextPlusOneToken;
 
                     if (nextPlusOneToken.length !== 0 && (isIn || isOf)) {
                         const nextPlusOneTokenTrimmed = this.trimLiteral(nextPlusOneToken);
