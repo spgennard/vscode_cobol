@@ -3,6 +3,29 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.13
+
+**performance tweaks**
+
+* [3ed3fb1448ab90f](https://github.com/spgennard/vscode_cobol/commit/3ed3fb1448ab90f) *2021-04-12 22:29:11*
+
+**prepare for delivery**
+
+* [fc17b8d9fca2e56](https://github.com/spgennard/vscode_cobol/commit/fc17b8d9fca2e56) *2021-04-12 21:32:08*
+
+**ignore warnings**
+
+* [71fa75b3eda254d](https://github.com/spgennard/vscode_cobol/commit/71fa75b3eda254d) *2021-04-12 21:22:09*
+
+**honour visability on references**
+
+* [d6e5ea875d2c305](https://github.com/spgennard/vscode_cobol/commit/d6e5ea875d2c305) *2021-04-12 21:06:27*
+
+**Update CHANGELOG.md**
+
+* [3e4bf8d6c916cb1](https://github.com/spgennard/vscode_cobol/commit/3e4bf8d6c916cb1) *2021-04-12 20:14:53*
+
+
 ## 7.4.12
 
 **continue work on forward references**
