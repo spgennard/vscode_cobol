@@ -1052,10 +1052,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 const possibleTokens = this.constantsOrVariables.get(strRef);
                 if (possibleTokens !== undefined) {
                     let ttype: COBOLTokenStyle = COBOLTokenStyle.Unknown;
+                    let addReference = true;
                     for (const token of possibleTokens) {
-                        ttype = token.tokenType;
+                        if (token.ignoreInOutlineView) {
+                            addReference = false;
+                        } else {
+                            ttype = token.tokenType;
+                        }
                     }
-                    this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, ttype);
+                    if (addReference) {
+                        this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, ttype);
+                    }
                     vcount++
                 }
                 else if (this.isVisibleSection(strRef)) {
@@ -2180,27 +2187,29 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 let sharedReferences = this.sourceReferences.unknownReferences;
                                 if (this.isVisibleSection(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Section;
-                                    this.sourceReferences.targetReferences
                                     sharedReferences = this.sourceReferences.targetReferences;
                                 } else if (this.isVisibleParagraph(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Paragraph;
                                     sharedReferences = this.sourceReferences.targetReferences;
-                                    this.sourceReferences.targetReferences
                                 }
 
                                 this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
                                 continue;
                             }
 
-                            const varTokens = this.constantsOrVariables.get(currentLower);
-
                             /* is this a reference to a variable? */
+                            const varTokens = this.constantsOrVariables.get(currentLower);
                             if (varTokens !== undefined) {
+                                let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
+                                let addReference = true;
                                 for (const varToken of varTokens) {
-                                    let ctype: COBOLTokenStyle = COBOLTokenStyle.Unknown;
                                     if (varToken.ignoreInOutlineView === false) {
                                         ctype = varToken.tokenType;
+                                    } else {
+                                        addReference = false;
                                     }
+                                }
+                                if (addReference) {
                                     this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, ctype);
                                 }
                             } else {
@@ -2208,12 +2217,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 let sharedReferences = this.sourceReferences.unknownReferences;
                                 if (this.isVisibleSection(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Section;
-                                    this.sourceReferences.targetReferences
                                     sharedReferences = this.sourceReferences.targetReferences;
                                 } else if (this.isVisibleParagraph(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Paragraph;
                                     sharedReferences = this.sourceReferences.targetReferences;
-                                    this.sourceReferences.targetReferences
                                 }
                                 this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
                             }
@@ -2228,15 +2235,20 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 continue;
                             }
 
-                            const varTokens = this.constantsOrVariables.get(trimmedCurrentLower);
-
                             /* is this a reference to a variable? */
+                            const varTokens = this.constantsOrVariables.get(trimmedCurrentLower);
                             if (varTokens !== undefined) {
+                                let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
+                                let addReference = true;
                                 for (const varToken of varTokens) {
                                     if (varToken.ignoreInOutlineView === false) {
-                                        this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, COBOLTokenStyle.Variable);
-                                        continue;
+                                        ctype = varToken.tokenType;
+                                    } else {
+                                        addReference = false;
                                     }
+                                }
+                                if (addReference) {
+                                    this.addReference(this.sourceReferences.constantsOrVariablesReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, ctype);
                                 }
                             } else {
                                 this.addReference(this.sourceReferences.unknownReferences, trimmedCurrentLower, lineNumber, token.currentCol + pos, COBOLTokenStyle.Unknown);
