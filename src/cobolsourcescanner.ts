@@ -1044,21 +1044,31 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
 
             // setup references for unknown forward references
+            const unknown = [];
+            // console.log(`DEBUG: unknownReferences : ${this.sourceReferences.unknownReferences.size}`);
+            let scount = 0, vcount = 0, pcount = 0;
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
-                if (this.isVisibleSection(strRef)) {
+
+                const possibleTokens = this.constantsOrVariables.get(strRef);
+                if (possibleTokens !== undefined) {
+                    let ttype: COBOLTokenStyle = COBOLTokenStyle.Unknown;
+                    for (const token of possibleTokens) {
+                        ttype = token.tokenType;
+                    }
+                    this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, ttype);
+                    vcount++
+                }
+                else if (this.isVisibleSection(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Section);
+                    scount++;
                 } else if (this.isVisibleParagraph(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Paragraph);
+                    pcount++;
                 } else {
-                    const possibleTokens = this.constantsOrVariables.get(strRef);
-                    if (possibleTokens !== undefined) {
-                        for (const token of possibleTokens) {
-                            this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, token.tokenType);
-                            continue;
-                        }
-                    }
+                    unknown.push(strRef);
                 }
             }
+            // console.log(`DEBUG: unprocessed : ${unknown.length}, p=${pcount},v=${vcount},s=${scount}`);
             this.sourceReferences.unknownReferences.clear();
             this.eventHandler.finish();
         }
@@ -1524,6 +1534,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
         do {
             try {
+                // console.log(`DEBUG: ${line}`);
                 let tcurrent: string = token.currentToken;
                 let tcurrentLower: string = token.currentTokenLower;
 
@@ -1599,13 +1610,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
                         if (this.sourceReferences !== undefined) {
-                            if (token.prevTokenLower === 'value' && this.isValidLiteral(tcurrentLower) && !this.isNumber(tcurrentLower) && this.isValidKeyword(tcurrentLower) === false) {
+                            if (token.prevTokenLower === 'value' && this.isValidLiteral(trimToken) && !this.isNumber(trimToken) && this.isValidKeyword(trimToken) === false) {
                                 // no forward validation can be done, as this is a one pass scanner
                                 this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
                             }
                         }
 
-                        if (token.prevTokenLower === 'to' && this.isValidKeyword(tcurrentLower) === false) {
+                        if (token.prevTokenLower === 'to' && this.isValidKeyword(trimToken) === false) {
                             const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, token.prevToken);
                             this.addVariableOrConstant(trimToken, variableToken);
                         }
@@ -2186,13 +2197,25 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             /* is this a reference to a variable? */
                             if (varTokens !== undefined) {
                                 for (const varToken of varTokens) {
+                                    let ctype: COBOLTokenStyle = COBOLTokenStyle.Unknown;
                                     if (varToken.ignoreInOutlineView === false) {
-                                        this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, varToken.tokenType);
-                                        continue;
+                                        ctype = varToken.tokenType;
                                     }
+                                    this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, ctype);
                                 }
                             } else {
-                                this.addReference(this.sourceReferences.unknownReferences, currentLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                                let sourceStyle = COBOLTokenStyle.Unknown;
+                                let sharedReferences = this.sourceReferences.unknownReferences;
+                                if (this.isVisibleSection(currentLower)) {
+                                    sourceStyle = COBOLTokenStyle.Section;
+                                    this.sourceReferences.targetReferences
+                                    sharedReferences = this.sourceReferences.targetReferences;
+                                } else if (this.isVisibleParagraph(currentLower)) {
+                                    sourceStyle = COBOLTokenStyle.Paragraph;
+                                    sharedReferences = this.sourceReferences.targetReferences;
+                                    this.sourceReferences.targetReferences
+                                }
+                                this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
                             }
 
                             continue;
