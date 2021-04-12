@@ -265,6 +265,7 @@ function checkForExtensionConflicts(): string {
                 if (ext.packageJSON.id === 'bitlang.cobol') {
                     continue;
                 }
+
                 for (const blessed_extension of blessed_extensions) {
                     if (blessed_extension === ext.packageJSON.id) {
                         ignore_blessed = true;
@@ -293,7 +294,7 @@ function checkForExtensionConflicts(): string {
                                         if (reason.length !== 0) {
                                             reason += ", ";
                                         }
-                                        reason = "contributes grammar";
+                                        reason += "contributes grammar";
                                     }
                                 }
                             }

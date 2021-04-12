@@ -1085,8 +1085,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return !foundParagraph.ignoreInOutlineView;
     }
 
-    private transferReference(symbol: string, symbolRefs: SourceReference[], transferReference: Map<string, SourceReference[]>, tokenStyle: COBOLTokenStyle): void {
-        const refList = transferReference.get(symbol);
+    private transferReference(symbol: string, symbolRefs: SourceReference[], transferReferenceMap: Map<string, SourceReference[]>, tokenStyle: COBOLTokenStyle): void {
+        const refList = transferReferenceMap.get(symbol);
         if (refList !== undefined) {
             for (const sourceRef of symbolRefs) {
                 sourceRef.tokenStyle = tokenStyle;
@@ -1096,7 +1096,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             for (const sourceRef of symbolRefs) {
                 sourceRef.tokenStyle = tokenStyle;
             }
-            transferReference.set(symbol, symbolRefs);
+            transferReferenceMap.set(symbol, symbolRefs);
         }
     }
 
@@ -1579,7 +1579,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             break;
                         default:
                             if (this.sourceReferences !== undefined) {
-                                if (this.isValidKeyword(tcurrentLower) === false) {
+                                if ((this.isValidKeyword(tcurrentLower) === false) && (this.isNumber(tcurrentLower) === false)) {
                                     // no forward validation can be done, as this is a one pass scanner
                                     this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
                                     state.parameters.push(new COBOLParameter(state.using, tcurrent));
@@ -1598,12 +1598,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (state.skipToDot) {
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
-                        if (this.isValidLiteral(tcurrentLower)) {
-                            if (token.prevTokenLower === 'value' || (this.isValidKeyword(tcurrentLower) === false)) {
-                                if (this.sourceReferences !== undefined) {
-                                    // no forward validation can be done, as this is a one pass scanner
-                                    this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
-                                }
+                        if (this.sourceReferences !== undefined) {
+                            if (token.prevTokenLower === 'value' && this.isValidLiteral(tcurrentLower) && !this.isNumber(tcurrentLower) && this.isValidKeyword(tcurrentLower) === false) {
+                                // no forward validation can be done, as this is a one pass scanner
+                                this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
                             }
                         }
 
@@ -2203,7 +2201,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         // traverse map of possible variables that could be indexes etc.. a bit messy but works
                         for (const [pos, trimmedCurrentLower] of this.trimVariableToMap(currentLower)) {
 
-                            if (this.isNumber(trimmedCurrentLower) === true || this.isValidKeyword(trimmedCurrentLower) === true) {
+                            if (this.isNumber(trimmedCurrentLower) === true || this.isValidKeyword(trimmedCurrentLower) === true || this.isValidLiteral(trimmedCurrentLower) === false) {
                                 continue;
                             }
 
