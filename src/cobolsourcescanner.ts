@@ -501,6 +501,7 @@ class ParseState {
     ignoreInOutlineView: boolean;
 
     addReferencesDuringSkipToTag: boolean;
+    addVariableDuringStipToTag: boolean;
 
     using: UsingState;
 
@@ -531,6 +532,7 @@ class ParseState {
         this.ignoreInOutlineView = false;
         this.skipToDot = false;
         this.addReferencesDuringSkipToTag = false;
+        this.addVariableDuringStipToTag = false;
         this.pickUpUsing = false;
         this.using = UsingState.BY_REF;
         this.parameters = [];
@@ -1612,16 +1614,38 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (state.skipToDot) {
                     if (state.addReferencesDuringSkipToTag) {
                         const trimToken = this.trimLiteral(tcurrentLower);
+                        const isValidKeyword = this.isValidKeyword(trimToken);
+
                         if (this.sourceReferences !== undefined) {
-                            if (token.prevTokenLower === 'value' && this.isValidLiteral(trimToken) && !this.isNumber(trimToken) && this.isValidKeyword(trimToken) === false) {
+                            if (this.isValidLiteral(trimToken) && !this.isNumber(trimToken) && isValidKeyword === false) {
                                 // no forward validation can be done, as this is a one pass scanner
                                 this.addReference(this.sourceReferences.unknownReferences, trimToken, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
                             }
                         }
 
-                        if (token.prevTokenLower === 'to' && this.isValidKeyword(trimToken) === false) {
-                            const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, token.prevToken);
-                            this.addVariableOrConstant(trimToken, variableToken);
+                        // turn off at keyword
+                        if (isValidKeyword) {
+                            state.addVariableDuringStipToTag = false;
+                        }
+
+                        // if we are in a to.. or indexed
+                        if (token.prevTokenLower === 'to') {
+                            state.addVariableDuringStipToTag = false;
+                        }
+
+                        if (token.prevTokenLower === 'indexed' && token.currentTokenLower === 'by') {
+                            state.addVariableDuringStipToTag = true;
+                        }
+
+                        if (token.prevTokenLower === 'depending' && token.currentTokenLower === 'on') {
+                            state.addVariableDuringStipToTag = false;
+                        }
+
+                        if (state.addVariableDuringStipToTag && isValidKeyword === false) {
+                            if (this.isValidLiteral(trimToken) && !this.isNumber(trimToken)) {
+                                const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimToken, trimToken, state.currentDivision, token.prevToken);
+                                this.addVariableOrConstant(trimToken, variableToken);
+                            }
                         }
                     }
                     //reset
@@ -2148,11 +2172,17 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     }
 
                     if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0) {
-                        if (this.isValidKeyword(nextTokenLower) === false) {
-                            const trimmedNextToken = this.trimLiteral(nextToken);
-                            const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, trimmedNextToken, trimmedNextToken, state.currentDivision);
-                            this.addVariableOrConstant(trimmedNextToken.toLowerCase(), variableToken);
-                        }
+                        state.skipToDot = true;
+                        state.addReferencesDuringSkipToTag = true;
+                        state.addVariableDuringStipToTag = true;
+                        continue;
+                    }
+
+                    if (prevTokenLower === "depending" && currentLower === "on" && nextToken.length > 0) {
+                        state.skipToDot = true;
+                        state.addReferencesDuringSkipToTag = true;
+                        state.addVariableDuringStipToTag = false;
+                        continue;
                     }
                 }
 
