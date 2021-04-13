@@ -1053,13 +1053,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 const possibleTokens = this.constantsOrVariables.get(strRef);
                 if (possibleTokens !== undefined) {
-                    let ttype: COBOLTokenStyle = COBOLTokenStyle.Unknown;
+                    let ttype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                     let addReference = true;
                     for (const token of possibleTokens) {
                         if (token.ignoreInOutlineView) {
                             addReference = false;
                         } else {
-                            ttype = token.tokenType;
+                            ttype = (token.tokenType === COBOLTokenStyle.Unknown) ? ttype : token.tokenType;
                         }
                     }
                     if (addReference) {
@@ -1597,7 +1597,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             if (this.sourceReferences !== undefined) {
                                 if ((this.isValidKeyword(tcurrentLower) === false) && (this.isNumber(tcurrentLower) === false)) {
                                     // no forward validation can be done, as this is a one pass scanner
-                                    this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                                    this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                                     state.parameters.push(new COBOLParameter(state.using, tcurrent));
                                 }
                             }
@@ -2212,7 +2212,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 let addReference = true;
                                 for (const varToken of varTokens) {
                                     if (varToken.ignoreInOutlineView === false) {
-                                        ctype = varToken.tokenType;
+                                        ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                                     } else {
                                         addReference = false;
                                     }
@@ -2250,7 +2250,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 let addReference = true;
                                 for (const varToken of varTokens) {
                                     if (varToken.ignoreInOutlineView === false) {
-                                        ctype = varToken.tokenType;
+                                        ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                                     } else {
                                         addReference = false;
                                     }
