@@ -3,6 +3,26 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.14
+
+**use a good default, for ref type, ignore unknown style**
+
+* [6fb33090b39dc73](https://github.com/spgennard/vscode_cobol/commit/6fb33090b39dc73) *2021-04-13 21:49:52*
+
+**remove unused code**
+
+* [973c3e43fcbf4ab](https://github.com/spgennard/vscode_cobol/commit/973c3e43fcbf4ab) *2021-04-13 21:29:48*
+
+**continue work on references**
+
+ * change $end-region to match $region
+* [28d41ac613d5ce4](https://github.com/spgennard/vscode_cobol/commit/28d41ac613d5ce4) *2021-04-13 17:06:55*
+
+**Update CHANGELOG.md**
+
+* [c0e597565838351](https://github.com/spgennard/vscode_cobol/commit/c0e597565838351) *2021-04-12 22:32:09*
+
+
 ## 7.4.13
 
 **performance tweaks**
