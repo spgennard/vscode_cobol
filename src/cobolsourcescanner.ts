@@ -2170,20 +2170,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         }
                         continue;
                     }
-
-                    if (prevTokenLower === "indexed" && currentLower === "by" && nextToken.length > 0) {
-                        state.skipToDot = true;
-                        state.addReferencesDuringSkipToTag = true;
-                        state.addVariableDuringStipToTag = true;
-                        continue;
-                    }
-
-                    if (prevTokenLower === "depending" && currentLower === "on" && nextToken.length > 0) {
-                        state.skipToDot = true;
-                        state.addReferencesDuringSkipToTag = true;
-                        state.addVariableDuringStipToTag = false;
-                        continue;
-                    }
                 }
 
                 /* add reference when perform is used */
