@@ -45,6 +45,7 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
         vsconfig.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
         vsconfig.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
+        vsconfig.linter_ignore_missing_copybooks = getBoolean("linter_ignore_missing_copybooks", false);
         vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
         vsconfig.scan_comments_for_hints = getBoolean("scan_comments_for_hints", false);

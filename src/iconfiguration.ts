@@ -46,6 +46,7 @@ export interface ICOBOLSettings {
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
     linter_ignore_section_before_entry: boolean;
+    linter_ignore_missing_copybooks: boolean;
 
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
@@ -111,6 +112,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public linter_house_standards: boolean;
     public linter_house_standards_rules: string[];
     public linter_ignore_section_before_entry: boolean;
+    public linter_ignore_missing_copybooks: boolean;
     public ignore_unsafe_extensions: boolean;
     public coboldoc_workspace_folder: string;
     public program_extensions: string[];
@@ -174,6 +176,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_unused_paragraphs_or_sections = true;
         this.linter_house_standards = true;
         this.linter_house_standards_rules = [];
+        this.linter_ignore_missing_copybooks = false;
         this.ignore_unsafe_extensions = false;
         this.scan_comments_for_hints = false;
         this.scan_comment_copybook_token = "source-dependency";
