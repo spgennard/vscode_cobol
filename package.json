@@ -550,7 +550,7 @@
           ],
           "uniqueItems": true
         },
-        "coboleditor.linter_ignore_missing_copybooks": {
+        "coboleditor.linter_ignore_missing_copybook": {
           "type": "boolean",
           "description": "Ignore missing copybook",
           "default": false

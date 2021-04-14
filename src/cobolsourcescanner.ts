@@ -2020,7 +2020,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     copybookToken.parsed = true;
                                 }
                             } else {
-                                if (this.configHandler.linter_ignore_missing_copybooks === false) {
+                                if (this.configHandler.linter_ignore_missing_copybook === false) {
                                     const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
                                     this.diagWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
                                 }
@@ -2400,7 +2400,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                                 }
                             } else {
-                                if (this.configHandler.linter_ignore_missing_copybooks === false) {
+                                if (this.configHandler.linter_ignore_missing_copybook === false) {
                                     const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
                                     this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
                                 }
