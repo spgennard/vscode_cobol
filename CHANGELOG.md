@@ -3,6 +3,25 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.4.15
+
+**tweak packages**
+
+* [ac3cea06e3def24](https://github.com/spgennard/vscode_cobol/commit/ac3cea06e3def24) *2021-04-14 20:47:47*
+
+**add linter_ignore_missing_copybook**
+
+* [6e58a11d0625581](https://github.com/spgennard/vscode_cobol/commit/6e58a11d0625581) *2021-04-14 20:26:38*
+
+**add linter_ignore_missing_copybooks config**
+
+* [ee0adca0f99b613](https://github.com/spgennard/vscode_cobol/commit/ee0adca0f99b613) *2021-04-14 19:50:49*
+
+**Update CHANGELOG.md**
+
+* [ed46a2c6da2d19c](https://github.com/spgennard/vscode_cobol/commit/ed46a2c6da2d19c) *2021-04-13 21:55:48*
+
+
 ## 7.4.14
 
 **use a good default, for ref type, ignore unknown style**
