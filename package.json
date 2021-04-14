@@ -208,7 +208,7 @@
         },
         "coboleditor.process_metadata_cache_on_file_save": {
           "type": "boolean",
-          "title": "Process metadata on file save",
+          "title": "When enabled, process metadata on file save",
           "default": false,
           "deprecationMessage": "This setting is depreciated and may be removed in future releases"
         },
@@ -277,7 +277,7 @@
         },
         "coboleditor.margin": {
           "type": "boolean",
-          "title": "apply margin shading",
+          "title": "When enabled, apply margin shading",
           "default": false
         },
         "coboleditor.enable_data_provider": {
@@ -288,7 +288,7 @@
         },
         "jcleditor.margin": {
           "type": "boolean",
-          "title": "apply margin shading",
+          "title": "When enabled, apply margin shading",
           "default": true
         },
         "coboleditor.fileformat_strategy": {
@@ -343,12 +343,12 @@
         },
         "coboleditor.enable_tabstop": {
           "type": "boolean",
-          "title": "Enable COBOL tab/detab key",
+          "title": "When enabled, activate COBOL tab/detab key",
           "default": true
         },
         "coboleditor.comment_line": {
           "type": "boolean",
-          "title": "Enable COBOL comment key",
+          "title": "When enabled, activate COBOL comment key",
           "default": true
         },
         "coboleditor.outline": {
@@ -380,19 +380,19 @@
         "coboleditor.linter": {
           "type": "boolean",
           "title": "Enable basic linting",
-          "description": "Enable basic linting (limited to sections/paragraph use)",
+          "description": "When enabled, activate basic linting (limited to sections/paragraph use)",
           "default": false
         },
         "coboleditor.linter_mark_as_information": {
           "type": "boolean",
           "title": "Mark all linter problems as information",
-          "description": "Mark all linter problems as information (false is hint)",
+          "description": "When enabled, mark all linter problems as information (false is hint)",
           "default": true
         },
         "coboleditor.linter_unused_paragraphs_or_sections": {
           "type": "boolean",
           "title": "Enable basic linting",
-          "description": "Enable basic linting (limited to sections/paragraph use)",
+          "description": "When enabled, activate basic linting (limited to sections/paragraph use)",
           "default": true
         },
         "coboleditor.sourceview": {
@@ -552,18 +552,18 @@
         },
         "coboleditor.linter_ignore_missing_copybook": {
           "type": "boolean",
-          "description": "Ignore missing copybook",
+          "description": "When enabled, do not generate missing copybook warnings",
           "default": false
         },
         "coboleditor.ignore_unsafe_extensions": {
           "type": "boolean",
-          "title": "Turn off unsafe extension check",
-          "description": "Turn off unsafe extension check",
+          "title": "When enabled, turn off unsafe extension check",
+          "description": "When enabled, turn off unsafe extension check",
           "default": false
         },
         "coboleditor.scan_comments_for_hints": {
           "type": "boolean",
-          "description": "Process scanner hints embedded in comments",
+          "description": "When enabled, process scanner hints embedded in comments",
           "default": false
         },
         "coboleditor.scan_comment_copybook_token": {
@@ -648,12 +648,12 @@
         },
         "coboleditor.maintain_metadata_cache_single_folder": {
           "type": "boolean",
-          "title": "Maintain Metadata Cache when using single folder",
+          "title": "When enabled, maintain metadata cache when using single folder is active",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {
           "type": "boolean",
-          "title": "Enable experimental semantic token provider",
+          "title": "When enabled, turn on the experimental semantic token provider",
           "default": false
         },
         "coboleditor.preprocessor_extensions": {
