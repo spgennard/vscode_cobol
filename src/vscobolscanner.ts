@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { FileType, TextDocument, Uri, window, workspace } from 'vscode';
+import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
@@ -124,6 +124,14 @@ export default class VSCOBOLSourceScanner {
                 InMemoryCache.delete(fileName);
                 cachedObject = undefined;
             }
+        }
+
+        // in memory document is out of sync with the on-disk document, so reparsing it
+        // will give in-consistent results, especially with the debugg
+        if (document.isDirty && debug.activeDebugSession !== undefined) {
+            logMessage("Source code has changed during debugging, in memory scanning suspended");
+            logMessage(` ID=${debug.activeDebugSession.id}, Name=${debug.activeDebugSession.name}, Type=${debug.activeDebugSession.type}`);
+            return undefined;
         }
 
         /* grab, the file parse it can cache it */
