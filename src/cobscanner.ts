@@ -108,6 +108,7 @@ for (const arg of args) {
             COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(scanData.md_entrypoints,true);
             COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(scanData.md_types,true);
             COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(features,scanData.md_metadata_files, true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(scanData.md_metadata_knowncopybooks,true);
 
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {

@@ -72,6 +72,8 @@ export interface ICOBOLSettings {
     metadata_entrypoints: string[];
     metadata_types: string[];
     metadata_files: string[];
+    metadata_knowncopybooks: string[];
+
     maintain_metadata_cache: boolean;
     maintain_metadata_cache_single_folder: boolean;
 
@@ -136,6 +138,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public metadata_entrypoints: string[];
     public metadata_types: string[];
     public metadata_files: string[];
+    public metadata_knowncopybooks: string[];
     public maintain_metadata_cache: boolean;
     public maintain_metadata_cache_single_folder: boolean;
 
@@ -199,6 +202,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.metadata_types = [];
         this.preprocessor_extensions = [];
         this.metadata_files = [];
+        this.metadata_knowncopybooks = [];
         this.maintain_metadata_cache = true;
         this.maintain_metadata_cache_single_folder = false;
         this.enable_semantic_token_provider = false;

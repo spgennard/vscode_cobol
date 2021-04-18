@@ -641,6 +641,21 @@
           "default": [],
           "uniqueItems": true
         },
+        "coboleditor.metadata_knowncopybooks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "types",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "internal metadata copybook filenames"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
+        },
         "coboleditor.maintain_metadata_cache": {
           "type": "boolean",
           "title": "Maintain Metadata Cache",

@@ -3,7 +3,7 @@ import fs from 'fs';
 
 import { extensions, FileType, Uri, workspace } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
-import { COBSCANNER_ADDFILE, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { COBOLStatUtils, logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -59,6 +59,7 @@ export class VSCobScanner {
             sf.md_entrypoints = settings.metadata_entrypoints;
             sf.md_types = settings.metadata_types;
             sf.md_metadata_files = settings.metadata_files;
+            sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
             await this.forkScanner(settings, sf, "OnSave", true);
         }
     }
@@ -214,6 +215,11 @@ export class VSCobScanner {
                             COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
                         }
                     }
+                } else if (message.startsWith(COBSCANNER_KNOWNCOPYBOOK)) {
+                    const args = message.split(",");
+                    const enKey = args[1];
+                    const inFilename = args[2];
+                    COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey,inFilename);
                 }
             } else {
                 logMessage(msg as string);
@@ -299,6 +305,7 @@ export class VSCobScanner {
         sf.md_symbols = settings.metadata_symbols;
         sf.md_entrypoints = settings.metadata_entrypoints;
         sf.md_metadata_files = settings.metadata_files;
+        sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
         for (const [, uri] of stats.directoriesScannedMap) {
             sf.Directories.push(uri.fsPath);
         }

@@ -94,6 +94,29 @@ export class COBOLWorkspaceSymbolCacheHelper {
             InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
+    public static addReferencedCopybook(copybook: string, fullInFilename: string) {
+        const inFilename = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullInFilename);
+        const encodedKey = `${copybook},${inFilename}`;
+        if (!InMemoryGlobalSymbolCache.knownCopybooks.has(encodedKey)) {
+            InMemoryGlobalSymbolCache.knownCopybooks.set(encodedKey,copybook);
+            InMemoryGlobalSymbolCache.isDirty = true;
+        }
+    }
+
+    public static removeAllCopybookReferences(fullInFilename: string) {
+        const inFilename = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullInFilename);
+        const keysToRemove = [];
+        for(const [encodedKey,] of InMemoryGlobalSymbolCache.knownCopybooks) {
+            const keys = encodedKey.split(",");
+            if (keys[1] === inFilename) {
+                keysToRemove.push(encodedKey);
+            }
+        }
+
+        for(const key of keysToRemove) {
+            InMemoryGlobalSymbolCache.knownCopybooks.delete(key);
+        }
+    }
 
     public static addClass(srcfilename: string, symbolUnchanged: string, lineNumber: number, category: TypeCategory): void {
         let map: Map<string, COBOLFileSymbol[]> = InMemoryGlobalSymbolCache.types;
@@ -142,13 +165,26 @@ export class COBOLWorkspaceSymbolCacheHelper {
 
     public static loadGlobalEntryCacheFromArray(symbols: string[], clear: boolean): void {
         if (clear) {
-            InMemoryGlobalSymbolCache.callableSymbols.entries();
+            InMemoryGlobalSymbolCache.callableSymbols.clear();
         }
 
         for (const symbol of symbols) {
             const symbolValues = symbol.split(",");
             if (symbolValues.length === 3) {
                 COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2], 10));
+            }
+        }
+    }
+
+    public static loadGlobalKnownCopybooksFromArray(copybookValues: string[], clear: boolean): void {
+        if (clear) {
+            InMemoryGlobalSymbolCache.knownCopybooks.clear();
+        }
+
+        for (const symbol of copybookValues) {
+            const encodedKey = symbol.split(",");
+            if (encodedKey.length === 2) {
+                InMemoryGlobalSymbolCache.knownCopybooks.set(symbol, encodedKey[1]);
             }
         }
     }

@@ -19,6 +19,8 @@ export class COBOLGlobalSymbolTable {
     public interfaces = new Map<string, COBOLFileSymbol[]>();
     public enums =  new Map<string, COBOLFileSymbol[]>();
 
+    public knownCopybooks = new Map<string, string>();
+    
     public isDirty = false;
     public sourceFilenameModified = new Map<string, COBOLWorkspaceFile>();
 

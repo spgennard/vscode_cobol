@@ -7,8 +7,7 @@ import { COBOLGlobalSymbolTable, COBOLWorkspaceFile } from './cobolglobalcache';
 export const InMemoryGlobalSymbolCache = new COBOLGlobalSymbolTable();
 
 export class InMemoryGlobalCacheHelper {
-    public static globalSymbolFilename = "globalsymbols.sym";
-    public static fileSymbolFilename = "filesymbols.sym";
+    private static globalSymbolFilename = "globalsymbols.sym";
 
     private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
         try {
@@ -34,8 +33,6 @@ export class InMemoryGlobalCacheHelper {
 
         return false;
     }
-
-
 
     public static getFilenameWithoutPath(fullPath: string): string {
         const lastSlash = fullPath.lastIndexOf(path.sep);

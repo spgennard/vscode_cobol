@@ -97,11 +97,12 @@ export class COBOLUtils {
             const entrypoints: string[] = settings.metadata_entrypoints;
             const types: string[] = settings.metadata_types;
             const files: string[] = settings.metadata_files;
-
+            const knownCopybooks: string[] = settings.metadata_knowncopybooks;
             symbols.length = 0;
             entrypoints.length = 0;
             types.length = 0;
             files.length = 0;
+            knownCopybooks.length = 0;
 
             for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
                 const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
@@ -119,6 +120,10 @@ export class COBOLUtils {
                         entrypoints.push(`${i},${value.filename},${value.lnum}`);
                     });
                 }
+            }
+
+            for (const [encodedKey,] of InMemoryGlobalSymbolCache.knownCopybooks.entries()) {
+                knownCopybooks.push(encodedKey);
             }
 
             COBOLUtils.typeToArray(types, "T", InMemoryGlobalSymbolCache.types);
@@ -139,6 +144,7 @@ export class COBOLUtils {
                     editorConfig.update('metadata_entrypoints', entrypoints, false);
                     editorConfig.update('metadata_types', types, false);
                     editorConfig.update('metadata_files', files, false);
+                    editorConfig.update('metadata_knowncopybooks', knownCopybooks, false);
                     InMemoryGlobalSymbolCache.isDirty = false;
                 } catch (e) {
                     logException("Failed to update metadata", e);
@@ -439,7 +445,9 @@ export class COBOLUtils {
 
     public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean): string {
         let newtext = text;
-        const args: string[] = splitArgument(text, true);
+        const args: string[] = [];
+        
+        splitArgument(text, true, args);
         const textLower = text.toLowerCase();
         let lastPos = 0;
         for (let ic = 0; ic < args.length; ic++) {

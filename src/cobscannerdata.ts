@@ -16,6 +16,7 @@ export class ScanData {
     public md_entrypoints: string[] = [];
     public md_types: string[] = [];
     public md_metadata_files: string[] = [];
+    public md_metadata_knowncopybooks: string[] = [];
     public workspaceFolders: string[] = [];
 }
 
@@ -41,6 +42,7 @@ export const COBSCANNER_SENDINTERFACE = "@@SEND.INTID";
 export const COBSCANNER_SENDENUM = "@@SEND.ENUMID";
 export const COBSCANNER_SENDCLASS = "@@SEND.CLASSID";
 export const COBSCANNER_ADDFILE = "@@SEND.FILES";
+export const COBSCANNER_KNOWNCOPYBOOK = "@@SEND.KNOWNCOPYBOOK";
 
 function replacer(this: any, key: any, value: any): any {
 

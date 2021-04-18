@@ -163,8 +163,7 @@ export function camelize(text: string): string {
     return ret;
 }
 
-export function splitArgument(input: string, splitBrackets: boolean): string[] {
-    const ret: string[] = [];
+export function splitArgument(input: string, splitBrackets: boolean, ret: string[]):void  {
     let inQuote = false;
     let inQuoteSingle = false;
     const lineLength = input.length;
@@ -229,8 +228,6 @@ export function splitArgument(input: string, splitBrackets: boolean): string[] {
     if (cArg.length !== 0) {
         ret.push(cArg);
     }
-
-    return ret;
 }
 
 export class COBOLToken {
@@ -322,7 +319,7 @@ class Token {
 
     public constructor(line: string, previousToken?: Token) {
         this.line = line;
-        this.lineTokens = splitArgument(this.line, false);
+        splitArgument(this.line, false, this.lineTokens);
         this.lineLowerTokens = [];
         for (let c = 0; c < this.lineTokens.length; c++) {
             this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
@@ -1959,7 +1956,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // copybook handling
                 if (prevTokenLowerUntrimmed === "copy" && current.length !== 0) {
                     const trimmedCopyBook = this.trimLiteral(current);
-                    // let newCopybook: boolean = false;
+                    if (this.isValidKeyword(trimmedCopyBook) || trimmedCopyBook.length === 0 ) {
+                        continue;
+                    }
 
                     let copyToken: COBOLToken = COBOLToken.Null;
                     const isIn = nextTokenLower === 'in';
@@ -1972,23 +1971,23 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         const desc: string = prevPlusCurrent + middleDesc + nextPlusOneTokenTrimmed;
                         if (this.copybookNestedInSection) {
                             if (state.currentSection !== COBOLToken.Null) {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, prevPlusCurrent, desc, state.currentSection, nextPlusOneTokenTrimmed);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, trimmedCopyBook, desc, state.currentSection, nextPlusOneTokenTrimmed);
                             } else {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, trimmedCopyBook, desc, state.currentDivision, nextPlusOneTokenTrimmed);
                             }
                         } else {
-                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, prevPlusCurrent, desc, state.currentDivision, nextPlusOneTokenTrimmed);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, trimmedCopyBook, desc, state.currentDivision, nextPlusOneTokenTrimmed);
                         }
                     }
                     else {
                         if (this.copybookNestedInSection) {
                             if (state.currentSection !== COBOLToken.Null) {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentSection);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, trimmedCopyBook, prevPlusCurrent, state.currentSection);
                             } else {
-                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
+                                copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, trimmedCopyBook, prevPlusCurrent, state.currentDivision);
                             }
                         } else {
-                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, prevPlusCurrent, prevPlusCurrent, state.currentDivision);
+                            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, trimmedCopyBook, prevPlusCurrent, state.currentDivision);
                         }
                     }
 
@@ -2035,7 +2034,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     state.currentDivision === state.procedureDivision && state.endsWithDot && state.prevEndsWithDot) {
                     if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
                         const beforeCurrent = line.substr(0, token.currentCol - 1).trim();
-                        // if (beforeCurrent.length === 0) {
                         const c = tcurrent;
                         if (c.length !== 0) {
                             if (this.isParagraph(c)) {
@@ -2048,7 +2046,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 }
                             }
                         }
-                        // }
                     }
                 }
 
@@ -2393,7 +2390,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     this.sourceReferences.state.ignoreInOutlineView = true;
                                     this.sourceReferences.topLevel = true;
 
-                                    // const qps = new COBOLSourceScanner(qfile, this.configHandler, "", this.sourceReferences, this.parse_copybooks_for_references);
                                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                     const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
                                     this.sourceReferences.topLevel = true;

@@ -86,7 +86,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const words: COBOLToken[] = tsearch.get(wordToComplete);
         const numberOfWordsInResults = words.length;
 
-        const workMap = new Map<string,string>();
+        const workMap = new Map<string, string>();
 
         const items: CompletionItem[] = [];
         for (let c = 0; c < numberOfWordsInResults; c++) {
@@ -132,6 +132,27 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         // logMessage("Search for [" + wordToComplete + "] gives " + items.length + " words");
         return items;
 
+    }
+
+    private getAllCopyBook(includeQuoted: boolean): CompletionItem[] {
+        const items: CompletionItem[] = [];
+        const mapOfCopybooks = new Map<string, string>();
+
+        for (const [encodedKey, ] of InMemoryGlobalSymbolCache.knownCopybooks) {
+            const copybook = encodedKey.split(",")[0];
+            if (mapOfCopybooks.has(copybook) === false) {
+                mapOfCopybooks.set(copybook, copybook);
+            }
+        }
+
+        for (const [copybook] of mapOfCopybooks) {
+            items.push(new CompletionItem(copybook, CompletionItemKind.File));
+            if (includeQuoted) {
+                items.push(new CompletionItem(`"${copybook}"`, CompletionItemKind.File));
+                items.push(new CompletionItem(`'${copybook}'`, CompletionItemKind.File));
+            }
+        }
+        return items;
     }
 
     private getAllTypes(workToComplete: string): CompletionItem[] {
@@ -232,9 +253,15 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 if (currentLine.toLowerCase().indexOf("cancel") !== -1) {
                     items = this.getCallTargets();
                 }
+                if (currentLine.toLowerCase().indexOf("copy") !== -1) {
+                    items = this.getAllCopyBook(false);
+                }
             }
             else {
                 switch (wordBeforeLower) {
+                    case "copy":
+                        items = this.getAllCopyBook(true);
+                        break;
                     case "type": {
                         items = this.getAllTypes(wordToComplete);
                         break;

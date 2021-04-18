@@ -50,6 +50,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         this.st.lastModifiedTime = qp.lastModifiedTime;
 
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
+            COBOLWorkspaceSymbolCacheHelper.removeAllCopybookReferences(this.st?.fileName);
             COBOLWorkspaceSymbolCacheHelper.removeAllPrograms(this.st?.fileName);
             COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
             COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
@@ -68,6 +69,12 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         }
 
         switch (token.tokenType) {
+            case COBOLTokenStyle.CopyBook:
+                COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName);
+                break;
+            case COBOLTokenStyle.CopyBookInOrOf:
+                COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName);
+                break;
             case COBOLTokenStyle.File:
                 COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
