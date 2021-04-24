@@ -63,9 +63,19 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                 c += 1;
             }
 
+            let argCopybooks = "";
+            for(const [copybook,file] of result.copybooks) {
+                argCopybooks += `${copybook} = ${file}\n`;
+                if (argCopybooks.length > maxLen) {
+                    maxLen = argCopybooks.length;
+                }
+            }
+
             let arg = `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines\n`;
             arg += "Original Line:"
             arg += `"${result.originalLine}"\n`;
+            arg += "-".repeat(maxLen)+"\n";
+            arg += argCopybooks;
             arg += "-".repeat(maxLen)+"\n";
             arg += "LNum:\n";
             arg += `${tooltip_lines}`;

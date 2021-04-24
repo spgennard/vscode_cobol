@@ -18,12 +18,14 @@ export class COBOLPreprocResult {
     public atLine: number;
     public originalLine: string;
     public replacedLines: string[];
+    public copybooks: Map<string, string>;
 
-    constructor(ppHandle: CobApiHandle, atLine: number, originalLine: string, replacedLines: string[]) {
+    constructor(ppHandle: CobApiHandle, atLine: number, originalLine: string, replacedLines: string[], copybooks:Map<string, string>) {
         this.ppHandle = ppHandle;
         this.atLine = atLine;
         this.originalLine = originalLine;
         this.replacedLines = replacedLines;
+        this.copybooks = copybooks;
     }
 }
 
@@ -992,7 +994,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     // if we have any pre-processed lines..
                     if (preProcLines.length !== 0 && ppHandleOrUndef !== undefined) {
-                        this.ppResults.push(new COBOLPreprocResult(ppHandleOrUndef, l, line, preProcLines));
+                        this.ppResults.push(new COBOLPreprocResult(ppHandleOrUndef, l, line, preProcLines, copybooks));
                         const currentOutlineView = state.ignoreInOutlineView;
                         const current_parse_copybooks_for_references = this.parse_copybooks_for_references;
                         this.parse_copybooks_for_references = false;
@@ -1007,7 +1009,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                             state.ignoreInOutlineView = currentOutlineView;
                             for (const [symbol, copybook] of copybooks) {
-                                this.newCOBOLToken(COBOLTokenStyle.File, l, line, symbol, copybook, state.currentDivision);
+                                this.newCOBOLToken(COBOLTokenStyle.File, l, line, copybook, symbol, state.currentDivision);
                             }
                         }
                         finally {
