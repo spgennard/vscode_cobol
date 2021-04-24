@@ -49,6 +49,7 @@ import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 import { SourceItem } from './sourceItem';
 import { VSSemanticProvider } from './vssemanticprovider';
+import { VSPPCodeLens } from './vsppcodelens';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -1288,6 +1289,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
         });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const actionCodelens = commands.registerCommand("codelens-sample.codelensAction", (args: string) => {
+        VSPPCodeLens.actionCodeLens(args);
+    });
+    context.subscriptions.push(actionCodelens);
+    const codelensProvider = new VSPPCodeLens();
+    languages.registerCodeLensProvider(getAllCobolSelectors(), codelensProvider);
+    
     if (settings.process_metadata_cache_on_start) {
         const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
         const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, depMode);

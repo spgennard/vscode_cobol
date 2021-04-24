@@ -13,6 +13,20 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
 
+export class COBOLPreprocResult {
+    public ppHandle: CobApiHandle;
+    public atLine : number;
+    public originalLine: string;
+    public replacedLines: string[];
+
+    constructor(ppHandle: CobApiHandle, atLine:number, originalLine:string, replacedLines: string[]) {
+        this.ppHandle = ppHandle;
+        this.atLine = atLine;
+        this.originalLine = originalLine;
+        this.replacedLines = replacedLines;
+    }
+}
+
 export class COBOLPreprocessorHelper {
     public static preprocessors = new Map<CobApiHandle, COBOLPreprocessor>();
     public static preprocessorsExts = new Map<string, CobApiHandle>();
@@ -51,36 +65,29 @@ export class COBOLPreprocessorHelper {
         }
     }
 
-    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): boolean {
-        const lines: string[] = [orgLine];
-
+    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): CobApiHandle|undefined {
         for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
-            let processedLines = false;
-            for (const line of lines) {
-                try {
-                    const poutput = new CobApiOutput();
-                    if (p.process(id, line, poutput)) {
-                        processedLines = true;
-                        for (const pline of poutput.lines) {
-                            allLines.push(pline);
-                        }
-                        for (const [symbol, internalCopybook] of poutput.externalFiles) {
-                            externalFiles.set(symbol, internalCopybook);
-                        }
+
+            try {
+                const poutput = new CobApiOutput();
+                if (p.process(id, orgLine, poutput)) {
+                    for (const pline of poutput.lines) {
+                        allLines.push(pline);
                     }
-                }
-                catch (e) {
-                    //
+                    for (const [symbol, internalCopybook] of poutput.externalFiles) {
+                        externalFiles.set(symbol, internalCopybook);
+                    }
+
+                    return handle;
                 }
             }
-
-            // the preproc has done something, stop now
-            if (processedLines) {
-                return true;
+            catch (e) {
+                allLines.length = 0;
+                externalFiles.clear();
             }
         }
 
-        return false;
+        return undefined;
     }
 
     public static actionEnd(id: string): void {
@@ -163,7 +170,7 @@ export function camelize(text: string): string {
     return ret;
 }
 
-export function splitArgument(input: string, splitBrackets: boolean, ret: string[]):void  {
+export function splitArgument(input: string, splitBrackets: boolean, ret: string[]): void {
     let inQuote = false;
     let inQuoteSingle = false;
     const lineLength = input.length;
@@ -666,6 +673,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     private isPreProcessorsActive = false;
 
+    public ppResults: COBOLPreprocResult[] = [];
+
     public static ParseUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
@@ -937,13 +946,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 break;
         }
 
-        // inform any pre-processors.
-        COBOLPreprocessorHelper.actionStart(this.id, this);
         let line: string | undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
         this.isPreProcessorsActive = COBOLPreprocessorHelper.isActive();
+        if (this.isPreProcessorsActive) {
+            // inform any pre-processors.
+            COBOLPreprocessorHelper.actionStart(this.id, this);
+        }
 
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
@@ -964,13 +975,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // don't parse a empty line
                 if (line.length > 0) {
-                    let preProcLines: string[] = [];
+                    const preProcLines: string[] = [];
                     const copybooks = new Map<string, string>();
-
+                    let ppHandleOrUndef:CobApiHandle|undefined = undefined;
                     if (this.isPreProcessorsActive) {
                         try {
-                            if (!COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks, this)) {
-                                preProcLines = [];
+                            ppHandleOrUndef = COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks, this);
+                            if (ppHandleOrUndef === undefined) {
+                                preProcLines.length = 0;
+                                copybooks.clear();
                             }
                         } catch (e) {
                             externalFeatures.logException("pp", e);
@@ -978,7 +991,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     }
 
                     // if we have any pre-processed lines..
-                    if (preProcLines.length !== 0) {
+                    if (preProcLines.length !== 0 && ppHandleOrUndef !== undefined) {
+                        this.ppResults.push(new COBOLPreprocResult(ppHandleOrUndef, l, line, preProcLines));
                         const currentOutlineView = state.ignoreInOutlineView;
                         state.ignoreInOutlineView = true;
                         for (const preProcLine of preProcLines) {
@@ -1956,7 +1970,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // copybook handling
                 if (prevTokenLowerUntrimmed === "copy" && current.length !== 0) {
                     const trimmedCopyBook = this.trimLiteral(current);
-                    if (this.isValidKeyword(trimmedCopyBook) || trimmedCopyBook.length === 0 ) {
+                    if (this.isValidKeyword(trimmedCopyBook) || trimmedCopyBook.length === 0) {
                         continue;
                     }
 
