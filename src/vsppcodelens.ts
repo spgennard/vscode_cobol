@@ -20,6 +20,15 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         });
     }
 
+    private padInteger(num:number, sizeNumber:number):string {
+        let numS = num.toString();
+        while (numS.length < sizeNumber) {
+             numS = "0"+numS;
+        }
+        
+        return numS;
+    }
+
     public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
         const lens: vscode.CodeLens[] = [];
 
@@ -31,15 +40,33 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         for(const result of current.ppResults) {
             const r = new vscode.Range(new vscode.Position(result.atLine, 0), new vscode.Position(result.atLine, result.originalLine.length));
             const cl = new vscode.CodeLens(r);
-            let tooltip = "";
+            let tooltip = "", tooltip_lines="";
+            let maxLen = 2+result.originalLine.length;
+            let c=0;
             for(const line of result.replacedLines) {
                 tooltip += `${line}\n`;
+                tooltip_lines += `${this.padInteger(c,5)} : "${line}"\n`;
+                if (10+line.length > maxLen) {
+                    maxLen = line.length+10;
+                }
+                c += 1;
             }
+
+            let arg = `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines\n`;
+            arg += `"${result.originalLine}"\n`;
+            arg += "-".repeat(maxLen)+"\n";
+            arg += "LNum:\n";
+            arg += `${tooltip_lines}`;
+            arg += "-".repeat(maxLen)+"\n";
+            arg += ` : ${result.ppHandle.description}\n`;
+            arg += ` : ${result.ppHandle.bugReportEmail}\n`;
+            arg += ` : ${result.ppHandle.bugReportUrl}\n`;
+
             cl.command = {
                 title: `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines`,
                 tooltip: tooltip,
-                command: "codelens-sample.codelensAction",
-                arguments: ["Argument 1", false]
+                command: "coboleditor.ppcodelenaction",
+                arguments: [arg]
             };
 
             this.resolveCodeLens(cl, token);
@@ -52,17 +79,16 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public resolveCodeLens(codeLens: vscode.CodeLens, token: vscode.CancellationToken): vscode.CodeLens {
-        // codeLens.command = 
-        // codeLens.command = {
-        //     title: codeLens.command?.title as string,
-        //     tooltip: "Tooltip provided by sample extension",
-        //     command: "codelens-sample.codelensAction",
-        //     arguments: ["Argument 1", false]
-        // };
         return codeLens;
     }
 
-    public static actionCodeLens(args: string ):void {
-        vscode.window.showInformationMessage(`CodeLens action clicked with args=${args}, size: ${args.length}`);
+    public static actionCodeLens(arg: string ):void {
+        vscode.workspace.openTextDocument({
+            content: `${arg}`,
+            language: 'text'
+        }).then((document: vscode.TextDocument) => {
+            vscode.window.showTextDocument(document);
+        }
+        );
     }
 }

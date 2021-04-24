@@ -1290,7 +1290,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const actionCodelens = commands.registerCommand("codelens-sample.codelensAction", (args: string) => {
+    const actionCodelens = commands.registerCommand("coboleditor.ppcodelenaction", (args: string) => {
         VSPPCodeLens.actionCodeLens(args);
     });
     context.subscriptions.push(actionCodelens);
