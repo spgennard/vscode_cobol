@@ -15,11 +15,11 @@ import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
 
 export class COBOLPreprocResult {
     public ppHandle: CobApiHandle;
-    public atLine : number;
+    public atLine: number;
     public originalLine: string;
     public replacedLines: string[];
 
-    constructor(ppHandle: CobApiHandle, atLine:number, originalLine:string, replacedLines: string[]) {
+    constructor(ppHandle: CobApiHandle, atLine: number, originalLine: string, replacedLines: string[]) {
         this.ppHandle = ppHandle;
         this.atLine = atLine;
         this.originalLine = originalLine;
@@ -65,7 +65,7 @@ export class COBOLPreprocessorHelper {
         }
     }
 
-    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): CobApiHandle|undefined {
+    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): CobApiHandle | undefined {
         for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
 
             try {
@@ -634,7 +634,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
     public diagWarnings: Map<string, COBOLFileSymbol>;
 
-    public parseReferences: boolean;
+    public parse4References: boolean;
     public sourceReferences: SharedSourceReferences;
     public sourceFileId: number;
 
@@ -677,7 +677,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public static ParseUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
-        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
+        parse_copybooks_for_references: boolean,
         eventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures
     ): COBOLSourceScanner {
@@ -732,7 +732,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
         cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
-        parse_copybooks_for_references: boolean = configHandler.parse_copybooks_for_references,
+        parse_copybooks_for_references: boolean,
         sourceEventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures) {
 
@@ -759,7 +759,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.diagWarnings = new Map<string, COBOLFileSymbol>();
-        this.parseReferences = sourceHandler !== null;
+        this.parse4References = sourceHandler !== null;
         this.cpPerformTargets = undefined;
         this.cpConstantsOrVars = undefined;
 
@@ -905,7 +905,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
 
             if (giveMetadataCacheWarning) {
-                if (!configHandler.parse_copybooks_for_references && configHandler.cache_metadata !== CacheDirectoryStrategy.Off) {
+                if (!this.parse_copybooks_for_references && configHandler.cache_metadata !== CacheDirectoryStrategy.Off) {
                     this.externalFeatures.logMessage(` Warning - Unable to determine context of ${filename}, this may affect metadata caching for this file`);
                 }
             }
@@ -977,7 +977,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (line.length > 0) {
                     const preProcLines: string[] = [];
                     const copybooks = new Map<string, string>();
-                    let ppHandleOrUndef:CobApiHandle|undefined = undefined;
+                    let ppHandleOrUndef: CobApiHandle | undefined = undefined;
                     if (this.isPreProcessorsActive) {
                         try {
                             ppHandleOrUndef = COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks, this);
@@ -994,18 +994,27 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (preProcLines.length !== 0 && ppHandleOrUndef !== undefined) {
                         this.ppResults.push(new COBOLPreprocResult(ppHandleOrUndef, l, line, preProcLines));
                         const currentOutlineView = state.ignoreInOutlineView;
+                        const current_parse_copybooks_for_references = this.parse_copybooks_for_references;
+                        this.parse_copybooks_for_references = false;
                         state.ignoreInOutlineView = true;
-                        for (const preProcLine of preProcLines) {
-                            if (preProcLine !== null && preProcLine !== undefined && preProcLine.trimLeft().length !== 0) {
-                                const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
-                                prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, preProcLine);
+                        try {
+                            for (const preProcLine of preProcLines) {
+                                if (preProcLine !== null && preProcLine !== undefined && preProcLine.trimLeft().length !== 0) {
+                                    const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
+                                    prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, preProcLine);
+                                }
+                            }
+
+                            state.ignoreInOutlineView = currentOutlineView;
+                            for (const [symbol, copybook] of copybooks) {
+                                this.newCOBOLToken(COBOLTokenStyle.File, l, line, symbol, copybook, state.currentDivision);
                             }
                         }
-
-                        state.ignoreInOutlineView = currentOutlineView;
-                        for (const [symbol, copybook] of copybooks) {
-                            this.newCOBOLToken(COBOLTokenStyle.File, l, line, symbol, copybook, state.currentDivision);
+                        finally {
+                            state.ignoreInOutlineView = currentOutlineView;
+                            this.parse_copybooks_for_references = current_parse_copybooks_for_references;
                         }
+
                     } else {
                         const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
                         prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, line);
@@ -2186,7 +2195,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 /* add reference when perform is used */
-                if (this.parseReferences && this.sourceReferences !== undefined) {
+                if (this.parse4References && this.sourceReferences !== undefined) {
                     if (state.inProcedureDivision) {
                         // not interested in literals
                         if (this.isQuotedLiteral(currentLower)) {
