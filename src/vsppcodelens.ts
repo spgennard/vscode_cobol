@@ -41,7 +41,18 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             const r = new vscode.Range(new vscode.Position(result.atLine, 0), new vscode.Position(result.atLine, result.originalLine.length));
             const cl = new vscode.CodeLens(r);
             let tooltip = "", tooltip_lines="";
+
             let maxLen = 2+result.originalLine.length;
+            if (3+result.ppHandle.description.length > maxLen) {
+                maxLen = 3+result.ppHandle.description.length;
+            }
+            if (3+result.ppHandle.bugReportEmail.length > maxLen) {
+                maxLen = 3+result.ppHandle.bugReportEmail.length;
+            }     
+            if (3+result.ppHandle.bugReportUrl.length > maxLen) {
+                maxLen = 3+result.ppHandle.bugReportUrl.length;
+            }
+
             let c=0;
             for(const line of result.replacedLines) {
                 tooltip += `${line}\n`;
@@ -53,14 +64,16 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             }
 
             let arg = `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines\n`;
+            arg += "Original Line:"
             arg += `"${result.originalLine}"\n`;
             arg += "-".repeat(maxLen)+"\n";
             arg += "LNum:\n";
             arg += `${tooltip_lines}`;
             arg += "-".repeat(maxLen)+"\n";
-            arg += ` : ${result.ppHandle.description}\n`;
-            arg += ` : ${result.ppHandle.bugReportEmail}\n`;
-            arg += ` : ${result.ppHandle.bugReportUrl}\n`;
+            arg += ` ${result.ppHandle.description}\n`;
+            arg += ` ${result.ppHandle.bugReportEmail}\n`;
+            arg += ` ${result.ppHandle.bugReportUrl}\n`;
+            arg += "-".repeat(maxLen)+"\n";
 
             cl.command = {
                 title: `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines`,
