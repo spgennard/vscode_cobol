@@ -359,6 +359,7 @@ class Token {
         } else {
             this.currentTokenLower = this.lineLowerTokens[this.tokenIndex];
         }
+        this.endsWithDot = this.currentToken[this.currentToken.length-1] === '.';
 
         this.prevCol = this.currentCol;
         this.currentCol = this.line.indexOf(this.currentToken, this.rollingColumn);
@@ -1441,20 +1442,16 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         let tokenCountPerLine = 0;
         do {
             try {
-                let endsWithDot = false;
+                const endsWithDot = token.endsWithDot;
 
                 let tcurrent: string = token.currentToken;
                 let tcurrentLower: string = token.currentTokenLower;
                 tokenCountPerLine++;
 
-                if (tcurrent.endsWith(".")) {
+                if (endsWithDot) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
-                    endsWithDot = true;
-                    token.endsWithDot = endsWithDot;
-                } else {
-                    token.endsWithDot = false;
-                }
+                } 
 
                 if (tokenCountPerLine === 1) {
                     const tokenAsNumber = Number.parseInt(tcurrent, 10);
@@ -1581,16 +1578,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     tcurrentLower = tcurrent.toLowerCase();
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = false;
-                } else if (tcurrent.endsWith(".")) {
+                } else if (token.endsWithDot) {
                     tcurrent = tcurrent.substr(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = true;
-                    token.endsWithDot = true;
                 } else {
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = false;
-                    token.endsWithDot = false;
                 }
 
                 // if pickUpUsing
