@@ -962,6 +962,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const documentSymbolProvider = new CobolDocumentSymbolProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(getAllCobolSelectors(), documentSymbolProvider));
     }
+    
+    context.subscriptions.push(languages.setLanguageConfiguration(getAllCobolSelectors(), {
+            wordPattern: new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*') }));
 
     const cobolProvider = new CobolSourceCompletionItemProvider(VSCOBOLConfiguration.get());
     const cobolProviderDisposible = languages.registerCompletionItemProvider(getAllCobolSelectors(), cobolProvider);
