@@ -963,6 +963,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
         context.subscriptions.push(languages.registerDocumentSymbolProvider(getAllCobolSelectors(), documentSymbolProvider));
     }
 
+	// override VS Code's default implementation of the debug hover by using document object's word position
+    // which uses the wordpattern (defined in cobol.configuration.json)
+    context.subscriptions.push(languages.registerEvaluatableExpressionProvider(getAllCobolSelectors(), {
+		provideEvaluatableExpression(document: vscode.TextDocument, position: vscode.Position): vscode.ProviderResult<vscode.EvaluatableExpression> {
+			const wordRange = document.getWordRangeAtPosition(position);
+			return wordRange ? new vscode.EvaluatableExpression(wordRange) : undefined;
+        }
+    }));
+
     const cobolProvider = new CobolSourceCompletionItemProvider(VSCOBOLConfiguration.get());
     const cobolProviderDisposible = languages.registerCompletionItemProvider(getAllCobolSelectors(), cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
