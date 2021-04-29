@@ -304,11 +304,11 @@ export class SourceReference {
 }
 
 class Token {
-    public line = "";
+    private line:string;
 
     private lineTokens: string[] = [];
-    private lineLowerTokens: string[] = [];
-    private isLiteral: boolean[] = [];
+    private lineTokensLower: string[];
+    private tokenColumns: number[] = [];
     private tokenIndex = 0;
 
     public currentToken = "";
@@ -321,35 +321,36 @@ class Token {
     public nextTokenLower = "";
 
     public currentCol = 0;
-    public prevCol = 0;
-    public rollingColumn = 0;
 
     public endsWithDot = false;
 
-    public constructor(line: string, previousToken?: Token) {
+    public constructor(line: string, previousToken: Token|undefined) {
         this.line = line;
         splitArgument(this.line, false, this.lineTokens);
-        this.lineLowerTokens = [];
+        this.lineTokensLower = [];
+        let rollingColumn = 0;
         for (let c = 0; c < this.lineTokens.length; c++) {
-            this.lineLowerTokens.push(this.lineTokens[c].toLowerCase());
+            const currentToken = this.lineTokens[c];
+            this.lineTokensLower.push(currentToken.toLowerCase());
+            rollingColumn = this.line.indexOf(currentToken, rollingColumn);
+            this.tokenColumns.push(rollingColumn);
         }
         this.tokenIndex = 0;
-        this.setupToken();
+        this.setupNextToken();
 
         if (previousToken !== undefined) {
             // wire in previous token into this token
             if (previousToken.lineTokens.length > 0) {
-                const lastToken = previousToken.lineTokens[previousToken.lineTokens.length - 1];
-                this.prevCol = previousToken.line.indexOf(lastToken);
-                this.prevToken = lastToken;
-                this.prevTokenLower = lastToken.toLowerCase();
+                const prevTokenId = previousToken.lineTokens.length - 1;
+                this.prevToken = previousToken.lineTokens[prevTokenId];
+                this.prevTokenLower = previousToken.lineTokensLower[prevTokenId];
             }
         }
     }
 
     public static Blank = new Token("", undefined);
 
-    private setupToken() {
+    private setupNextToken() {
         this.prevToken = this.currentToken;
         this.prevTokenLower = this.currentTokenLower;
 
@@ -357,13 +358,11 @@ class Token {
         if (this.currentToken === undefined) {
             this.currentToken = this.currentTokenLower = "";
         } else {
-            this.currentTokenLower = this.lineLowerTokens[this.tokenIndex];
+            this.currentTokenLower = this.lineTokensLower[this.tokenIndex];
         }
         this.endsWithDot = this.currentToken[this.currentToken.length - 1] === '.';
 
-        this.prevCol = this.currentCol;
-        this.currentCol = this.line.indexOf(this.currentToken, this.rollingColumn);
-        this.rollingColumn = this.currentCol + this.currentToken.length;
+        this.currentCol = this.tokenColumns[this.tokenIndex];
 
         /* setup next token + 1 */
         if (2 + this.tokenIndex < this.lineTokens.length) {
@@ -377,7 +376,7 @@ class Token {
             if (this.nextToken === undefined) {
                 this.nextToken = this.nextTokenLower = "";
             } else {
-                this.nextTokenLower = this.lineLowerTokens[1 + this.tokenIndex];
+                this.nextTokenLower = this.lineTokensLower[1 + this.tokenIndex];
             }
         } else {
             this.nextToken = this.nextTokenLower = "";
@@ -390,7 +389,7 @@ class Token {
         }
 
         this.tokenIndex++;
-        this.setupToken();
+        this.setupNextToken();
         return false;
     }
 
@@ -398,11 +397,11 @@ class Token {
         const possibleTokenLower = possibleToken.toLocaleLowerCase();
         const possibleTokenLowerDot = possibleTokenLower + ".";
 
-        for (let c = 0; c < this.lineLowerTokens.length; c++) {
-            if (this.lineLowerTokens[c] === possibleTokenLower) {
+        for (let c = 0; c < this.lineTokensLower.length; c++) {
+            if (this.lineTokensLower[c] === possibleTokenLower) {
                 return true;
             }
-            if (this.lineLowerTokens[c] === possibleTokenLowerDot) {
+            if (this.lineTokensLower[c] === possibleTokenLowerDot) {
                 return true;
             }
         }
@@ -504,7 +503,10 @@ class ParseState {
 
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
-
+    inReplace: boolean;
+    replaceLeft: string;
+    replaceRight: string;
+    captureReplaceLeft: boolean;
     ignoreInOutlineView: boolean;
 
     addReferencesDuringSkipToTag: boolean;
@@ -515,6 +517,8 @@ class ParseState {
     parameters: COBOLParameter[];
 
     entryPointCount: number;
+
+    replaceMap: Map<string, string>;
 
     constructor() {
         this.currentDivision = COBOLToken.Null;
@@ -547,6 +551,11 @@ class ParseState {
         this.endsWithDot = false;
         this.prevEndsWithDot = false;
         this.currentLineIsComment = false;
+        this.inReplace = false;
+        this.captureReplaceLeft = true;
+        this.replaceLeft = "";
+        this.replaceRight = "";
+        this.replaceMap = new Map<string, string>();
     }
 }
 
@@ -1665,6 +1674,37 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             }
                         }
                     }
+
+                    if (state.inReplace) {
+                        switch (tcurrentLower) {
+                            case 'by':
+                                state.captureReplaceLeft = false;
+                                break;
+                            case 'off':
+                                state.skipToDot = false;
+                                state.inReplace = false;
+                                state.replaceMap.clear();
+                                break;
+                            default:
+                                if (state.captureReplaceLeft) {
+                                    if (state.replaceLeft.length !== 0) {
+                                        state.replaceLeft += " ";
+                                    }
+                                    state.replaceLeft += tcurrent;
+                                } else {
+                                    if (state.replaceRight.length !== 0) {
+                                        state.replaceRight += " ";
+                                    }
+                                    state.replaceRight += tcurrent;
+                                }
+                                if (!state.captureReplaceLeft && tcurrent.endsWith("==")) {
+                                    state.replaceMap.set(state.replaceLeft, state.replaceRight);
+                                    state.replaceLeft = state.replaceRight = "";    
+                                }
+                                break;
+                        }
+
+                    }
                     //reset
                     if (state.endsWithDot === true) {
                         state.skipToDot = false;
@@ -1711,7 +1751,16 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     continue;
                 }
 
-                // handle sections)
+                //remember replace
+                if (currentLower === 'replace') {
+                    state.inReplace = true;
+                    state.skipToDot = true;
+                    state.captureReplaceLeft = true;
+                    state.replaceLeft = state.replaceRight = "";
+                    continue;
+                }
+
+                // handle sections
                 if (state.currentClass === COBOLToken.Null && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== 'exit')) {
                     if (prevTokenLower === "declare") {
                         continue;
@@ -2043,16 +2092,14 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // we are in the procedure division
                 if (state.captureDivisions && state.currentDivision !== COBOLToken.Null &&
                     state.currentDivision === state.procedureDivision && state.endsWithDot && state.prevEndsWithDot) {
-                    if (!this.isValidKeyword(prevTokenLower) && !this.isValidKeyword(currentLower)) {
-                        const beforeCurrent = line.substr(0, token.currentCol - 1).trim();
-                        const c = tcurrent;
-                        if (c.length !== 0) {
-                            if (this.isParagraph(c)) {
+                    if (!this.isValidKeyword(currentLower)) {
+                        if (tcurrent.length !== 0) {
+                            if (this.isParagraph(tcurrent)) {
                                 if (state.currentSection !== COBOLToken.Null) {
-                                    const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentSection);
+                                    const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, tcurrent, tcurrent, state.currentSection);
                                     this.paragraphs.set(newToken.tokenNameLower, newToken);
                                 } else {
-                                    const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, c, c, state.currentDivision);
+                                    const newToken = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, tcurrent, tcurrent, state.currentDivision);
                                     this.paragraphs.set(newToken.tokenNameLower, newToken);
                                 }
                             }
