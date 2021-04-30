@@ -255,13 +255,13 @@ export class COBOLToken {
     public extraInformation: string;
     public inSection: COBOLToken;
 
-    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, "", "", "", undefined, false, "");
+    static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, 0, "", "", undefined, false, "");
 
     public getEndDelimiterToken(): COBOLToken {
-        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, "", this.tokenName, this.description, this.parentToken, this.inProcedureDivision, "");
+        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, 0, this.tokenName, this.description, this.parentToken, this.inProcedureDivision, "");
     }
 
-    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, line: string, token: string, description: string,
+    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, startColumn: number, token: string, description: string,
         parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation: string) {
         this.ignoreInOutlineView = false;
         this.filename = filename;
@@ -269,7 +269,7 @@ export class COBOLToken {
         this.startLine = startLine;
         this.tokenName = token.trim();
         this.tokenNameLower = this.tokenName.toLowerCase();
-        this.startColumn = line.indexOf(this.tokenName);
+        this.startColumn = startColumn;
         this.description = description;
         this.endLine = this.startLine;
         this.endColumn = this.startColumn + this.tokenName.length;
@@ -1066,7 +1066,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
 
             if (this.ImplicitProgramId.length !== 0) {
-                const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, undefined);
+                const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", this.ImplicitProgramId, this.ImplicitProgramId, COBOLToken.Null);
                 ctoken.endLine = sourceHandler.getLineCount();
                 ctoken.startLine = 0;
                 ctoken.endColumn = lineLength;
@@ -1165,12 +1165,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
     }
 
-    private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, line: string, token: string,
-        description: string, parentToken: COBOLToken | undefined,
+    private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, _line: string, token: string,
+        description: string, parentToken: COBOLToken,
         extraInformation = ""): COBOLToken {
 
         const state: ParseState = this.sourceReferences.state;
-        const ctoken = new COBOLToken(this.filename, tokenType, startLine, line, token, description, parentToken, state.inProcedureDivision, extraInformation);
+        const ctoken = new COBOLToken(this.filename, tokenType, startLine, _line.indexOf(token), token, description, parentToken, state.inProcedureDivision, extraInformation);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
