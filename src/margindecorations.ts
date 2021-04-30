@@ -272,7 +272,8 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
     }
 
     if (textLanguage === TextLanguage.COBOL) {
-        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, VSCOBOLConfiguration.get());
+        const configHandler = VSCOBOLConfiguration.get();
+        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         if (gcp === undefined) {
             activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
             return;
@@ -288,7 +289,14 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
                 return;
         }
 
-        for (let i = 0; i < doc.lineCount; i++) {
+        const lineLimit = configHandler.editor_maxTokenizationLineLength;
+        const maxLinesInFile = doc.lineCount;
+        let maxLines = maxLinesInFile;
+        if (maxLines > lineLimit) {
+            maxLines = lineLimit;
+        }
+
+        for (let i = 0; i < maxLines; i++) {
             const lineText = doc.lineAt(i);
             const line = lineText.text;
 
