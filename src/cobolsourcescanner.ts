@@ -958,7 +958,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 break;
         }
 
-        let line: string | undefined = undefined;
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
@@ -971,19 +970,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 state.currentLineIsComment = false;
-                line = sourceHandler.getLine(l, false);
+                const processedLine: string|undefined = sourceHandler.getLine(l, false);
 
                 // eof
-                if (line === undefined) {
+                if (processedLine === undefined) {
                     break;
                 }
 
                 // don't process line
-                if (line.length === 0 && state.currentLineIsComment) {
+                if (processedLine.length === 0 && state.currentLineIsComment) {
                     continue;
                 }
 
-                line = line.trimRight();
+                const line = processedLine.trimRight();
 
                 // don't parse a empty line
                 if (line.length > 0) {
@@ -1013,7 +1012,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             for (const preProcLine of preProcLines) {
                                 if (preProcLine !== null && preProcLine !== undefined && preProcLine.trimLeft().length !== 0) {
                                     const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
-                                    prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, preProcLine);
+                                    prevToken = this.parseLineByLine(l, prevTokenToParse, preProcLine);
                                 }
                             }
 
@@ -1029,7 +1028,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     } else {
                         const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
-                        prevToken = this.parseLineByLine(sourceHandler, l, prevTokenToParse, line);
+                        prevToken = this.parseLineByLine(l, prevTokenToParse, line);
                     }
                 }
             }
@@ -1039,37 +1038,39 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         }
 
         if (this.sourceReferences.topLevel) {
-            const lineLength = line !== undefined ? line.length : 0;
+            const lastLineCount = sourceHandler.getLineCount();
+            const lastLineLengthU = sourceHandler.getLine(lastLineCount, true);
+            const lastLineLength = lastLineLengthU === undefined ? 0: lastLineLengthU.length;
             if (state.programs.length !== 0) {
                 for (let cp = 0; cp < state.programs.length; cp++) {
                     const currentProgram = state.programs.pop();
                     if (currentProgram !== undefined) {
                         currentProgram.endLine = sourceHandler.getLineCount();
-                        currentProgram.endColumn = lineLength;
+                        currentProgram.endColumn = lastLineLength;
                     }
                 }
             }
 
             if (state.currentDivision !== COBOLToken.Null) {
                 state.currentDivision.endLine = sourceHandler.getLineCount();
-                state.currentDivision.endColumn = lineLength;
+                state.currentDivision.endColumn = lastLineLength;
             }
 
             if (state.currentSection !== COBOLToken.Null) {
                 state.currentSection.endLine = sourceHandler.getLineCount();
-                state.currentSection.endColumn = lineLength;
+                state.currentSection.endColumn = lastLineLength;
             }
 
             if (state.currentParagraph !== COBOLToken.Null) {
                 state.currentParagraph.endLine = sourceHandler.getLineCount();
-                state.currentParagraph.endColumn = lineLength;
+                state.currentParagraph.endColumn = lastLineLength;
             }
 
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", 0, this.ImplicitProgramId, this.ImplicitProgramId, COBOLToken.Null);
                 ctoken.endLine = sourceHandler.getLineCount();
                 ctoken.startLine = 0;
-                ctoken.endColumn = lineLength;
+                ctoken.endColumn = lastLineLength;
                 ctoken.ignoreInOutlineView = true;
                 state.currentProgramTarget.Token = ctoken;
                 this.tokensInOrder.pop();
@@ -1566,11 +1567,23 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
     }
 
-    private parseLineByLine(sourceHandler: ISourceHandler, lineNumber: number, prevToken: Token, line: string): Token {
+    private cleanupReplaceToken(token: string): string {
+        if (token.startsWith("==") && token.endsWith("==")) {
+            return token.substring(2,token.length-2);
+        }
+
+        return token;
+    }
+
+    private parseLineByLine(lineNumber: number, prevToken: Token, line: string): Token {
         const token = new Token(line, prevToken);
 
-        const state: ParseState = this.sourceReferences.state;
+        return this.processToken(lineNumber, token, line);
+    }
 
+    private processToken(lineNumber: number, token:Token, line:string): Token {
+        const state: ParseState = this.sourceReferences.state;
+        
         do {
             try {
                 // console.log(`DEBUG: ${line}`);
@@ -1580,8 +1593,28 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     continue;
                 }
 
+                // fakeup a replace algorithm
+                if (state.replaceMap.size !== 0) {
+                    if (state.replaceMap.has(tcurrent)) {
+                        const rtext = state.replaceMap.get(tcurrent);
+                        if (rtext !== undefined) {
+                            const newToken = new Token(rtext as string,token);
+                            const lastTokenId = this.tokensInOrder.length;
+                            this.processToken(lineNumber, newToken, rtext);
+                            if (lastTokenId !== this.tokensInOrder.length) {
+                                for(let ltid=lastTokenId; ltid<this.tokensInOrder.length; ltid++) {
+                                    const addedToken = this.tokensInOrder[ltid];
+                                    addedToken.startColumn = token.currentCol;
+                                    addedToken.endColumn = token.currentCol + tcurrent.length;
+                                }
+                            }
+                            continue;
+                        }
+                    }
+
+                }
+
                 let tcurrentLower: string = token.currentTokenLower;
-                const tcurrentCurrentCol = token.currentCol;
 
                 // HACK for "set x to entry"
                 if (token.prevTokenLower === "to" && tcurrentLower === "entry") {
@@ -1609,7 +1642,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (state.endsWithDot) {
                         state.pickUpUsing = false;
                     }
-                    let isReadonly = false;
                     switch (tcurrentLower) {
                         case "using":
                             state.using = UsingState.BY_REF;
@@ -1620,7 +1652,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             state.using = UsingState.BY_REF;
                             break;
                         case "value":
-                            isReadonly = true;
                             state.using = UsingState.BY_VALUE;
                             break;
                         case "returning":
@@ -1642,6 +1673,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     continue;
                 }
+
+                const tcurrentCurrentCol = token.currentCol;
 
                 // if skipToDot and not the end of the statement.. swallow
                 if (state.skipToDot) {
@@ -1706,7 +1739,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     state.replaceRight += tcurrent;
                                 }
                                 if (!state.captureReplaceLeft && tcurrent.endsWith("==")) {
-                                    state.replaceMap.set(state.replaceLeft, state.replaceRight);
+                                    state.replaceMap.set(this.cleanupReplaceToken(""+state.replaceLeft), this.cleanupReplaceToken(""+state.replaceRight));
                                     state.replaceLeft = state.replaceRight = "";
                                 }
                                 break;
