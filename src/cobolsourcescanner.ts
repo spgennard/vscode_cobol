@@ -2123,7 +2123,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // are we in the working-storage section?
                 if (state.pickFields && prevToken.length > 0) {
-
+                    let tcurrentCurrentCol2 = tcurrentCurrentCol;
                     /* only interesting in things that are after a number */
                     if (this.isNumber(prevToken) && !this.isNumber(current)) {
                         const isFiller: boolean = (currentLower === 'filler');
@@ -2139,6 +2139,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 line = prevToken + " filler ";
                                 trimToken = "filler";
                                 pickUpThisField = true;
+                                tcurrentCurrentCol2 = 0;
                             } else {
                                 // okay, current item looks like it could be a field
                                 if (!this.isValidKeyword(currentLower)) {
@@ -2175,7 +2176,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     }
                                 }
 
-                                const ctoken = this.newCOBOLToken(style, lineNumber, line, tcurrentCurrentCol, trimToken, trimToken, state.currentDivision, extraInfo);
+                                const ctoken = this.newCOBOLToken(style, lineNumber, line, tcurrentCurrentCol2, trimToken, trimToken, state.currentDivision, extraInfo);
                                 if (!isFiller) {
                                     this.addVariableOrConstant(currentLower, ctoken);
                                 }
