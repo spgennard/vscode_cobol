@@ -321,9 +321,6 @@ class SToken {
 }
 
 class Token {
-    private line: string;
-
-    private lineTokens: string[] = [];
     private tokenIndex = 0;
 
     public currentToken = "";
@@ -338,26 +335,26 @@ class Token {
     private stokens: SToken[] = [];
 
     public constructor(line: string, previousToken: Token | undefined) {
-        this.line = line;
-        splitArgument(this.line, false, this.lineTokens);
+        const lineTokens: string[] = [];
+        splitArgument(line, false, lineTokens);
         let rollingColumn = 0;
-        for (let c = 0; c < this.lineTokens.length; c++) {
-            const currentToken = this.lineTokens[c];
+        for (let c = 0; c < lineTokens.length; c++) {
+            const currentToken = lineTokens[c];
             const currentTokenLower = currentToken.toLowerCase();
 
-            rollingColumn = this.line.indexOf(currentToken, rollingColumn);
+            rollingColumn = line.indexOf(currentToken, rollingColumn);
 
-            const endsWithDot = this.lineTokens[c].charAt(currentToken.length - 1) === '.';
-            this.stokens.push(new SToken(this.lineTokens[c], currentTokenLower, endsWithDot, rollingColumn));
+            const endsWithDot = currentToken.length === 0 ? false : currentToken.charAt(currentToken.length - 1) === '.';
+            this.stokens.push(new SToken(currentToken, currentTokenLower, endsWithDot, rollingColumn));
         }
         this.tokenIndex = 0;
         this.setupNextToken();
 
         if (previousToken !== undefined) {
             // wire in previous token into this token
-            if (previousToken.lineTokens.length > 0) {
-                const prevTokenId = previousToken.lineTokens.length - 1;
-                this.prevToken = previousToken.lineTokens[prevTokenId];
+            if (previousToken.stokens.length > 0) {
+                const prevTokenId = previousToken.stokens.length - 1;
+                this.prevToken = previousToken.stokens[prevTokenId].currentToken;
                 this.prevTokenLower = previousToken.stokens[prevTokenId].currentTokenLower;
             }
         }
@@ -1593,10 +1590,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     private parseLineByLine(lineNumber: number, prevToken: Token, line: string): Token {
         const token = new Token(line, prevToken);
 
-        return this.processToken(lineNumber, token, line);
+        return this.processToken(lineNumber, token, line, this.sourceReferences.state.replaceMap.size !== 0);
     }
 
-    private processToken(lineNumber: number, token: Token, line: string): Token {
+    private processToken(lineNumber: number, token: Token, line: string, replaceOn: boolean): Token {
         const state: ParseState = this.sourceReferences.state;
 
         do {
@@ -1609,13 +1606,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 // fakeup a replace algorithm
-                if (state.replaceMap.size !== 0) {
+                if (replaceOn) {
                     if (state.replaceMap.has(tcurrent)) {
                         const rtext = state.replaceMap.get(tcurrent);
                         if (rtext !== undefined) {
                             const newToken = new Token(rtext as string, token);
                             const lastTokenId = this.tokensInOrder.length;
-                            this.processToken(lineNumber, newToken, rtext);
+                            this.processToken(lineNumber, newToken, rtext, replaceOn);
+
+                            // ensure any new token match the original soure
                             if (lastTokenId !== this.tokensInOrder.length) {
                                 for (let ltid = lastTokenId; ltid < this.tokensInOrder.length; ltid++) {
                                     const addedToken = this.tokensInOrder[ltid];
