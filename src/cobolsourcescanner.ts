@@ -378,6 +378,37 @@ class Token {
         return this.stokens[2 + this.tokenIndex];
     }
 
+    public compoundItems(startCompound: string, scanner: COBOLSourceScanner) {
+        if (this.endsWithDot) {
+            return startCompound;
+        }
+
+        if (1 + this.tokenIndex >= this.stokens.length) {
+            return startCompound;
+        }
+
+        let comp = startCompound;
+        let addNext = false;
+        for(let sc=1+this.tokenIndex; sc<this.stokens.length; sc++) {
+            const stok = this.stokens[sc];
+            const trimCurrent = scanner.trimLiteral(stok.currentToken);
+            if (stok.endsWithDot) {
+                return comp+" "+trimCurrent;
+            }
+            if(addNext) {
+                comp += " "+trimCurrent;
+                addNext = false;
+            } else if (stok.currentToken === '&') {
+                comp += " "+trimCurrent;
+                addNext = true;
+            } else {
+                return comp;
+            }
+        }
+
+        return comp;
+
+    }
     private setupNextToken() {
         this.prevToken = this.currentToken;
         this.prevTokenLower = this.currentTokenLower;
@@ -1396,7 +1427,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return varMap;
     }
 
-    private trimLiteral(literal: string) {
+    public trimLiteral(literal: string):string {
         let literalTrimmed = literal.trim();
 
         if (literalTrimmed.length === 0) {
@@ -1610,9 +1641,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (state.replaceMap.has(tcurrent)) {
                         const rtext = state.replaceMap.get(tcurrent);
                         if (rtext !== undefined) {
-                            const newToken = new Token(rtext as string, token);
                             const lastTokenId = this.tokensInOrder.length;
-                            this.processToken(lineNumber, newToken, rtext, replaceOn);
+                            const newLine = rtext+" "+line.substr(token.currentCol+token.currentToken.length);
+                            const newToken = new Token(newLine as string, token);
+                            const retToken = this.processToken(lineNumber, newToken, newLine, replaceOn);
 
                             // ensure any new token match the original soure
                             if (lastTokenId !== this.tokensInOrder.length) {
@@ -1622,7 +1654,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     addedToken.endColumn = token.currentCol + tcurrent.length;
                                 }
                             }
-                            continue;
+                            return retToken;
                         }
                     }
 
@@ -1755,6 +1787,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 if (!state.captureReplaceLeft && tcurrent.endsWith("==")) {
                                     state.replaceMap.set(this.cleanupReplaceToken("" + state.replaceLeft), this.cleanupReplaceToken("" + state.replaceRight));
                                     state.replaceLeft = state.replaceRight = "";
+                                    state.captureReplaceLeft = true;
                                 }
                                 break;
                         }
@@ -1875,8 +1908,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // handle entries
                 if (prevTokenLowerUntrimmed === "entry") {
+                    let entryStatement = prevPlusCurrent;
                     const trimmedCurrent = this.trimLiteral(current);
-                    const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, tcurrentCurrentCol, trimmedCurrent, prevPlusCurrent, state.currentDivision);
+                    const nextSTokenOrBlank = token.nextSTokenOrBlank().currentToken;
+                    if (nextSTokenOrBlank == "&") {
+                        entryStatement = prevToken+" "+token.compoundItems(trimmedCurrent, this);
+                    }
+                    const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, tcurrentCurrentCol, trimmedCurrent, entryStatement, state.currentDivision);
 
                     state.entryPointCount++;
                     state.parameters = [];
