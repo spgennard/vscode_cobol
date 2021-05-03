@@ -3,6 +3,93 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.2
+
+**prep**
+
+* [b5ba4804b2fe5e7](https://github.com/spgennard/vscode_cobol/commit/b5ba4804b2fe5e7) *2021-05-03 17:56:38*
+
+**add experimental replace verb passing under option**
+
+* [e7745945e990cc8](https://github.com/spgennard/vscode_cobol/commit/e7745945e990cc8) *2021-05-03 16:09:16*
+
+**try to handle mf compound entry-statements**
+
+* [3dedc2aedc7fe4f](https://github.com/spgennard/vscode_cobol/commit/3dedc2aedc7fe4f) *2021-05-02 15:40:33*
+
+**simplify code**
+
+* [ec4673ed35eece5](https://github.com/spgennard/vscode_cobol/commit/ec4673ed35eece5) *2021-05-02 11:06:51*
+
+**tidy up token handling**
+
+* [d619a8bb2955e8d](https://github.com/spgennard/vscode_cobol/commit/d619a8bb2955e8d) *2021-05-01 23:45:45*
+
+**add an initial impl of 'replace' functionality**
+
+* [93b2a034801f4d6](https://github.com/spgennard/vscode_cobol/commit/93b2a034801f4d6) *2021-05-01 21:02:25*
+
+**fix offset for 'fake' filler items**
+
+* [71f14d0ebd82891](https://github.com/spgennard/vscode_cobol/commit/71f14d0ebd82891) *2021-05-01 07:30:05*
+
+**continue work on tweaking startColumn handling**
+
+* [ba57b300d565141](https://github.com/spgennard/vscode_cobol/commit/ba57b300d565141) *2021-04-30 22:28:13*
+
+**start to change COBOLToken/Token to be performant**
+
+* [753beb429294f10](https://github.com/spgennard/vscode_cobol/commit/753beb429294f10) *2021-04-30 19:09:37*
+
+**fix bug with paragraphs and continue token/refactoring**
+
+* [c8fa5989dcd1ecb](https://github.com/spgennard/vscode_cobol/commit/c8fa5989dcd1ecb) *2021-04-29 23:30:50*
+
+**remove condition that is not required**
+
+* [3ddf8759f44ac97](https://github.com/spgennard/vscode_cobol/commit/3ddf8759f44ac97) *2021-04-25 15:29:09*
+
+**tweak token**
+
+* [dc4c57d62efb506](https://github.com/spgennard/vscode_cobol/commit/dc4c57d62efb506) *2021-04-25 15:12:28*
+
+**place the file system correctly**
+
+* [131377b31c666d8](https://github.com/spgennard/vscode_cobol/commit/131377b31c666d8) *2021-04-24 21:58:52*
+
+**ensure pp turns off parse_copybooks_for_references**
+
+* [d596bfb77f4fa91](https://github.com/spgennard/vscode_cobol/commit/d596bfb77f4fa91) *2021-04-24 17:15:52*
+
+**update**
+
+* [e736c87f928027a](https://github.com/spgennard/vscode_cobol/commit/e736c87f928027a) *2021-04-24 16:55:54*
+
+**create new doc on pp codelens**
+
+* [838a20bdc2a3b17](https://github.com/spgennard/vscode_cobol/commit/838a20bdc2a3b17) *2021-04-24 16:40:23*
+
+**add codelens for pp, so we can see easier what is happening**
+
+* [d2f368f70a56abf](https://github.com/spgennard/vscode_cobol/commit/d2f368f70a56abf) *2021-04-24 09:10:09*
+
+**use the copybook scan tokens**
+
+* [49be90df5d118aa](https://github.com/spgennard/vscode_cobol/commit/49be90df5d118aa) *2021-04-18 21:22:58*
+
+**warn about out of sync cache when debugging and don't reparse**
+
+* [922d811f3029cb7](https://github.com/spgennard/vscode_cobol/commit/922d811f3029cb7) *2021-04-16 19:18:35*
+
+**package update**
+
+* [c2f6eaa82de8d54](https://github.com/spgennard/vscode_cobol/commit/c2f6eaa82de8d54) *2021-04-14 21:05:08*
+
+**Update CHANGELOG.md**
+
+* [3e26e8c465e3d35](https://github.com/spgennard/vscode_cobol/commit/3e26e8c465e3d35) *2021-04-14 21:02:55*
+
+
 ## 7.4.15
 
 **tweak packages**
