@@ -12,6 +12,7 @@ import * as path from 'path';
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
+import { config } from "node:process";
 
 export class COBOLPreprocResult {
     public ppHandle: CobApiHandle;
@@ -483,7 +484,7 @@ export class SharedSourceReferences {
 
     public topLevel: boolean;
 
-    constructor(topLevel: boolean) {
+    constructor(configHandler: ICOBOLSettings, topLevel: boolean) {
         this.filenames = [];
 
         this.targetReferences = new Map<string, SourceReference[]>();
@@ -494,7 +495,7 @@ export class SharedSourceReferences {
         this.sharedSections = new Map<string, COBOLToken>();
         this.sharedParagraphs = new Map<string, COBOLToken>();
         this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
-        this.state = new ParseState();
+        this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
         this.topLevel = topLevel;
         this.ignoreUnusedSymbol = new Map<string, string>();
@@ -563,7 +564,9 @@ class ParseState {
 
     replaceMap: Map<string, string>;
 
-    constructor() {
+    public process_replace_verb: boolean;
+
+    constructor(configHandler: ICOBOLSettings) {
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
         this.currentSection = COBOLToken.Null;
@@ -599,6 +602,8 @@ class ParseState {
         this.replaceLeft = "";
         this.replaceRight = "";
         this.replaceMap = new Map<string, string>();
+        this.process_replace_verb = configHandler.process_replace_verb;
+
     }
 }
 
@@ -740,7 +745,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
             "",
-            new SharedSourceReferences(true),
+            new SharedSourceReferences(configHandler, true),
             parse_copybooks_for_references,
             eventHandler,
             externalFeatures
@@ -757,7 +762,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
             cacheDirectory,
-            new SharedSourceReferences(true),
+            new SharedSourceReferences(configHandler, true),
             parse_copybooks_for_references,
             eventHandler,
             externalFeatures
@@ -786,7 +791,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
-        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(true),
+        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true),
         parse_copybooks_for_references: boolean,
         sourceEventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures) {
@@ -1047,10 +1052,15 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     // if we have any pre-processed lines..
                     if (preProcLines.length !== 0 && ppHandleOrUndef !== undefined) {
                         this.ppResults.push(new COBOLPreprocResult(ppHandleOrUndef, l, line, preProcLines, copybooks));
+
                         const currentOutlineView = state.ignoreInOutlineView;
                         const current_parse_copybooks_for_references = this.parse_copybooks_for_references;
+                        const current_process_replace_verb = configHandler.process_replace_verb;
+
                         this.parse_copybooks_for_references = false;
                         state.ignoreInOutlineView = true;
+                        state.process_replace_verb = false;
+                        
                         try {
                             for (const preProcLine of preProcLines) {
                                 if (preProcLine !== null && preProcLine !== undefined && preProcLine.trimLeft().length !== 0) {
@@ -1066,6 +1076,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         }
                         finally {
                             state.ignoreInOutlineView = currentOutlineView;
+                            state.process_replace_verb = current_process_replace_verb;
                             this.parse_copybooks_for_references = current_parse_copybooks_for_references;
                         }
 
@@ -1840,7 +1851,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
                 //remember replace
-                if (currentLower === 'replace') {
+                if (state.process_replace_verb && currentLower === 'replace') {
                     state.inReplace = true;
                     state.skipToDot = true;
                     state.captureReplaceLeft = true;

@@ -143,7 +143,7 @@ for (const arg of args) {
                         const config = new COBOLSettings();
                         config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                         const symbolCatcher = new COBOLSymbolTableEventHelper(config);
-                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(true), config.parse_copybooks_for_references, symbolCatcher, features);
+                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(config,true), config.parse_copybooks_for_references, symbolCatcher, features);
                         if (qcp.callTargets.size > 0) {
                             stats.programsDefined++;
                             if (qcp.callTargets !== undefined) {

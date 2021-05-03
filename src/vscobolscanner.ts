@@ -158,7 +158,7 @@ export default class VSCOBOLSourceScanner {
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
                 const qcpd = new COBOLSourceScanner(sourceHandler, config,
-                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(true),
+                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(config,true),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);

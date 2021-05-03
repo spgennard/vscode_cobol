@@ -685,7 +685,13 @@
           },
           "default": [],
           "uniqueItems": true
-        }
+        },
+        "coboleditor.process_replace_verb": {
+          "type": "boolean",
+          "title": "Process 'replace' verb",
+          "description": "Process 'replace' verb (default false)",
+          "default": false
+        }        
       }
     },
     "views": {
