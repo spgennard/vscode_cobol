@@ -151,7 +151,7 @@ export class CobolLinterProvider {
 
         for (const standard of standards) {
             const sectionStandard = standard.split("=", 2);
-            standardsMap.set(sectionStandard[0].toLocaleLowerCase(), sectionStandard[1]);
+            standardsMap.set(sectionStandard[0].toLowerCase(), sectionStandard[1]);
         }
 
         for (const [key, tokens] of qp.constantsOrVariables) {
@@ -240,7 +240,7 @@ export class CobolLinterProvider {
                     let ignore = false;
                     if (this.settings.linter_ignore_section_before_entry) {
                         const nextLine = qp.sourceHandler.getLine(1 + token.startLine, false);
-                        if (nextLine?.toLocaleLowerCase().indexOf("entry") !== -1) {
+                        if (nextLine?.toLowerCase().indexOf("entry") !== -1) {
                             ignore = true;
                         }
                     }

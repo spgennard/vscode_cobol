@@ -27,7 +27,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
             const word = wordRange ? document.getText(wordRange) : '';
             if (word !== "") {
                 const img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCache;
-                const wordLower = word.toLocaleLowerCase();
+                const wordLower = word.toLowerCase();
                 if (img.callableSymbols.has(wordLower)) {
                     const symbols = img.callableSymbols.get(wordLower);
                     if (symbols !== undefined) {

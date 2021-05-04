@@ -90,7 +90,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         if (word === "") {
             return undefined;
         }
-        const workLower = word.toLocaleLowerCase();
+        const workLower = word.toLowerCase();
 
         for (let i = 1; i < document.lineCount; i++) {
             const lineText = document.lineAt(i).text;
@@ -118,7 +118,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 }
 
                 // fuzzy match for a FD declaration
-                if (leftOfWord.toLocaleLowerCase() === "fd") {
+                if (leftOfWord.toLowerCase() === "fd") {
                     return new vscode.Location(
                         document.uri,
                         new vscode.Position(i, wordIndex)

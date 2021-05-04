@@ -126,7 +126,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
             break;
         }
 
-        const line = lineText.toLocaleLowerCase();
+        const line = lineText.toLowerCase();
         const validFixedLine = isValidFixedLine(line);
         if (validFixedLine) {
             validFixedLines++;

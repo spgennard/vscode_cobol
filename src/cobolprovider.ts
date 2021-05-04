@@ -228,7 +228,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 wordBefore = wordBefore.substr(1 + lastSpace);
                 wordBeforeLower = wordBefore.toLowerCase();
                 if (wordBeforeLower === "to") {
-                    if (lineOrg.toLocaleLowerCase().indexOf("go") !== -1) {
+                    if (lineOrg.toLowerCase().indexOf("go") !== -1) {
                         wordBefore = wordBeforeLower = "goto";
                     }
                 }

@@ -31,7 +31,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             return Promise.resolve(null);
         }
 
-        const workLower = word.toLocaleLowerCase();
+        const workLower = word.toLowerCase();
         const settings = VSCOBOLConfiguration.get();
         // cache current document, so interactive searches can be faster
         if (this.current === undefined || this.currentVersion !== document.version) {

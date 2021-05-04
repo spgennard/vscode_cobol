@@ -44,7 +44,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
 
             const wordRange = document.getWordRangeAtPosition(position, this.sectionRegEx);
             const word = wordRange ? document.getText(wordRange) : '';
-            const wordLower = word.toLocaleLowerCase();
+            const wordLower = word.toLowerCase();
 
             if (wordLower.length > 0) {
                 /* iterate through all the known copybook references */

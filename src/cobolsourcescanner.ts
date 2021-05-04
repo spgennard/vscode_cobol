@@ -166,7 +166,7 @@ export function camelize(text: string): string {
                 uppercaseNext = true;
             }
 
-            ret += ch.toLocaleLowerCase();
+            ret += ch.toLowerCase();
         }
     }
 
@@ -408,8 +408,8 @@ class Token {
         }
 
         return comp;
-
     }
+
     private setupNextToken() {
         this.prevToken = this.currentToken;
         this.prevTokenLower = this.currentTokenLower;
@@ -438,7 +438,7 @@ class Token {
     }
 
     public isTokenPresent(possibleToken: string): boolean {
-        const possibleTokenLower = possibleToken.toLocaleLowerCase();
+        const possibleTokenLower = possibleToken.toLowerCase();
         const possibleTokenLowerDot = possibleTokenLower + ".";
 
         for (let c = 0; c < this.stokens.length; c++) {
@@ -1969,7 +1969,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (state.currentClass !== COBOLToken.Null && prevTokenLower === "end" &&
                     (currentLower === "class" || currentLower === "enum" || currentLower === "valuetype" || currentLower === "interface")) {
                     state.currentClass.endLine = lineNumber;
-                    state.currentClass.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentClass.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
 
                     state.currentClass = COBOLToken.Null;
                     state.captureDivisions = true;
@@ -2048,7 +2048,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // handle "end method"
                 if (state.currentMethod !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "method") {
                     state.currentMethod.endLine = lineNumber;
-                    state.currentMethod.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentMethod.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
 
                     state.currentMethod = COBOLToken.Null;
                     state.pickFields = false;
@@ -2089,7 +2089,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 // handle "end function"
                 if (state.currentFunctionId !== COBOLToken.Null && prevTokenLower === "end" && currentLower === "function") {
                     state.currentFunctionId.endLine = lineNumber;
-                    state.currentFunctionId.endColumn = line.toLocaleLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentFunctionId.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
                     this.newCOBOLToken(COBOLTokenStyle.EndFunctionId, lineNumber, line, tcurrentCurrentCol, prevToken, current, state.currentDivision);
 
                     state.pickFields = false;
@@ -2532,7 +2532,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (commandTrimmed !== undefined) {
                     if (commandTrimmed === CobolLinterProviderSymbols.NotReferencedMarker_external) {
                         for (const offset in args) {
-                            this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLocaleLowerCase(), args[offset]);
+                            this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLowerCase(), args[offset]);
                         }
                     }
                 }
