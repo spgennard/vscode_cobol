@@ -186,11 +186,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             if (inOrOfPos === -1) {
                 inOrOfPos = textLower.indexOf(" of ");
             }
-            if (inOrOfPos !== -1) {
-                inOrOfPos += 4;
-            } else {
-                inOrOfPos = 0;
-            }
+            inOrOfPos !== -1 ? inOrOfPos += 4 : inOrOfPos = 0;
         }
 
         let inDirectory = inOrOfPos !== 0 ? text.substr(inOrOfPos) : "";
