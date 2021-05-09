@@ -162,7 +162,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         const text = line.text;
         const textLower = text.toLowerCase().replace("\t", " ");
         let filename = this.extractCopyBoolFilename(text);
-        let inOrOfPos = -1;
+        let inOrOfPos = 0;
 
         const activeTextEditor = vscode.window.activeTextEditor;
         if (activeTextEditor && filename === undefined) {
@@ -186,9 +186,14 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             if (inOrOfPos === -1) {
                 inOrOfPos = textLower.indexOf(" of ");
             }
+            if (inOrOfPos !== -1) {
+                inOrOfPos += 4;
+            } else {
+                inOrOfPos = 0;
+            }
         }
 
-        let inDirectory = inOrOfPos !== -1 ? text.substr(2 + inOrOfPos) : "";
+        let inDirectory = inOrOfPos !== 0 ? text.substr(inOrOfPos) : "";
 
         if (inDirectory.length !== 0) {
             let inDirItems = inDirectory.trim();
