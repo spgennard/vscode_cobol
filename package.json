@@ -1,7 +1,7 @@
 {
   "name": "cobol",
-  "displayName": "COBOL",
-  "description": "IntelliSense, highlighting, snippets and more for COBOL, JCL, PL/I & DIR and HLASM",
+  "displayName": "COBOL Language Support and more..",
+  "description": "Syntax highlighting, intellisense, snippets for COBOL, JCL, PL/I & DIR and HLASM",
   "version": "7.5.2",
   "publisher": "bitlang",
   "keywords": [
@@ -18,7 +18,8 @@
     "cobolit",
     "ibmcobol",
     "bms",
-    "mfu"
+    "mfu",
+    "multi-root ready"
   ],
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
   "icon": "images/cobol.png",
   "categories": [
     "Programming Languages",
+    "Linters",
     "Snippets",
     "Other"
   ],
