@@ -1521,6 +1521,10 @@
     ],
     "snippets": [
       {
+        "language": "cobol",
+        "path": "./snippets/cobol.json"
+      },
+      {
         "language": "COBOL",
         "path": "./snippets/cobol.json"
       },
