@@ -570,7 +570,7 @@ class ParseState {
 
     process_replace_verb: boolean;
 
-    current_copybook_state: copybookStatement;
+    copybook_state: copybookState;
 
     constructor(configHandler: ICOBOLSettings) {
         this.currentDivision = COBOLToken.Null;
@@ -610,8 +610,7 @@ class ParseState {
         this.replaceRight = "";
         this.replaceMap = new Map<string, string>();
         this.process_replace_verb = configHandler.process_replace_verb;
-        this.current_copybook_state = new copybookStatement();
-
+        this.copybook_state = new copybookState();
     }
 }
 
@@ -1819,7 +1818,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     }
 
                     if (state.inCopy) {
-                        const cbState = state.current_copybook_state;
+                        const cbState = state.copybook_state;
                         switch (tcurrentLower) {
                             case "":
                                 break;
@@ -1861,7 +1860,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     break;
                                 }
                                 if (cbState.isReplacingBy) {
-                                    cbState.replaceMap.set(this.cleanupReplaceToken("" + cbState.replaceLeft), this.cleanupReplaceToken("" + tcurrent));
+                                    cbState.copyReplaceMap.set(this.cleanupReplaceToken("" + cbState.replaceLeft), this.cleanupReplaceToken("" + tcurrent));
                                     cbState.isReplacingBy = false;
                                     cbState.isReplacing = true;
                                     cbState.isLeading = false;
@@ -1887,7 +1886,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         state.addReferencesDuringSkipToTag = false;
 
                         if (state.inCopy) {
-                            this.processCopyBook(state.current_copybook_state);
+                            this.processCopyBook(state.copybook_state);
                         }
                     }
                     continue;
@@ -2204,7 +2203,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (currentLower === 'copy') {
                     state.inCopy = true;
                     state.skipToDot = true;
-                    state.current_copybook_state.copyVerb = current;
+                    state.copybook_state.copyVerb = current;
                     continue;
                 }
 
@@ -2456,7 +2455,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
 
-    private processCopyBook(cbInfo: copybookStatement) {
+    private processCopyBook(cbInfo: copybookState) {
         const state: ParseState = this.sourceReferences.state;
 
         let copyToken: COBOLToken = COBOLToken.Null;
@@ -2510,7 +2509,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         this.sourceReferences.topLevel = false;
 
                         const prevRepMap = this.sourceReferences.state.replaceMap;
-                        this.sourceReferences.state.replaceMap = cbInfo.replaceMap;
+                        this.sourceReferences.state.replaceMap = new Map<string,string>([...cbInfo.copyReplaceMap, ...prevRepMap]);
 
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
@@ -2666,7 +2665,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 }
 
-class copybookStatement {
+class copybookState {
     public copyBook = "";
     public trimmedCopyBook = "";
     public isIn = false;
@@ -2680,7 +2679,7 @@ class copybookStatement {
     public literal2 = "";
     public library_name = "";
     public replaceLeft = "";
-    public replaceMap = new Map<string, string>();
+    public copyReplaceMap = new Map<string, string>();
     public isTrailing = false;
     public isLeading = false;
     public fileName = "";

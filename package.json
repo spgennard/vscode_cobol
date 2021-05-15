@@ -29,7 +29,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.57.0"
+    "vscode": "^1.56.0"
   },
   "extensionKind": [
     "workspace"
@@ -1520,10 +1520,6 @@
       }
     ],
     "snippets": [
-      {
-        "language": "cobol",
-        "path": "./snippets/cobol.json"
-      },
       {
         "language": "COBOL",
         "path": "./snippets/cobol.json"
