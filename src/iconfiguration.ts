@@ -81,7 +81,7 @@ export interface ICOBOLSettings {
 
     enable_semantic_token_provider: boolean;
 
-    process_replace_verb: boolean;
+    enable_text_replacement: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -148,7 +148,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     public enable_semantic_token_provider:boolean;
 
-    public process_replace_verb: boolean;
+    public enable_text_replacement: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
@@ -209,6 +210,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.maintain_metadata_cache = true;
         this.maintain_metadata_cache_single_folder = false;
         this.enable_semantic_token_provider = false;
-        this.process_replace_verb = false;
+        this.enable_text_replacement= false;
     }
 }

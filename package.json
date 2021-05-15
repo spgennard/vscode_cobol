@@ -688,10 +688,10 @@
           "default": [],
           "uniqueItems": true
         },
-        "coboleditor.process_replace_verb": {
+        "coboleditor.enable_text_replacement": {
           "type": "boolean",
-          "title": "Process 'replace' verb",
-          "description": "Process 'replace' verb (default false)",
+          "title": "Process 'replace' and 'replacing' verb",
+          "description": "Process 'replace' and 'replacing' verb (default false)",
           "default": false
         }
       }
