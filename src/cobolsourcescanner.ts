@@ -1871,7 +1871,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     cbState.copyBook = tcurrent;
                                     cbState.trimmedCopyBook = this.trimLiteral(tcurrentLower);
                                     cbState.lineNumber = lineNumber;
-                                    cbState.tcurrentCurrentCol = token.currentCol;
+                                    cbState.currentCol = token.currentCol;
                                     cbState.line = line;
                                     break;
                                 }
@@ -1886,6 +1886,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         state.addReferencesDuringSkipToTag = false;
 
                         if (state.inCopy) {
+                            state.copybook_state.endLineNumber = lineNumber;
+                            state.copybook_state.endCol = token.currentCol+token.currentToken.length;
                             this.processCopyBook(state.copybook_state);
                         }
                     }
@@ -2462,7 +2464,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         const isIn = cbInfo.isIn;
         const isOf = cbInfo.isOf;
         const lineNumber = cbInfo.lineNumber;
-        const tcurrentCurrentCol = cbInfo.tcurrentCurrentCol;
+        const tcurrentCurrentCol = cbInfo.currentCol;
         const line = cbInfo.line;
         const trimmedCopyBook = cbInfo.trimmedCopyBook;
         const copyVerb = cbInfo.copyVerb;
@@ -2484,6 +2486,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, copyVerb + " " + copyBook, insertInSection);
         }
 
+        copyToken.endLine = cbInfo.endLineNumber;
+        copyToken.endColumn = cbInfo.endCol;
+        
         // state.current_copybook_state = new copybookStatement();
         state.inCopy = false;
 
@@ -2673,7 +2678,9 @@ class copybookState {
     public isReplacing = false;
     public isReplacingBy = false;
     public lineNumber = 0;
-    public tcurrentCurrentCol = 0;
+    public endLineNumber = 0;
+    public endCol = 0;
+    public currentCol = 0;
     public line = ""
     public copyVerb = "";
     public literal2 = "";
