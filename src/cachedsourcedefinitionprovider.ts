@@ -50,7 +50,11 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                 /* iterate through all the known copybook references */
                 for (const [key, value] of qcp.copyBooksUsed) {
                     try {
-                        const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                        let fileName = value.statementInformation.fileName;
+                        if (fileName === null || fileName.length === 0) {
+                            fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                        }
+                        
                         if (fileName.length > 0) {
                             const symbolTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                             if (symbolTable !== undefined) {
@@ -88,7 +92,10 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
             /* iterate through all the known copybook references */
             for (const [key, value] of qcp.copyBooksUsed) {
                 try {
-                    const fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                    let fileName = value.statementInformation.fileName;
+                    if (fileName === null || fileName.length === 0) {
+                        fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                    }
                     if (fileName.length > 0) {
                         const symbolTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);
                         if (symbolTable !== undefined) {

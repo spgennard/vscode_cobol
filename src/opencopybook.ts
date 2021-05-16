@@ -7,6 +7,8 @@ import { Range, TextDocument, Definition, Position, CancellationToken, Uri } fro
 import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
+import VSCOBOLSourceScanner from './vscobolscanner';
+import COBOLSourceScanner from './cobolsourcescanner';
 
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";
@@ -155,8 +157,47 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         return this.resolveDefinitions(document, position, token);
     }
 
+    private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
+        const locations: vscode.Location[] = [];
+
+        const config = VSCOBOLConfiguration.get();
+        const qcp: COBOLSourceScanner | undefined  = VSCOBOLSourceScanner.getCachedObject(document, config);
+        if (qcp === undefined) {
+            return this.resolveDefinitionsFallback(document,pos,ct);
+        }
+
+        for(const [,b] of qcp.copyBooksUsed) {
+            const st = b.statementInformation;
+            if (pos.line >= st.lineNumber && pos.line << st.endLineNumber) {
+                let isOkay = true;
+
+                if (pos.line === st.lineNumber) {
+                    if (pos.character < st.currentCol) {
+                        isOkay = false;
+                    }
+                }
+
+                if (pos.line === st.endLineNumber) {
+                    if (pos.character > st.endCol) {
+                        isOkay = false;
+                    }
+                }
+
+                if (isOkay) {
+                    const fullPath = st.fileName;
+                    return new vscode.Location(
+                        Uri.file(fullPath),
+                        new Range(new Position(0, 0), new Position(0, 0))
+                    );
+                }
+            }
+        }
+
+        return locations;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private async resolveDefinitions(doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
+    private async resolveDefinitionsFallback(doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const config = VSCOBOLConfiguration.get();
         const line = doc.lineAt(pos);
         const text = line.text;

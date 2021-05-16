@@ -457,15 +457,40 @@ class Token {
     }
 }
 
+
+export class copybookState {
+    public copyBook = "";
+    public trimmedCopyBook = "";
+    public isIn = false;
+    public isOf = false;
+    public isReplacing = false;
+    public isReplacingBy = false;
+    public lineNumber = 0;
+    public endLineNumber = 0;
+    public endCol = 0;
+    public currentCol = 0;
+    public line = ""
+    public copyVerb = "";
+    public literal2 = "";
+    public library_name = "";
+    public replaceLeft = "";
+    public copyReplaceMap = new Map<string, string>();
+    public isTrailing = false;
+    public isLeading = false;
+    public fileName = "";
+}
+
 export class COBOLCopybookToken {
-    static Null: COBOLCopybookToken = new COBOLCopybookToken(COBOLToken.Null, true);
+    static Null: COBOLCopybookToken = new COBOLCopybookToken(COBOLToken.Null, true, new copybookState());
 
     public readonly token: COBOLToken;
     public parsed: boolean;
+    public statementInformation: copybookState;
 
-    constructor(token: COBOLToken, parsed: boolean) {
+    constructor(token: COBOLToken, parsed: boolean, statementInformation: copybookState) {
         this.token = token;
         this.parsed = parsed;
+        this.statementInformation = statementInformation;
     }
 }
 
@@ -572,6 +597,8 @@ class ParseState {
 
     copybook_state: copybookState;
 
+    inCopyStartColumn: number;
+
     constructor(configHandler: ICOBOLSettings) {
         this.currentDivision = COBOLToken.Null;
         this.procedureDivision = COBOLToken.Null;
@@ -611,6 +638,7 @@ class ParseState {
         this.replaceMap = new Map<string, string>();
         this.enable_text_replacement = configHandler.enable_text_replacement;
         this.copybook_state = new copybookState();
+        this.inCopyStartColumn = 0;
     }
 }
 
@@ -1873,7 +1901,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     cbState.copyBook = tcurrent;
                                     cbState.trimmedCopyBook = this.trimLiteral(tcurrentLower);
                                     cbState.lineNumber = lineNumber;
-                                    cbState.currentCol = token.currentCol;
+                                    cbState.currentCol = state.inCopyStartColumn; // stored when 'copy' is seen
                                     cbState.line = line;
                                     break;
                                 }
@@ -2206,6 +2234,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 //remember copy
                 if (currentLower === 'copy') {
                     state.inCopy = true;
+                    state.inCopyStartColumn = token.currentCol;
                     state.skipToDot = true;
                     state.copybook_state.copyVerb = current;
                     continue;
@@ -2491,11 +2520,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         copyToken.endLine = cbInfo.endLineNumber;
         copyToken.endColumn = cbInfo.endCol;
 
-        // state.current_copybook_state = new copybookStatement();
         state.inCopy = false;
 
         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
-            const copybookToken = new COBOLCopybookToken(copyToken, false);
+            const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
 
             if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
@@ -2671,26 +2699,4 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             }
         }
     }
-}
-
-class copybookState {
-    public copyBook = "";
-    public trimmedCopyBook = "";
-    public isIn = false;
-    public isOf = false;
-    public isReplacing = false;
-    public isReplacingBy = false;
-    public lineNumber = 0;
-    public endLineNumber = 0;
-    public endCol = 0;
-    public currentCol = 0;
-    public line = ""
-    public copyVerb = "";
-    public literal2 = "";
-    public library_name = "";
-    public replaceLeft = "";
-    public copyReplaceMap = new Map<string, string>();
-    public isTrailing = false;
-    public isLeading = false;
-    public fileName = "";
 }
