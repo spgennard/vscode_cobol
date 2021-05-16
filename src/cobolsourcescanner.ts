@@ -12,6 +12,7 @@ import * as path from 'path';
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
+import { logException } from "./extension";
 
 export class COBOLPreprocResult {
     public ppHandle: CobApiHandle;
@@ -459,7 +460,7 @@ class Token {
 
 
 export class copybookState {
-    public sourceHandler: ISourceHandler|undefined = undefined;
+    public sourceHandler: ISourceHandler | undefined = undefined;
     public copyBook = "";
     public trimmedCopyBook = "";
     public isIn = false;
@@ -1689,28 +1690,33 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 // fakeup a replace algorithm
                 if (replaceOn) {
+                    let rightLine = line.substr(token.currentCol);
+                    const rightLineOrg = line.substr(0, token.currentCol);
                     for (const [k, r] of state.replaceMap) {
-                        if (tcurrent.startsWith(k)) {
-                            const rtext = r + tcurrent.substr(k.length);
-                            if (rtext !== undefined) {
-                                const lastTokenId = this.tokensInOrder.length;
-                                const leftLine = line.substr(0, token.currentCol) 
-                                const newLine = rtext + " " + line.substr(token.currentCol + token.currentToken.length);
-                                this.sourceHandler.setUpdatedLine(lineNumber, leftLine + newLine);
+                        const rex = new RegExp(`\\b${k}\\b`,'g');
+                        rightLine = rightLine.replace(rex, r);
+                    }
 
-                                const newToken = new Token(newLine as string, new Token(token.prevToken, undefined));
-                                const retToken = this.processToken(lineNumber, newToken, newLine, replaceOn);
+                    if (rightLine !== rightLineOrg) {
+                        try {
+                            const leftLine = line.substr(0, token.currentCol)
 
-                                // ensure any new token match the original soure
-                                if (lastTokenId !== this.tokensInOrder.length) {
-                                    for (let ltid = lastTokenId; ltid < this.tokensInOrder.length; ltid++) {
-                                        const addedToken = this.tokensInOrder[ltid];
-                                        addedToken.startColumn = token.currentCol;
-                                        addedToken.endColumn = token.currentCol + tcurrent.length;
-                                    }
+                            this.sourceHandler.setUpdatedLine(lineNumber, leftLine + rightLine);
+                            const lastTokenId = this.tokensInOrder.length;
+                            const newToken = new Token(rightLine as string, new Token(token.prevToken, undefined));
+                            const retToken = this.processToken(lineNumber, newToken, rightLine, false);
+
+                            // ensure any new token match the original soure
+                            if (lastTokenId !== this.tokensInOrder.length) {
+                                for (let ltid = lastTokenId; ltid < this.tokensInOrder.length; ltid++) {
+                                    const addedToken = this.tokensInOrder[ltid];
+                                    addedToken.startColumn = token.currentCol;
+                                    addedToken.endColumn = token.currentCol + tcurrent.length;
                                 }
-                                return retToken;
                             }
+                            return retToken;
+                        } catch (e) {
+                            this.externalFeatures.logException("replace", e);
                         }
                     }
                 }
@@ -1899,6 +1905,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     cbState.isReplacing = true;
                                     cbState.isLeading = false;
                                     cbState.isTrailing = false;
+                                    cbState.replaceLeft = "";
                                     break;
                                 }
                                 if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn) {
@@ -1924,6 +1931,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             state.copybook_state.endCol = token.currentCol + token.currentToken.length;
                             this.processCopyBook(state.copybook_state);
                         }
+                        state.inCopy = false;
                     }
                     continue;
                 }

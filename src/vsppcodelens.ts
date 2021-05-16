@@ -105,22 +105,34 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                     const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.lineNumber, 0),
                         new vscode.Position(cbInfo.statementInformation.lineNumber, l.text.length));
                     const cl = new vscode.CodeLens(r);
-                    let arg = "";
+                    let src = "";
+                    let prevSrc = "";
+                    let prevMaxLines = 10;
                     if (cbInfo.statementInformation.sourceHandler !== undefined) {
                         for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
-                            arg += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                            arg += "\n";
+                            src += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                            src += "\n";
+                            if (prevMaxLines > 0) {
+                                prevSrc += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                                prevSrc += "\n";
+                                --prevMaxLines;
+                            }
                         }
                     }
-                    cl.command = {
-                        title: `View copybook repacement`,
-                        tooltip: "?",
-                        command: "coboleditor.ppcodelenaction",
-                        arguments: [arg]
-                    };
-                    this.resolveCodeLens(cl, token);
 
-                    lens.push(cl);
+                    if (src.length !== 0) {
+                        const arg = `*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
+
+                        cl.command = {
+                            title: `View copybook repacement`,
+                            tooltip: prevSrc,
+                            command: "coboleditor.ppcodelenaction",
+                            arguments: [arg]
+                        };
+                        this.resolveCodeLens(cl, token);
+
+                        lens.push(cl);
+                    }
                 }
             }
         }
