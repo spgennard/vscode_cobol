@@ -71,7 +71,7 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_files = getmetadata_files(vsconfig);
         vsconfig.metadata_knowncopybooks = getmetadata_knowncopybooks(vsconfig);
         vsconfig.enable_semantic_token_provider = getBoolean('enable_semantic_token_provider', false);
-        vsconfig.enable_text_replacement= getBoolean('process_replace_verb', false);
+        vsconfig.enable_text_replacement= getBoolean('enable_text_replacement', false);
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
         return vsconfig;
     }

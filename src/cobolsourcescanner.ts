@@ -459,6 +459,7 @@ class Token {
 
 
 export class copybookState {
+    public sourceHandler: ISourceHandler|undefined = undefined;
     public copyBook = "";
     public trimmedCopyBook = "";
     public isIn = false;
@@ -1693,7 +1694,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             const rtext = r + tcurrent.substr(k.length);
                             if (rtext !== undefined) {
                                 const lastTokenId = this.tokensInOrder.length;
+                                const leftLine = line.substr(0, token.currentCol) 
                                 const newLine = rtext + " " + line.substr(token.currentCol + token.currentToken.length);
+                                this.sourceHandler.setUpdatedLine(lineNumber, leftLine + newLine);
+
                                 const newToken = new Token(newLine as string, new Token(token.prevToken, undefined));
                                 const retToken = this.processToken(lineNumber, newToken, newLine, replaceOn);
 
@@ -2549,7 +2553,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         }
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
-
+                        cbInfo.sourceHandler = qps.sourceHandler;
                         this.sourceReferences.state.replaceMap = prevRepMap;
                         this.sourceReferences.topLevel = currentTopLevel;
                         state.ignoreInOutlineView = currentIgnoreInOutlineView;

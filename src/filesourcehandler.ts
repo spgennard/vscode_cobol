@@ -20,6 +20,7 @@ export class FileSourceHandler implements ISourceHandler {
     commentCallback?: ICommentCallback;
     documentVersionId: BigInt;
     isSourceInWorkspace: boolean;
+    updatedSource: Map<number, string>;
 
     public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
         this.document = document;
@@ -29,6 +30,7 @@ export class FileSourceHandler implements ISourceHandler {
         this.lines = [];
         this.commentCount = 0;
         this.isSourceInWorkspace = false;
+        this.updatedSource = new Map<number,string>();
 
         if (features === undefined) {
             features = EmptyExternalFeature.Default;
@@ -162,5 +164,17 @@ export class FileSourceHandler implements ISourceHandler {
 
     getShortWorkspaceFilename(): string {
         return "";
+    }
+
+    getUpdatedLine(linenumber: number) : string|undefined {
+        if (this.updatedSource.has(linenumber)) {
+            return this.updatedSource.get(linenumber);
+        }
+
+        return this.getLine(linenumber,false);
+    }
+
+    setUpdatedLine(lineNumber: number, line:string) : void {
+        this.updatedSource.set(lineNumber, line);
     }
 }

@@ -13,6 +13,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     documentVersionId: BigInt;
     isSourceInWorkSpace: boolean;
     shortWorkspaceFilename: string;
+    updatedSource: Map<number, string>;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -25,6 +26,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         const workspaceFilename = COBOLStatUtils.getShortWorkspaceFilename(document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
+        this.updatedSource = new Map<number, string>();
     }
 
     getDocumentVersionId(): BigInt {
@@ -138,5 +140,17 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
     getShortWorkspaceFilename(): string {
         return this.shortWorkspaceFilename;
+    }
+
+    setUpdatedLine(lineNumber: number, line:string) : void {
+        this.updatedSource.set(lineNumber, line);
+    }
+    
+    getUpdatedLine(linenumber: number) : string|undefined {
+        if (this.updatedSource.has(linenumber)) {
+            return this.updatedSource.get(linenumber);
+        }
+
+        return this.getLine(linenumber,false);
     }
 }

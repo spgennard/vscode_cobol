@@ -20,12 +20,12 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         });
     }
 
-    private padInteger(num:number, sizeNumber:number):string {
+    private padInteger(num: number, sizeNumber: number): string {
         let numS = num.toString();
         while (numS.length < sizeNumber) {
-             numS = "0"+numS;
+            numS = "0" + numS;
         }
-        
+
         return numS;
     }
 
@@ -37,34 +37,34 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             return lens;
         }
 
-        for(const result of current.ppResults) {
+        for (const result of current.ppResults) {
             const r = new vscode.Range(new vscode.Position(result.atLine, 0), new vscode.Position(result.atLine, result.originalLine.length));
             const cl = new vscode.CodeLens(r);
-            let tooltip = "", tooltip_lines="";
+            let tooltip = "", tooltip_lines = "";
 
-            let maxLen = 2+result.originalLine.length;
-            if (3+result.ppHandle.description.length > maxLen) {
-                maxLen = 3+result.ppHandle.description.length;
+            let maxLen = 2 + result.originalLine.length;
+            if (3 + result.ppHandle.description.length > maxLen) {
+                maxLen = 3 + result.ppHandle.description.length;
             }
-            if (3+result.ppHandle.bugReportEmail.length > maxLen) {
-                maxLen = 3+result.ppHandle.bugReportEmail.length;
-            }     
-            if (3+result.ppHandle.bugReportUrl.length > maxLen) {
-                maxLen = 3+result.ppHandle.bugReportUrl.length;
+            if (3 + result.ppHandle.bugReportEmail.length > maxLen) {
+                maxLen = 3 + result.ppHandle.bugReportEmail.length;
+            }
+            if (3 + result.ppHandle.bugReportUrl.length > maxLen) {
+                maxLen = 3 + result.ppHandle.bugReportUrl.length;
             }
 
-            let c=0;
-            for(const line of result.replacedLines) {
+            let c = 0;
+            for (const line of result.replacedLines) {
                 tooltip += `${line}\n`;
-                tooltip_lines += `${this.padInteger(c,5)} : "${line}"\n`;
-                if (10+line.length > maxLen) {
-                    maxLen = line.length+10;
+                tooltip_lines += `${this.padInteger(c, 5)} : "${line}"\n`;
+                if (10 + line.length > maxLen) {
+                    maxLen = line.length + 10;
                 }
                 c += 1;
             }
 
             let argCopybooks = "";
-            for(const [copybook,file] of result.copybooks) {
+            for (const [copybook, file] of result.copybooks) {
                 argCopybooks += `${copybook} = ${file}\n`;
                 if (argCopybooks.length > maxLen) {
                     maxLen = argCopybooks.length;
@@ -74,16 +74,16 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             let arg = `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines\n`;
             arg += "Original Line:"
             arg += `"${result.originalLine}"\n`;
-            arg += "-".repeat(maxLen)+"\n";
+            arg += "-".repeat(maxLen) + "\n";
             arg += argCopybooks;
-            arg += "-".repeat(maxLen)+"\n";
+            arg += "-".repeat(maxLen) + "\n";
             arg += "LNum:\n";
             arg += `${tooltip_lines}`;
-            arg += "-".repeat(maxLen)+"\n";
+            arg += "-".repeat(maxLen) + "\n";
             arg += ` ${result.ppHandle.description}\n`;
             arg += ` ${result.ppHandle.bugReportEmail}\n`;
             arg += ` ${result.ppHandle.bugReportUrl}\n`;
-            arg += "-".repeat(maxLen)+"\n";
+            arg += "-".repeat(maxLen) + "\n";
 
             cl.command = {
                 title: `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines`,
@@ -93,10 +93,37 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             };
 
             this.resolveCodeLens(cl, token);
-    
+
             lens.push(cl);
         }
- 
+
+
+        for (const [, cbInfo] of current.copyBooksUsed) {
+            if (cbInfo.parsed) {
+                if (cbInfo.statementInformation.copyReplaceMap.size !== 0) {
+                    const l = document.lineAt(cbInfo.statementInformation.lineNumber);
+                    const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.lineNumber, 0),
+                        new vscode.Position(cbInfo.statementInformation.lineNumber, l.text.length));
+                    const cl = new vscode.CodeLens(r);
+                    let arg = "";
+                    if (cbInfo.statementInformation.sourceHandler !== undefined) {
+                        for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
+                            arg += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                            arg += "\n";
+                        }
+                    }
+                    cl.command = {
+                        title: `View copybook repacement`,
+                        tooltip: "?",
+                        command: "coboleditor.ppcodelenaction",
+                        arguments: [arg]
+                    };
+                    this.resolveCodeLens(cl, token);
+
+                    lens.push(cl);
+                }
+            }
+        }
         return lens;
     }
 
@@ -105,7 +132,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         return codeLens;
     }
 
-    public static actionCodeLens(arg: string ):void {
+    public static actionCodeLens(arg: string): void {
         vscode.workspace.openTextDocument({
             content: `${arg}`,
             language: 'text'
