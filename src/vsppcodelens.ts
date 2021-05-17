@@ -120,8 +120,12 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         }
                     }
 
+                    if (prevMaxLines <= 0) {
+                        prevSrc += "\n(first 10 lines)";
+                    }
+
                     if (src.length !== 0) {
-                        const arg = `*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
+                        const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
 
                         cl.command = {
                             title: `View copybook repacement`,

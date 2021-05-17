@@ -458,8 +458,29 @@ class Token {
     }
 }
 
+export class replaceToken {
+    public replaceToken: string;
+    public rex4wordreplace: RegExp;
 
-export class copybookState {
+    constructor(replaceToken: string, tokenState: IReplaceState) {
+        this.replaceToken = replaceToken;
+        if (tokenState.isPseudoTextDelimiter) {
+            this.rex4wordreplace = new RegExp(`${replaceToken}`, 'g');
+        } else {
+            this.rex4wordreplace = new RegExp(`\\b${replaceToken}\\b`, 'g');
+        }
+    }
+}
+
+export interface IReplaceState {
+    isPseudoTextDelimiter: boolean;
+}
+
+export class replaceState implements IReplaceState {
+    public isPseudoTextDelimiter = false;
+}
+
+export class copybookState implements IReplaceState {
     public sourceHandler: ISourceHandler | undefined = undefined;
     public copyBook = "";
     public trimmedCopyBook = "";
@@ -476,10 +497,11 @@ export class copybookState {
     public literal2 = "";
     public library_name = "";
     public replaceLeft = "";
-    public copyReplaceMap = new Map<string, string>();
+    public copyReplaceMap = new Map<string, replaceToken>();
     public isTrailing = false;
     public isLeading = false;
     public fileName = "";
+    public isPseudoTextDelimiter = false;
 }
 
 export class COBOLCopybookToken {
@@ -578,6 +600,8 @@ class ParseState {
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
     inReplace: boolean;
+    replace_state: replaceState;
+
     inCopy: boolean;
     replaceLeft: string;
     replaceRight: string;
@@ -593,7 +617,7 @@ class ParseState {
 
     entryPointCount: number;
 
-    replaceMap: Map<string, string>;
+    replaceMap: Map<string, replaceToken>;
 
     enable_text_replacement: boolean;
 
@@ -633,11 +657,12 @@ class ParseState {
         this.prevEndsWithDot = false;
         this.currentLineIsComment = false;
         this.inReplace = false;
+        this.replace_state = new replaceState(); 
         this.inCopy = false;
         this.captureReplaceLeft = true;
         this.replaceLeft = "";
         this.replaceRight = "";
-        this.replaceMap = new Map<string, string>();
+        this.replaceMap = new Map<string, replaceToken>();
         this.enable_text_replacement = configHandler.enable_text_replacement;
         this.copybook_state = new copybookState();
         this.inCopyStartColumn = 0;
@@ -1658,12 +1683,13 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
     }
 
-    private cleanupReplaceToken(token: string): string {
+    private cleanupReplaceToken(token: string, rstate: IReplaceState): string {
         if (token.endsWith(",")) {
             token = token.substr(0, token.length - 1);
         }
 
         if (token.startsWith("==") && token.endsWith("==")) {
+            rstate.isPseudoTextDelimiter = true;
             return token.substring(2, token.length - 2);
         }
 
@@ -1688,13 +1714,12 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     continue;
                 }
 
-                // fakeup a replace algorithm
+                // fakeup a replace algorithmf
                 if (replaceOn) {
                     let rightLine = line.substr(token.currentCol);
-                    const rightLineOrg = line.substr(0, token.currentCol);
+                    const rightLineOrg = line.substr(token.currentCol);
                     for (const [k, r] of state.replaceMap) {
-                        const rex = new RegExp(`\\b${k}\\b`,'g');
-                        rightLine = rightLine.replace(rex, r);
+                        rightLine = rightLine.replace(r.rex4wordreplace, k);
                     }
 
                     if (rightLine !== rightLineOrg) {
@@ -1846,7 +1871,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     state.replaceRight += tcurrent;
                                 }
                                 if (!state.captureReplaceLeft && tcurrent.endsWith("==")) {
-                                    state.replaceMap.set(this.cleanupReplaceToken("" + state.replaceLeft), this.cleanupReplaceToken("" + state.replaceRight));
+                                    state.replaceMap.set(this.cleanupReplaceToken("" + state.replaceRight, state.replace_state),
+                                        new replaceToken(this.cleanupReplaceToken("" + state.replaceLeft, state.replace_state), state.replace_state));
                                     state.replaceLeft = state.replaceRight = "";
                                     state.captureReplaceLeft = true;
                                 }
@@ -1899,7 +1925,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 }
                                 if (cbState.isReplacingBy) {
                                     if (this.configHandler.enable_text_replacement) {
-                                        cbState.copyReplaceMap.set(this.cleanupReplaceToken("" + cbState.replaceLeft), this.cleanupReplaceToken("" + tcurrent));
+                                        cbState.copyReplaceMap.set(
+                                            this.cleanupReplaceToken("" + tcurrent, cbState),
+                                            new replaceToken(this.cleanupReplaceToken("" + cbState.replaceLeft, cbState), cbState));
                                     }
                                     cbState.isReplacingBy = false;
                                     cbState.isReplacing = true;
@@ -2557,7 +2585,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                         const prevRepMap = this.sourceReferences.state.replaceMap;
 
                         if (this.configHandler.enable_text_replacement) {
-                            this.sourceReferences.state.replaceMap = new Map<string, string>([...cbInfo.copyReplaceMap, ...prevRepMap]);
+                            this.sourceReferences.state.replaceMap = new Map<string, replaceToken>([...cbInfo.copyReplaceMap, ...prevRepMap]);
                         }
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
