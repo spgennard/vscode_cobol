@@ -161,29 +161,19 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         const locations: vscode.Location[] = [];
 
         const config = VSCOBOLConfiguration.get();
-        const qcp: COBOLSourceScanner | undefined  = VSCOBOLSourceScanner.getCachedObject(document, config);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {
-            return this.resolveDefinitionsFallback(document,pos,ct);
+            return this.resolveDefinitionsFallback(document, pos, ct);
         }
 
-        for(const [,b] of qcp.copyBooksUsed) {
+
+        for (const [, b] of qcp.copyBooksUsed) {
             const st = b.statementInformation;
-            if (pos.line >= st.lineNumber && pos.line << st.endLineNumber) {
-                let isOkay = true;
+            if (st.fileName.length !== 0) {
+                const stPos = new Range(new Position(st.lineNumber, st.currentCol),
+                    new Position(st.endLineNumber, st.endCol));
 
-                if (pos.line === st.lineNumber) {
-                    if (pos.character < st.currentCol) {
-                        isOkay = false;
-                    }
-                }
-
-                if (pos.line === st.endLineNumber) {
-                    if (pos.character > st.endCol) {
-                        isOkay = false;
-                    }
-                }
-
-                if (isOkay) {
+                if (stPos.contains(pos)) {
                     const fullPath = st.fileName;
                     return new vscode.Location(
                         Uri.file(fullPath),
@@ -192,6 +182,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                 }
             }
         }
+
 
         return locations;
     }

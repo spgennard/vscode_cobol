@@ -2273,6 +2273,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 //remember copy
                 if (currentLower === 'copy') {
+                    state.copybook_state = new copybookState();
                     state.inCopy = true;
                     state.inCopyStartColumn = token.currentCol;
                     state.skipToDot = true;
