@@ -1,8 +1,8 @@
 {
   "name": "cobol",
-  "displayName": "COBOL Language Support and more..",
-  "description": "Syntax highlighting, intellisense, snippets for COBOL, JCL, PL/I & DIR and HLASM",
-  "version": "7.5.17",
+  "displayName": "COBOL",
+  "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
+  "version": "7.5.18",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
