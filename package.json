@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL Language Support and more..",
   "description": "Syntax highlighting, intellisense, snippets for COBOL, JCL, PL/I & DIR and HLASM",
-  "version": "7.5.2",
+  "version": "7.5.17",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
