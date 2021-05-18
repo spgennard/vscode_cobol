@@ -5,6 +5,10 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.5.17
 
+**Update CHANGELOG.md**
+
+* [99fcf59f3c624bd](https://github.com/spgennard/vscode_cobol/commit/99fcf59f3c624bd) *2021-05-18 15:59:42*
+
 **don't change unless it a COBOL doc (ie: pp output)**
 
 * [bd39204aefea630](https://github.com/spgennard/vscode_cobol/commit/bd39204aefea630) *2021-05-18 13:51:47*
