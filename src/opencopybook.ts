@@ -166,23 +166,19 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             return this.resolveDefinitionsFallback(document, pos, ct);
         }
 
-
         for (const [, b] of qcp.copyBooksUsed) {
             const st = b.statementInformation;
             if (st.fileName.length !== 0) {
-                const stPos = new Range(new Position(st.lineNumber, st.currentCol),
-                    new Position(st.endLineNumber, st.endCol));
+                const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
 
                 if (stPos.contains(pos)) {
-                    const fullPath = st.fileName;
                     return new vscode.Location(
-                        Uri.file(fullPath),
+                        Uri.file(st.fileName),
                         new Range(new Position(0, 0), new Position(0, 0))
                     );
                 }
             }
         }
-
 
         return locations;
     }

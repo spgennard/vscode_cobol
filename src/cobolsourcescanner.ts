@@ -488,10 +488,10 @@ export class copybookState implements IReplaceState {
     public isOf = false;
     public isReplacing = false;
     public isReplacingBy = false;
-    public lineNumber = 0;
+    public startLineNumber = 0;
     public endLineNumber = 0;
     public endCol = 0;
-    public currentCol = 0;
+    public startCol = 0;
     public line = ""
     public copyVerb = "";
     public literal2 = "";
@@ -1939,8 +1939,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn) {
                                     cbState.copyBook = tcurrent;
                                     cbState.trimmedCopyBook = this.trimLiteral(tcurrentLower);
-                                    cbState.lineNumber = lineNumber;
-                                    cbState.currentCol = state.inCopyStartColumn; // stored when 'copy' is seen
+                                    cbState.startLineNumber = lineNumber;
+                                    cbState.startCol = state.inCopyStartColumn; // stored when 'copy' is seen
                                     cbState.line = line;
                                     break;
                                 }
@@ -2535,8 +2535,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         let copyToken: COBOLToken = COBOLToken.Null;
         const isIn = cbInfo.isIn;
         const isOf = cbInfo.isOf;
-        const lineNumber = cbInfo.lineNumber;
-        const tcurrentCurrentCol = cbInfo.currentCol;
+        const lineNumber = cbInfo.startLineNumber;
+        const tcurrentCurrentCol = cbInfo.startCol;
         const line = cbInfo.line;
         const trimmedCopyBook = cbInfo.trimmedCopyBook;
         const copyVerb = cbInfo.copyVerb;

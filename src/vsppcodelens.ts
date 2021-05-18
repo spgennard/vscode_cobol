@@ -101,9 +101,9 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         for (const [, cbInfo] of current.copyBooksUsed) {
             if (cbInfo.parsed) {
                 if (cbInfo.statementInformation.copyReplaceMap.size !== 0) {
-                    const l = document.lineAt(cbInfo.statementInformation.lineNumber);
-                    const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.lineNumber, 0),
-                        new vscode.Position(cbInfo.statementInformation.lineNumber, l.text.length));
+                    const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
+                    const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
+                        new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));
                     const cl = new vscode.CodeLens(r);
                     let src = "";
                     let prevSrc = "";
@@ -121,7 +121,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                     }
 
                     if (prevMaxLines <= 0) {
-                        prevSrc += "\n(first 10 lines)";
+                        prevSrc += "\n......";
                     }
 
                     if (src.length !== 0) {
