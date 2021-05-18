@@ -3,6 +3,90 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.17
+
+**don't change unless it a COBOL doc (ie: pp output)**
+
+* [bd39204aefea630](https://github.com/spgennard/vscode_cobol/commit/bd39204aefea630) *2021-05-18 13:51:47*
+
+**flip to COBOL for temp doc**
+
+* [ad90ab7d981cb76](https://github.com/spgennard/vscode_cobol/commit/ad90ab7d981cb76) *2021-05-18 13:48:30*
+
+**tidy up**
+
+* [bc016e26bf4f4f4](https://github.com/spgennard/vscode_cobol/commit/bc016e26bf4f4f4) *2021-05-18 10:47:30*
+
+**use range**
+
+* [1fa50e3d2777d7d](https://github.com/spgennard/vscode_cobol/commit/1fa50e3d2777d7d) *2021-05-17 23:22:12*
+
+**continue work on copybook handling**
+
+* [74dbe6edbfc06a9](https://github.com/spgennard/vscode_cobol/commit/74dbe6edbfc06a9) *2021-05-17 21:48:13*
+
+**only have word sub for the moment**
+
+* [1395bc5921cac06](https://github.com/spgennard/vscode_cobol/commit/1395bc5921cac06) *2021-05-16 23:39:43*
+
+**add a codelens for 'copy replacing' results**
+
+* [ea376a8d2151a0e](https://github.com/spgennard/vscode_cobol/commit/ea376a8d2151a0e) *2021-05-16 20:48:42*
+
+**start to wire in existing token'ed copy statement**
+
+ * - fix start to be before &#x27;copy&#x27; verb
+* [f0f864ab69411f7](https://github.com/spgennard/vscode_cobol/commit/f0f864ab69411f7) *2021-05-16 15:11:15*
+
+**rename replace boolean, to allow it to include replace/replacing**
+
+* [cb23430ae6b0cbb](https://github.com/spgennard/vscode_cobol/commit/cb23430ae6b0cbb) *2021-05-15 22:40:34*
+
+**add range for copy statement**
+
+* [592ea5e9d397f92](https://github.com/spgennard/vscode_cobol/commit/592ea5e9d397f92) *2021-05-15 20:40:05*
+
+**make replace/replacing work better**
+
+* [55dd15f1b39905f](https://github.com/spgennard/vscode_cobol/commit/55dd15f1b39905f) *2021-05-15 20:08:18*
+
+**add lowercase cobol alias for the snippets**
+
+* [075d24f21c6c8a1](https://github.com/spgennard/vscode_cobol/commit/075d24f21c6c8a1) *2021-05-14 07:45:23*
+
+**move version forward**
+
+* [2f747eb130676c5](https://github.com/spgennard/vscode_cobol/commit/2f747eb130676c5) *2021-05-13 22:12:11*
+
+**tweak**
+
+* [5dff120a67396e0](https://github.com/spgennard/vscode_cobol/commit/5dff120a67396e0) *2021-05-11 21:27:35*
+
+**avoid security issue**
+
+* [1f682ebe9c93738](https://github.com/spgennard/vscode_cobol/commit/1f682ebe9c93738) *2021-05-11 20:52:15*
+
+**update**
+
+* [82922fcd6d0816c](https://github.com/spgennard/vscode_cobol/commit/82922fcd6d0816c) *2021-05-11 20:48:01*
+
+**continue work copybook handling**
+
+* [632ccd0601d4c6f](https://github.com/spgennard/vscode_cobol/commit/632ccd0601d4c6f) *2021-05-09 21:13:52*
+
+**fix navigation of "copy of.." but this mechanism might be short-lived..**
+
+* [ee4fc15db462396](https://github.com/spgennard/vscode_cobol/commit/ee4fc15db462396) *2021-05-09 16:06:12*
+
+**use only one style**
+
+* [6ed3cae6d10a43d](https://github.com/spgennard/vscode_cobol/commit/6ed3cae6d10a43d) *2021-05-04 20:54:12*
+
+**Update CHANGELOG.md**
+
+* [c423be5df06a1d2](https://github.com/spgennard/vscode_cobol/commit/c423be5df06a1d2) *2021-05-03 17:57:13*
+
+
 ## 7.5.2
 
 **prep**
