@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.18
+
+**remove npe**
+
+* [042414bf3d6b16b](https://github.com/spgennard/vscode_cobol/commit/042414bf3d6b16b) *2021-05-18 16:10:47*
+
+**update**
+
+* [c40d37715c5888d](https://github.com/spgennard/vscode_cobol/commit/c40d37715c5888d) *2021-05-18 16:05:14*
+
+**Update CHANGELOG.md**
+
+* [fbe16e28baf1ac0](https://github.com/spgennard/vscode_cobol/commit/fbe16e28baf1ac0) *2021-05-18 16:02:47*
+
+
 ## 7.5.17
 
 **Update CHANGELOG.md**
