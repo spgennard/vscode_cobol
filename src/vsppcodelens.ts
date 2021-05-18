@@ -153,8 +153,10 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             content: `${arg}`,
             language: 'text'
         }).then((document: vscode.TextDocument) => {
-            vscode.window.showTextDocument(document);
-        }
-        );
+            vscode.window.showTextDocument(document).then(editor => {
+                vscode.languages.setTextDocumentLanguage(editor.document, "COBOL");
+                return
+            })
+        });
     }
 }
