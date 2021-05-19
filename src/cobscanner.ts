@@ -125,7 +125,7 @@ for (const arg of args) {
             try {
 
                 let fCount = 0;
-                const fSendOn = (scanData.fileCount * 0.05) | 0;
+                const fSendOn = Math.round(scanData.fileCount * 0.01);
                 let fSendCount = 0;
                 for (const file of scanData.Files) {
                     const cacheDir = scanData.cacheDirectory;

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.5.18",
+  "version": "7.5.19",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -258,11 +258,10 @@
           "default": ""
         },
         "coboleditor.cache_metadata_time_limit": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "type": "number",
-          "markdownDescription": "Limited the time to process the cache (on startup) in ms",
-          "title": "Limited the time to process the cache (on startup)",
-          "default": 30000
+          "markdownDescription": "Limited the time to process the metadata cache in ms",
+          "title": "Limited the time to process the cache",
+          "default": 60000
         },
         "coboleditor.cache_metadata_max_directory_scan_depth": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",

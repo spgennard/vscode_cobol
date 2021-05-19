@@ -35,7 +35,7 @@ export class VSCOBOLConfiguration {
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         vsconfig.cache_metadata = getcache_metadata();
-        vsconfig.cache_metadata_time_limit = getNumber("cache_metadata_time_limit", 30000);
+        vsconfig.cache_metadata_time_limit = getNumber("cache_metadata_time_limit", 60000);
         vsconfig.cache_metadata_max_directory_scan_depth = getNumber("cache_metadata_max_directory_scan_depth", 32);
         vsconfig.cache_metadata_show_progress_messages = getBoolean("cache_metadata_show_progress_messages", false);
         vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);

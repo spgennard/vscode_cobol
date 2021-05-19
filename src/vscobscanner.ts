@@ -49,7 +49,7 @@ export class VSCobScanner {
         }
 
         if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
-            COBOLUtils.saveGlobalCacheToWorkspace(settings,false);
+            COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
             const sf = new ScanData();
             sf.showStats = false;
             sf.Files.push(fsPath);
@@ -133,6 +133,16 @@ export class VSCobScanner {
 
         VSCobScanner.activePid = child.pid;
 
+        const timer = setTimeout(function () {
+            try {
+                if (VSCobScanner.activePid !== 0) {
+                    child.kill()
+                }
+            } catch (err) {
+                logException(`Timeout, ${reason}`, err);
+            }
+        }, settings.cache_metadata_time_limit);
+
         child.on('error', err => {
             if (tempDirectory !== undefined) {
                 VSCobScanner.removeScannerFile(tempDirectory);
@@ -142,6 +152,8 @@ export class VSCobScanner {
 
         child.on('exit', code => {
             VSCobScanner.activePid = 0;
+            clearTimeout(timer);
+
             if (code !== 0) {
                 if (sf.showMessage) {
                     logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
@@ -219,7 +231,7 @@ export class VSCobScanner {
                     const args = message.split(",");
                     const enKey = args[1];
                     const inFilename = args[2];
-                    COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey,inFilename);
+                    COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename);
                 }
             } else {
                 logMessage(msg as string);
