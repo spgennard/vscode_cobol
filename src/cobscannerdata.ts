@@ -21,7 +21,6 @@ export class ScanData {
 }
 
 export class ScanStats {
-    timeCap = 600000;
     directoriesScanned = 0;
     directoryDepth = 0;
     maxDirectoryDepth = 0;

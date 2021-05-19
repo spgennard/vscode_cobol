@@ -257,11 +257,11 @@
           "title": "User specific directory for the workspace metadata cache (directory has to exist)",
           "default": ""
         },
-        "coboleditor.cache_metadata_time_limit": {
+        "coboleditor.cache_metadata_inactivity_timeout": {
           "type": "number",
-          "markdownDescription": "Limited the time to process the metadata cache in ms",
-          "title": "Limited the time to process the cache",
-          "default": 60000
+          "markdownDescription": "Inactivity timeout for metadata cache in ms",
+          "title": "Inactivity timeout for metadata cache in ms",
+          "default": 5000
         },
         "coboleditor.cache_metadata_max_directory_scan_depth": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
@@ -1105,12 +1105,6 @@
         "title": "Toggle margin"
       },
       {
-        "command": "cobolplugin.checkworkspaceformissingcopybookdirs",
-        "category": "COBOL",
-        "title": "Check workspace folders recursively for potential copybook directories",
-        "enablement": "!isWeb"
-      },
-      {
         "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
         "category": "COBOL",
         "title": "Process files in workspace for metadata",
@@ -1883,11 +1877,11 @@
     "eslint": "^7.26.0",
     "glob": "^7.1.7",
     "mocha": "^8.4.0",
-    "ts-loader": "^9.2.0",
+    "ts-loader": "^9.2.1",
     "typescript": "^4.2.4",
     "vsce": "^1.88.0",
     "vscode-test": "^1.5.2",
-    "webpack": "^5.37.0",
+    "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
     "merge": "2.1.1"
   },

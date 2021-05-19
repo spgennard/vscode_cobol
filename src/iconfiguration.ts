@@ -37,7 +37,7 @@ export interface ICOBOLSettings {
     intellisense_item_limit:number;
     process_metadata_cache_on_start:boolean;
     cache_metadata: CacheDirectoryStrategy;
-    cache_metadata_time_limit: number;
+    cache_metadata_inactivity_timeout: number;
     cache_metadata_max_directory_scan_depth: number;
     parse_copybooks_for_references: boolean;
     workspacefolders_order: string[];
@@ -107,7 +107,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public intellisense_item_limit:number;
     public process_metadata_cache_on_start:boolean;
     public cache_metadata:CacheDirectoryStrategy;
-    public cache_metadata_time_limit: number;
+    public cache_metadata_inactivity_timeout: number;
     public cache_metadata_max_directory_scan_depth: number;
     public parse_copybooks_for_references: boolean;
     public workspacefolders_order: string[];
@@ -174,7 +174,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_item_limit = 30;
         this.process_metadata_cache_on_start = false;
         this.cache_metadata = CacheDirectoryStrategy.Off;
-        this.cache_metadata_time_limit = 60000;
+        this.cache_metadata_inactivity_timeout = 5000;
         this.cache_metadata_max_directory_scan_depth = 32;
         this.cache_metadata_show_progress_messages = false;
         this.parse_copybooks_for_references = false;

@@ -141,7 +141,7 @@ export class VSCobScanner {
             } catch (err) {
                 logException(`Timeout, ${reason}`, err);
             }
-        }, settings.cache_metadata_time_limit);
+        }, settings.cache_metadata_inactivity_timeout);
 
         child.on('error', err => {
             if (tempDirectory !== undefined) {
@@ -166,6 +166,7 @@ export class VSCobScanner {
 
         let prevPercent = 0;
         child.on('message', (msg) => {
+            timer.refresh();        // restart timer
             const message = msg as string;
             if (message.startsWith("@@")) {
                 if (message.startsWith(COBSCANNER_STATUS)) {
