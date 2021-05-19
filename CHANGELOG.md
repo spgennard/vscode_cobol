@@ -3,6 +3,27 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.19
+### GitHub [#282](https://github.com/spgennard/vscode_cobol/issues/282) VSCode become unresponsible after run processAllFilesInWorkspace command in a huge worskspace  
+
+**VSCode become unresponsible after run processAllFilesInWorkspace command in a huge worskspace Fix #282**
+
+ * - Wire up cache_metadata_time_limit, so processAllFilesInWorkspace can
+ * be cancelled early
+ * - Change the process indicator to be finer
+* [ee9384fe6fb7a88](https://github.com/spgennard/vscode_cobol/commit/ee9384fe6fb7a88) *2021-05-19 21:22:48*
+
+
+
+**update**
+
+* [1c6f4e1437402c9](https://github.com/spgennard/vscode_cobol/commit/1c6f4e1437402c9) *2021-05-18 19:20:10*
+
+**Update CHANGELOG.md**
+
+* [98ae406474e5022](https://github.com/spgennard/vscode_cobol/commit/98ae406474e5022) *2021-05-18 19:18:38*
+
+
 ## 7.5.18
 
 **remove npe**
