@@ -85,11 +85,17 @@ export class COBOLWorkspaceSymbolCacheHelper {
     }
 
     public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber = 1): void {
+        if (srcfilename.length === 0 || symbolUnchanged.length === 0) {
+            return;
+        }
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
             InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);
     }
 
     public static addEntryPoint(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
+        if (srcfilename.length === 0 || symbolUnchanged.length === 0) {
+            return;
+        }
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
             InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
