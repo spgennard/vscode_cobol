@@ -3,6 +3,27 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.20
+
+**avoid bad entry in cache**
+
+ * empty cache if depreciated setting is used
+* [f675bc032ee9b10](https://github.com/spgennard/vscode_cobol/commit/f675bc032ee9b10) *2021-05-20 21:32:16*
+
+**Update publishit.sh**
+
+* [c114271d864fe08](https://github.com/spgennard/vscode_cobol/commit/c114271d864fe08) *2021-05-20 10:41:37*
+
+**use a inactivity based timer rather than a length of time timer**
+
+ * - inactivity is a lack of any message from the scanner
+* [7c21aa63b18a19b](https://github.com/spgennard/vscode_cobol/commit/7c21aa63b18a19b) *2021-05-19 22:23:28*
+
+**Update CHANGELOG.md**
+
+* [33511bcdb5f9cf9](https://github.com/spgennard/vscode_cobol/commit/33511bcdb5f9cf9) *2021-05-19 21:25:11*
+
+
 ## 7.5.19
 ### GitHub [#282](https://github.com/spgennard/vscode_cobol/issues/282) VSCode become unresponsible after run processAllFilesInWorkspace command in a huge worskspace  
 
