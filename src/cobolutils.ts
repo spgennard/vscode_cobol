@@ -12,7 +12,6 @@ import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLFileSymbol } from './cobolglobalcache';
-import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
 import { CacheDirectoryStrategy } from './externalfeatures';
 
 export enum FoldStyle {
@@ -45,19 +44,52 @@ export class COBOLUtils {
         return globString;
     }
 
+    static getProgramGlobPattern(config: ICOBOLSettings): string {
+        let globString = "*.{";
+        for (const ext of config.program_extensions) {
+            if (ext.length !== 0) {
+                if (globString.endsWith("{")) {
+                    globString += ext;
+                } else {
+                    globString += "," + ext;
+                }
+            }
+        }
+
+        globString += "}";
+
+        return globString;
+    }
+
+    static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
+
     static async populateDefaultCallableSymbols(): Promise<void> {
+        const ws = vscode.workspace.workspaceFile;
+        if (ws === undefined) {
+            InMemoryGlobalSymbolCache.defaultCallableSymbols.clear();
+            return;
+        }
+
+        // already cached?
+        if (ws.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath) {
+            return;
+        }
+
+        // stash away current ws
+        COBOLUtils.prevWorkSpaceUri = ws;
         const config = VSCOBOLConfiguration.get();
-        const globPattern = COBOLUtils.getCopybookGlobPattern(config);
+        const globPattern = COBOLUtils.getProgramGlobPattern(config);
+
 
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
             uris.forEach((uri: vscode.Uri) => {
                 const fullPath = uri.fsPath;
                 const fileName = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullPath);
                 const fileNameNoExt = path.basename(fileName, path.extname(fileName));
-                const fileNameNoExtLower = fileNameNoExt.toLowerCase();
-                const c = InMemoryGlobalSymbolCache.callableSymbols.get(fileNameNoExtLower);
+                const callableSymbolFromFilenameLower = fileNameNoExt.toLowerCase();
+                const c = InMemoryGlobalSymbolCache.defaultCallableSymbols.get(callableSymbolFromFilenameLower);
                 if (c === undefined) {
-                    COBOLWorkspaceSymbolCacheHelper.addSymbol(fileName, fileNameNoExtLower);
+                    InMemoryGlobalSymbolCache.defaultCallableSymbols.set(callableSymbolFromFilenameLower, fullPath);
                 }
             });
         });
@@ -74,6 +106,21 @@ export class COBOLUtils {
                 });
             }
         }
+    }
+
+    public static clearGlobalCache():void {
+        // only update if we have a workspace
+        if (getWorkspaceFolders() === undefined) {
+            return;
+        }
+        
+        const editorConfig = vscode.workspace.getConfiguration('coboleditor');
+        editorConfig.update('metadata_symbols', [], false);
+        editorConfig.update('metadata_entrypoints', [], false);
+        editorConfig.update('metadata_types', [], false);
+        editorConfig.update('metadata_files', [], false);
+        editorConfig.update('metadata_knowncopybooks', [], false);
+        InMemoryGlobalSymbolCache.isDirty = false;
     }
 
     public static saveGlobalCacheToWorkspace(settings: ICOBOLSettings, update = true): void {
@@ -112,7 +159,12 @@ export class COBOLUtils {
                         const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
                         if (fileSymbol !== undefined) {
                             fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                                symbols.push(`${i},${value.filename}`);
+                                update = true;
+
+                                // do not save a callable that is in the defaultCallableSymbol map
+                                if (InMemoryGlobalSymbolCache.defaultCallableSymbols.has(i) === false) {
+                                    symbols.push(`${i},${value.filename}`);
+                                }
                             });
                         }
                     }

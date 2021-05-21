@@ -1107,26 +1107,32 @@
       {
         "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
         "category": "COBOL",
-        "title": "Process files in workspace for metadata",
+        "title": "Process files in workspace for metadata (deprecated)",
         "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
       },
       {
         "command": "cobolplugin.deprecated.dumpMetaData",
         "category": "COBOL",
-        "title": "Dump metadata for diagnostic",
+        "title": "Dump metadata for diagnostic (deprecated)",
         "enablement": "!isWeb  && config.coboleditor.cache_metadata != off"
       },
       {
         "command": "cobolplugin.deprecated.clearMetaData",
         "category": "COBOL",
+        "title": "Clear metadata (deprecated)",
+        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache != off"
+      },
+      {
+        "command": "cobolplugin.clearGlobalCache",
+        "category": "COBOL",
         "title": "Clear metadata",
-        "enablement": "!isWeb && config.coboleditor.cache_metadata != off"
+        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache"
       },
       {
         "command": "cobolplugin.processAllFilesInWorkspace",
         "category": "COBOL",
         "title": "Scan source files in workspace for metadata",
-        "enablement": "!isWeb && config.coboleditor.cache_metadata == off"
+        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache"
       },
       {
         "command": "cobolplugin.mfurunMenu",

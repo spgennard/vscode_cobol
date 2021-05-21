@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { VSCOBOLConfiguration } from './configuration';
-import {  COBOLGlobalSymbolTable } from './cobolglobalcache';
+import { COBOLGlobalSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 
@@ -12,7 +12,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
         return this.resolveDefinitions(document, position, token);
     }
 
-   readonly callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+    readonly callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
     // readonly enableUrlOpenBodge = false;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -28,25 +28,34 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
             if (word !== "") {
                 const img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCache;
                 const wordLower = word.toLowerCase();
+
+                if (img.defaultCallableSymbols.has(wordLower)) {
+                    const fullfileName = img.defaultCallableSymbols.get(wordLower);
+                    if (fullfileName !== undefined) {
+                        this.getLocationGivenFile(fullfileName, 0, locations);
+                   }
+                }
+
                 if (img.callableSymbols.has(wordLower)) {
                     const symbols = img.callableSymbols.get(wordLower);
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename,"",config);
+                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename, "", config);
                                 this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
                             }
                         }
                     }
                 }
+
                 if (img.entryPoints.has(wordLower)) {
                     const symbols = img.entryPoints.get(wordLower);
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename,"",config);
+                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename, "", config);
                                 this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
                             }
                         }

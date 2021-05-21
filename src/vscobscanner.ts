@@ -54,7 +54,7 @@ export class VSCobScanner {
             sf.showStats = false;
             sf.Files.push(fsPath);
             sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
-            sf.showMessage = settings.cache_metadata_show_progress_messages;
+            sf.cache_metadata_show_progress_messages = settings.cache_metadata_show_progress_messages;
             sf.md_symbols = settings.metadata_symbols;
             sf.md_entrypoints = settings.metadata_entrypoints;
             sf.md_types = settings.metadata_types;
@@ -155,7 +155,7 @@ export class VSCobScanner {
             clearTimeout(timer);
 
             if (code !== 0) {
-                if (sf.showMessage) {
+                if (sf.cache_metadata_show_progress_messages) {
                     logMessage(`External scan completed [Exit Code=${code}/${reason}]`);
                 }
             } else {
@@ -314,7 +314,7 @@ export class VSCobScanner {
 
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
-        sf.showMessage = settings.cache_metadata_show_progress_messages;
+        sf.cache_metadata_show_progress_messages = settings.cache_metadata_show_progress_messages;
         sf.md_symbols = settings.metadata_symbols;
         sf.md_entrypoints = settings.metadata_entrypoints;
         sf.md_metadata_files = settings.metadata_files;

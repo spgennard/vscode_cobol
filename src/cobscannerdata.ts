@@ -7,7 +7,7 @@ export class ScanData {
     public maxDirectoryDepth = 0;
     public fileCount = 0;
     public parse_copybooks_for_references = false;
-    public showMessage = false;
+    public cache_metadata_show_progress_messages = false;
     public cacheDirectory = "";
     public Files: string[] = [];
     public Directories: string[] = [];

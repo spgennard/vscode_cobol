@@ -11,7 +11,7 @@ import path from "path";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { FileSourceHandler } from "./filesourcehandler";
-import { COBOLSettings } from "./iconfiguration";
+import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 
 const args = process.argv.slice(2);
 const features = ConsoleExternalFeatures.Default;
@@ -28,7 +28,7 @@ class Utils {
     private static isFileT(sdir: string): [boolean, fs.BigIntStats | undefined] {
         try {
             if (fs.existsSync(sdir)) {
-                const f = fs.statSync(sdir, { bigint: true } );
+                const f = fs.statSync(sdir, { bigint: true });
                 if (f && f.isFile()) {
                     return [true, f];
                 }
@@ -53,7 +53,7 @@ class Utils {
         const cachedMtime = cachedMtimeWS?.lastModifiedTime;
         // features.logMessage(`cacheUpdateRequired(${nfilename} = ${cachedMtime})`);
         if (cachedMtime !== undefined) {
-            const stat4src = fs.statSync(filename, { bigint:true });
+            const stat4src = fs.statSync(filename, { bigint: true });
             if (cachedMtime < stat4src.mtimeMs) {
                 return true;
             }
@@ -90,12 +90,19 @@ class Utils {
 }
 
 let lastJsonFile = "";
+const settings: ICOBOLSettings = new COBOLSettings();
+
 for (const arg of args) {
     if (arg.endsWith(".json")) {
         try {
             lastJsonFile = arg;
             const scanData = ScanDataHelper.load(arg);
             features.setWorkspaceFolders(scanData.workspaceFolders);
+
+            // may need more..
+            settings.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
+            settings.cache_metadata_show_progress_messages = scanData.cache_metadata_show_progress_messages;
+
             const aborted = false;
             const stats = new ScanStats();
             stats.start = Utils.performance_now();
@@ -104,11 +111,11 @@ for (const arg of args) {
             stats.fileCount = scanData.fileCount;
 
             // TODO: add in other metadata items
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(scanData.md_symbols,true);
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(scanData.md_entrypoints,true);
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(scanData.md_types,true);
-            COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(features,scanData.md_metadata_files, true);
-            COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(scanData.md_metadata_knowncopybooks,true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, scanData.md_symbols, true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, scanData.md_entrypoints, true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, scanData.md_types, true);
+            COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, features, scanData.md_metadata_files, true);
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, scanData.md_metadata_knowncopybooks, true);
 
             if (scanData.showStats) {
                 if (stats.directoriesScanned !== 0) {
@@ -143,7 +150,7 @@ for (const arg of args) {
                         const config = new COBOLSettings();
                         config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                         const symbolCatcher = new COBOLSymbolTableEventHelper(config);
-                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(config,true), config.parse_copybooks_for_references, symbolCatcher, features);
+                        const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(config, true), config.parse_copybooks_for_references, symbolCatcher, features);
                         if (qcp.callTargets.size > 0) {
                             stats.programsDefined++;
                             if (qcp.callTargets !== undefined) {
@@ -151,7 +158,7 @@ for (const arg of args) {
                             }
                         }
 
-                        if (scanData.showMessage) {
+                        if (scanData.cache_metadata_show_progress_messages) {
                             features.logMessage(`  Parse completed: ${file}`);
                         }
                         stats.filesScanned++;
