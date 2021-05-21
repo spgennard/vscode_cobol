@@ -3,6 +3,26 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.22
+
+**reduce the amount of items cached to the workspace at the expense of**
+
+ * resolving them via the workspace
+* [baa522f2e186a3a](https://github.com/spgennard/vscode_cobol/commit/baa522f2e186a3a) *2021-05-21 23:23:57*
+
+**Update stale.yml**
+
+* [6b1bca15d1a4258](https://github.com/spgennard/vscode_cobol/commit/6b1bca15d1a4258) *2021-05-21 15:04:38*
+
+**update**
+
+* [50b3caa39ae226d](https://github.com/spgennard/vscode_cobol/commit/50b3caa39ae226d) *2021-05-20 21:37:56*
+
+**Update CHANGELOG.md**
+
+* [6a415b7edc40ca2](https://github.com/spgennard/vscode_cobol/commit/6a415b7edc40ca2) *2021-05-20 21:34:18*
+
+
 ## 7.5.20
 
 **avoid bad entry in cache**
