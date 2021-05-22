@@ -133,7 +133,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         if (this.st !== undefined && this.qp !== undefined) {
             if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
                 this.parse_copybooks_for_references === false) {
-                COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
+                COBOLSymbolTableHelper.saveToFile(this.qp.deprecatedCacheDirectory, this.st);
             }
         }
     }
