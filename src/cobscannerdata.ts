@@ -68,4 +68,8 @@ export class ScanDataHelper {
         const str: string = fs.readFileSync(fn).toString();
         return JSON.parse(str) as ScanData;
     }
+
+    public static parseScanData(str: string) : ScanData {
+        return JSON.parse(str) as ScanData;
+    }
 }
