@@ -5,6 +5,39 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.5.22
 
+**prep**
+
+* [aec25640a9bdfe1](https://github.com/spgennard/vscode_cobol/commit/aec25640a9bdfe1) *2021-05-22 21:22:08*
+
+**fix a 'replace' problem**
+
+ * start to refactor cobscanner
+* [c8feba4a5ad53a9](https://github.com/spgennard/vscode_cobol/commit/c8feba4a5ad53a9) *2021-05-22 20:10:30*
+
+**update ref**
+
+* [7647f5d5715cd61](https://github.com/spgennard/vscode_cobol/commit/7647f5d5715cd61) *2021-05-22 16:49:39*
+
+**start to make it obvious which bits of code are dep'ed**
+
+* [00ab8a747bae801](https://github.com/spgennard/vscode_cobol/commit/00ab8a747bae801) *2021-05-22 16:47:57*
+
+**try to fix user's broken config**
+
+* [a26ebb3f674ac38](https://github.com/spgennard/vscode_cobol/commit/a26ebb3f674ac38) *2021-05-22 16:28:19*
+
+**expand callable synbols to include the line number**
+
+* [c8de26ba95b6f62](https://github.com/spgennard/vscode_cobol/commit/c8de26ba95b6f62) *2021-05-22 11:26:10*
+
+**update**
+
+* [19819d21fe5a5dd](https://github.com/spgennard/vscode_cobol/commit/19819d21fe5a5dd) *2021-05-21 23:29:40*
+
+**Update CHANGELOG.md**
+
+* [54c7551a71c9e9d](https://github.com/spgennard/vscode_cobol/commit/54c7551a71c9e9d) *2021-05-21 23:28:17*
+
 **reduce the amount of items cached to the workspace at the expense of**
 
  * resolving them via the workspace
