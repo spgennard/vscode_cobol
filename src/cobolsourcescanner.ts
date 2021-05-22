@@ -459,16 +459,20 @@ class Token {
 }
 
 export class replaceToken {
-    public replaceToken: string;
+    private replaceToken: string;
     public rex4wordreplace: RegExp;
 
-    constructor(replaceToken: string, tokenState: IReplaceState) {
-        this.replaceToken = replaceToken;
+    constructor(replaceTokenRaw: string, tokenState: IReplaceState) {
+        this.replaceToken = this.escapeRegExp(replaceTokenRaw);
         if (tokenState.isPseudoTextDelimiter) {
-            this.rex4wordreplace = new RegExp(`${replaceToken}`, 'g');
+            this.rex4wordreplace = new RegExp(`${this.replaceToken}`, 'g');
         } else {
-            this.rex4wordreplace = new RegExp(`\\b${replaceToken}\\b`, 'g');
+            this.rex4wordreplace = new RegExp(`\\b${this.replaceToken}\\b`, 'g');
         }
+    }
+
+    private escapeRegExp(text: string) {
+        return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     }
 }
 
@@ -657,7 +661,7 @@ class ParseState {
         this.prevEndsWithDot = false;
         this.currentLineIsComment = false;
         this.inReplace = false;
-        this.replace_state = new replaceState(); 
+        this.replace_state = new replaceState();
         this.inCopy = false;
         this.captureReplaceLeft = true;
         this.replaceLeft = "";
