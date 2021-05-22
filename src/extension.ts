@@ -1309,18 +1309,23 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(actionCodelens);
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(getAllCobolSelectors(), codelensProvider);
-    
+
+    if (settings.maintain_metadata_cache && settings.cache_metadata !== CacheDirectoryStrategy.Off) {
+        if (workspace.workspaceFile !== undefined) {
+            const editorConfig = vscode.workspace.getConfiguration('coboleditor');
+            editorConfig.update("cache_metadata", false, false);
+            COBOLUtils.clearGlobalCache();
+
+            logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
+            logMessage("         cache_metadata turned off, please review settings")
+        }
+    }
+
     if (settings.process_metadata_cache_on_start) {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, depMode);
+        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, settings.cache_metadata !== CacheDirectoryStrategy.Off);
         pm.then(() => {
             return;
         });
-    }
-
-    if (settings.maintain_metadata_cache && settings.cache_metadata !== CacheDirectoryStrategy.Off) {
-        logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
-        logMessage("         Please fix your settings.")
     }
     openChangeLog();
 }
