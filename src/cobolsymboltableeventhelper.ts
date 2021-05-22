@@ -96,7 +96,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 }
                 break;
             case COBOLTokenStyle.ImplicitProgramId:
-                COBOLWorkspaceSymbolCacheHelper.addSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
             case COBOLTokenStyle.ProgramId:
                 if (process.send) {
@@ -122,7 +122,6 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 if (process.send) {
                     process.send(`${COBSCANNER_SENDCLASS},${token.tokenName},${token.startLine},${this.st.fileName}`);
                 }
-                break;
                 break;
             case COBOLTokenStyle.MethodId:
                 // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);

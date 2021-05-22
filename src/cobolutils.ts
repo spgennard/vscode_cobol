@@ -163,7 +163,11 @@ export class COBOLUtils {
 
                                 // do not save a callable that is in the defaultCallableSymbol map
                                 if (InMemoryGlobalSymbolCache.defaultCallableSymbols.has(i) === false) {
-                                    symbols.push(`${i},${value.filename}`);
+                                    if (value.lnum !== 0) {
+                                        symbols.push(`${i},${value.filename},${value.lnum}`);
+                                    } else {
+                                        symbols.push(`${i},${value.filename}`);
+                                    }
                                 }
                             });
                         }

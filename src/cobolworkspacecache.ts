@@ -102,7 +102,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         return false;
     }
 
-    public static addSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
+    public static addCalableSymbol(srcfilename: string, symbolUnchanged: string, lineNumber: number): void {
         if (srcfilename.length === 0 || symbolUnchanged.length === 0) {
             return;
         }
@@ -209,7 +209,11 @@ export class COBOLWorkspaceSymbolCacheHelper {
             for (const symbol of symbols) {
                 const symbolValues = symbol.split(",");
                 if (symbolValues.length === 2) {
-                    COBOLWorkspaceSymbolCacheHelper.addSymbol(symbolValues[1], symbolValues[0], 0);
+                    COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], 0);
+                }
+                
+                if (symbolValues.length === 3) {
+                    COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
                 }
             }
         }

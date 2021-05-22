@@ -194,7 +194,7 @@ export class VSCobScanner {
                     const tokenFilename = args[3];
                     COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                     COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
-                    COBOLWorkspaceSymbolCacheHelper.addSymbol(tokenFilename, tokenName, tokenLine);
+                    COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(tokenFilename, tokenName, tokenLine);
                 }
                 else if (message.startsWith(COBSCANNER_SENDCLASS)) {
                     const args = message.split(",");
