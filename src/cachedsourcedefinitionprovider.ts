@@ -28,7 +28,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
             return locations;
         }
 
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
         if (cacheDirectory === undefined) {
             return locations;
         }

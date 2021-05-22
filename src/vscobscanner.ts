@@ -43,7 +43,7 @@ export class VSCobScanner {
         }
 
         // cleanup old sym files
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
         }
@@ -264,7 +264,7 @@ export class VSCobScanner {
                 return;
             }
 
-            const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+            const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
             if (cacheDirectory !== undefined && VSCobScanner.IsScannerActive(cacheDirectory)) {
                 COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
                 if (!viaCommand) {

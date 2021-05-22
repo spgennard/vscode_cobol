@@ -484,7 +484,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage("");
             logMessage(" Caching");
             logMessage(`  Cache Strategy                            : ${settings.cache_metadata}`);
-            const cacheDir = VSCOBOLSourceScanner.getCacheDirectory();
+            const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
             if (cacheDir !== undefined) {
                 logMessage(`  Cache directory  : ${cacheDir}`);
             }
@@ -830,7 +830,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);
         } else {
@@ -839,7 +839,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const clearMetaData = commands.registerCommand('cobolplugin.deprecated.clearMetaData', function () {
-        const cacheDirectory = VSCOBOLSourceScanner.getCacheDirectory();
+        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined) {
             VSCOBOLSourceScanner.clearMetaData(settings, cacheDirectory);
         } else {

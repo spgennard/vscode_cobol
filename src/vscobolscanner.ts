@@ -106,7 +106,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
             this.qp !== undefined &&
             this.st !== undefined) {
-            COBOLSymbolTableHelper.saveToFile(this.qp.cacheDirectory, this.st);
+            COBOLSymbolTableHelper.saveToFile(this.qp.deprecatedCacheDirectory, this.st);
         }
         COBOLUtils.saveGlobalCacheToWorkspace(this.config);
     }
@@ -153,7 +153,7 @@ export default class VSCOBOLSourceScanner {
                     }
                 }
 
-                const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getCacheDirectory();
+                const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
                 const startTime = performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
@@ -300,7 +300,7 @@ export default class VSCOBOLSourceScanner {
         });
     }
 
-    public static getCacheDirectory(): string | undefined {
+    public static getDeprecatedCacheDirectory(): string | undefined {
 
         const settings = VSCOBOLConfiguration.get();
 

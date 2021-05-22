@@ -711,7 +711,7 @@ export interface ICOBOLSourceScanner {
     lastModifiedTime: BigInt;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
     // tokensInOrder: COBOLToken[];
-    cacheDirectory: string;
+    deprecatedCacheDirectory: string;
     workspaceFile: COBOLWorkspaceFile;
 }
 
@@ -787,7 +787,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    readonly cacheDirectory: string;
+    readonly deprecatedCacheDirectory: string;
 
     private eventHandler: ICOBOLSourceScannerEvents;
 
@@ -863,7 +863,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.sourceHandler = sourceHandler;
         this.id = sourceHandler.getUriAsString();
         this.configHandler = configHandler;
-        this.cacheDirectory = cacheDirectory;
+        this.deprecatedCacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
         this.parse_copybooks_for_references = parse_copybooks_for_references;
