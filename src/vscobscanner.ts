@@ -158,7 +158,7 @@ export class VSCobScanner {
         }, settings.cache_metadata_inactivity_timeout);
 
         child.on('error', err => {
-            if (tempDirectory !== undefined) {
+            if (tempDirectory !== undefined && deprecatedMode) {
                 VSCobScanner.removeScannerFile(tempDirectory);
             }
             logException(`Fork caused ${reason}`, err);
