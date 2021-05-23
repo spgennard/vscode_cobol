@@ -72,4 +72,9 @@ export class ScanDataHelper {
     public static parseScanData(str: string) : ScanData {
         return JSON.parse(str) as ScanData;
     }
+
+    public static getScanData(st: ScanData) : string {
+        return  JSON.stringify(st,replacer);
+    }
+    
 }

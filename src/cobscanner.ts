@@ -203,6 +203,27 @@ for (const arg of args) {
             }
         }
     }
+    else if (arg.toLowerCase() === 'useenv') {
+
+        try {
+            const SCANDATA_ENV = process.env.SCANDATA;
+            if (SCANDATA_ENV !== undefined) {
+                const scanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
+                processFile(scanData);
+            } else {
+                features.logMessage(`SCANDATA not found in environment`);
+            }
+        }
+        catch (e) {
+            if (e instanceof SyntaxError) {
+                features.logMessage(`Unable to load ${arg}`);
+            } else {
+                features.logException("cobscanner", e);
+            }
+        }
+    } else {
+        features.logMessage(`INFO: arg passed is ${arg}`);
+    }
 }
 
 if (lastJsonFile.length !== 0) {

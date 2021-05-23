@@ -9,7 +9,7 @@ import { COBOLStatUtils, logChannelHide, logChannelSetPreserveFocus, logExceptio
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./opencopybook";
 import VSCOBOLSourceScanner from "./vscobolscanner";
-import { fork, ForkOptions } from 'child_process';
+import { ChildProcess, fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
@@ -116,17 +116,31 @@ export class VSCobScanner {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean): Promise<void> {
-        ScanDataHelper.save(tempDirectory, sf);
-
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
-        const jsonFile = path.join(tempDirectory, ScanDataHelper.scanFilename);
+        let child: ChildProcess;
 
-        const options: ForkOptions = {
-            stdio: [0, 1, 2, "ipc"],
-            cwd: VSCobScanner.scannerBinDir
-        };
+        if (deprecatedMode) {
+            ScanDataHelper.save(tempDirectory, sf);
+            const jsonFile = path.join(tempDirectory, ScanDataHelper.scanFilename);
+            const options: ForkOptions = {
+                stdio: [0, 1, 2, "ipc"],
+                cwd: VSCobScanner.scannerBinDir
+            };
 
-        const child = fork(jcobscanner_js, [jsonFile], options);
+            child = fork(jcobscanner_js, [jsonFile], options);
+        }
+        else {
+            const options: ForkOptions = {
+                stdio: [0, 1, 2, "ipc"],
+                cwd: VSCobScanner.scannerBinDir,
+                env: {
+                    SCANDATA: ScanDataHelper.getScanData(sf)
+                }
+            };
+            child = fork(jcobscanner_js, ["useenv"], options);
+        }
+
+        // const child = ;
         if (child == undefined) {
             return;
         }
