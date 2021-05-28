@@ -36,4 +36,9 @@ export class VSExternalFeatures implements IExternalFeatures{
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
         return COBOLStatUtils.getFullWorkspaceFilename(sdir, sdirMs);
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public setWorkspaceFolders(_folders: string[]) {
+        //
+    }
 }

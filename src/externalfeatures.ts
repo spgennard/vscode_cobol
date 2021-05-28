@@ -13,6 +13,7 @@ export interface IExternalFeatures {
     expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string;
     getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat;
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
+    setWorkspaceFolders(folders: string[]):void;
 }
 
 export enum ESourceFormat {
@@ -66,5 +67,9 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
         return undefined;
+    }
+
+    public setWorkspaceFolders(_folders: string[]) {
+        //
     }
 }

@@ -340,7 +340,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings, checkForConflicts: boo
         checkForExtensionConflictsMessage = checkForExtensionConflicts();
         if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
             messageBoxDone = true;
-            window.showInformationMessage("COBOL Extension that has found duplicate or conflicting functionality", { modal: true });
+            window.showInformationMessage("COBOL Extension has located duplicate or conflicting functionality", { modal: true });
         }
         // display the message
         if (checkForExtensionConflictsMessage.length !== 0) {
@@ -429,7 +429,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logChannelSetPreserveFocus(true);
         }
     }
-    COBOLOutputChannel.clear();
+    // COBOLOutputChannel.clear();
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
 
@@ -648,6 +648,8 @@ function actionSourceViewItemFunction(si: SourceItem, debug: boolean) {
     commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
 }
 
+let shown_enable_semantic_token_provider = false;
+
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
 
@@ -670,7 +672,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-            if (!md_syms && !md_eps && !md_types && !md_metadata_files) {
+            if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
                 setupSourceViewTree(settings, true);
@@ -691,7 +693,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, ExternalFeatures, settings.metadata_files, true);
             }
 
-            if (enable_semantic_token_provider) {
+            if (enable_semantic_token_provider && !shown_enable_semantic_token_provider) {
+                shown_enable_semantic_token_provider = true;
                 vscode.window.showInformationMessage("The configuration setting 'coboleditor.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session");
             }
 
@@ -822,11 +825,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const processAllFilesInWorkspaceOutOfProcessDeprecated = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true);
+        await VSCobScanner.deprecated_processAllFilesInWorkspaceOutOfProcess(true);
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false);
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true);
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
@@ -841,7 +844,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const clearMetaData = commands.registerCommand('cobolplugin.deprecated.clearMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined) {
-            VSCOBOLSourceScanner.clearMetaData(settings, cacheDirectory);
+            VSCOBOLSourceScanner.deprecatedClearMetaData(settings, cacheDirectory);
         } else {
             logMessage("Metadata caching is turned off (or invalid)");
         }
@@ -1322,7 +1325,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     if (settings.process_metadata_cache_on_start) {
-        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, settings.cache_metadata !== CacheDirectoryStrategy.Off);
+        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
+        const pm = depMode === false ? VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false) :
+                                       VSCobScanner.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
         pm.then(() => {
             return;
         });

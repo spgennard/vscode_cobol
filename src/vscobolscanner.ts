@@ -286,8 +286,8 @@ export default class VSCOBOLSourceScanner {
         }
     }
 
-    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
-        if (VSCobScanner.IsScannerActive(cacheDirectory)) {
+    public static deprecatedClearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
+        if (VSCobScanner.IsDeprecatedScannerActive(cacheDirectory)) {
             window.showInformationMessage(" Unable to clear metadata while caching is already in progress");
             return;
         }

@@ -93,7 +93,6 @@ export class COBOLUtils {
                 }
             });
         });
-        COBOLUtils.saveGlobalCacheToWorkspace(config);
     }
 
 

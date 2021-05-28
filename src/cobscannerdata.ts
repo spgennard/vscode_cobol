@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 
 export class ScanData {
+    public scannerBinDir = "";
     public directoriesScanned = 0;
     public maxDirectoryDepth = 0;
     public fileCount = 0;
@@ -31,6 +32,7 @@ export class ScanStats {
     programsDefined = 0;
     entryPointsDefined = 0;
     start = 0;
+    endTime = 0;
     showMessage = false;
 }
 

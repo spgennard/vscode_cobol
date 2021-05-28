@@ -155,8 +155,9 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public logMessage(message: string): void {
         if (process.send) {
             process.send(message);
+        } else {
+            console.log(message);
         }
-        console.log(message);
 
         return;
     }
@@ -165,7 +166,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         this.logMessage(ex.name + ": " + message);
         if (ex !== undefined && ex.stack !== undefined) {
             this.logMessage(ex.stack);
-        }
+        } 
         return;
     }
 
