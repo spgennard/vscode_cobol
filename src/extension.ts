@@ -333,20 +333,22 @@ function checkForExtensionConflicts(): string {
 
 let messageBoxDone = false;
 
-function initExtensionSearchPaths(config: ICOBOLSettings, checkForConflicts: boolean) {
+function checkForConflicts(config: ICOBOLSettings) {
     let checkForExtensionConflictsMessage = "";
 
-    if (checkForConflicts) {
-        checkForExtensionConflictsMessage = checkForExtensionConflicts();
-        if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
-            messageBoxDone = true;
-            window.showInformationMessage("COBOL Extension that has found duplicate or conflicting functionality", { modal: true });
-        }
-        // display the message
-        if (checkForExtensionConflictsMessage.length !== 0) {
-            logMessage(checkForExtensionConflictsMessage);
-        }
+    checkForExtensionConflictsMessage = checkForExtensionConflicts();
+    if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
+        messageBoxDone = true;
+        window.showInformationMessage("COBOL Extension has found duplicate or conflicting functionality.", { modal: true });
     }
+    // display the message
+    if (checkForExtensionConflictsMessage.length !== 0) {
+        logMessage(checkForExtensionConflictsMessage);
+    }
+}
+
+function initExtensionSearchPaths(config: ICOBOLSettings) {
+
     fileSearchDirectory.length = 0;
 
     const extsdir = config.copybookdirs;
@@ -495,7 +497,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
     }
 
-    initExtensionSearchPaths(settings, true);
+    checkForConflicts(settings);
+    initExtensionSearchPaths(settings);
 
     if (thisExtension !== undefined) {
         const ws = getWorkspaceFolders();
@@ -707,7 +710,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const collection = languages.createDiagnosticCollection('cobolDiag');
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
-    initExtensionSearchPaths(settings, false);
+    initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, false);
