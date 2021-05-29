@@ -225,7 +225,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
                 if (sdirMs === stat4src.mtimeMs) {
                     return possibleFile;
                 } 
-                this.logMessage(`getFullWorkspaceFilename: found ${sdirMs} !== ${stat4src.mtimeMs}`);
+                // this.logMessage(`getFullWorkspaceFilename: found ${sdirMs} !== ${stat4src.mtimeMs}`);
             }
         }
 

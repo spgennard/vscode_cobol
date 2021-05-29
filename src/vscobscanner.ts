@@ -13,7 +13,7 @@ import { ChildProcess, fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
-import { InMemoryGlobalCacheHelper } from "./globalcachehelper";
+import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 
@@ -189,6 +189,7 @@ export class VSCobScanner {
             timer.refresh();        // restart timer
             const message = msg as string;
             if (message.startsWith("@@")) {
+                InMemoryGlobalSymbolCache.isDirty = true;
                 if (message.startsWith(COBSCANNER_STATUS)) {
                     const args = message.split(" ");
                     progressStatusBarItem.show();

@@ -15,7 +15,6 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
-import { performance } from "perf_hooks";
 
 const args = process.argv.slice(2);
 const settings: ICOBOLSettings = new COBOLSettings();
@@ -282,7 +281,7 @@ for (const arg of args) {
 
                         const threadStats: ScanStats[] = [];
                         const jsFile = path.join(baseScanData.scannerBinDir, "cobscanner_worker.js");
-                        const startTime = performance.now();
+                        const startTime = Utils.performance_now();
                         const combinedStats = new ScanStats();
 
                         combinedStats.start = startTime;
@@ -298,7 +297,8 @@ for (const arg of args) {
                             const sfFileChunk = files.slice(i, i + chunkSize);
                             scanData.Files = sfFileChunk;
                             scanData.fileCount = sfFileChunk.length;
-                            const wtd = new workerThreadData(SCANDATA_ENV);
+                            const SCANDATA_ENV_THREAD = ScanDataHelper.getScanData(scanData);
+                            const wtd = new workerThreadData(SCANDATA_ENV_THREAD);
                             const worker = new Worker(jsFile, { workerData: wtd });
 
                             //Listen for a message from worker
@@ -326,7 +326,7 @@ for (const arg of args) {
                                         combinedStats.entryPointsDefined += tstat.entryPointsDefined;
                                     }
 
-                                    combinedStats.endTime = performance.now() - startTime;
+                                    combinedStats.endTime = Utils.performance_now() - startTime;
                                     Scanner.processFileShowFooter(combinedStats, features, false);
 
                                     features.logMessage(`ALL threads completed (${threadStats.length})`);
