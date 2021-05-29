@@ -14,6 +14,7 @@ export interface IExternalFeatures {
     getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat;
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
+    getWorkspaceFolders(): string[];
 }
 
 export enum ESourceFormat {
@@ -71,5 +72,9 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public setWorkspaceFolders(_folders: string[]) {
         //
+    }
+
+    public getWorkspaceFolders(): string[] {
+        return [];
     }
 }

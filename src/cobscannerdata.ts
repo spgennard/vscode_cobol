@@ -54,6 +54,13 @@ function replacer(this: any, key: any, value: any): any {
     return value;
 }
 
+function reviver(key: any, value: any): any {
+    if (typeof value === 'bigint' && value !== null) {
+        return BigInt(value);
+    }
+    
+    return value;
+}
 export class ScanDataHelper {
     public static readonly scanFilename = "cobscanner.json";
 
@@ -72,7 +79,7 @@ export class ScanDataHelper {
     }
 
     public static parseScanData(str: string) : ScanData {
-        return JSON.parse(str) as ScanData;
+        return JSON.parse(str, reviver) as ScanData;
     }
 
     public static getScanData(st: ScanData) : string {

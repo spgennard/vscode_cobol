@@ -209,15 +209,23 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         this.workspaceFolders = folders;
     }
 
+    public getWorkspaceFolders(): string[] {
+        return this.workspaceFolders;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
+        if (this.workspaceFolders.length === 0) {
+            this.logMessage("getFullWorkspaceFilename: workspaceFolders.length === 0");
+        }
         for (const folder of this.workspaceFolders) {
             const possibleFile = path.join(folder, sdir);
             if (ConsoleExternalFeatures.isFile(possibleFile)) {
                 const stat4src = fs.statSync(possibleFile, { bigint: true });
                 if (sdirMs === stat4src.mtimeMs) {
                     return possibleFile;
-                }
+                } 
+                this.logMessage(`getFullWorkspaceFilename: found ${sdirMs} !== ${stat4src.mtimeMs}`);
             }
         }
 

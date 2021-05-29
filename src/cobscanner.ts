@@ -15,6 +15,7 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
+import { performance } from "perf_hooks";
 
 const args = process.argv.slice(2);
 const settings: ICOBOLSettings = new COBOLSettings();
@@ -49,12 +50,11 @@ class Utils {
         return hash.digest('hex');
     }
 
-    public static cacheUpdateRequired(cacheDirectory: string, nfilename: string): boolean {
+    public static cacheUpdateRequired(cacheDirectory: string, nfilename: string, features: IExternalFeatures): boolean {
         const filename = path.normalize(nfilename);
 
         const cachedMtimeWS = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
         const cachedMtime = cachedMtimeWS?.lastModifiedTime;
-        // features.logMessage(`cacheUpdateRequired(${nfilename} = ${cachedMtime})`);
         if (cachedMtime !== undefined) {
             const stat4src = fs.statSync(filename, { bigint: true });
             if (cachedMtime < stat4src.mtimeMs) {
@@ -63,17 +63,18 @@ class Utils {
             return false;
         }
 
-        const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        const fnStat = Utils.isFileT(fn);
-        if (fnStat[0]) {
-            const stat4cache = fnStat[1];
-            const stat4src = fs.statSync(filename, { bigint: true });
-            if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
-                return true;
+        if (cacheDirectory !== null && cacheDirectory.length !== 0) {
+            const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
+            const fnStat = Utils.isFileT(fn);
+            if (fnStat[0]) {
+                const stat4cache = fnStat[1];
+                const stat4src = fs.statSync(filename, { bigint: true });
+                if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
-
         return true;
     }
 
@@ -180,7 +181,7 @@ export class Scanner {
                     fSendCount = 0;
                 }
 
-                if (Utils.cacheUpdateRequired(cacheDir, file)) {
+                if (Utils.cacheUpdateRequired(cacheDir, file, features)) {
                     const filesHandler = new FileSourceHandler(file, false);
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
@@ -216,12 +217,10 @@ export class Scanner {
 let lastJsonFile = "";
 
 export class workerThreadData {
-    public scanData: ScanData;
-    public scanStats: ScanStats;
+    public scanDataString: string;
 
-    constructor(sd: ScanData, scanStats: ScanStats) {
-        this.scanData = sd;
-        this.scanStats = scanStats;
+    constructor(scanDataString: string) {
+        this.scanDataString = scanDataString;
     }
 }
 
@@ -268,41 +267,46 @@ for (const arg of args) {
                 }
             }
                 break;
-            case 'usethreads': {
+            case 'useenvx': {
                 const features = ConsoleExternalFeatures.Default;
                 try {
                     const SCANDATA_ENV = process.env.SCANDATA;
                     if (SCANDATA_ENV !== undefined) {
                         const baseScanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
                         Scanner.setup(baseScanData, features);
-                        const numCpus = os.cpus().length;
-
-                        // if (files.length / numCpus > 50) {
+                        const _numCpus = os.cpus().length;
                         let i, j;
                         const files = baseScanData.Files;
-                        const chunkSize = files.length / numCpus;
-                        const statsArray: ScanStats[] = [];
-                        const threadStats = [];
+                        const threadCount = _numCpus / 2;
+                        const chunkSize = files.length / threadCount;
+
+                        const threadStats: ScanStats[] = [];
                         const jsFile = path.join(baseScanData.scannerBinDir, "cobscanner_worker.js");
-                        features.logMessage(`Using : ${jsFile}`);
+                        const startTime = performance.now();
+                        const combinedStats = new ScanStats();
+
+                        combinedStats.start = startTime;
+                        combinedStats.directoriesScanned = baseScanData.directoriesScanned;
+                        combinedStats.maxDirectoryDepth = baseScanData.maxDirectoryDepth;
+                        combinedStats.fileCount = baseScanData.fileCount;
+
+                        Scanner.processFileShowHeader(combinedStats, features);
+
                         for (i = 0, j = files.length; i < j; i += chunkSize) {
                             const scanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
                             Scanner.setup(scanData, features);
-                            const statsC = new ScanStats();
-                            statsArray.push(statsC);
                             const sfFileChunk = files.slice(i, i + chunkSize);
                             scanData.Files = sfFileChunk;
                             scanData.fileCount = sfFileChunk.length;
-                            const sd = new workerThreadData(scanData,statsC);
-                            const worker = new Worker(jsFile, { workerData: sd });
+                            const wtd = new workerThreadData(SCANDATA_ENV);
+                            const worker = new Worker(jsFile, { workerData: wtd });
 
                             //Listen for a message from worker
                             worker.on("message", result => {
                                 const resStr = result as string;
                                 if (resStr.startsWith("++")) {
                                     const s = JSON.parse(resStr.substr(2)) as ScanStats;
-                                    threadStats.push(s);                                    
-                                    features.logMessage(`endTime = ${s.endTime}`);
+                                    threadStats.push(s);
                                 } else {
                                     features.logMessage(resStr);
                                 }
@@ -312,15 +316,23 @@ for (const arg of args) {
                                 features.logException("usethreads", error);
                             });
 
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             worker.on("exit", exitCode => {
-                                features.logMessage(`ExitCode:${exitCode}`);
-                                if (threadStats.length === numCpus) {
+                                if (threadStats.length === threadCount) {
+                                    for (const tstat of threadStats) {
+                                        combinedStats.filesScanned += tstat.filesScanned;
+                                        combinedStats.filesUptodate += tstat.filesUptodate;
+                                        combinedStats.programsDefined += tstat.programsDefined;
+                                        combinedStats.entryPointsDefined += tstat.entryPointsDefined;
+                                    }
+
+                                    combinedStats.endTime = performance.now() - startTime;
+                                    Scanner.processFileShowFooter(combinedStats, features, false);
+
                                     features.logMessage(`ALL threads completed (${threadStats.length})`);
                                 }
                             })
                         }
-
-                        features.logMessage("Completed..");
                     }
                 } catch (e) {
                     features.logException("cobscanner", e);
@@ -345,3 +357,5 @@ if (lastJsonFile.length !== 0) {
         //continue
     }
 }
+
+

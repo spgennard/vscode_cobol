@@ -49,6 +49,7 @@ export class InMemoryGlobalCacheHelper {
         } else {
             InMemoryGlobalSymbolCache.sourceFilenameModified.set(filename, wsf);
         }
+        InMemoryGlobalSymbolCache.isDirty = true;
     }
 
     public static getSourceFilenameModifiedTable(): string[] {

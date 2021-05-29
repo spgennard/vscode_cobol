@@ -243,9 +243,9 @@ export class VSCobScanner {
                     const shortFilename = COBOLStatUtils.getShortWorkspaceFilename(fullFilename);
                     if (shortFilename !== undefined) {
                         const cws = new COBOLWorkspaceFile(ms, shortFilename);
+                        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
                         if (fullFilename !== undefined) {
                             InMemoryGlobalCacheHelper.addFilename(fullFilename, cws);
-                            COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
                         }
                     }
                 } else if (message.startsWith(COBSCANNER_KNOWNCOPYBOOK)) {

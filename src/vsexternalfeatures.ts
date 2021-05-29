@@ -41,4 +41,8 @@ export class VSExternalFeatures implements IExternalFeatures{
     public setWorkspaceFolders(_folders: string[]) {
         //
     }
+
+    public getWorkspaceFolders(): string[] {
+        return [];
+    }
 }
