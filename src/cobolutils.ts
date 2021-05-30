@@ -45,7 +45,8 @@ export class COBOLUtils {
     }
 
     static getProgramGlobPattern(config: ICOBOLSettings): string {
-        let globString = "**/*.{";
+        let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
+
         for (const ext of config.program_extensions) {
             if (ext.length !== 0) {
                 if (globString.endsWith("{")) {
@@ -63,7 +64,11 @@ export class COBOLUtils {
 
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
-    static async populateDefaultCallableSymbols(settings: ICOBOLSettings): Promise<void> {
+    static populateDefaultCallableSymbolsSync(settings: ICOBOLSettings, reset: boolean): void {
+        (async () => await COBOLUtils.populateDefaultCallableSymbols(settings, reset))();
+    }
+
+    static async populateDefaultCallableSymbols(settings: ICOBOLSettings, reset: boolean): Promise<void> {
         if (settings.cache_metadata !== CacheDirectoryStrategy.Off) {
             return;
         }
@@ -79,9 +84,14 @@ export class COBOLUtils {
             return;
         }
 
-        // already cached?
-        if ((wsf.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath)) {
-            return;
+        // reset 
+        if (reset) {
+            COBOLUtils.prevWorkSpaceUri = undefined;
+        } else {
+            // already cached?
+            if (wsf.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath) {
+                return;
+            }
         }
 
         // stash away current ws
@@ -115,12 +125,12 @@ export class COBOLUtils {
         }
     }
 
-    public static clearGlobalCache():void {
+    public static clearGlobalCache(): void {
         // only update if we have a workspace
         if (getWorkspaceFolders() === undefined) {
             return;
         }
-        
+
         const editorConfig = vscode.workspace.getConfiguration('coboleditor');
         editorConfig.update('metadata_symbols', [], false);
         editorConfig.update('metadata_entrypoints', [], false);

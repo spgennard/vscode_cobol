@@ -662,6 +662,11 @@
           "title": "Maintain Metadata Cache",
           "default": true
         },
+        "coboleditor.maintain_metadata_recursive_search": {
+          "type": "boolean",
+          "title": "When 'Maintain Cache' is enabled, recursive search for source code",
+          "default": false
+        },
         "coboleditor.maintain_metadata_cache_single_folder": {
           "type": "boolean",
           "title": "When enabled, maintain metadata cache when using single folder is active",

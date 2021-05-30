@@ -257,7 +257,7 @@ export class VSCobScanner {
         logMessage("");
         logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
-        await COBOLUtils.populateDefaultCallableSymbols(settings);
+        await COBOLUtils.populateDefaultCallableSymbols(settings, false);
         for (const [, b] of InMemoryGlobalSymbolCache.defaultCallableSymbols) {
             files.push(b);
         }
