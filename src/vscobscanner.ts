@@ -1,5 +1,4 @@
 import path from "path";
-import fs from 'fs';
 
 import { extensions, FileType, Uri, workspace, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
@@ -16,9 +15,10 @@ import tempDirectory from 'temp-dir';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
+import { VSCobScanner_depreciated } from "./vscobscanner_depreciated";
 
 
-class ScanStats {
+class FileScanStats {
     parentPid = 0;
     filesIgnored = 0;
     directoriesScanned = 0;
@@ -75,49 +75,8 @@ export class VSCobScanner {
         return "";
     }
 
-    private static deprecatedActivePid = 0;
-
-    public static isDeprecatedAlive(pid: number): boolean {
-        if (this.deprecatedActivePid === 0) {
-            return false;
-        }
-
-        try {
-            return process.kill(pid, 0);
-        }
-        catch (e) {
-            return e.code === 'EPERM';
-        }
-    }
-
-    private static removeScannerFile(cacheDirectory: string): void {
-        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-        try {
-            fs.unlinkSync(jsonFile);
-        } catch {
-            //continue
-        }
-    }
-
-    public static IsDeprecatedScannerActive(cacheDirectory: string): boolean {
-
-        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-        const jsonFileExists = fs.existsSync(jsonFile);
-
-        if (VSCobScanner.deprecatedActivePid === 0) {
-            return jsonFileExists;
-        }
-
-        // if the file exists.. then leave early
-        if (jsonFileExists) {
-            return jsonFileExists;
-        }
-
-        return this.isDeprecatedAlive(VSCobScanner.deprecatedActivePid);
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
+    public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
         let child: ChildProcess;
 
@@ -151,7 +110,7 @@ export class VSCobScanner {
         }
 
         if (deprecatedMode) {
-            VSCobScanner.deprecatedActivePid = child.pid;
+            VSCobScanner_depreciated.deprecatedActivePid = child.pid;
         }
 
         const timer = setTimeout(function () {
@@ -164,14 +123,14 @@ export class VSCobScanner {
 
         child.on('error', err => {
             if (tempDirectory !== undefined && deprecatedMode) {
-                VSCobScanner.removeScannerFile(tempDirectory);
+                VSCobScanner_depreciated.removeScannerFile(tempDirectory);
             }
             logException(`Fork caused ${reason}`, err);
         });
 
         child.on('exit', code => {
             if (deprecatedMode) {
-                VSCobScanner.deprecatedActivePid = 0;
+                VSCobScanner_depreciated.deprecatedActivePid = 0;
             }
             clearTimeout(timer);
 
@@ -285,88 +244,8 @@ export class VSCobScanner {
         }
     }
 
-    public static async deprecated_processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
 
-        const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
-        const settings = VSCOBOLConfiguration.get();
-
-        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
-            logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
-            return;
-        }
-
-        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
-        if (cacheDirectory !== undefined && VSCobScanner.IsDeprecatedScannerActive(cacheDirectory)) {
-            COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
-            if (!viaCommand) {
-                logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
-                VSCobScanner.removeScannerFile(cacheDirectory);
-                logMessage(` - lock file released`);
-            } else {
-                logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
-                return;
-            }
-        }
-
-
-        const ws = getWorkspaceFolders();
-        const stats = new ScanStats();
-        const files: string[] = [];
-
-        if (ws === undefined) {
-            logMessage(`No workspace folders available ${msgViaCommand}`);
-            return;
-        }
-
-        if (!viaCommand) {
-            logChannelHide();
-        } else {
-            logChannelSetPreserveFocus(!viaCommand);
-        }
-        logMessage("");
-        logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
-
-        if (ws !== undefined) {
-            for (const folder of ws) {
-                try {
-                    await VSCobScanner.generateCOBScannerData(settings, folder.uri, stats, files);
-                } catch {
-                    continue;
-                }
-            }
-
-        }
-
-        COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
-        const sf = new ScanData();
-        sf.scannerBinDir = VSCobScanner.scannerBinDir;
-        sf.directoriesScanned = stats.directoriesScanned;
-        sf.maxDirectoryDepth = stats.maxDirectoryDepth;
-        sf.fileCount = stats.fileCount;
-
-        sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
-        sf.Files = files;
-        sf.cache_metadata_show_progress_messages = settings.cache_metadata_show_progress_messages;
-        sf.md_symbols = settings.metadata_symbols;
-        sf.md_entrypoints = settings.metadata_entrypoints;
-        sf.md_metadata_files = settings.metadata_files;
-        sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
-        for (const [, uri] of stats.directoriesScannedMap) {
-            sf.Directories.push(uri.fsPath);
-        }
-
-        if (ws !== undefined) {
-            for (const f of ws) {
-                if (f !== undefined && f.uri.scheme === 'file') {
-                    sf.workspaceFolders.push(f.uri.fsPath);
-                }
-            }
-        }
-
-        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, true, false, -1);
-    }
-
-    private static getScanData(settings: ICOBOLSettings, ws: ReadonlyArray<WorkspaceFolder>, stats: ScanStats, files: string[]): ScanData {
+    private static getScanData(settings: ICOBOLSettings, ws: ReadonlyArray<WorkspaceFolder>, stats: FileScanStats, files: string[]): ScanData {
         const sf = new ScanData();
         sf.scannerBinDir = VSCobScanner.scannerBinDir;
         sf.directoriesScanned = stats.directoriesScanned;
@@ -394,13 +273,14 @@ export class VSCobScanner {
 
         return sf;
     }
+
     public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean, useThreaded: boolean, threadCount:number): Promise<void> {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
 
         const ws = getWorkspaceFolders();
-        const stats = new ScanStats();
+        const stats = new FileScanStats();
         const files: string[] = [];
 
         if (ws === undefined) {
@@ -428,31 +308,12 @@ export class VSCobScanner {
         }
 
         COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
-        // const numCpus = os.cpus().length;
-
-        // if (files.length / numCpus > 50) {
-        //     let i, j;
-        //     const chunkSize = files.length / numCpus;
-        //     const statsArray: ScanStats[] = [];
-        //     for (i = 0, j = files.length; i < j; i += chunkSize) {
-        //         const statsC = new ScanStats();
-        //         statsArray.push(statsC);
-        //         const sf = this.getScanData(settings, ws, statsC, files);
-        //         sf.showStats = false;
-        //         const sfFileChunk = files.slice(i, i + chunkSize);
-
-        //         sf.Files = sfFileChunk;
-        //         sf.fileCount = sfFileChunk.length;
-        //         await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, false);
-        //     }
-        //     COBOLUtils.saveGlobalCacheToWorkspace(settings, true);
-        // } else {
+ 
         const sf = this.getScanData(settings, ws, stats, files);
         await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true, useThreaded,threadCount);
-        // }
     }
 
-    private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: ScanStats, files2scan: string[]): Promise<boolean> {
+    private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: FileScanStats, files2scan: string[]): Promise<boolean> {
         const entries = await workspace.fs.readDirectory(folder);
         stats.directoriesScanned++;
         if (stats.directoriesScannedMap.has(folder.fsPath)) {

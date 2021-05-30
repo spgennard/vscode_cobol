@@ -50,6 +50,7 @@ import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 import { SourceItem } from './sourceItem';
 import { VSSemanticProvider } from './vssemanticprovider';
 import { VSPPCodeLens } from './vsppcodelens';
+import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -825,7 +826,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const processAllFilesInWorkspaceOutOfProcessDeprecated = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.deprecated_processAllFilesInWorkspaceOutOfProcess(true);
+        await VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(true);
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
@@ -1355,7 +1356,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
         // not threaded on startup
         const pm = depMode === false ? VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1) :
-            VSCobScanner.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
+            VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
         pm.then(() => {
             return;
         });
