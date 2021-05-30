@@ -3,6 +3,67 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.30
+
+**only show threading option on large workspaes**
+
+* [8535c4105723bcf](https://github.com/spgennard/vscode_cobol/commit/8535c4105723bcf) *2021-05-30 22:56:05*
+
+**remove check for ..x perms, as if used needs to be done everywhere...**
+
+* [7aa4c3842f706fc](https://github.com/spgennard/vscode_cobol/commit/7aa4c3842f706fc) *2021-05-30 22:38:34*
+
+**add option to enable recursive search but disable by default**
+
+* [3ff06e3203130da](https://github.com/spgennard/vscode_cobol/commit/3ff06e3203130da) *2021-05-30 16:47:40*
+
+**continue refactoring cobscanner/vscobscanner**
+
+ * - move file scanner to own mechanism
+ * - use workspace findFile approach for scanner
+ * - drop unused list of directories
+* [d759640d6f120cf](https://github.com/spgennard/vscode_cobol/commit/d759640d6f120cf) *2021-05-30 15:26:16*
+
+**continue to refactor the vscobscanner**
+
+* [4f53522ab7aa3e5](https://github.com/spgennard/vscode_cobol/commit/4f53522ab7aa3e5) *2021-05-30 14:35:03*
+
+**start to move vscobscanner code to seperate class, so the non-dep can be**
+
+ * moved forward without the restrictions imposed by the old dep&#x27;ed code
+* [68874ba19179f89](https://github.com/spgennard/vscode_cobol/commit/68874ba19179f89) *2021-05-30 11:28:51*
+
+**continue work cobscanner**
+
+* [415795e8125be34](https://github.com/spgennard/vscode_cobol/commit/415795e8125be34) *2021-05-30 00:09:38*
+
+**continue work on cobscanner**
+
+* [1cdfab0fe897aaa](https://github.com/spgennard/vscode_cobol/commit/1cdfab0fe897aaa) *2021-05-29 02:06:10*
+
+**continue work on cobscanner**
+
+ * - fix bug with not updating a timestamp
+* [d7e44f97e9ce576](https://github.com/spgennard/vscode_cobol/commit/d7e44f97e9ce576) *2021-05-29 01:16:17*
+
+**commit performance changes for cobscanner**
+
+* [9fee4680593cd87](https://github.com/spgennard/vscode_cobol/commit/9fee4680593cd87) *2021-05-28 08:28:03*
+
+**unlink not required in !depmode**
+
+* [b52db85e64cb54a](https://github.com/spgennard/vscode_cobol/commit/b52db85e64cb54a) *2021-05-23 23:12:38*
+
+**continue to work on scanner**
+
+ * - useenv mode setup
+* [815f11affc0f764](https://github.com/spgennard/vscode_cobol/commit/815f11affc0f764) *2021-05-23 23:10:42*
+
+**Update CHANGELOG.md**
+
+* [733f507fd721e61](https://github.com/spgennard/vscode_cobol/commit/733f507fd721e61) *2021-05-23 21:14:10*
+
+
 ## 7.5.23
 
 **Update CHANGELOG.md**
