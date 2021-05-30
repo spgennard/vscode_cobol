@@ -54,34 +54,22 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         if (this.parse_copybooks_for_references === false) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.Union:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Constant:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.ConditionName:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Variable:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Paragraph:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Section:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
             }
         }
@@ -99,6 +87,9 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
                 break;
             case COBOLTokenStyle.ImplicitProgramId:
                 COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDPRGID},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
                 break;
             case COBOLTokenStyle.ProgramId:
                 if (this.sender) {

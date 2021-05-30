@@ -284,8 +284,8 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
     return extraDirs;
 }
 
-const DEFAULT_COPYBOOK_EXTS = ["cpy", "CPY"];
-const DEFAULT_PROGRAM_EXTS = ["cbl", "CBL"];
+const DEFAULT_COPYBOOK_EXTS = [ "cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", "dds", "ss", "wks"];
+const DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
 
 function getCopybookExts(): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');

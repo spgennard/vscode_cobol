@@ -103,7 +103,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "COBOL configuration",
+      "title": "COBOL",
       "properties": {
         "coboleditor.tabstops": {
           "type": "array",
@@ -182,6 +182,8 @@
             }
           },
           "default": [
+            "cob",
+            "COB",
             "cbl",
             "CBL",
             "cobol",
@@ -664,12 +666,12 @@
         },
         "coboleditor.maintain_metadata_recursive_search": {
           "type": "boolean",
-          "title": "When 'Maintain Cache' is enabled, recursive search for source code",
+          "title": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
           "default": false
         },
         "coboleditor.maintain_metadata_cache_single_folder": {
           "type": "boolean",
-          "title": "When enabled, maintain metadata cache when using single folder is active",
+          "title": "When 'Maintain Metadata Cache' is enabled, cache metadata using single folder",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {

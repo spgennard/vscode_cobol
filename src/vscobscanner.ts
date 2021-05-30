@@ -29,7 +29,6 @@ class FileScanStats {
 export class VSCobScanner {
     public static readonly scannerBinDir = VSCobScanner.getCobScannerDirectory();
 
-
     private static getCobScannerDirectory(): string {
         const thisExtension = extensions.getExtension("bitlang.cobol");
         if (thisExtension !== undefined) {
@@ -166,9 +165,9 @@ export class VSCobScanner {
                     if (shortFilename !== undefined) {
                         const cws = new COBOLWorkspaceFile(ms, shortFilename);
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
-                        if (fullFilename !== undefined) {
-                            InMemoryGlobalCacheHelper.addFilename(fullFilename, cws);
-                        }
+                        InMemoryGlobalCacheHelper.addFilename(fullFilename, cws);
+                    } else {
+                        logMessage(`Unable to getShortWorkspaceFilename for ${fullFilename}`);
                     }
                 } else if (message.startsWith(COBSCANNER_KNOWNCOPYBOOK)) {
                     const args = message.split(",");

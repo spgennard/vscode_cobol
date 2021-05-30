@@ -129,7 +129,6 @@ if (parentPort !== null) {
         const wd: workerThreadData = workerData as workerThreadData;
         const scanData = wd.scanData;
         scanData.showStats = false;
-        
         const sd = new ScanStats();
         Scanner.transferScanDataToGlobals(scanData, features);
         Scanner.processFiles(scanData,features, threadSender.Default, sd);

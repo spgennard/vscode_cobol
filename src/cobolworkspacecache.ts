@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import path from "path";
+import { features } from "process";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { CacheDirectoryStrategy, IExternalFeatures } from "./externalfeatures";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
@@ -297,6 +298,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
                     } else {
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(fileValues[1]);
                         COBOLWorkspaceSymbolCacheHelper.removeAllTypes(fileValues[1]);
+                        // externalFeatures.logMessage(`loadFileCacheFromArray, could not ${fileValues[1]} with ${ms}`);
                     }
                 }
             }

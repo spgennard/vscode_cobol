@@ -59,6 +59,7 @@ class Utils {
         if (cachedMtime !== undefined) {
             const stat4src = fs.statSync(filename, { bigint: true });
             if (cachedMtime < stat4src.mtimeMs) {
+                features.logMessage(`cacheUpdateRequired : ${nfilename}, cachedMtime=${cachedMtime} < ${stat4src.mtimeMs}`);
                 return true;
             }
             return false;
@@ -172,12 +173,6 @@ export class Scanner {
             for (const file of scanData.Files) {
                 const cacheDir = scanData.cacheDirectory;
 
-                fSendCount++;
-                if (fSendCount === scanData.sendOnCount) {
-                    sender.sendMessage(`${COBSCANNER_STATUS} ${scanData.sendPercent}`);
-                    fSendCount = 0;
-                }
-
                 if (Utils.cacheUpdateRequired(cacheDir, file, features)) {
                     const filesHandler = new FileSourceHandler(file, false);
                     const config = new COBOLSettings();
@@ -197,6 +192,12 @@ export class Scanner {
                     stats.filesScanned++;
                 } else {
                     stats.filesUptodate++;
+                }
+
+                fSendCount++;
+                if (fSendCount === scanData.sendOnCount) {
+                    sender.sendMessage(`${COBSCANNER_STATUS} ${scanData.sendPercent}`);
+                    fSendCount = 0;
                 }
             }
         } catch (e) {

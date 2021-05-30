@@ -118,15 +118,15 @@ export class COBOLStatUtils {
         try {
             if (fs.existsSync(sdir)) {
                 // not on windows, do extra check for +x perms (protects exe & dirs)
-                if (!COBOLFileUtils.isWin32) {
-                    try {
-                        fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
-                        return false;
-                    }
-                    catch {
-                        return true;
-                    }
-                }
+                // if (!COBOLFileUtils.isWin32) {
+                //     try {
+                //         fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
+                //         return false;
+                //     }
+                //     catch {
+                //         return true;
+                //     }
+                // }
 
                 return true;
             }
