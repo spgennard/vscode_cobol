@@ -63,20 +63,29 @@ export class COBOLUtils {
 
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
-    static async populateDefaultCallableSymbols(): Promise<void> {
-        const ws = vscode.workspace.workspaceFile;
+    static async populateDefaultCallableSymbols(settings: ICOBOLSettings): Promise<void> {
+        if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
+            return;
+        }
+
+        const ws = getWorkspaceFolders();
         if (ws === undefined) {
+            return;
+        }
+
+        const wsf = vscode.workspace.workspaceFile;
+        if (wsf === undefined) {
             InMemoryGlobalSymbolCache.defaultCallableSymbols.clear();
             return;
         }
 
         // already cached?
-        if (ws.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath) {
+        if ((wsf.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath)) {
             return;
         }
 
         // stash away current ws
-        COBOLUtils.prevWorkSpaceUri = ws;
+        COBOLUtils.prevWorkSpaceUri = wsf;
         const config = VSCOBOLConfiguration.get();
         const globPattern = COBOLUtils.getProgramGlobPattern(config);
 

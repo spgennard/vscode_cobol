@@ -906,7 +906,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const ws = getWorkspaceFolders();
 		if (ws !== undefined) {
             if (isSupportedLanguage(doc)) {
-                await COBOLUtils.populateDefaultCallableSymbols();
+                await COBOLUtils.populateDefaultCallableSymbols(settings);
             }
         }
     });
@@ -921,7 +921,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
         if (settings.process_metadata_cache_on_file_save) {
-            await VSCobScanner.processSavedFile(doc.uri.fsPath, settings);
+            await VSCobScanner_depreciated.processSavedFile(doc.uri.fsPath, settings);
         }
     });
     context.subscriptions.push(onDidSaveTextDocumentHandler);

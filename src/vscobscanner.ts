@@ -14,7 +14,6 @@ import { COBOLUtils } from "./cobolutils";
 import tempDirectory from 'temp-dir';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
-import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 import { VSCobScanner_depreciated } from "./vscobscanner_depreciated";
 
 
@@ -32,39 +31,6 @@ class FileScanStats {
 export class VSCobScanner {
     public static readonly scannerBinDir = VSCobScanner.getCobScannerDirectory();
 
-    public static async processSavedFile(fsPath: string, settings: ICOBOLSettings): Promise<void> {
-        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
-            return;
-        }
-
-        // handle when parsed
-        if (settings.parse_copybooks_for_references) {
-            return;
-        }
-
-        // cleanup old sym files
-        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
-        if (cacheDirectory !== undefined) {
-            COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
-        }
-
-        if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
-            COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
-            const sf = new ScanData();
-            sf.scannerBinDir = VSCobScanner.scannerBinDir;
-            sf.showStats = false;
-            sf.Files.push(fsPath);
-            sf.fileCount = sf.Files.length;
-            sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
-            sf.cache_metadata_show_progress_messages = settings.cache_metadata_show_progress_messages;
-            sf.md_symbols = settings.metadata_symbols;
-            sf.md_entrypoints = settings.metadata_entrypoints;
-            sf.md_types = settings.metadata_types;
-            sf.md_metadata_files = settings.metadata_files;
-            sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
-            await this.forkScanner(settings, sf, "OnSave", true, true, false, -1);
-        }
-    }
 
     private static getCobScannerDirectory(): string {
         const thisExtension = extensions.getExtension("bitlang.cobol");
@@ -274,7 +240,7 @@ export class VSCobScanner {
         return sf;
     }
 
-    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean, useThreaded: boolean, threadCount:number): Promise<void> {
+    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
@@ -296,21 +262,26 @@ export class VSCobScanner {
         logMessage("");
         logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
-        if (ws !== undefined) {
-            for (const folder of ws) {
-                try {
-                    await VSCobScanner.generateCOBScannerData(settings, folder.uri, stats, files);
-                } catch {
-                    continue;
-                }
-            }
+        // if (ws !== undefined) {
+        // for (const folder of ws) {
+        //     try {
+        //         await VSCobScanner.generateCOBScannerData(settings, folder.uri, stats, files);
+        //     } catch {
+        //         continue;
+        //     }
+        // }
+        // }
+        await COBOLUtils.populateDefaultCallableSymbols(settings);
 
+        for (const [, b] of InMemoryGlobalSymbolCache.defaultCallableSymbols) {
+            files.push(b);
         }
 
         COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
- 
+
         const sf = this.getScanData(settings, ws, stats, files);
-        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true, useThreaded,threadCount);
+        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true, useThreaded, threadCount);
+        COBOLUtils.saveGlobalCacheToWorkspace(settings, true);
     }
 
     private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: FileScanStats, files2scan: string[]): Promise<boolean> {
@@ -356,16 +327,14 @@ export class VSCobScanner {
                 case FileType.Directory:
                     if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
                         const fullDirectory = path.join(folder.fsPath, entry);
-                        if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                            try {
-                                dir2scan.push(Uri.file(fullDirectory));
-                            } catch (ex) {
-                                logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
-                                if (ex instanceof Error) {
-                                    logException("Unexpected abort during Uri Parse", ex as Error);
-                                } else {
-                                    logMessage(ex);
-                                }
+                        try {
+                            dir2scan.push(Uri.file(fullDirectory));
+                        } catch (ex) {
+                            logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
+                            if (ex instanceof Error) {
+                                logException("Unexpected abort during Uri Parse", ex as Error);
+                            } else {
+                                logMessage(ex);
                             }
                         }
                     }
@@ -390,7 +359,6 @@ export class VSCobScanner {
             } else {
                 logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
             }
-
         }
 
         return true;

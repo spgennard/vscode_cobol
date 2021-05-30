@@ -2,7 +2,6 @@ import path from "path";
 import fs from 'fs';
 import { ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCobScanner } from "./vscobscanner";
-import { COBOLUtils } from "./cobolutils";
 import { VSCOBOLConfiguration } from "./configuration";
 import VSCOBOLSourceScanner from "./vscobolscanner";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage } from "./extension";
@@ -201,7 +200,6 @@ export class VSCobScanner_depreciated {
 
         }
 
-        COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
         const sf = new ScanData();
         sf.scannerBinDir = VSCobScanner.scannerBinDir;
         sf.directoriesScanned = stats.directoriesScanned;
@@ -228,6 +226,39 @@ export class VSCobScanner_depreciated {
         }
 
         await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, true, false, -1);
+    }
+
+    public static async processSavedFile(fsPath: string, settings: ICOBOLSettings): Promise<void> {
+        if (VSCOBOLConfiguration.isOnDiskCachingEnabled() === false) {
+            return;
+        }
+
+        // handle when parsed
+        if (settings.parse_copybooks_for_references) {
+            return;
+        }
+
+        // cleanup old sym files
+        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
+        if (cacheDirectory !== undefined) {
+            COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
+        }
+
+        if (COBOLFileUtils.isValidCopybookExtension(fsPath, settings) || COBOLFileUtils.isValidProgramExtension(fsPath, settings)) {
+            const sf = new ScanData();
+            sf.scannerBinDir = VSCobScanner.scannerBinDir;
+            sf.showStats = false;
+            sf.Files.push(fsPath);
+            sf.fileCount = sf.Files.length;
+            sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
+            sf.cache_metadata_show_progress_messages = settings.cache_metadata_show_progress_messages;
+            sf.md_symbols = settings.metadata_symbols;
+            sf.md_entrypoints = settings.metadata_entrypoints;
+            sf.md_types = settings.metadata_types;
+            sf.md_metadata_files = settings.metadata_files;
+            sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
+            await VSCobScanner.forkScanner(settings, sf, "OnSave", true, true, false, -1);
+        }
     }
 
 }
