@@ -19,6 +19,8 @@ import { IExternalFeatures } from "./externalfeatures";
 const args = process.argv.slice(2);
 const settings: ICOBOLSettings = new COBOLSettings();
 
+const progressPercentage = 5;
+
 class Utils {
     private static msleep(n: number) {
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
@@ -103,7 +105,7 @@ class processSender implements ICOBOLSourceScannerEventer {
 }
 
 export class Scanner {
-    public static setup(scanData: ScanData, features: IExternalFeatures): void {
+    public static transferScanDataToGlobals(scanData: ScanData, features: IExternalFeatures): void {
         features.setWorkspaceFolders(scanData.workspaceFolders);
 
         // may need more..
@@ -155,8 +157,6 @@ export class Scanner {
     }
 
     public static processFiles(scanData: ScanData, features: IExternalFeatures, sender: ICOBOLSourceScannerEventer, stats: ScanStats): void {
-        Scanner.setup(scanData, features);
-
         let aborted = false;
         stats.start = Utils.performance_now();
         stats.directoriesScanned = scanData.directoriesScanned;
@@ -168,15 +168,13 @@ export class Scanner {
         }
 
         try {
-            let fCount = 0;
-            const fSendOn = Math.round(scanData.fileCount * 0.01);
             let fSendCount = 0;
             for (const file of scanData.Files) {
                 const cacheDir = scanData.cacheDirectory;
 
-                fCount++; fSendCount++;
-                if (fSendCount === fSendOn) {
-                    sender.sendMessage(`${COBSCANNER_STATUS} ${fCount} ${scanData.Files.length}`);
+                fSendCount++;
+                if (fSendCount === scanData.sendOnCount) {
+                    sender.sendMessage(`${COBSCANNER_STATUS} ${scanData.sendPercent}`);
                     fSendCount = 0;
                 }
 
@@ -216,10 +214,10 @@ export class Scanner {
 let lastJsonFile = "";
 
 export class workerThreadData {
-    public scanDataString: string;
+    public scanData: ScanData;
 
-    constructor(scanDataString: string) {
-        this.scanDataString = scanDataString;
+    constructor(scanData: ScanData) {
+        this.scanData = scanData;
     }
 }
 
@@ -233,6 +231,8 @@ for (const arg of args) {
             lastJsonFile = arg;
             const scanData: ScanData = ScanDataHelper.load(arg);
             const scanStats = new ScanStats();
+            ScanDataHelper.setupPercent(scanData, scanData.Files.length,progressPercentage);
+            Scanner.transferScanDataToGlobals(scanData, features);
             Scanner.processFiles(scanData, features, processSender.Default, scanStats);
         }
         catch (e) {
@@ -251,8 +251,12 @@ for (const arg of args) {
                     const SCANDATA_ENV = process.env.SCANDATA;
                     if (SCANDATA_ENV !== undefined) {
                         const scanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
+                        ScanDataHelper.setupPercent(scanData, scanData.Files.length,progressPercentage);
+
                         const scanStats = new ScanStats();
+                        Scanner.transferScanDataToGlobals(scanData, features);
                         Scanner.processFiles(scanData, features, processSender.Default, scanStats);
+                        features.logMessage(`${COBSCANNER_STATUS} 100`);
                     } else {
                         features.logMessage(`SCANDATA not found in environment`);
                     }
@@ -266,17 +270,23 @@ for (const arg of args) {
                 }
             }
                 break;
-            case 'useenvx': {
+            case 'useenv_threaded': {
                 const features = ConsoleExternalFeatures.Default;
                 try {
                     const SCANDATA_ENV = process.env.SCANDATA;
                     if (SCANDATA_ENV !== undefined) {
                         const baseScanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
-                        Scanner.setup(baseScanData, features);
-                        const _numCpus = os.cpus().length;
+                        ScanDataHelper.setupPercent(baseScanData, baseScanData.Files.length,progressPercentage);
+                        Scanner.transferScanDataToGlobals(baseScanData, features);
+
+                        let _numCpus = os.cpus().length *0.75;    // only use 75% of CPUs
+                        const _numCpuEnv = process.env.SCANDATA_TCOUNT;
+                        if (_numCpuEnv !== undefined) {
+                            _numCpus = Number.parseInt(_numCpuEnv);
+                        }
                         let i, j;
                         const files = baseScanData.Files;
-                        const threadCount = _numCpus / 2;
+                        const threadCount = _numCpus - 1;
                         const chunkSize = files.length / threadCount;
 
                         const threadStats: ScanStats[] = [];
@@ -290,15 +300,12 @@ for (const arg of args) {
                         combinedStats.fileCount = baseScanData.fileCount;
 
                         Scanner.processFileShowHeader(combinedStats, features);
-
                         for (i = 0, j = files.length; i < j; i += chunkSize) {
-                            const scanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
-                            Scanner.setup(scanData, features);
                             const sfFileChunk = files.slice(i, i + chunkSize);
+                            const scanData: ScanData = { ...baseScanData }
                             scanData.Files = sfFileChunk;
                             scanData.fileCount = sfFileChunk.length;
-                            const SCANDATA_ENV_THREAD = ScanDataHelper.getScanData(scanData);
-                            const wtd = new workerThreadData(SCANDATA_ENV_THREAD);
+                            const wtd = new workerThreadData(scanData);
                             const worker = new Worker(jsFile, { workerData: wtd });
 
                             //Listen for a message from worker
@@ -325,11 +332,10 @@ for (const arg of args) {
                                         combinedStats.programsDefined += tstat.programsDefined;
                                         combinedStats.entryPointsDefined += tstat.entryPointsDefined;
                                     }
-
+                                    threadStats.length = 0;
                                     combinedStats.endTime = Utils.performance_now() - startTime;
+                                    features.logMessage(`${COBSCANNER_STATUS} 100`);
                                     Scanner.processFileShowFooter(combinedStats, features, false);
-
-                                    features.logMessage(`ALL threads completed (${threadStats.length})`);
                                 }
                             })
                         }

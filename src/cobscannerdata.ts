@@ -3,6 +3,9 @@ import path from "path";
 import fs from "fs";
 
 export class ScanData {
+    public sendOnCount = 0;
+    public sendOnFileCount = 0;
+    public sendPercent=0;
     public scannerBinDir = "";
     public directoriesScanned = 0;
     public maxDirectoryDepth = 0;
@@ -85,5 +88,10 @@ export class ScanDataHelper {
     public static getScanData(st: ScanData) : string {
         return  JSON.stringify(st,replacer);
     }
-    
+   
+    public static setupPercent(scanData: ScanData, numberOfFiles: number, percentIncrement: number):void {
+        scanData.sendOnFileCount = numberOfFiles;
+        scanData.sendPercent = percentIncrement;
+        scanData.sendOnCount = Math.round(scanData.sendOnFileCount * (scanData.sendPercent / 100));
+    }
 }

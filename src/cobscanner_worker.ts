@@ -1,6 +1,6 @@
 import { parentPort, workerData } from 'worker_threads';
 import { Scanner, workerThreadData } from './cobscanner';
-import { ScanData, ScanDataHelper, ScanStats } from './cobscannerdata';
+import { ScanStats } from './cobscannerdata';
 import { ESourceFormat, IExternalFeatures } from './externalfeatures';
 
 import * as fs from 'fs';
@@ -125,12 +125,14 @@ class threadSender implements ICOBOLSourceScannerEventer {
 
 if (parentPort !== null) {
     try {
+        const features = ThreadConsoleExternalFeatures.Default;
         const wd: workerThreadData = workerData as workerThreadData;
-        const scanData: ScanData = ScanDataHelper.parseScanData(wd.scanDataString);
-        const sd = new ScanStats();
+        const scanData = wd.scanData;
         scanData.showStats = false;
-        // scanData.cache_metadata_show_progress_messages = true;
-        Scanner.processFiles(scanData,ThreadConsoleExternalFeatures.Default, threadSender.Default, sd);
+        
+        const sd = new ScanStats();
+        Scanner.transferScanDataToGlobals(scanData, features);
+        Scanner.processFiles(scanData,features, threadSender.Default, sd);
         parentPort.postMessage(`++${JSON.stringify(sd)}`);
     } catch (e) {
         threadSender.Default.sendMessage(e.message);

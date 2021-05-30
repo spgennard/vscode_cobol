@@ -80,7 +80,6 @@ export class COBOLUtils {
         const config = VSCOBOLConfiguration.get();
         const globPattern = COBOLUtils.getProgramGlobPattern(config);
 
-
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
             uris.forEach((uri: vscode.Uri) => {
                 const fullPath = uri.fsPath;

@@ -62,7 +62,7 @@ export class VSCobScanner {
             sf.md_types = settings.metadata_types;
             sf.md_metadata_files = settings.metadata_files;
             sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
-            await this.forkScanner(settings, sf, "OnSave", true, true);
+            await this.forkScanner(settings, sf, "OnSave", true, true, false, -1);
         }
     }
 
@@ -117,7 +117,7 @@ export class VSCobScanner {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean, updateNow: boolean): Promise<void> {
+    private static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
         let child: ChildProcess;
 
@@ -136,10 +136,13 @@ export class VSCobScanner {
                 stdio: [0, 1, 2, "ipc"],
                 cwd: VSCobScanner.scannerBinDir,
                 env: {
-                    SCANDATA: ScanDataHelper.getScanData(sf)
+                    SCANDATA: ScanDataHelper.getScanData(sf),
+                    SCANDATA_TCOUNT: `${threadCount}`
                 }
             };
-            child = fork(jcobscanner_js, ["useenv"], options);
+            const scannerStyle = useThreaded ? "useenv_threaded" : "useenv";
+
+            child = fork(jcobscanner_js, [scannerStyle], options);
         }
 
         // const child = ;
@@ -150,7 +153,7 @@ export class VSCobScanner {
         if (deprecatedMode) {
             VSCobScanner.deprecatedActivePid = child.pid;
         }
-        
+
         const timer = setTimeout(function () {
             try {
                 child.kill()
@@ -184,7 +187,7 @@ export class VSCobScanner {
             }
         });
 
-        let prevPercent = 0;
+        let percent = 0;
         child.on('message', (msg) => {
             timer.refresh();        // restart timer
             const message = msg as string;
@@ -193,13 +196,8 @@ export class VSCobScanner {
                 if (message.startsWith(COBSCANNER_STATUS)) {
                     const args = message.split(" ");
                     progressStatusBarItem.show();
-                    const a1 = Number.parseInt(args[1], 10);
-                    const a2 = Number.parseInt(args[2], 10);
-                    const percent = ((a1 / a2) * 100) | 0;
-                    if (prevPercent !== percent) {
-                        progressStatusBarItem.text = `Processing metadata: ${percent}%`;
-                        prevPercent = percent;
-                    }
+                    percent += Number.parseInt(args[1], 10);
+                    progressStatusBarItem.text = `Processing metadata: ${percent}%`;
                 }
                 else if (message.startsWith(COBSCANNER_SENDEP)) {
                     const args = message.split(",");
@@ -285,8 +283,8 @@ export class VSCobScanner {
                 }
             }
         }
-
     }
+
     public static async deprecated_processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
@@ -365,10 +363,10 @@ export class VSCobScanner {
             }
         }
 
-        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, true);
+        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, true, false, -1);
     }
 
-    private static getScanData(settings: ICOBOLSettings, ws: ReadonlyArray<WorkspaceFolder>, stats: ScanStats, files:string[]) : ScanData {
+    private static getScanData(settings: ICOBOLSettings, ws: ReadonlyArray<WorkspaceFolder>, stats: ScanStats, files: string[]): ScanData {
         const sf = new ScanData();
         sf.scannerBinDir = VSCobScanner.scannerBinDir;
         sf.directoriesScanned = stats.directoriesScanned;
@@ -396,7 +394,7 @@ export class VSCobScanner {
 
         return sf;
     }
-    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean): Promise<void> {
+    public static async processAllFilesInWorkspaceOutOfProcess(viaCommand: boolean, useThreaded: boolean, threadCount:number): Promise<void> {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
@@ -449,8 +447,8 @@ export class VSCobScanner {
         //     }
         //     COBOLUtils.saveGlobalCacheToWorkspace(settings, true);
         // } else {
-            const sf = this.getScanData(settings, ws, stats, files);
-            await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true);
+        const sf = this.getScanData(settings, ws, stats, files);
+        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true, useThreaded,threadCount);
         // }
     }
 

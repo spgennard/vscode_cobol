@@ -12,7 +12,7 @@ import * as commenter from './commenter';
 
 import { COBOLDocumentationCommentHandler } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
-import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
+import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol, isSupportedLanguage } from './margindecorations';
 import { jclStatements } from "./keywords/jclstatements";
 import { acuKeywords, cobolKeywords, cobolProcedureKeywords, cobolRegisters, cobolStorageKeywords } from "./keywords/cobolKeywords";
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
@@ -321,7 +321,7 @@ function checkForExtensionConflicts(): string {
                     }
                 }
             }
-            
+
             if (reason.length !== 0) {
                 dupExtensionMessage += getExtensionInformation(ext, reason);
             }
@@ -678,15 +678,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 setupSourceViewTree(settings, true);
             }
             if (md_syms) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings,settings.metadata_symbols, true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, true);
             }
 
             if (md_eps) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings,settings.metadata_entrypoints, true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, true);
             }
 
             if (md_types) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings,settings.metadata_types, true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, true);
             }
 
             if (md_metadata_files) {
@@ -699,7 +699,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (md_metadata_knowncopybooks) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks,true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, true);
             }
         }
     });
@@ -716,8 +716,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, false);
     COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, ExternalFeatures, settings.metadata_files, false);
-    COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks,false);
-    
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, false);
+
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
@@ -829,7 +829,37 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true);
+
+        window.showQuickPick(["Yes", "No"], { placeHolder: "Use threads?" }).then(function (data) {
+            if (data === 'Yes') {
+                const defCpuCount = os.cpus().length;
+                vscode.window.showInputBox({
+                    prompt: 'How many threads do you want to use?',
+                    value: "" + defCpuCount,
+                    validateInput: (threadString: string): string | undefined => {
+                        const threadCount: number = Number.parseInt(threadString, 10);
+
+                        if (threadCount < 2 || threadCount > (defCpuCount * 3)) {
+                            return `Thread count must be between 2 and ${defCpuCount * 3}`;
+                        } else {
+                            return undefined;
+                        }
+                    }
+                }).then(value => {
+                    // leave early
+                    if (value === undefined) {
+                        return;
+                    }
+
+                    const threadCount: number = Number.parseInt(value, 10);
+                    VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true, threadCount);
+
+                });
+
+            } else {
+                VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false, -1);
+            }
+        });
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
@@ -864,19 +894,20 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
 
         activateLogChannelAndPaths(false, settings, true);
-        await COBOLUtils.populateDefaultCallableSymbols();
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 
-    const onDidGrantWorkspaceTrust = workspace.onDidGrantWorkspaceTrust(async () => {
-        await COBOLUtils.populateDefaultCallableSymbols();
-    });
-    context.subscriptions.push(onDidGrantWorkspaceTrust);
-    
     // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc) => {
-        await COBOLUtils.populateDefaultCallableSymbols();
         flip_plaintext(doc);
+
+        //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
+        const ws = getWorkspaceFolders();
+		if (ws !== undefined) {
+            if (isSupportedLanguage(doc)) {
+                await COBOLUtils.populateDefaultCallableSymbols();
+            }
+        }
     });
     context.subscriptions.push(onDidOpenTextDocumentHandler);
 
@@ -1300,11 +1331,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const provider = VSSemanticProvider.provider();
     vscode.languages.registerDocumentSemanticTokensProvider(getAllCobolSelectors(), provider, VSSemanticProvider.getLegend());
 
-    //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
-    if (workspace.workspaceFile !== undefined) {
-        await COBOLUtils.populateDefaultCallableSymbols();
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actionCodelens = commands.registerCommand("coboleditor.ppcodelenaction", (args: string) => {
         VSPPCodeLens.actionCodeLens(args);
@@ -1314,7 +1340,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     languages.registerCodeLensProvider(getAllCobolSelectors(), codelensProvider);
 
     if (settings.maintain_metadata_cache && settings.cache_metadata !== CacheDirectoryStrategy.Off) {
-        if (workspace.workspaceFile !== undefined) {
+        const ws = getWorkspaceFolders();
+		if (ws !== undefined) {
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update("cache_metadata", false, false);
             COBOLUtils.clearGlobalCache();
@@ -1326,8 +1353,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     if (settings.process_metadata_cache_on_start) {
         const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-        const pm = depMode === false ? VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false) :
-                                       VSCobScanner.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
+        // not threaded on startup
+        const pm = depMode === false ? VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1) :
+            VSCobScanner.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
         pm.then(() => {
             return;
         });
