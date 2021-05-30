@@ -1,13 +1,11 @@
 import path from "path";
 
-import { extensions, FileType, Uri, workspace, WorkspaceFolder } from "vscode";
+import { extensions, Uri, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
 import { COBOLStatUtils, logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLFileUtils } from "./opencopybook";
-import VSCOBOLSourceScanner from "./vscobolscanner";
 import { ChildProcess, fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
@@ -225,9 +223,6 @@ export class VSCobScanner {
         sf.md_entrypoints = settings.metadata_entrypoints;
         sf.md_metadata_files = settings.metadata_files;
         sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
-        for (const [, uri] of stats.directoriesScannedMap) {
-            sf.Directories.push(uri.fsPath);
-        }
 
         if (ws !== undefined) {
             for (const f of ws) {
@@ -262,17 +257,7 @@ export class VSCobScanner {
         logMessage("");
         logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
-        // if (ws !== undefined) {
-        // for (const folder of ws) {
-        //     try {
-        //         await VSCobScanner.generateCOBScannerData(settings, folder.uri, stats, files);
-        //     } catch {
-        //         continue;
-        //     }
-        // }
-        // }
         await COBOLUtils.populateDefaultCallableSymbols(settings);
-
         for (const [, b] of InMemoryGlobalSymbolCache.defaultCallableSymbols) {
             files.push(b);
         }
@@ -283,86 +268,4 @@ export class VSCobScanner {
         await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true, useThreaded, threadCount);
         COBOLUtils.saveGlobalCacheToWorkspace(settings, true);
     }
-
-    private static async generateCOBScannerData(settings: ICOBOLSettings, folder: Uri, stats: FileScanStats, files2scan: string[]): Promise<boolean> {
-        const entries = await workspace.fs.readDirectory(folder);
-        stats.directoriesScanned++;
-        if (stats.directoriesScannedMap.has(folder.fsPath)) {
-            return true;
-        }
-
-        if (stats.showMessage) {
-            const spaces = " ".repeat(stats.directoryDepth);
-            logMessage(` ${spaces}Directory : ${folder.fsPath}`);
-        }
-        stats.directoriesScannedMap.set(folder.fsPath, folder);
-
-        const dir2scan: Uri[] = [];
-
-        for (const [entry, fileType] of entries) {
-            switch (fileType) {
-                case FileType.File | FileType.SymbolicLink:
-                    {
-                        const spaces4file = " ".repeat(1 + stats.directoryDepth);
-                        logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
-                    }
-                // eslint-disable-next-line no-fallthrough
-                case FileType.File:
-                    {
-                        const fullPath = path.join(folder.fsPath, entry);
-                        if (COBOLFileUtils.isValidProgramExtension(fullPath, settings) || COBOLFileUtils.isValidCopybookExtension(fullPath, settings)) {
-                            files2scan.push(fullPath);
-                            stats.fileCount++;
-                        } else {
-                            stats.filesIgnored++;
-                        }
-                    }
-                    break;
-                case FileType.Directory | FileType.SymbolicLink:
-                    {
-                        const spaces4dir = " ".repeat(1 + stats.directoryDepth);
-                        logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
-                    }
-                // eslint-disable-next-line no-fallthrough
-                case FileType.Directory:
-                    if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                        const fullDirectory = path.join(folder.fsPath, entry);
-                        try {
-                            dir2scan.push(Uri.file(fullDirectory));
-                        } catch (ex) {
-                            logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
-                            if (ex instanceof Error) {
-                                logException("Unexpected abort during Uri Parse", ex as Error);
-                            } else {
-                                logMessage(ex);
-                            }
-                        }
-                    }
-                    break;
-            }
-        }
-
-        if (dir2scan.length !== 0) {
-            if (1 + stats.directoryDepth <= settings.cache_metadata_max_directory_scan_depth) {
-                stats.directoryDepth++;
-                for (const directoryUri of dir2scan) {
-                    try {
-                        await VSCobScanner.generateCOBScannerData(settings, directoryUri, stats, files2scan);
-                    } catch {
-                        continue;       // file not found
-                    }
-                }
-                if (stats.directoryDepth > stats.maxDirectoryDepth) {
-                    stats.maxDirectoryDepth = stats.directoryDepth;
-                }
-                stats.directoryDepth--;
-            } else {
-                logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
-            }
-        }
-
-        return true;
-    }
-
-
 }

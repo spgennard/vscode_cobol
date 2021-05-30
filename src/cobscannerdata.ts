@@ -14,7 +14,6 @@ export class ScanData {
     public cache_metadata_show_progress_messages = false;
     public cacheDirectory = "";
     public Files: string[] = [];
-    public Directories: string[] = [];
     public showStats = true;
     public md_symbols: string[] = [];
     public md_entrypoints: string[] = [];

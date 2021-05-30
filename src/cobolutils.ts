@@ -45,7 +45,7 @@ export class COBOLUtils {
     }
 
     static getProgramGlobPattern(config: ICOBOLSettings): string {
-        let globString = "*.{";
+        let globString = "**/*.{";
         for (const ext of config.program_extensions) {
             if (ext.length !== 0) {
                 if (globString.endsWith("{")) {
@@ -64,7 +64,7 @@ export class COBOLUtils {
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
     static async populateDefaultCallableSymbols(settings: ICOBOLSettings): Promise<void> {
-        if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
+        if (settings.cache_metadata !== CacheDirectoryStrategy.Off) {
             return;
         }
 

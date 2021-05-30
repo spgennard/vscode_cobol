@@ -213,9 +213,6 @@ export class VSCobScanner_depreciated {
         sf.md_entrypoints = settings.metadata_entrypoints;
         sf.md_metadata_files = settings.metadata_files;
         sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
-        for (const [, uri] of stats.directoriesScannedMap) {
-            sf.Directories.push(uri.fsPath);
-        }
 
         if (ws !== undefined) {
             for (const f of ws) {
