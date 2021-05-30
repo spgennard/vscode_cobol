@@ -51,6 +51,7 @@ import { SourceItem } from './sourceItem';
 import { VSSemanticProvider } from './vssemanticprovider';
 import { VSPPCodeLens } from './vsppcodelens';
 import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
+import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -837,9 +838,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
 
-        window.showQuickPick(["Yes", "No"], { placeHolder: "Use threads?" }).then(function (data) {
+        if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false, -1);
+            return;
+        }
+
+        window.showQuickPick(["Yes", "No"], { placeHolder: "Your workspace is large, do you want to extra threads for your metadata scan?" }).then(function (data) {
             if (data === 'Yes') {
-                const defCpuCount = os.cpus().length;
+                const cpuCount = os.cpus().length;
+                const defCpuCount = cpuCount >= 4 ? (cpuCount / 2) : cpuCount;
                 vscode.window.showInputBox({
                     prompt: 'How many threads do you want to use?',
                     value: "" + defCpuCount,

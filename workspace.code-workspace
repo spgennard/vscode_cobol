@@ -37,8 +37,7 @@
 			"1598470462548,src/test/suite/issue189_coboldoc.cbl",
 			"1598469615592,src/test/suite/issue189_msdn.cbl",
 			"1599686519024,src/test/suite/string.cbl",
-			"1597963271928,src/test/suite/test.cbl",
-			"1554938593885,issues/examples/rainbow_code.cbl"
+			"1597963271928,src/test/suite/test.cbl"
 		],
 		"coboleditor.metadata_knowncopybooks": []
 	}
