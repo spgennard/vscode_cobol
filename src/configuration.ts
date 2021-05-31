@@ -86,7 +86,7 @@ export class VSCOBOLConfiguration {
     }
 
 
-    public static isOnDiskCachingEnabled(): boolean {
+    public static isDepreciatedDiskCachingEnabled(): boolean {
         const config = VSCOBOLConfiguration.get();
         const cacheStrat = config.cache_metadata;
         if (cacheStrat === CacheDirectoryStrategy.Off) {

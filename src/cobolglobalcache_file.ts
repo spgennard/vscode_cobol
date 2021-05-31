@@ -92,7 +92,7 @@ export class COBOLSymbolTableHelper {
                         fs.unlinkSync(fn);
                     } catch (e) {
                         //
-                    }                    return undefined;
+                    } return undefined;
                 }
             }
             catch (e) {
@@ -137,6 +137,4 @@ export class COBOLSymbolTableHelper {
             logMessage(`Symbol file removed ${nfilename}`);
         }
     }
-
-
 }

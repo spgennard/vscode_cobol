@@ -379,12 +379,13 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
         }
 
-        if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+        if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
             logMessage("----------------------------------------------------------------------");
             logMessage(" Deprecated Features settings");
             logMessage("");
             logMessage(" Caching");
-            logMessage(`  Cache Strategy                            : ${settings.cache_metadata}`);
+            logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+            
             const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
             if (cacheDir !== undefined) {
                 logMessage(`  Cache directory  : ${cacheDir}`);
@@ -833,7 +834,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
         if (settings.process_metadata_cache_on_file_save) {
-            await VSCobScanner_depreciated.processSavedFile(doc.uri.fsPath, settings);
+            await VSCobScanner_depreciated.depreciatedProcessSavedFile(doc.uri.fsPath, settings);
         }
     });
     context.subscriptions.push(onDidSaveTextDocumentHandler);
@@ -881,7 +882,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(sourcedefProvider);
 
-    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+    if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
         const cachedSourcedefProvider = languages.registerDefinitionProvider(getAllCobolSelectors(), {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
                 const csdp = new CachedCOBOLSourceDefinition();

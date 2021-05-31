@@ -6,21 +6,17 @@ import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COB
 import { VSCOBOLConfiguration } from "./configuration";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
-import { ChildProcess, fork, ForkOptions } from 'child_process';
+import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { COBOLUtils } from "./cobolutils";
-import tempDirectory from 'temp-dir';
+
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
-import { VSCobScanner_depreciated } from "./vscobscanner_depreciated";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 
 class FileScanStats {
-    parentPid = 0;
-    filesIgnored = 0;
     directoriesScanned = 0;
-    directoryDepth = 0;
     maxDirectoryDepth = 0;
     fileCount = 0;
     showMessage = false;
@@ -40,42 +36,26 @@ export class VSCobScanner {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, deprecatedMode: boolean, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
+    public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
-        let child: ChildProcess;
 
-        if (deprecatedMode) {
-            ScanDataHelper.save(tempDirectory, sf);
-            const jsonFile = path.join(tempDirectory, ScanDataHelper.scanFilename);
-            const options: ForkOptions = {
-                stdio: [0, 1, 2, "ipc"],
-                cwd: VSCobScanner.scannerBinDir
-            };
+        const options: ForkOptions = {
+            stdio: [0, 1, 2, "ipc"],
+            cwd: VSCobScanner.scannerBinDir,
+            env: {
+                SCANDATA: ScanDataHelper.getScanData(sf),
+                SCANDATA_TCOUNT: `${threadCount}`
+            }
+        };
+        const scannerStyle = useThreaded ? "useenv_threaded" : "useenv";
+        const child = fork(jcobscanner_js, [scannerStyle], options);
 
-            child = fork(jcobscanner_js, [jsonFile], options);
-        }
-        else {
-            const options: ForkOptions = {
-                stdio: [0, 1, 2, "ipc"],
-                cwd: VSCobScanner.scannerBinDir,
-                env: {
-                    SCANDATA: ScanDataHelper.getScanData(sf),
-                    SCANDATA_TCOUNT: `${threadCount}`
-                }
-            };
-            const scannerStyle = useThreaded ? "useenv_threaded" : "useenv";
-
-            child = fork(jcobscanner_js, [scannerStyle], options);
-        }
 
         // const child = ;
         if (child == undefined) {
             return;
         }
 
-        if (deprecatedMode) {
-            VSCobScanner_depreciated.deprecatedActivePid = child.pid;
-        }
 
         const timer = setTimeout(function () {
             try {
@@ -86,16 +66,10 @@ export class VSCobScanner {
         }, settings.cache_metadata_inactivity_timeout);
 
         child.on('error', err => {
-            if (tempDirectory !== undefined && deprecatedMode) {
-                VSCobScanner_depreciated.removeScannerFile(tempDirectory);
-            }
             logException(`Fork caused ${reason}`, err);
         });
 
         child.on('exit', code => {
-            if (deprecatedMode) {
-                VSCobScanner_depreciated.deprecatedActivePid = 0;
-            }
             clearTimeout(timer);
 
             if (code !== 0) {
@@ -265,7 +239,7 @@ export class VSCobScanner {
         COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
 
         const sf = this.getScanData(settings, ws, stats, files);
-        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, false, true, useThreaded, threadCount);
+        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, useThreaded, threadCount);
         COBOLUtils.saveGlobalCacheToWorkspace(settings, true);
     }
 }
