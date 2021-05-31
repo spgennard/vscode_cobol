@@ -4,6 +4,21 @@ import { COBOLSettings } from './iconfiguration';
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";
 
+    public static isFileT(sdir: string): [boolean, fs.BigIntStats | undefined] {
+        try {
+            if (fs.existsSync(sdir)) {
+                const f = fs.statSync(sdir, { bigint: true });
+                if (f && f.isFile()) {
+                    return [true, f];
+                }
+            }
+        }
+        catch {
+            return [false, undefined];
+        }
+        return [false, undefined];
+    }
+    
     public static isFile(sdir: string): boolean {
         try {
             if (fs.existsSync(sdir)) {

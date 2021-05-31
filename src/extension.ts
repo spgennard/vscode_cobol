@@ -1288,7 +1288,7 @@ function openChangeLog(): void {
         const lastVersion = currentContext.globalState.get("bitlang.cobol.version");
         if (lastVersion !== version) {
             const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
-            if (fs.existsSync(verFile)) {
+            if (COBOLFileUtils.isFile(verFile)) {
                 const readmeUri = vscode.Uri.file(verFile);
                 commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
                 currentContext.globalState.update("bitlang.cobol.version", version);

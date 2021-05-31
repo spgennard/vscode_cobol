@@ -1,32 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-import * as fs from 'fs';
 import * as path from 'path';
 
 import { COBOLGlobalSymbolTable, COBOLWorkspaceFile } from './cobolglobalcache';
+import { COBOLFileUtils } from './fileutils';
 
 export const InMemoryGlobalSymbolCache = new COBOLGlobalSymbolTable();
 
 export class InMemoryGlobalCacheHelper {
     private static globalSymbolFilename = "globalsymbols.sym";
 
-    private static isFileT(sdir: string): [boolean, fs.Stats | undefined] {
-        try {
-            if (fs.existsSync(sdir)) {
-                const f = fs.statSync(sdir);
-                if (f && f.isFile()) {
-                    return [true, f];
-                }
-            }
-        }
-        catch {
-            return [false, undefined];
-        }
-        return [false, undefined];
-    }
-
     public static (cacheDirectory: string): boolean {
         const fn: string = path.join(cacheDirectory, InMemoryGlobalCacheHelper.globalSymbolFilename);
-        const fnStat = InMemoryGlobalCacheHelper.isFileT(fn);
+        const fnStat = COBOLFileUtils.isFileT(fn);
         if (fnStat[0]) {
             return true;
         }

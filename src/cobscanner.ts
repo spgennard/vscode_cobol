@@ -15,6 +15,7 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
+import { COBOLFileUtils } from "./fileutils";
 
 const args = process.argv.slice(2);
 const settings: ICOBOLSettings = new COBOLSettings();
@@ -30,20 +31,7 @@ class Utils {
         Utils.msleep(n * 1000);
     }
 
-    private static isFileT(sdir: string): [boolean, fs.BigIntStats | undefined] {
-        try {
-            if (fs.existsSync(sdir)) {
-                const f = fs.statSync(sdir, { bigint: true });
-                if (f && f.isFile()) {
-                    return [true, f];
-                }
-            }
-        }
-        catch {
-            return [false, undefined];
-        }
-        return [false, undefined];
-    }
+
 
     public static getHashForFilename(filename: string) {
         const hash: Hash = crypto.createHash('sha256');
@@ -67,7 +55,7 @@ class Utils {
 
         if (cacheDirectory !== null && cacheDirectory.length !== 0) {
             const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-            const fnStat = Utils.isFileT(fn);
+            const fnStat = COBOLFileUtils.isFileT(fn);
             if (fnStat[0]) {
                 const stat4cache = fnStat[1];
                 const stat4src = fs.statSync(filename, { bigint: true });

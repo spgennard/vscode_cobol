@@ -10,6 +10,7 @@ import ISourceHandler from './isourcehandler';
 import { ICOBOLSettings } from './iconfiguration';
 import { getCOBOLSourceFormat } from './consoleexternalfeatures';
 import { ICOBOLSourceScannerEventer } from './cobolsourcescanner';
+import { COBOLFileUtils } from './fileutils';
 
 // class WorkerUtils {
 //     public static msleep(n: number) {
@@ -27,15 +28,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public workspaceFolders: string[] = [];
 
     private static isFile(sdir: string): boolean {
-        try {
-            if (fs.existsSync(sdir)) {
-                return true;
-            }
-        }
-        catch {
-            return false;
-        }
-        return false;
+        return COBOLFileUtils.isFile(sdir);
     }
 
     public logMessage(message: string): void {

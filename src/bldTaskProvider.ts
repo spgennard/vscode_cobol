@@ -1,5 +1,4 @@
 import path, { dirname } from 'path';
-import fs from 'fs';
 import * as vscode from 'vscode';
 import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLFileUtils } from './fileutils';
@@ -98,7 +97,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 					const fname = path.join(folder.uri.fsPath, scriptName);
 
 					try {
-						if (fs.existsSync(fname)) {
+						if (COBOLFileUtils.isFile(fname)) {
 							return fname;
 						}
 					}

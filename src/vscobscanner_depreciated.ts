@@ -42,7 +42,7 @@ export class VSCobScanner_depreciated {
     public static IsDeprecatedScannerActive(cacheDirectory: string): boolean {
 
         const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-        const jsonFileExists = fs.existsSync(jsonFile);
+        const jsonFileExists = COBOLFileUtils.isFile(jsonFile);
 
         if (VSCobScanner_depreciated.deprecatedActivePid === 0) {
             return jsonFileExists;

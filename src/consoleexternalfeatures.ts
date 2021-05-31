@@ -7,6 +7,7 @@ import fs from 'fs';
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import ISourceHandler from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLFileUtils } from './fileutils';
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
@@ -141,15 +142,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public workspaceFolders: string[] = [];
 
     private static isFile(sdir: string): boolean {
-        try {
-            if (fs.existsSync(sdir)) {
-                return true;
-            }
-        }
-        catch {
-            return false;
-        }
-        return false;
+        return COBOLFileUtils.isFile(sdir);
     }
 
     public logMessage(message: string): void {
