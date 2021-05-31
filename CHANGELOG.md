@@ -5,6 +5,14 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.5.31
 
+**update**
+
+* [44f6d7525f85ef9](https://github.com/spgennard/vscode_cobol/commit/44f6d7525f85ef9) *2021-05-31 21:45:54*
+
+**Update CHANGELOG.md**
+
+* [05b5290e7298980](https://github.com/spgennard/vscode_cobol/commit/05b5290e7298980) *2021-05-31 21:36:00*
+
 **continue the seperation of the depreciated caching support**
 
 * [777185353c3ac6e](https://github.com/spgennard/vscode_cobol/commit/777185353c3ac6e) *2021-05-31 21:34:38*
