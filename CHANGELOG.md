@@ -3,6 +3,29 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.5.31
+
+**continue the seperation of the depreciated caching support**
+
+* [777185353c3ac6e](https://github.com/spgennard/vscode_cobol/commit/777185353c3ac6e) *2021-05-31 21:34:38*
+
+**continue refactor file handing**
+
+* [a7d5b1c22ca5723](https://github.com/spgennard/vscode_cobol/commit/a7d5b1c22ca5723) *2021-05-31 16:01:10*
+
+**continue refactoring the file apis, into vs based ones & non-vs**
+
+* [e1863e295305bed](https://github.com/spgennard/vscode_cobol/commit/e1863e295305bed) *2021-05-31 11:57:01*
+
+**update**
+
+* [26bed67a6be34b3](https://github.com/spgennard/vscode_cobol/commit/26bed67a6be34b3) *2021-05-31 09:47:02*
+
+**Update CHANGELOG.md**
+
+* [d642ca7b1fbff60](https://github.com/spgennard/vscode_cobol/commit/d642ca7b1fbff60) *2021-05-30 22:56:54*
+
+
 ## 7.5.30
 
 **only show threading option on large workspaes**
