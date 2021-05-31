@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
-import { COBOLStatUtils } from './extension';
+import { VSCOBOLFileUtils } from './vsfileutils';
 
 export class VSCodeSourceHandler implements ISourceHandler {
     commentCount: number;
@@ -23,7 +23,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCallback = commentCallback;
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
-        const workspaceFilename = COBOLStatUtils.getShortWorkspaceFilename(document.fileName);
+        const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
         this.updatedSource = new Map<number, string>();

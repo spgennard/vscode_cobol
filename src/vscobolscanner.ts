@@ -15,7 +15,7 @@ import { COBOLSymbolTable } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
-import { COBOLFileUtils } from "./opencopybook";
+import { COBOLFileUtils } from "./fileutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { VSPreProc } from "./vspreproc";
 import { VSCobScanner_depreciated } from './vscobscanner_depreciated';

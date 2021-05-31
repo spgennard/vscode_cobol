@@ -2,12 +2,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import path from "path";
-import { features } from "process";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { CacheDirectoryStrategy, IExternalFeatures } from "./externalfeatures";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { ICOBOLSettings } from "./iconfiguration";
-
 
 export enum TypeCategory {
     ClassId = "T",

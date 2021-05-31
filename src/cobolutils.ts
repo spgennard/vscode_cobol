@@ -2,17 +2,18 @@ import * as vscode from 'vscode';
 import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
+import { logMessage, isDirectory, logException } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { writeFileSync } from 'fs';
-import { COBOLFileUtils } from './opencopybook';
+import { COBOLFileUtils } from './fileutils';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLFileSymbol } from './cobolglobalcache';
 import { CacheDirectoryStrategy } from './externalfeatures';
+import { VSCOBOLFileUtils } from './vsfileutils';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -263,7 +264,7 @@ export class COBOLUtils {
             if (COBOLFileUtils.isDirectPath(ddir)) {
                 const ws = getWorkspaceFolders();
                 if (vscode.workspace !== undefined && ws !== undefined) {
-                    if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
+                    if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
                             const uriToFolder = vscode.Uri.file(path.normalize(ddir));
@@ -289,7 +290,7 @@ export class COBOLUtils {
 
                             if (isDirectory(sdir)) {
                                 if (COBOLFileUtils.isNetworkPath(sdir)) {
-                                    if (COBOLStatUtils.isPathInWorkspace(sdir) === false) {
+                                    if (VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
                                         const uriToFolder = vscode.Uri.file(path.normalize(sdir));
                                         vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
@@ -335,7 +336,7 @@ export class COBOLUtils {
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
                     copybook_filename.indexOf(".") !== -1 ||
-                    COBOLStatUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
+                    COBOLFileUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
                     return 'Invalid copybook';
                 } else {
                     return undefined;

@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { COBOLStatUtils, logException, logMessage, logTimedMessage, performance_now } from "./extension";
+import { logException, logMessage, logTimedMessage, performance_now } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
 import { getCOBOLSourceFormat } from "./margindecorations";
 import { COBOLCopyBookProvider } from "./opencopybook";
+import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSExternalFeatures implements IExternalFeatures{
     public logMessage(message: string): void {
@@ -34,7 +35,7 @@ export class VSExternalFeatures implements IExternalFeatures{
     }
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        return COBOLStatUtils.getFullWorkspaceFilename(sdir, sdirMs);
+        return VSCOBOLFileUtils.getFullWorkspaceFilename(sdir, sdirMs);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

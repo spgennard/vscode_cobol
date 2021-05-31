@@ -18,7 +18,7 @@ import { acuKeywords, cobolKeywords, cobolProcedureKeywords, cobolRegisters, cob
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 
 import updateDecorations from './margindecorations';
-import { COBOLFileUtils } from './opencopybook';
+import { COBOLFileUtils } from './fileutils';
 
 import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
@@ -52,6 +52,7 @@ import { VSSemanticProvider } from './vssemanticprovider';
 import { VSPPCodeLens } from './vsppcodelens';
 import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
+import { VSCOBOLFileUtils } from './vsfileutils';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -101,108 +102,6 @@ export function isDirectory(sdir: string): boolean {
     }
     return false;
 }
-
-
-
-export class COBOLStatUtils {
-
-    public static async isFileASync(sdir: string): Promise<boolean> {
-        try {
-            const statSDir = await workspace.fs.stat(vscode.Uri.file(sdir));
-            return (statSDir.type & vscode.FileType.File) === vscode.FileType.File;
-        } catch {
-            return false;
-        }
-    }
-
-    public static isFile(sdir: string): boolean {
-        try {
-            if (fs.existsSync(sdir)) {
-                // not on windows, do extra check for +x perms (protects exe & dirs)
-                // if (!COBOLFileUtils.isWin32) {
-                //     try {
-                //         fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
-                //         return false;
-                //     }
-                //     catch {
-                //         return true;
-                //     }
-                // }
-
-                return true;
-            }
-        }
-        catch {
-            return false;
-        }
-        return false;
-    }
-
-    public static isPathInWorkspace(ddir: string): boolean {
-        const ws = getWorkspaceFolders();
-        if (workspace === undefined || ws === undefined) {
-            return false;
-        }
-
-        const fullPath = path.normalize(ddir);
-        for (const folder of ws) {
-            if (folder.uri.fsPath === fullPath) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        const ws = getWorkspaceFolders();
-        if (workspace === undefined || ws === undefined) {
-            return undefined;
-        }
-        for (const folder of ws) {
-            if (folder.uri.scheme === 'file') {
-                const folderPath = folder.uri.path;
-                const possibleFile = path.join(folderPath, sdir);
-                if (COBOLStatUtils.isFile(possibleFile)) {
-                    const stat4src = fs.statSync(possibleFile, { bigint: true });
-                    if (sdirMs === stat4src.mtimeMs) {
-                        return possibleFile;
-                    }
-                }
-            }
-        }
-
-        return undefined;
-    }
-
-    public static getShortWorkspaceFilename(ddir: string): string | undefined {
-        const ws = getWorkspaceFolders();
-        if (workspace === undefined || ws === undefined) {
-            return undefined;
-        }
-
-        const fullPath = path.normalize(ddir);
-        let bestShortName = "";
-        for (const folder of ws) {
-            if (folder.uri.scheme === 'file') {
-                const folderPath = folder.uri.path;
-                if (fullPath.startsWith(folderPath)) {
-                    const possibleShortPath = fullPath.substr(1 + folderPath.length);
-                    if (bestShortName.length === 0) {
-                        bestShortName = possibleShortPath;
-                    } else {
-                        if (possibleShortPath.length < possibleShortPath.length) {
-                            bestShortName = possibleShortPath;
-                        }
-                    }
-                }
-            }
-        }
-
-        return bestShortName.length === 0 ? undefined : bestShortName;
-    }
-}
-
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -364,7 +263,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings, checkForConflicts: boo
         else if (COBOLFileUtils.isDirectPath(ddir)) {
             logWarningMessage(` non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
-                if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
+                if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                     if (COBOLFileUtils.isNetworkPath(ddir)) {
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
@@ -402,7 +301,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings, checkForConflicts: boo
                         const sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
-                            if (COBOLFileUtils.isNetworkPath(sdir) && COBOLStatUtils.isPathInWorkspace(sdir) === false) {
+                            if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
                                 logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
 

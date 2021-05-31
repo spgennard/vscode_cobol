@@ -4,7 +4,7 @@ import { extensions, Uri, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { COBOLStatUtils, logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
+import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { ChildProcess, fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
@@ -13,6 +13,7 @@ import tempDirectory from 'temp-dir';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
 import { VSCobScanner_depreciated } from "./vscobscanner_depreciated";
+import { VSCOBOLFileUtils } from "./vsfileutils";
 
 
 class FileScanStats {
@@ -161,7 +162,7 @@ export class VSCobScanner {
                     const args = message.split(",");
                     const ms = BigInt(args[1]);
                     const fullFilename = args[2];
-                    const shortFilename = COBOLStatUtils.getShortWorkspaceFilename(fullFilename);
+                    const shortFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(fullFilename);
                     if (shortFilename !== undefined) {
                         const cws = new COBOLWorkspaceFile(ms, shortFilename);
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);

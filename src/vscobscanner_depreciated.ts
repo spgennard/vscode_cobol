@@ -7,7 +7,7 @@ import VSCOBOLSourceScanner from "./vscobolscanner";
 import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { FileType, Uri, workspace } from "vscode";
-import { COBOLFileUtils } from "./opencopybook";
+import { COBOLFileUtils } from "./fileutils";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 import { getWorkspaceFolders } from "./cobolfolders";
 
