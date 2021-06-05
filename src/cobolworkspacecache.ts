@@ -7,7 +7,6 @@ import { CacheDirectoryStrategy, IExternalFeatures } from "./externalfeatures";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { ICOBOLSettings } from "./iconfiguration";
 
-
 export enum TypeCategory {
     ClassId = "T",
     InterfaceId = "I",
@@ -290,13 +289,14 @@ export class COBOLWorkspaceSymbolCacheHelper {
                 const fileValues = symbol.split(",");
                 if (fileValues.length === 2) {
                     const ms = BigInt(fileValues[0]);
-                    const cws = new COBOLWorkspaceFile(ms, fileValues[1]);
                     const fullDir = externalFeatures.getFullWorkspaceFilename(fileValues[1], ms);
                     if (fullDir !== undefined) {
+                        const cws = new COBOLWorkspaceFile(ms, fileValues[1]);
                         InMemoryGlobalSymbolCache.sourceFilenameModified.set(fullDir as string, cws);
                     } else {
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(fileValues[1]);
                         COBOLWorkspaceSymbolCacheHelper.removeAllTypes(fileValues[1]);
+                        // externalFeatures.logMessage(`loadFileCacheFromArray, could not ${fileValues[1]} with ${ms}`);
                     }
                 }
             }

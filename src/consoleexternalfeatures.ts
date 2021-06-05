@@ -7,6 +7,7 @@ import fs from 'fs';
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import ISourceHandler from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLFileUtils } from './fileutils';
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
@@ -141,22 +142,15 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public workspaceFolders: string[] = [];
 
     private static isFile(sdir: string): boolean {
-        try {
-            if (fs.existsSync(sdir)) {
-                return true;
-            }
-        }
-        catch {
-            return false;
-        }
-        return false;
+        return COBOLFileUtils.isFile(sdir);
     }
 
     public logMessage(message: string): void {
         if (process.send) {
             process.send(message);
+        } else {
+            console.log(message);
         }
-        console.log(message);
 
         return;
     }
@@ -165,7 +159,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         this.logMessage(ex.name + ": " + message);
         if (ex !== undefined && ex.stack !== undefined) {
             this.logMessage(ex.stack);
-        }
+        } 
         return;
     }
 
@@ -208,15 +202,23 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         this.workspaceFolders = folders;
     }
 
+    public getWorkspaceFolders(): string[] {
+        return this.workspaceFolders;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
+        if (this.workspaceFolders.length === 0) {
+            this.logMessage("getFullWorkspaceFilename: workspaceFolders.length === 0");
+        }
         for (const folder of this.workspaceFolders) {
             const possibleFile = path.join(folder, sdir);
             if (ConsoleExternalFeatures.isFile(possibleFile)) {
                 const stat4src = fs.statSync(possibleFile, { bigint: true });
                 if (sdirMs === stat4src.mtimeMs) {
                     return possibleFile;
-                }
+                } 
+                this.logMessage(`getFullWorkspaceFilename: found ${possibleFile} ${sdirMs} !== ${stat4src.mtimeMs}`);
             }
         }
 

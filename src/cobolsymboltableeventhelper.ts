@@ -1,5 +1,5 @@
 import { InMemoryGlobalCacheHelper } from "./globalcachehelper";
-import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./cobolsourcescanner";
+import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEventer, ICOBOLSourceScannerEvents } from "./cobolsourcescanner";
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
@@ -13,8 +13,10 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
     private st: COBOLSymbolTable | undefined;
     private parse_copybooks_for_references: boolean;
     private config: ICOBOLSettings;
+    private sender: ICOBOLSourceScannerEventer;
 
-    public constructor(config: ICOBOLSettings) {
+    public constructor(config: ICOBOLSettings, sender: ICOBOLSourceScannerEventer) {
+        this.sender = sender;
         this.config = config;
         this.parse_copybooks_for_references = config.parse_copybooks_for_references;
     }
@@ -28,8 +30,8 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
 
-            if (process.send !== undefined) {
-                process.send(`${COBSCANNER_ADDFILE},${this.st?.lastModifiedTime},${this.st?.fileName}`);
+            if (this.sender !== undefined) {
+                this.sender.sendMessage(`${COBSCANNER_ADDFILE},${this.st?.lastModifiedTime},${this.st?.fileName}`);
             }
         }
 
@@ -52,75 +54,66 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         if (this.parse_copybooks_for_references === false) {
             switch (token.tokenType) {
                 case COBOLTokenStyle.Union:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Constant:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.ConditionName:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Variable:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.variableSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Paragraph:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
                 case COBOLTokenStyle.Section:
-                    if (this.parse_copybooks_for_references === false) {
-                        this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
-                    }
+                    this.st.labelSymbols.set(token.tokenNameLower, new COBOLSymbol(token.tokenName, token.startLine));
                     break;
             }
         }
 
         switch (token.tokenType) {
             case COBOLTokenStyle.CopyBook:
-                if (process.send) {
-                    process.send(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.CopyBookInOrOf:
-                if (process.send) {
-                    process.send(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.ImplicitProgramId:
                 COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDPRGID},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                }
                 break;
             case COBOLTokenStyle.ProgramId:
-                if (process.send) {
-                    process.send(`${COBSCANNER_SENDPRGID},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDPRGID},${token.tokenName},${token.startLine},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.EntryPoint:
-                if (process.send) {
-                    process.send(`${COBSCANNER_SENDEP},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDEP},${token.tokenName},${token.startLine},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.InterfaceId:
-                if (process.send) {
-                    process.send(`${COBSCANNER_SENDINTERFACE},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDINTERFACE},${token.tokenName},${token.startLine},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.EnumId:
-                if (process.send) {
-                    process.send(`${COBSCANNER_SENDENUM},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDENUM},${token.tokenName},${token.startLine},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.ClassId:
-                if (process.send) {
-                    process.send(`${COBSCANNER_SENDCLASS},${token.tokenName},${token.startLine},${this.st.fileName}`);
+                if (this.sender) {
+                    this.sender.sendMessage(`${COBSCANNER_SENDCLASS},${token.tokenName},${token.startLine},${this.st.fileName}`);
                 }
                 break;
             case COBOLTokenStyle.MethodId:

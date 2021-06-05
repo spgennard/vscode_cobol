@@ -704,6 +704,10 @@ export class CallTargetInformation {
     }
 }
 
+export interface ICOBOLSourceScannerEventer {
+    sendMessage(message:string):void;
+}
+
 export interface ICOBOLSourceScannerEvents {
     start(qp: ICOBOLSourceScanner): void;
     processToken(token: COBOLToken): void;

@@ -5,6 +5,7 @@ import * as crypto from 'crypto';
 
 import { Hash } from "crypto";
 import { COBOLSymbol, COBOLSymbolTable, InMemoryFileSymbolCache } from './cobolglobalcache';
+import { COBOLFileUtils } from './fileutils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lzjs = require('lzjs');
@@ -48,27 +49,6 @@ function logMessage(mesg: string) {
 }
 
 export class COBOLSymbolTableHelper {
-
-    private static isFileT(sdir: string): [boolean, fs.BigIntStats | undefined] {
-        try {
-            if (fs.existsSync(sdir)) {
-                try {
-                    const f = fs.statSync(sdir, { bigint: true });
-                    if (f && f.isFile()) {
-                        return [true, f];
-                    }
-                }
-                catch (e) {
-                    //
-                }
-            }
-        }
-        catch {
-            return [false, undefined];
-        }
-        return [false, undefined];
-    }
-
     private static getHashForFilename(filename: string) {
         const hash: Hash = crypto.createHash('sha256');
         hash.update(filename);
@@ -101,7 +81,7 @@ export class COBOLSymbolTableHelper {
         }
 
         const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-        const fnStat = COBOLSymbolTableHelper.isFileT(fn);
+        const fnStat = COBOLFileUtils.isFileT(fn);
         if (fnStat[0]) {
             try {
                 const stat4cache = fnStat[1];
@@ -112,7 +92,7 @@ export class COBOLSymbolTableHelper {
                         fs.unlinkSync(fn);
                     } catch (e) {
                         //
-                    }                    return undefined;
+                    } return undefined;
                 }
             }
             catch (e) {
@@ -157,6 +137,4 @@ export class COBOLSymbolTableHelper {
             logMessage(`Symbol file removed ${nfilename}`);
         }
     }
-
-
 }

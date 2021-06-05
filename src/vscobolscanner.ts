@@ -15,10 +15,10 @@ import { COBOLSymbolTable } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLUtils } from "./cobolutils";
 import { ScanDataHelper, ScanStats } from "./cobscannerdata";
-import { VSCobScanner } from "./vscobscanner";
-import { COBOLFileUtils } from "./opencopybook";
+import { COBOLFileUtils } from "./fileutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { VSPreProc } from "./vspreproc";
+import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -286,8 +286,8 @@ export default class VSCOBOLSourceScanner {
         }
     }
 
-    public static clearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
-        if (VSCobScanner.IsScannerActive(cacheDirectory)) {
+    public static deprecatedClearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
+        if (VSCobScanner_depreciated.isDeprecatedScannerActive(cacheDirectory)) {
             window.showInformationMessage(" Unable to clear metadata while caching is already in progress");
             return;
         }

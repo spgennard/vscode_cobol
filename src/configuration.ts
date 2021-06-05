@@ -65,6 +65,7 @@ export class VSCOBOLConfiguration {
 
         vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
         vsconfig.maintain_metadata_cache_single_folder = getBoolean("maintain_metadata_cache_single_folder", false);
+        vsconfig.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
         vsconfig.metadata_symbols = getmetadata_symbols(vsconfig);
         vsconfig.metadata_entrypoints = getmetadata_entrypoints(vsconfig);
         vsconfig.metadata_types = getmetadata_types(vsconfig);
@@ -85,7 +86,7 @@ export class VSCOBOLConfiguration {
     }
 
 
-    public static isOnDiskCachingEnabled(): boolean {
+    public static isDepreciatedDiskCachingEnabled(): boolean {
         const config = VSCOBOLConfiguration.get();
         const cacheStrat = config.cache_metadata;
         if (cacheStrat === CacheDirectoryStrategy.Off) {
@@ -283,8 +284,8 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
     return extraDirs;
 }
 
-const DEFAULT_COPYBOOK_EXTS = ["cpy", "CPY"];
-const DEFAULT_PROGRAM_EXTS = ["cbl", "CBL"];
+const DEFAULT_COPYBOOK_EXTS = [ "cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", "dds", "ss", "wks"];
+const DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
 
 function getCopybookExts(): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');

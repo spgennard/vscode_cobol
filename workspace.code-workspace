@@ -26,7 +26,8 @@
 		"coboleditor.preprocessor_extensions": [
 		],
 		"coboleditor.metadata_symbols": [
-			"sample,issue189_coboldoc.cbl,5"
+			"sample,issue189_coboldoc.cbl,5",
+			"fred,rainbow_code.cbl,1"
 		],
 		"coboleditor.metadata_entrypoints": [],
 		"coboleditor.metadata_types": [

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.5.23",
+  "version": "7.5.31",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -103,7 +103,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "COBOL configuration",
+      "title": "COBOL",
       "properties": {
         "coboleditor.tabstops": {
           "type": "array",
@@ -182,6 +182,8 @@
             }
           },
           "default": [
+            "cob",
+            "COB",
             "cbl",
             "CBL",
             "cobol",
@@ -662,9 +664,14 @@
           "title": "Maintain Metadata Cache",
           "default": true
         },
+        "coboleditor.maintain_metadata_recursive_search": {
+          "type": "boolean",
+          "title": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
+          "default": false
+        },
         "coboleditor.maintain_metadata_cache_single_folder": {
           "type": "boolean",
-          "title": "When enabled, maintain metadata cache when using single folder is active",
+          "title": "When 'Maintain Metadata Cache' is enabled, cache metadata using single folder",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {
@@ -1864,6 +1871,7 @@
     "vscode:prepublish": "npm run compile && webpack --mode production",
     "webpack": "npm run compile && webpack --mode development",
     "webpack-dev-not-used": "webpack --mode development --watch",
+    "just-compile": "tsc -b",
     "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
     "test-compile": "tsc -p ./",
     "watch": "tsc -b -w",
@@ -1875,19 +1883,19 @@
     "@types/glob": "^7.1.3",
     "@types/minimatch": "^3.0.4",
     "@types/mocha": "^8.2.2",
-    "@types/node": "^15.6.0",
+    "@types/node": "^15.6.1",
     "@types/vscode": "^1.56.0",
-    "@typescript-eslint/eslint-plugin": "^4.24.0",
-    "@typescript-eslint/parser": "^4.24.0",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
     "depcheck": "^1.4.1",
-    "eslint": "^7.26.0",
+    "eslint": "^7.27.0",
     "glob": "^7.1.7",
     "mocha": "^8.4.0",
-    "ts-loader": "^9.2.1",
-    "typescript": "^4.2.4",
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
     "vsce": "^1.88.0",
     "vscode-test": "^1.5.2",
-    "webpack": "^5.37.1",
+    "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0",
     "merge": "2.1.1"
   },
@@ -1896,10 +1904,11 @@
     "minimatch": "^3.0.4",
     "n-readlines": "^1.0.1",
     "performance-now": "2.1.0",
+    "promisify-child-process": "^4.1.1",
     "properties-reader": "^2.2.0",
+    "temp-dir": "^2.0.0",
     "trie-search": "^1.3.5",
-    "typescript-string-operations": "^1.4.1",
-    "temp-dir": "^2.0.0"
+    "typescript-string-operations": "^1.4.1"
   },
   "extensionDependencies": []
 }

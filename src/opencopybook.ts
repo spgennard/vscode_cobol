@@ -4,151 +4,13 @@ import * as path from 'path';
 
 import * as vscode from 'vscode';
 import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from 'vscode';
-import { getCombinedCopyBookSearchPath, COBOLStatUtils } from './extension';
 import { VSCOBOLConfiguration } from './configuration';
-import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
+import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import COBOLSourceScanner from './cobolsourcescanner';
+import { VSCOBOLFileUtils } from './vsfileutils';
 
-export class COBOLFileUtils {
-    static readonly isWin32 = process.platform === "win32";
 
-    public static isValidCopybookExtension(filename: string, settings: COBOLSettings): boolean {
-        const lastDot = filename.lastIndexOf(".");
-        let extension = filename;
-        if (lastDot !== -1) {
-            extension = filename.substr(1 + lastDot);
-        }
-
-        const exts = settings.copybookexts;
-        for (let extpos = 0; extpos < exts.length; extpos++) {
-            if (exts[extpos] === extension) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static isValidProgramExtension(filename: string, settings: COBOLSettings): boolean {
-        const lastDot = filename.lastIndexOf(".");
-        let extension = "";
-        if (lastDot !== -1) {
-            extension = filename.substr(1 + lastDot);
-        }
-
-        const exts = settings.program_extensions;
-        for (let extpos = 0; extpos < exts.length; extpos++) {
-            if (exts[extpos] === extension) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static isDirectPath(dir: string): boolean {
-        if (dir === undefined && dir === null) {
-            return false;
-        }
-
-        if (COBOLFileUtils.isWin32) {
-            if (dir.length > 2 && dir[1] === ':') {
-                return true;
-            }
-
-            if (dir.length > 1 && dir[0] === '\\') {
-                return true;
-            }
-
-            return false;
-        }
-
-        if (dir.length > 1 && dir[0] === '/') {
-            return true;
-        }
-
-        return false;
-    }
-
-    // only handle unc filenames
-    public static isNetworkPath(dir: string): boolean {
-        if (dir === undefined && dir === null) {
-            return false;
-        }
-
-        if (COBOLFileUtils.isWin32) {
-            if (dir.length > 1 && dir[0] === '\\') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static findCopyBook(filename: string, config: ICOBOLSettings): string {
-        if (!filename) {
-            return "";
-        }
-
-        const hasDot = filename.indexOf(".");
-
-        for (const copybookdir of getCombinedCopyBookSearchPath()) {
-
-            /* check for the file as is.. */
-            const firstPossibleFile = path.join(copybookdir, filename);
-            if (COBOLStatUtils.isFile(firstPossibleFile)) {
-                return firstPossibleFile;
-            }
-
-            /* no extension? */
-            if (hasDot === -1) {
-                // search through the possible extensions
-                for (const ext of config.copybookexts) {
-                    const possibleFile = path.join(copybookdir, filename + "." + ext);
-
-                    if (COBOLStatUtils.isFile(possibleFile)) {
-                        return possibleFile;
-                    }
-                }
-            }
-        }
-
-        return "";
-    }
-
-    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings): string {
-        if (!filename) {
-            return "";
-        }
-
-        const hasDot = filename.indexOf(".");
-
-        for (const baseCopybookdir of getCombinedCopyBookSearchPath()) {
-            const copybookdir = path.join(baseCopybookdir, inDirectory);
-
-            /* check for the file as is.. */
-            const firstPossibleFile = path.join(copybookdir, filename);
-            if (COBOLStatUtils.isFile(firstPossibleFile)) {
-                return firstPossibleFile;
-            }
-
-            /* no extension? */
-            if (hasDot === -1) {
-                // search through the possible extensions
-                for (const ext of config.copybookexts) {
-                    const possibleFile = path.join(copybookdir, filename + "." + ext);
-
-                    if (COBOLStatUtils.isFile(possibleFile)) {
-                        return possibleFile;
-                    }
-                }
-            }
-
-        }
-
-        return "";
-    }
-
-}
 
 export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
@@ -254,7 +116,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     public static expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
 
         if (inDirectory === null || inDirectory.length === 0) {
-            const fullPath = COBOLFileUtils.findCopyBook(filename, config);
+            const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config);
             if (fullPath.length !== 0) {
                 return path.normalize(fullPath);
             }
@@ -262,7 +124,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             return fullPath;
         }
 
-        const fullPath = COBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config);
+        const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config);
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }

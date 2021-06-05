@@ -12,13 +12,13 @@ import * as commenter from './commenter';
 
 import { COBOLDocumentationCommentHandler } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
-import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol } from './margindecorations';
+import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol, isSupportedLanguage } from './margindecorations';
 import { jclStatements } from "./keywords/jclstatements";
 import { acuKeywords, cobolKeywords, cobolProcedureKeywords, cobolRegisters, cobolStorageKeywords } from "./keywords/cobolKeywords";
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 
 import updateDecorations from './margindecorations';
-import { COBOLFileUtils } from './opencopybook';
+import { COBOLFileUtils } from './fileutils';
 
 import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
@@ -50,6 +50,9 @@ import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 import { SourceItem } from './sourceItem';
 import { VSSemanticProvider } from './vssemanticprovider';
 import { VSPPCodeLens } from './vsppcodelens';
+import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
+import { InMemoryGlobalSymbolCache } from './globalcachehelper';
+import { VSCOBOLFileUtils } from './vsfileutils';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -99,108 +102,6 @@ export function isDirectory(sdir: string): boolean {
     }
     return false;
 }
-
-
-
-export class COBOLStatUtils {
-
-    public static async isFileASync(sdir: string): Promise<boolean> {
-        try {
-            const statSDir = await workspace.fs.stat(vscode.Uri.file(sdir));
-            return (statSDir.type & vscode.FileType.File) === vscode.FileType.File;
-        } catch {
-            return false;
-        }
-    }
-
-    public static isFile(sdir: string): boolean {
-        try {
-            if (fs.existsSync(sdir)) {
-                // not on windows, do extra check for +x perms (protects exe & dirs)
-                if (!COBOLFileUtils.isWin32) {
-                    try {
-                        fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
-                        return false;
-                    }
-                    catch {
-                        return true;
-                    }
-                }
-
-                return true;
-            }
-        }
-        catch {
-            return false;
-        }
-        return false;
-    }
-
-    public static isPathInWorkspace(ddir: string): boolean {
-        const ws = getWorkspaceFolders();
-        if (workspace === undefined || ws === undefined) {
-            return false;
-        }
-
-        const fullPath = path.normalize(ddir);
-        for (const folder of ws) {
-            if (folder.uri.fsPath === fullPath) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        const ws = getWorkspaceFolders();
-        if (workspace === undefined || ws === undefined) {
-            return undefined;
-        }
-        for (const folder of ws) {
-            if (folder.uri.scheme === 'file') {
-                const folderPath = folder.uri.path;
-                const possibleFile = path.join(folderPath, sdir);
-                if (COBOLStatUtils.isFile(possibleFile)) {
-                    const stat4src = fs.statSync(possibleFile, { bigint: true });
-                    if (sdirMs === stat4src.mtimeMs) {
-                        return possibleFile;
-                    }
-                }
-            }
-        }
-
-        return undefined;
-    }
-
-    public static getShortWorkspaceFilename(ddir: string): string | undefined {
-        const ws = getWorkspaceFolders();
-        if (workspace === undefined || ws === undefined) {
-            return undefined;
-        }
-
-        const fullPath = path.normalize(ddir);
-        let bestShortName = "";
-        for (const folder of ws) {
-            if (folder.uri.scheme === 'file') {
-                const folderPath = folder.uri.path;
-                if (fullPath.startsWith(folderPath)) {
-                    const possibleShortPath = fullPath.substr(1 + folderPath.length);
-                    if (bestShortName.length === 0) {
-                        bestShortName = possibleShortPath;
-                    } else {
-                        if (possibleShortPath.length < possibleShortPath.length) {
-                            bestShortName = possibleShortPath;
-                        }
-                    }
-                }
-            }
-        }
-
-        return bestShortName.length === 0 ? undefined : bestShortName;
-    }
-}
-
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -321,7 +222,7 @@ function checkForExtensionConflicts(): string {
                     }
                 }
             }
-            
+
             if (reason.length !== 0) {
                 dupExtensionMessage += getExtensionInformation(ext, reason);
             }
@@ -339,7 +240,7 @@ function checkForConflicts(config: ICOBOLSettings) {
     checkForExtensionConflictsMessage = checkForExtensionConflicts();
     if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
         messageBoxDone = true;
-        window.showInformationMessage("COBOL Extension has found duplicate or conflicting functionality.", { modal: true });
+        window.showInformationMessage("COBOL Extension has located duplicate or conflicting functionality.", { modal: true });
     }
     // display the message
     if (checkForExtensionConflictsMessage.length !== 0) {
@@ -364,7 +265,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
         else if (COBOLFileUtils.isDirectPath(ddir)) {
             logWarningMessage(` non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
-                if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
+                if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                     if (COBOLFileUtils.isNetworkPath(ddir)) {
                         logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
@@ -402,7 +303,7 @@ function initExtensionSearchPaths(config: ICOBOLSettings) {
                         const sdir = path.join(folder.uri.fsPath, extdir);
 
                         if (isDirectory(sdir)) {
-                            if (COBOLFileUtils.isNetworkPath(sdir) && COBOLStatUtils.isPathInWorkspace(sdir) === false) {
+                            if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
                                 logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
 
@@ -431,7 +332,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logChannelSetPreserveFocus(true);
         }
     }
-    COBOLOutputChannel.clear();
+    // COBOLOutputChannel.clear();
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
 
@@ -480,12 +381,13 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
         }
 
-        if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+        if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
             logMessage("----------------------------------------------------------------------");
             logMessage(" Deprecated Features settings");
             logMessage("");
             logMessage(" Caching");
-            logMessage(`  Cache Strategy                            : ${settings.cache_metadata}`);
+            logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+            
             const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
             if (cacheDir !== undefined) {
                 logMessage(`  Cache directory  : ${cacheDir}`);
@@ -651,6 +553,8 @@ function actionSourceViewItemFunction(si: SourceItem, debug: boolean) {
     commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
 }
 
+let shown_enable_semantic_token_provider = false;
+
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
 
@@ -671,35 +575,42 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_metadata_files = event.affectsConfiguration("coboleditor.metadata_files");
         const md_metadata_knowncopybooks = event.affectsConfiguration("coboleditor.metadata_knowncopybooks");
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
+        const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
+
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-            if (!md_syms && !md_eps && !md_types && !md_metadata_files) {
+            if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
                 setupSourceViewTree(settings, true);
             }
             if (md_syms) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings,settings.metadata_symbols, true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, true);
             }
 
             if (md_eps) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings,settings.metadata_entrypoints, true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, true);
             }
 
             if (md_types) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings,settings.metadata_types, true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, true);
             }
 
             if (md_metadata_files) {
                 COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, ExternalFeatures, settings.metadata_files, true);
             }
 
-            if (enable_semantic_token_provider) {
+            if (enable_semantic_token_provider && !shown_enable_semantic_token_provider) {
+                shown_enable_semantic_token_provider = true;
                 vscode.window.showInformationMessage("The configuration setting 'coboleditor.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session");
             }
 
             if (md_metadata_knowncopybooks) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks,true);
+                COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, true);
+            }
+
+            if (maintain_metadata_recursive_search) {
+                COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
             }
         }
     });
@@ -716,8 +627,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, false);
     COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, ExternalFeatures, settings.metadata_files, false);
-    COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks,false);
-    
+    COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, false);
+
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
@@ -825,11 +736,47 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const processAllFilesInWorkspaceOutOfProcessDeprecated = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true);
+        await VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(true);
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false);
+
+        if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false, -1);
+            return;
+        }
+
+        window.showQuickPick(["Yes", "No"], { placeHolder: "Your workspace is large, do you want to extra threads for your metadata scan?" }).then(function (data) {
+            if (data === 'Yes') {
+                const cpuCount = os.cpus().length;
+                const defCpuCount = cpuCount >= 4 ? (cpuCount / 2) : cpuCount;
+                vscode.window.showInputBox({
+                    prompt: 'How many threads do you want to use?',
+                    value: "" + defCpuCount,
+                    validateInput: (threadString: string): string | undefined => {
+                        const threadCount: number = Number.parseInt(threadString, 10);
+
+                        if (threadCount < 2 || threadCount > (defCpuCount * 3)) {
+                            return `Thread count must be between 2 and ${defCpuCount * 3}`;
+                        } else {
+                            return undefined;
+                        }
+                    }
+                }).then(value => {
+                    // leave early
+                    if (value === undefined) {
+                        return;
+                    }
+
+                    const threadCount: number = Number.parseInt(value, 10);
+                    VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true, threadCount);
+
+                });
+
+            } else {
+                VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false, -1);
+            }
+        });
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
@@ -844,7 +791,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const clearMetaData = commands.registerCommand('cobolplugin.deprecated.clearMetaData', function () {
         const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined) {
-            VSCOBOLSourceScanner.clearMetaData(settings, cacheDirectory);
+            VSCOBOLSourceScanner.deprecatedClearMetaData(settings, cacheDirectory);
         } else {
             logMessage("Metadata caching is turned off (or invalid)");
         }
@@ -864,19 +811,20 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
 
         activateLogChannelAndPaths(false, settings, true);
-        await COBOLUtils.populateDefaultCallableSymbols();
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 
-    const onDidGrantWorkspaceTrust = workspace.onDidGrantWorkspaceTrust(async () => {
-        await COBOLUtils.populateDefaultCallableSymbols();
-    });
-    context.subscriptions.push(onDidGrantWorkspaceTrust);
-    
     // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc) => {
-        await COBOLUtils.populateDefaultCallableSymbols();
         flip_plaintext(doc);
+
+        //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
+        const ws = getWorkspaceFolders();
+		if (ws !== undefined) {
+            if (isSupportedLanguage(doc)) {
+                await COBOLUtils.populateDefaultCallableSymbols(settings, false);
+            }
+        }
     });
     context.subscriptions.push(onDidOpenTextDocumentHandler);
 
@@ -889,7 +837,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
         if (settings.process_metadata_cache_on_file_save) {
-            await VSCobScanner.processSavedFile(doc.uri.fsPath, settings);
+            await VSCobScanner_depreciated.depreciatedProcessSavedFile(doc.uri.fsPath, settings);
         }
     });
     context.subscriptions.push(onDidSaveTextDocumentHandler);
@@ -937,7 +885,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(sourcedefProvider);
 
-    if (VSCOBOLConfiguration.isOnDiskCachingEnabled()) {
+    if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
         const cachedSourcedefProvider = languages.registerDefinitionProvider(getAllCobolSelectors(), {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
                 const csdp = new CachedCOBOLSourceDefinition();
@@ -1300,11 +1248,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const provider = VSSemanticProvider.provider();
     vscode.languages.registerDocumentSemanticTokensProvider(getAllCobolSelectors(), provider, VSSemanticProvider.getLegend());
 
-    //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
-    if (workspace.workspaceFile !== undefined) {
-        await COBOLUtils.populateDefaultCallableSymbols();
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actionCodelens = commands.registerCommand("coboleditor.ppcodelenaction", (args: string) => {
         VSPPCodeLens.actionCodeLens(args);
@@ -1314,7 +1257,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     languages.registerCodeLensProvider(getAllCobolSelectors(), codelensProvider);
 
     if (settings.maintain_metadata_cache && settings.cache_metadata !== CacheDirectoryStrategy.Off) {
-        if (workspace.workspaceFile !== undefined) {
+        const ws = getWorkspaceFolders();
+		if (ws !== undefined) {
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update("cache_metadata", false, false);
             COBOLUtils.clearGlobalCache();
@@ -1325,7 +1269,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     if (settings.process_metadata_cache_on_start) {
-        const pm = VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, settings.cache_metadata !== CacheDirectoryStrategy.Off);
+        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
+        // not threaded on startup
+        const pm = depMode === false ? VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1) :
+            VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
         pm.then(() => {
             return;
         });
@@ -1345,7 +1292,7 @@ function openChangeLog(): void {
         const lastVersion = currentContext.globalState.get("bitlang.cobol.version");
         if (lastVersion !== version) {
             const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
-            if (fs.existsSync(verFile)) {
+            if (COBOLFileUtils.isFile(verFile)) {
                 const readmeUri = vscode.Uri.file(verFile);
                 commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
                 currentContext.globalState.update("bitlang.cobol.version", version);

@@ -10,6 +10,7 @@ import { window, workspace } from 'vscode';
 
 import tempDirectory from 'temp-dir';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
+import { COBOLFileUtils } from './fileutils';
 
 const myConsoleFile = path.join(tempDirectory, "vscode_" + process.pid) + ".txt";
 
@@ -37,7 +38,7 @@ export class COBOLSourceScannerUtils {
         if (!settings.parse_copybooks_for_references) {
             try {
                 const gPath = path.join(cacheDirectory, "globalsymbols.sym");
-                if (fs.existsSync(gPath)) {
+                if (COBOLFileUtils.isFile(gPath)) {
                     fs.unlinkSync(gPath);
                 }
             }
@@ -48,7 +49,7 @@ export class COBOLSourceScannerUtils {
             try {
                 const fPath = path.join(cacheDirectory, "filesymbols.sym");
 
-                if (fs.existsSync(fPath)) {
+                if (COBOLFileUtils.isFile(fPath)) {
                     fs.unlinkSync(fPath);
                 }
             }
@@ -115,7 +116,7 @@ export class COBOLSourceScannerUtils {
 
     public static cleanup(): void {
         try {
-            if (fs.existsSync(myConsoleFile)) {
+            if (COBOLFileUtils.isFile(myConsoleFile)) {
                 fs.unlinkSync(myConsoleFile);
             }
         }

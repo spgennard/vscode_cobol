@@ -2,17 +2,18 @@ import * as vscode from 'vscode';
 import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage, isDirectory, logException, COBOLStatUtils } from './extension';
+import { logMessage, isDirectory, logException } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { writeFileSync } from 'fs';
-import { COBOLFileUtils } from './opencopybook';
+import { COBOLFileUtils } from './fileutils';
 import { VSCOBOLConfiguration } from './configuration';
 import { getWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLFileSymbol } from './cobolglobalcache';
 import { CacheDirectoryStrategy } from './externalfeatures';
+import { VSCOBOLFileUtils } from './vsfileutils';
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -45,7 +46,8 @@ export class COBOLUtils {
     }
 
     static getProgramGlobPattern(config: ICOBOLSettings): string {
-        let globString = "*.{";
+        let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
+
         for (const ext of config.program_extensions) {
             if (ext.length !== 0) {
                 if (globString.endsWith("{")) {
@@ -63,23 +65,40 @@ export class COBOLUtils {
 
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
-    static async populateDefaultCallableSymbols(): Promise<void> {
-        const ws = vscode.workspace.workspaceFile;
+    static populateDefaultCallableSymbolsSync(settings: ICOBOLSettings, reset: boolean): void {
+        (async () => await COBOLUtils.populateDefaultCallableSymbols(settings, reset))();
+    }
+
+    static async populateDefaultCallableSymbols(settings: ICOBOLSettings, reset: boolean): Promise<void> {
+        if (settings.cache_metadata !== CacheDirectoryStrategy.Off) {
+            return;
+        }
+
+        const ws = getWorkspaceFolders();
         if (ws === undefined) {
+            return;
+        }
+
+        const wsf = vscode.workspace.workspaceFile;
+        if (wsf === undefined) {
             InMemoryGlobalSymbolCache.defaultCallableSymbols.clear();
             return;
         }
 
-        // already cached?
-        if (ws.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath) {
-            return;
+        // reset 
+        if (reset) {
+            COBOLUtils.prevWorkSpaceUri = undefined;
+        } else {
+            // already cached?
+            if (wsf.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath) {
+                return;
+            }
         }
 
         // stash away current ws
-        COBOLUtils.prevWorkSpaceUri = ws;
+        COBOLUtils.prevWorkSpaceUri = wsf;
         const config = VSCOBOLConfiguration.get();
         const globPattern = COBOLUtils.getProgramGlobPattern(config);
-
 
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
             uris.forEach((uri: vscode.Uri) => {
@@ -93,7 +112,6 @@ export class COBOLUtils {
                 }
             });
         });
-        COBOLUtils.saveGlobalCacheToWorkspace(config);
     }
 
 
@@ -108,12 +126,12 @@ export class COBOLUtils {
         }
     }
 
-    public static clearGlobalCache():void {
+    public static clearGlobalCache(): void {
         // only update if we have a workspace
         if (getWorkspaceFolders() === undefined) {
             return;
         }
-        
+
         const editorConfig = vscode.workspace.getConfiguration('coboleditor');
         editorConfig.update('metadata_symbols', [], false);
         editorConfig.update('metadata_entrypoints', [], false);
@@ -246,7 +264,7 @@ export class COBOLUtils {
             if (COBOLFileUtils.isDirectPath(ddir)) {
                 const ws = getWorkspaceFolders();
                 if (vscode.workspace !== undefined && ws !== undefined) {
-                    if (COBOLStatUtils.isPathInWorkspace(ddir) === false) {
+                    if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             logMessage(" Adding " + ddir + " to workspace");
                             const uriToFolder = vscode.Uri.file(path.normalize(ddir));
@@ -272,7 +290,7 @@ export class COBOLUtils {
 
                             if (isDirectory(sdir)) {
                                 if (COBOLFileUtils.isNetworkPath(sdir)) {
-                                    if (COBOLStatUtils.isPathInWorkspace(sdir) === false) {
+                                    if (VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");
                                         const uriToFolder = vscode.Uri.file(path.normalize(sdir));
                                         vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
@@ -318,7 +336,7 @@ export class COBOLUtils {
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
                     copybook_filename.indexOf(".") !== -1 ||
-                    COBOLStatUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
+                    COBOLFileUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
                     return 'Invalid copybook';
                 } else {
                     return undefined;

@@ -9,6 +9,7 @@ const lineByLine = require('n-readlines');
 
 import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
+import path from 'path';
 
 
 export class FileSourceHandler implements ISourceHandler {
@@ -21,6 +22,7 @@ export class FileSourceHandler implements ISourceHandler {
     documentVersionId: BigInt;
     isSourceInWorkspace: boolean;
     updatedSource: Map<number, string>;
+    shortFilename: string;
 
     public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
         this.document = document;
@@ -30,12 +32,12 @@ export class FileSourceHandler implements ISourceHandler {
         this.lines = [];
         this.commentCount = 0;
         this.isSourceInWorkspace = false;
-        this.updatedSource = new Map<number,string>();
-
+        this.updatedSource = new Map<number, string>();
         if (features === undefined) {
             features = EmptyExternalFeature.Default;
         }
-        const docstat = fs.statSync(document, {bigint:true});
+        this.shortFilename = this.findShortWorkspaceFilename(document, features);
+        const docstat = fs.statSync(document, { bigint: true });
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
         this.documentVersionId = docstat.mtimeMs;
@@ -56,7 +58,7 @@ export class FileSourceHandler implements ISourceHandler {
         return this.documentVersionId;
     }
 
-    private sendCommentCallback(line: string, lineNumber:number) {
+    private sendCommentCallback(line: string, lineNumber: number) {
         if (this.commentCallback !== undefined) {
             this.commentCallback.processComment(line, this.getFilename(), lineNumber);
         }
@@ -76,8 +78,8 @@ export class FileSourceHandler implements ISourceHandler {
 
     private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
-    getLine(lineNumber: number, raw:boolean): string | undefined {
-        let line:string|undefined=undefined;
+    getLine(lineNumber: number, raw: boolean): string | undefined {
+        let line: string | undefined = undefined;
 
         try {
             if (lineNumber >= this.lines.length) {
@@ -92,21 +94,21 @@ export class FileSourceHandler implements ISourceHandler {
 
             const startComment = line.indexOf("*>");
             if (startComment !== -1) {
-                this.sendCommentCallback(line,lineNumber);
+                this.sendCommentCallback(line, lineNumber);
                 line = line.substring(0, startComment);
                 this.commentCount++;
             }
             // drop fixed format line
             if (line.length > 1 && line[0] === '*') {
                 this.commentCount++;
-                this.sendCommentCallback(line,lineNumber);
+                this.sendCommentCallback(line, lineNumber);
                 return "";
             }
 
             // drop fixed format line
             if (line.length > 7 && line[6] === '*') {
                 this.commentCount++;
-                this.sendCommentCallback(line,lineNumber);
+                this.sendCommentCallback(line, lineNumber);
                 return "";
             }
 
@@ -163,18 +165,43 @@ export class FileSourceHandler implements ISourceHandler {
     }
 
     getShortWorkspaceFilename(): string {
-        return "";
+        return this.shortFilename;
     }
 
-    getUpdatedLine(linenumber: number) : string|undefined {
+    getUpdatedLine(linenumber: number): string | undefined {
         if (this.updatedSource.has(linenumber)) {
             return this.updatedSource.get(linenumber);
         }
 
-        return this.getLine(linenumber,false);
+        return this.getLine(linenumber, false);
     }
 
-    setUpdatedLine(lineNumber: number, line:string) : void {
+    setUpdatedLine(lineNumber: number, line: string): void {
         this.updatedSource.set(lineNumber, line);
     }
+
+    private findShortWorkspaceFilename(ddir: string, features: IExternalFeatures): string {
+        const ws = features.getWorkspaceFolders();
+        if (ws === undefined || ws.length === 0) {
+            return "";
+        }
+
+        const fullPath = path.normalize(ddir);
+        let bestShortName = "";
+        for (const folderPath of ws) {
+            if (fullPath.startsWith(folderPath)) {
+                const possibleShortPath = fullPath.substr(1 + folderPath.length);
+                if (bestShortName.length === 0) {
+                    bestShortName = possibleShortPath;
+                } else {
+                    if (possibleShortPath.length < possibleShortPath.length) {
+                        bestShortName = possibleShortPath;
+                    }
+                }
+            }
+        }
+
+        return bestShortName;
+    }
+
 }
