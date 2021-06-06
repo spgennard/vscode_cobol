@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.5.31",
+  "version": "7.6.5",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1529,6 +1529,10 @@
       {
         "language": "COBOL",
         "path": "./snippets/cobol.json"
+      },
+      {
+        "language": "COBOL",
+        "path": "./snippets/cobol-compound.json"
       },
       {
         "language": "ACUCOBOL",
