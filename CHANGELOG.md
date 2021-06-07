@@ -3,6 +3,53 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.7
+
+**use alternative update mechanism that caused update events**
+
+* [fdd8df9e0d5bff7](https://github.com/spgennard/vscode_cobol/commit/fdd8df9e0d5bff7) *2021-06-07 23:16:16*
+
+**next method.. to vslogger**
+
+* [207431e0f00f356](https://github.com/spgennard/vscode_cobol/commit/207431e0f00f356) *2021-06-07 23:05:23*
+
+**move stuff to VSLogger**
+
+* [702b1aa9c1dd070](https://github.com/spgennard/vscode_cobol/commit/702b1aa9c1dd070) *2021-06-07 22:58:46*
+
+**move one more function into the vslogger**
+
+* [cb778ef24559d3a](https://github.com/spgennard/vscode_cobol/commit/cb778ef24559d3a) *2021-06-07 22:51:49*
+
+**continue refactoring**
+
+* [0d325689ac72c2e](https://github.com/spgennard/vscode_cobol/commit/0d325689ac72c2e) *2021-06-07 22:40:33*
+
+**move performance_now**
+
+* [b41d0418432c981](https://github.com/spgennard/vscode_cobol/commit/b41d0418432c981) *2021-06-07 22:33:11*
+
+**move isDirectory**
+
+* [bec159e3f0fe91a](https://github.com/spgennard/vscode_cobol/commit/bec159e3f0fe91a) *2021-06-07 22:20:35*
+
+**continue refactoring**
+
+* [8ed4bfcde9999a3](https://github.com/spgennard/vscode_cobol/commit/8ed4bfcde9999a3) *2021-06-07 21:46:29*
+
+**merge function**
+
+* [b8fbfcf7d6625d5](https://github.com/spgennard/vscode_cobol/commit/b8fbfcf7d6625d5) *2021-06-07 21:37:56*
+
+**update due to typescript changes**
+
+* [e49b2526d478827](https://github.com/spgennard/vscode_cobol/commit/e49b2526d478827) *2021-06-07 20:14:40*
+
+**Update CHANGELOG.md**
+
+* [925834edb75ca0a](https://github.com/spgennard/vscode_cobol/commit/925834edb75ca0a) *2021-06-07 19:42:04*
+
+
 ## 7.6.6
 ### GitHub [#285](https://github.com/spgennard/vscode_cobol/issues/285) Margin setting not respected  
 
