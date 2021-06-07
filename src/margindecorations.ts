@@ -119,6 +119,8 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
     const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
     let prevRightMargin = "";
     let validFixedLines = 0;
+    let skippedLines = 0;
+    let linesGT80 = 0;
     for (let i = 0; i < maxLines; i++) {
 
         const lineText = doc.getLine(i, true);
@@ -126,6 +128,10 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
             break;
         }
 
+        if (lineText.length === 0) {
+            skippedLines++;
+            continue;
+        }
         const line = lineText.toLowerCase();
         const validFixedLine = isValidFixedLine(line);
         if (validFixedLine) {
@@ -159,6 +165,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         if (pos4sourceformat_after === 0) {
             if (line.length > 80) {
                 defFormat = ESourceFormat.variable;
+                linesGT80++;
                 continue;
             } else {
                 if (isValidFixedLine(line)) {
@@ -197,7 +204,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         }
     }
 
-    if (validFixedLines == maxLines) {
+    if (linesGT80 === 0 && (validFixedLines + skippedLines == maxLines)) {
         return ESourceFormat.fixed;
     }
 
@@ -260,13 +267,7 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
     }
 
     /* is it enabled? (COBOL) */
-    if (textLanguage === TextLanguage.COBOL && !isEnabledViaWorkspace4cobol) {
-        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
-        return;
-    }
-
-    /* is it enabled? (COBOL) */
-    if (textLanguage === TextLanguage.JCL && !isEnabledViaWorkspace4jcl) {
+    if (textLanguage === TextLanguage.JCL && !isEnabledViaWorkspace4jcl()) {
         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
         return;
     }
@@ -274,21 +275,27 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
     if (textLanguage === TextLanguage.COBOL) {
         const configHandler = VSCOBOLConfiguration.get();
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
-        if (gcp === undefined) {
-            activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
-            return;
-        }
-
-        /* does it include sourceformat"free"? */
-        const sourceformatStyle: ESourceFormat = gcp.sourceFormat;
-        switch (sourceformatStyle) {
-            case ESourceFormat.free:
-            case ESourceFormat.variable:
-            case ESourceFormat.unknown:
+        const cobolMarginOn = isEnabledViaWorkspace4cobol();
+        if (!cobolMarginOn) {
+            if (gcp === undefined) {
+                // if we have not scanned the source and coboleditor.margin is not set, then wipe the
                 activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
                 return;
+            }
+
+            /* if we have parsed and coboleditor.margin is not set */
+            const sourceformatStyle: ESourceFormat = gcp.sourceFormat;
+            // default to using the margin from 
+            switch (sourceformatStyle) {
+                case ESourceFormat.free:
+                case ESourceFormat.variable:
+                case ESourceFormat.unknown:
+                    activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+                    return;
+            }
         }
 
+        // fixed format from here onwards...
         const lineLimit = configHandler.editor_maxTokenizationLineLength;
         const maxLinesInFile = doc.lineCount;
         let maxLines = maxLinesInFile;
@@ -300,13 +307,11 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
             const lineText = doc.lineAt(i);
             const line = lineText.text;
 
-            if (sourceformatStyle === ESourceFormat.fixed) {
-                if (line.length > 6) {
-                    const startPos = new Position(i, 0);
-                    const endPos = new Position(i, 6);
-                    const decoration = { range: new Range(startPos, endPos) };
-                    decorationOptions.push(decoration);
-                }
+            if (line.length > 6) {
+                const startPos = new Position(i, 0);
+                const endPos = new Position(i, 6);
+                const decoration = { range: new Range(startPos, endPos) };
+                decorationOptions.push(decoration);
             }
 
             if (line.length > 72) {

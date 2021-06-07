@@ -3,6 +3,23 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.6
+### GitHub [#285](https://github.com/spgennard/vscode_cobol/issues/285) Margin setting not respected  
+
+**Margin setting not respected Fix #285**
+
+ * - blank lines caused fixed file format detection to break
+ * - lines &gt; 80 should case fixed file format detection to be considerred
+ * - allow coboleditor.margin to overide file format
+* [b3d6c4dffc958d2](https://github.com/spgennard/vscode_cobol/commit/b3d6c4dffc958d2) *2021-06-07 19:37:56*
+
+
+
+**Update CHANGELOG.md**
+
+* [ba0d806d897597e](https://github.com/spgennard/vscode_cobol/commit/ba0d806d897597e) *2021-06-06 20:34:42*
+
+
 ## 7.6.5
 
 **add more abbr to snippets**

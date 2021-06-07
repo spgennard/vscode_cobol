@@ -335,8 +335,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         } else {
             logChannelSetPreserveFocus(true);
         }
+        COBOLOutputChannel.clear();
     }
-    // COBOLOutputChannel.clear();
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
 
@@ -404,7 +404,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
 
     checkForConflicts(settings);
-    initExtensionSearchPaths(settings);
+    initExtensionSearchPaths(settings;
 
     if (thisExtension !== undefined) {
         const ws = getWorkspaceFolders();
@@ -625,7 +625,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const collection = languages.createDiagnosticCollection('cobolDiag');
     const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
     const cobolfixer = new CobolLinterActionFixer();
-    initExtensionSearchPaths(settings);
     activateLogChannelAndPaths(true, settings, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, false);
