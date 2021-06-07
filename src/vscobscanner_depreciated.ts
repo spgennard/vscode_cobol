@@ -4,7 +4,7 @@ import tempDirectory from 'temp-dir';
 import { VSCobScanner } from "./vscobscanner";
 import { VSCOBOLConfiguration } from "./configuration";
 import VSCOBOLSourceScanner from "./vscobolscanner";
-import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
+import { logException, logMessage, progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { FileType, Uri, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
@@ -189,9 +189,9 @@ export class VSCobScanner_depreciated {
         }
 
         if (!viaCommand) {
-            logChannelHide();
+            VSLogger.logChannelHide();
         } else {
-            logChannelSetPreserveFocus(!viaCommand);
+            VSLogger.logChannelSetPreserveFocus(!viaCommand);
         }
         logMessage("");
         logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);

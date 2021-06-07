@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { logException, logMessage, logTimedMessage, VSExtensionUtils } from "./extension";
+import { logException, logMessage, VSExtensionUtils, VSLogger } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
@@ -19,7 +19,7 @@ export class VSExternalFeatures implements IExternalFeatures{
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean {
-        return logTimedMessage(timeTaken, message, parameters);
+        return VSLogger.logTimedMessage(timeTaken, message, parameters);
     }
 
     public performance_now(): number {

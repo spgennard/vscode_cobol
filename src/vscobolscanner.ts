@@ -6,7 +6,7 @@ import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
-import { logMessage, logException, logTimedMessage, logChannelSetPreserveFocus, ExternalFeatures, VSExtensionUtils } from "./extension";
+import { logMessage, logException, ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
 import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -163,7 +163,7 @@ export default class VSCOBOLSourceScanner {
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);
 
-                logTimedMessage(VSExtensionUtils.performance_now() - startTime, " - Parsing " + fileName);
+                VSLogger.logTimedMessage(VSExtensionUtils.performance_now() - startTime, " - Parsing " + fileName);
 
                 if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
                     // drop the smallest..
@@ -192,7 +192,7 @@ export default class VSCOBOLSourceScanner {
     }
 
     public static async checkWorkspaceForMissingCopybookDirs(): Promise<void> {
-        logChannelSetPreserveFocus(false);
+        VSLogger.logChannelSetPreserveFocus(false);
         logMessage("Checking workspace for folders that are not present in copybookdirs setting");
 
         const settings = VSCOBOLConfiguration.get();

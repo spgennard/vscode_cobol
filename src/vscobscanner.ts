@@ -4,7 +4,7 @@ import { extensions, Uri, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { logChannelHide, logChannelSetPreserveFocus, logException, logMessage, progressStatusBarItem } from "./extension";
+import { logException, logMessage, progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
@@ -224,9 +224,9 @@ export class VSCobScanner {
         }
 
         if (!viaCommand) {
-            logChannelHide();
+            VSLogger.logChannelHide();
         } else {
-            logChannelSetPreserveFocus(!viaCommand);
+            VSLogger.logChannelSetPreserveFocus(!viaCommand);
         }
         logMessage("");
         logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);

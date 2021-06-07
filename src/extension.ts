@@ -136,7 +136,7 @@ export class VSExtensionUtils {
         return Date.now();
     }
 
-    public static  openChangeLog(): void {
+    public static openChangeLog(): void {
         const thisExtension = extensions.getExtension("bitlang.cobol");
         if (thisExtension !== undefined) {
             const extPath = `${thisExtension.extensionPath}`;
@@ -291,7 +291,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         if (hide) {
             COBOLOutputChannel.hide();
         } else {
-            logChannelSetPreserveFocus(true);
+            VSLogger.logChannelSetPreserveFocus(true);
         }
     }
     COBOLOutputChannel.clear();
@@ -477,7 +477,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             { modal: true },
             "More information?").then(function (data) {
                 if (data === 'More information?') {
-                    logChannelSetPreserveFocus(false);
+                    VSLogger.logChannelSetPreserveFocus(false);
                 }
             });
     }
@@ -1221,7 +1221,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(migrateCopybooksToWorkspaceCommand);
 
     const showCOBOLChannel = vscode.commands.registerCommand('cobolplugin.showCOBOLChannel', () => {
-        logChannelSetPreserveFocus(true);
+        VSLogger.logChannelSetPreserveFocus(true);
     });
     context.subscriptions.push(showCOBOLChannel);
 
@@ -1319,25 +1319,37 @@ export function logException(message: string, ex: Error): void {
 
 export class VSLogger {
     public static readonly logTimeThreshold = 500;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public static logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean {
+        const fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
+
+        if (timeTaken < VSLogger.logTimeThreshold) {
+            return false;
+        }
+
+        if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+            const m: string = util.format(message, parameters);
+            COBOLOutputChannel.appendLine(m.padEnd(60) + fixedTimeTaken);
+        } else {
+            COBOLOutputChannel.appendLine(message.padEnd(60) + fixedTimeTaken);
+        }
+
+        return true;
+    }
+
+    public static logChannelSetPreserveFocus(preserveFocus: boolean): void {
+        COBOLOutputChannel.show(preserveFocus);
+    }
+
+
+    public static logChannelHide(): void {
+        COBOLOutputChannel.hide();
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean {
-    const fixedTimeTaken = " (" + timeTaken.toFixed(2) + "ms)";
 
-    if (timeTaken < VSLogger.logTimeThreshold) {
-        return false;
-    }
-
-    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        const m: string = util.format(message, parameters);
-        COBOLOutputChannel.appendLine(m.padEnd(60) + fixedTimeTaken);
-    } else {
-        COBOLOutputChannel.appendLine(message.padEnd(60) + fixedTimeTaken);
-    }
-
-    return true;
-}
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1362,11 +1374,5 @@ export function logWarningMessage(message: string, ...parameters: any[]): void {
     }
 }
 
-export function logChannelSetPreserveFocus(preserveFocus: boolean): void {
-    COBOLOutputChannel.show(preserveFocus);
-}
 
-export function logChannelHide(): void {
-    COBOLOutputChannel.hide();
-}
 
