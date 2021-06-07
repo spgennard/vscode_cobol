@@ -8,6 +8,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import ISourceHandler from './isourcehandler';
 import { ESourceFormat } from './externalfeatures';
 import VSCOBOLSourceScanner from './vscobolscanner';
+import { getWorkspaceFolders } from './cobolfolders';
 
 const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -45,10 +46,13 @@ function isMarginEnabled(configString: string): boolean {
 }
 
 export function enableMarginCobolMargin(enabled: boolean): void {
-    const configString = "coboleditor";
-    const currentContext: ExtensionContext = getCurrentContext();
+    if (getWorkspaceFolders() === undefined) {
+        return;
+    }
 
-    currentContext.workspaceState.update(configString, enabled);
+    const editorConfig = workspace.getConfiguration('coboleditor');
+
+    editorConfig.update("margin", enabled);
 }
 
 export function isEnabledViaWorkspace4cobol(): boolean {
