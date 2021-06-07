@@ -114,20 +114,22 @@ const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep"    // code scanner
 ];
 
-const known_problem_extensions: string[] = [
-    "OlegKunitsyn.gnucobol-debug",              // debugger
-    "BroadcomMFD.debugger-for-mainframe",       // debugger
-    "rechinformatica.rech-cobol-debugger",      // debugger
-    "BroadcomMFD.ccf"                           // control flow extension
+const known_problem_extensions: string[][] = [
+    ["debugger", "OlegKunitsyn.gnucobol-debug"],               // debugger
+    ["debugger", "BroadcomMFD.debugger-for-mainframe"],         // debugger
+    ["debugger", "rechinformatica.rech-cobol-debugger"],        // debugger
+    ["control flow extension", "BroadcomMFD.ccf"]              // control flow extension
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reason: string): string {
+function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reasons: string[]): string {
     let dupExtensionMessage = "";
 
     dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
-    if (reason.length !== 0) {
-        dupExtensionMessage += ` Reason        : ${reason}\n`;
+    if (reasons.length !== 0) {
+        for (const reason of reasons) {
+            dupExtensionMessage += ` Reason        : ${reason}\n`;
+        }
     }
 
     if (grab_info_for_ext.packageJSON.id !== undefined) {
@@ -160,7 +162,7 @@ function checkForExtensionConflicts(): string {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const ext of extensions.all) {
-        let reason = "";
+        const reason = [];
         let ignore_blessed = false;
         if (ext !== undefined && ext.packageJSON !== undefined) {
             if (ext.packageJSON.id !== undefined) {
@@ -175,9 +177,9 @@ function checkForExtensionConflicts(): string {
                 }
 
                 if (!ignore_blessed) {
-                    for (const known_problem_extension of known_problem_extensions) {
+                    for (const [type_of_extension, known_problem_extension] of known_problem_extensions) {
                         if (known_problem_extension === ext.packageJSON.id) {
-                            reason = "includes support that is problematic with this extension";
+                            reason.push(`contributes ${type_of_extension} that does not match syntax provided`);
                         }
                     }
                 }
@@ -193,10 +195,7 @@ function checkForExtensionConflicts(): string {
                                 if (element.language !== undefined) {
                                     const l = `${element.language}`.toUpperCase();
                                     if (l === 'COBOL') {
-                                        if (reason.length !== 0) {
-                                            reason += ", ";
-                                        }
-                                        reason += "contributes grammar";
+                                        reason.push("contributes conflicting grammar");
                                     }
                                 }
                             }
@@ -211,10 +210,7 @@ function checkForExtensionConflicts(): string {
                                 if (languageElement.id !== undefined) {
                                     const l = `${languageElement.id}`.toUpperCase();
                                     if (l === 'COBOL') {
-                                        if (reason.length !== 0) {
-                                            reason += ", ";
-                                        }
-                                        reason += "contributes language id";
+                                        reason.push("contributes language id");
                                     }
                                 }
                             }
@@ -235,16 +231,24 @@ function checkForExtensionConflicts(): string {
 let messageBoxDone = false;
 
 function checkForConflicts(config: ICOBOLSettings) {
-    let checkForExtensionConflictsMessage = "";
-
-    checkForExtensionConflictsMessage = checkForExtensionConflicts();
-    if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
-        messageBoxDone = true;
-        window.showInformationMessage("COBOL Extension has located duplicate or conflicting functionality.", { modal: true });
-    }
-    // display the message
+    let checkForExtensionConflictsMessage = checkForExtensionConflicts();
     if (checkForExtensionConflictsMessage.length !== 0) {
-        logMessage(checkForExtensionConflictsMessage);
+        return;
+    }
+    // allways log the message, display depending on settings
+    logMessage(checkForExtensionConflictsMessage);
+
+    if (config.ignore_unsafe_extensions === false && messageBoxDone === false) {
+        messageBoxDone = true;
+
+        window.showInformationMessage(
+            "COBOL Extension has located duplicate or conflicting functionality", 
+            { modal: true },
+            "More information?").then(function (data) {
+                if (data === 'More information?') {
+                    logChannelSetPreserveFocus(false);
+                }
+            });
     }
 }
 
@@ -387,7 +391,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             logMessage("");
             logMessage(" Caching");
             logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
-            
+
             const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
             if (cacheDir !== undefined) {
                 logMessage(`  Cache directory  : ${cacheDir}`);
@@ -820,7 +824,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
         const ws = getWorkspaceFolders();
-		if (ws !== undefined) {
+        if (ws !== undefined) {
             if (isSupportedLanguage(doc)) {
                 await COBOLUtils.populateDefaultCallableSymbols(settings, false);
             }
@@ -1258,7 +1262,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     if (settings.maintain_metadata_cache && settings.cache_metadata !== CacheDirectoryStrategy.Off) {
         const ws = getWorkspaceFolders();
-		if (ws !== undefined) {
+        if (ws !== undefined) {
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update("cache_metadata", false, false);
             COBOLUtils.clearGlobalCache();

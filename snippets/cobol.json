@@ -84,39 +84,54 @@
 		"scope": "cobol,acucobol"
 	},
 	"delimited": {
-		"prefix": "delimited by size",
-		"body" : [
+		"prefix": [
+			"delimited by size",
+			"dbs"
+		],
+		"body": [
 			"delimited by size"
 		],
 		"description": "delimited by size (string)",
 		"scope": "cobol,acucobol"
 	},
 	"DELIMITED": {
-		"prefix": "DELIMITED BY SIZE",
-		"body" : [
+		"prefix": [
+			"DELIMITED BY SIZE",
+			"DBS"
+		],
+		"body": [
 			"DELIMITED BY SIZE"
 		],
 		"description": "DELIMITED BY SIZE (string)",
 		"scope": "cobol,acucobol"
 	},
 	"delimited_space": {
-		"prefix": "delimited by space",
-		"body" : [
+		"prefix": [
+			"delimited by space",
+			"ds"
+		],
+		"body": [
 			"delimited by space"
 		],
 		"description": "delimited by size (string)",
 		"scope": "cobol,acucobol"
 	},
 	"DELIMITED_SPACE": {
-		"prefix": "DELIMITED BY SPACE",
-		"body" : [
+		"prefix": [
+			"DELIMITED BY SPACE",
+			"DS"
+		],
+		"body": [
 			"DELIMITED BY SPACE"
 		],
 		"description": "DELIMITED BY SPACE (string)",
 		"scope": "cobol,acucobol"
 	},
 	"divide": {
-		"prefix": "divide",
+		"prefix": [
+			"divide",
+			"dgr"
+		],
 		"body": [
 			"divide ${1:a} by ${2:b} giving ${3:c} ${4:remainder ${5:d}}"
 		],
@@ -124,7 +139,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"DIVIDE": {
-		"prefix": "DIVIDE",
+		"prefix": [
+			"DIVIDE",
+			"DGR"
+		],
 		"body": [
 			"DIVIDE ${1:a} BY ${2:b} GIVING ${3:c} ${4:REMAINDER ${5:d}}"
 		],
@@ -132,7 +150,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"entry": {
-		"prefix": "entry",
+		"prefix": [
+			"entry",
+			"eg"
+		],
 		"body": [
 			"$1-ep section.",
 			"entry \"$1\".",
@@ -144,7 +165,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"ENTRY": {
-		"prefix": "ENTRY",
+		"prefix": [
+			"ENTRY",
+			"GB"
+		],
 		"body": [
 			"$1-EP SECTON.",
 			"ENTRY \"$1\".",
@@ -156,7 +180,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"enum-id": {
-		"prefix": "enum-id",
+		"prefix": [
+			"enum-id",
+			"ei"
+		],
 		"body": [
 			"*>> <summary>enum-id $1</summary>",
 			"enum-id. $1 as \"Status\".",
@@ -168,7 +195,10 @@
 		"scope": "cobol"
 	},
 	"evaluate": {
-		"prefix": "evaluate",
+		"prefix": [
+			"evaluate",
+			"ee"
+		],
 		"body": [
 			"evaluate $1",
 			"    when $2",
@@ -214,7 +244,10 @@
 		"scope": "cobol"
 	},
 	"if": {
-		"prefix": "if",
+		"prefix": [
+			"if",
+			"ie"
+		],
 		"body": [
 			"if ${1:condition}",
 			"   $0",
@@ -223,7 +256,10 @@
 		"scope": "cobol"
 	},
 	"IF": {
-		"prefix": "IF",
+		"prefix": [
+			"IF",
+			"ie"
+		],
 		"body": [
 			"IF ${1:CONDITION}",
 			"   $0",
@@ -232,7 +268,10 @@
 		"scope": "cobol"
 	},
 	"if else": {
-		"prefix": "if",
+		"prefix": [
+			"if",
+			"iee"
+		],
 		"body": [
 			"if ${1:condition}",
 			"   $0",
@@ -243,7 +282,10 @@
 		"scope": "cobol"
 	},
 	"IF ELSE": {
-		"prefix": "IF",
+		"prefix": [
+			"IF",
+			"IEE"
+		],
 		"body": [
 			"IF ${1:CONDITION}",
 			"   $0",
@@ -318,7 +360,10 @@
 		"scope": "cobol"
 	},
 	"method-id": {
-		"prefix": "method-id",
+		"prefix": [
+			"method-id",
+			"mi"
+		],
 		"body": [
 			"*>> <summary>method $1</summary>",
 			"method-id $1.",
@@ -376,7 +421,10 @@
 		"scope": "cobol"
 	},
 	"multiply": {
-		"prefix": "multiply",
+		"prefix": [
+			"multiply",
+			"mg"
+		],
 		"body": [
 			"multiply ${1:a} by ${2:b} giving ${3:c}"
 		],
@@ -384,7 +432,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"MULTIPLY": {
-		"prefix": "MULTIPLY",
+		"prefix": [
+			"MULTIPLY",
+			"MG"
+		],
 		"body": [
 			"MULTIPLY ${1:a} BY ${2:b} GIVING ${3:c}"
 		],
@@ -392,7 +443,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"perform": {
-		"prefix": "perform",
+		"prefix": [
+			"perform",
+			"pt"
+		],
 		"body": [
 			"perform ${1:paragraph-name} ${2:value-1} times"
 		],
@@ -400,7 +454,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"PERFORM": {
-		"prefix": "PERFORM",
+		"prefix": [
+			"PERFORM",
+			"PE"
+		],
 		"body": [
 			"PERFORM ${1:paragraph-name} ${2:value-1} TIMES"
 		],
@@ -408,7 +465,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"perform-end-perform": {
-		"prefix": "perform",
+		"prefix": [
+			"perform",
+			"pe"
+		],
 		"body": [
 			"perform ${1}",
 			"\t${2}",
@@ -419,7 +479,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"PERFORM-END-PERFORM": {
-		"prefix": "PERFORM",
+		"prefix": [
+			"PERFORM",
+			"PE"
+		],
 		"body": [
 			"PERFORM ${1}",
 			"\t${2}",
@@ -430,7 +493,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"perform varying": {
-		"prefix": "perform",
+		"prefix": [
+			"perform",
+			"pv"
+		],
 		"body": [
 			"perform ${1:paragraph-name} varying ${2:field-1}",
 			" from ${3:value-1} by ${4:value-2}",
@@ -441,7 +507,10 @@
 		"scope": "cobol,acucobol"
 	},
 	"PERFORM VARYING": {
-		"prefix": "PERFORM",
+		"prefix": [
+			"PERFORM",
+			"PV"
+		],
 		"body": [
 			"PERFORM ${1:paragraph-name} VARYING ${2:field-1}",
 			" FROM ${3:value-1} BY ${4:value-2}",
@@ -661,7 +730,10 @@
 		"scope": "cobol"
 	},
 	"valuetype": {
-		"prefix": "valuetype-id",
+		"prefix": [
+			"vi",
+			"valuetype-id"
+		],
 		"body": [
 			"valuetype-id $1 ${2:public}.",
 			"01 item string ${2:public}.",
@@ -1400,7 +1472,7 @@
 	},
 	"FUNCTION-ABS": {
 		"prefix": [
-			"fUNCTION ABS"
+			"FUNCTION ABS"
 		],
 		"body": [
 			"FUNCTION ABS(${1:number})$0"
@@ -1440,7 +1512,7 @@
 	},
 	"FUNCTION-ATAN": {
 		"prefix": [
-			"fUNCTION ATAN"
+			"FUNCTION ATAN"
 		],
 		"body": [
 			"FUNCTION ATAN(${1:tangent})$0"
@@ -1480,7 +1552,7 @@
 	},
 	"FUNCTION-CHAR-NATIONAL": {
 		"prefix": [
-			"function char-national"
+			"FUNCTION CHAR-NATIONAL"
 		],
 		"body": [
 			"FUNCTION CHAR-NATIONAL(${1:integer})$0"
@@ -1500,7 +1572,7 @@
 	},
 	"FUNCTION-CONCATENATE": {
 		"prefix": [
-			"FUNCTION CONCATENATE"
+			"function concatenate"
 		],
 		"body": [
 			"function concatenate(${1:string1},${2:string2})$0"
@@ -1690,10 +1762,10 @@
 	},
 	"FUNCTION-LOCALE-TIME": {
 		"prefix": [
-			"fUNCTION LOCALE-TIME"
+			"FUNCTION LOCALE-TIME"
 		],
 		"body": [
-			"fUNCTION LOCALE-TIME(${1:yyyymmdd},${2:locale-optional})$0"
+			"FUNCTION LOCALE-TIME(${1:yyyymmdd},${2:locale-optional})$0"
 		],
 		"description": "format time; according to locale",
 		"scope": "cobol,acucobol"
@@ -1890,10 +1962,10 @@
 	},
 	"FUNCTION-ORD-MAX": {
 		"prefix": [
-			"fUNCTION ORD-MAX"
+			"FUNCTION ORD-MAX"
 		],
 		"body": [
-			"fUNCTION ORD-MAX(${1:char},${2:...})$0"
+			"FUNCTION ORD-MAX(${1:char},${2:...})$0"
 		],
 		"description": "max. ordinal position in the program character set corresponding to list of chars",
 		"scope": "cobol,acucobol"
@@ -1910,6 +1982,7 @@
 	},
 	"FUNCTION-PI": {
 		"prefix": [
+			"PI",
 			"FUNCTION PI"
 		],
 		"body": [
@@ -1920,10 +1993,10 @@
 	},
 	"FUNCTION-PRESENT-VALUE": {
 		"prefix": [
-			"fUNCTION PRESENT-VALUE"
+			"FUNCTION PRESENT-VALUE"
 		],
 		"body": [
-			"fUNCTION PRESENT-VALUE(${1:discount-rate},${2:amount},${3:...})$0"
+			"FUNCTION PRESENT-VALUE(${1:discount-rate},${2:amount},${3:...})$0"
 		],
 		"description": "approximation of the present value of a series of future period-end amount",
 		"scope": "cobol,acucobol"
@@ -2013,6 +2086,7 @@
 			"FUNCTION SQRT"
 		],
 		"body": [
+			"FS",
 			"FUNCTION SQRT(${1:number})$0"
 		],
 		"description": "aproximation of the square root of number",
@@ -2023,6 +2097,7 @@
 			"FUNCTION TAN"
 		],
 		"body": [
+			"FT",
 			"FUNCTION TAN(${1:angle})$0"
 		],
 		"description": "trigonometric tangent of the specified angle",
@@ -2030,6 +2105,7 @@
 	},
 	"FUNCTION-UPPER-CASE": {
 		"prefix": [
+			"FU",
 			"FUNCTION UPPER-CASE"
 		],
 		"body": [
@@ -2050,6 +2126,7 @@
 	},
 	"FUNCTION-YEAR-TO-YYYY": {
 		"prefix": [
+			"FY",
 			"FUNCTION YEAR-TO-YYYY"
 		],
 		"body": [
@@ -2086,14 +2163,20 @@
 		"description": "CANCEL literal"
 	},
 	"exit program": {
-		"prefix": "exit",
+		"prefix": [
+			"ep",
+			"exit"
+		],
 		"body": [
 			"exit program returning ${1:item}"
 		],
 		"description": "EXIT PROGRAM"
 	},
 	"EXIT PROGRAM": {
-		"prefix": "EXIT",
+		"prefix": [
+			"EP",
+			"EXIT"
+		],
 		"body": [
 			"EXIT PROGRAM RETURNING ${1:item}"
 		],
@@ -2115,7 +2198,10 @@
 		"scope": "cobol"
 	},
 	"IDENTIFICATION DIVISION": {
-		"prefix": "IDENTIFICATION DIVISION",
+		"prefix": [
+			"ID",
+			"IDENTIFICATION DIVISION"
+		],
 		"body": [
 			"IDENTIFICATION DIVISION.",
 			"$0"
@@ -2123,7 +2209,10 @@
 		"scope": "cobol"
 	},
 	"identification division": {
-		"prefix": "identification division",
+		"prefix": [
+			"id",
+			"identification division"
+		],
 		"body": [
 			"identification division.",
 			"$0"
@@ -2131,28 +2220,40 @@
 		"scope": "cobol"
 	},
 	"environment division": {
-		"prefix": "environment division",
+		"prefix": [
+			"ed",
+			"environment division"
+		],
 		"body": [
 			"environment division.",
 			"$0"
 		]
 	},
 	"ENVIRONMENT DIVISION": {
-		"prefix": "ENVIRONMENT DIVISION",
+		"prefix": [
+			"ED",
+			"ENVIRONMENT DIVISION"
+		],
 		"body": [
 			"ENVIRONMENT DIVISION.",
 			"$0"
 		]
 	},
 	"DATA DIVISION": {
-		"prefix": "DATA DIVISION",
+		"prefix": [
+			"DD",
+			"DATA DIVISION"
+		],
 		"body": [
 			"DATA DIVISION.",
 			"$0"
 		]
 	},
 	"data division": {
-		"prefix": "data division",
+		"prefix": [
+			"dd",
+			"data division"
+		],
 		"body": [
 			"data division.",
 			"$0"
@@ -2160,14 +2261,20 @@
 		"scope": "cobol"
 	},
 	"WORKING-STORAGE SECTION": {
-		"prefix": "WORKING-STORAGE",
+		"prefix": [
+			"WS",
+			"WORKING-STORAGE"
+		],
 		"body": [
 			"WORKING-STORAGE SECTION.",
 			"$0"
 		]
 	},
 	"working-storage section": {
-		"prefix": "working-storage",
+		"prefix": [
+			"ws",
+			"working-storage"
+		],
 		"body": [
 			"working-storage section.",
 			"$0"
@@ -2175,14 +2282,21 @@
 		"scope": "cobol"
 	},
 	"local-storage section": {
-		"prefix": "local-storage",
+		"prefix": [
+			"ls",
+			"local-storage"
+		],
 		"body": [
 			"local-storage section.",
 			"$0"
 		]
 	},
 	"LINKAGE SECTION ": {
-		"prefix": "LINKAGE SECTION",
+		"prefix": [
+			"LS",
+			"LKS",
+			"LINKAGE SECTION"
+		],
 		"body": [
 			"LINKAGE SECTION.",
 			"$0"
@@ -2190,21 +2304,31 @@
 		"scope": "cobol"
 	},
 	"linkage section.": {
-		"prefix": "linkage section",
+		"prefix": [
+			"ls",
+			"lks",
+			"linkage section"
+		],
 		"body": [
 			"linkage section.",
 			"$0"
 		]
 	},
 	"PROCEDURE DIVISION": {
-		"prefix": "PROCEDURE DIVISION",
+		"prefix": [
+			"PD",
+			"PROCEDURE DIVISION"
+		],
 		"body": [
 			"PROCEDURE DIVISION.",
 			"$0"
 		]
 	},
 	"procedure division": {
-		"prefix": "procedure division",
+		"prefix": [
+			"pd",
+			"procedure division"
+		],
 		"body": [
 			"procedure division.",
 			"$0"
@@ -2212,7 +2336,10 @@
 		"scope": "cobol"
 	},
 	"PROGRAM-ID": {
-		"prefix": "PROGRAM-ID. PRG.",
+		"prefix": [
+			"PI",
+			"PROGRAM-ID. PRG."
+		],
 		"body": [
 			"PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/${1:/upcase}/}}.",
 			"$0"
@@ -2220,7 +2347,10 @@
 		"scope": "cobol"
 	},
 	"program-id": {
-		"prefix": "program-id. prg.",
+		"prefix": [
+			"pi",
+			"program-id. prg."
+		],
 		"body": [
 			"program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"$0"
@@ -2269,9 +2399,9 @@
 		],
 		"scope": "cobol"
 	},
-	"ruler" : {
-		"prefix" : "ruler",
-		"body" : "|...+.*..1....+....2....+....3....+....4....+....5....+....6....+....7..",
-		"scope" : "cobol"
+	"ruler": {
+		"prefix": "ruler",
+		"body": "|...+.*..1....+....2....+....3....+....4....+....5....+....6....+....7..",
+		"scope": "cobol"
 	}
 }

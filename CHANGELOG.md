@@ -3,6 +3,26 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.5
+
+**add more abbr to snippets**
+
+ * add more information to the extension checks
+* [1c71f159af79e4b](https://github.com/spgennard/vscode_cobol/commit/1c71f159af79e4b) *2021-06-06 20:32:32*
+
+**add quotes**
+
+* [28287b1bf3f5b52](https://github.com/spgennard/vscode_cobol/commit/28287b1bf3f5b52) *2021-05-31 22:08:26*
+
+**update**
+
+* [0c93e2db83414dd](https://github.com/spgennard/vscode_cobol/commit/0c93e2db83414dd) *2021-05-31 22:04:01*
+
+**Update CHANGELOG.md**
+
+* [4b80c19597f15d2](https://github.com/spgennard/vscode_cobol/commit/4b80c19597f15d2) *2021-05-31 21:48:05*
+
+
 ## 7.5.31
 
 **update**
