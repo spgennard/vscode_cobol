@@ -1,6 +1,5 @@
 'use strict';
 import * as path from 'path';
-import * as fs from 'fs';
 import * as vscode from "vscode";
 import os from 'os';
 
@@ -84,6 +83,43 @@ export class VSExtensionUtils {
     public static getCombinedCopyBookSearchPath(): string[] {
         return fileSearchDirectory;
     }
+
+    public static flip_plaintext(doc: TextDocument):void {
+        if (doc === undefined) {
+            return;
+        }
+    
+        const settings = VSCOBOLConfiguration.get();
+        if ((settings.ignore_unsafe_extensions) && doc.languageId === 'cobol') {
+            vscode.languages.setTextDocumentLanguage(doc, "COBOL");
+            return;
+        }
+    
+        if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
+            const lineCount = doc.lineCount;
+            if (lineCount >= 3) {
+                const firstLine = doc.lineAt((0)).text;
+                const secondLine = doc.lineAt(1).text;
+    
+                if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ")) {
+                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_MF_LISTFILE");
+                    return;
+                }
+    
+                //NOTE: If we have more.. refactor..
+                if (firstLine.startsWith("Pro*COBOL: Release")) {
+                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_PCOB_LISTFILE");
+                    return;
+                }
+    
+                if ((firstLine.indexOf("ACUCOBOL-GT ") !== -1) && (firstLine.indexOf("Page:") !== -1)) {
+                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_ACU_LISTFILE");
+                    return;
+                }
+            }
+        }
+    }
+    
 }
 
 export const ExternalFeatures = new VSExternalFeatures();
@@ -92,18 +128,6 @@ export const currentHostInformation = `${os.hostname()}/${os.userInfo().username
 
 
 
-export function isDirectory(sdir: string): boolean {
-    try {
-        const f = fs.statSync(sdir, { bigint: true });
-        if (f && f.isDirectory()) {
-            return true;
-        }
-    }
-    catch {
-        return false;
-    }
-    return false;
-}
 
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -331,7 +355,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             }
 
             const startTime = performance_now();
-            if (isDirectory(ddir)) {
+            if (COBOLFileUtils.isDirectory(ddir)) {
                 const totalTimeInMS = performance_now() - startTime;
                 const timeTaken = totalTimeInMS.toFixed(2);
                 if (totalTimeInMS <= 2000) {
@@ -360,7 +384,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                     if (COBOLFileUtils.isDirectPath(extdir) === false) {
                         const sdir = path.join(folder.uri.fsPath, extdir);
 
-                        if (isDirectory(sdir)) {
+                        if (COBOLFileUtils.isDirectory(sdir)) {
                             if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
                                 logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
@@ -453,41 +477,6 @@ export function getCurrentContext(): ExtensionContext {
     return currentContext;
 }
 
-function flip_plaintext(doc: TextDocument) {
-    if (doc === undefined) {
-        return;
-    }
-
-    const settings = VSCOBOLConfiguration.get();
-    if ((settings.ignore_unsafe_extensions) && doc.languageId === 'cobol') {
-        vscode.languages.setTextDocumentLanguage(doc, "COBOL");
-        return;
-    }
-
-    if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
-        const lineCount = doc.lineCount;
-        if (lineCount >= 3) {
-            const firstLine = doc.lineAt((0)).text;
-            const secondLine = doc.lineAt(1).text;
-
-            if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ")) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_MF_LISTFILE");
-                return;
-            }
-
-            //NOTE: If we have more.. refactor..
-            if (firstLine.startsWith("Pro*COBOL: Release")) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_PCOB_LISTFILE");
-                return;
-            }
-
-            if ((firstLine.indexOf("ACUCOBOL-GT ") !== -1) && (firstLine.indexOf("Page:") !== -1)) {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL_ACU_LISTFILE");
-                return;
-            }
-        }
-    }
-}
 
 function setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
 
@@ -814,7 +803,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc) => {
-        flip_plaintext(doc);
+        VSExtensionUtils.flip_plaintext(doc);
 
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
         const ws = getWorkspaceFolders();
@@ -828,7 +817,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     /* flip any already opened docs */
     for (let docid = 0; docid < workspace.textDocuments.length; docid++) {
-        flip_plaintext(workspace.textDocuments[docid]);
+        VSExtensionUtils.flip_plaintext(workspace.textDocuments[docid]);
     }
 
     setupSourceViewTree(VSCOBOLConfiguration.get(), false);

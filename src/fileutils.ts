@@ -18,7 +18,7 @@ export class COBOLFileUtils {
         }
         return [false, undefined];
     }
-    
+
     public static isFile(sdir: string): boolean {
         try {
             if (fs.existsSync(sdir)) {
@@ -113,4 +113,18 @@ export class COBOLFileUtils {
         return false;
     }
 
+
+
+    public static isDirectory(sdir: string): boolean {
+        try {
+            const f = fs.statSync(sdir, { bigint: true });
+            if (f && f.isDirectory()) {
+                return true;
+            }
+        }
+        catch {
+            return false;
+        }
+        return false;
+    }
 }

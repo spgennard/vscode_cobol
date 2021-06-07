@@ -6,7 +6,7 @@ import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
-import { logMessage, logException, logTimedMessage, isDirectory, performance_now, logChannelSetPreserveFocus, ExternalFeatures } from "./extension";
+import { logMessage, logException, logTimedMessage, performance_now, logChannelSetPreserveFocus, ExternalFeatures } from "./extension";
 import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -320,7 +320,7 @@ export default class VSCOBOLSourceScanner {
                 }
 
                 /* not a directory, so ignore */
-                if (!isDirectory(storageDirectory)) {
+                if (!COBOLFileUtils.isDirectory(storageDirectory)) {
                     return undefined;
                 }
 
@@ -333,7 +333,7 @@ export default class VSCOBOLSourceScanner {
             if (ws !== undefined) {
                 for (const folder of ws) {
                     const cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
-                    if (isDirectory(cacheDir2)) {
+                    if (COBOLFileUtils.isDirectory(cacheDir2)) {
                         return cacheDir2;
                     }
                     if (firstCacheDir === "") {
@@ -346,7 +346,7 @@ export default class VSCOBOLSourceScanner {
                 return undefined;
             }
 
-            if (isDirectory(firstCacheDir) === false) {
+            if (COBOLFileUtils.isDirectory(firstCacheDir) === false) {
                 try {
                     fs.mkdirSync(firstCacheDir);
                 }

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage, isDirectory, logException } from './extension';
+import { logMessage, logException } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
@@ -288,7 +288,7 @@ export class COBOLUtils {
                         if (COBOLFileUtils.isDirectPath(extdir) === false) {
                             sdir = path.join(folder.uri.fsPath, extdir);
 
-                            if (isDirectory(sdir)) {
+                            if (COBOLFileUtils.isDirectory(sdir)) {
                                 if (COBOLFileUtils.isNetworkPath(sdir)) {
                                     if (VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
                                         logMessage(" Adding " + sdir + " to workspace");

@@ -4,8 +4,8 @@ import * as path from 'path';
 
 import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn } from './iconfiguration';
-import { isDirectory } from './extension';
 import { CacheDirectoryStrategy } from './externalfeatures';
+import { COBOLFileUtils } from './fileutils';
 
 
 export class VSCOBOLConfiguration {
@@ -263,7 +263,7 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
                 if (e !== undefined && e !== null) {
                     e.split(path.delimiter).forEach(function (item) {
                         if (item !== undefined && item !== null && item.length > 0) {
-                            if (isDirectory(item)) {
+                            if (COBOLFileUtils.isDirectory(item)) {
                                 extraDirs.push(item);
                             } else {
                                 invalidSearchDirectory.push(item);
