@@ -24,9 +24,10 @@ class FileScanStats {
     showMessage = false;
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
+
 export class VSCobScanner_depreciated {
 
-    public static deprecatedActivePid = 0;
+    public static deprecatedActivePid: number|undefined = undefined;
 
     private static isDeprecatedAlive(pid: number): boolean {
         if (this.deprecatedActivePid === 0) {
@@ -55,7 +56,11 @@ export class VSCobScanner_depreciated {
             return jsonFileExists;
         }
 
-        return this.isDeprecatedAlive(VSCobScanner_depreciated.deprecatedActivePid);
+        let validPid  = 0;
+        if (VSCobScanner_depreciated.deprecatedActivePid !== undefined) {
+            validPid = VSCobScanner_depreciated.deprecatedActivePid;
+        }
+        return this.isDeprecatedAlive(validPid);
     }
 
     private static depreciatedRemoveScannerFile(cacheDirectory: string): void {
