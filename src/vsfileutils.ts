@@ -3,8 +3,9 @@ import fs from "fs";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBOLFileUtils } from "./fileutils";
 import { workspace } from "vscode";
-import { getCombinedCopyBookSearchPath } from "./extension";
+
 import { ICOBOLSettings } from "./iconfiguration";
+import { VSExtensionUtils } from "./extension";
 
 export class VSCOBOLFileUtils {
 
@@ -79,7 +80,7 @@ export class VSCOBOLFileUtils {
 
         const hasDot = filename.indexOf(".");
 
-        for (const copybookdir of getCombinedCopyBookSearchPath()) {
+        for (const copybookdir of VSExtensionUtils.getCombinedCopyBookSearchPath()) {
 
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
@@ -110,7 +111,7 @@ export class VSCOBOLFileUtils {
 
         const hasDot = filename.indexOf(".");
 
-        for (const baseCopybookdir of getCombinedCopyBookSearchPath()) {
+        for (const baseCopybookdir of VSExtensionUtils.getCombinedCopyBookSearchPath()) {
             const copybookdir = path.join(baseCopybookdir, inDirectory);
 
             /* check for the file as is.. */
