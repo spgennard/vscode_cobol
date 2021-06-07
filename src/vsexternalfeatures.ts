@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { logException, logMessage, logTimedMessage, performance_now } from "./extension";
+import { logException, logMessage, logTimedMessage, VSExtensionUtils } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
@@ -23,7 +23,7 @@ export class VSExternalFeatures implements IExternalFeatures{
     }
 
     public performance_now(): number {
-        return performance_now();
+        return VSExtensionUtils.performance_now();
     }
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {

@@ -120,6 +120,20 @@ export class VSExtensionUtils {
         }
     }
     
+    public static performance_now(): number {
+        if (!process.env.BROWSER) {
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                return require('performance-now').performance.now;
+            }
+            catch {
+                return Date.now();
+            }
+        }
+    
+        return Date.now();
+    }
+    
 }
 
 export const ExternalFeatures = new VSExternalFeatures();
@@ -354,9 +368,9 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                 }
             }
 
-            const startTime = performance_now();
+            const startTime = VSExtensionUtils.performance_now();
             if (COBOLFileUtils.isDirectory(ddir)) {
-                const totalTimeInMS = performance_now() - startTime;
+                const totalTimeInMS = VSExtensionUtils.performance_now() - startTime;
                 const timeTaken = totalTimeInMS.toFixed(2);
                 if (totalTimeInMS <= 2000) {
                     fileSearchDirectory.push(ddir);
@@ -1353,16 +1367,3 @@ export function logChannelHide(): void {
     COBOLOutputChannel.hide();
 }
 
-export function performance_now(): number {
-    if (!process.env.BROWSER) {
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            return require('performance-now').performance.now;
-        }
-        catch {
-            return Date.now();
-        }
-    }
-
-    return Date.now();
-}

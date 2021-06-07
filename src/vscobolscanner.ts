@@ -6,7 +6,7 @@ import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
-import { logMessage, logException, logTimedMessage, performance_now, logChannelSetPreserveFocus, ExternalFeatures } from "./extension";
+import { logMessage, logException, logTimedMessage, logChannelSetPreserveFocus, ExternalFeatures, VSExtensionUtils } from "./extension";
 import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -154,7 +154,7 @@ export default class VSCOBOLSourceScanner {
                 }
 
                 const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
-                const startTime = performance_now();
+                const startTime = VSExtensionUtils.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
                 const qcpd = new COBOLSourceScanner(sourceHandler, config,
@@ -163,7 +163,7 @@ export default class VSCOBOLSourceScanner {
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);
 
-                logTimedMessage(performance_now() - startTime, " - Parsing " + fileName);
+                logTimedMessage(VSExtensionUtils.performance_now() - startTime, " - Parsing " + fileName);
 
                 if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
                     // drop the smallest..
