@@ -46,6 +46,8 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
 
     let prevRightMargin = "";
     let validFixedLines = 0;
+    let skippedLines = 0;
+    let linesGT80 = 0;
     for (let i = 0; i < maxLines; i++) {
 
         const lineText = doc.getLine(i, true);
@@ -53,6 +55,10 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
             break;
         }
 
+        if (lineText.length === 0) {
+            skippedLines++;
+            continue;
+        }
         const line = lineText.toLowerCase();
         const validFixedLine = isValidFixedLine(line);
         if (validFixedLine) {
@@ -86,6 +92,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         if (pos4sourceformat_after === 0) {
             if (line.length > 80) {
                 defFormat = ESourceFormat.variable;
+                linesGT80++;
                 continue;
             } else {
                 if (isValidFixedLine(line)) {
@@ -124,7 +131,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         }
     }
 
-    if (validFixedLines == maxLines) {
+    if (linesGT80 === 0 && (validFixedLines + skippedLines == maxLines)) {
         return ESourceFormat.fixed;
     }
 
@@ -133,6 +140,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         return ESourceFormat.fixed;
     }
 
+    // TODO: Add supprt for config/map based filename config
     return defFormat;
 }
 
