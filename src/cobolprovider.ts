@@ -4,7 +4,7 @@ import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
-import { logMessage, logTimeThreshold, VSExtensionUtils } from './extension';
+import { logMessage, VSExtensionUtils, VSLogger } from './extension';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
@@ -341,7 +341,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         const totalTimeInMS = VSExtensionUtils.performance_now() - startTime;
         const timeTaken = totalTimeInMS.toFixed(2);
-        if (totalTimeInMS > logTimeThreshold) {
+        if (totalTimeInMS > VSLogger.logTimeThreshold) {
             logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }
         return items;
@@ -359,7 +359,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         }
 
         return targets;
-
     }
 
 }
