@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import COBOLSourceScanner, { COBOLTokenStyle } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
-import { logException } from './extension';
+import { VSLogger } from './extension';
 import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 
@@ -49,7 +49,7 @@ export class VSSemanticProvider {
                 }
 
             } catch (e) {
-                logException("SemanticProvider: sections", e);
+                VSLogger.logException("SemanticProvider: sections", e);
             }
         }
         for (const [,token] of qcp.paragraphs) {
@@ -62,7 +62,7 @@ export class VSSemanticProvider {
                 }
 
             } catch (e) {
-                logException("SemanticProvider: paragraphs", e);
+                VSLogger.logException("SemanticProvider: paragraphs", e);
             }
         }
 
@@ -75,7 +75,7 @@ export class VSSemanticProvider {
                     );
                 }
             } catch (e) {
-                logException("SemanticProvider: targetReferences", e);
+                VSLogger.logException("SemanticProvider: targetReferences", e);
             }
 
         }
@@ -99,7 +99,7 @@ export class VSSemanticProvider {
                             );
                         }
                     } catch (e) {
-                        logException("SemanticProvider: constantsOrVariables", e);
+                        VSLogger.logException("SemanticProvider: constantsOrVariables", e);
                     }
                 }
             }
@@ -123,7 +123,7 @@ export class VSSemanticProvider {
                         );
                     }
                 } catch (e) {
-                    logException("SemanticProvider: sourceRefs", e);
+                    VSLogger.logException("SemanticProvider: sourceRefs", e);
                 }
             }
         }

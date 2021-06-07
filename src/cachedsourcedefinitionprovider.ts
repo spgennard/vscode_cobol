@@ -6,7 +6,7 @@ import { VSCOBOLConfiguration } from './configuration';
 import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
-import { logException } from './extension';
+import { VSLogger } from './extension';
 
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
@@ -66,7 +66,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                         }
                     }
                     catch (fe) {
-                        logException(fe.message, fe);
+                        VSLogger.logException(fe.message, fe);
                     }
                 }
             }
@@ -107,7 +107,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                     }
                 }
                 catch (fe) {
-                    logException(fe.message, fe);
+                    VSLogger.logException(fe.message, fe);
                 }
             }
         }

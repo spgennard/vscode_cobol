@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { logException, logMessage, VSExtensionUtils, VSLogger } from "./extension";
+import { logMessage, VSExtensionUtils, VSLogger } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
@@ -14,7 +14,7 @@ export class VSExternalFeatures implements IExternalFeatures{
     }
 
     public logException(message: string, ex: Error): void {
-        logException(message, ex);
+        VSLogger.logException(message, ex);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

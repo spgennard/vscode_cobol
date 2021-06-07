@@ -4,7 +4,7 @@ import { extensions, Uri, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { logException, logMessage, progressStatusBarItem, VSLogger } from "./extension";
+import { logMessage, progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
@@ -61,12 +61,12 @@ export class VSCobScanner {
             try {
                 child.kill()
             } catch (err) {
-                logException(`Timeout, ${reason}`, err);
+                VSLogger.logException(`Timeout, ${reason}`, err);
             }
         }, settings.cache_metadata_inactivity_timeout);
 
         child.on('error', err => {
-            logException(`Fork caused ${reason}`, err);
+            VSLogger.logException(`Fork caused ${reason}`, err);
         });
 
         child.on('exit', code => {

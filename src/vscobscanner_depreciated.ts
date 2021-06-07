@@ -4,7 +4,7 @@ import tempDirectory from 'temp-dir';
 import { VSCobScanner } from "./vscobscanner";
 import { VSCOBOLConfiguration } from "./configuration";
 import VSCOBOLSourceScanner from "./vscobolscanner";
-import { logException, logMessage, progressStatusBarItem, VSLogger } from "./extension";
+import { logMessage, progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { FileType, Uri, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
@@ -121,7 +121,7 @@ export class VSCobScanner_depreciated {
                             } catch (ex) {
                                 logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
                                 if (ex instanceof Error) {
-                                    logException("Unexpected abort during Uri Parse", ex as Error);
+                                    VSLogger.logException("Unexpected abort during Uri Parse", ex as Error);
                                 } else {
                                     logMessage(ex);
                                 }
@@ -256,7 +256,7 @@ export class VSCobScanner_depreciated {
             try {
                 child.kill()
             } catch (err) {
-                logException(`Timeout, ${reason}`, err);
+                VSLogger.logException(`Timeout, ${reason}`, err);
             }
         }, settings.cache_metadata_inactivity_timeout);
 
@@ -264,7 +264,7 @@ export class VSCobScanner_depreciated {
             if (tempDirectory !== undefined) {
                 VSCobScanner_depreciated.depreciatedRemoveScannerFile(tempDirectory);
             }
-            logException(`Fork caused ${reason}`, err);
+            VSLogger.logException(`Fork caused ${reason}`, err);
         });
 
         child.on('exit', code => {

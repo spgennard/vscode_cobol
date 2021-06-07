@@ -5,7 +5,7 @@ import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
 import { getWorkspaceFolders } from './cobolfolders';
-import { logException } from './extension';
+import {  VSLogger } from './extension';
 import VSCOBOLSourceScanner from './vscobolscanner';
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
@@ -263,7 +263,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             }
         }
         catch (e) {
-            logException("checkFile", e);
+            VSLogger.logException("checkFile", e);
         }
     }
 

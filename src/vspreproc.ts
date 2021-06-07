@@ -2,7 +2,7 @@ import { Extension, extensions } from "vscode";
 import { COBAPIConstants, COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { dumpPreProcInfo, ExternalFeatures, logException, logMessage } from "./extension";
+import { dumpPreProcInfo, ExternalFeatures, logMessage, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
@@ -58,7 +58,7 @@ export class VSPreProc {
             }
             catch (e) {
                 failed = true;
-                logException(`Unable to get preprocessor : ${extName}`, e);
+                VSLogger.logException(`Unable to get preprocessor : ${extName}`, e);
             }
         }
 

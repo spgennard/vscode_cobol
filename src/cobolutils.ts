@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage, logException } from './extension';
+import { logMessage,  VSLogger } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
@@ -236,7 +236,7 @@ export class COBOLUtils {
                     editorConfig.update('metadata_knowncopybooks', knownCopybooks, false);
                     InMemoryGlobalSymbolCache.isDirty = false;
                 } catch (e) {
-                    logException("Failed to update metadata", e);
+                    VSLogger.logException("Failed to update metadata", e);
                 }
             }
         }
@@ -307,7 +307,7 @@ export class COBOLUtils {
                         }
                     }
                     catch (e) {
-                        logException("dir", e);
+                        VSLogger.logException("dir", e);
                     }
                 }
             }

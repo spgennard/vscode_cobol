@@ -374,7 +374,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             invalidSearchDirectory.push(ddir);
         }
         else if (COBOLFileUtils.isDirectPath(ddir)) {
-            logWarningMessage(` non portable copybook directory ${ddir} defined`);
+            VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
                 if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                     if (COBOLFileUtils.isNetworkPath(ddir)) {
@@ -425,7 +425,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                     }
                 }
                 catch (e) {
-                    logException("dir", e);
+                    VSLogger.logException("dir", e);
                 }
             }
         }
@@ -1310,13 +1310,14 @@ export async function deactivate(): Promise<void> {
     await deactivateAsync();
 }
 
-export function logException(message: string, ex: Error): void {
-    logMessage(ex.name + ": " + message);
-    if (ex !== undefined && ex.stack !== undefined) {
-        logMessage(ex.stack);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function logMessage(message: string, ...parameters: any[]): void {
+    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+        COBOLOutputChannel.appendLine(util.format(message, parameters));
+    } else {
+        COBOLOutputChannel.appendLine(message);
     }
 }
-
 export class VSLogger {
     public static readonly logTimeThreshold = 500;
 
@@ -1346,33 +1347,32 @@ export class VSLogger {
     public static logChannelHide(): void {
         COBOLOutputChannel.hide();
     }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public static logWarningMessage(message: string, ...parameters: any[]): void {
+        const trimmedLeftCount = message.length - message.trimLeft().length;
+        const spacesToLeft = " ".repeat(trimmedLeftCount);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logMessage(message: string, ...parameters: any[]): void {
-    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        COBOLOutputChannel.appendLine(util.format(message, parameters));
-    } else {
-        COBOLOutputChannel.appendLine(message);
+        // TODO: Could this be colorized?
+        if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+            COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${util.format(message, parameters)}`);
+        } else {
+            COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${message}`);
+        }
     }
-}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logWarningMessage(message: string, ...parameters: any[]): void {
-    const trimmedLeftCount = message.length - message.trimLeft().length;
-    const spacesToLeft = " ".repeat(trimmedLeftCount);
 
-    // TODO: Could this be colorized?
-    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${util.format(message, parameters)}`);
-    } else {
-        COBOLOutputChannel.appendLine(`${spacesToLeft}WARNING: ${message}`);
+    public static logException(message: string, ex: Error): void {
+        logMessage(ex.name + ": " + message);
+        if (ex !== undefined && ex.stack !== undefined) {
+            logMessage(ex.stack);
+        }
     }
+
 }
+
+
 
 
 

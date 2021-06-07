@@ -12,7 +12,6 @@ import * as path from 'path';
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
-import { logException } from "./extension";
 
 export class COBOLPreprocResult {
     public ppHandle: CobApiHandle;

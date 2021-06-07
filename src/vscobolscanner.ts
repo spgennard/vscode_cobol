@@ -6,7 +6,7 @@ import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
-import { logMessage, logException, ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
+import { logMessage, ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
 import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -184,7 +184,7 @@ export default class VSCOBOLSourceScanner {
                 return qcpd;
             }
             catch (e) {
-                logException("getCachedObject", e);
+                VSLogger.logException("getCachedObject", e);
             }
         }
 
