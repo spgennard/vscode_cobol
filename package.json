@@ -346,12 +346,14 @@
         },
         "coboleditor.enable_tabstop": {
           "type": "boolean",
-          "title": "When enabled, activate COBOL tab/detab key",
+          "title": "COBOL TabStop Key",
+          "description": "When enabled, activate COBOL tab/detab key",
           "default": true
         },
         "coboleditor.comment_line": {
           "type": "boolean",
-          "title": "When enabled, activate COBOL comment key",
+          "title": "Comment line",
+          "description": "When enabled, activate COBOL comment key",
           "default": true
         },
         "coboleditor.outline": {

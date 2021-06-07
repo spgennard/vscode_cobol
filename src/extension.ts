@@ -157,6 +157,7 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
 
     return dupExtensionMessage;
 }
+
 function checkForExtensionConflicts(): string {
     let dupExtensionMessage = "";
 
@@ -230,103 +231,6 @@ function checkForExtensionConflicts(): string {
 
 let messageBoxDone = false;
 
-function initExtensionAndSearchPaths(config: ICOBOLSettings, checkForConflicts: boolean) {
-    let checkForExtensionConflictsMessage = "";
-
-    if (checkForConflicts) {
-        checkForExtensionConflictsMessage = checkForExtensionConflicts();
-        // display the message
-        if (checkForExtensionConflictsMessage.length !== 0) {
-            logMessage(checkForExtensionConflictsMessage);
-        }
-
-        if (checkForExtensionConflictsMessage.length !== 0 && config.ignore_unsafe_extensions === false && messageBoxDone === false) {
-            messageBoxDone = true;
-            
-            window.showInformationMessage(
-                "COBOL Extension has located duplicate or conflicting functionality", 
-                { modal: true },
-                "More information?").then(function (data) {
-                    if (data === 'More information?') {
-                        logChannelSetPreserveFocus(false);
-                    }
-                });
-        }
-    }
-    fileSearchDirectory.length = 0;
-
-    const extsdir = config.copybookdirs;
-    invalidSearchDirectory = config.invalid_copybookdirs;
-    invalidSearchDirectory.length = 0;
-
-    // step 1 look through the copybook default dirs for "direct" paths and include them in search path
-    for (const ddir of extsdir) {
-        if (config.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
-            logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
-            invalidSearchDirectory.push(ddir);
-        }
-        else if (COBOLFileUtils.isDirectPath(ddir)) {
-            logWarningMessage(` non portable copybook directory ${ddir} defined`);
-            if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
-                if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
-                    if (COBOLFileUtils.isNetworkPath(ddir)) {
-                        logMessage(" The directory " + ddir + " for performance should be part of the workspace");
-                    }
-                }
-            }
-
-            const startTime = performance_now();
-            if (isDirectory(ddir)) {
-                const totalTimeInMS = performance_now() - startTime;
-                const timeTaken = totalTimeInMS.toFixed(2);
-                if (totalTimeInMS <= 2000) {
-                    fileSearchDirectory.push(ddir);
-                } else {
-                    logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
-                    invalidSearchDirectory.push(ddir);
-                }
-            } else {
-                invalidSearchDirectory.push(ddir);
-            }
-        }
-    }
-
-    // step 2
-    const ws = getWorkspaceFolders();
-    if (ws !== undefined) {
-        for (const folder of ws) {
-            // place the workspace folder in the copybook path
-
-            fileSearchDirectory.push(folder.uri.fsPath);
-
-            /* now add any extra directories that are below this workspace folder */
-            for (const extdir of extsdir) {
-                try {
-                    if (COBOLFileUtils.isDirectPath(extdir) === false) {
-                        const sdir = path.join(folder.uri.fsPath, extdir);
-
-                        if (isDirectory(sdir)) {
-                            if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
-                                logMessage(" The directory " + sdir + " for performance should be part of the workspace");
-                            }
-
-                            fileSearchDirectory.push(sdir);
-                        } else {
-                            invalidSearchDirectory.push(sdir);
-                        }
-                    }
-                }
-                catch (e) {
-                    logException("dir", e);
-                }
-            }
-        }
-    }
-
-    fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
-    invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
-}
-
 function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
     if (!quiet) {
         if (hide) {
@@ -334,8 +238,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         } else {
             logChannelSetPreserveFocus(true);
         }
-        COBOLOutputChannel.clear();
     }
+    COBOLOutputChannel.clear();
 
     const thisExtension = extensions.getExtension("bitlang.cobol");
 
@@ -402,7 +306,78 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
     }
 
-    initExtensionAndSearchPaths(settings, true);
+    fileSearchDirectory.length = 0;
+
+    const extsdir = settings.copybookdirs;
+    invalidSearchDirectory = settings.invalid_copybookdirs;
+    invalidSearchDirectory.length = 0;
+
+    // step 1 look through the copybook default dirs for "direct" paths and include them in search path
+    for (const ddir of extsdir) {
+        if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
+            logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
+            invalidSearchDirectory.push(ddir);
+        }
+        else if (COBOLFileUtils.isDirectPath(ddir)) {
+            logWarningMessage(` non portable copybook directory ${ddir} defined`);
+            if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
+                if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
+                    if (COBOLFileUtils.isNetworkPath(ddir)) {
+                        logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                    }
+                }
+            }
+
+            const startTime = performance_now();
+            if (isDirectory(ddir)) {
+                const totalTimeInMS = performance_now() - startTime;
+                const timeTaken = totalTimeInMS.toFixed(2);
+                if (totalTimeInMS <= 2000) {
+                    fileSearchDirectory.push(ddir);
+                } else {
+                    logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
+                    invalidSearchDirectory.push(ddir);
+                }
+            } else {
+                invalidSearchDirectory.push(ddir);
+            }
+        }
+    }
+
+    // step 2
+    const ws = getWorkspaceFolders();
+    if (ws !== undefined) {
+        for (const folder of ws) {
+            // place the workspace folder in the copybook path
+
+            fileSearchDirectory.push(folder.uri.fsPath);
+
+            /* now add any extra directories that are below this workspace folder */
+            for (const extdir of extsdir) {
+                try {
+                    if (COBOLFileUtils.isDirectPath(extdir) === false) {
+                        const sdir = path.join(folder.uri.fsPath, extdir);
+
+                        if (isDirectory(sdir)) {
+                            if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
+                                logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                            }
+
+                            fileSearchDirectory.push(sdir);
+                        } else {
+                            invalidSearchDirectory.push(sdir);
+                        }
+                    }
+                }
+                catch (e) {
+                    logException("dir", e);
+                }
+            }
+        }
+    }
+
+    fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
+    invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
         const ws = getWorkspaceFolders();
@@ -430,6 +405,26 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         }
 
         logMessage("");
+    }
+
+    let checkForExtensionConflictsMessage = "";
+    checkForExtensionConflictsMessage = checkForExtensionConflicts();
+    // display the message
+    if (checkForExtensionConflictsMessage.length !== 0) {
+        logMessage(checkForExtensionConflictsMessage);
+    }
+
+    if (checkForExtensionConflictsMessage.length !== 0 && settings.ignore_unsafe_extensions === false && messageBoxDone === false) {
+        messageBoxDone = true;
+
+        window.showInformationMessage(
+            "COBOL Extension has located duplicate or conflicting functionality",
+            { modal: true },
+            "More information?").then(function (data) {
+                if (data === 'More information?') {
+                    logChannelSetPreserveFocus(false);
+                }
+            });
     }
 }
 
