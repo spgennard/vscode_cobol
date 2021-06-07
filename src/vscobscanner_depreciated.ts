@@ -4,7 +4,7 @@ import tempDirectory from 'temp-dir';
 import { VSCobScanner } from "./vscobscanner";
 import { VSCOBOLConfiguration } from "./configuration";
 import VSCOBOLSourceScanner from "./vscobolscanner";
-import { logMessage, progressStatusBarItem, VSLogger } from "./extension";
+import { progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { FileType, Uri, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
@@ -81,7 +81,7 @@ export class VSCobScanner_depreciated {
 
         if (stats.showMessage) {
             const spaces = " ".repeat(stats.directoryDepth);
-            logMessage(` ${spaces}Directory : ${folder.fsPath}`);
+            VSLogger.logMessage(` ${spaces}Directory : ${folder.fsPath}`);
         }
         stats.directoriesScannedMap.set(folder.fsPath, folder);
 
@@ -92,7 +92,7 @@ export class VSCobScanner_depreciated {
                 case FileType.File | FileType.SymbolicLink:
                     {
                         const spaces4file = " ".repeat(1 + stats.directoryDepth);
-                        logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                        VSLogger.logMessage(`${spaces4file} File : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
                     }
                 // eslint-disable-next-line no-fallthrough
                 case FileType.File:
@@ -109,7 +109,7 @@ export class VSCobScanner_depreciated {
                 case FileType.Directory | FileType.SymbolicLink:
                     {
                         const spaces4dir = " ".repeat(1 + stats.directoryDepth);
-                        logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
+                        VSLogger.logMessage(`${spaces4dir} Directory : ${entry} in ${folder.fsPath} is a symbolic link which may cause duplicate data to be cached`);
                     }
                 // eslint-disable-next-line no-fallthrough
                 case FileType.Directory:
@@ -119,11 +119,11 @@ export class VSCobScanner_depreciated {
                             try {
                                 dir2scan.push(Uri.file(fullDirectory));
                             } catch (ex) {
-                                logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
+                                VSLogger.logMessage(` Uri.file failed with ${fullDirectory} from ${folder.fsPath} + ${entry}`);
                                 if (ex instanceof Error) {
                                     VSLogger.logException("Unexpected abort during Uri Parse", ex as Error);
                                 } else {
-                                    logMessage(ex);
+                                    VSLogger.logMessage(ex);
                                 }
                             }
                         }
@@ -147,7 +147,7 @@ export class VSCobScanner_depreciated {
                 }
                 stats.directoryDepth--;
             } else {
-                logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
+                VSLogger.logMessage(` Directories below : ${folder.fsPath} has not been scanned (depth limit is ${settings.cache_metadata_max_directory_scan_depth})`);
             }
 
         }
@@ -161,7 +161,7 @@ export class VSCobScanner_depreciated {
         const settings = VSCOBOLConfiguration.get();
 
         if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled() === false) {
-            logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
+            VSLogger.logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
             return;
         }
 
@@ -169,11 +169,11 @@ export class VSCobScanner_depreciated {
         if (cacheDirectory !== undefined && VSCobScanner_depreciated.isDeprecatedScannerActive(cacheDirectory)) {
             COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
             if (!viaCommand) {
-                logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
+                VSLogger.logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
                 VSCobScanner_depreciated.depreciatedRemoveScannerFile(cacheDirectory);
-                logMessage(` - lock file released`);
+                VSLogger.logMessage(` - lock file released`);
             } else {
-                logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
+                VSLogger.logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
                 return;
             }
         }
@@ -184,7 +184,7 @@ export class VSCobScanner_depreciated {
         const files: string[] = [];
 
         if (ws === undefined) {
-            logMessage(`No workspace folders available ${msgViaCommand}`);
+            VSLogger.logMessage(`No workspace folders available ${msgViaCommand}`);
             return;
         }
 
@@ -193,8 +193,8 @@ export class VSCobScanner_depreciated {
         } else {
             VSLogger.logChannelSetPreserveFocus(!viaCommand);
         }
-        logMessage("");
-        logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
+        VSLogger.logMessage("");
+        VSLogger.logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
         if (ws !== undefined) {
             for (const folder of ws) {
@@ -273,7 +273,7 @@ export class VSCobScanner_depreciated {
 
             if (code !== 0) {
                 // if (sf.cache_metadata_show_progress_messages) {
-                logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
+                VSLogger.logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
                 // }
             } else {
                 progressStatusBarItem.hide();
@@ -314,7 +314,7 @@ export class VSCobScanner_depreciated {
                     COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename);
                 }
             } else {
-                logMessage(msg as string);
+                VSLogger.logMessage(msg as string);
             }
         });
 
@@ -325,7 +325,7 @@ export class VSCobScanner_depreciated {
                 for (const line of lines.split("\n")) {
                     const lineTrimmed = line.trim();
                     if (lineTrimmed.length !== 0) {
-                        logMessage(` ${line}`);
+                        VSLogger.logMessage(` ${line}`);
                     }
                 }
             }
@@ -338,7 +338,7 @@ export class VSCobScanner_depreciated {
                 for (const line of lines.split("\n")) {
                     const lineTrimmed = line.trim();
                     if (lineTrimmed.length !== 0) {
-                        logMessage(` [${line}]`);
+                        VSLogger.logMessage(` [${line}]`);
                     }
                 }
             }

@@ -300,25 +300,25 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
     if (thisExtension !== undefined) {
         if (vscode.env.uriScheme !== 'vscode') {
-            logMessage("----------------------------------------------------------------------");
-            logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
-            logMessage("----------------------------------------------------------------------");
-            logMessage(`Version                                     : ${vscode.version}`);
+            VSLogger.logMessage("----------------------------------------------------------------------");
+            VSLogger.logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
+            VSLogger.logMessage("----------------------------------------------------------------------");
+            VSLogger.logMessage(`Version                                     : ${vscode.version}`);
         } else {
-            logMessage(`VSCode version                              : ${vscode.version}`);
+            VSLogger.logMessage(`VSCode version                              : ${vscode.version}`);
         }
-        logMessage(` Platform                                   : ${os.platform}`);
-        logMessage(` Architecture                               : ${os.arch}`);
-        logMessage("Extension Information:");
-        logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
-        logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);
-        logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
-        logMessage(` Parse copybook for references              : ${settings.parse_copybooks_for_references}`);
-        logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`)
-        logMessage(` Semantic token provider enabled            : ${settings.enable_semantic_token_provider}`);
+        VSLogger.logMessage(` Platform                                   : ${os.platform}`);
+        VSLogger.logMessage(` Architecture                               : ${os.arch}`);
+        VSLogger.logMessage("Extension Information:");
+        VSLogger.logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
+        VSLogger.logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);
+        VSLogger.logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
+        VSLogger.logMessage(` Parse copybook for references              : ${settings.parse_copybooks_for_references}`);
+        VSLogger.logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`)
+        VSLogger.logMessage(` Semantic token provider enabled            : ${settings.enable_semantic_token_provider}`);
         try {
             const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting').get<number>("enabled");
-            logMessage(` editor.semanticHighlighting.enabled        : ${editor_semanticHighlighting_enabled}`);
+            VSLogger.logMessage(` editor.semanticHighlighting.enabled        : ${editor_semanticHighlighting_enabled}`);
         } catch
         {
             //
@@ -327,34 +327,34 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         try {
             const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
                 { languageId: 'COBOL' }).get<number>("enabled");
-            logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
+            VSLogger.logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
         } catch
         {
             //
         }
         try {
             const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
-            logMessage(` workbench color theme                      : ${workbench_theme}`);
+            VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);
         } catch
         {
             //
         }
         if (vscode.workspace.workspaceFile !== undefined) {
-            logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
+            VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
         }
 
         if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
-            logMessage("----------------------------------------------------------------------");
-            logMessage(" Deprecated Features settings");
-            logMessage("");
-            logMessage(" Caching");
-            logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+            VSLogger.logMessage("----------------------------------------------------------------------");
+            VSLogger.logMessage(" Deprecated Features settings");
+            VSLogger.logMessage("");
+            VSLogger.logMessage(" Caching");
+            VSLogger.logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
 
             const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
             if (cacheDir !== undefined) {
-                logMessage(`  Cache directory  : ${cacheDir}`);
+                VSLogger.logMessage(`  Cache directory  : ${cacheDir}`);
             }
-            logMessage("----------------------------------------------------------------------");
+            VSLogger.logMessage("----------------------------------------------------------------------");
         }
 
         dumpPreProcInfo(settings);
@@ -370,7 +370,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
     for (const ddir of extsdir) {
         if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
-            logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
+            VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
             invalidSearchDirectory.push(ddir);
         }
         else if (COBOLFileUtils.isDirectPath(ddir)) {
@@ -378,7 +378,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
                 if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                     if (COBOLFileUtils.isNetworkPath(ddir)) {
-                        logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                        VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                     }
                 }
             }
@@ -390,7 +390,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                 if (totalTimeInMS <= 2000) {
                     fileSearchDirectory.push(ddir);
                 } else {
-                    logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
+                    VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
                     invalidSearchDirectory.push(ddir);
                 }
             } else {
@@ -415,7 +415,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
                         if (COBOLFileUtils.isDirectory(sdir)) {
                             if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
-                                logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                                VSLogger.logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                             }
 
                             fileSearchDirectory.push(sdir);
@@ -437,36 +437,36 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     if (thisExtension !== undefined) {
         const ws = getWorkspaceFolders();
         if (ws !== undefined) {
-            logMessage("  Workspace Folders:");
+            VSLogger.logMessage("  Workspace Folders:");
             for (const folder of ws) {
-                logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+                VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
             }
         }
 
         let extsdir = VSExtensionUtils.getCombinedCopyBookSearchPath();
         if (extsdir.length !== 0) {
-            logMessage("  Combined Workspace and CopyBook Folders to search:");
+            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
             for (const sdir of extsdir) {
-                logMessage("   => " + sdir);
+                VSLogger.logMessage("   => " + sdir);
             }
         }
 
         extsdir = invalidSearchDirectory;
         if (extsdir.length !== 0) {
-            logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
+            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
             for (const sdir of extsdir) {
-                logMessage("   => " + sdir);
+                VSLogger.logMessage("   => " + sdir);
             }
         }
 
-        logMessage("");
+        VSLogger.logMessage("");
     }
 
     let checkForExtensionConflictsMessage = "";
     checkForExtensionConflictsMessage = checkForExtensionConflicts();
     // display the message
     if (checkForExtensionConflictsMessage.length !== 0) {
-        logMessage(checkForExtensionConflictsMessage);
+        VSLogger.logMessage(checkForExtensionConflictsMessage);
     }
 
     if (checkForExtensionConflictsMessage.length !== 0 && settings.ignore_unsafe_extensions === false && messageBoxDone === false) {
@@ -489,16 +489,16 @@ export function dumpPreProcInfo(settings: COBOLSettings): void {
             const activePreProc = COBOLPreprocessorHelper.preprocessorsExts.get(extName);
 
             if (activePreProc !== undefined) {
-                logMessage(` Active preprocessor              : ${activePreProc.id}`);
-                logMessage(`                                  : ${activePreProc.description}`);
-                logMessage(`                                  : ${activePreProc.bugReportEmail}`);
-                logMessage(`                                  : ${activePreProc.bugReportUrl}`);
+                VSLogger.logMessage(` Active preprocessor              : ${activePreProc.id}`);
+                VSLogger.logMessage(`                                  : ${activePreProc.description}`);
+                VSLogger.logMessage(`                                  : ${activePreProc.bugReportEmail}`);
+                VSLogger.logMessage(`                                  : ${activePreProc.bugReportUrl}`);
             }
             continue;
         }
-        logMessage('');
-        logMessage(` Registered preprocessor          : ${extName}`);
-        logMessage('');
+        VSLogger.logMessage('');
+        VSLogger.logMessage(` Registered preprocessor          : ${extName}`);
+        VSLogger.logMessage('');
     }
 }
 
@@ -580,7 +580,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const onExtChange = vscode.extensions.onDidChange(() => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         activateLogChannelAndPaths(true, settings, false);
-        logMessage("extensions changed");
+        VSLogger.logMessage("extensions changed");
     });
     context.subscriptions.push(onExtChange);
 
@@ -801,7 +801,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);
         } else {
-            logMessage("Metadata caching is turned off (or invalid)");
+            VSLogger.logMessage("Metadata caching is turned off (or invalid)");
         }
     });
 
@@ -810,7 +810,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (cacheDirectory !== undefined) {
             VSCOBOLSourceScanner.deprecatedClearMetaData(settings, cacheDirectory);
         } else {
-            logMessage("Metadata caching is turned off (or invalid)");
+            VSLogger.logMessage("Metadata caching is turned off (or invalid)");
         }
     });
 
@@ -818,7 +818,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
                 COBOLUtils.clearGlobalCache();
-                logMessage("Metadata cache cleared");
+                VSLogger.logMessage("Metadata cache cleared");
             }
         });
     });
@@ -1280,8 +1280,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
             editorConfig.update("cache_metadata", false, false);
             COBOLUtils.clearGlobalCache();
 
-            logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
-            logMessage("         cache_metadata turned off, please review settings")
+            VSLogger.logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
+            VSLogger.logMessage("         cache_metadata turned off, please review settings")
         }
     }
 
@@ -1310,14 +1310,7 @@ export async function deactivate(): Promise<void> {
     await deactivateAsync();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logMessage(message: string, ...parameters: any[]): void {
-    if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
-        COBOLOutputChannel.appendLine(util.format(message, parameters));
-    } else {
-        COBOLOutputChannel.appendLine(message);
-    }
-}
+
 export class VSLogger {
     public static readonly logTimeThreshold = 500;
 
@@ -1364,12 +1357,20 @@ export class VSLogger {
 
 
     public static logException(message: string, ex: Error): void {
-        logMessage(ex.name + ": " + message);
+        VSLogger.logMessage(ex.name + ": " + message);
         if (ex !== undefined && ex.stack !== undefined) {
-            logMessage(ex.stack);
+            VSLogger.logMessage(ex.stack);
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public static logMessage(message: string, ...parameters: any[]): void {
+        if ((parameters !== undefined || parameters !== null) && parameters.length !== 0) {
+            COBOLOutputChannel.appendLine(util.format(message, parameters));
+        } else {
+            COBOLOutputChannel.appendLine(message);
+        }
+    }
 }
 
 

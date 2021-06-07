@@ -4,7 +4,7 @@ import { extensions, Uri, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { VSCOBOLConfiguration } from "./configuration";
-import { logMessage, progressStatusBarItem, VSLogger } from "./extension";
+import { progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { fork, ForkOptions } from 'child_process';
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
@@ -74,7 +74,7 @@ export class VSCobScanner {
 
             if (code !== 0) {
                 // if (sf.cache_metadata_show_progress_messages) {
-                logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
+                VSLogger.logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
                 // }
             } else {
                 progressStatusBarItem.hide();
@@ -142,7 +142,7 @@ export class VSCobScanner {
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
                         InMemoryGlobalCacheHelper.addFilename(fullFilename, cws);
                     } else {
-                        logMessage(`Unable to getShortWorkspaceFilename for ${fullFilename}`);
+                        VSLogger.logMessage(`Unable to getShortWorkspaceFilename for ${fullFilename}`);
                     }
                 } else if (message.startsWith(COBSCANNER_KNOWNCOPYBOOK)) {
                     const args = message.split(",");
@@ -151,7 +151,7 @@ export class VSCobScanner {
                     COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename);
                 }
             } else {
-                logMessage(msg as string);
+                VSLogger.logMessage(msg as string);
             }
         });
 
@@ -162,7 +162,7 @@ export class VSCobScanner {
                 for (const line of lines.split("\n")) {
                     const lineTrimmed = line.trim();
                     if (lineTrimmed.length !== 0) {
-                        logMessage(` ${line}`);
+                        VSLogger.logMessage(` ${line}`);
                     }
                 }
             }
@@ -175,7 +175,7 @@ export class VSCobScanner {
                 for (const line of lines.split("\n")) {
                     const lineTrimmed = line.trim();
                     if (lineTrimmed.length !== 0) {
-                        logMessage(` [${line}]`);
+                        VSLogger.logMessage(` [${line}]`);
                     }
                 }
             }
@@ -219,7 +219,7 @@ export class VSCobScanner {
         const files: string[] = [];
 
         if (ws === undefined) {
-            logMessage(`No workspace folders available ${msgViaCommand}`);
+            VSLogger.logMessage(`No workspace folders available ${msgViaCommand}`);
             return;
         }
 
@@ -228,8 +228,8 @@ export class VSCobScanner {
         } else {
             VSLogger.logChannelSetPreserveFocus(!viaCommand);
         }
-        logMessage("");
-        logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
+        VSLogger.logMessage("");
+        VSLogger.logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
         await COBOLUtils.populateDefaultCallableSymbols(settings, false);
         for (const [, b] of InMemoryGlobalSymbolCache.defaultCallableSymbols) {

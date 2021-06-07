@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { logMessage, VSExtensionUtils, VSLogger } from "./extension";
+import { VSExtensionUtils, VSLogger } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
@@ -10,7 +10,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSExternalFeatures implements IExternalFeatures{
     public logMessage(message: string): void {
-        logMessage(message);
+        VSLogger.logMessage(message);
     }
 
     public logException(message: string, ex: Error): void {

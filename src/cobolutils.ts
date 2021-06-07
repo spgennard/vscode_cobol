@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
 import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
-import { logMessage,  VSLogger } from './extension';
+import { VSLogger } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
@@ -266,7 +266,7 @@ export class COBOLUtils {
                 if (vscode.workspace !== undefined && ws !== undefined) {
                     if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
-                            logMessage(" Adding " + ddir + " to workspace");
+                            VSLogger.logMessage(" Adding " + ddir + " to workspace");
                             const uriToFolder = vscode.Uri.file(path.normalize(ddir));
                             vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
                             updateCopybookdirs = true;
@@ -291,7 +291,7 @@ export class COBOLUtils {
                             if (COBOLFileUtils.isDirectory(sdir)) {
                                 if (COBOLFileUtils.isNetworkPath(sdir)) {
                                     if (VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
-                                        logMessage(" Adding " + sdir + " to workspace");
+                                        VSLogger.logMessage(" Adding " + sdir + " to workspace");
                                         const uriToFolder = vscode.Uri.file(path.normalize(sdir));
                                         vscode.workspace.updateWorkspaceFolders(ws.length, 0, { uri: uriToFolder });
                                         updateCopybookdirs = true;
@@ -299,7 +299,7 @@ export class COBOLUtils {
                                         fileSearchDirectory.push(sdir);
                                     }
 
-                                    logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                                    VSLogger.logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                                 } else {
                                     fileSearchDirectory.push(sdir);
                                 }
@@ -317,9 +317,9 @@ export class COBOLUtils {
         if (updateCopybookdirs) {
             const editorConfig = vscode.workspace.getConfiguration('coboleditor');
             editorConfig.update('copybookdirs', fileSearchDirectory);
-            logMessage("Copybook settings and workspace has been updated.");
+            VSLogger.logMessage("Copybook settings and workspace has been updated.");
         } else {
-            logMessage("No copybook directories have been migrated");
+            VSLogger.logMessage("No copybook directories have been migrated");
         }
 
     }
@@ -625,7 +625,7 @@ export class COBOLUtils {
         const file = new VSCodeSourceHandler(activeEditor.document, false);
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
-            logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
+            VSLogger.logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
             return;
         }
 

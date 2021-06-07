@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { logMessage } from './extension';
 import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from './cobolsourcescanner';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { ICOBOLSettings } from './iconfiguration';
+import { VSLogger } from './extension';
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
@@ -152,7 +152,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
         }
         catch (e) {
-            logMessage(e);
+            VSLogger.logMessage(e);
         }
 
         try {
@@ -166,7 +166,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             }
         }
         catch (e) {
-            logMessage(e);
+            VSLogger.logMessage(e);
         }
         return undefined;
     }

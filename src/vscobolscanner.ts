@@ -6,7 +6,7 @@ import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
-import { logMessage, ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
+import { ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
 import { VSCOBOLConfiguration } from "./configuration";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -120,7 +120,7 @@ export default class VSCOBOLSourceScanner {
 
         // file is too large to parse
         if (document.lineCount > config.editor_maxTokenizationLineLength) {
-            logMessage(` ${document.fileName} is not parsed, line count is ${document.lineCount} and editor.maxTokenizationLineLength is ${config.editor_maxTokenizationLineLength}`);
+            VSLogger.logMessage(` ${document.fileName} is not parsed, line count is ${document.lineCount} and editor.maxTokenizationLineLength is ${config.editor_maxTokenizationLineLength}`);
             return undefined;
         }
 
@@ -136,8 +136,8 @@ export default class VSCOBOLSourceScanner {
         // in memory document is out of sync with the on-disk document, so reparsing it
         // will give in-consistent results, especially with the debugg
         if (document.isDirty && debug.activeDebugSession !== undefined) {
-            logMessage("Source code has changed during debugging, in memory scanning suspended");
-            logMessage(` ID=${debug.activeDebugSession.id}, Name=${debug.activeDebugSession.name}, Type=${debug.activeDebugSession.type}`);
+            VSLogger.logMessage("Source code has changed during debugging, in memory scanning suspended");
+            VSLogger.logMessage(` ID=${debug.activeDebugSession.id}, Name=${debug.activeDebugSession.name}, Type=${debug.activeDebugSession.type}`);
             return undefined;
         }
 
@@ -193,7 +193,7 @@ export default class VSCOBOLSourceScanner {
 
     public static async checkWorkspaceForMissingCopybookDirs(): Promise<void> {
         VSLogger.logChannelSetPreserveFocus(false);
-        logMessage("Checking workspace for folders that are not present in copybookdirs setting");
+        VSLogger.logMessage("Checking workspace for folders that are not present in copybookdirs setting");
 
         const settings = VSCOBOLConfiguration.get();
         const ws = getWorkspaceFolders();
@@ -206,7 +206,7 @@ export default class VSCOBOLSourceScanner {
                 }
             }
         }
-        logMessage(" -- Analysis complete");
+        VSLogger.logMessage(" -- Analysis complete");
     }
 
     public static async checkWorkspaceForMissingCopybookDir(settings: ICOBOLSettings, topLevelFolder: Uri, folder: Uri): Promise<void> {
@@ -225,7 +225,7 @@ export default class VSCOBOLSourceScanner {
                             if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
                                 const copyBookCount = await VSCOBOLSourceScanner.howManyCopyBooksInDirectory(fullDirectory, settings);
                                 if (copyBookCount !== 0) {
-                                    logMessage(`  Add: ${possibleCopydir} to coboleditor.copybookdirs (possible copybooks ${copyBookCount})`);
+                                    VSLogger.logMessage(`  Add: ${possibleCopydir} to coboleditor.copybookdirs (possible copybooks ${copyBookCount})`);
                                 }
                             }
                             await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings, topLevelFolder, Uri.file(fullDirectory));
@@ -295,7 +295,7 @@ export default class VSCOBOLSourceScanner {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === 'Yes') {
                 VSCOBOLSourceScanner.wipeCacheDirectory(cacheDirectory);
-                logMessage("Metadata cache cleared");
+                VSLogger.logMessage("Metadata cache cleared");
             }
         });
     }
