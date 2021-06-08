@@ -1,7 +1,6 @@
 'use strict';
 
-import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType, ExtensionContext } from 'vscode';
-import { getCurrentContext } from './extension';
+import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType } from 'vscode';
 import minimatch from 'minimatch';
 import { ICOBOLSettings } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
@@ -29,12 +28,8 @@ const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEdit
 });
 
 function isMarginEnabled(configString: string): boolean {
-    const currentContext: ExtensionContext = getCurrentContext();
-    const enabledViaContext: boolean | undefined = currentContext.workspaceState.get<boolean>(configString);
-
-    // if this is enabled via the context, then return it early
-    if (enabledViaContext !== undefined && enabledViaContext !== null && enabledViaContext === true) {
-        return true;
+    if (getWorkspaceFolders() === undefined) {
+        return false;
     }
 
     const editorConfig = workspace.getConfiguration(configString);

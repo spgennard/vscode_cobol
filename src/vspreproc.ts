@@ -2,7 +2,7 @@ import { Extension, extensions } from "vscode";
 import { COBAPIConstants, COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { dumpPreProcInfo, ExternalFeatures, VSLogger } from "./extension";
+import { ExternalFeatures, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
@@ -63,7 +63,7 @@ export class VSPreProc {
         }
 
         if (show) {
-            dumpPreProcInfo(settings);
+            VSPreProc.dumpPreProcInfo(settings);
         }
 
         if (clear) {
@@ -103,4 +103,24 @@ export class VSPreProc {
         }
     }
 
+
+
+    public static dumpPreProcInfo(settings: ICOBOLSettings): void {
+        for (const extName of settings.preprocessor_extensions) {
+            if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
+                const activePreProc = COBOLPreprocessorHelper.preprocessorsExts.get(extName);
+
+                if (activePreProc !== undefined) {
+                    VSLogger.logMessage(` Active preprocessor              : ${activePreProc.id}`);
+                    VSLogger.logMessage(`                                  : ${activePreProc.description}`);
+                    VSLogger.logMessage(`                                  : ${activePreProc.bugReportEmail}`);
+                    VSLogger.logMessage(`                                  : ${activePreProc.bugReportUrl}`);
+                }
+                continue;
+            }
+            VSLogger.logMessage('');
+            VSLogger.logMessage(` Registered preprocessor          : ${extName}`);
+            VSLogger.logMessage('');
+        }
+    }
 }

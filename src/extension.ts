@@ -26,7 +26,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { SourceViewTree } from './sourceviewtree';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
-import { COBOLSettings, ICOBOLSettings } from './iconfiguration';
+import { ICOBOLSettings } from './iconfiguration';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require('properties-reader');
@@ -45,13 +45,13 @@ import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
 import { COBOLCallTargetProvider } from './cobolcalltargetprovider';
 import { COBOLWorkspaceSymbolCacheHelper } from './cobolworkspacecache';
-import { COBOLPreprocessorHelper } from './cobolsourcescanner';
 import { SourceItem } from './sourceItem';
 import { VSSemanticProvider } from './vssemanticprovider';
 import { VSPPCodeLens } from './vsppcodelens';
 import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 import { VSCOBOLFileUtils } from './vsfileutils';
+import { VSPreProc } from './vspreproc';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -357,8 +357,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             VSLogger.logMessage("----------------------------------------------------------------------");
         }
 
-        dumpPreProcInfo(settings);
-
+        VSPreProc.dumpPreProcInfo(settings);
     }
 
     fileSearchDirectory.length = 0;
@@ -462,8 +461,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         VSLogger.logMessage("");
     }
 
-    let checkForExtensionConflictsMessage = "";
-    checkForExtensionConflictsMessage = checkForExtensionConflicts();
+    const checkForExtensionConflictsMessage = checkForExtensionConflicts();
+
     // display the message
     if (checkForExtensionConflictsMessage.length !== 0) {
         VSLogger.logMessage(checkForExtensionConflictsMessage);
@@ -483,24 +482,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
 }
 
-export function dumpPreProcInfo(settings: COBOLSettings): void {
-    for (const extName of settings.preprocessor_extensions) {
-        if (COBOLPreprocessorHelper.preprocessorsExts.has(extName)) {
-            const activePreProc = COBOLPreprocessorHelper.preprocessorsExts.get(extName);
-
-            if (activePreProc !== undefined) {
-                VSLogger.logMessage(` Active preprocessor              : ${activePreProc.id}`);
-                VSLogger.logMessage(`                                  : ${activePreProc.description}`);
-                VSLogger.logMessage(`                                  : ${activePreProc.bugReportEmail}`);
-                VSLogger.logMessage(`                                  : ${activePreProc.bugReportUrl}`);
-            }
-            continue;
-        }
-        VSLogger.logMessage('');
-        VSLogger.logMessage(` Registered preprocessor          : ${extName}`);
-        VSLogger.logMessage('');
-    }
-}
 
 export function getCurrentContext(): ExtensionContext {
     return currentContext;
