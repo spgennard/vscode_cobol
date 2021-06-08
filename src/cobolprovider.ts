@@ -156,7 +156,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getAllTypes(workToComplete: string): CompletionItem[] {
-        const startsWith = workToComplete.length != 0;
+        const startsWith = workToComplete.length !== 0;
         const items: CompletionItem[] = [];
         const itemMap = new Map<string, CompletionItem>();
 

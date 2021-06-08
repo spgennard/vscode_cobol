@@ -24,18 +24,16 @@ export class FileSourceHandler implements ISourceHandler {
     updatedSource: Map<number, string>;
     shortFilename: string;
 
-    public constructor(document: string, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback, features?: IExternalFeatures) {
+    public constructor(document: string) {
         this.document = document;
-        this.dumpNumbersInAreaA = dumpNumbersInAreaA;
-        this.commentCallback = commentCallback;
+        this.dumpNumbersInAreaA = false;
+        this.commentCallback = undefined;
         this.dumpAreaBOnwards = false;
         this.lines = [];
         this.commentCount = 0;
         this.isSourceInWorkspace = false;
         this.updatedSource = new Map<number, string>();
-        if (features === undefined) {
-            features = EmptyExternalFeature.Default;
-        }
+        const features = EmptyExternalFeature.Default;
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat = fs.statSync(document, { bigint: true });
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
@@ -125,6 +123,7 @@ export class FileSourceHandler implements ISourceHandler {
                     }
                 }
             }
+            
             if (this.dumpAreaBOnwards && line.length >= 73) {
                 line = line.substr(0, 72);
             }

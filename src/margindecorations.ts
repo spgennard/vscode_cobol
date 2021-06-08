@@ -203,7 +203,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         }
     }
 
-    if (linesGT80 === 0 && (validFixedLines + skippedLines == maxLines)) {
+    if (linesGT80 === 0 && (validFixedLines + skippedLines === maxLines)) {
         return ESourceFormat.fixed;
     }
 

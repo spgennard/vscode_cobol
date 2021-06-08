@@ -247,7 +247,9 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
         /* remove ${workspaceFolder} */
         dir = expandEnvVars(dir);
 
+        // eslint-disable-next-line no-template-curly-in-string
         if (dir.startsWith("${workspaceFolder}")) {
+            // eslint-disable-next-line no-template-curly-in-string
             dir = dir.replace("${workspaceFolder}", "").trim();
 
             // remove / or \ forward

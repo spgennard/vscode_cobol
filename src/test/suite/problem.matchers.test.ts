@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as assert from 'assert';
 
 import path from 'path';

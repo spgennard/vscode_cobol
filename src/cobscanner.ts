@@ -162,7 +162,7 @@ export class Scanner {
                 const cacheDir = scanData.cacheDirectory;
 
                 if (Utils.cacheUpdateRequired(cacheDir, file, features)) {
-                    const filesHandler = new FileSourceHandler(file, false);
+                    const filesHandler = new FileSourceHandler(file);
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);

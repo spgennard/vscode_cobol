@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { COBOLTokenStyle, splitArgument } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
+import { VSLogger } from './extension';
 import { outlineFlag } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSPreProc } from './vspreproc';
@@ -224,7 +225,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                 }
             }
             catch (e) {
-                console.log("Failed " + e + " on " + JSON.stringify(token));
+                VSLogger.logException("Failed " + e + " on " + JSON.stringify(token),e);
             }
         }
         return symbols;

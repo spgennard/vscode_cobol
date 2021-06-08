@@ -131,7 +131,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         }
     }
 
-    if (linesGT80 === 0 && (validFixedLines + skippedLines == maxLines)) {
+    if (linesGT80 === 0 && (validFixedLines + skippedLines === maxLines)) {
         return ESourceFormat.fixed;
     }
 
@@ -157,6 +157,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         if (process.send) {
             process.send(message);
         } else {
+            // eslint-disable-next-line no-console
             console.log(message);
         }
 

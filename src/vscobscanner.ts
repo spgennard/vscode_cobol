@@ -52,7 +52,7 @@ export class VSCobScanner {
 
 
         // const child = ;
-        if (child == undefined) {
+        if (child === undefined) {
             return;
         }
 

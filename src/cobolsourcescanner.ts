@@ -1305,7 +1305,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
-        if (ctoken.ignoreInOutlineView || tokenType == COBOLTokenStyle.ImplicitProgramId) {
+        if (ctoken.ignoreInOutlineView || tokenType === COBOLTokenStyle.ImplicitProgramId) {
             this.tokensInOrder.push(ctoken);
             this.eventHandler.processToken(ctoken);
             return ctoken;
@@ -2081,7 +2081,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     let entryStatement = prevPlusCurrent;
                     const trimmedCurrent = this.trimLiteral(current);
                     const nextSTokenOrBlank = token.nextSTokenOrBlank().currentToken;
-                    if (nextSTokenOrBlank == "&") {
+                    if (nextSTokenOrBlank === "&") {
                         entryStatement = prevToken + " " + token.compoundItems(trimmedCurrent, this);
                     }
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.EntryPoint, lineNumber, line, tcurrentCurrentCol, trimmedCurrent, entryStatement, state.currentDivision);
@@ -2585,7 +2585,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                         // add the specific version
                         this.copyBooksUsed.set(fileName, copybookToken);
-                        const qfile = new FileSourceHandler(fileName, false);
+                        const qfile = new FileSourceHandler(fileName);
                         const currentTopLevel = this.sourceReferences.topLevel;
                         const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                         state.ignoreInOutlineView = true;
@@ -2725,7 +2725,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 if (this.copyBooksUsed.has(fileName) === false) {
                                     this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
 
-                                    const qfile = new FileSourceHandler(fileName, false);
+                                    const qfile = new FileSourceHandler(fileName);
                                     const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                                     this.sourceReferences.state.ignoreInOutlineView = true;
                                     this.sourceReferences.topLevel = true;

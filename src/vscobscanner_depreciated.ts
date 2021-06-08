@@ -246,7 +246,7 @@ export class VSCobScanner_depreciated {
         const child = fork(jcobscanner_js, [jsonFile], options);
 
         // const child = ;
-        if (child == undefined) {
+        if (child === undefined) {
             return;
         }
 

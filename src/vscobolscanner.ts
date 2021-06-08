@@ -369,6 +369,7 @@ export default class VSCOBOLSourceScanner {
 
         // if on Windows replace ${HOME} with ${USERPROFILE}
         if (COBOLFileUtils.isWin32) {
+            // eslint-disable-next-line no-template-curly-in-string
             str = str.replace(/\$\{HOME\}/, '${USERPROFILE}');
         }
 

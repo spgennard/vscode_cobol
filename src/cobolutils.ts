@@ -66,7 +66,7 @@ export class COBOLUtils {
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
     static populateDefaultCallableSymbolsSync(settings: ICOBOLSettings, reset: boolean): void {
-        (async () => await COBOLUtils.populateDefaultCallableSymbols(settings, reset))();
+        (async () => COBOLUtils.populateDefaultCallableSymbols(settings, reset))();
     }
 
     static async populateDefaultCallableSymbols(settings: ICOBOLSettings, reset: boolean): Promise<void> {
@@ -148,7 +148,7 @@ export class COBOLUtils {
         }
 
         // unless we say we want single folder support, never apply an update to it
-        if (settings.maintain_metadata_cache_single_folder == false && vscode.workspace.workspaceFile === undefined) {
+        if (settings.maintain_metadata_cache_single_folder === false && vscode.workspace.workspaceFile === undefined) {
             return;
         }
 

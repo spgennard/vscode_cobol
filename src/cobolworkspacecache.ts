@@ -114,7 +114,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
             return;
         }
         
-        if (symbolUnchanged.toLowerCase() == callableSymbolFromFilenameLower) {
+        if (symbolUnchanged.toLowerCase() === callableSymbolFromFilenameLower) {
             InMemoryGlobalSymbolCache.defaultCallableSymbols.set(callableSymbolFromFilenameLower, srcfilename);
             return;
         }
