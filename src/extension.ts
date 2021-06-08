@@ -23,7 +23,7 @@ import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
 import { VSCOBOLConfiguration } from './configuration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
-import { SourceViewTree } from './sourceviewtree';
+import { VSSourceTreeViewHandler } from './sourceviewtree';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
 import { ICOBOLSettings } from './iconfiguration';
@@ -55,15 +55,11 @@ import { VSPreProc } from './vspreproc';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
-let currentContext: ExtensionContext;
 const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
-
-let sourceTreeView: SourceViewTree | undefined = undefined;
-let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
-
+let currentContext: ExtensionContext;
 let bldscriptTaskProvider: vscode.Disposable | undefined;
-
 let shown_enable_semantic_token_provider = false;
+let messageBoxDone = false;
 
 export class VSExtensionUtils {
     public static getAllCobolSelectors(): vscode.DocumentSelector {
@@ -161,9 +157,7 @@ export const currentHostInformation = `${os.hostname()}/${os.userInfo().username
 let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
-let commandTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
-const commandTerminalName = "COBOL Application";
 
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep"    // code scanner
@@ -171,8 +165,8 @@ const blessed_extensions: string[] = [
 
 const known_problem_extensions: string[][] = [
     ["debugger", "OlegKunitsyn.gnucobol-debug"],               // debugger
-    ["debugger", "BroadcomMFD.debugger-for-mainframe"],         // debugger
-    ["debugger", "rechinformatica.rech-cobol-debugger"],        // debugger
+    ["debugger", "BroadcomMFD.debugger-for-mainframe"],        // debugger
+    ["debugger", "rechinformatica.rech-cobol-debugger"],       // debugger
     ["control flow extension", "BroadcomMFD.ccf"]              // control flow extension
 ];
 
@@ -283,8 +277,6 @@ function checkForExtensionConflicts(): string {
 
     return dupExtensionMessage;
 }
-
-let messageBoxDone = false;
 
 function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
     if (!quiet) {
@@ -487,72 +479,6 @@ export function getCurrentContext(): ExtensionContext {
     return currentContext;
 }
 
-
-class VSSourceTreeViewHandler {
-    static setupSourceViewTree(config: ICOBOLSettings, reinit: boolean) {
-
-        if ((config.sourceview === false || reinit) && sourceTreeView !== undefined) {
-            sourceTreeWatcher?.dispose();
-            sourceTreeView = undefined;
-        }
-
-        if (config.sourceview && sourceTreeView === undefined) {
-            sourceTreeView = new SourceViewTree(config);
-            sourceTreeWatcher = workspace.createFileSystemWatcher('**/*');
-
-            sourceTreeWatcher.onDidCreate((uri) => {
-                if (sourceTreeView !== undefined) {
-                    sourceTreeView.checkFile(uri);
-                }
-            });
-
-            sourceTreeWatcher.onDidDelete((uri) => {
-                if (sourceTreeView !== undefined) {
-                    sourceTreeView.clearFile(uri);
-                }
-            });
-
-            window.registerTreeDataProvider('flat-source-view', sourceTreeView);
-            return;
-        }
-
-    }
-
-    static actionSourceViewItemFunction(si: SourceItem, debug: boolean) {
-        if (commandTerminal === undefined) {
-            commandTerminal = vscode.window.createTerminal(commandTerminalName);
-        }
-
-        let prefRunner = "";
-        let prefRunnerDebug = "";
-        let fsPath = "";
-        if (si !== undefined && si.uri !== undefined) {
-            fsPath = si.uri.path as string;
-        }
-
-        if (COBOLFileUtils.isWin32) {
-            if (fsPath.endsWith("acu")) {
-                prefRunner = "wrun32";
-                prefRunnerDebug = debug ? "-d " : "";
-            } else if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
-                prefRunner = "cobrun";
-                prefRunnerDebug = debug ? "(+A) " : "";
-            }
-        } else {
-            // todo consider adding threaded version, cobmode
-            if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
-                prefRunner = debug ? "anim" : "cobrun";
-            } else if (fsPath.endsWith("acu")) {
-                prefRunner = "runcbl";
-                prefRunnerDebug = debug ? "-d " : "";
-            }
-        }
-
-        commandTerminal.show(true);
-        commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
-    }
-
-}
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;

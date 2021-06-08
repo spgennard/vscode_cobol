@@ -7,6 +7,77 @@ import { ICOBOLSettings } from './iconfiguration';
 import { getWorkspaceFolders } from './cobolfolders';
 import {  VSLogger } from './extension';
 import VSCOBOLSourceScanner from './vscobolscanner';
+import { COBOLFileUtils } from './fileutils';
+
+let sourceTreeView: SourceViewTree | undefined = undefined;
+let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
+let commandTerminal: vscode.Terminal | undefined = undefined;
+const commandTerminalName = "COBOL Application";
+
+export class VSSourceTreeViewHandler {
+    static setupSourceViewTree(config: ICOBOLSettings, reinit: boolean):void{
+
+        if ((config.sourceview === false || reinit) && sourceTreeView !== undefined) {
+            sourceTreeWatcher?.dispose();
+            sourceTreeView = undefined;
+        }
+
+        if (config.sourceview && sourceTreeView === undefined) {
+            sourceTreeView = new SourceViewTree(config);
+            sourceTreeWatcher = workspace.createFileSystemWatcher('**/*');
+
+            sourceTreeWatcher.onDidCreate((uri) => {
+                if (sourceTreeView !== undefined) {
+                    sourceTreeView.checkFile(uri);
+                }
+            });
+
+            sourceTreeWatcher.onDidDelete((uri) => {
+                if (sourceTreeView !== undefined) {
+                    sourceTreeView.clearFile(uri);
+                }
+            });
+
+            vscode.window.registerTreeDataProvider('flat-source-view', sourceTreeView);
+            return;
+        }
+
+    }
+
+    static actionSourceViewItemFunction(si: SourceItem, debug: boolean):void {
+        if (commandTerminal === undefined) {
+            commandTerminal = vscode.window.createTerminal(commandTerminalName);
+        }
+
+        let prefRunner = "";
+        let prefRunnerDebug = "";
+        let fsPath = "";
+        if (si !== undefined && si.uri !== undefined) {
+            fsPath = si.uri.path as string;
+        }
+
+        if (COBOLFileUtils.isWin32) {
+            if (fsPath.endsWith("acu")) {
+                prefRunner = "wrun32";
+                prefRunnerDebug = debug ? "-d " : "";
+            } else if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+                prefRunner = "cobrun";
+                prefRunnerDebug = debug ? "(+A) " : "";
+            }
+        } else {
+            // todo consider adding threaded version, cobmode
+            if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+                prefRunner = debug ? "anim" : "cobrun";
+            } else if (fsPath.endsWith("acu")) {
+                prefRunner = "runcbl";
+                prefRunnerDebug = debug ? "-d " : "";
+            }
+        }
+
+        commandTerminal.show(true);
+        commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+    }
+}
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private cobolItem: SourceItem;

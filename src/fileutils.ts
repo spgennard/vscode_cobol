@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { COBOLSettings } from './iconfiguration';
+import { ICOBOLSettings } from './iconfiguration';
 
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";
@@ -42,7 +42,7 @@ export class COBOLFileUtils {
         return false;
     }
 
-    public static isValidCopybookExtension(filename: string, settings: COBOLSettings): boolean {
+    public static isValidCopybookExtension(filename: string, settings: ICOBOLSettings): boolean {
         const lastDot = filename.lastIndexOf(".");
         let extension = filename;
         if (lastDot !== -1) {
@@ -58,7 +58,7 @@ export class COBOLFileUtils {
         return false;
     }
 
-    public static isValidProgramExtension(filename: string, settings: COBOLSettings): boolean {
+    public static isValidProgramExtension(filename: string, settings: ICOBOLSettings): boolean {
         const lastDot = filename.lastIndexOf(".");
         let extension = "";
         if (lastDot !== -1) {

@@ -1,6 +1,6 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import VSCOBOLSourceScanner from './vscobolscanner';
-import { ICOBOLSettings, COBOLSettings } from './iconfiguration';
+import { ICOBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
 import TrieSearch from 'trie-search';
@@ -75,7 +75,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
 
     private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
-        const iconfig: COBOLSettings = VSCOBOLConfiguration.get();
+        const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
 
         const includeUpper: boolean = iconfig.intellisense_include_uppercase;
         const includeLower: boolean = iconfig.intellisense_include_lowercase;

@@ -2,7 +2,7 @@ import TrieSearch from 'trie-search';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import { camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './configuration';
-import { COBOLSettings } from './iconfiguration';
+import { ICOBOLSettings } from './iconfiguration';
 
 interface TrieObject {
 	key: string;
@@ -29,7 +29,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 	}
 
 	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number): CompletionItem[] {
-		const iconfig: COBOLSettings = VSCOBOLConfiguration.get();
+		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
 		const results = this.words.get(wordToComplete);
 		const includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
 		const includeUpper: boolean = iconfig.intellisense_include_uppercase;
