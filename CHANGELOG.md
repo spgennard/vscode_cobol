@@ -3,6 +3,49 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.8
+### GitHub [#286](https://github.com/spgennard/vscode_cobol/issues/286) Extension Host error with &#x60;bitlang.cobol&#x60; after upgrade to 7.6  
+
+**change process_metadata_cache_on_start to be executed via a private command and change comparision Fix #286**
+
+* [dac47cdd7f1122e](https://github.com/spgennard/vscode_cobol/commit/dac47cdd7f1122e) *2021-06-09 18:45:34*
+
+
+
+**update**
+
+* [73d1e56708e7f15](https://github.com/spgennard/vscode_cobol/commit/73d1e56708e7f15) *2021-06-09 19:38:15*
+
+**move getSourceFormat into a seperate file and add langid to doc, so it**
+
+ * can be used with out of process scanner
+* [e4506ee9a029bd7](https://github.com/spgennard/vscode_cobol/commit/e4506ee9a029bd7) *2021-06-09 19:29:54*
+
+**unify coboleditor.margin & coboleditor.fileformat_strategy**
+
+* [b44411db04ce91a](https://github.com/spgennard/vscode_cobol/commit/b44411db04ce91a) *2021-06-09 16:56:19*
+
+**some lint based tweaks**
+
+* [92bb604bede4dd8](https://github.com/spgennard/vscode_cobol/commit/92bb604bede4dd8) *2021-06-08 21:56:49*
+
+**refactor a little more**
+
+* [c45593c8695c4c2](https://github.com/spgennard/vscode_cobol/commit/c45593c8695c4c2) *2021-06-08 20:42:24*
+
+**continue refactoring**
+
+* [7b2baad469f202a](https://github.com/spgennard/vscode_cobol/commit/7b2baad469f202a) *2021-06-08 20:34:43*
+
+**update**
+
+* [26082286725310b](https://github.com/spgennard/vscode_cobol/commit/26082286725310b) *2021-06-07 23:18:55*
+
+**Update CHANGELOG.md**
+
+* [0e40e3c1aac4750](https://github.com/spgennard/vscode_cobol/commit/0e40e3c1aac4750) *2021-06-07 23:17:59*
+
+
 ## 7.6.7
 
 **use alternative update mechanism that caused update events**
