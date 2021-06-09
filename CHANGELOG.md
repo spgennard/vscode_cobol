@@ -3,6 +3,17 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.9
+
+**use cmd for dep'ed command**
+
+* [49571beef2dbdd3](https://github.com/spgennard/vscode_cobol/commit/49571beef2dbdd3) *2021-06-09 20:06:18*
+
+**Update CHANGELOG.md**
+
+* [994544ac0ffed04](https://github.com/spgennard/vscode_cobol/commit/994544ac0ffed04) *2021-06-09 19:38:46*
+
+
 ## 7.6.8
 ### GitHub [#286](https://github.com/spgennard/vscode_cobol/issues/286) Extension Host error with &#x60;bitlang.cobol&#x60; after upgrade to 7.6  
 
