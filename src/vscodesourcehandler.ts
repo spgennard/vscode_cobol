@@ -14,6 +14,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     isSourceInWorkSpace: boolean;
     shortWorkspaceFilename: string;
     updatedSource: Map<number, string>;
+    languageId:string;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -23,6 +24,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.commentCallback = commentCallback;
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
+        this.languageId = document.languageId;
+        
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
@@ -152,5 +155,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
 
         return this.getLine(linenumber,false);
+    }
+
+    getLanguageId():string {
+        return this.languageId;
     }
 }

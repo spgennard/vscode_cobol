@@ -4,8 +4,8 @@ import { VSExtensionUtils, VSLogger } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
-import { getCOBOLSourceFormat } from "./margindecorations";
 import { COBOLCopyBookProvider } from "./opencopybook";
+import { getCOBOLSourceFormat } from "./sourceformat";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSExternalFeatures implements IExternalFeatures{

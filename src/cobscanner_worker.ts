@@ -8,9 +8,9 @@ import * as path from 'path';
 import util from 'util';
 import ISourceHandler from './isourcehandler';
 import { ICOBOLSettings } from './iconfiguration';
-import { getCOBOLSourceFormat } from './consoleexternalfeatures';
 import { ICOBOLSourceScannerEventer } from './cobolsourcescanner';
 import { COBOLFileUtils } from './fileutils';
+import { getCOBOLSourceFormat } from './sourceformat';
 
 // class WorkerUtils {
 //     public static msleep(n: number) {
@@ -79,7 +79,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return getCOBOLSourceFormat(doc,config,false);
+        return getCOBOLSourceFormat(doc,config);
     }
 
     public setWorkspaceFolders(folders: string[]):void {

@@ -17,4 +17,5 @@ export default interface ISourceHandler {
     getDocumentVersionId(): BigInt;
     getIsSourceInWorkSpace(): boolean;
     getShortWorkspaceFilename(): string;
+    getLanguageId():string;
 }

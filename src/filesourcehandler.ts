@@ -23,6 +23,7 @@ export class FileSourceHandler implements ISourceHandler {
     isSourceInWorkspace: boolean;
     updatedSource: Map<number, string>;
     shortFilename: string;
+    languageId:string;
 
     public constructor(document: string) {
         this.document = document;
@@ -33,6 +34,8 @@ export class FileSourceHandler implements ISourceHandler {
         this.commentCount = 0;
         this.isSourceInWorkspace = false;
         this.updatedSource = new Map<number, string>();
+        this.languageId = "COBOL";
+        
         const features = EmptyExternalFeature.Default;
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat = fs.statSync(document, { bigint: true });
@@ -203,4 +206,7 @@ export class FileSourceHandler implements ISourceHandler {
         return bestShortName;
     }
 
+    getLanguageId():string {
+        return this.languageId;
+    }
 }
