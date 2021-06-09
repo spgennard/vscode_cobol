@@ -116,7 +116,9 @@ export default class VSCOBOLSourceScanner {
     private static readonly MAX_MEM_CACHE_SIZE = 30;
 
     public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
-        // const config = VSCOBOLConfiguration.get();
+        if (config.enable_source_scanner === false) {
+            return undefined;
+        }
 
         // file is too large to parse
         if (document.lineCount > config.editor_maxTokenizationLineLength) {

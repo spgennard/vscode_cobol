@@ -11,7 +11,7 @@ import * as commenter from './commenter';
 
 import { COBOLDocumentationCommentHandler } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
-import { enableMarginCobolMargin, isEnabledViaWorkspace4cobol, isSupportedLanguage } from './margindecorations';
+import { isSupportedLanguage } from './margindecorations';
 import { jclStatements } from "./keywords/jclstatements";
 import { acuKeywords, cobolKeywords, cobolProcedureKeywords, cobolRegisters, cobolStorageKeywords } from "./keywords/cobolKeywords";
 import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
@@ -644,17 +644,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         languages.setTextDocumentLanguage(act.document, "COBOL");
     });
 
-    const toggleCOBOLMargin = commands.registerCommand('cobolplugin.toggle_margin', function () {
-        const act = window.activeTextEditor;
-        if (act === null || act === undefined) {
-            return;
-        }
-
-        enableMarginCobolMargin(!isEnabledViaWorkspace4cobol());
-        updateDecorations(act);
-    });
-
-
     const checkWorkspaceForMissingCopybookDirs = commands.registerCommand('cobolplugin.checkWorkspaceForMissingCopybookDirs', async () => {
         await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDirs();
     });
@@ -780,7 +769,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(changeLanguageToAcu);
     context.subscriptions.push(changeLanguageToCOBOL);
 
-    context.subscriptions.push(toggleCOBOLMargin);
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessDeprecated);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);

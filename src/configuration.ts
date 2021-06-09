@@ -3,7 +3,7 @@
 import * as path from 'path';
 
 import { workspace } from 'vscode';
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn } from './iconfiguration';
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from './iconfiguration';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { COBOLFileUtils } from './fileutils';
 
@@ -74,6 +74,17 @@ export class VSCOBOLConfiguration {
         vsconfig.enable_semantic_token_provider = getBoolean('enable_semantic_token_provider', false);
         vsconfig.enable_text_replacement= getBoolean('enable_text_replacement', false);
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
+
+        //TODO: remove after a reasonable period of time
+        //in-memory migration of old setting
+        const removed_margin = getBoolean("margin", false);
+        if (removed_margin) {
+            vsconfig.fileformat_strategy = "always_fixed";
+        }
+
+        vsconfig.editor_margin_files = getFixedFilenameConfiguration();
+
+        vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
         return vsconfig;
     }
 
@@ -95,6 +106,17 @@ export class VSCOBOLConfiguration {
 
         return true;
     }
+}
+
+
+function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
+    const editorConfig = workspace.getConfiguration('coboleditor');
+    const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
+    if (files === undefined || files === null) {
+        return [];
+    }
+
+    return files;
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {

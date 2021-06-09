@@ -2,12 +2,13 @@
 
 import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType } from 'vscode';
 import minimatch from 'minimatch';
-import { ICOBOLSettings } from './iconfiguration';
+import { ICOBOLSettings, IEditorMarginFiles } from './iconfiguration';
 import { VSCOBOLConfiguration } from './configuration';
 import ISourceHandler from './isourcehandler';
 import { ESourceFormat } from './externalfeatures';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { getWorkspaceFolders } from './cobolfolders';
+import { VSCodeSourceHandler } from './vscodesourcehandler';
 
 const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -27,12 +28,12 @@ const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEdit
 
 });
 
-function isMarginEnabled(configString: string): boolean {
+function isEnabledViaWorkspace4jcl(): boolean {
     if (getWorkspaceFolders() === undefined) {
         return false;
     }
 
-    const editorConfig = workspace.getConfiguration(configString);
+    const editorConfig = workspace.getConfiguration('jcleditor');
     const marginOn = editorConfig.get<boolean>('margin');
     if (marginOn !== undefined) {
         return marginOn;
@@ -40,31 +41,8 @@ function isMarginEnabled(configString: string): boolean {
     return true;
 }
 
-export function enableMarginCobolMargin(enabled: boolean): void {
-    if (getWorkspaceFolders() === undefined) {
-        return;
-    }
-
-    const editorConfig = workspace.getConfiguration('coboleditor');
-
-    editorConfig.update("margin", enabled);
-}
-
-export function isEnabledViaWorkspace4cobol(): boolean {
-    return isMarginEnabled('coboleditor');
-}
-
-function isEnabledViaWorkspace4jcl(): boolean {
-    return isMarginEnabled('jcleditor');
-}
-
-
 export const sourceformatMessages: string[] = ['unknown', 'fixed', 'free', 'variable'];
 
-interface IEditorMarginFiles {
-    pattern: string;
-    sourceformat: ESourceFormat;
-}
 
 function isNumber(value: string | number): boolean {
     if (value.toString().length === 0) {
@@ -73,15 +51,6 @@ function isNumber(value: string | number): boolean {
     return !isNaN(Number(value.toString()));
 }
 
-function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
-    if (files === undefined || files === null) {
-        return [];
-    }
-
-    return files;
-}
 
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
@@ -100,7 +69,6 @@ function isValidFixedLine(line: string): boolean {
 }
 
 export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-
     if (config.fileformat_strategy === "always_fixed") {
         return ESourceFormat.fixed;
     }
@@ -212,7 +180,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
         return ESourceFormat.fixed;
     }
 
-    const filesFilter = getFixedFilenameConfiguration();
+    const filesFilter = config.editor_margin_files;
     if (filesFilter.length >= 1) {
         const docFilename: string = doc.getFilename();
         for (let i = 0; i < filesFilter.length; i++) {
@@ -273,19 +241,17 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
 
     if (textLanguage === TextLanguage.COBOL) {
         const configHandler = VSCOBOLConfiguration.get();
-        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
-        const cobolMarginOn = isEnabledViaWorkspace4cobol();
-        if (!cobolMarginOn) {
+        if (configHandler.fileformat_strategy !== "always_fixed") {
+            const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
+            let sf: ESourceFormat = ESourceFormat.unknown;
             if (gcp === undefined) {
-                // if we have not scanned the source and coboleditor.margin is not set, then wipe the
-                activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
-                return;
+                const vsfile = new VSCodeSourceHandler(doc, false);
+                sf = getCOBOLSourceFormat(vsfile, configHandler);
+            } else {
+                sf = gcp.sourceFormat;
             }
-
-            /* if we have parsed and coboleditor.margin is not set */
-            const sourceformatStyle: ESourceFormat = gcp.sourceFormat;
-            // default to using the margin from 
-            switch (sourceformatStyle) {
+            // use the known file format from the scan itself
+            switch (sf) {
                 case ESourceFormat.free:
                 case ESourceFormat.variable:
                 case ESourceFormat.unknown:
@@ -315,7 +281,8 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
 
             if (line.length > 72) {
                 const startPos = new Position(i, 72);
-                const endPos = new Position(i, line.length);
+                // only colour 72-80
+                const endPos = new Position(i, (line.length < 80 ? line.length : 80));
                 const decoration = { range: new Range(startPos, endPos) };
                 decorationOptions.push(decoration);
             }

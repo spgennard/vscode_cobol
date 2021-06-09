@@ -821,23 +821,6 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         );
     }
 
-    public static ParseCached(sourceHandler: ISourceHandler,
-        configHandler: ICOBOLSettings,
-        cacheDirectory: string,
-        parse_copybooks_for_references: boolean,
-        eventHandler: ICOBOLSourceScannerEvents,
-        externalFeatures: IExternalFeatures
-    ): COBOLSourceScanner {
-        return new COBOLSourceScanner(sourceHandler,
-            configHandler,
-            cacheDirectory,
-            new SharedSourceReferences(configHandler, true),
-            parse_copybooks_for_references,
-            eventHandler,
-            externalFeatures
-        );
-    }
-
     public static ParseUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: COBOLSourceScanner,

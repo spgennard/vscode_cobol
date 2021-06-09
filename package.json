@@ -63,7 +63,6 @@
     "onCommand:cobolplugin.revtab",
     "onCommand:cobolplugin.change_lang_to_acu",
     "onCommand:cobolplugin.change_lang_to_cobol",
-    "onCommand:cobolplugin.toggle_margin",
     "onCommand:cobolplugin.change_source_format",
     "onCommand:cobolplugin.deprecated.dumpMetaData",
     "onCommand:cobolplugin.deprecated.clearMetaData",
@@ -212,27 +211,27 @@
         },
         "coboleditor.process_metadata_cache_on_file_save": {
           "type": "boolean",
-          "title": "When enabled, process metadata on file save",
+          "description": "When enabled, process metadata on file save",
           "default": false,
           "deprecationMessage": "This setting is depreciated and may be removed in future releases"
         },
         "coboleditor.ignorecolumn_b_onwards": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "type": "boolean",
-          "title": "include column 72 onwards in parsing",
+          "description": "include column 72 onwards in parsing",
           "default": true
         },
         "coboleditor.copybooks_nested": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "type": "boolean",
           "markdownDescription": "nest copybooks in outline view (restart required)",
-          "title": "nest copybooks in outline view (restart require)",
+          "description": "nest copybooks in outline view (restart require)",
           "default": false
         },
         "coboleditor.fuzzy_variable_search": {
           "type": "boolean",
           "markdownDescription": "fuzzy variable search (legacy compatibility)",
-          "title": "fuzzy variable search",
+          "description": "fuzzy variable search",
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "default": false
         },
@@ -275,12 +274,12 @@
         "coboleditor.cache_metadata_show_progress_messages": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "type": "boolean",
-          "markdownDescription": "Show log message during meta data processing",
+          "description": "Show log message during meta data processing",
           "default": false
         },
         "coboleditor.margin": {
           "type": "boolean",
-          "title": "When enabled, apply margin shading",
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "default": false
         },
         "coboleditor.enable_data_provider": {
@@ -291,7 +290,8 @@
         },
         "jcleditor.margin": {
           "type": "boolean",
-          "title": "When enabled, apply margin shading",
+          "description": "When enabled, always apply margin shading for JCL source code",
+          "markdownDescription": "When enabled, *always* apply margin shading for JCL source code",
           "default": true
         },
         "coboleditor.fileformat_strategy": {
@@ -346,13 +346,11 @@
         },
         "coboleditor.enable_tabstop": {
           "type": "boolean",
-          "title": "COBOL TabStop Key",
           "description": "When enabled, activate COBOL tab/detab key",
           "default": true
         },
         "coboleditor.comment_line": {
           "type": "boolean",
-          "title": "Comment line",
           "description": "When enabled, activate COBOL comment key",
           "default": true
         },
@@ -384,61 +382,51 @@
         },
         "coboleditor.linter": {
           "type": "boolean",
-          "title": "Enable basic linting",
           "description": "When enabled, activate basic linting (limited to sections/paragraph use)",
           "default": false
         },
         "coboleditor.linter_mark_as_information": {
           "type": "boolean",
-          "title": "Mark all linter problems as information",
           "description": "When enabled, mark all linter problems as information (false is hint)",
           "default": true
         },
         "coboleditor.linter_unused_paragraphs_or_sections": {
           "type": "boolean",
-          "title": "Enable basic linting",
           "description": "When enabled, activate basic linting (limited to sections/paragraph use)",
           "default": true
         },
         "coboleditor.sourceview": {
           "type": "boolean",
-          "title": "Enable experimental explorer source view",
           "description": "Enable experimental explorer source view",
           "default": false
         },
         "coboleditor.sourceview_include_jcl_files": {
           "type": "boolean",
-          "title": "Include JCL Files in source view",
           "description": "Include JCL Files in source view",
           "default": true
         },
         "coboleditor.sourceview_include_hlasm_files": {
           "type": "boolean",
-          "title": "Include HLASM Files in source view",
           "description": "Include HLASM Files in source view",
           "default": true
         },
         "coboleditor.sourceview_include_pli_files": {
           "type": "boolean",
-          "title": "Include PL/I Files in source view",
           "description": "Include PL/I Files in source view",
           "default": true
         },
         "coboleditor.sourceview_include_doc_files": {
           "type": "boolean",
-          "title": "Include Documentation Files in source view",
           "description": "Include Documentation Files in source view",
           "default": true
         },
         "coboleditor.sourceview_include_script_files": {
           "type": "boolean",
-          "title": "Include Script Files in source view",
           "description": "Include Script Files in source view",
           "default": true
         },
         "coboleditor.sourceview_include_object_files": {
           "type": "boolean",
-          "title": "Include Object Files in source view",
           "description": "Include Object Files in source view",
           "default": true
         },
@@ -450,37 +438,31 @@
         },
         "coboleditor.mfunit.diagnostic.color": {
           "type": "boolean",
-          "title": "Enable ANSI color",
           "description": "Enable ANSI color when using the Micro Focus Unit Testing Framework (mfunit) in terminal",
           "default": true
         },
         "coboleditor.disable_unc_copybooks_directories": {
           "type": "boolean",
-          "title": "Disable UNC Copybooks",
           "description": "Disable UNC Copybooks (default false)",
           "default": false
         },
         "coboleditor.intellisense_include_unchanged": {
           "type": "boolean",
-          "title": "Include result unchanged in intellisense results",
           "description": "Include result unchanged in intellisense results (default true)",
           "default": true
         },
         "coboleditor.intellisense_include_camelcase": {
           "type": "boolean",
-          "title": "Include camelcase in intellisense results",
           "description": "Include camelcase in intellisense results (default false)",
           "default": false
         },
         "coboleditor.intellisense_include_uppercase": {
           "type": "boolean",
-          "title": "Include uppercase results in intellisense results",
           "description": "Include uppercase results in intellisense results (default false)",
           "default": false
         },
         "coboleditor.intellisense_include_lowercase": {
           "type": "boolean",
-          "title": "Include lowercase results in intellisense results",
           "description": "Include lowercase results in intellisense results (default false)",
           "default": false
         },
@@ -493,13 +475,11 @@
         },
         "coboleditor.process_metadata_cache_on_start": {
           "type": "boolean",
-          "title": "Process metadata cache on startup",
           "description": "Process metadata cache on extension load (default false)",
           "default": false
         },
         "coboleditor.parse_copybooks_for_references": {
           "type": "boolean",
-          "title": "Parse copybook for reference",
           "description": "Parse copybook for reference (default false)",
           "default": false
         },
@@ -520,13 +500,11 @@
         },
         "coboleditor.linter_house_standards": {
           "type": "boolean",
-          "title": "Enable house standards rules",
           "description": "Enable house standards rules",
           "default": false
         },
         "coboleditor.linter_ignore_section_before_entry": {
           "type": "boolean",
-          "title": "Do not warn on unused section before entry-point",
           "description": "Do not issue a warning if a unused section occurs before a entry-point, as this is often used to stop code trickling through to the next statements.",
           "default": true
         },
@@ -611,7 +589,8 @@
                 "type": "string",
                 "description": "internal metadata entypoints"
               }
-            }
+            },
+            "readOnly": true
           },
           "default": [],
           "uniqueItems": true
@@ -663,22 +642,22 @@
         },
         "coboleditor.maintain_metadata_cache": {
           "type": "boolean",
-          "title": "Maintain Metadata Cache",
+          "description": "Maintain Metadata Cache",
           "default": true
         },
         "coboleditor.maintain_metadata_recursive_search": {
           "type": "boolean",
-          "title": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
+          "description": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
           "default": false
         },
         "coboleditor.maintain_metadata_cache_single_folder": {
           "type": "boolean",
-          "title": "When 'Maintain Metadata Cache' is enabled, cache metadata using single folder",
+          "description": "When 'Maintain Metadata Cache' is enabled, cache metadata using single folder",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {
           "type": "boolean",
-          "title": "When enabled, turn on the experimental semantic token provider",
+          "description": "When enabled, turn on the experimental semantic token provider",
           "default": false
         },
         "coboleditor.preprocessor_extensions": {
@@ -698,9 +677,13 @@
         },
         "coboleditor.enable_text_replacement": {
           "type": "boolean",
-          "title": "Process 'replace' and 'replacing' verb",
           "description": "Process 'replace' and 'replacing' verb (default false)",
           "default": false
+        },
+        "coboleditor.enable_source_scanner": {
+          "type": "boolean",
+          "description": "Scan source code (default true)",
+          "default": true
         }
       }
     },
@@ -1109,11 +1092,6 @@
         "title": "Select ACUCOBOL-GT language"
       },
       {
-        "command": "cobolplugin.toggle_margin",
-        "category": "COBOL",
-        "title": "Toggle margin"
-      },
-      {
         "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
         "category": "COBOL",
         "title": "Process files in workspace for metadata (deprecated)",
@@ -1505,26 +1483,6 @@
         "key": "alt+shift+c",
         "command": "cobolplugin.change_lang_to_cobol",
         "when": "editorLangId == ACUCOBOL && !inSnippetMode"
-      },
-      {
-        "key": "alt+shift+m",
-        "command": "cobolplugin.toggle_margin",
-        "when": "editorTextFocus && editorLangId == cobol"
-      },
-      {
-        "key": "alt+shift+m",
-        "command": "cobolplugin.toggle_margin",
-        "when": "editorTextFocus && editorLangId == COBOL"
-      },
-      {
-        "key": "alt+shift+m",
-        "command": "cobolplugin.toggle_margin",
-        "when": "editorTextFocus && editorLangId == ACUCOBOL"
-      },
-      {
-        "key": "alt+shift+m",
-        "command": "cobolplugin.toggle_margin",
-        "when": "editorTextFocus && editorLangId == COBOLIT"
       }
     ],
     "snippets": [

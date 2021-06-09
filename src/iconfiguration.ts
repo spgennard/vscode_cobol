@@ -1,4 +1,4 @@
-import { CacheDirectoryStrategy } from "./externalfeatures";
+import { CacheDirectoryStrategy, ESourceFormat } from "./externalfeatures";
 
 export enum outlineFlag {
     On = "on",
@@ -11,6 +11,12 @@ export enum formatOnReturn {
     Off = "off",
     CamelCase = "camelcase",
     UpperCase = "uppercase"
+}
+
+
+export interface IEditorMarginFiles {
+    pattern: string;
+    sourceformat: ESourceFormat;
 }
 
 export interface ICOBOLSettings {
@@ -83,6 +89,10 @@ export interface ICOBOLSettings {
     enable_semantic_token_provider: boolean;
 
     enable_text_replacement: boolean;
+
+    editor_margin_files:IEditorMarginFiles[];
+
+    enable_source_scanner:boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -153,6 +163,12 @@ export class COBOLSettings implements ICOBOLSettings {
 
     public enable_text_replacement: boolean;
 
+    public removed_margin:boolean;
+
+    public editor_margin_files:IEditorMarginFiles[];
+
+    public enable_source_scanner:boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
@@ -215,5 +231,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.maintain_metadata_recursive_search = false;
         this.enable_semantic_token_provider = false;
         this.enable_text_replacement= false;
+        this.removed_margin = false;
+        this.editor_margin_files = [];
+        this.enable_source_scanner = true;
     }
 }
