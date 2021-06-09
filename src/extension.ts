@@ -38,7 +38,6 @@ import { getWorkspaceFolders } from './cobolfolders';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
-import { CacheDirectoryStrategy } from './externalfeatures';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
@@ -654,7 +653,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
     const processAllFilesInWorkspaceOutOfProcessOnStartup = commands.registerCommand('cobolplugin.processAllFilesInWorkspaceOnStartup', async () => {
-        VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1);
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1);
+    });
+
+    const deprecated_processAllFilesInWorkspaceOutOfProcessOnStartup = commands.registerCommand('cobolplugin.deprecated.processAllFilesInWorkspaceOnStartup', async () => {
+        await VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
@@ -778,6 +781,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessDeprecated);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessOnStartup);
+    context.subscriptions.push(deprecated_processAllFilesInWorkspaceOutOfProcessOnStartup);
 
     context.subscriptions.push(dumpMetadata);
     context.subscriptions.push(clearMetaData);
@@ -1174,34 +1178,19 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(), codelensProvider);
 
-    if (settings.maintain_metadata_cache && settings.cache_metadata !== CacheDirectoryStrategy.Off) {
-        const ws = getWorkspaceFolders();
-        if (ws !== undefined) {
-            const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-            editorConfig.update("cache_metadata", false, false);
-            COBOLUtils.clearGlobalCache();
-
-            VSLogger.logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
-            VSLogger.logMessage("         cache_metadata turned off, please review settings")
-        }
-    }
+    VSExtensionUtils.openChangeLog();
 
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {
                 commands.executeCommand("cobolplugin.processAllFilesInWorkspaceOnStartup");
             } else {
-                const pm = VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
-                pm.then(() => {
-                    return;
-                });
+                commands.executeCommand("cobolplugin.deprecated.processAllFilesInWorkspaceOnStartup");
             }
         } catch {
             // just incase
         }
     }
-
-    VSExtensionUtils.openChangeLog();
 }
 
 export async function deactivateAsync(): Promise<void> {
