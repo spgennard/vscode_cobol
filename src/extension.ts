@@ -652,6 +652,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(true);
     });
 
+
+    const processAllFilesInWorkspaceOutOfProcessOnStartup = commands.registerCommand('cobolplugin.processAllFilesInWorkspaceOnStartup', async () => {
+        VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1);
+    });
+
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand('cobolplugin.processAllFilesInWorkspace', async () => {
 
         if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
@@ -772,6 +777,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessDeprecated);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);
+    context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessOnStartup);
 
     context.subscriptions.push(dumpMetadata);
     context.subscriptions.push(clearMetaData);
@@ -1181,14 +1187,20 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     if (settings.process_metadata_cache_on_start) {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-        // not threaded on startup
-        const pm = depMode === false ? VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1) :
-            VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
-        pm.then(() => {
-            return;
-        });
+        try {
+            if (settings.maintain_metadata_cache) {
+                commands.executeCommand("cobolplugin.processAllFilesInWorkspaceOnStartup");
+            } else {
+                const pm = VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
+                pm.then(() => {
+                    return;
+                });
+            }
+        } catch {
+            // just incase
+        }
     }
+
     VSExtensionUtils.openChangeLog();
 }
 
