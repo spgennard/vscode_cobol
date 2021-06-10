@@ -15,7 +15,6 @@ export class VSCOBOLConfiguration {
     public static init(): ICOBOLSettings {
         const vsconfig = VSCOBOLConfiguration.config;
         vsconfig.enable_tabstop = getBoolean('enable_tabstop', false);
-        vsconfig.ignorecolumn_b_onwards = getBoolean('ignorecolumn_b_onwards', false);
         vsconfig.copybooks_nested = getBoolean('copybooks_nested', false);
         vsconfig.fuzzy_variable_search = getBoolean('fuzzy_variable_search', false);
         vsconfig.outline = isOutlineEnabled();

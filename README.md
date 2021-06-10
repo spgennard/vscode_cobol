@@ -386,13 +386,13 @@ The hint token can be configured by the ```coboleditor.scan_comment_copybook_tok
 It is recommended that the token name remain consistent in your source, otherwise it will make it hard for observers of your source to understand the code.
 
 
-## coboleditor.fileformat
+## coboleditor.fileformat & coboleditor.fileformat_strategy
 
-When ```coboleditor.margin``` is enabled extension will look for "sourceformat" settings (json array) in the header of the source file itself.
+When ```coboleditor.fileformat_strategy``` is set to "normal", the source format will be determined heuristically but can be overriden by either embedded directives with each source file.
 
-However, if you need to tell the extension which file are which particular format, this can be achieved with ```coboleditor.fileformat``` property.
+However, if you need to tell the extension which file(s) are which particular file format, this can be achieved with ```coboleditor.fileformat``` property.
 
-For example, if you want all the files that match ```A*.cbl``` to be fixed and every other *.cbl is free format, you can then use:
+For example, if you want all the files that match ```A*.cbl``` to be fixed and every other ```*.cbl``` is free format, you can then use:
 
 ```json
     "coboleditor.fileformat": [
@@ -406,6 +406,8 @@ For example, if you want all the files that match ```A*.cbl``` to be fixed and e
         }
     ],
 ```
+
+If always use ```fixed``` format you can set ```coboleditor.fileformat_strategy=always_fixed```.
 
 ## Handling code pages
 

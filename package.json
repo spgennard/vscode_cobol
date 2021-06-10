@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.6.9",
+  "version": "7.6.10",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -215,12 +215,6 @@
           "default": false,
           "deprecationMessage": "This setting is depreciated and may be removed in future releases"
         },
-        "coboleditor.ignorecolumn_b_onwards": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-          "type": "boolean",
-          "description": "include column 72 onwards in parsing",
-          "default": true
-        },
         "coboleditor.copybooks_nested": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "type": "boolean",
@@ -265,7 +259,7 @@
           "default": 5000
         },
         "coboleditor.cache_metadata_max_directory_scan_depth": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "markdownDeprecationMessage": "This setting is depreciated and may be removed in future releases. Please use `#coboleditor.maintain_metadata_cache#`",
           "type": "number",
           "markdownDescription": "Limited the depth of the metadata cache directory scan",
           "title": "Limited the depth of the metadata cache directory scan",
@@ -279,7 +273,7 @@
         },
         "coboleditor.margin": {
           "type": "boolean",
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "markdownDeprecationMessage": "This setting is depreciated and may be removed in future releases. Please use `#coboleditor.fileformat_strategy#` and set it to *always_fixed*.",
           "default": false
         },
         "coboleditor.enable_data_provider": {
