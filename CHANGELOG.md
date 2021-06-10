@@ -3,6 +3,18 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.10
+
+**update README**
+
+ * remove unused property
+* [4907965934fbc5f](https://github.com/spgennard/vscode_cobol/commit/4907965934fbc5f) *2021-06-10 20:03:25*
+
+**Update CHANGELOG.md**
+
+* [73bdffdbc9b82c0](https://github.com/spgennard/vscode_cobol/commit/73bdffdbc9b82c0) *2021-06-09 20:09:41*
+
+
 ## 7.6.9
 
 **use cmd for dep'ed command**
