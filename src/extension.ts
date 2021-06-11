@@ -303,52 +303,58 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         VSLogger.logMessage("Extension Information:");
         VSLogger.logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
         VSLogger.logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);
-        VSLogger.logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
-        VSLogger.logMessage(` Parse copybook for references              : ${settings.parse_copybooks_for_references}`);
-        VSLogger.logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`)
-        VSLogger.logMessage(` Semantic token provider enabled            : ${settings.enable_semantic_token_provider}`);
-        try {
-            const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting').get<number>("enabled");
-            VSLogger.logMessage(` editor.semanticHighlighting.enabled        : ${editor_semanticHighlighting_enabled}`);
-        } catch
-        {
-            //
-        }
 
-        try {
-            const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
-                { languageId: 'COBOL' }).get<number>("enabled");
-            VSLogger.logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
-        } catch
-        {
-            //
-        }
-        try {
-            const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
-            VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);
-        } catch
-        {
-            //
-        }
-        if (vscode.workspace.workspaceFile !== undefined) {
-            VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
-        }
-
-        if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
-            VSLogger.logMessage("----------------------------------------------------------------------");
-            VSLogger.logMessage(" Deprecated Features settings");
-            VSLogger.logMessage("");
-            VSLogger.logMessage(" Caching");
-            VSLogger.logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
-
-            const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
-            if (cacheDir !== undefined) {
-                VSLogger.logMessage(`  Cache directory  : ${cacheDir}`);
+        if (workspace.isTrusted) {
+            VSLogger.logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
+            VSLogger.logMessage(` Parse copybook for references              : ${settings.parse_copybooks_for_references}`);
+            VSLogger.logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`)
+            VSLogger.logMessage(` Semantic token provider enabled            : ${settings.enable_semantic_token_provider}`);
+            try {
+                const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting').get<number>("enabled");
+                VSLogger.logMessage(` editor.semanticHighlighting.enabled        : ${editor_semanticHighlighting_enabled}`);
+            } catch
+            {
+                //
             }
-            VSLogger.logMessage("----------------------------------------------------------------------");
-        }
 
-        VSPreProc.dumpPreProcInfo(settings);
+            try {
+                const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
+                    { languageId: 'COBOL' }).get<number>("enabled");
+                VSLogger.logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
+            } catch
+            {
+                //
+            }
+            try {
+                const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
+                VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);
+            } catch
+            {
+                //
+            }
+            if (vscode.workspace.workspaceFile !== undefined) {
+                VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
+            }
+            
+            if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
+                VSLogger.logMessage("----------------------------------------------------------------------");
+                VSLogger.logMessage(" Deprecated Features settings");
+                VSLogger.logMessage("");
+                VSLogger.logMessage(" Caching");
+                VSLogger.logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
+    
+                const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
+                if (cacheDir !== undefined) {
+                    VSLogger.logMessage(`  Cache directory  : ${cacheDir}`);
+                }
+                VSLogger.logMessage("----------------------------------------------------------------------");
+            }
+    
+            VSPreProc.dumpPreProcInfo(settings);
+    
+        }
+        VSLogger.logMessage(` Is Workspace Trusted                       : ${workspace.isTrusted}`);
+
     }
 
     fileSearchDirectory.length = 0;
@@ -359,32 +365,40 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
     for (const ddir of extsdir) {
-        if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
-            VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
-            invalidSearchDirectory.push(ddir);
-        }
-        else if (COBOLFileUtils.isDirectPath(ddir)) {
-            VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
-            if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
-                if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
-                    if (COBOLFileUtils.isNetworkPath(ddir)) {
-                        VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+        if (workspace.isTrusted === false) {
+            // copybooks that have a direct path or a network are only available in full trust
+            if (COBOLFileUtils.isDirectPath(ddir) || COBOLFileUtils.isNetworkPath(ddir)) {
+                invalidSearchDirectory.push(ddir);
+                continue;
+            }
+        } else {
+            if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
+                VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
+                invalidSearchDirectory.push(ddir);
+            }
+            else if (COBOLFileUtils.isDirectPath(ddir)) {
+                VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
+                if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
+                    if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
+                        if (COBOLFileUtils.isNetworkPath(ddir)) {
+                            VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                        }
                     }
                 }
-            }
 
-            const startTime = VSExtensionUtils.performance_now();
-            if (COBOLFileUtils.isDirectory(ddir)) {
-                const totalTimeInMS = VSExtensionUtils.performance_now() - startTime;
-                const timeTaken = totalTimeInMS.toFixed(2);
-                if (totalTimeInMS <= 2000) {
-                    fileSearchDirectory.push(ddir);
+                const startTime = VSExtensionUtils.performance_now();
+                if (COBOLFileUtils.isDirectory(ddir)) {
+                    const totalTimeInMS = VSExtensionUtils.performance_now() - startTime;
+                    const timeTaken = totalTimeInMS.toFixed(2);
+                    if (totalTimeInMS <= 2000) {
+                        fileSearchDirectory.push(ddir);
+                    } else {
+                        VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
+                        invalidSearchDirectory.push(ddir);
+                    }
                 } else {
-                    VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
                     invalidSearchDirectory.push(ddir);
                 }
-            } else {
-                invalidSearchDirectory.push(ddir);
             }
         }
     }
@@ -394,7 +408,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     if (ws !== undefined) {
         for (const folder of ws) {
             // place the workspace folder in the copybook path
-
             fileSearchDirectory.push(folder.uri.fsPath);
 
             /* now add any extra directories that are below this workspace folder */
@@ -489,7 +502,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         VSLogger.logMessage("extensions changed");
     });
     context.subscriptions.push(onExtChange);
-
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
         const updated = event.affectsConfiguration(`coboleditor`);

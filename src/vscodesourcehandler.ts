@@ -5,7 +5,7 @@ import { VSCOBOLFileUtils } from './vsfileutils';
 
 export class VSCodeSourceHandler implements ISourceHandler {
     commentCount: number;
-    document: vscode.TextDocument;
+    document: vscode.TextDocument|undefined;
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
     commentCallback?: ICommentCallback;
@@ -14,7 +14,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     isSourceInWorkSpace: boolean;
     shortWorkspaceFilename: string;
     updatedSource: Map<number, string>;
-    languageId:string;
+    languageId: string;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -25,11 +25,18 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
         this.languageId = document.languageId;
-        
+
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
         this.updatedSource = new Map<number, string>();
+
+
+        // if we cannot be trusted and the file is outside the workspace, dont read it
+        if (vscode.workspace.isTrusted === false && !this.isSourceInWorkSpace) {
+            this.commentCallback = undefined;
+            this.document = undefined;
+        }
     }
 
     getDocumentVersionId(): BigInt {
@@ -37,7 +44,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     }
 
     getUriAsString(): string {
-        return this.document.uri.toString();
+        return this.document === undefined ? "" : this.document.uri.toString();
     }
 
     getLineCount(): number {
@@ -56,9 +63,8 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
     }
 
-    getLine(lineNumber: number, raw: boolean): string|undefined {
-
-        if (lineNumber >= this.lineCount) {
+    getLine(lineNumber: number, raw: boolean): string | undefined {
+        if (this.document === undefined || lineNumber >= this.lineCount) {
             return undefined;
         }
 
@@ -117,27 +123,23 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.dumpAreaBOnwards = flag;
     }
 
-     isValidKeyword(keyword: string): boolean {
+    isValidKeyword(keyword: string): boolean {
         return cobolKeywordDictionary.has(keyword);
     }
 
-    getUri() : vscode.Uri {
-        return this.document.uri;
-    }
-
     getFilename(): string {
-        return this.document.fileName;
+        return this.document !== undefined ? this.document.fileName : "";
     }
 
-    setCommentCallback(commentCallback: ICommentCallback):void {
+    setCommentCallback(commentCallback: ICommentCallback): void {
         this.commentCallback = commentCallback;
     }
 
-    resetCommentCount():void {
+    resetCommentCount(): void {
         this.commentCount = 0;
     }
 
-    getIsSourceInWorkSpace():boolean {
+    getIsSourceInWorkSpace(): boolean {
         return this.isSourceInWorkSpace;
     }
 
@@ -145,19 +147,19 @@ export class VSCodeSourceHandler implements ISourceHandler {
         return this.shortWorkspaceFilename;
     }
 
-    setUpdatedLine(lineNumber: number, line:string) : void {
+    setUpdatedLine(lineNumber: number, line: string): void {
         this.updatedSource.set(lineNumber, line);
     }
-    
-    getUpdatedLine(linenumber: number) : string|undefined {
+
+    getUpdatedLine(linenumber: number): string | undefined {
         if (this.updatedSource.has(linenumber)) {
             return this.updatedSource.get(linenumber);
         }
 
-        return this.getLine(linenumber,false);
+        return this.getLine(linenumber, false);
     }
 
-    getLanguageId():string {
+    getLanguageId(): string {
         return this.languageId;
     }
 }

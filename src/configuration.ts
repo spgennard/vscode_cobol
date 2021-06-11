@@ -48,7 +48,10 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
         vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
         vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
-        vsconfig.scan_comments_for_hints = getBoolean("scan_comments_for_hints", false);
+
+        // scan for comments can cause a file access.. so it cannot be trusted
+        vsconfig.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
+        
         vsconfig.scan_comment_copybook_token = getscan_comment_copybook_token();
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
         vsconfig.cache_metadata_user_directory = getString("cache_metadata_user_directory", "");
@@ -75,18 +78,49 @@ export class VSCOBOLConfiguration {
         vsconfig.enable_text_replacement = getBoolean('enable_text_replacement', false);
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
 
-        VSCOBOLConfiguration.fliDepreciatedSettings(vsconfig);
+        VSCOBOLConfiguration.flipDepreciatedSettings(vsconfig);
 
         vsconfig.editor_margin_files = getFixedFilenameConfiguration();
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
+
+        if (!workspace.isTrusted) {
+            VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
+        }
         return vsconfig;
     }
 
     static logCacheMetadataDone = false;
     static logMarginDone = false;
 
-    static fliDepreciatedSettings(vsconfig: ICOBOLSettings): void {
+    static adjustForUntructedEnv(vsconfig: ICOBOLSettings): void {
+        vsconfig.enable_source_scanner = false;
+        vsconfig.disable_unc_copybooks_directories = true;
+        vsconfig.process_metadata_cache_on_start = false;
+        vsconfig.parse_copybooks_for_references = false;
+        vsconfig.cache_metadata = CacheDirectoryStrategy.Off;
+        vsconfig.cache_metadata_max_directory_scan_depth = 1;
+        vsconfig.cache_metadata_show_progress_messages = false;
+        vsconfig.process_metadata_cache_on_file_save = false;
+        vsconfig.cache_metadata_user_directory = "";
+        vsconfig.editor_maxTokenizationLineLength = 1;
+        vsconfig.sourceview = false;
+        vsconfig.format_on_return = formatOnReturn.Off;
+
+        vsconfig.maintain_metadata_cache = false;
+        vsconfig.maintain_metadata_cache_single_folder = false;
+        vsconfig.maintain_metadata_recursive_search = false;
+        vsconfig.metadata_symbols = [];
+        vsconfig.metadata_entrypoints = [];
+        vsconfig.metadata_types = [];
+        vsconfig.metadata_files = [];
+        vsconfig.enable_semantic_token_provider = false;
+        vsconfig.enable_text_replacement = false;
+        vsconfig.preprocessor_extensions = [];
+    }
+
+
+    static flipDepreciatedSettings(vsconfig: ICOBOLSettings): void {
 
         //TODO: remove after a reasonable period of time
         //in-memory migration of old setting
@@ -95,7 +129,7 @@ export class VSCOBOLConfiguration {
             vsconfig.fileformat_strategy = "always_fixed";
             if (!VSCOBOLConfiguration.logMarginDone) {
                 VSLogger.logMessage("WARNING: coboleditor.margin is set, ignoring and using coboleditor.fileformat_strategy=always_fixed");
-                VSCOBOLConfiguration.logMarginDone=true;
+                VSCOBOLConfiguration.logMarginDone = true;
             }
         }
 

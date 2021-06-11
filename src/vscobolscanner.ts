@@ -159,6 +159,7 @@ export default class VSCOBOLSourceScanner {
                 const startTime = VSExtensionUtils.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
+
                 const qcpd = new COBOLSourceScanner(sourceHandler, config,
                     cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(config,true),
                     config.parse_copybooks_for_references,
