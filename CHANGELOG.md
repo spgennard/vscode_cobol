@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.11
+
+**add some untrusted editing support**
+
+* [ce105fde4f1bc02](https://github.com/spgennard/vscode_cobol/commit/ce105fde4f1bc02) *2021-06-11 22:59:03*
+
+**update**
+
+* [1559a31549448a0](https://github.com/spgennard/vscode_cobol/commit/1559a31549448a0) *2021-06-10 20:06:22*
+
+**Update CHANGELOG.md**
+
+* [8004e1ffb10fb23](https://github.com/spgennard/vscode_cobol/commit/8004e1ffb10fb23) *2021-06-10 20:05:17*
+
+
 ## 7.6.10
 
 **update README**
