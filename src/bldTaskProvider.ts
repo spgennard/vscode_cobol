@@ -20,6 +20,10 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 
 
 	public provideTasks(): Thenable<vscode.Task[]> | undefined {
+		if (!vscode.workspace.isTrusted) {
+			return undefined;
+		}
+
 		const scriptFilename = this.getFileFromWorkspace();
 		if (scriptFilename === undefined) {
 			return undefined;
@@ -62,6 +66,10 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 	}
 
 	public resolveTask(_task: vscode.Task): vscode.Task | undefined {
+		if (!vscode.workspace.isTrusted) {
+			return undefined;
+		}
+
 		const scriptName = this.getFileFromWorkspace();
 
 		// does this workspace have a bld.sh or bld.bat

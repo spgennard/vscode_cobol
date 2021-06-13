@@ -506,6 +506,12 @@ Although this extension does not understand comments in COBOL source files, it c
 }
 ```
 
+## Visual Studio Code Workspace Trust security
+
+When in limited functionality mode the extension disables all functionality that might be use for malicious purposes.
+
+The extension only enables features that allow basic editing, making it ideal for browsing untrusted source.
+
 ## Online resources
 
 - Online communities

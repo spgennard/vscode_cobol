@@ -1176,9 +1176,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(resequenceColumnNumbersCommands);
 
-    bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
-    context.subscriptions.push(bldscriptTaskProvider);
-
+    if (workspace.isTrusted) {
+        bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
+        context.subscriptions.push(bldscriptTaskProvider);
+    }
+    
     const provider = VSSemanticProvider.provider();
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(), provider, VSSemanticProvider.getLegend());
 
