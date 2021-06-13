@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.12
+
+**update related to limited functionality mode**
+
+* [63bf6bdd7bf19f7](https://github.com/spgennard/vscode_cobol/commit/63bf6bdd7bf19f7) *2021-06-13 21:11:26*
+
+**upd lock**
+
+* [babde13ddc6de88](https://github.com/spgennard/vscode_cobol/commit/babde13ddc6de88) *2021-06-11 23:01:24*
+
+**Update CHANGELOG.md**
+
+* [40eac938e1a14d7](https://github.com/spgennard/vscode_cobol/commit/40eac938e1a14d7) *2021-06-11 23:00:20*
+
+
 ## 7.6.11
 
 **add some untrusted editing support**
