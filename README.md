@@ -205,7 +205,7 @@ The example below shows you how you can create a single task to compile one prog
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "acu cobol - ccbl32 (single file)",
+            "label": "ACUCOBOL-GT - ccbl32 (single file)",
             "type": "shell",
             "command": "%ACUCOBOL%\\bin\\ccbl32",
             "args": [
