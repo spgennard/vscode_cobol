@@ -205,7 +205,7 @@ The example below shows you how you can create a single task to compile one prog
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "acu cobol - ccbl32 (single file)",
+            "label": "acucobol - ccbl32 (single file)",
             "type": "shell",
             "command": "%ACUCOBOL%\\bin\\ccbl32",
             "args": [
@@ -232,7 +232,7 @@ The example below shows you how you can create a single task to compile one prog
 |-----------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------|
 | COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                                                          |
 | COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc                               |
-| ACU-COBOLGT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl                                |
+| ACUCOBOL-GT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl                                |
 | Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                            |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx                                   |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                            |
