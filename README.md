@@ -76,7 +76,7 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 {
     "version": "2.0.0",
     "tasks": [ {
-            "label": "build",
+            "label": "Compile: using msbuild (mycobolproject.sln)",
             "type": "shell",
             "command": "msbuild",
             "args": [
@@ -105,7 +105,7 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat3-netx-sx" p
 
 ```json
 {
-    "label": "mf cobol (single file)",
+    "label": "Compile: using cobol (single file)",
     "command": "cobol",
     "args": [
         "${file}",
@@ -142,7 +142,7 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" p
 
 ```json
 {
-    "label": "mf cobol (single file)",
+    "label": "Compile: using cobol (single file)",
     "command": "cobol",
     "args": [
         "${file}",
@@ -181,7 +181,7 @@ The example below shows you how you can create a single task to compile one prog
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "cobolit - cobc (single file)",
+            "label": "Compile: cobc (single file)",
             "type": "shell",
             "command": "cobc",
             "args": [
@@ -205,7 +205,7 @@ The example below shows you how you can create a single task to compile one prog
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "ACUCOBOL-GT - ccbl32 (single file)",
+            "label": "Compile: using ccbl32 (single file)",
             "type": "shell",
             "command": "%ACUCOBOL%\\bin\\ccbl32",
             "args": [
