@@ -84,6 +84,8 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
 
+        vsconfig.prefer_lowercase_cobol_language_id = getBoolean('prefer_lowercase_cobol_language_id', false);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

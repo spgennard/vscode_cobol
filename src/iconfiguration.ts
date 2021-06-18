@@ -92,6 +92,8 @@ export interface ICOBOLSettings {
     editor_margin_files:IEditorMarginFiles[];
 
     enable_source_scanner:boolean;
+
+    prefer_lowercase_cobol_language_id: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -167,6 +169,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     public enable_source_scanner:boolean;
 
+    public prefer_lowercase_cobol_language_id: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
@@ -231,5 +235,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.removed_margin = false;
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
+        this.prefer_lowercase_cobol_language_id = false;
     }
 }

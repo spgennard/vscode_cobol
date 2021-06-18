@@ -87,7 +87,15 @@ export class VSExtensionUtils {
         }
 
         const settings = VSCOBOLConfiguration.get();
-        if ((settings.ignore_unsafe_extensions) && doc.languageId === 'cobol') {
+
+        // if we prefer lowecase cobol id.. then flip to it
+        if (settings.prefer_lowercase_cobol_language_id && doc.languageId === 'COBOL') {
+            vscode.languages.setTextDocumentLanguage(doc, "cobol");
+            return;
+        }
+
+        // if we prefer uppercase COBOL.. flip to it..
+        if (!settings.prefer_lowercase_cobol_language_id && doc.languageId === 'cobol') {
             vscode.languages.setTextDocumentLanguage(doc, "COBOL");
             return;
         }
