@@ -421,6 +421,15 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                 //
             }
             try {
+                const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
+                    { languageId: 'cobol' }).get<number>("enabled");
+                VSLogger.logMessage(` [cobol]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
+            } catch
+            {
+                //
+            }          
+            
+            try {
                 const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
                 VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);
             } catch
