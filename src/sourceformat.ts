@@ -38,7 +38,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
 
     // if we are using the micro focus extension and the editor is langid of 'cobol'
     if (config.extend_micro_focus_cobol_extension) {
-        if (config.Lextend_micro_focus_cobol_extension_editor || langid === 'cobol') {
+        if (config.extend_micro_focus_cobol_extension_editor || langid === 'cobol') {
             switch(config.microfocus_editor_sourceformat) {
                 case "fixed" : return ESourceFormat.fixed;
                 case "variable" : return ESourceFormat.variable;
