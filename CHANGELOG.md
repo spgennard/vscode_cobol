@@ -3,6 +3,47 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.15
+
+**refactor debugger check and allow people using gnucobol language to**
+
+ * bypass the check
+* [78d48f8db25310b](https://github.com/spgennard/vscode_cobol/commit/78d48f8db25310b) *2021-06-16 19:57:30*
+
+**flip scope**
+
+* [7d5fe7ac1e7b4d4](https://github.com/spgennard/vscode_cobol/commit/7d5fe7ac1e7b4d4) *2021-06-16 19:16:36*
+
+**changed missed scope changes**
+
+* [8b89b40e58ecaa1](https://github.com/spgennard/vscode_cobol/commit/8b89b40e58ecaa1) *2021-06-16 19:15:24*
+
+**Update README.md**
+
+ * - make labels easier to read
+* [173fb84333645d4](https://github.com/spgennard/vscode_cobol/commit/173fb84333645d4) *2021-06-16 19:14:28*
+
+**tweak**
+
+* [e73587a10b91567](https://github.com/spgennard/vscode_cobol/commit/e73587a10b91567) *2021-06-15 23:40:23*
+
+**remove non-existant ref to language**
+
+* [ad077c1bd26c67d](https://github.com/spgennard/vscode_cobol/commit/ad077c1bd26c67d) *2021-06-15 20:15:16*
+
+**cleanup forgotten unused files**
+
+* [8d5f325aca07442](https://github.com/spgennard/vscode_cobol/commit/8d5f325aca07442) *2021-06-15 19:51:24*
+
+**upd lock**
+
+* [5141f5251d1605a](https://github.com/spgennard/vscode_cobol/commit/5141f5251d1605a) *2021-06-13 21:13:58*
+
+**Update CHANGELOG.md**
+
+* [fe0bc3a9aac91e8](https://github.com/spgennard/vscode_cobol/commit/fe0bc3a9aac91e8) *2021-06-13 21:12:03*
+
+
 ## 7.6.12
 
 **update related to limited functionality mode**

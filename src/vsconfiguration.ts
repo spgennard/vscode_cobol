@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 
-import { workspace } from 'vscode';
+import { commands, workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from './iconfiguration';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { COBOLFileUtils } from './fileutils';
@@ -84,9 +84,15 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
 
+        vsconfig.prefer_lowercase_cobol_language_id = getBoolean('prefer_lowercase_cobol_language_id', false);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
+
+        // setup dynamic contexts given settings
+        VSCOBOLConfiguration.setupDynamicContexts(vsconfig);
+
         return vsconfig;
     }
 
@@ -119,6 +125,10 @@ export class VSCOBOLConfiguration {
         vsconfig.preprocessor_extensions = [];
     }
 
+
+    static setupDynamicContexts(vsconfig: ICOBOLSettings):void {
+        commands.executeCommand('setContext', 'coboleditor.enable_lc_cobol', vsconfig.prefer_lowercase_cobol_language_id);
+    }
 
     static flipDepreciatedSettings(vsconfig: ICOBOLSettings): void {
 

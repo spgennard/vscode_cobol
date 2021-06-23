@@ -87,7 +87,15 @@ export class VSExtensionUtils {
         }
 
         const settings = VSCOBOLConfiguration.get();
-        if ((settings.ignore_unsafe_extensions) && doc.languageId === 'cobol') {
+
+        // if we prefer lowecase cobol id.. then flip to it
+        if (settings.prefer_lowercase_cobol_language_id && doc.languageId === 'COBOL') {
+            vscode.languages.setTextDocumentLanguage(doc, "cobol");
+            return;
+        }
+
+        // if we prefer uppercase COBOL.. flip to it..
+        if (!settings.prefer_lowercase_cobol_language_id && doc.languageId === 'cobol') {
             vscode.languages.setTextDocumentLanguage(doc, "COBOL");
             return;
         }
@@ -163,9 +171,6 @@ const blessed_extensions: string[] = [
 ];
 
 const known_problem_extensions: string[][] = [
-    ["debugger", "OlegKunitsyn.gnucobol-debug"],               // debugger
-    ["debugger", "BroadcomMFD.debugger-for-mainframe"],        // debugger
-    ["debugger", "rechinformatica.rech-cobol-debugger"],       // debugger
     ["control flow extension", "BroadcomMFD.ccf"]              // control flow extension
 ];
 
@@ -206,8 +211,24 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     return dupExtensionMessage;
 }
 
+function checkForCompatibleDebuggers(): boolean {
+    const gnuCobolExt = extensions.getExtension("bitlang.gnucobol");
+    if (gnuCobolExt === undefined) {
+        return true;
+    }
+
+    const gnuConfig = workspace.getConfiguration('gnucobol');
+    if (gnuConfig === undefined) {
+        return true;
+    }
+
+    // if the preferred language is gnucobol, then skip the check
+    return !gnuConfig.get<boolean>('prefer_gnucobol_syntax', false);
+}
+
 function checkForExtensionConflicts(): string {
     let dupExtensionMessage = "";
+    const checkDebuggers = checkForCompatibleDebuggers();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const ext of extensions.all) {
@@ -235,32 +256,106 @@ function checkForExtensionConflicts(): string {
             }
 
             if (!ignore_blessed) {
+                let extMarkedAsDebugger = false;
+                //categories
+
+                if (ext.packageJSON.categories !== undefined) {
+                    const categoriesBody = ext.packageJSON.categories;
+                    if (categoriesBody !== undefined && categoriesBody instanceof Object) {
+                        for (const key in categoriesBody) {
+                            try {
+                                const element = categoriesBody[key];
+                                if (element !== undefined) {
+                                    const l = `${element}`.toUpperCase();
+                                    if (l === 'DEBUGGERS') {
+                                        extMarkedAsDebugger = true;
+                                    }
+                                }
+                            } catch {
+                                // just incase
+                            }
+                        }
+                    }
+                }
+
                 if (ext.packageJSON.contributes !== undefined) {
                     const grammarsBody = ext.packageJSON.contributes.grammars;
-                    if (grammarsBody !== undefined) {
-                        if (grammarsBody instanceof Object) {
-                            for (const key in grammarsBody) {
+                    const languagesBody = ext.packageJSON.contributes.languages;
+
+                    // check for unexpected duplicate COBOL language
+                    if (grammarsBody !== undefined && grammarsBody instanceof Object) {
+                        for (const key in grammarsBody) {
+                            try {
                                 const element = grammarsBody[key];
-                                if (element.language !== undefined) {
+                                if (element !== undefined && element.language !== undefined) {
                                     const l = `${element.language}`.toUpperCase();
                                     if (l === 'COBOL') {
                                         reason.push("contributes conflicting grammar");
                                     }
                                 }
+                            } catch {
+                                // just incase
                             }
                         }
                     }
 
-                    const languagesBody = ext.packageJSON.contributes.languages;
-                    if (languagesBody !== undefined) {
-                        if (languagesBody instanceof Object) {
-                            for (const key in languagesBody) {
-                                const languageElement = languagesBody[key];
-                                if (languageElement.id !== undefined) {
+                    // check for language id
+                    if (languagesBody !== undefined && languagesBody instanceof Object) {
+                        for (const key in languagesBody) {
+                            const languageElement = languagesBody[key];
+                            try {
+
+                                if (languageElement !== undefined && languageElement.id !== undefined) {
                                     const l = `${languageElement.id}`.toUpperCase();
                                     if (l === 'COBOL') {
                                         reason.push("contributes language id");
                                     }
+                                }
+                            }
+                            catch {
+                                // just incase
+                            }
+                        }
+                    }
+
+                    if (extMarkedAsDebugger && checkDebuggers) {
+                        const debuggerBody = ext.packageJSON.contributes.debuggers;
+                        const breakpointsBody = ext.packageJSON.contributes.breakpoints;
+                        if (debuggerBody !== undefined && debuggerBody instanceof Object) {
+                            for (const key in debuggerBody) {
+                                try {
+                                    const debuggerElement = debuggerBody[key];
+                                    if (debuggerElement !== undefined && debuggerElement.enableBreakpointsFor !== undefined) {
+                                        if (debuggerElement.enableBreakpointsFor.languageIds !== undefined) {
+                                            for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
+                                                const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
+                                                const l = `${languageElement}`.toUpperCase();
+                                                if (l === 'COBOL') {
+                                                    reason.push("extension includes debugger for a different COBOL vendor");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                catch {
+                                    // just incase
+                                }
+                            }
+                        }
+
+                        if (breakpointsBody !== undefined && breakpointsBody instanceof Object) {
+                            for (const key in breakpointsBody) {
+                                const bpLangKey = breakpointsBody[key];
+                                try {
+                                    if (bpLangKey !== undefined && bpLangKey.language !== undefined) {
+                                        const bpLang = `${bpLangKey.language}`;
+                                        if (bpLang === 'COBOL') {
+                                            reason.push("extension includes debugger for a different COBOL vendor");
+                                        }
+                                    }
+                                }
+                                catch {
+                                    // just incase
                                 }
                             }
                         }
@@ -326,6 +421,15 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                 //
             }
             try {
+                const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
+                    { languageId: 'cobol' }).get<number>("enabled");
+                VSLogger.logMessage(` [cobol]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
+            } catch
+            {
+                //
+            }          
+            
+            try {
                 const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
                 VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);
             } catch
@@ -335,23 +439,23 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             if (vscode.workspace.workspaceFile !== undefined) {
                 VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
             }
-            
+
             if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
                 VSLogger.logMessage("----------------------------------------------------------------------");
                 VSLogger.logMessage(" Deprecated Features settings");
                 VSLogger.logMessage("");
                 VSLogger.logMessage(" Caching");
                 VSLogger.logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
-    
+
                 const cacheDir = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
                 if (cacheDir !== undefined) {
                     VSLogger.logMessage(`  Cache directory  : ${cacheDir}`);
                 }
                 VSLogger.logMessage("----------------------------------------------------------------------");
             }
-    
+
             VSPreProc.dumpPreProcInfo(settings);
-    
+
         }
         VSLogger.logMessage(` Is Workspace Trusted                       : ${workspace.isTrusted}`);
 
@@ -1180,7 +1284,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
         context.subscriptions.push(bldscriptTaskProvider);
     }
-    
+
     const provider = VSSemanticProvider.provider();
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(), provider, VSSemanticProvider.getLegend());
 
