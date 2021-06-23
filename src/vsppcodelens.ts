@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as vscode from 'vscode';
 import COBOLSourceScanner from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 

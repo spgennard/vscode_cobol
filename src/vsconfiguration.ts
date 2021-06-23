@@ -84,7 +84,8 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
 
-        vsconfig.prefer_lowercase_cobol_language_id = getBoolean('prefer_lowercase_cobol_language_id', false);
+        vsconfig.extend_micro_focus_cobol_extension = getBoolean('extend_micro_focus_cobol_extension', false);
+        vsconfig.extend_micro_focus_cobol_extension_editor = getBoolean('extend_micro_focus_cobol_extension_editor', false);
         
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
@@ -127,7 +128,7 @@ export class VSCOBOLConfiguration {
 
 
     static setupDynamicContexts(vsconfig: ICOBOLSettings):void {
-        commands.executeCommand('setContext', 'coboleditor.enable_lc_cobol', vsconfig.prefer_lowercase_cobol_language_id);
+        commands.executeCommand('setContext', 'coboleditor.enable_lc_cobol', vsconfig.extend_micro_focus_cobol_extension);
     }
 
     static flipDepreciatedSettings(vsconfig: ICOBOLSettings): void {

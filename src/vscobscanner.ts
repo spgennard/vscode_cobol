@@ -3,7 +3,7 @@ import path from "path";
 import { extensions, Uri, WorkspaceFolder } from "vscode";
 import { getWorkspaceFolders } from "./cobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
-import { VSCOBOLConfiguration } from "./configuration";
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";
 import { fork, ForkOptions } from 'child_process';

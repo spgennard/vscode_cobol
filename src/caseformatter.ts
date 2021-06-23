@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult, OnTypeFormattingEditProvider } from "vscode";
 import COBOLSourceScanner from './cobolsourcescanner';
 import { COBOLUtils, FoldAction, FoldStyle } from './cobolutils';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { formatOnReturn } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 

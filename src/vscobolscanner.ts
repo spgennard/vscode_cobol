@@ -7,7 +7,7 @@ import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScanne
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 import { ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
-import { VSCOBOLConfiguration } from "./configuration";
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { getWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";

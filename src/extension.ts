@@ -20,7 +20,7 @@ import updateDecorations from './margindecorations';
 import { COBOLFileUtils } from './fileutils';
 
 import VSCOBOLSourceScanner, { clearCOBOLCache } from './vscobolscanner';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { CobolReferenceProvider } from './cobolreferenceprovider';
 import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { VSSourceTreeViewHandler } from './sourceviewtree';
@@ -74,6 +74,14 @@ export class VSExtensionUtils {
         if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
             return true;
         }
+
+        const settings = VSCOBOLConfiguration.get();
+        if (settings.extend_micro_focus_cobol_extension) {
+            if (settings.extend_micro_focus_cobol_extension_editor && langid === 'cobol') {
+                return true;
+            }
+        }
+
         return false
     }
 
@@ -88,16 +96,18 @@ export class VSExtensionUtils {
 
         const settings = VSCOBOLConfiguration.get();
 
-        // if we prefer lowecase cobol id.. then flip to it
-        if (settings.prefer_lowercase_cobol_language_id && doc.languageId === 'COBOL') {
-            vscode.languages.setTextDocumentLanguage(doc, "cobol");
-            return;
-        }
+        if (settings.extend_micro_focus_cobol_extension) {
+            // if we prefer lowecase cobol id.. then flip to it
+            if (settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'COBOL') {
+                vscode.languages.setTextDocumentLanguage(doc, "cobol");
+                return;
+            }
 
-        // if we prefer uppercase COBOL.. flip to it..
-        if (!settings.prefer_lowercase_cobol_language_id && doc.languageId === 'cobol') {
-            vscode.languages.setTextDocumentLanguage(doc, "COBOL");
-            return;
+            // if we prefer uppercase COBOL.. flip to it..
+            if (!settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'cobol') {
+                vscode.languages.setTextDocumentLanguage(doc, "COBOL");
+                return;
+            }
         }
 
         if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
@@ -167,7 +177,8 @@ let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
 
 const blessed_extensions: string[] = [
-    "HCLTechnologies.hclappscancodesweep"    // code scanner
+    "HCLTechnologies.hclappscancodesweep",    // code scanner
+    "Micro-Focus-AMC.mfcobol"                 // Micro Focus COBOL Extension
 ];
 
 const known_problem_extensions: string[][] = [
@@ -427,8 +438,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             } catch
             {
                 //
-            }          
-            
+            }
+
             try {
                 const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
                 VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);

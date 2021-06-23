@@ -2,7 +2,7 @@ import { CompletionItemProvider, TextDocument, Position, CancellationToken, Comp
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { ICOBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import TrieSearch from 'trie-search';
 import { VSExtensionUtils, VSLogger } from './extension';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';

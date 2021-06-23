@@ -2,7 +2,7 @@ import path from "path";
 import fs from 'fs';
 import tempDirectory from 'temp-dir';
 import { VSCobScanner } from "./vscobscanner";
-import { VSCOBOLConfiguration } from "./configuration";
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import VSCOBOLSourceScanner from "./vscobolscanner";
 import { progressStatusBarItem, VSLogger } from "./extension";
 import { ICOBOLSettings } from "./iconfiguration";

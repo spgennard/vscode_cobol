@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from './cobolsourcescanner';
 import VSCOBOLSourceScanner from './vscobolscanner';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { ICOBOLSettings } from './iconfiguration';
 import { VSLogger } from './extension';

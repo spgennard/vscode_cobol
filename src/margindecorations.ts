@@ -1,7 +1,7 @@
 'use strict';
 
 import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType } from 'vscode';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ESourceFormat } from './externalfeatures';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { getWorkspaceFolders } from './cobolfolders';

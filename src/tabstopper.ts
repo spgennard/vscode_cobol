@@ -1,7 +1,7 @@
 'use strict';
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from 'vscode';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 
 function executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean) {
     const tabs = VSCOBOLConfiguration.get().tabstops;

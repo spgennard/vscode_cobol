@@ -1,7 +1,7 @@
 'use strict';
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window } from 'vscode';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ESourceFormat } from './externalfeatures';
 import VSCOBOLSourceScanner from './vscobolscanner';
 

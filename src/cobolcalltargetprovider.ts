@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { COBOLGlobalSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';

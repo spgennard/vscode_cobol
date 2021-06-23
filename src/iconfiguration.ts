@@ -93,7 +93,8 @@ export interface ICOBOLSettings {
 
     enable_source_scanner:boolean;
 
-    prefer_lowercase_cobol_language_id: boolean;
+    extend_micro_focus_cobol_extension: boolean;
+    extend_micro_focus_cobol_extension_editor: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -169,7 +170,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     public enable_source_scanner:boolean;
 
-    public prefer_lowercase_cobol_language_id: boolean;
+    public extend_micro_focus_cobol_extension: boolean;
+    public extend_micro_focus_cobol_extension_editor: boolean;
 
     constructor() {
         this.enable_tabstop = true;
@@ -235,6 +237,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.removed_margin = false;
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
-        this.prefer_lowercase_cobol_language_id = false;
+        this.extend_micro_focus_cobol_extension = false;
+        this.extend_micro_focus_cobol_extension_editor = false;
     }
 }

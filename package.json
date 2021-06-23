@@ -734,6 +734,16 @@
           "type": "boolean",
           "description": "Scan source code (default true)",
           "default": true
+        },
+        "coboleditor.extend_micro_focus_cobol_extension": {
+          "type": "boolean",
+          "description": "Extend the Micro Focus COBOL Extension with functionality from this extension.",
+          "default": false
+        },
+        "coboleditor.extend_micro_focus_cobol_extension_editor": {
+          "type": "boolean",
+          "description": "Use 'Micro Focus' extension for editing files",
+          "default": false
         }
       }
     },
@@ -1205,13 +1215,13 @@
         "command": "cobolplugin.removeColumnNumbers",
         "category": "COBOL",
         "title": "Remove Column Numbers",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.resequenceColumnNumbers",
         "category": "COBOL",
         "title": "Re-sequence Column Numbers",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeKeywordsLowercase",

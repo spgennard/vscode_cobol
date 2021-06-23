@@ -1,7 +1,7 @@
 import TrieSearch from 'trie-search';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import { camelize } from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ICOBOLSettings } from './iconfiguration';
 
 interface TrieObject {

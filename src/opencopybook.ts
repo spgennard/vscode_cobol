@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import * as vscode from 'vscode';
 import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from 'vscode';
-import { VSCOBOLConfiguration } from './configuration';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import COBOLSourceScanner from './cobolsourcescanner';
