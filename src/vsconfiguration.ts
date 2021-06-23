@@ -87,6 +87,8 @@ export class VSCOBOLConfiguration {
         vsconfig.extend_micro_focus_cobol_extension = getBoolean('extend_micro_focus_cobol_extension', false);
         vsconfig.extend_micro_focus_cobol_extension_editor = getBoolean('extend_micro_focus_cobol_extension_editor', false);
         
+        VSCOBOLConfiguration.setupSettingsFromMicroFocusExtension(vsconfig);
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
@@ -129,6 +131,16 @@ export class VSCOBOLConfiguration {
 
     static setupDynamicContexts(vsconfig: ICOBOLSettings):void {
         commands.executeCommand('setContext', 'coboleditor.enable_lc_cobol', vsconfig.extend_micro_focus_cobol_extension);
+    }
+
+    static setupSettingsFromMicroFocusExtension(vsconfig: ICOBOLSettings):void {
+
+        const mfConfigEditor = workspace.getConfiguration('microFocusCOBOL.editor',undefined);
+        if (mfConfigEditor === undefined) {
+            return;
+        }
+
+        vsconfig.microfocus_editor_sourceformat = mfConfigEditor.get("sourceFormat", "fixed");
     }
 
     static flipDepreciatedSettings(vsconfig: ICOBOLSettings): void {

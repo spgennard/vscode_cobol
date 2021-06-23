@@ -39,6 +39,7 @@
 			"1599686519024,src/test/suite/string.cbl",
 			"1597963271928,src/test/suite/test.cbl"
 		],
-		"coboleditor.metadata_knowncopybooks": []
+		"coboleditor.metadata_knowncopybooks": [],
+		"microFocusCOBOL.editor.sourceFormat": "variable"
 	}
 }

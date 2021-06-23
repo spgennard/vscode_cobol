@@ -627,8 +627,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_metadata_knowncopybooks = event.affectsConfiguration("coboleditor.metadata_knowncopybooks");
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
+        const mf_changed = event.affectsConfiguration("microFocusCOBOL.editor");
 
-        if (updated) {
+        if (updated || mf_changed) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();

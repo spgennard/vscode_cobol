@@ -95,6 +95,8 @@ export interface ICOBOLSettings {
 
     extend_micro_focus_cobol_extension: boolean;
     extend_micro_focus_cobol_extension_editor: boolean;
+
+    microfocus_editor_sourceformat: string;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -173,6 +175,8 @@ export class COBOLSettings implements ICOBOLSettings {
     public extend_micro_focus_cobol_extension: boolean;
     public extend_micro_focus_cobol_extension_editor: boolean;
 
+    public microfocus_editor_sourceformat: string;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
@@ -237,7 +241,9 @@ export class COBOLSettings implements ICOBOLSettings {
         this.removed_margin = false;
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
+
         this.extend_micro_focus_cobol_extension = false;
         this.extend_micro_focus_cobol_extension_editor = false;
+        this.microfocus_editor_sourceformat = "fixed";
     }
 }
