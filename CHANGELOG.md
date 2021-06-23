@@ -3,6 +3,30 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.23
+
+**enable a bit more, still wip.. so this might change...**
+
+* [8257e2898ba7538](https://github.com/spgennard/vscode_cobol/commit/8257e2898ba7538) *2021-06-23 21:55:19*
+
+**avoid the possible double flip scenario**
+
+* [0b92792e027d99e](https://github.com/spgennard/vscode_cobol/commit/0b92792e027d99e) *2021-06-23 21:40:49*
+
+**add support for picking up source format from the mf settings**
+
+ * - this enables the commenter to be in-sync
+* [94e04c35840c89d](https://github.com/spgennard/vscode_cobol/commit/94e04c35840c89d) *2021-06-23 20:55:40*
+
+**update**
+
+* [33cbd8f00e6129c](https://github.com/spgennard/vscode_cobol/commit/33cbd8f00e6129c) *2021-06-23 19:41:12*
+
+**Update CHANGELOG.md**
+
+* [f5e8d4a1c6eecac](https://github.com/spgennard/vscode_cobol/commit/f5e8d4a1c6eecac) *2021-06-23 19:40:05*
+
+
 ## 7.6.22
 
 **prepare for delivery**
