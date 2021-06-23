@@ -97,17 +97,23 @@ export class VSExtensionUtils {
         const settings = VSCOBOLConfiguration.get();
 
         if (settings.extend_micro_focus_cobol_extension) {
-            // if we prefer lowecase cobol id.. then flip to it
-            if (settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'COBOL') {
-                vscode.languages.setTextDocumentLanguage(doc, "cobol");
-                return;
+            const pref_gnu = get_gnucobol_prefer_syntax(false);
+
+            // don't do anything if gnucobol_prefer_syntax is active
+            if (!pref_gnu) {
+                // if we prefer lowecase cobol id.. then flip to it
+                if (settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'COBOL') {
+                    vscode.languages.setTextDocumentLanguage(doc, "cobol");
+                    return;
+                }
+
+                // if we prefer uppercase COBOL.. flip to it..
+                if (!settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'cobol') {
+                    vscode.languages.setTextDocumentLanguage(doc, "COBOL");
+                    return;
+                }
             }
 
-            // if we prefer uppercase COBOL.. flip to it..
-            if (!settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'cobol') {
-                vscode.languages.setTextDocumentLanguage(doc, "COBOL");
-                return;
-            }
         }
 
         if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
@@ -222,19 +228,23 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     return dupExtensionMessage;
 }
 
+function get_gnucobol_prefer_syntax(def: boolean): boolean {
+    const gnuConfig = workspace.getConfiguration('gnucobol');
+    if (gnuConfig === undefined) {
+        return def;
+    }
+
+    // if the preferred language is gnucobol, then skip the check
+    return gnuConfig.get<boolean>('prefer_gnucobol_syntax', false);
+}
+
 function checkForCompatibleDebuggers(): boolean {
     const gnuCobolExt = extensions.getExtension("bitlang.gnucobol");
     if (gnuCobolExt === undefined) {
         return true;
     }
 
-    const gnuConfig = workspace.getConfiguration('gnucobol');
-    if (gnuConfig === undefined) {
-        return true;
-    }
-
-    // if the preferred language is gnucobol, then skip the check
-    return !gnuConfig.get<boolean>('prefer_gnucobol_syntax', false);
+    return !get_gnucobol_prefer_syntax(false);
 }
 
 function checkForExtensionConflicts(): string {
