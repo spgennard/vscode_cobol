@@ -3,6 +3,38 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.22
+
+**prepare for delivery**
+
+* [17bcf6ba43df05b](https://github.com/spgennard/vscode_cobol/commit/17bcf6ba43df05b) *2021-06-23 19:39:30*
+
+**fix compilation bug introduced by previous refactoring**
+
+ * add support for using the &#x27;real&#x27; Micro Focus extension
+* [a42eaf740ee5b05](https://github.com/spgennard/vscode_cobol/commit/a42eaf740ee5b05) *2021-06-23 17:03:11*
+
+**add dynamic context via settings (WIP)**
+
+* [ca8298a80bd0fc0](https://github.com/spgennard/vscode_cobol/commit/ca8298a80bd0fc0) *2021-06-21 22:02:17*
+
+**add the building block of dual language id support**
+
+* [9e534e131927540](https://github.com/spgennard/vscode_cobol/commit/9e534e131927540) *2021-06-18 21:07:57*
+
+**add lc cobol enabler**
+
+* [5cc5fbff5809614](https://github.com/spgennard/vscode_cobol/commit/5cc5fbff5809614) *2021-06-18 20:58:21*
+
+**update**
+
+* [1e8ea2949fd66c9](https://github.com/spgennard/vscode_cobol/commit/1e8ea2949fd66c9) *2021-06-16 20:03:03*
+
+**Update CHANGELOG.md**
+
+* [9d34bb79b456b65](https://github.com/spgennard/vscode_cobol/commit/9d34bb79b456b65) *2021-06-16 20:01:56*
+
+
 ## 7.6.15
 
 **refactor debugger check and allow people using gnucobol language to**
