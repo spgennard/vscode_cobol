@@ -3,6 +3,18 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.24
+
+**ensure metadata is not used when extending the mf extension**
+
+ * - leave in memory cache in place
+* [cfd932ee0d2100a](https://github.com/spgennard/vscode_cobol/commit/cfd932ee0d2100a) *2021-06-24 21:56:08*
+
+**Update CHANGELOG.md**
+
+* [a94ba236a9806b0](https://github.com/spgennard/vscode_cobol/commit/a94ba236a9806b0) *2021-06-23 21:59:06*
+
+
 ## 7.6.23
 
 **enable a bit more, still wip.. so this might change...**
