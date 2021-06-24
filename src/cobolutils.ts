@@ -228,12 +228,16 @@ export class COBOLUtils {
 
             if (update) {
                 try {
-                    const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-                    editorConfig.update('metadata_symbols', symbols, false);
-                    editorConfig.update('metadata_entrypoints', entrypoints, false);
-                    editorConfig.update('metadata_types', types, false);
-                    editorConfig.update('metadata_files', files, false);
-                    editorConfig.update('metadata_knowncopybooks', knownCopybooks, false);
+                    if (settings.extend_micro_focus_cobol_extension) {
+                        COBOLUtils.clearGlobalCache();
+                    } else {
+                        const editorConfig = vscode.workspace.getConfiguration('coboleditor');
+                        editorConfig.update('metadata_symbols', symbols, false);
+                        editorConfig.update('metadata_entrypoints', entrypoints, false);
+                        editorConfig.update('metadata_types', types, false);
+                        editorConfig.update('metadata_files', files, false);
+                        editorConfig.update('metadata_knowncopybooks', knownCopybooks, false);
+                    }
                     InMemoryGlobalSymbolCache.isDirty = false;
                 } catch (e) {
                     VSLogger.logException("Failed to update metadata", e);

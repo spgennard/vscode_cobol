@@ -36,7 +36,7 @@ export class VSCobScanner {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
+    private static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
         const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
 
         const options: ForkOptions = {
@@ -214,6 +214,11 @@ export class VSCobScanner {
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
 
+        if (settings.extend_micro_focus_cobol_extension) {
+            VSLogger.logMessage(` - Metadata not available when extend_micro_focus_cobol_extension is enabled`);
+            return;
+        }
+        
         const ws = getWorkspaceFolders();
         const stats = new FileScanStats();
         const files: string[] = [];

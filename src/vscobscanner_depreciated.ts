@@ -160,6 +160,11 @@ export class VSCobScanner_depreciated {
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
 
+        if (settings.extend_micro_focus_cobol_extension) {
+            VSLogger.logMessage(` - Metadata not available when extend_micro_focus_cobol_extension is enabled`);
+            return;
+        }
+        
         if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled() === false) {
             VSLogger.logMessage(`Metadata cache is off, no action taken ${msgViaCommand}`);
             return;
