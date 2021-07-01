@@ -3,6 +3,25 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.6.30
+
+**add support for migrating tasks to mf**
+
+* [cf04d54cfe91713](https://github.com/spgennard/vscode_cobol/commit/cf04d54cfe91713) *2021-07-01 21:13:21*
+
+**flip fix**
+
+* [3853f2642c6f239](https://github.com/spgennard/vscode_cobol/commit/3853f2642c6f239) *2021-06-29 19:27:37*
+
+**upd lock**
+
+* [c66f8b86be32c38](https://github.com/spgennard/vscode_cobol/commit/c66f8b86be32c38) *2021-06-24 21:59:18*
+
+**Update CHANGELOG.md**
+
+* [9065bccac5a08cf](https://github.com/spgennard/vscode_cobol/commit/9065bccac5a08cf) *2021-06-24 21:57:10*
+
+
 ## 7.6.24
 
 **ensure metadata is not used when extending the mf extension**
