@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.6.24",
+  "version": "7.6.30",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1305,6 +1305,12 @@
         "command": "cobolplugin.showCOBOLChannel",
         "category": "COBOL",
         "title": "Show COBOL Channel"
+      },
+      {
+        "command": "cobolplugin.migrateProblemMatchers",
+        "category": "COBOL",
+        "enablement": "isWorkspaceTrusted && editorTextFocus",
+        "title": "Migrate task to Micro Focus"
       }
     ],
     "menus": {
@@ -1388,6 +1394,11 @@
           "command": "cobolplugin.extractSelectionToCopybook",
           "group": "cobolplugin",
           "when": "editorTextFocus && editorLangId == cobol && editorHasSelection && coboleditor.enable_lc_cobol"
+        },
+        {
+          "command": "cobolplugin.migrateProblemMatchers",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && resourceFilename == tasks.json && config.coboleditor.extend_micro_focus_cobol_extension && coboleditor.enable_migrate2mf_tasks"
         }
       ],
       "view/item/context": [

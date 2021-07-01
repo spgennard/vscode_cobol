@@ -7,11 +7,11 @@ import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSPreProc {
 
-    public static areAllPreProcessorsReady(settings: ICOBOLSettings): boolean {
+    public static async areAllPreProcessorsReady(settings: ICOBOLSettings): Promise<boolean> {
         return VSPreProc.registerPreProcessors(settings);
     }
 
-    public static registerPreProcessors(settings: ICOBOLSettings): boolean {
+    public static async registerPreProcessors(settings: ICOBOLSettings): Promise<boolean> {
         let show = false;
         let failed = false;
         let clear = false;
@@ -26,6 +26,12 @@ export class VSPreProc {
                     VSLogger.logMessage(` WARNING: PreProcessors ${extName} not found, continuing without it`);
                     clear = true;
                     break;
+                }
+
+                // wait for extension
+                if (ppExt.isActive === false) {
+                    // wait for extension
+                    await ppExt.activate();
                 }
 
                 // leave early because the extenion is not ready

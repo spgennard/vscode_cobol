@@ -28,7 +28,6 @@ export function clearCOBOLCache(): void {
     InMemoryGlobalSymbolCache.isDirty = false;
 }
 
-
 export class VSScanStats extends ScanStats {
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
@@ -150,9 +149,11 @@ export default class VSCOBOLSourceScanner {
                 //   eg: if the ext depends on this but its exports are queried before it has
                 //        completed the activation.. it just does not work
                 if (config.preprocessor_extensions.length !== 0) {
-                    if (VSPreProc.registerPreProcessors(config) === false) {
-                        return undefined;
-                    }
+                    async () => {
+                        if (await VSPreProc.registerPreProcessors(config) === false) {
+                            return undefined;
+                        }
+                    };
                 }
 
                 const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
@@ -161,7 +162,7 @@ export default class VSCOBOLSourceScanner {
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
 
                 const qcpd = new COBOLSourceScanner(sourceHandler, config,
-                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(config,true),
+                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(config, true),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);

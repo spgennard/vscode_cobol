@@ -51,6 +51,7 @@ import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 import { VSCOBOLFileUtils } from './vsfileutils';
 import { VSPreProc } from './vspreproc';
+import { MigrationUtilsToMicroFocus } from './vsmf_migration';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -884,9 +885,17 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 
+    // default to on.. but only when "extend mf" is enabled via "when" clause.. 
+    vscode.commands.executeCommand("setContext", "coboleditor.enable_migrate2mf_tasks", true);
+
     // handle Micro Focus .lst files!
-    const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc) => {
+    const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+
         VSExtensionUtils.flip_plaintext(doc);
+
+        if (doc.uri.fsPath.endsWith("tasks.json")) {
+            commands.executeCommand("setContext", "coboleditor.enable_migrate2mf_tasks", MigrationUtilsToMicroFocus.isMigrateProblemMatchersActive(doc));
+        }
 
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
         const ws = getWorkspaceFolders();
@@ -1329,7 +1338,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(false), codelensProvider);
 
-    VSExtensionUtils.openChangeLog();
+    const migrateProblemMatchers = vscode.commands.registerCommand('cobolplugin.migrateProblemMatchers', () => {
+        if (vscode.window.activeTextEditor) {
+            MigrationUtilsToMicroFocus.migrateProblemMatchers(vscode.window.activeTextEditor);
+        }
+    });
+    context.subscriptions.push(migrateProblemMatchers);
+
 
     if (settings.process_metadata_cache_on_start) {
         try {

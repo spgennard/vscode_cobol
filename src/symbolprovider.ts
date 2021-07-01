@@ -87,7 +87,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
             return symbols;
         }
 
-        if (VSPreProc.areAllPreProcessorsReady(settings) === false) {
+        if (await VSPreProc.areAllPreProcessorsReady(settings) === false) {
             return symbols;
         }
 
