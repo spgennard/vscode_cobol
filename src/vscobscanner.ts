@@ -213,12 +213,7 @@ export class VSCobScanner {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
-
-        if (settings.extend_micro_focus_cobol_extension) {
-            VSLogger.logMessage(` - Metadata not available when extend_micro_focus_cobol_extension is enabled`);
-            return;
-        }
-        
+      
         const ws = getWorkspaceFolders();
         const stats = new FileScanStats();
         const files: string[] = [];

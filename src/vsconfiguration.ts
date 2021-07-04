@@ -119,7 +119,7 @@ export class VSCOBOLConfiguration {
         vsconfig.maintain_metadata_cache = false;
         vsconfig.maintain_metadata_cache_single_folder = false;
         vsconfig.maintain_metadata_recursive_search = false;
-        vsconfig.metadata_symbols = [];
+        vsconfig.metadata_symbols = [];1
         vsconfig.metadata_entrypoints = [];
         vsconfig.metadata_types = [];
         vsconfig.metadata_files = [];
@@ -141,16 +141,6 @@ export class VSCOBOLConfiguration {
         }
 
         vsconfig.microfocus_editor_sourceformat = mfConfigEditor.get("sourceFormat", "fixed");
-
-        // ensure no metadata is used
-        if (vsconfig.extend_micro_focus_cobol_extension) {
-            vsconfig.metadata_symbols = [];
-            vsconfig.metadata_entrypoints = [];
-            vsconfig.metadata_types = [];
-            vsconfig.metadata_files = [];
-            vsconfig.enable_semantic_token_provider = false;
-            vsconfig.enable_text_replacement = false;
-        }
     }
 
     static flipDepreciatedSettings(vsconfig: ICOBOLSettings): void {
