@@ -5,6 +5,10 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.7.3
 
+**Update CHANGELOG.md**
+
+* [db00a0ba81cff74](https://github.com/spgennard/vscode_cobol/commit/db00a0ba81cff74) *2021-07-04 20:26:04*
+
 **prep for delivery**
 
 * [a4370f5fbd17fa2](https://github.com/spgennard/vscode_cobol/commit/a4370f5fbd17fa2) *2021-07-04 20:25:34*
