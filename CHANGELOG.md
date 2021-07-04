@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.7.3
+
+**prep for delivery**
+
+* [a4370f5fbd17fa2](https://github.com/spgennard/vscode_cobol/commit/a4370f5fbd17fa2) *2021-07-04 20:25:34*
+
+**update version**
+
+* [9f8e1eabb174257](https://github.com/spgennard/vscode_cobol/commit/9f8e1eabb174257) *2021-07-01 21:19:31*
+
+**Update CHANGELOG.md**
+
+* [492271eba15443b](https://github.com/spgennard/vscode_cobol/commit/492271eba15443b) *2021-07-01 21:16:40*
+
+
 ## 7.6.30
 
 **add support for migrating tasks to mf**
