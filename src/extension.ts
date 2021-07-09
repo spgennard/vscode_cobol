@@ -74,7 +74,7 @@ export class VSExtensionUtils {
             const settings = VSCOBOLConfiguration.get();
             if (settings.extend_micro_focus_cobol_extension) {
                 ret.push(
-                    { scheme: 'file', language: 'cobol' } 
+                    { scheme: 'file', language: 'cobol' }
                 );
             }
 
@@ -115,6 +115,12 @@ export class VSExtensionUtils {
             if (!pref_gnu) {
                 // if we prefer lowecase cobol id.. then flip to it
                 if (settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'COBOL') {
+                    vscode.languages.setLanguageConfiguration("cobol",
+                        {
+                            "wordPattern": /[\\-a-zA-Z0-9_@]+/
+
+                        }
+                    );
                     vscode.languages.setTextDocumentLanguage(doc, "cobol");
                     return;
                 }
@@ -957,7 +963,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(copyBookProvider);
 
-    const sourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(false), {
+    const sourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const csd = new COBOLSourceDefinition();
             return csd.provideDefinition(doc, pos, ct);
@@ -983,7 +989,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(COBOLCallTargetProviderProvider);
 
-    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(false), new CobolReferenceProvider()));
+    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(true), new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(false), cobolfixer));
 
     const jclSelectors = [
