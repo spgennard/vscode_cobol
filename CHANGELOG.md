@@ -12,6 +12,10 @@ Changelog for spgennardvscode_cobol.
 
 
 
+**Update CHANGELOG.md**
+
+* [368fd9dce222040](https://github.com/spgennard/vscode_cobol/commit/368fd9dce222040) *2021-07-09 19:20:08*
+
 **upd**
 
 * [53b12ca3ca6c830](https://github.com/spgennard/vscode_cobol/commit/53b12ca3ca6c830) *2021-07-09 19:19:40*
