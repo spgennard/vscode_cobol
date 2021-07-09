@@ -1,52 +1,45 @@
-import TrieSearch from 'trie-search';
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
 import { camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ICOBOLSettings } from './iconfiguration';
 
-interface TrieObject {
-	key: string;
-	index: number;
-}
-
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
-	private words: TrieSearch = new TrieSearch('key');
+	private words: string[];
 	private isCOBOL: boolean;
 
 	public constructor(keywords: string[], forCOBOL: boolean) {
-		let i = 0;
 		this.isCOBOL = forCOBOL;
 
 		/* in the future, this could be extended to add a pri rather than just use the position
 		 * the array
 		 */
-		this.words.addAll(keywords.map((value: string) => {
-			return {
-				key: value,
-				index: ++i
-			};
-		}));
+		this.words = keywords;
 	}
 
 	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number): CompletionItem[] {
+		if (wordToComplete.length === 0) {
+			return [];
+		}
+
 		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
-		const results = this.words.get(wordToComplete);
 		const includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
 		const includeUpper: boolean = iconfig.intellisense_include_uppercase;
 		const includeLower: boolean = iconfig.intellisense_include_lowercase;
 		const includeAsIS: boolean = iconfig.intellisense_include_unchanged;
 
-		// Sort the results by index
-		results.sort((a: TrieObject, b: TrieObject) => {
-			return a.index - b.index;
-		});
-
 		const items: CompletionItem[] = [];
-		for (const [, tag] of results.entries()) {
+		const wordToCompleteLower = wordToComplete.toLowerCase();
+		for (let key of this.words) {
+			const keyLower = key.toLowerCase();
+			if (keyLower.startsWith(wordToCompleteLower) === false) {
+				continue;
+			}
 			const retKeys = [];
 
+			const orgKey = key;
+			key = orgKey.substr(wordToComplete.length);
+
 			//if the text is uppercase, the present the items as uppercase
-			const key = tag.key;
 			if (includeAsIS) {
 				retKeys.push(key);
 			}
@@ -68,7 +61,9 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			})
 
 			for (const uniqueRetKey of uniqueRetKeys) {
-				items.push(new CompletionItem(uniqueRetKey, CompletionItemKind.Keyword));
+				const ci = new CompletionItem(uniqueRetKey, CompletionItemKind.Keyword);
+				ci.detail = orgKey;
+				items.push(ci);
 			}
 
 			if (items.length >= limit) {
@@ -83,10 +78,22 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
 		let wordToComplete = '';
 		let lineBefore = '';
+		const currentLine: string = document.lineAt(position.line).text;
+
+		if (currentLine.endsWith(" ")) {
+			return [];
+		}
+
 		const range = document.getWordRangeAtPosition(position);
 		if (range) {
 			wordToComplete = document.getText(new Range(range.start, position));
 			lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
+		} else {
+			wordToComplete = currentLine.trim();
+			const prevSpace = wordToComplete.lastIndexOf(" ");
+			if (prevSpace !== -1) {
+				wordToComplete = wordToComplete.substr(prevSpace).trim();
+			}
 		}
 
 		if (this.isCOBOL) {
