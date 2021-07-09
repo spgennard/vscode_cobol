@@ -3,6 +3,32 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.7.8
+### GitHub [#290](https://github.com/spgennard/vscode_cobol/issues/290) Go To Definition with MF Cobol Extension  
+
+**Go To Definition with MF Cobol Extension Fix #290**
+
+* [87186f847cd07a7](https://github.com/spgennard/vscode_cobol/commit/87186f847cd07a7) *2021-07-09 19:18:42*
+
+
+
+**upd**
+
+* [53b12ca3ca6c830](https://github.com/spgennard/vscode_cobol/commit/53b12ca3ca6c830) *2021-07-09 19:19:40*
+
+**remove ";1", that did not affect compilation**
+
+* [a535ae4199e8c2b](https://github.com/spgennard/vscode_cobol/commit/a535ae4199e8c2b) *2021-07-05 06:56:40*
+
+**update**
+
+* [572bb6d7debf51c](https://github.com/spgennard/vscode_cobol/commit/572bb6d7debf51c) *2021-07-04 20:27:50*
+
+**Update CHANGELOG.md**
+
+* [45641b51b093421](https://github.com/spgennard/vscode_cobol/commit/45641b51b093421) *2021-07-04 20:27:19*
+
+
 ## 7.7.3
 
 **Update CHANGELOG.md**
