@@ -89,16 +89,23 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const workMap = new Map<string, string>();
 
         const items: CompletionItem[] = [];
+        const wordToCompleteLower = wordToComplete.toLowerCase();
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
             //if the text is uppercase, the present the items as uppercase
             const key: COBOLToken = words[c];
             const retKeys = [];
-
+            
             if (workMap.has(key.tokenNameLower)) {
                 continue;
             }
             workMap.set(key.tokenNameLower, key.tokenNameLower);
+
+            const orgKey = key.tokenName;
+            if (key.tokenNameLower.startsWith(wordToCompleteLower)) {
+                key.tokenName = key.tokenName.substring(wordToComplete.length);
+                key.tokenNameLower = key.tokenNameLower.substring(wordToComplete.length);
+            }
 
             if (includeAsIS) {
                 retKeys.push((key.tokenName));
@@ -121,7 +128,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             })
 
             for (const uniqueRetKey of uniqueRetKeys) {
-                items.push(new CompletionItem(uniqueRetKey, kind));
+                const ci = new CompletionItem(uniqueRetKey, kind);
+                ci.detail = orgKey;
+                items.push(ci);
             }
 
             if (items.length >= limit) {
@@ -238,7 +247,15 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             if (lastSpace === -1) {
                 wordBefore = currentLine;
             } else {
-                wordBefore = currentLine.substr(1 + lastSpace);
+                const lastSpaceLine = currentLine.substr(0, lastSpace);
+                let prevLastSpace = lastSpaceLine.lastIndexOf(" ");
+                if (prevLastSpace === -1) {
+                    prevLastSpace = 0;
+                }
+                const l = lastSpace -  prevLastSpace;
+                wordBefore = currentLine.substr(prevLastSpace, l); 
+                wordToComplete = currentLine.substr(1+lastSpace);
+                
             }
             wordBeforeLower = wordBefore.toLowerCase();
         }
