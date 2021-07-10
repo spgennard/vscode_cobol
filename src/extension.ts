@@ -115,12 +115,13 @@ export class VSExtensionUtils {
             if (!pref_gnu) {
                 // if we prefer lowecase cobol id.. then flip to it
                 if (settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'COBOL') {
-                    vscode.languages.setLanguageConfiguration("cobol",
-                        {
-                            "wordPattern": /[\\-a-zA-Z0-9_@]+/
-
-                        }
-                    );
+                    if (settings.extend_micro_focus_cobol_extension_editor_fix290) {
+                        vscode.languages.setLanguageConfiguration("cobol",
+                            {
+                                "wordPattern": /[\\-a-zA-Z0-9_@]+/
+                            }
+                        );
+                    }
                     vscode.languages.setTextDocumentLanguage(doc, "cobol");
                     return;
                 }

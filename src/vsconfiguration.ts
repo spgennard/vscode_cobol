@@ -86,6 +86,7 @@ export class VSCOBOLConfiguration {
 
         vsconfig.extend_micro_focus_cobol_extension = getBoolean('extend_micro_focus_cobol_extension', false);
         vsconfig.extend_micro_focus_cobol_extension_editor = getBoolean('extend_micro_focus_cobol_extension_editor', false);
+        vsconfig.extend_micro_focus_cobol_extension_editor_fix290 = getBoolean('extend_micro_focus_cobol_extension_editor_fix290', true);
         
         VSCOBOLConfiguration.setupSettingsFromMicroFocusExtension(vsconfig);
 

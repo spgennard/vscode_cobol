@@ -744,6 +744,11 @@
           "type": "boolean",
           "description": "Use 'Micro Focus' extension for editing files",
           "default": false
+        },
+        "coboleditor.extend_micro_focus_cobol_extension_editor_fix290": {
+          "type": "boolean",
+          "description": "Apply fix for issue290 (when MF extension active) [restart required if changed]",
+          "default": true
         }
       }
     },
