@@ -3,6 +3,28 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.7.9
+### GitHub [#290](https://github.com/spgennard/vscode_cobol/issues/290) Go To Definition with MF Cobol Extension  
+
+**Apply fix under property - Fix #290**
+
+* [f079adaa15d4e0a](https://github.com/spgennard/vscode_cobol/commit/f079adaa15d4e0a) *2021-07-10 09:14:51*
+
+
+
+**remove use of trie class**
+
+* [51a36c96a5b1795](https://github.com/spgennard/vscode_cobol/commit/51a36c96a5b1795) *2021-07-09 22:32:17*
+
+**tweak provider**
+
+* [4dcd938c8f26f6e](https://github.com/spgennard/vscode_cobol/commit/4dcd938c8f26f6e) *2021-07-09 20:40:32*
+
+**Update CHANGELOG.md**
+
+* [dbfe9ad1d42933d](https://github.com/spgennard/vscode_cobol/commit/dbfe9ad1d42933d) *2021-07-09 19:23:53*
+
+
 ## 7.7.8
 ### GitHub [#290](https://github.com/spgennard/vscode_cobol/issues/290) Go To Definition with MF Cobol Extension  
 
