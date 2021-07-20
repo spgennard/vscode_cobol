@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 
-import { commands, workspace } from 'vscode';
+import { commands, extensions, workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from './iconfiguration';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { COBOLFileUtils } from './fileutils';
@@ -51,7 +51,7 @@ export class VSCOBOLConfiguration {
 
         // scan for comments can cause a file access.. so it cannot be trusted
         vsconfig.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
-        
+
         vsconfig.scan_comment_copybook_token = getscan_comment_copybook_token();
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
         vsconfig.cache_metadata_user_directory = getString("cache_metadata_user_directory", "");
@@ -84,11 +84,19 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
 
-        vsconfig.extend_micro_focus_cobol_extension = getBoolean('extend_micro_focus_cobol_extension', false);
-        vsconfig.extend_micro_focus_cobol_extension_editor = getBoolean('extend_micro_focus_cobol_extension_editor', false);
-        vsconfig.extend_micro_focus_cobol_extension_editor_fix290 = getBoolean('extend_micro_focus_cobol_extension_editor_fix290', true);
-        
-        VSCOBOLConfiguration.setupSettingsFromMicroFocusExtension(vsconfig);
+        const mfcobol_extension = extensions.getExtension('Micro-Focus-AMC.mfcobol');
+        if (mfcobol_extension === undefined) {
+            vsconfig.extend_micro_focus_cobol_extension = false;
+            vsconfig.extend_micro_focus_cobol_extension_editor = false;
+            vsconfig.extend_micro_focus_cobol_extension_editor_fix290 = false;
+        } else {
+            vsconfig.extend_micro_focus_cobol_extension = getBoolean('extend_micro_focus_cobol_extension', false);
+            vsconfig.extend_micro_focus_cobol_extension_editor = getBoolean('extend_micro_focus_cobol_extension_editor', false);
+            vsconfig.extend_micro_focus_cobol_extension_editor_fix290 = getBoolean('extend_micro_focus_cobol_extension_editor_fix290', true);
+
+            VSCOBOLConfiguration.setupSettingsFromMicroFocusExtension(vsconfig);
+        }
+
 
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
@@ -130,13 +138,13 @@ export class VSCOBOLConfiguration {
     }
 
 
-    static setupDynamicContexts(vsconfig: ICOBOLSettings):void {
+    static setupDynamicContexts(vsconfig: ICOBOLSettings): void {
         commands.executeCommand('setContext', 'coboleditor.enable_lc_cobol', vsconfig.extend_micro_focus_cobol_extension);
     }
 
-    static setupSettingsFromMicroFocusExtension(vsconfig: ICOBOLSettings):void {
+    static setupSettingsFromMicroFocusExtension(vsconfig: ICOBOLSettings): void {
 
-        const mfConfigEditor = workspace.getConfiguration('microFocusCOBOL.editor',undefined);
+        const mfConfigEditor = workspace.getConfiguration('microFocusCOBOL.editor', undefined);
         if (mfConfigEditor === undefined) {
             return;
         }

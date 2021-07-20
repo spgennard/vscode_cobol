@@ -3,13 +3,13 @@ import fs from 'fs';
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
-// let detab = require('detab');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 
 import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
 import path from 'path';
+import { StringBuilder } from 'typescript-string-operations';
 
 
 export class FileSourceHandler implements ISourceHandler {
@@ -136,6 +136,34 @@ export class FileSourceHandler implements ISourceHandler {
         }
 
         return line;
+    }
+
+    getLineTabExpanded(lineNumber: number):string|undefined {
+        const unexpandedLine = this.getLine(lineNumber, true);
+        if (unexpandedLine === undefined) {
+            return undefined;
+        }
+
+        // do we have a tab?
+        if (unexpandedLine.indexOf('\t') !== -1) {
+            return unexpandedLine;
+        }
+
+        const tabSize = 4;
+
+        let col = 0;
+        const buf = new StringBuilder();
+        for (const c of unexpandedLine) {
+            if (c === '\t') {
+                do {
+                    buf.Append(' ');
+                } while (++col % tabSize !== 0);
+            } else {
+                buf.Append(c);
+            }
+            col++;
+        }
+        return buf.ToString();
     }
 
     setDumpAreaA(flag: boolean): void {

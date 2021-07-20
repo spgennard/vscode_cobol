@@ -52,6 +52,7 @@ import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 import { VSCOBOLFileUtils } from './vsfileutils';
 import { VSPreProc } from './vspreproc';
 import { MigrationUtilsToMicroFocus } from './vsmf_migration';
+import { DebugAdapterInterceptor } from './vsmf_debugext';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -1352,7 +1353,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(migrateProblemMatchers);
 
-
+    const autoDummper = DebugAdapterInterceptor.registerDebugAdapterInterceptor();
+    context.subscriptions.push(autoDummper);
+    
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

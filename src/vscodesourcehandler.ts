@@ -1,4 +1,6 @@
+import { StringBuilder } from 'typescript-string-operations';
 import * as vscode from 'vscode';
+import { workspace } from 'vscode';
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { VSCOBOLFileUtils } from './vsfileutils';
@@ -30,7 +32,6 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
         this.updatedSource = new Map<number, string>();
-
 
         // if we cannot be trusted and the file is outside the workspace, dont read it
         if (vscode.workspace.isTrusted === false && !this.isSourceInWorkSpace) {
@@ -113,6 +114,35 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
 
         return line;
+    }
+
+    getLineTabExpanded(lineNumber: number):string|undefined {
+        const unexpandedLine = this.getLine(lineNumber, true);
+        if (unexpandedLine === undefined) {
+            return undefined;
+        }
+
+        // do we have a tab?
+        if (unexpandedLine.indexOf('\t') === -1) {
+            return unexpandedLine;
+        }
+
+        const editorConfig = workspace.getConfiguration('editor');
+        const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>('tabSize', 4);
+
+        let col = 0;
+        const buf = new StringBuilder();
+        for (const c of unexpandedLine) {
+            if (c === '\t') {
+                do {
+                    buf.Append(' ');
+                } while (++col % tabSize !== 0);
+            } else {
+                buf.Append(c);
+            }
+            col++;
+        }
+        return buf.ToString();
     }
 
     setDumpAreaA(flag: boolean): void {

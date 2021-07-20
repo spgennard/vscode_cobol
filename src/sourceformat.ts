@@ -64,7 +64,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
 
     for (let i = 0; i < maxLines; i++) {
 
-        let lineText = doc.getLine(i, true);
+        let lineText = doc.getLineTabExpanded(i);
         if (lineText === undefined) {
             break;
         }
@@ -74,6 +74,7 @@ export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings
             skippedLines++;
             continue;
         }
+
         const line = lineText.toLowerCase();
         const validFixedLine = isValidFixedLine(line);
         if (validFixedLine) {
