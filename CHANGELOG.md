@@ -3,6 +3,36 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.7.19
+### GitHub [#293](https://github.com/spgennard/vscode_cobol/issues/293) Automatic source detection file format fails when source includes tabstops when coboleditor.enable_tabstop&#x3D;false &amp;&amp; editor.useTabStops&#x3D;true  
+
+**Do not display the margin, if the line contains tab Fix #293**
+
+* [82629684ac38243](https://github.com/spgennard/vscode_cobol/commit/82629684ac38243) *2021-07-20 22:12:36*
+
+
+
+**prep**
+
+* [aeea7ace75996b0](https://github.com/spgennard/vscode_cobol/commit/aeea7ace75996b0) *2021-07-20 22:23:47*
+
+**disable it, for the moment**
+
+* [475200e15d5bc28](https://github.com/spgennard/vscode_cobol/commit/475200e15d5bc28) *2021-07-20 22:22:59*
+
+**add start of the debugger extension for special registers scope**
+
+* [a799b9afe651b51](https://github.com/spgennard/vscode_cobol/commit/a799b9afe651b51) *2021-07-20 22:22:12*
+
+**tidy code**
+
+* [19832c72552e98c](https://github.com/spgennard/vscode_cobol/commit/19832c72552e98c) *2021-07-20 22:15:55*
+
+**Update CHANGELOG.md**
+
+* [da283905fb34db9](https://github.com/spgennard/vscode_cobol/commit/da283905fb34db9) *2021-07-10 09:26:59*
+
+
 ## 7.7.9
 ### GitHub [#290](https://github.com/spgennard/vscode_cobol/issues/290) Go To Definition with MF Cobol Extension  
 
