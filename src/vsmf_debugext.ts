@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { Variable, Scope } from 'vscode-debugadapter';
+import { VSCOBOLConfiguration } from './vsconfiguration';
 
 export class DebugAdapterInterceptor implements vscode.DebugAdapterTracker {
 	
@@ -13,19 +14,26 @@ export class DebugAdapterInterceptor implements vscode.DebugAdapterTracker {
     private lastSPRegisters: Variable[] = [];
 
     async onDidSendMessage(message: DebugProtocol.ProtocolMessage):Promise<void> {
+        const config = VSCOBOLConfiguration.get();
+        if (config.extend_micro_focus_cobol_extension_debugger === false) {
+            return;
+        }
+
         if (message.type === 'response') {
 			const m = message as DebugProtocol.Response;
 			if (m.command === 'scopes' && m.body && Array.isArray(m.body.scopes)) {
 				m.body.scopes.push(new Scope('Special Registers', DebugAdapterInterceptor.SP_REGISTER_SCOPE_ID));
 			}
+
 			if (m.command === 'variables' && this.pendingVariableResponses.has(m.request_seq)) {
 				m.body = m.body || {};	// make sure that the response has a body
 				m.body.variables = this.pendingVariableResponses.get(m.request_seq);
-				m.success = true;	// override any error that might be returned from the DA
-				delete m.message;	// clear the error message
+				m.success = true;	    // override any error that might be returned from the DA
+				delete m.message;	    // clear the error message
 				this.pendingVariableResponses.delete(m.request_seq);
 			}
 		}
+
         if (message.type === 'event') {
 			const event = message as DebugProtocol.Event;
 			if (event.event === 'stopped') {	// listen on stopped events so that we can have some "state" that changes
@@ -57,6 +65,19 @@ export class DebugAdapterInterceptor implements vscode.DebugAdapterTracker {
         return reg;
     }
 
+
+    readonly specialRegisters: string[] = [
+        "RETURN-CODE",
+        "SORT-RETURN",
+        "JSON-CODE",
+        "JSON-STATUS",
+        "XML-CODE",
+        "XML-EVENT",
+        "XML-NTEXT",
+        "XML-TEXT",
+        "SQLCODE"
+    ];
+
     async getSpecialRegisters() : Promise<Variable[]> {
         const vars: Variable[] = [];
 
@@ -68,19 +89,7 @@ export class DebugAdapterInterceptor implements vscode.DebugAdapterTracker {
         let response = await ds.customRequest('stackTrace', { threadId: 1 })
         const frameId = response.stackFrames[0].id;
 
-        const specialRegisters: string[] = [
-            "RETURN-CODE",
-            "SORT-RETURN",
-            "JSON-CODE",
-            "JSON-STATUS",
-            "XML-CODE",
-            "XML-EVENT",
-            "XML-NTEXT",
-            "XML-TEXT",
-            "SQLCODE"
-        ];
-
-        for (const specialRegister of specialRegisters) {
+        for (const specialRegister of this.specialRegisters) {
             try {
                 response = await ds.customRequest('evaluate', { expression: specialRegister, frameId: frameId });
                 if (response !== undefined && response.result !== undefined) {
@@ -99,11 +108,7 @@ export class DebugAdapterInterceptor implements vscode.DebugAdapterTracker {
                     }
 
                     const res = response.result;
-
-
-                    if (vscode.debug.activeDebugConsole) {
-                        vars.push(new Variable(specialRegister, `${res}`));
-                    }
+                    vars.push(new Variable(specialRegister, `${res}`));
                 }
             }
             catch {

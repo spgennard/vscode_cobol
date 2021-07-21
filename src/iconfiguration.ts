@@ -96,6 +96,7 @@ export interface ICOBOLSettings {
     extend_micro_focus_cobol_extension: boolean;
     extend_micro_focus_cobol_extension_editor: boolean;
     extend_micro_focus_cobol_extension_editor_fix290: boolean;
+    extend_micro_focus_cobol_extension_debugger: boolean;
 
     microfocus_editor_sourceformat: string;
 }
@@ -176,6 +177,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public extend_micro_focus_cobol_extension: boolean;
     public extend_micro_focus_cobol_extension_editor: boolean;
     public extend_micro_focus_cobol_extension_editor_fix290: boolean;
+    public extend_micro_focus_cobol_extension_debugger: boolean;
 
     public microfocus_editor_sourceformat: string;
 
@@ -247,6 +249,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.extend_micro_focus_cobol_extension = false;
         this.extend_micro_focus_cobol_extension_editor = false;
         this.extend_micro_focus_cobol_extension_editor_fix290 = true;
+        this.extend_micro_focus_cobol_extension_debugger = false;
         
         this.microfocus_editor_sourceformat = "fixed";
     }

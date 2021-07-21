@@ -749,6 +749,11 @@
           "type": "boolean",
           "description": "Apply fix for issue290 (when MF extension active) [restart required if changed]",
           "default": true
+        },
+        "coboleditor.extend_micro_focus_cobol_extension_debugger": {
+          "type": "boolean",
+          "description": "Extend Micro Focus native debugger [restart required if changed]",
+          "default": true
         }
       }
     },
