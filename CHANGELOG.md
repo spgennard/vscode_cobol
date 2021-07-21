@@ -3,6 +3,17 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.7.22
+
+**upd deps**
+
+* [72b9b13a95f7fd7](https://github.com/spgennard/vscode_cobol/commit/72b9b13a95f7fd7) *2021-07-21 23:36:42*
+
+**Update CHANGELOG.md**
+
+* [bfb7952f8d72332](https://github.com/spgennard/vscode_cobol/commit/bfb7952f8d72332) *2021-07-21 23:25:47*
+
+
 ## 7.7.21
 
 **Update CHANGELOG.md**
