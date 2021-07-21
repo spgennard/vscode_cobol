@@ -5,6 +5,10 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.7.21
 
+**Update CHANGELOG.md**
+
+* [35204585cafd59d](https://github.com/spgennard/vscode_cobol/commit/35204585cafd59d) *2021-07-21 23:24:53*
+
 **add config for debugger ext**
 
 * [220f3b27f522b61](https://github.com/spgennard/vscode_cobol/commit/220f3b27f522b61) *2021-07-21 20:45:20*
