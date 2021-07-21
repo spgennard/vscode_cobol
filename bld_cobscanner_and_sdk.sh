@@ -38,6 +38,8 @@ npm init -y >/dev/null
 npm install lzjs
 npm install n-readlines
 npm install performance-now
+npm install minimatch
+npm install typescript-string-operations
 npm version --allow-same-version $PACKAGE_VERSION
 npm install
 depcheck
