@@ -3,6 +3,17 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.7.21
+
+**add config for debugger ext**
+
+* [220f3b27f522b61](https://github.com/spgennard/vscode_cobol/commit/220f3b27f522b61) *2021-07-21 20:45:20*
+
+**Update CHANGELOG.md**
+
+* [5f73a5ebd893a29](https://github.com/spgennard/vscode_cobol/commit/5f73a5ebd893a29) *2021-07-20 22:24:23*
+
+
 ## 7.7.19
 ### GitHub [#293](https://github.com/spgennard/vscode_cobol/issues/293) Automatic source detection file format fails when source includes tabstops when coboleditor.enable_tabstop&#x3D;false &amp;&amp; editor.useTabStops&#x3D;true  
 
