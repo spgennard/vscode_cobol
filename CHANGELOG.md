@@ -5,6 +5,14 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.7.28
 
+**update**
+
+* [03c1f1dbfe91d8e](https://github.com/spgennard/vscode_cobol/commit/03c1f1dbfe91d8e) *2021-07-28 11:41:28*
+
+**Update CHANGELOG.md**
+
+* [03e2f15402a4854](https://github.com/spgennard/vscode_cobol/commit/03e2f15402a4854) *2021-07-28 11:38:50*
+
 **remove features that extended the 'Micro Focus COBOL Extension'**
 
  * to be compliant with its license.
