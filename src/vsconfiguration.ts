@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 
-import { commands, extensions, workspace } from 'vscode';
+import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from './iconfiguration';
 import { CacheDirectoryStrategy } from './externalfeatures';
 import { COBOLFileUtils } from './fileutils';
@@ -84,27 +84,9 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
 
-        const mfcobol_extension = extensions.getExtension('Micro-Focus-AMC.mfcobol');
-        if (mfcobol_extension === undefined) {
-            vsconfig.extend_micro_focus_cobol_extension = false;
-            vsconfig.extend_micro_focus_cobol_extension_editor = false;
-            vsconfig.extend_micro_focus_cobol_extension_editor_fix290 = false;
-            vsconfig.extend_micro_focus_cobol_extension_debugger = false;
-        } else {
-            vsconfig.extend_micro_focus_cobol_extension = getBoolean('extend_micro_focus_cobol_extension', false);
-            vsconfig.extend_micro_focus_cobol_extension_editor = getBoolean('extend_micro_focus_cobol_extension_editor', false);
-            vsconfig.extend_micro_focus_cobol_extension_editor_fix290 = getBoolean('extend_micro_focus_cobol_extension_editor_fix290', true);
-            vsconfig.extend_micro_focus_cobol_extension_debugger = getBoolean('extend_micro_focus_cobol_extension_debugger',false);
-            VSCOBOLConfiguration.setupSettingsFromMicroFocusExtension(vsconfig);
-        }
-
-
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
-
-        // setup dynamic contexts given settings
-        VSCOBOLConfiguration.setupDynamicContexts(vsconfig);
 
         return vsconfig;
     }
@@ -136,21 +118,6 @@ export class VSCOBOLConfiguration {
         vsconfig.enable_semantic_token_provider = false;
         vsconfig.enable_text_replacement = false;
         vsconfig.preprocessor_extensions = [];
-    }
-
-
-    static setupDynamicContexts(vsconfig: ICOBOLSettings): void {
-        commands.executeCommand('setContext', 'coboleditor.enable_lc_cobol', vsconfig.extend_micro_focus_cobol_extension);
-    }
-
-    static setupSettingsFromMicroFocusExtension(vsconfig: ICOBOLSettings): void {
-
-        const mfConfigEditor = workspace.getConfiguration('microFocusCOBOL.editor', undefined);
-        if (mfConfigEditor === undefined) {
-            return;
-        }
-
-        vsconfig.microfocus_editor_sourceformat = mfConfigEditor.get("sourceFormat", "fixed");
     }
 
     static flipDepreciatedSettings(vsconfig: ICOBOLSettings): void {

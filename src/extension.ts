@@ -51,8 +51,6 @@ import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 import { VSCOBOLFileUtils } from './vsfileutils';
 import { VSPreProc } from './vspreproc';
-import { MigrationUtilsToMicroFocus } from './vsmf_migration';
-import { DebugAdapterInterceptor } from './vsmf_debugext';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -63,7 +61,7 @@ let shown_enable_semantic_token_provider = false;
 let messageBoxDone = false;
 
 export class VSExtensionUtils {
-    public static getAllCobolSelectors(activate_lc_cobol: boolean): vscode.DocumentSelector {
+    public static getAllCobolSelectors(): vscode.DocumentSelector {
         const ret = [
             { scheme: 'file', language: 'COBOL_MF_LISTFILE' },
             { scheme: 'file', language: 'COBOL' },
@@ -71,28 +69,12 @@ export class VSExtensionUtils {
             { scheme: 'file', language: 'ACUCOBOL' }    // alias
         ];
 
-        if (activate_lc_cobol) {
-            const settings = VSCOBOLConfiguration.get();
-            if (settings.extend_micro_focus_cobol_extension) {
-                ret.push(
-                    { scheme: 'file', language: 'cobol' }
-                );
-            }
-
-        }
         return ret;
     }
 
     public static isKnownCOBOLLanguageId(langid: string): boolean {
         if (langid === 'COBOL' || langid === 'ACUCOBOL' || langid === 'COBOLIT') {
             return true;
-        }
-
-        const settings = VSCOBOLConfiguration.get();
-        if (settings.extend_micro_focus_cobol_extension) {
-            if (settings.extend_micro_focus_cobol_extension_editor && langid === 'cobol') {
-                return true;
-            }
         }
 
         return false
@@ -105,35 +87,6 @@ export class VSExtensionUtils {
     public static flip_plaintext(doc: TextDocument): void {
         if (doc === undefined) {
             return;
-        }
-
-        const settings = VSCOBOLConfiguration.get();
-
-        if (settings.extend_micro_focus_cobol_extension) {
-            const pref_gnu = get_gnucobol_prefer_syntax(false);
-
-            // don't do anything if gnucobol_prefer_syntax is active
-            if (!pref_gnu) {
-                // if we prefer lowecase cobol id.. then flip to it
-                if (settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'COBOL') {
-                    if (settings.extend_micro_focus_cobol_extension_editor_fix290) {
-                        vscode.languages.setLanguageConfiguration("cobol",
-                            {
-                                "wordPattern": /[\\-a-zA-Z0-9_@]+/
-                            }
-                        );
-                    }
-                    vscode.languages.setTextDocumentLanguage(doc, "cobol");
-                    return;
-                }
-
-                // if we prefer uppercase COBOL.. flip to it..
-                if (!settings.extend_micro_focus_cobol_extension_editor && doc.languageId === 'cobol') {
-                    vscode.languages.setTextDocumentLanguage(doc, "COBOL");
-                    return;
-                }
-            }
-
         }
 
         if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
@@ -461,14 +414,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             {
                 //
             }
-            try {
-                const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting',
-                    { languageId: 'cobol' }).get<number>("enabled");
-                VSLogger.logMessage(` [cobol]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
-            } catch
-            {
-                //
-            }
 
             try {
                 const workbench_theme = workspace.getConfiguration('workbench').get<string>("colorTheme");
@@ -657,9 +602,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_metadata_knowncopybooks = event.affectsConfiguration("coboleditor.metadata_knowncopybooks");
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
-        const mf_changed = event.affectsConfiguration("microFocusCOBOL.editor");
 
-        if (updated || mf_changed) {
+        if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
@@ -901,10 +845,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         VSExtensionUtils.flip_plaintext(doc);
 
-        if (doc.uri.fsPath.endsWith("tasks.json")) {
-            commands.executeCommand("setContext", "coboleditor.enable_migrate2mf_tasks", MigrationUtilsToMicroFocus.isMigrateProblemMatchersActive(doc));
-        }
-
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
         const ws = getWorkspaceFolders();
         if (ws !== undefined) {
@@ -957,7 +897,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     context.subscriptions.push(insertIgnoreCommentLineCommand);
 
-    const copyBookProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(true), {
+    const copyBookProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const ccbp = new opencopybook.COBOLCopyBookProvider();
             return ccbp.provideDefinition(doc, pos, ct);
@@ -965,7 +905,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(copyBookProvider);
 
-    const sourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(true), {
+    const sourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const csd = new COBOLSourceDefinition();
             return csd.provideDefinition(doc, pos, ct);
@@ -974,7 +914,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(sourcedefProvider);
 
     if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
-        const cachedSourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(false), {
+        const cachedSourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(), {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
                 const csdp = new CachedCOBOLSourceDefinition();
                 return csdp.provideDefinition(doc, pos, ct);
@@ -983,7 +923,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         context.subscriptions.push(cachedSourcedefProvider);
     }
 
-    const COBOLCallTargetProviderProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(true), {
+    const COBOLCallTargetProviderProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const csdp = new COBOLCallTargetProvider();
             return csdp.provideDefinition(doc, pos, ct);
@@ -991,8 +931,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(COBOLCallTargetProviderProvider);
 
-    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(true), new CobolReferenceProvider()));
-    context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(false), cobolfixer));
+    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(), new CobolReferenceProvider()));
+    context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(), cobolfixer));
 
     const jclSelectors = [
         { scheme: 'file', language: 'JCL' }
@@ -1008,7 +948,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const allKeywordsUnique = [...new Set(allKeywords)];
     const keywordProvider = new KeywordAutocompleteCompletionItemProvider(allKeywordsUnique, true);
-    const keywordProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(true), keywordProvider);
+    const keywordProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
     if (settings.outline) {
@@ -1017,11 +957,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         /* TODO: add .DIR keywords too */
         const documentSymbolProvider = new CobolDocumentSymbolProvider();
-        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(true), documentSymbolProvider));
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(), documentSymbolProvider));
     }
 
     const cobolProvider = new CobolSourceCompletionItemProvider(VSCOBOLConfiguration.get());
-    const cobolProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(true), cobolProvider);
+    const cobolProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(), cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 
     // const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
@@ -1336,7 +1276,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     const provider = VSSemanticProvider.provider();
-    vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(false), provider, VSSemanticProvider.getLegend());
+    vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(), provider, VSSemanticProvider.getLegend());
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actionCodelens = commands.registerCommand("coboleditor.ppcodelenaction", (args: string) => {
@@ -1344,18 +1284,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(actionCodelens);
     const codelensProvider = new VSPPCodeLens();
-    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(false), codelensProvider);
+    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(), codelensProvider);
 
-    const migrateProblemMatchers = vscode.commands.registerCommand('cobolplugin.migrateProblemMatchers', () => {
-        if (vscode.window.activeTextEditor) {
-            MigrationUtilsToMicroFocus.migrateProblemMatchers(vscode.window.activeTextEditor);
-        }
-    });
-    context.subscriptions.push(migrateProblemMatchers);
-
-    const autoDummper = DebugAdapterInterceptor.registerDebugAdapterInterceptor();
-    context.subscriptions.push(autoDummper);
-    
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

@@ -320,9 +320,9 @@ Visual Studio Code workspaces are not "projects" but do allow you keep your sour
 
 Things to consider:
 
- - If you have copybooks, you should change the ```coboleditor.copybookdirs``` settings to setup where the extension can find your copybooks
-  - If use the *COPY* verb with this extension, you may also need to adjust the ```coboleditor.copybookexts``` settings (json array).
-  - If you want the extension to understand the contents of your copybook before you access it, then turn on the ```coboleditor.parse_copybooks_for_references``` settings (json array) to allow the extension to look inside the copybook references
+- If you have copybooks, you should change the ```coboleditor.copybookdirs``` settings to setup where the extension can find your copybooks
+- If use the *COPY* verb with this extension, you may also need to adjust the ```coboleditor.copybookexts``` settings (json array).
+- If you want the extension to understand the contents of your copybook before you access it, then turn on the ```coboleditor.parse_copybooks_for_references``` settings (json array) to allow the extension to look inside the copybook references
 
 
 ### COBOL Linter
@@ -424,33 +424,13 @@ For example, to ensure you use utf8 for all you files use:
 }
 ```
 
-## Integration with Micro Focus COBOL extension
-
-The [Micro Focus COBOL extension](https://marketplace.visualstudio.com/items?itemName=Micro-Focus-AMC.mfcobol) is new (June 2021) and has good support for debugging applications and can be used in conjuction with this extension.
-
-To enable the integration support enable the following configuration property:
-
-```json
-"coboleditor.extend_micro_focus_cobol_extension": true
-```
-
-If you specifically want to the Micro Focus COBOL extension COBOL language colouriser, you can enable the following property:
-
-```json
-"coboleditor.extend_micro_focus_cobol_extension_editor": true
-```
-
-If you are editing your "tasks.json" file, you are also provided with a tool via your right mouse context menu that allows you migrate the "problem matchers" from this extension to the Micro Focus COBOL extension.
-
-If you have enabled ```coboleditor.extend_micro_focus_cobol_extension_editor``` property the source file format is taken from the property ```microFocusCOBOL.editor.sourceFormat```.
-
 ## Tips
 
 - If you find you are not getting any symbols in the outline view or the peek/goto definition functionality does not work, please check the ``Output->COBOL`` panel as it may give you a reason for this.
 
    For example the editor line limit has been surpassed or the file fails to be identified as a COBOL source file.
 
- - The colors in the editor can be changed on a per theme basis, for example:
+  - The colors in the editor can be changed on a per theme basis, for example:
 
 ```json
 "editor.tokenColorCustomizations": {
@@ -555,9 +535,9 @@ The extension only enables features that allow basic editing, making it ideal fo
 
 ## Shortcuts
 
- - [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
- - [ALT] + [SHIFT] + [A]: Change to ACUCOBOL-GT Syntax
- - [ALT] + [SHIFT] + [M]: Toggle margins (overrides user/workspace settings)
+  - [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
+- [ALT] + [SHIFT] + [A]: Change to ACUCOBOL-GT Syntax
+- [ALT] + [SHIFT] + [M]: Toggle margins (overrides user/workspace settings)
 
 ## Contributors
 
