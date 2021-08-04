@@ -23,7 +23,6 @@ export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_parse_line_limit: number;
     copybooks_nested:boolean;
-    fuzzy_variable_search: boolean;
     outline: outlineFlag;
     copybookdirs: string[];
     invalid_copybookdirs: string[];
@@ -100,7 +99,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public copybooks_nested: boolean;
     public enable_tabstop: boolean;
     public pre_parse_line_limit: number;
-    public fuzzy_variable_search: boolean;
     public outline: outlineFlag;
     public copybookdirs: string[];
     public linter: boolean;
@@ -171,7 +169,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
         this.copybooks_nested = false;
-        this.fuzzy_variable_search = false;
         this.fileformat_strategy = "normal";
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];

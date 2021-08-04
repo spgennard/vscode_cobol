@@ -16,7 +16,6 @@ export class VSCOBOLConfiguration {
         const vsconfig = VSCOBOLConfiguration.config;
         vsconfig.enable_tabstop = getBoolean('enable_tabstop', false);
         vsconfig.copybooks_nested = getBoolean('copybooks_nested', false);
-        vsconfig.fuzzy_variable_search = getBoolean('fuzzy_variable_search', false);
         vsconfig.outline = isOutlineEnabled();
         vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
         vsconfig.pre_parse_line_limit = getPreParseLineLimit();

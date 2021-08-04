@@ -278,13 +278,6 @@
           "description": "nest copybooks in outline view (restart require)",
           "default": false
         },
-        "coboleditor.fuzzy_variable_search": {
-          "type": "boolean",
-          "markdownDescription": "fuzzy variable search (legacy compatibility)",
-          "description": "fuzzy variable search",
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
-          "default": false
-        },
         "coboleditor.cache_metadata": {
           "deprecationMessage": "This setting is depreciated and may be removed in future releases",
           "enum": [
@@ -711,6 +704,7 @@
           "default": false
         },
         "coboleditor.preprocessor_extensions": {
+          "deprecationMessage": "Deprecated to be removed in next monthly release (September)",
           "type": "array",
           "items": {
             "type": "string",

@@ -69,66 +69,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             return locations;
         }
 
-        /* fuzzy search is not using the parser and it give false positive's, so lets
-         * disable it by default but allow it to be re-enabled via config setting
-         */
-        if (settings.fuzzy_variable_search) {
-            /* let's see if is a variable via our fuzzy matcher (catch all/brute force) */
-            loc = this.getFuzzyVariable(document, position);
-            if (loc) {
-                locations.push(loc);
-                return locations;
-            }
-        }
-
         return locations;
     }
-
-    private getFuzzyVariable(document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
-        const wordRange = document.getWordRangeAtPosition(position, new RegExp("[a-zA-Z0-9_-]+"));
-        const word = wordRange ? document.getText(wordRange) : '';
-        if (word === "") {
-            return undefined;
-        }
-        const workLower = word.toLowerCase();
-
-        for (let i = 1; i < document.lineCount; i++) {
-            const lineText = document.lineAt(i).text;
-
-            // TODO - need to handle inline comments too
-            if (lineText.length > 7 && lineText[6] === '*') {
-                continue;
-            }
-
-            // time to leave
-            if (lineText.match(/.*(procedure\s+division).*$/i)) {
-                return undefined;
-            }
-
-            const wordIndex = lineText.toLowerCase().indexOf(workLower);
-            if (wordIndex !== -1) {
-                const leftOfWord = lineText.substr(0, wordIndex).trim();
-
-                // fuzzy match for variable
-                if (leftOfWord.match(/^[0-9 ]+$/i)) {
-                    return new vscode.Location(
-                        document.uri,
-                        new vscode.Position(i, wordIndex)
-                    );
-                }
-
-                // fuzzy match for a FD declaration
-                if (leftOfWord.toLowerCase() === "fd") {
-                    return new vscode.Location(
-                        document.uri,
-                        new vscode.Position(i, wordIndex)
-                    );
-                }
-            }
-        }
-        return undefined;
-    }
-
 
     private getSectionOrParaLocation(document: vscode.TextDocument, sf: COBOLSourceScanner, position: vscode.Position): vscode.Location | undefined {
         const wordRange = document.getWordRangeAtPosition(position, this.sectionRegEx);
