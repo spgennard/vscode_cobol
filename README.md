@@ -280,7 +280,7 @@ RUN zypper --non-interactive install  --no-recommends lsb-release git
 
 devcontainer.json:
 
-```json
+```jsonc
 {
 	// See https://aka.ms/vscode-remote/devcontainer.json for format details.
 	"name": "Visual COBOL",
