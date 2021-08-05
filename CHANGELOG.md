@@ -5,6 +5,14 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.8.2
 
+**change to jsonc**
+
+* [71503aaac1d0ab6](https://github.com/spgennard/vscode_cobol/commit/71503aaac1d0ab6) *2021-08-05 15:46:04*
+
+**Update CHANGELOG.md**
+
+* [167b7cd769b56e5](https://github.com/spgennard/vscode_cobol/commit/167b7cd769b56e5) *2021-08-05 15:38:29*
+
 **update**
 
 * [346db921f9f9e86](https://github.com/spgennard/vscode_cobol/commit/346db921f9f9e86) *2021-08-05 15:37:58*
