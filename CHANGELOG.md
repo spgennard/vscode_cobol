@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.8.2
+
+**update**
+
+* [346db921f9f9e86](https://github.com/spgennard/vscode_cobol/commit/346db921f9f9e86) *2021-08-05 15:37:58*
+
+**remove dep'ed fuzzy search**
+
+* [181722745e38aae](https://github.com/spgennard/vscode_cobol/commit/181722745e38aae) *2021-08-04 21:18:41*
+
+**Update CHANGELOG.md**
+
+* [21a852a1bcbf658](https://github.com/spgennard/vscode_cobol/commit/21a852a1bcbf658) *2021-08-04 19:40:55*
+
+
 ## 7.8.1
 
 **refresh**
