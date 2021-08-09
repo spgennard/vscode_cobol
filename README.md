@@ -1,7 +1,6 @@
-[![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
-
-
 # COBOL Source editing for Visual Studio Code
+
+[![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
 This extension was originally aimed at providing syntax highlighting for COBOL but overtime is has been extended to provide syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and Micro Focus Unit Test Reports.
 
@@ -19,27 +18,27 @@ This extension uses the Visual Studio Code APIs because the Language Server Prot
 
 Everywhere Visual Studio Code works.
 
-## Code colorization for COBOL, PL/I and JCL:
+## Code colorization for COBOL, PL/I and JCL
 
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/screenshot_three.png)
 
-## IntelliSense example:
+## IntelliSense example
 
 ![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/perform_add.gif)
 
-## Breadcrumb support:
+## Breadcrumb support
 
 ![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/breadcrumb.png)
 
-## Outline support:
+## Outline support
 
 ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/outline.png)
 
-## Go to definition:
+## Go to definition
 
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/gotodef.gif)
 
-## Peek definition:
+## Peek definition
 
 ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/peekdef.gif)
 
@@ -175,7 +174,6 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" p
 
 The example below shows you how you can create a single task to compile one program using the `cobc` command.
 
-
 ```json
 {
     "version": "2.0.0",
@@ -282,35 +280,35 @@ devcontainer.json:
 
 ```jsonc
 {
-	// See https://aka.ms/vscode-remote/devcontainer.json for format details.
-	"name": "Visual COBOL",
+ // See https://aka.ms/vscode-remote/devcontainer.json for format details.
+ "name": "Visual COBOL",
 
-	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-	"dockerFile": "Dockerfile",
+ // Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+ "dockerFile": "Dockerfile",
 
-	// The optional 'runArgs' property can be used to specify additional runtime arguments.
-	"runArgs": [
-		//  Uncomment the next line if you want to use Docker from the container. See the docker-in-docker definition for details.
-		// "-v","/var/run/docker.sock:/var/run/docker.sock",
+ // The optional 'runArgs' property can be used to specify additional runtime arguments.
+ "runArgs": [
+  //  Uncomment the next line if you want to use Docker from the container. See the docker-in-docker definition for details.
+  // "-v","/var/run/docker.sock:/var/run/docker.sock",
 
-		// Uncomment the next two lines if you will use a ptrace-based debugger like C++, Go, and Rust
-		"--cap-add=SYS_PTRACE",
-		"--security-opt", "seccomp=unconfined"
-	],
+  // Uncomment the next two lines if you will use a ptrace-based debugger like C++, Go, and Rust
+  "--cap-add=SYS_PTRACE",
+  "--security-opt", "seccomp=unconfined"
+ ],
 
-	// Uncomment the next line if you want to publish any ports.
-	// "appPort": [],
+ // Uncomment the next line if you want to publish any ports.
+ // "appPort": [],
 
-	// Uncomment the next line if you want to add in default container specific settings.json values
-	// "settings":  { "workbench.colorTheme": "Quiet Light" },
+ // Uncomment the next line if you want to add in default container specific settings.json values
+ // "settings":  { "workbench.colorTheme": "Quiet Light" },
 
-	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
+ // Uncomment the next line to run commands after the container is created.
+ // "postCreateCommand": "uname -a",
 
-	// Add the IDs of any extensions you want installed in the array below.
-	"extensions": [
-		"bitlang.cobol"
-	]
+ // Add the IDs of any extensions you want installed in the array below.
+ "extensions": [
+  "bitlang.cobol"
+ ]
 }
 ```
 
@@ -323,7 +321,6 @@ Things to consider:
 - If you have copybooks, you should change the ```coboleditor.copybookdirs``` settings to setup where the extension can find your copybooks
 - If use the *COPY* verb with this extension, you may also need to adjust the ```coboleditor.copybookexts``` settings (json array).
 - If you want the extension to understand the contents of your copybook before you access it, then turn on the ```coboleditor.parse_copybooks_for_references``` settings (json array) to allow the extension to look inside the copybook references
-
 
 ### COBOL Linter
 
@@ -384,7 +381,6 @@ To enable this feature enable the ```scan_comments_for_hints``` setting, for exa
 The hint token can be configured by the ```coboleditor.scan_comment_copybook_token``` setting, which has the default value set to ```source-dependency```.
 
 It is recommended that the token name remain consistent in your source, otherwise it will make it hard for observers of your source to understand the code.
-
 
 ## coboleditor.fileformat & coboleditor.fileformat_strategy
 
@@ -451,12 +447,14 @@ Useful tokens that are often changed are: comment.line.cobol.newpage, keyword.op
 Spell checking code is helpful but without specific support for the COBOL language it can be a painful experience, so in order to make it easier. I have produced a spell checker extension that has a the standard COBOL reserved words and keywords from various dialects such a Micro Focus COBOL and IBM Enterprise COBOL.
 
 Spell checking can be enabled/disabled in your source code by using:
+
 ```cobol
       * spell-checker: disable
       * spell-checker: enable
 ```
 
 You can also ignore words in the code, for example:
+
 ```cobol
       * cSpell:ignoreWords TPCC, ridfld, dfhresp
 ```
@@ -516,17 +514,17 @@ The extension only enables features that allow basic editing, making it ideal fo
 
 - Online communities
   - [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
-   - [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
-   - [Open Mainframe Project - COBOL Forum](https://community.openmainframeproject.org/c/cobol-technical-questions)
-   - [Tek-Tips - COBOL General discussion](https://www.tek-tips.com/threadminder.cfm?pid=209)
- - Stack Overflow topics/tags:
-   - [Micro Focus COBOL, PL/I, REXX, JCL and CICS](https://stackoverflow.com/questions/tagged/microfocus)
-   - [ACUCOBOL-GT](https://stackoverflow.com/questions/tagged/acucobol-gt)
-   - [COBOL](https://stackoverflow.com/questions/tagged/cobol)
-   - [COBOL.NET](https://stackoverflow.com/questions/tagged/cobol.net)
-   - [CICS](https://stackoverflow.com/questions/tagged/cics)
- - [COBOL Programming Language Articles on Reddit](https://www.reddit.com/r/cobol/)
- - [Linkedin Learning COBOL Resources](https://www.linkedin.com/learning/topics/cobol)
+  - [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
+  - [Open Mainframe Project - COBOL Forum](https://community.openmainframeproject.org/c/cobol-technical-questions)
+  - [Tek-Tips - COBOL General discussion](https://www.tek-tips.com/threadminder.cfm?pid=209)
+- Stack Overflow topics/tags:
+  - [Micro Focus COBOL, PL/I, REXX, JCL and CICS](https://stackoverflow.com/questions/tagged/microfocus)
+  - [ACUCOBOL-GT](https://stackoverflow.com/questions/tagged/acucobol-gt)
+  - [COBOL](https://stackoverflow.com/questions/tagged/cobol)
+  - [COBOL.NET](https://stackoverflow.com/questions/tagged/cobol.net)
+  - [CICS](https://stackoverflow.com/questions/tagged/cics)
+- [COBOL Programming Language Articles on Reddit](https://www.reddit.com/r/cobol/)
+- [Linkedin Learning COBOL Resources](https://www.linkedin.com/learning/topics/cobol)
 - wikipedia
   - [COBOL](https://en.wikipedia.org/wiki/COBOL)
   - [CICS](https://en.wikipedia.org/wiki/CICS)
@@ -535,7 +533,7 @@ The extension only enables features that allow basic editing, making it ideal fo
 
 ## Shortcuts
 
-  - [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
+- [ALT] + [SHIFT] + [C]: Change to COBOL Syntax (default)
 - [ALT] + [SHIFT] + [A]: Change to ACUCOBOL-GT Syntax
 - [ALT] + [SHIFT] + [M]: Toggle margins (overrides user/workspace settings)
 
@@ -543,8 +541,8 @@ The extension only enables features that allow basic editing, making it ideal fo
 
 I would like to thank the follow contributors for providing patches, fixes, kind words of wisdom and enhancements.
 
- - Ted John of Berkshire, UK
- - Kevin Abel of Lincoln, NE, USA
- - Simon Sobisch of Germany
+- Ted John of Berkshire, UK
+- Kevin Abel of Lincoln, NE, USA
+- Simon Sobisch of Germany
 
  NOTE: Some of the above contributions have now been moved into the GnuCOBOL extension.
