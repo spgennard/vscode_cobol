@@ -3,6 +3,21 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.8.7
+
+**update**
+
+* [ff497db2d91da8b](https://github.com/spgennard/vscode_cobol/commit/ff497db2d91da8b) *2021-08-09 16:17:12*
+
+**update**
+
+* [cfdad4118047a2b](https://github.com/spgennard/vscode_cobol/commit/cfdad4118047a2b) *2021-08-09 11:05:32*
+
+**Update CHANGELOG.md**
+
+* [9ec89b4c69904d0](https://github.com/spgennard/vscode_cobol/commit/9ec89b4c69904d0) *2021-08-09 11:03:10*
+
+
 ## 7.8.6
 
 **remove markdown warnings**
