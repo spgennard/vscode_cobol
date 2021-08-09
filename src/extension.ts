@@ -133,8 +133,8 @@ export class VSExtensionUtils {
         if (thisExtension !== undefined) {
             const extPath = `${thisExtension.extensionPath}`;
             const version = `${thisExtension.packageJSON.version}`;
-            const lastVersion = currentContext.globalState.get("bitlang.cobol.version");
-            if (lastVersion !== version) {
+            const glastVersion = currentContext.globalState.get("bitlang.cobol.version");
+            if (glastVersion !== version) {
                 const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
                 if (COBOLFileUtils.isFile(verFile)) {
                     const readmeUri = vscode.Uri.file(verFile);
@@ -142,6 +142,22 @@ export class VSExtensionUtils {
                     currentContext.globalState.update("bitlang.cobol.version", version);
                 }
             }
+            const lastDot = version.lastIndexOf('.');
+            if (lastDot !== -1) {
+                const lastSVersion = version.substr(0, lastDot);
+                const glastsVersion = currentContext.globalState.get("bitlang.cobol.sversion");
+
+                if (glastsVersion !== lastSVersion) {
+                    const verFile = path.join(extPath, `CHANGELOG_${lastSVersion}.md`);
+                    if (COBOLFileUtils.isFile(verFile)) {
+                        const readmeUri = vscode.Uri.file(verFile);
+                        commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
+                        currentContext.globalState.update("bitlang.cobol.sversion", lastSVersion);
+                    }
+                }
+    
+            }
+
         }
     }
 }
@@ -1297,6 +1313,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
             // just incase
         }
     }
+
+    VSExtensionUtils.openChangeLog();
 }
 
 export async function deactivateAsync(): Promise<void> {
