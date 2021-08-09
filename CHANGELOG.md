@@ -3,6 +3,17 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.8.6
+
+**remove markdown warnings**
+
+* [1c5441d456c5f4e](https://github.com/spgennard/vscode_cobol/commit/1c5441d456c5f4e) *2021-08-09 11:02:04*
+
+**Update CHANGELOG.md**
+
+* [8eac8efd43beb0a](https://github.com/spgennard/vscode_cobol/commit/8eac8efd43beb0a) *2021-08-05 18:21:11*
+
+
 ## 7.8.2
 
 **change to jsonc**
