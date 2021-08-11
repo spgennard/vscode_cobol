@@ -148,7 +148,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
             const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
-            })
+            });
 
             for (const uniqueRetKey of uniqueRetKeys) {
                 const ci = new CompletionItem(uniqueRetKey, kind);

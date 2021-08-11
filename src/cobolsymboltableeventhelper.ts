@@ -36,7 +36,7 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         }
 
         COBOLWorkspaceSymbolCacheHelper.removeAllPrograms(this.st?.fileName);
-        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
+        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);
         COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
         InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
     }

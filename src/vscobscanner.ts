@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import path from "path";
 
 import { extensions, Uri, WorkspaceFolder } from "vscode";
@@ -37,7 +38,7 @@ export class VSCobScanner {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
-        const jcobscanner_js = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
+        const jcobscannerJS = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
 
         const options: ForkOptions = {
             stdio: [0, 1, 2, "ipc"],
@@ -48,7 +49,7 @@ export class VSCobScanner {
             }
         };
         const scannerStyle = useThreaded ? "useenv_threaded" : "useenv";
-        const child = fork(jcobscanner_js, [scannerStyle], options);
+        const child = fork(jcobscannerJS, [scannerStyle], options);
 
 
         // const child = ;
@@ -59,7 +60,7 @@ export class VSCobScanner {
 
         const timer = setTimeout(function () {
             try {
-                child.kill()
+                child.kill();
             } catch (err) {
                 VSLogger.logException(`Timeout, ${reason}`, err);
             }

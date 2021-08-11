@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 'use strict';
 
 import * as path from 'path';
@@ -137,7 +138,7 @@ export class VSCOBOLConfiguration {
 
             if (!VSCOBOLConfiguration.logCacheMetadataDone) {
                 VSLogger.logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
-                VSLogger.logMessage("         cache_metadata turned off, please review settings")
+                VSLogger.logMessage("         cache_metadata turned off, please review settings");
                 VSCOBOLConfiguration.logCacheMetadataDone = true;
             }
         }

@@ -40,7 +40,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         for (const result of current.ppResults) {
             const r = new vscode.Range(new vscode.Position(result.atLine, 0), new vscode.Position(result.atLine, result.originalLine.length));
             const cl = new vscode.CodeLens(r);
-            let tooltip = "", tooltip_lines = "";
+            let tooltip = "", tooltipLines = "";
 
             let maxLen = 2 + result.originalLine.length;
             if (3 + result.ppHandle.description.length > maxLen) {
@@ -56,7 +56,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             let c = 0;
             for (const line of result.replacedLines) {
                 tooltip += `${line}\n`;
-                tooltip_lines += `${this.padInteger(c, 5)} : "${line}"\n`;
+                tooltipLines += `${this.padInteger(c, 5)} : "${line}"\n`;
                 if (10 + line.length > maxLen) {
                     maxLen = line.length + 10;
                 }
@@ -72,13 +72,13 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             }
 
             let arg = `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines\n`;
-            arg += "Original Line:"
+            arg += "Original Line:";
             arg += `"${result.originalLine}"\n`;
             arg += "-".repeat(maxLen) + "\n";
             arg += argCopybooks;
             arg += "-".repeat(maxLen) + "\n";
             arg += "LNum:\n";
-            arg += `${tooltip_lines}`;
+            arg += `${tooltipLines}`;
             arg += "-".repeat(maxLen) + "\n";
             arg += ` ${result.ppHandle.description}\n`;
             arg += ` ${result.ppHandle.bugReportEmail}\n`;
@@ -156,9 +156,9 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             vscode.window.showTextDocument(document).then(editor => {
                 if (arg.startsWith("*>")) {
                     vscode.languages.setTextDocumentLanguage(editor.document, "COBOL");
-                    return
+                    return;
                 }
-            })
+            });
         });
     }
 }

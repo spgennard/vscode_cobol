@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 export default {
     "url" : "https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_73/apis/ile4a1TOC.htm",
     "name" : "ILE CEE Date and Time APIs",

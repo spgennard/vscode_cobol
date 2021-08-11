@@ -51,7 +51,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
         if (this.st?.fileName !== undefined && this.st.lastModifiedTime !== undefined) {
             COBOLWorkspaceSymbolCacheHelper.removeAllCopybookReferences(this.st?.fileName);
             COBOLWorkspaceSymbolCacheHelper.removeAllPrograms(this.st?.fileName);
-            COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName)
+            COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(this.st?.fileName);
             COBOLWorkspaceSymbolCacheHelper.removeAllTypes(this.st?.fileName);
             InMemoryGlobalCacheHelper.addFilename(this.st?.fileName, qp.workspaceFile);
         }
@@ -379,7 +379,7 @@ export default class VSCOBOLSourceScanner {
 
         const replaced = str.replace(/\$\{([^%]+)\}/g, (_original, matched) => {
             const r = process.env[matched];
-            return r ? r : ''
+            return r ? r : '';
         });
 
         return replaced;

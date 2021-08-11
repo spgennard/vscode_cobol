@@ -77,7 +77,7 @@ export class VSExtensionUtils {
             return true;
         }
 
-        return false
+        return false;
     }
 
     public static getCombinedCopyBookSearchPath(): string[] {
@@ -412,7 +412,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         if (workspace.isTrusted) {
             VSLogger.logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
             VSLogger.logMessage(` Parse copybook for references              : ${settings.parse_copybooks_for_references}`);
-            VSLogger.logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`)
+            VSLogger.logMessage(` Editor maxTokenizationLineLength           : ${settings.editor_maxTokenizationLineLength}`);
             VSLogger.logMessage(` Semantic token provider enabled            : ${settings.enable_semantic_token_provider}`);
             try {
                 const editor_semanticHighlighting_enabled = workspace.getConfiguration('editor.semanticHighlighting').get<number>("enabled");

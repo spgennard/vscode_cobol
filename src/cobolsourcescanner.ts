@@ -495,7 +495,7 @@ export class copybookState implements IReplaceState {
     public endLineNumber = 0;
     public endCol = 0;
     public startCol = 0;
-    public line = ""
+    public line = "";
     public copyVerb = "";
     public literal2 = "";
     public library_name = "";
@@ -1204,7 +1204,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     if (addReference) {
                         this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, ttype);
                     }
-                    vcount++
+                    vcount++;
                 }
                 else if (this.isVisibleSection(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Section);
@@ -1714,7 +1714,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                     if (rightLine !== rightLineOrg) {
                         try {
-                            const leftLine = line.substr(0, token.currentCol)
+                            const leftLine = line.substr(0, token.currentCol);
 
                             this.sourceHandler.setUpdatedLine(lineNumber, leftLine + rightLine);
                             const lastTokenId = this.tokensInOrder.length;
