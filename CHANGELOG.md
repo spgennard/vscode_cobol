@@ -3,6 +3,25 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.8.19
+
+**update**
+
+* [a5e642ee2b4bf39](https://github.com/spgennard/vscode_cobol/commit/a5e642ee2b4bf39) *2021-08-21 21:33:40*
+
+**remove warning messages**
+
+* [6c89eba7c9e6944](https://github.com/spgennard/vscode_cobol/commit/6c89eba7c9e6944) *2021-08-21 21:33:03*
+
+**upfsyr**
+
+* [63dd216bfb78de9](https://github.com/spgennard/vscode_cobol/commit/63dd216bfb78de9) *2021-08-11 21:34:53*
+
+**Update CHANGELOG.md**
+
+* [ae2a0a7773df671](https://github.com/spgennard/vscode_cobol/commit/ae2a0a7773df671) *2021-08-11 21:01:17*
+
+
 ## 7.8.8
 
 **Update CHANGELOG.md**
