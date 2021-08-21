@@ -16,5 +16,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-console":"warn",
+        "no-duplicate-case": "error"
     }
 }
