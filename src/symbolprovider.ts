@@ -189,6 +189,8 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
                                 } else if (token.extraInformation.endsWith("88")) {
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.EnumMember, container, lrange));
+                                } else if (token.extraInformation.endsWith("-OCCURS")) {
+                                    symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Array, container, lrange));
                                 } else {
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));
                                 }
@@ -218,6 +220,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                         case COBOLTokenStyle.Property:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Property, container, lrange));
                             break;
+
                         case COBOLTokenStyle.Constructor:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
                             break;

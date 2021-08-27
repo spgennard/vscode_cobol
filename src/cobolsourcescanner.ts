@@ -704,7 +704,7 @@ export class CallTargetInformation {
 }
 
 export interface ICOBOLSourceScannerEventer {
-    sendMessage(message:string):void;
+    sendMessage(message: string): void;
 }
 
 export interface ICOBOLSourceScannerEvents {
@@ -2335,6 +2335,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 }
 
                                 let extraInfo = prevToken;
+                                let redefinesPresent = false;
+                                let occursPresent = false;
                                 if (prevToken === '01' || prevToken === '1') {
                                     if (nextTokenLower === 'redefines') {
                                         extraInfo += "-GROUP";
@@ -2347,8 +2349,19 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                     if (token.isTokenPresent("constant")) {
                                         style = COBOLTokenStyle.Constant;
                                     }
-                                    if (token.isTokenPresent("redefines")) {
+
+                                    redefinesPresent = token.isTokenPresent("redefines");
+                                    if (redefinesPresent) {
                                         style = COBOLTokenStyle.Union;
+                                    }
+                                } else {
+                                    if (nextTokenLower.length === 0) {
+                                        extraInfo += "-GROUP";
+                                    }
+
+                                    occursPresent = token.isTokenPresent("occurs");
+                                    if (occursPresent) {
+                                        extraInfo += "-OCCURS";
                                     }
                                 }
 
@@ -2370,7 +2383,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 if (prevToken === '01' || prevToken === '1' ||
                                     prevToken === '66' || prevToken === '77' || prevToken === '78') {
                                     if (nextTokenLower.length === 0 ||
-                                        nextTokenLower === 'redefines' ||
+                                        redefinesPresent || occursPresent ||
                                         (state.currentSection.tokenNameLower === "report" && nextTokenLower === "type")) {
                                         state.current01Group = ctoken;
                                     } else {
