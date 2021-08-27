@@ -236,7 +236,7 @@ export class COBOLUtils {
                     editorConfig.update('metadata_knowncopybooks', knownCopybooks, false);
                     InMemoryGlobalSymbolCache.isDirty = false;
                 } catch (e) {
-                    VSLogger.logException("Failed to update metadata", e);
+                    VSLogger.logException("Failed to update metadata", e as Error);
                 }
             }
         }
@@ -307,7 +307,7 @@ export class COBOLUtils {
                         }
                     }
                     catch (e) {
-                        VSLogger.logException("dir", e);
+                        VSLogger.logException("dir", e as Error);
                     }
                 }
             }

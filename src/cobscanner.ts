@@ -189,7 +189,7 @@ export class Scanner {
                 }
             }
         } catch (e) {
-            features.logException("cobscanner", e);
+            features.logException("cobscanner", e as Error);
             aborted = true;
         } finally {
             stats.endTime = Utils.performance_now() - stats.start;
@@ -228,7 +228,7 @@ for (const arg of args) {
             if (e instanceof SyntaxError) {
                 features.logMessage(`Unable to load ${arg}`);
             } else {
-                features.logException("cobscanner", e);
+                features.logException("cobscanner", e as Error);
             }
         }
     }
@@ -254,7 +254,7 @@ for (const arg of args) {
                     if (e instanceof SyntaxError) {
                         features.logMessage(`Unable to load ${arg}`);
                     } else {
-                        features.logException("cobscanner", e);
+                        features.logException("cobscanner", e as Error);
                     }
                 }
             }
@@ -330,7 +330,7 @@ for (const arg of args) {
                         }
                     }
                 } catch (e) {
-                    features.logException("cobscanner", e);
+                    features.logException("cobscanner", e as Error);
                 } finally {
                     //
                 }

@@ -534,7 +534,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                     }
                 }
                 catch (e) {
-                    VSLogger.logException("dir", e);
+                    VSLogger.logException("dir", e as Error);
                 }
             }
         }

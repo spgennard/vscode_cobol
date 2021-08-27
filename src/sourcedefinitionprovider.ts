@@ -94,7 +94,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
         }
         catch (e) {
-            VSLogger.logMessage(e);
+            VSLogger.logMessage((e as Error).message);
         }
 
         try {
@@ -108,7 +108,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             }
         }
         catch (e) {
-            VSLogger.logMessage(e);
+            VSLogger.logMessage((e as Error).message);
         }
         return undefined;
     }

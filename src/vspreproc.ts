@@ -64,7 +64,7 @@ export class VSPreProc {
             }
             catch (e) {
                 failed = true;
-                VSLogger.logException(`Unable to get preprocessor : ${extName}`, e);
+                VSLogger.logException(`Unable to get preprocessor : ${extName}`, e as Error);
             }
         }
 

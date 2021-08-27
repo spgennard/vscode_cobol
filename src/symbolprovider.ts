@@ -228,7 +228,7 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                 }
             }
             catch (e) {
-                VSLogger.logException("Failed " + e + " on " + JSON.stringify(token),e);
+                VSLogger.logException("Failed " + e + " on " + JSON.stringify(token),e as Error);
             }
         }
         return symbols;

@@ -127,6 +127,6 @@ if (parentPort !== null) {
         Scanner.processFiles(scanData,features, threadSender.Default, sd);
         parentPort.postMessage(`++${JSON.stringify(sd)}`);
     } catch (e) {
-        threadSender.Default.sendMessage(e.message);
+        threadSender.Default.sendMessage((e as Error).message);
     }
 }

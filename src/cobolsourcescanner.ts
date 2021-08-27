@@ -969,7 +969,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                 }
                 catch (e) {
-                    this.externalFeatures.logException("COBOLScannner - Parse error : " + e, e);
+                    this.externalFeatures.logException("COBOLScannner - Parse error : " + e, e as Error);
                 }
             }
 
@@ -1097,7 +1097,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 copybooks.clear();
                             }
                         } catch (e) {
-                            externalFeatures.logException("pp", e);
+                            externalFeatures.logException("pp", e as Error);
                         }
                     }
 
@@ -1139,7 +1139,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                this.externalFeatures.logException("COBOLScannner - Parse error", e);
+                this.externalFeatures.logException("COBOLScannner - Parse error", e as Error);
             }
         }
 
@@ -1434,7 +1434,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
             return !isNaN(Number(value.toString()));
         }
         catch (e) {
-            this.externalFeatures.logException("isNumber(" + value + ")", e);
+            this.externalFeatures.logException("isNumber(" + value + ")", e as Error);
             return false;
         }
     }
@@ -1641,7 +1641,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                this.externalFeatures.logException("COBOLScannner relaxedParseLineByLine line error: ", e);
+                this.externalFeatures.logException("COBOLScannner relaxedParseLineByLine line error: ", e as Error);
             }
         }
         while (token.moveToNextToken() === false);
@@ -1731,7 +1731,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                             }
                             return retToken;
                         } catch (e) {
-                            this.externalFeatures.logException("replace", e);
+                            this.externalFeatures.logException("replace", e as Error);
                         }
                     }
                 }
@@ -2523,7 +2523,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
             }
             catch (e) {
-                this.externalFeatures.logException("COBOLScannner line error: ", e);
+                this.externalFeatures.logException("COBOLScannner line error: ", e as Error);
             }
         }
         while (token.moveToNextToken() === false);

@@ -66,7 +66,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                         }
                     }
                     catch (fe) {
-                        VSLogger.logException(fe.message, fe);
+                        VSLogger.logException((fe as Error).message, fe as Error);
                     }
                 }
             }
@@ -107,7 +107,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                     }
                 }
                 catch (fe) {
-                    VSLogger.logException(fe.message, fe);
+                    VSLogger.logException((fe as Error).message, fe as Error);
                 }
             }
         }

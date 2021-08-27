@@ -334,7 +334,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             }
         }
         catch (e) {
-            VSLogger.logException("checkFile", e);
+            VSLogger.logException("checkFile", e as Error);
         }
     }
 

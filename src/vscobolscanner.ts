@@ -188,7 +188,7 @@ export default class VSCOBOLSourceScanner {
                 return qcpd;
             }
             catch (e) {
-                VSLogger.logException("getCachedObject", e);
+                VSLogger.logException("getCachedObject", e as Error);
             }
         }
 

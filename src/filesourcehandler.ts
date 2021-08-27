@@ -51,7 +51,7 @@ export class FileSourceHandler implements ISourceHandler {
             features.logTimedMessage(features.performance_now() - startTime, ' - Loading File ' + document);
         }
         catch (e) {
-            features.logException("File failed! (" + document + ")", e);
+            features.logException("File failed! (" + document + ")", e as Error);
         }
     }
 

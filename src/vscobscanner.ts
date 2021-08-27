@@ -62,7 +62,7 @@ export class VSCobScanner {
             try {
                 child.kill();
             } catch (err) {
-                VSLogger.logException(`Timeout, ${reason}`, err);
+                VSLogger.logException(`Timeout, ${reason}`, err as Error);
             }
         }, settings.cache_metadata_inactivity_timeout);
 

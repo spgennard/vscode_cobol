@@ -49,7 +49,7 @@ export class VSSemanticProvider {
                 }
 
             } catch (e) {
-                VSLogger.logException("SemanticProvider: sections", e);
+                VSLogger.logException("SemanticProvider: sections", e as Error);
             }
         }
         for (const [,token] of qcp.paragraphs) {
@@ -62,7 +62,7 @@ export class VSSemanticProvider {
                 }
 
             } catch (e) {
-                VSLogger.logException("SemanticProvider: paragraphs", e);
+                VSLogger.logException("SemanticProvider: paragraphs", e as Error);
             }
         }
 
@@ -75,7 +75,7 @@ export class VSSemanticProvider {
                     );
                 }
             } catch (e) {
-                VSLogger.logException("SemanticProvider: targetReferences", e);
+                VSLogger.logException("SemanticProvider: targetReferences", e as Error);
             }
 
         }
@@ -99,7 +99,7 @@ export class VSSemanticProvider {
                             );
                         }
                     } catch (e) {
-                        VSLogger.logException("SemanticProvider: constantsOrVariables", e);
+                        VSLogger.logException("SemanticProvider: constantsOrVariables", e as Error);
                     }
                 }
             }
@@ -123,7 +123,7 @@ export class VSSemanticProvider {
                         );
                     }
                 } catch (e) {
-                    VSLogger.logException("SemanticProvider: sourceRefs", e);
+                    VSLogger.logException("SemanticProvider: sourceRefs", e as Error);
                 }
             }
         }
