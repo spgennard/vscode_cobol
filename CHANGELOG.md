@@ -3,6 +3,17 @@
 
 Changelog for spgennardvscode_cobol.
 
+## 7.9.1
+
+**prep for tomorrow**
+
+* [54da32fb75d6365](https://github.com/spgennard/vscode_cobol/commit/54da32fb75d6365) *2021-08-27 22:51:12*
+
+**Update CHANGELOG.md**
+
+* [f8b455451d4d63f](https://github.com/spgennard/vscode_cobol/commit/f8b455451d4d63f) *2021-08-27 22:14:09*
+
+
 ## 7.8.27
 ### GitHub [#296](https://github.com/spgennard/vscode_cobol/issues/296) group items in lower levels are not recognized as group items  
 
