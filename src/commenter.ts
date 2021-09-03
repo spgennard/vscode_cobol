@@ -109,7 +109,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 
     /* remove * from column 6 */
     if (lineContents.length > 6 &&
-        lineContents[6] === '*') {
+        (lineContents[6] === '*' || lineContents[6] === '/')) {
         const r = new Range(new Position(l, 6), new Position(l, 7));
         editor.replace(r, " ");
         return;

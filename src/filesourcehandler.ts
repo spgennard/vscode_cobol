@@ -99,6 +99,7 @@ export class FileSourceHandler implements ISourceHandler {
                 line = line.substring(0, startComment);
                 this.commentCount++;
             }
+
             // drop fixed format line
             if (line.length > 1 && line[0] === '*') {
                 this.commentCount++;
@@ -107,7 +108,7 @@ export class FileSourceHandler implements ISourceHandler {
             }
 
             // drop fixed format line
-            if (line.length > 7 && line[6] === '*') {
+            if (line.length > 7 && (line[6] === '*' || line[6] === '/') ) {
                 this.commentCount++;
                 this.sendCommentCallback(line, lineNumber);
                 return "";
