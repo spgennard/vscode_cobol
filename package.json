@@ -733,21 +733,16 @@
           "type": "array",
           "items": {
             "type": "string",
-            "title": "Visual Studio COBOL Language Id",
-            "properties": {
-              "languageId": {
-                "type": "string",
-                "description": "Valid COBOL Language Id"
-              }
-            }
+            "title": "Valid Visual Studio COBOL Language Id",
+            "pattern": "(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^COBOL_MF_LISTFILE$)",
+            "patternErrorMessage" : "Invalid language id, can be cobol, COBOL, COBOLIT, ACUCOBOL or COBOL_MF_LISTFILE"  
           },
           "default": [
             "COBOL",
             "COBOLIT",
-            "ACUCOBOL",
-            "COBOL_MF_LISTFILE"
+            "ACUCOBOL"
           ],
-          "uniqueItems": true
+          "uniqueItems": true          
         }
       }
     },

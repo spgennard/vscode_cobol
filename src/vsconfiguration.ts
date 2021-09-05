@@ -84,11 +84,24 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
 
+        const user_cobol_language_ids = workspace.getConfiguration('coboleditor').get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
+        let valid = true;
+        
+        for(const languageId of user_cobol_language_ids) {
+            // same regex as package.json
+            const validReg = new RegExp("(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^COBOL_MF_LISTFILE$)","gm");
+            if (!validReg.test(languageId)) {
+                valid = false;
+            }
+        }
+
+        if (valid) {
+            vsconfig.valid_cobol_language_ids = user_cobol_language_ids;
+        }
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
-
-        vsconfig.valid_cobol_language_ids = workspace.getConfiguration('coboleditor').get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
 
         return vsconfig;
     }
