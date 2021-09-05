@@ -729,7 +729,7 @@
           "description": "Scan source code (default true)",
           "default": true
         },
-        "coboleditor.valid_cobol_language_ids" : {
+        "coboleditor.valid_cobol_language_ids": {
           "type": "array",
           "items": {
             "type": "string",
@@ -742,13 +742,12 @@
             }
           },
           "default": [
-            "COBOL", 
+            "COBOL",
             "COBOLIT",
             "ACUCOBOL",
             "COBOL_MF_LISTFILE"
           ],
           "uniqueItems": true
-
         }
       }
     },
@@ -1160,31 +1159,31 @@
         "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
         "category": "COBOL",
         "title": "Process files in workspace for metadata (deprecated)",
-        "enablement": "!isWeb && config.coboleditor.cache_metadata != off && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "!isWeb && config.coboleditor.cache_metadata != off && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.deprecated.dumpMetaData",
         "category": "COBOL",
         "title": "Dump metadata for diagnostic (deprecated)",
-        "enablement": "!isWeb  && config.coboleditor.cache_metadata != off && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "!isWeb  && config.coboleditor.cache_metadata != off && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.deprecated.clearMetaData",
         "category": "COBOL",
         "title": "Clear metadata (deprecated)",
-        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache != off && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache != off && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.clearGlobalCache",
         "category": "COBOL",
         "title": "Clear metadata",
-        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.processAllFilesInWorkspace",
         "category": "COBOL",
         "title": "Scan source files in workspace for metadata",
-        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.mfurunMenu",
@@ -1208,13 +1207,13 @@
         "command": "cobolplugin.removeAllComments",
         "category": "COBOL",
         "title": "Remove COBOL Comments",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.removeIdentificationArea",
         "category": "COBOL",
         "title": "Remove COBOL Identification Area",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.removeColumnNumbers",
@@ -1232,79 +1231,79 @@
         "command": "cobolplugin.makeKeywordsLowercase",
         "category": "COBOL",
         "title": "Make keywords lowercase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeKeywordsUppercase",
         "category": "COBOL",
         "title": "Make keywords uppercase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeKeywordsCamelCase",
         "category": "COBOL",
         "title": "Make keywords camelcase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeFieldsLowercase",
         "category": "COBOL",
         "title": "Make fields lowercase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeFieldsUppercase",
         "category": "COBOL",
         "title": "Make fields uppercase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeFieldsCamelCase",
         "category": "COBOL",
         "title": "Make fields camelcase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makePerformTargetsLowerCase",
         "category": "COBOL",
         "title": "Make perform targets lowercase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makePerformTargetsUpperCase",
         "category": "COBOL",
         "title": "Make perform targets uppercase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makePerformTargetsCamelCase",
         "category": "COBOL",
         "title": "Make perform targets camelcase",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.extractSelectionToParagraph",
         "category": "COBOL",
         "title": "Extract selection to paragraph",
-        "enablement": "editorFocus && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "editorFocus && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.extractSelectionToSection",
         "category": "COBOL",
         "title": "Extract selection to section",
-        "enablement": "editorFocus && isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "editorFocus && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.extractSelectionToCopybook",
         "category": "COBOL",
         "title": "Extract selection to copybook",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.migrateCopybooksToWorkspace",
         "category": "COBOL",
         "title": "Migrate copybook settings to workspace (for performance)",
-        "enablement": "isWorkspaceTrusted && !coboleditor.enable_lc_cobol"
+        "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.showCOBOLChannel",
@@ -1359,46 +1358,6 @@
           "command": "cobolplugin.extractSelectionToCopybook",
           "group": "cobolplugin",
           "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
-        },
-        {
-          "command": "cobolplugin.move2dd",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && !editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.move2ws",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && !editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.move2pd",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && !editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.move2anyforward",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && !editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.move2anybackwards",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && !editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.extractSelectionToParagraph",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.extractSelectionToSection",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && editorHasSelection && coboleditor.enable_lc_cobol"
-        },
-        {
-          "command": "cobolplugin.extractSelectionToCopybook",
-          "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == cobol && editorHasSelection && coboleditor.enable_lc_cobol"
         }
       ],
       "view/item/context": [
@@ -1423,11 +1382,6 @@
       {
         "key": "ctrl+k ctrl+j",
         "command": "cobolplugin.move2pd",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
-      },
-      {
-        "key": "ctrl+k ctrl+j",
-        "command": "cobolplugin.move2pd",
         "when": "editorTextFocus && editorLangId == COBOL"
       },
       {
@@ -1443,11 +1397,6 @@
       {
         "key": "ctrl+alt+p",
         "command": "cobolplugin.move2pd",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
-      },
-      {
-        "key": "ctrl+alt+p",
-        "command": "cobolplugin.move2pd",
         "when": "editorTextFocus && editorLangId == COBOL"
       },
       {
@@ -1463,11 +1412,6 @@
       {
         "key": "ctrl+alt+w",
         "command": "cobolplugin.move2ws",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
-      },
-      {
-        "key": "ctrl+alt+w",
-        "command": "cobolplugin.move2ws",
         "when": "editorTextFocus && editorLangId == COBOL"
       },
       {
@@ -1483,11 +1427,6 @@
       {
         "key": "ctrl+alt+d",
         "command": "cobolplugin.move2dd",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
-      },
-      {
-        "key": "ctrl+alt+d",
-        "command": "cobolplugin.move2dd",
         "when": "editorTextFocus && editorLangId == COBOL"
       },
       {
@@ -1503,17 +1442,7 @@
       {
         "key": "ctrl+alt+.",
         "command": "cobolplugin.move2anyforward",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
-      },
-      {
-        "key": "ctrl+alt+.",
-        "command": "cobolplugin.move2anyforward",
         "when": "editorTextFocus && editorLangId == COBOL"
-      },
-      {
-        "key": "ctrl+alt+,",
-        "command": "cobolplugin.move2anybackwards",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
       },
       {
         "key": "ctrl+alt+,",
@@ -1539,21 +1468,11 @@
         "key": "ctrl+alt+,",
         "command": "cobolplugin.move2anybackwards",
         "when": "editorTextFocus && editorLangId == COBOLIT"
-      },
-      {
-        "key": "tab",
-        "command": "cobolplugin.tab",
-        "when": "editorLangId == cobol && !inSnippetMode && coboleditor.enable_lc_cobol"
       },
       {
         "key": "tab",
         "command": "cobolplugin.tab",
         "when": "editorLangId == COBOL && !inSnippetMode"
-      },
-      {
-        "key": "shift+tab",
-        "command": "cobolplugin.revtab",
-        "when": "editorLangId == cobol && !inSnippetMode && coboleditor.enable_lc_cobol"
       },
       {
         "key": "shift+tab",
@@ -1583,17 +1502,7 @@
       {
         "key": "ctrl+/",
         "command": "cobolplugin.commentline",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
-      },
-      {
-        "key": "ctrl+/",
-        "command": "cobolplugin.commentline",
         "when": "editorTextFocus && editorLangId == COBOL"
-      },
-      {
-        "key": "ctrl+/",
-        "command": "cobolplugin.commentline",
-        "when": "editorTextFocus && editorLangId == cobol && coboleditor.enable_lc_cobol"
       },
       {
         "key": "ctrl+/",
