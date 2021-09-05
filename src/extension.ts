@@ -604,10 +604,10 @@ export function getCurrentContext(): ExtensionContext {
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
         activateLogChannelAndPaths(true, settings, false);
         VSLogger.logMessage("extensions changed");
     });
@@ -624,7 +624,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
 
         if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
@@ -662,10 +662,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
-
     const collection = languages.createDiagnosticCollection('cobolDiag');
-    const linter = new CobolLinterProvider(collection, VSCOBOLConfiguration.get());
+    const linter = new CobolLinterProvider(collection, settings);
     const cobolfixer = new CobolLinterActionFixer();
     activateLogChannelAndPaths(true, settings, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, false);
@@ -851,7 +849,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(clearGlobalCache);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(async () => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.init();
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
         activateLogChannelAndPaths(false, settings, true);
     });
@@ -880,7 +878,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         VSExtensionUtils.flip_plaintext(workspace.textDocuments[docid]);
     }
 
-    VSSourceTreeViewHandler.setupSourceViewTree(VSCOBOLConfiguration.get(), false);
+    VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
 
     const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
         if (settings.process_metadata_cache_on_file_save) {
@@ -980,7 +978,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), documentSymbolProvider));
     }
 
-    const cobolProvider = new CobolSourceCompletionItemProvider(VSCOBOLConfiguration.get());
+    const cobolProvider = new CobolSourceCompletionItemProvider(settings);
     const cobolProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 

@@ -13,7 +13,7 @@ import { VSLogger } from './extension';
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
 
-    public static init(): ICOBOLSettings {
+    private static init(): ICOBOLSettings {
         const vsconfig = VSCOBOLConfiguration.config;
         vsconfig.enable_tabstop = getBoolean('enable_tabstop', false);
         vsconfig.copybooks_nested = getBoolean('copybooks_nested', false);
@@ -88,6 +88,8 @@ export class VSCOBOLConfiguration {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
 
+        vsconfig.valid_cobol_language_ids = workspace.getConfiguration('coboleditor').get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
+
         return vsconfig;
     }
 
@@ -152,6 +154,11 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration.config;
     }
 
+
+    public static reinit() : ICOBOLSettings {
+        VSCOBOLConfiguration.config.init_required = true;
+        return VSCOBOLConfiguration.get();
+    }
 
     public static isDepreciatedDiskCachingEnabled(): boolean {
         const config = VSCOBOLConfiguration.get();

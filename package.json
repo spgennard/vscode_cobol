@@ -728,6 +728,27 @@
           "type": "boolean",
           "description": "Scan source code (default true)",
           "default": true
+        },
+        "coboleditor.valid_cobol_language_ids" : {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "Visual Studio COBOL Language Id",
+            "properties": {
+              "languageId": {
+                "type": "string",
+                "description": "Valid COBOL Language Id"
+              }
+            }
+          },
+          "default": [
+            "COBOL", 
+            "COBOLIT",
+            "ACUCOBOL",
+            "COBOL_MF_LISTFILE"
+          ],
+          "uniqueItems": true
+
         }
       }
     },
