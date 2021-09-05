@@ -22,7 +22,7 @@ export interface IEditorMarginFiles {
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_parse_line_limit: number;
-    copybooks_nested:boolean;
+    copybooks_nested: boolean;
     outline: outlineFlag;
     copybookdirs: string[];
     invalid_copybookdirs: string[];
@@ -32,14 +32,14 @@ export interface ICOBOLSettings {
     linter: boolean;
     line_comment: boolean;
     fileformat_strategy: string;
-    enable_data_provider:boolean;
+    enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
     intellisense_include_unchanged: boolean;
-    intellisense_include_camelcase:boolean;
+    intellisense_include_camelcase: boolean;
     intellisense_include_uppercase: boolean;
-    intellisense_include_lowercase:boolean;
-    intellisense_item_limit:number;
-    process_metadata_cache_on_start:boolean;
+    intellisense_include_lowercase: boolean;
+    intellisense_item_limit: number;
+    process_metadata_cache_on_start: boolean;
     cache_metadata: CacheDirectoryStrategy;
     cache_metadata_inactivity_timeout: number;
     cache_metadata_max_directory_scan_depth: number;
@@ -54,7 +54,7 @@ export interface ICOBOLSettings {
 
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
-    scan_comments_for_hints:boolean;
+    scan_comments_for_hints: boolean;
     cache_metadata_show_progress_messages: boolean;
     scan_comment_copybook_token: string;
     process_metadata_cache_on_file_save: boolean;
@@ -68,7 +68,7 @@ export interface ICOBOLSettings {
     sourceview_include_object_files: boolean;
 
     format_constants_to_uppercase: boolean;
-    format_on_return:formatOnReturn;
+    format_on_return: formatOnReturn;
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
 
@@ -82,15 +82,17 @@ export interface ICOBOLSettings {
     maintain_metadata_cache_single_folder: boolean;
     maintain_metadata_recursive_search: boolean;
 
-    preprocessor_extensions:string[];
+    preprocessor_extensions: string[];
 
     enable_semantic_token_provider: boolean;
 
     enable_text_replacement: boolean;
 
-    editor_margin_files:IEditorMarginFiles[];
+    editor_margin_files: IEditorMarginFiles[];
 
-    enable_source_scanner:boolean;
+    enable_source_scanner: boolean;
+
+    valid_cobol_language_ids: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -107,13 +109,13 @@ export class COBOLSettings implements ICOBOLSettings {
     public fileformat_strategy: string;
     public enable_data_provider: boolean;
     public disable_unc_copybooks_directories: boolean;
-    public intellisense_include_unchanged:boolean;
-    public intellisense_include_camelcase:boolean;
-    public intellisense_include_uppercase:boolean;
-    public intellisense_include_lowercase:boolean;
-    public intellisense_item_limit:number;
-    public process_metadata_cache_on_start:boolean;
-    public cache_metadata:CacheDirectoryStrategy;
+    public intellisense_include_unchanged: boolean;
+    public intellisense_include_camelcase: boolean;
+    public intellisense_include_uppercase: boolean;
+    public intellisense_include_lowercase: boolean;
+    public intellisense_item_limit: number;
+    public process_metadata_cache_on_start: boolean;
+    public cache_metadata: CacheDirectoryStrategy;
     public cache_metadata_inactivity_timeout: number;
     public cache_metadata_max_directory_scan_depth: number;
     public parse_copybooks_for_references: boolean;
@@ -129,7 +131,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public program_extensions: string[];
     public scan_comments_for_hints: boolean;
     public scan_comment_copybook_token: string;
-    public cache_metadata_show_progress_messages:boolean;
+    public cache_metadata_show_progress_messages: boolean;
     public process_metadata_cache_on_file_save: boolean;
     public cache_metadata_user_directory: string;
     public sourceview: boolean;
@@ -139,7 +141,7 @@ export class COBOLSettings implements ICOBOLSettings {
     public sourceview_include_doc_files: boolean;
     public sourceview_include_script_files: boolean;
     public sourceview_include_object_files: boolean;
-    public format_on_return:formatOnReturn;
+    public format_on_return: formatOnReturn;
     public editor_maxTokenizationLineLength: number;
     public format_constants_to_uppercase: boolean;
     public init_required = true;
@@ -148,22 +150,24 @@ export class COBOLSettings implements ICOBOLSettings {
     public metadata_types: string[];
     public metadata_files: string[];
     public metadata_knowncopybooks: string[];
-    
+
     public maintain_metadata_cache: boolean;
     public maintain_metadata_cache_single_folder: boolean;
     public maintain_metadata_recursive_search: boolean;
 
     public preprocessor_extensions: string[];
 
-    public enable_semantic_token_provider:boolean;
+    public enable_semantic_token_provider: boolean;
 
     public enable_text_replacement: boolean;
 
-    public removed_margin:boolean;
+    public removed_margin: boolean;
 
-    public editor_margin_files:IEditorMarginFiles[];
+    public editor_margin_files: IEditorMarginFiles[];
 
-    public enable_source_scanner:boolean;
+    public enable_source_scanner: boolean;
+
+    public valid_cobol_language_ids: string[];
 
     constructor() {
         this.enable_tabstop = true;
@@ -224,9 +228,15 @@ export class COBOLSettings implements ICOBOLSettings {
         this.maintain_metadata_cache_single_folder = false;
         this.maintain_metadata_recursive_search = false;
         this.enable_semantic_token_provider = false;
-        this.enable_text_replacement= false;
+        this.enable_text_replacement = false;
         this.removed_margin = false;
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
+        this.valid_cobol_language_ids = [
+            'COBOL', 
+            'COBOLIT',
+            'ACUCOBOL',
+            'COBOL_MF_LISTFILE'
+        ];
     }
 }

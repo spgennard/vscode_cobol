@@ -5,8 +5,9 @@ import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit
 import COBOLSourceScanner from './cobolsourcescanner';
 import { COBOLUtils, FoldAction, FoldStyle } from './cobolutils';
 import { VSCOBOLConfiguration } from './vsconfiguration';
-import { formatOnReturn } from './iconfiguration';
+import { formatOnReturn, ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
+import { VSExtensionUtils } from './extension';
 
 export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
 
@@ -55,12 +56,8 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static register(): any {
-        const langPlusSchemas = [
-            { scheme: 'file', language: 'COBOL' },
-            { scheme: 'file', language: 'COBOLIT' },
-            { scheme: 'file', language: 'ACUCOBOL' }
-        ];
+    static register(settings: ICOBOLSettings): any {
+        const langPlusSchemas = VSExtensionUtils.getAllCobolSelectors(settings);
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLCaseFormatter(), '\n');
 

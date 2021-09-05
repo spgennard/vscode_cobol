@@ -982,7 +982,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (preParseState.procedureDivisionRelatedTokens !== 0 && preParseState.procedureDivisionRelatedTokens > preParseState.workingStorageRelatedTokens) {
                     this.ImplicitProgramId = "";
 
-                    const fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", 0, "Procedure", "Procedure Division (CopyBook)", state.currentDivision);
+                    const fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Procedure Division", 0, "Procedure", "Procedure Division (CopyBook)", state.currentDivision);                    
                     state.currentDivision = fakeDivision;
                     state.procedureDivision = fakeDivision;
                     state.pickFields = false;
@@ -990,6 +990,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                     sourceLooksLikeCOBOL = true;
                     fakeDivision.ignoreInOutlineView = true;
                     this.sourceIsCopybook = true;
+                    state.endsWithDot = true;
+                    state.prevEndsWithDot = true;
                 }
                 else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
                     const fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", 0, "Data", "Data Division (CopyBook)", state.currentDivision);
