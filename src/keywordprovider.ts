@@ -102,7 +102,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			if (lineBefore.indexOf("*>") !== -1) {
 				inComment = true;
 			}
-			if (lineBefore.length > 7 && (lineBefore[6] === '*' || lineBefore[6] === '/')) {
+			if (lineBefore.length >= 7 && (lineBefore[6] === '*' || lineBefore[6] === '/')) {
 				inComment = true;
 			}
 

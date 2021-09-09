@@ -108,9 +108,11 @@ export class FileSourceHandler implements ISourceHandler {
             }
 
             // drop fixed format line
-            if (line.length > 7 && (line[6] === '*' || line[6] === '/') ) {
+            if (line.length >= 7 && (line[6] === '*' || line[6] === '/') ) {
                 this.commentCount++;
-                this.sendCommentCallback(line, lineNumber);
+                if (line[6] === '/') {
+                    this.sendCommentCallback(line, lineNumber);
+                }
                 return "";
             }
 

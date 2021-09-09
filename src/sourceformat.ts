@@ -18,7 +18,7 @@ function isNumber(value: string | number): boolean {
 const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
 
 function isValidFixedLine(line: string): boolean {
-    if (line.length > 7) {
+    if (line.length >= 7) {
         switch (line[6]) {
             case '*': return true;
             case 'D': return true;
