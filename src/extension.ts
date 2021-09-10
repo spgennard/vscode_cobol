@@ -221,28 +221,9 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     return dupExtensionMessage;
 }
 
-function get_gnucobol_prefer_syntax(def: boolean): boolean {
-    const gnuConfig = workspace.getConfiguration('gnucobol');
-    if (gnuConfig === undefined) {
-        return def;
-    }
-
-    // if the preferred language is gnucobol, then skip the check
-    return gnuConfig.get<boolean>('prefer_gnucobol_syntax', false);
-}
-
-function checkForCompatibleDebuggers(): boolean {
-    const gnuCobolExt = extensions.getExtension("bitlang.gnucobol");
-    if (gnuCobolExt === undefined) {
-        return true;
-    }
-
-    return !get_gnucobol_prefer_syntax(false);
-}
 
 function checkForExtensionConflicts(): string {
     let dupExtensionMessage = "";
-    const checkDebuggers = checkForCompatibleDebuggers();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const ext of extensions.all) {
@@ -332,7 +313,7 @@ function checkForExtensionConflicts(): string {
                         }
                     }
 
-                    if (extMarkedAsDebugger && checkDebuggers) {
+                    if (extMarkedAsDebugger) {
                         const debuggerBody = ext.packageJSON.contributes.debuggers;
                         const breakpointsBody = ext.packageJSON.contributes.breakpoints;
                         if (debuggerBody !== undefined && debuggerBody instanceof Object) {
