@@ -2,10 +2,9 @@
 set -e
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 # --ignore-commits-without-issue
-npx git-changelog-command-line --to-ref refs/heads/main \
+A=$(npx git-changelog-command-line --to-ref refs/heads/main \
 --ignore-pattern "^\[maven-release-plugin\].*|^\[Gradle Release Plugin\].*|^Merge.*|^bump.*" \
---no-issue-name "" -std -tec "
-# Changelog
+--no-issue-name "" -std -tec "# Changelog
 
 Changelog for {{ownerName}}{{repoName}}.
 
@@ -33,4 +32,6 @@ Changelog for {{ownerName}}{{repoName}}.
 
  {{/issues}}
 {{/tags}}
-" >CHANGELOG.md
+" | sed 's/\n\n //g')
+
+echo -e $A | awk '!NF {if (++n <= 1) print; next}; {n=0;print}' >CHANGELOG.md
