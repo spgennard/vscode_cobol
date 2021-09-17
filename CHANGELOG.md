@@ -2,7 +2,7 @@
 
 Changelog for spgennardvscode_cobol.
 
-## Unreleased
+## 7.9.16
  
 **Update CHANGELOG.md**
 
