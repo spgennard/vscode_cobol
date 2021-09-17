@@ -9,29 +9,15 @@ A=$(npx git-changelog-command-line --to-ref refs/heads/main \
 Changelog for {{ownerName}}{{repoName}}.
 
 {{#tags}}
-## {{name}}
- {{#issues}}
-  {{#hasIssue}}
-   {{#hasLink}}
-### {{name}} [{{issue}}]({{link}}) {{title}} {{#hasIssueType}} *{{issueType}}* {{/hasIssueType}} {{#hasLabels}} {{#labels}} *{{.}}* {{/labels}} {{/hasLabels}}
-   {{/hasLink}}
-   {{^hasLink}}
-### {{name}} {{issue}} {{title}} {{#hasIssueType}} *{{issueType}}* {{/hasIssueType}} {{#hasLabels}} {{#labels}} *{{.}}* {{/labels}} {{/hasLabels}}
-   {{/hasLink}}
-  {{/hasIssue}}
-
+## {{name}} {{#issues}} {{#hasIssue}} {{#hasLink}}
+### {{name}} [{{issue}}]({{link}}) {{title}} {{#hasIssueType}} *{{issueType}}* {{/hasIssueType}} {{#hasLabels}} {{#labels}} *{{.}}* {{/labels}} {{/hasLabels}} {{/hasLink}} {{^hasLink}}
+### {{name}} {{issue}} {{title}} {{#hasIssueType}} *{{issueType}}* {{/hasIssueType}} {{#hasLabels}} {{#labels}} *{{.}}* {{/labels}} {{/hasLabels}} {{/hasLink}} {{/hasIssue}}
   {{#commits}}
 **{{{messageTitle}}}**
-
-{{#messageBodyItems}}
- * {{.}}
-{{/messageBodyItems}}
 * [{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}}) *{{commitTime}}*
-
   {{/commits}}
-
  {{/issues}}
 {{/tags}}
-" | sed 's/\n\n //g')
+")
 
-echo -e $A | awk '!NF {if (++n <= 1) print; next}; {n=0;print}' >CHANGELOG.md
+echo -e $A | awk '!NF {if (++n <= 2) print; next}; {n=0;print}' >CHANGELOG.md
