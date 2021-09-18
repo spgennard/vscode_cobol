@@ -1,7 +1,6 @@
 import fs from 'fs';
 
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
-import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
@@ -10,6 +9,7 @@ import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
 import path from 'path';
 import { StringBuilder } from 'typescript-string-operations';
+import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
 
 
 export class FileSourceHandler implements ISourceHandler {
@@ -178,7 +178,7 @@ export class FileSourceHandler implements ISourceHandler {
     }
 
     isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.has(keyword);
+        return getCOBOLKeywordDictionary(this.languageId).has(keyword);
     }
 
     getFilename(): string {

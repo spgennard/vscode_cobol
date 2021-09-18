@@ -516,7 +516,7 @@ export const cobolFunctions: string[] = [
 	"year-to-yyyy"
 ];
 
-export const acuKeywords: string[] = [
+const acuKeywords: string[] = [
 	"3-d",
 	"active-x-control",
 	"activex-res",
@@ -1018,28 +1018,53 @@ export const cobolCBLApis: string[] = [
 	"CBL_YIELD_RUN_UNIT"
 ];
 
-export const cobolKeywordDictionary = new Map<string, string>();
+const cobolKeywordDictionaryMap = new Map<string, string>();
+const acucobolKeywordDictionaryMap = new Map<string, string>();
 export const cobolProcedureKeywordDictionary = new Map<string, string>();
 export const cobolStorageKeywordDictionary = new Map<string, string>();
 export const cobolRegistersDictionary = new Map<string, string>();
 
+const cobolList: string[] = [];
+const acucobolList: string[] = [];
+
 /* inline decl */
 for (const key of cobolKeywords) {
-	cobolKeywordDictionary.set(key, key);
+	cobolKeywordDictionaryMap.set(key, key);
+	acucobolKeywordDictionaryMap.set(key, key);
+	cobolList.push(key);
+	acucobolList.push(key);
 }
 
 for (const key of acuKeywords) {
-	cobolKeywordDictionary.set(key, key);
+	acucobolKeywordDictionaryMap.set(key, key);
+	acucobolList.push(key);
 }
 
 for (const key of cobolProcedureKeywords) {
 	cobolProcedureKeywordDictionary.set(key, key);
+	cobolList.push(key);
+	acucobolList.push(key);
 }
 
 for (const key of cobolStorageKeywords) {
 	cobolStorageKeywordDictionary.set(key, key);
+	cobolList.push(key);
+	acucobolList.push(key);
 }
 
 for (const key of cobolRegisters) {
 	cobolRegistersDictionary.set(key, key);
+	cobolList.push(key);
+	acucobolList.push(key);
+}
+
+export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> {
+	if (dialect === 'ACUCOBOL') {
+		return acucobolKeywordDictionaryMap;
+	}
+	return cobolKeywordDictionaryMap;
+}
+
+export function getCOBOLKeywordList(dialect: string) : string[] {
+	return dialect === 'ACUCOBOL' ? acucobolList : cobolList;
 }

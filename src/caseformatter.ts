@@ -11,11 +11,11 @@ import { VSExtensionUtils } from './extension';
 
 export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
 
-    private convertLine(line: string, foldStyle: FoldStyle, current: COBOLSourceScanner, foldConstantToUpper: boolean) {
+    private convertLine(line: string, foldStyle: FoldStyle, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid:string) {
         const oldText = line;
-        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldStyle, foldConstantToUpper);
-        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldStyle, foldConstantToUpper);
-        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldStyle, foldConstantToUpper);
+        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldStyle, foldConstantToUpper, langid);
+        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldStyle, foldConstantToUpper, langid);
+        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldStyle, foldConstantToUpper,langid);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,6 +31,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
             return;
         }
 
+        const langid = document.languageId;
 
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (current === undefined) {
@@ -41,8 +42,8 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
         if (line) {
             const oldText = line.text;
             const newText = settings.format_on_return === formatOnReturn.CamelCase ?
-                this.convertLine(oldText,FoldStyle.CamelCase,current, settings.format_constants_to_uppercase) :
-                this.convertLine(oldText,FoldStyle.UpperCase,current, settings.format_constants_to_uppercase);
+                this.convertLine(oldText,FoldStyle.CamelCase,current, settings.format_constants_to_uppercase,langid) :
+                this.convertLine(oldText,FoldStyle.UpperCase,current, settings.format_constants_to_uppercase,langid);
 
             if (newText !== oldText) {
                 const startPos = new vscode.Position(l, 0);

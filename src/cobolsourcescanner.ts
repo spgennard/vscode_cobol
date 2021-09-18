@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ISourceHandler, { ICommentCallback } from "./isourcehandler";
-import { cobolKeywordDictionary, cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary } from "./keywords/cobolKeywords";
+import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
@@ -1417,7 +1417,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     }
 
     private isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.has(keyword);
+        return getCOBOLKeywordDictionary(this.sourceHandler.getLanguageId()).has(keyword);
     }
 
     private isValidProcedureKeyword(keyword: string): boolean {

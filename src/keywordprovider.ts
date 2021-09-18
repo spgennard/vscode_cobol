@@ -2,21 +2,17 @@ import { CompletionItemProvider, TextDocument, Position, CancellationToken, Comp
 import { camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ICOBOLSettings } from './iconfiguration';
+import { getCOBOLKeywordList } from './keywords/cobolKeywords';
+import { jclStatements } from './keywords/jclstatements';
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
-	private words: string[];
 	private isCOBOL: boolean;
 
-	public constructor(keywords: string[], forCOBOL: boolean) {
+	public constructor(forCOBOL: boolean) {
 		this.isCOBOL = forCOBOL;
-
-		/* in the future, this could be extended to add a pri rather than just use the position
-		 * the array
-		 */
-		this.words = keywords;
 	}
 
-	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number): CompletionItem[] {
+	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number, langid: string): CompletionItem[] {
 		if (wordToComplete.length === 0) {
 			return [];
 		}
@@ -29,7 +25,9 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 
 		const items: CompletionItem[] = [];
 		const wordToCompleteLower = wordToComplete.toLowerCase();
-		for (let key of this.words) {
+		const words:string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
+
+		for (let key of words) {
 			const keyLower = key.toLowerCase();
 			if (keyLower.startsWith(wordToCompleteLower) === false) {
 				continue;
@@ -126,6 +124,6 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		// 	return items;
 		// }
 
-		return this.getKeywordsGivenPartialWord(wordToComplete, 128);
+		return this.getKeywordsGivenPartialWord(wordToComplete, 128, document.languageId);
 	}
 }

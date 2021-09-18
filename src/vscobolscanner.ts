@@ -114,6 +114,18 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 export default class VSCOBOLSourceScanner {
     private static readonly MAX_MEM_CACHE_SIZE = 30;
 
+    public static removeCachedObject(document: TextDocument, config: ICOBOLSettings): void {
+        if (config.enable_source_scanner === false) {
+            return undefined;
+        }
+
+        const fileName: string = document.fileName;
+        const cachedObject = InMemoryCache.get(fileName);
+        if (cachedObject !== undefined) {
+            InMemoryCache.delete(fileName);
+        }
+    }
+
     public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
         if (config.enable_source_scanner === false) {
             return undefined;

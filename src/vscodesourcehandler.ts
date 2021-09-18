@@ -2,7 +2,7 @@ import { StringBuilder } from 'typescript-string-operations';
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
-import { cobolKeywordDictionary } from './keywords/cobolKeywords';
+import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
 import { VSCOBOLFileUtils } from './vsfileutils';
 
 export class VSCodeSourceHandler implements ISourceHandler {
@@ -156,7 +156,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     }
 
     isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.has(keyword);
+        return getCOBOLKeywordDictionary(this.languageId).has(keyword);
     }
 
     getFilename(): string {

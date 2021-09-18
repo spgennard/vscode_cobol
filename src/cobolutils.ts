@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
-import { cobolKeywordDictionary, cobolRegistersDictionary, cobolStorageKeywordDictionary } from './keywords/cobolKeywords';
+import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
 import { VSLogger } from './extension';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
@@ -518,9 +518,9 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    private static isValidKeywordOrStorageKeyword(keyword: string): boolean {
+    private static isValidKeywordOrStorageKeyword(languageId: string,keyword: string): boolean {
         const keywordLower = keyword.toLowerCase();
-        const isKeyword = cobolKeywordDictionary.has(keywordLower);
+        const isKeyword = getCOBOLKeywordDictionary(languageId).has(keywordLower);
         if (isKeyword) {
             return true;
         }
@@ -532,7 +532,7 @@ export class COBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean): string {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean, languageid:string): string {
         let newtext = text;
         const args: string[] = [];
 
@@ -572,7 +572,7 @@ export class COBOLUtils {
                     break;
 
                 case FoldAction.Keywords:
-                    actionIt = COBOLUtils.isValidKeywordOrStorageKeyword(argLower);
+                    actionIt = COBOLUtils.isValidKeywordOrStorageKeyword(languageid, argLower);
                     break;
             }
 
@@ -618,7 +618,7 @@ export class COBOLUtils {
         return text;
     }
 
-    public static foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle): void {
+    public static foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle, languageid: string): void {
         const uri = activeEditor.document.uri;
 
         const settings = VSCOBOLConfiguration.get();
@@ -637,7 +637,7 @@ export class COBOLUtils {
                 break;      // eof
             }
 
-            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle, settings.format_constants_to_uppercase);
+            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle, settings.format_constants_to_uppercase,languageid);
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {

@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from './cobolsourcescanner';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
-import { cobolKeywordDictionary } from './keywords/cobolKeywords';
 import { ICOBOLSettings } from './iconfiguration';
 import { VSLogger } from './extension';
+import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
@@ -114,7 +114,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
     }
 
     private isValidKeyword(keyword: string): boolean {
-        return cobolKeywordDictionary.has(keyword);
+        return getCOBOLKeywordDictionary("COBOL").has(keyword);
     }
 
     private getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position, settings: ICOBOLSettings): boolean {
