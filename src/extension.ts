@@ -847,6 +847,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (ws !== undefined) {
             if (isSupportedLanguage(doc)) {
                 await COBOLUtils.populateDefaultCallableSymbols(settings, false);
+                await vscode.commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeDocumentSymbolProvider', doc.uri);
             }
         }
     });
