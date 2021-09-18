@@ -3,7 +3,13 @@
 Changelog for spgennardvscode_cobol.
 
 
-## Unreleased 
+## 7.9.18 
+ 
+**start to make keywords language dialect aware**
+* [e5b4dc430af0b1a](https://github.com/spgennard/vscode_cobol/commit/e5b4dc430af0b1a) *2021-09-18 18:47:29*
+ 
+**simplify changelog**
+* [5a9f036b8c3c9b3](https://github.com/spgennard/vscode_cobol/commit/5a9f036b8c3c9b3) *2021-09-17 20:58:24*
  
 **Update CHANGELOG.md**
 * [b8e10bfd3d8d73a](https://github.com/spgennard/vscode_cobol/commit/b8e10bfd3d8d73a) *2021-09-17 20:42:14*
