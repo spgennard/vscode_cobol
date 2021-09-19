@@ -1036,26 +1036,34 @@ for (const key of cobolKeywords) {
 }
 
 for (const key of acuKeywords) {
-	acucobolKeywordDictionaryMap.set(key, key);
-	acucobolList.push(key);
+	if (!acucobolKeywordDictionaryMap.has(key)) {
+		acucobolKeywordDictionaryMap.set(key, key);
+		acucobolList.push(key);
+	}
 }
 
 for (const key of cobolProcedureKeywords) {
-	cobolProcedureKeywordDictionary.set(key, key);
-	cobolList.push(key);
-	acucobolList.push(key);
+	if (!cobolProcedureKeywordDictionary.has(key)) {
+		cobolProcedureKeywordDictionary.set(key, key);
+		cobolList.push(key);
+		acucobolList.push(key);
+	}
 }
 
 for (const key of cobolStorageKeywords) {
-	cobolStorageKeywordDictionary.set(key, key);
-	cobolList.push(key);
-	acucobolList.push(key);
+	if (!cobolStorageKeywordDictionary.has(key)) {
+		cobolStorageKeywordDictionary.set(key, key);
+		cobolList.push(key);
+		acucobolList.push(key);
+	}
 }
 
 for (const key of cobolRegisters) {
-	cobolRegistersDictionary.set(key, key);
-	cobolList.push(key);
-	acucobolList.push(key);
+	if (!cobolRegistersDictionary.has(key)) {
+		cobolRegistersDictionary.set(key, key);
+		cobolList.push(key);
+		acucobolList.push(key);
+	}
 }
 
 export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> {
@@ -1065,6 +1073,6 @@ export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> 
 	return cobolKeywordDictionaryMap;
 }
 
-export function getCOBOLKeywordList(dialect: string) : string[] {
+export function getCOBOLKeywordList(dialect: string): string[] {
 	return dialect === 'ACUCOBOL' ? acucobolList : cobolList;
 }
