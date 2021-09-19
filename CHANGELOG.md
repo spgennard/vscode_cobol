@@ -3,6 +3,21 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.9.19 
+ 
+**update acucobol keywords**
+* [3d8631e6d7ae39e](https://github.com/spgennard/vscode_cobol/commit/3d8631e6d7ae39e) *2021-09-19 21:00:35*
+ 
+**just-incase code to ensure we don't get duplicates in the lists**
+* [ee734a085f90e22](https://github.com/spgennard/vscode_cobol/commit/ee734a085f90e22) *2021-09-19 07:37:12*
+ 
+**update syntax**
+* [3aa8f797a9568b0](https://github.com/spgennard/vscode_cobol/commit/3aa8f797a9568b0) *2021-09-18 22:20:14*
+ 
+**Update CHANGELOG.md**
+* [8e0ce2639f55c07](https://github.com/spgennard/vscode_cobol/commit/8e0ce2639f55c07) *2021-09-18 18:48:26*
+ 
+ 
 ## 7.9.18 
  
 **start to make keywords language dialect aware**
