@@ -112,11 +112,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
         return undefined;
     }
-
-    private isValidKeyword(keyword: string): boolean {
-        return getCOBOLKeywordDictionary("COBOL").has(keyword);
-    }
-
+    
     private getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position, settings: ICOBOLSettings): boolean {
         const wordRange = document.getWordRangeAtPosition(position, this.variableRegEx);
         const word = wordRange ? document.getText(wordRange) : '';
@@ -125,7 +121,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         const tokenLower: string = word.toLowerCase();
-        if (this.isValidKeyword(tokenLower)) {
+        if (getCOBOLKeywordDictionary(document.languageId).has(tokenLower)) {
             return false;
         }
 
