@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.9.20 
+ 
+**tidy up/fix bug**
+* [78dd575074ce866](https://github.com/spgennard/vscode_cobol/commit/78dd575074ce866) *2021-09-20 23:03:05*
+ 
+**Update CHANGELOG.md**
+* [084ff05a99c326a](https://github.com/spgennard/vscode_cobol/commit/084ff05a99c326a) *2021-09-19 21:01:47*
+ 
+ 
 ## 7.9.19 
  
 **update acucobol keywords**
