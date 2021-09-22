@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.9.21 
+ 
+**tweak acu syntax**
+* [2959a573b3a9c61](https://github.com/spgennard/vscode_cobol/commit/2959a573b3a9c61) *2021-09-22 21:15:55*
+ 
+**Update CHANGELOG.md**
+* [ba57b34b69e4dbc](https://github.com/spgennard/vscode_cobol/commit/ba57b34b69e4dbc) *2021-09-20 23:03:46*
+ 
+ 
 ## 7.9.20 
  
 **tidy up/fix bug**
