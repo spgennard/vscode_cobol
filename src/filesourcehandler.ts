@@ -5,7 +5,7 @@ import ISourceHandler, { ICommentCallback } from './isourcehandler';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 
-import { EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
+import { EmptyExternalFeature, ESourceFormat, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
 import path from 'path';
 import { StringBuilder } from 'typescript-string-operations';
@@ -24,6 +24,7 @@ export class FileSourceHandler implements ISourceHandler {
     updatedSource: Map<number, string>;
     shortFilename: string;
     languageId:string;
+    format: ESourceFormat;
 
     public constructor(document: string) {
         this.document = document;
@@ -35,7 +36,8 @@ export class FileSourceHandler implements ISourceHandler {
         this.isSourceInWorkspace = false;
         this.updatedSource = new Map<number, string>();
         this.languageId = "COBOL";
-        
+        this.format = ESourceFormat.unknown;
+
         const features = EmptyExternalFeature.Default;
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat = fs.statSync(document, { bigint: true });
@@ -114,6 +116,15 @@ export class FileSourceHandler implements ISourceHandler {
                     this.sendCommentCallback(line, lineNumber);
                 }
                 return "";
+            }
+
+            // only handle debug
+            if (this.format === ESourceFormat.terminal) {
+                if (line.startsWith("\\D") || line.startsWith("|")) {
+                    this.commentCount++;
+                    this.sendCommentCallback(line, lineNumber);
+                    return "";
+                }
             }
 
             // todo - this is a bit messy and should be revised
@@ -239,5 +250,9 @@ export class FileSourceHandler implements ISourceHandler {
 
     getLanguageId():string {
         return this.languageId;
+    }
+
+    setSourceFormat(format: ESourceFormat):void {
+        this.format = format;
     }
 }

@@ -39,7 +39,7 @@
       "include": "source.cobol"
     },
     {
-      "match": "(\\\\D.*)$",
+      "match": "(^\\\\D.*)$",
       "name": "token.debug-token"
     }
   ],

@@ -1,3 +1,5 @@
+import { ESourceFormat } from "./externalfeatures";
+
 export interface ICommentCallback {
     processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number) : void;
 }
@@ -19,4 +21,5 @@ export default interface ISourceHandler {
     getIsSourceInWorkSpace(): boolean;
     getShortWorkspaceFilename(): string;
     getLanguageId():string;
+    setSourceFormat(format: ESourceFormat):void;
 }

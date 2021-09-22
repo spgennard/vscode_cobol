@@ -1,6 +1,7 @@
 import { StringBuilder } from 'typescript-string-operations';
 import * as vscode from 'vscode';
 import { workspace } from 'vscode';
+import { ESourceFormat } from './externalfeatures';
 import ISourceHandler, { ICommentCallback } from './isourcehandler';
 import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
 import { VSCOBOLFileUtils } from './vsfileutils';
@@ -17,6 +18,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     shortWorkspaceFilename: string;
     updatedSource: Map<number, string>;
     languageId: string;
+    format: ESourceFormat;
 
     public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
         this.document = document;
@@ -27,6 +29,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
         this.languageId = document.languageId;
+        this.format = ESourceFormat.unknown;
 
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
@@ -83,12 +86,14 @@ export class VSCodeSourceHandler implements ISourceHandler {
             line = line.substring(0, startComment);
             this.commentCount++;
         }
-        // drop fixed format line
+
+        // drop variable format line
         if (line.length > 1 && line[0] === '*') {
             this.commentCount++;
             this.sendCommentCallback(line, lineNumber);
             return "";
         }
+
         // drop fixed format line
         if (line.length >= 7 && (line[6] === '*' || line[6] === '/') ) {
             this.commentCount++;
@@ -96,6 +101,15 @@ export class VSCodeSourceHandler implements ISourceHandler {
                 this.sendCommentCallback(line, lineNumber);
             }
             return "";
+        }
+
+        // only handle debug
+        if (this.format === ESourceFormat.terminal) {
+            if (line.startsWith("\\D") || line.startsWith("|")) {
+                this.commentCount++;
+                this.sendCommentCallback(line, lineNumber);
+                return "";
+            }
         }
 
         // todo - this is a bit messy and should be revised
@@ -193,5 +207,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
     getLanguageId(): string {
         return this.languageId;
+    }
+
+    setSourceFormat(format: ESourceFormat):void {
+        this.format = format;
     }
 }
