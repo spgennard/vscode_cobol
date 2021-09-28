@@ -75,7 +75,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
     }
 }
 
-export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
@@ -146,9 +146,6 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
                             if (includePara === false) {
                                 break;
                             }
-                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
-                            break;
-                        case COBOLTokenStyle.DeclarativesSection:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;
                         case COBOLTokenStyle.Section:

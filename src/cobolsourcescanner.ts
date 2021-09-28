@@ -131,7 +131,6 @@ export enum COBOLTokenStyle {
     EndExec = "EndExec",
     Declaratives = "Declaratives",
     EndDeclaratives = "EndDeclaratives",
-    DeclarativesSection = "DeclarativesSection",
     Unknown = "Unknown",
     Null = "Null"
 }
@@ -1988,9 +1987,10 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 if (prevTokenLower === "end" && currentLower === "declaratives") {
                     state.declaratives.endLine = lineNumber;
                     state.declaratives.endColumn = line.indexOf(tcurrent);
-                    // this.tokensInOrder.push(state.declaratives);
                     state.inDeclaratives = false;
                     state.declaratives = COBOLToken.Null;
+                    state.declaratives = this.newCOBOLToken(COBOLTokenStyle.EndDeclaratives, lineNumber, line, tcurrentCurrentCol, current, current, state.currentDivision);
+
                     continue;
                 }
 
@@ -2256,7 +2256,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                 }
 
 
-                if (currentLower === "declaratives") {
+                if (prevTokenLower !== 'end' && currentLower === "declaratives") {
                     state.declaratives = this.newCOBOLToken(COBOLTokenStyle.Declaratives, lineNumber, line, tcurrentCurrentCol, current, current, state.currentDivision);
                     state.inDeclaratives = true;
                     // this.tokensInOrder.pop();       /* only interested it at the end */

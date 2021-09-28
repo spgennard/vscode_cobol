@@ -12,7 +12,7 @@ import * as commenter from './commenter';
 import { COBOLDocumentationCommentHandler } from './doccomment';
 import { KeywordAutocompleteCompletionItemProvider } from './keywordprovider';
 import { isSupportedLanguage } from './margindecorations';
-import { CobolDocumentSymbolProvider, JCLDocumentSymbolProvider } from './symbolprovider';
+import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from './symbolprovider';
 
 import updateDecorations from './margindecorations';
 import { COBOLFileUtils } from './fileutils';
@@ -49,6 +49,7 @@ import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 import { VSCOBOLFileUtils } from './vsfileutils';
 import { VSPreProc } from './vspreproc';
+import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -955,8 +956,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
         context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
 
         /* TODO: add .DIR keywords too */
-        const documentSymbolProvider = new CobolDocumentSymbolProvider();
-        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), documentSymbolProvider));
+        const symbolInformationProvider = new CobolSymbolInformationProvider();
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), symbolInformationProvider));
+
+        // const documentSymbolProvider2 = new CobolDocumentSymbolProvider();
+        // context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), documentSymbolProvider2));
     }
 
     const cobolProvider = new CobolSourceCompletionItemProvider(settings);
