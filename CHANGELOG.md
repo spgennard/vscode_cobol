@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.9.27 
+ 
+**remove possible security issue with npm package (nth-check)**
+* [795ca4d00c8e5db](https://github.com/spgennard/vscode_cobol/commit/795ca4d00c8e5db) *2021-09-28 20:24:15*
+ 
+**Update CHANGELOG.md**
+* [c0be380abb14d53](https://github.com/spgennard/vscode_cobol/commit/c0be380abb14d53) *2021-09-22 21:16:22*
+ 
+ 
 ## 7.9.21 
  
 **tweak acu syntax**
