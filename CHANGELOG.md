@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.1 
+ 
+**new month**
+* [89ceb8d18b61e2e](https://github.com/spgennard/vscode_cobol/commit/89ceb8d18b61e2e) *2021-10-02 21:03:06*
+ 
+**Update CHANGELOG.md**
+* [a2b7db6f73c2149](https://github.com/spgennard/vscode_cobol/commit/a2b7db6f73c2149) *2021-09-28 20:29:18*
+ 
+ 
 ## 7.9.27 
  
 **remove possible security issue with npm package (nth-check)**
