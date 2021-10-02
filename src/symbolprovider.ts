@@ -177,16 +177,16 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
                                 continue;
                             }
 
-                            if (token.extraInformation === 'fd' || token.extraInformation === 'sd'
-                                || token.extraInformation === 'rd' || token.extraInformation === 'select') {
+                            if (token.extraInformation1 === 'fd' || token.extraInformation1 === 'sd'
+                                || token.extraInformation1 === 'rd' || token.extraInformation1 === 'select') {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
                             }
                             else {
-                                if (token.extraInformation.endsWith("-GROUP")) {
+                                if (token.extraInformation1.endsWith("-GROUP")) {
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
-                                } else if (token.extraInformation.endsWith("88")) {
+                                } else if (token.extraInformation1.endsWith("88")) {
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.EnumMember, container, lrange));
-                                } else if (token.extraInformation.endsWith("-OCCURS")) {
+                                } else if (token.extraInformation1.endsWith("-OCCURS")) {
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Array, container, lrange));
                                 } else {
                                     symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Field, container, lrange));

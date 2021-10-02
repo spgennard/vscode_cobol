@@ -176,7 +176,7 @@ class ProgramSymbols extends COBOLDocumentSymbols {
     }
 
     private addRawVariable(token: COBOLToken, symbol: vscode.DocumentSymbol):void {
-        if (this.currentGroup !== undefined && token.extraInformation.substr(0,2) !== '01') {
+        if (this.currentGroup !== undefined && token.extraInformation1.substr(0,2) !== '01') {
             this.currentGroup?.push(symbol);
             return;
         }
@@ -197,8 +197,8 @@ class ProgramSymbols extends COBOLDocumentSymbols {
             return;
         }
 
-        if (token.extraInformation === 'fd' || token.extraInformation === 'sd'
-            || token.extraInformation === 'rd' || token.extraInformation === 'select') {
+        if (token.extraInformation1 === 'fd' || token.extraInformation1 === 'sd'
+            || token.extraInformation1 === 'rd' || token.extraInformation1 === 'select') {
             const sym = super.newDocumentSymbol(token, vscode.SymbolKind.File, false);
             this.addRawVariable(token,sym);
             return;
@@ -206,24 +206,24 @@ class ProgramSymbols extends COBOLDocumentSymbols {
 
         let addSymbol: vscode.DocumentSymbol;
 
-        const firstTwo = token.extraInformation.substr(0,2);
+        const firstTwo = token.extraInformation1.substr(0,2);
         if (firstTwo === '01' || firstTwo === '77' || firstTwo === '88' || firstTwo === '66') {
             this.currentGroup = undefined;
         }
 
-        if (token.extraInformation.endsWith("-GROUP")) {
+        if (token.extraInformation1.endsWith("-GROUP")) {
             addSymbol = super.newDocumentSymbol(token, vscode.SymbolKind.Struct, false);
-        } else if (token.extraInformation.endsWith("88")) {
+        } else if (token.extraInformation1.endsWith("88")) {
             this.currentGroup = undefined;
             addSymbol = super.newDocumentSymbol(token, vscode.SymbolKind.EnumMember, false);
-        } else if (token.extraInformation.endsWith("-OCCURS")) {
+        } else if (token.extraInformation1.endsWith("-OCCURS")) {
             addSymbol = super.newDocumentSymbol(token, vscode.SymbolKind.Array, false);
         } else {
             addSymbol = super.newDocumentSymbol(token, vscode.SymbolKind.Field, false);
         }
 
         this.addRawVariable(token, addSymbol);
-        if (token.extraInformation.endsWith("-GROUP")) {
+        if (token.extraInformation1.endsWith("-GROUP")) {
             this.currentGroup = addSymbol.children;
         }
     }

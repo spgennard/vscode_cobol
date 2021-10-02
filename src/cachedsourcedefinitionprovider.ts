@@ -52,7 +52,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                     try {
                         let fileName = value.statementInformation.fileName;
                         if (fileName === null || fileName.length === 0) {
-                            fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                            fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation1, config);
                         }
                         
                         if (fileName.length > 0) {
@@ -94,7 +94,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
                 try {
                     let fileName = value.statementInformation.fileName;
                     if (fileName === null || fileName.length === 0) {
-                        fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation, config);
+                        fileName = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(key, value.token.extraInformation1, config);
                     }
                     if (fileName.length > 0) {
                         const symbolTable: COBOLSymbolTable | undefined = COBOLSymbolTableHelper.getSymbolTableGivenFile(cacheDirectory, fileName);

@@ -257,7 +257,7 @@ You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a d
 
 Dockerfile:
 
-```Dockerfile
+```dockerfile
 FROM microfocus/vcdevhub:sles15_5.1_x64_login
 
 USER root
