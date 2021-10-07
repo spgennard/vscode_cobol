@@ -233,6 +233,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
         this.valid_cobol_language_ids = [
+            'BITLANG-COBOL',
             'COBOL', 
             'COBOLIT',
             'ACUCOBOL',

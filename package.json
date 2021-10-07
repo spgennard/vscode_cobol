@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.2",
+  "version": "7.10.4",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -43,6 +43,7 @@
     "onFileSystem:file",
     "onLanguage:plaintext",
     "onLanguage:cobol",
+    "onLanguage:BITLANG-COBOL",
     "onLanguage:COBOL",
     "onLanguage:COBOLIT",
     "onLanguage:ACUCOBOL",
@@ -734,11 +735,12 @@
           "items": {
             "type": "string",
             "title": "Valid Visual Studio COBOL Language Id",
-            "pattern": "(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^COBOL_MF_LISTFILE$)",
+            "pattern": "(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^COBOL_MF_LISTFILE|^BITLANG-COBOL$)",
             "patternErrorMessage" : "Invalid language id, can be cobol, COBOL, COBOLIT, ACUCOBOL or COBOL_MF_LISTFILE"  
           },
           "default": [
             "COBOL",
+            "BITLANG-COBOL",
             "COBOLIT",
             "ACUCOBOL"
           ],
@@ -757,6 +759,24 @@
     },
     "configurationDefaults": {
       "[COBOL]": {
+        "editor.semanticHighlighting.enabled": true,
+        "files.autoGuessEncoding": false,
+        "editor.snippetSuggestions": "bottom",
+        "editor.renderIndentGuides": false,
+        "editor.autoIndent": "advanced",
+        "editor.insertSpaces": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+          6,
+          7,
+          11,
+          72
+        ],
+        "editor.detectIndentation": false,
+        "editor.useTabStops": false,
+        "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
+      },
+      "[BITLANG-COBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
@@ -878,6 +898,16 @@
         ],
         "configuration": "./cobol.configuration.json"
       },
+
+      {
+        "id": "BITLANG-COBOL",
+        "filenames": [
+          "SQLCA"
+        ],
+        "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
+        "extensions": [ ],
+        "configuration": "./cobol.configuration.json"
+      },
       {
         "id": "COBOL_MF_LISTFILE",
         "extensions": [],
@@ -992,6 +1022,16 @@
     "grammars": [
       {
         "language": "COBOL",
+        "scopeName": "source.cobol",
+        "path": "./syntaxes/COBOL.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.html": "html",
+          "meta.embedded.block.java": "java"
+        }
+      },
+      {
+        "language": "BITLANG-COBOL",
         "scopeName": "source.cobol",
         "path": "./syntaxes/COBOL.tmLanguage.json",
         "embeddedLanguages": {
@@ -1160,7 +1200,7 @@
         "command": "cobolplugin.deprecated.dumpMetaData",
         "category": "COBOL",
         "title": "Dump metadata for diagnostic (deprecated)",
-        "enablement": "!isWeb  && config.coboleditor.cache_metadata != off && isWorkspaceTrusted"
+        "enablement": "!isWeb && config.coboleditor.cache_metadata != off && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.deprecated.clearMetaData",
@@ -1317,42 +1357,42 @@
         {
           "command": "cobolplugin.move2dd",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2ws",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2pd",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2anyforward",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2anybackwards",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.extractSelectionToParagraph",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.extractSelectionToSection",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.extractSelectionToCopybook",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId == COBOL && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && editorHasSelection"
         }
       ],
       "view/item/context": [
@@ -1377,7 +1417,7 @@
       {
         "key": "ctrl+k ctrl+j",
         "command": "cobolplugin.move2pd",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+k ctrl+j",
@@ -1392,7 +1432,7 @@
       {
         "key": "ctrl+alt+p",
         "command": "cobolplugin.move2pd",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+alt+p",
@@ -1407,7 +1447,7 @@
       {
         "key": "ctrl+alt+w",
         "command": "cobolplugin.move2ws",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+alt+w",
@@ -1422,7 +1462,7 @@
       {
         "key": "ctrl+alt+d",
         "command": "cobolplugin.move2dd",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+alt+d",
@@ -1437,12 +1477,12 @@
       {
         "key": "ctrl+alt+.",
         "command": "cobolplugin.move2anyforward",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+alt+,",
         "command": "cobolplugin.move2anybackwards",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+alt+.",
@@ -1467,12 +1507,12 @@
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "editorLangId == COBOL && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !inSnippetMode"
       },
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "editorLangId == COBOL && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !inSnippetMode"
       },
       {
         "key": "tab",
@@ -1497,7 +1537,7 @@
       {
         "key": "ctrl+/",
         "command": "cobolplugin.commentline",
-        "when": "editorTextFocus && editorLangId == COBOL"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$/"
       },
       {
         "key": "ctrl+/",
@@ -1512,7 +1552,7 @@
       {
         "key": "alt+shift+a",
         "command": "cobolplugin.change_lang_to_acu",
-        "when": "editorLangId == COBOL && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$/ && !inSnippetMode"
       },
       {
         "key": "alt+shift+c",

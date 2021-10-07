@@ -89,7 +89,7 @@ export class VSCOBOLConfiguration {
         
         for(const languageId of user_cobol_language_ids) {
             // same regex as package.json
-            const validReg = new RegExp("(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^COBOL_MF_LISTFILE$)","gm");
+            const validReg = new RegExp("(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^BITLANG-COBOL|^COBOL_MF_LISTFILE$)","gm");
             if (!validReg.test(languageId)) {
                 valid = false;
             }
