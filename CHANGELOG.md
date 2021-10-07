@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.4 
+ 
+**add BITLANG-COBOL id**
+* [1b9b5eced05255a](https://github.com/spgennard/vscode_cobol/commit/1b9b5eced05255a) *2021-10-07 22:39:04*
+ 
+**Update CHANGELOG.md**
+* [241dfcd83a8fe65](https://github.com/spgennard/vscode_cobol/commit/241dfcd83a8fe65) *2021-10-07 09:57:39*
+ 
+ 
 ## 7.10.2 
  
 **remove reference to switcher**
