@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.2 
+ 
+**remove reference to switcher**
+* [01a85483b22074b](https://github.com/spgennard/vscode_cobol/commit/01a85483b22074b) *2021-10-07 09:57:12*
+ 
+**Update CHANGELOG.md**
+* [f438f4daf333c0f](https://github.com/spgennard/vscode_cobol/commit/f438f4daf333c0f) *2021-10-02 21:15:17*
+ 
+ 
 ## 7.10.1 
  
 **update**
