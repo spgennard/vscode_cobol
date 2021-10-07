@@ -6,72 +6,22 @@ import { outlineFlag } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSPreProc } from './vspreproc';
 
-export class JCLDocumentSymbolProvider2 implements vscode.DocumentSymbolProvider {
+class SimpleStack<T> {
+    _store: T[] = [];
+    push(val: T) {
+        this._store.push(val);
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
-        const symbols: vscode.SymbolInformation[] = [];
-        const settings = VSCOBOLConfiguration.get();
+    pop(): T | undefined {
+        return this._store.pop();
+    }
 
-        if (settings.outline === outlineFlag.Off) {
-            return symbols;
-        }
+    peek(): T | undefined {
+        return this._store[this.size() - 1];
+    }
 
-        const ownerUri = document.uri;
-
-        const lastLine = document.lineCount;
-        const lastLineColumn = document.lineAt(lastLine - 1).text.length;
-        let container = "";
-
-        for (let i = 0; i < document.lineCount; i++) {
-            const line = document.lineAt(i);
-            const textText = line.text;
-
-            if (textText.startsWith("//*")) {
-                continue;
-            }
-
-            if (textText.startsWith("//")) {
-                const textLineClean = textText.substr(2);
-                const lineTokens = [];
-                const possibleTokens: string[] = [];
-                splitArgument(textLineClean, false, possibleTokens);
-                for (let l = 0; l < possibleTokens.length; l++) {
-                    if (possibleTokens[l] !== undefined) {
-                        const possibleToken = possibleTokens[l].trim();
-                        if (possibleToken.length > 0) {
-                            lineTokens.push(possibleToken);
-                        }
-                    }
-                }
-
-                if (lineTokens.length > 0) {
-                    if (lineTokens.length > 1) {
-
-                        if (lineTokens[1].toLowerCase().indexOf("job") !== -1) {
-                            const srange = new vscode.Range(new vscode.Position(i, 0),
-                                new vscode.Position(lastLine, lastLineColumn));
-                            const lrange = new vscode.Location(ownerUri, srange);
-
-                            symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Field, container, lrange));
-                            container = lineTokens[0];
-                        }
-
-                        if (lineTokens[1].toLowerCase().indexOf("exec") !== -1) {
-                            const srange = new vscode.Range(new vscode.Position(i, 0),
-                                new vscode.Position(i, lineTokens.length));
-                            const lrange = new vscode.Location(ownerUri, srange);
-
-                            symbols.push(new vscode.SymbolInformation(lineTokens[0], vscode.SymbolKind.Function, container, lrange));
-                        }
-
-                    }
-                }
-            }
-
-        }
-
-        return symbols;
+    size(): number {
+        return this._store.length;
     }
 }
 
@@ -175,21 +125,81 @@ class ProgramSymbols extends COBOLDocumentSymbols {
         this.currentDivisionSymbols?.push(sym);
     }
 
-    private addRawVariable(token: COBOLToken, symbol: vscode.DocumentSymbol):void {
-        if (this.currentGroup !== undefined && token.extraInformation1.substr(0,2) !== '01') {
-            this.currentGroup?.push(symbol);
+    private addRawVariable(token: COBOLToken, symbol: vscode.DocumentSymbol): void {
+        if (this.currentGroup !== undefined && token.extraInformation1.substr(0, 2) !== '01') {
+            VSLogger.logMessage(` addRawVariable: ${this.currentGroup?.name} -> ${token.tokenName} -> ${token.extraInformation1}`);
+            this.currentGroup?.children.push(symbol);
             return;
         }
 
         if (this.currentSectionSymbols !== undefined) {
+            VSLogger.logMessage(` addRawVariable: section -> ${token.tokenName} -> ${token.extraInformation1}`);
             this.currentSectionSymbols.push(symbol);
         } else {
+            VSLogger.logMessage(` addRawVariable: division -> ${token.tokenName} -> ${token.extraInformation1}`);
             this.currentDivisionSymbols?.push(symbol);
+
         }
     }
 
-    private currentGroup: vscode.DocumentSymbol[] | undefined;
+    private addGroup(firstTwo: number, token: COBOLToken, addSymbol: vscode.DocumentSymbol): void {
+        if (this.currentGroupLevel === 0) {
+            this.addRawVariable(token, addSymbol);
+            this.currentGroup = addSymbol;
+            this.currentGroupLevel = firstTwo;
+            return;
+        }
+
+        if (firstTwo > this.currentGroupLevel) {
+            VSLogger.logMessage(`Addgroup: push level, save: ${this.currentGroup?.name}@${this.currentGroupLevel}`);
+            this.currentGroups.push(this.currentGroup);
+            this.currentGroupsLevels.push(this.currentGroupLevel)
+            this.currentGroup?.children.push(addSymbol);
+            this.currentGroup = addSymbol;
+            this.currentGroupLevel = firstTwo;
+            VSLogger.logMessage(`Addgroup: push level, new: ${this.currentGroup?.name}@${this.currentGroupLevel}\n`);
+            return;
+        }
+
+        if(firstTwo < this.currentGroupLevel) {
+            VSLogger.logMessage(`Addgroup: pop level (top), ${this.currentGroup?.name}@${this.currentGroupLevel}`);
+            const possibleCurrentGroup = this.currentGroups.pop();
+            if (possibleCurrentGroup !== undefined) {
+                this.currentGroup = possibleCurrentGroup;
+            }
+            const possibleGroupLevel = this.currentGroupsLevels.pop();
+            if (possibleGroupLevel !== undefined) {
+                this.currentGroupLevel = possibleGroupLevel;
+            }
+            this.currentGroup?.children.push(addSymbol);
+            VSLogger.logMessage(`Addgroup: pop level (bot), ${this.currentGroup?.name}@${this.currentGroupLevel}\n`);
+            return;
+        }
+
+        if (firstTwo === this.currentGroupLevel) {
+            VSLogger.logMessage(`Addgroup: same level, ${this.currentGroup?.name}@${this.currentGroupLevel}`);
+            const parent = this.currentGroups.peek();
+            if (parent !== undefined) {
+                VSLogger.logMessage(` Addgroup: parent name, ${parent.name}`);
+                parent.children.push(addSymbol);
+                VSLogger.logMessage(`\n`);
+                // VSLogger.logMessage(`Addgroup: same level, ${this.currentGroup.name}@${this.currentGroupLevel}\n`);
+            }
+            return;
+        }
+
+        VSLogger.logMessage(`Addgroup: FAIL: ${firstTwo} -> ${token.tokenName} -> ${token.extraInformation1}`);
+        // this.addRawVariable(token, addSymbol);
+        // this.currentGroupLevel = firstTwo;
+        // VSLogger.logMessage(`Addgroup: end: ${firstTwo} -> ${token.tokenName} -> ${token.extraInformation1}\n`);
+    }
+    private currentGroup: vscode.DocumentSymbol | undefined = undefined;
+
     // TODO: - need stack to handle nested groups, pop level when is <= current level
+
+    private currentGroupLevel = 0;
+    private currentGroups = new SimpleStack<vscode.DocumentSymbol | undefined>();
+    private currentGroupsLevels = new SimpleStack<number>();
 
     public addVariable(token: COBOLToken) {
         //     // drop fillers
@@ -200,14 +210,14 @@ class ProgramSymbols extends COBOLDocumentSymbols {
         if (token.extraInformation1 === 'fd' || token.extraInformation1 === 'sd'
             || token.extraInformation1 === 'rd' || token.extraInformation1 === 'select') {
             const sym = super.newDocumentSymbol(token, vscode.SymbolKind.File, false);
-            this.addRawVariable(token,sym);
+            this.addRawVariable(token, sym);
             return;
         }
 
         let addSymbol: vscode.DocumentSymbol;
 
-        const firstTwo = token.extraInformation1.substr(0,2);
-        if (firstTwo === '01' || firstTwo === '77' || firstTwo === '88' || firstTwo === '66') {
+        const firstTwo = Number(token.extraInformation1.substr(0, 2).replace(/^0+/, ''));
+        if (firstTwo === 1 || firstTwo === 77 || firstTwo === 88 || firstTwo === 66) {
             this.currentGroup = undefined;
         }
 
@@ -222,13 +232,14 @@ class ProgramSymbols extends COBOLDocumentSymbols {
             addSymbol = super.newDocumentSymbol(token, vscode.SymbolKind.Field, false);
         }
 
-        this.addRawVariable(token, addSymbol);
-        if (token.extraInformation1.endsWith("-GROUP")) {
-            this.currentGroup = addSymbol.children;
+        VSLogger.logMessage(`${firstTwo} -> ${token.tokenName} -> ${token.extraInformation1}`);
+        if (token.extraInformation1.indexOf("GROUP") !== -1) {
+            this.addGroup(firstTwo, token, addSymbol);
         }
+        //  else {
+        //     this.addRawVariable(token, addSymbol);
+        // }
     }
-
-
 }
 
 export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
