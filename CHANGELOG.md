@@ -5,6 +5,12 @@ Changelog for spgennardvscode_cobol.
 
 ## 7.10.9 
  
+**tweak**
+* [0f88e5904fabc1e](https://github.com/spgennard/vscode_cobol/commit/0f88e5904fabc1e) *2021-10-09 20:55:32*
+ 
+**Update CHANGELOG.md**
+* [c862416b82691a5](https://github.com/spgennard/vscode_cobol/commit/c862416b82691a5) *2021-10-09 20:54:59*
+ 
 **change adjust cursor to ctrl+alt+a and add adjust left margin ctrl+alt+l**
 * [62e8bbdfd5a15de](https://github.com/spgennard/vscode_cobol/commit/62e8bbdfd5a15de) *2021-10-09 20:53:19*
  
