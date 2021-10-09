@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.8 
+ 
+**Release 'indent' to cursor - ctrl+alt+i**
+* [48bfcb89c9e1f55](https://github.com/spgennard/vscode_cobol/commit/48bfcb89c9e1f55) *2021-10-09 19:37:25*
+ 
+**Update CHANGELOG.md**
+* [98a2276ea56cc6f](https://github.com/spgennard/vscode_cobol/commit/98a2276ea56cc6f) *2021-10-07 22:39:32*
+ 
+ 
 ## 7.10.4 
  
 **add BITLANG-COBOL id**
