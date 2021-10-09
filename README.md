@@ -55,7 +55,7 @@ Everywhere Visual Studio Code works.
 | ctrl+hover        |              Peek head of copybook or symbol/field              |
 | right mouse/peek  |             Peek copybook without opening the file)             |
 | ctrl+alt+a        |                 Adjust line to cursor position                  |
-| ctrl+alt+l        |                 Left adjust line to left margin                  |
+| ctrl+alt+l        |                 Left adjust line to left margin                 |
 
 ## Settings
 
