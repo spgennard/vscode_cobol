@@ -3,6 +3,18 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.9 
+ 
+**change adjust cursor to ctrl+alt+a and add adjust left margin ctrl+alt+l**
+* [62e8bbdfd5a15de](https://github.com/spgennard/vscode_cobol/commit/62e8bbdfd5a15de) *2021-10-09 20:53:19*
+ 
+**update**
+* [e4c122b8cbd79fc](https://github.com/spgennard/vscode_cobol/commit/e4c122b8cbd79fc) *2021-10-09 19:41:07*
+ 
+**Update CHANGELOG.md**
+* [81b8ac8d8fdbafc](https://github.com/spgennard/vscode_cobol/commit/81b8ac8d8fdbafc) *2021-10-09 19:38:03*
+ 
+ 
 ## 7.10.8 
  
 **Release 'indent' to cursor - ctrl+alt+i**
