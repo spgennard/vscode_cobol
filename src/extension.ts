@@ -1294,6 +1294,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(indentToCursorCommand);
 
+    const leftAdjustLineCommand = commands.registerCommand("cobolplugin.leftAdjustLine", () => {
+        COBOLUtils.leftAdjustLine();
+    });
+    context.subscriptions.push(leftAdjustLineCommand);
+  
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

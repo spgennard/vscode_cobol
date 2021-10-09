@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.8",
+  "version": "7.10.9",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -26,7 +26,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.61.0"
+    "vscode": "^1.60.0"
   },
   "extensionKind": [
     "workspace"
@@ -1355,7 +1355,12 @@
         "command": "cobolplugin.indentToCursor",
         "category": "COBOL",
         "title": "indent to cursor"
-      }
+      },
+      {
+        "command": "cobolplugin.leftAdjustLine",
+        "category": "COBOL",
+        "title": "left adjust line"
+      }      
     ],
     "menus": {
       "editor/context": [
@@ -1470,10 +1475,16 @@
         "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
-        "key": "ctrl+alt+i",
+        "key": "ctrl+alt+a",
         "command": "cobolplugin.indentToCursor",
         "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+alt+l",
+        "command": "cobolplugin.leftAdjustLine",
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       }
+      
     ],
     "snippets": [
       {

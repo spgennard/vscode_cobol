@@ -381,6 +381,26 @@ export class COBOLUtils {
         }
     }
 
+    public static leftAdjustLine(): void {
+        if (vscode.window.activeTextEditor) {
+            const editor = vscode.window.activeTextEditor;
+            const sel = editor.selection;
+            const line = editor.document.lineAt(sel.start.line).text;
+            const lineTrimmed = line.trimStart();
+            const posStartOfLine = new vscode.Position(sel.start.line,0);
+
+            editor.edit(edit => {
+                const endOfLine = new vscode.Position(sel.start.line,line.length);
+                const ran = new vscode.Range(posStartOfLine, endOfLine);
+                edit.delete(ran);
+                edit.insert(posStartOfLine, lineTrimmed);
+                // })
+             }).then(ok => {
+                editor.selection = new vscode.Selection(posStartOfLine,posStartOfLine);
+            });
+        }
+    }
+
     public static extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean): void {
         const sel = activeTextEditor.selection;
 

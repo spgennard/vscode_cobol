@@ -44,17 +44,18 @@ Everywhere Visual Studio Code works.
 
 ## Keybindings
 
-| Keys                     |                          Description                            |
-|--------------------------|:---------------------------------------------------------------:|
-| ctrl+alt+p               |                    Go to procedure division                     |
-| ctrl+alt+w               |                  Go to working-storage section                  |
-| ctrl+alt+d               | Go to data division (or working-storage section if not present) |
-| ctrl+alt+,               |             Go backwards to next section/division               |
-| ctrl+alt+.               |            Go forward to next next section/division             |
-| f12 or ctrl+click        |                     Go to copybook/file                         |
-| ctrl+hover               |                     Peek head of copybook or symbol/field       |
-| right mouse/peek         |            Peek copybook without opening the file)              |
-| ctrl+alt+i               |                        Indent to cursor                         |
+| Keys              |                           Description                           |
+|-------------------|:---------------------------------------------------------------:|
+| ctrl+alt+p        |                    Go to procedure division                     |
+| ctrl+alt+w        |                  Go to working-storage section                  |
+| ctrl+alt+d        | Go to data division (or working-storage section if not present) |
+| ctrl+alt+,        |              Go backwards to next section/division              |
+| ctrl+alt+.        |            Go forward to next next section/division             |
+| f12 or ctrl+click |                       Go to copybook/file                       |
+| ctrl+hover        |              Peek head of copybook or symbol/field              |
+| right mouse/peek  |             Peek copybook without opening the file)             |
+| ctrl+alt+a        |                 Adjust line to cursor position                  |
+| ctrl+alt+l        |                 Left adjust line to left margin                  |
 
 ## Settings
 
@@ -227,20 +228,20 @@ The example below shows you how you can create a single task to compile one prog
 
 ### Task: Breakdown of problem matchers
 
-| Product and Version                           | Tools                                                            | Problem matcher(s)                                                     |
-|-----------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------|
-| COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                                                          |
-| COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc                               |
-| ACUCOBOL-GT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl                                |
-| Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx                                            |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx                                   |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx                                            |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"3" for information              | +mfcobol-errformat3-info                                               |
-| Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                                                       |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                                                    |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn                                             |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                                                    |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | $mfcobol-errformat2-copybook                                           |
+| Product and Version                           | Tools                                                            | Problem matcher(s)                       |
+|-----------------------------------------------|------------------------------------------------------------------|------------------------------------------|
+| COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                            |
+| COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc |
+| ACUCOBOL-GT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl  |
+| Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx              |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx     |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx              |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3" for information              | +mfcobol-errformat3-info                 |
+| Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                         |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                      |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn               |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                      |
+|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | $mfcobol-errformat2-copybook             |
 
 NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook", "-info", "-note" and similar problem matcher are included before problem matchers without this suffix.
 
