@@ -1289,6 +1289,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings), codelensProvider);
 
+    const indentToCursorCommand = commands.registerCommand("cobolplugin.indentToCursor", () => {
+        COBOLUtils.indentToCursor();
+    });
+    context.subscriptions.push(indentToCursorCommand);
+
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

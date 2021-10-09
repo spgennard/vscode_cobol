@@ -54,6 +54,7 @@ Everywhere Visual Studio Code works.
 | f12 or ctrl+click        |                     Go to copybook/file                         |
 | ctrl+hover               |                     Peek head of copybook or symbol/field       |
 | right mouse/peek         |            Peek copybook without opening the file)              |
+| ctrl+alt+i               |                        Indent to cursor                         |
 
 ## Settings
 

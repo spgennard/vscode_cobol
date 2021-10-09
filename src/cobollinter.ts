@@ -50,7 +50,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 
         if (w !== undefined && code !== undefined) {
             const pos = w.document.positionAt(offset);
-            w.edit(edit => {
+            await w.edit(edit => {
                 edit.insert(pos, "      *> cobol-lint " + code + "\n");
             });
         }

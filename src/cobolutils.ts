@@ -357,6 +357,30 @@ export class COBOLUtils {
 
     }
 
+    public static indentToCursor(): void {
+        if (vscode.window.activeTextEditor) {
+            const editor = vscode.window.activeTextEditor;
+            const sel = editor.selection;
+            const line = editor.document.lineAt(sel.start.line).text;
+            const lineTrimmed = line.trimStart();
+
+            editor.edit(edit => {
+                const posStartOfLine = new vscode.Position(sel.start.line,0);
+                const endOfLine = new vscode.Position(sel.start.line,line.length);
+                const ran = new vscode.Range(posStartOfLine, endOfLine);
+                edit.delete(ran);
+            // }).then(ok => {
+            //     editor.edit(edit => {
+                // const posStartOfLine = new vscode.Position(sel.start.line,0);
+                const replaceLine = " ".repeat(sel.start.character)+lineTrimmed;
+                edit.insert(posStartOfLine, replaceLine);
+                // })
+             }).then(ok => {
+                editor.selection = sel;
+            });
+        }
+    }
+
     public static extractSelectionTo(activeTextEditor: vscode.TextEditor, para: boolean): void {
         const sel = activeTextEditor.selection;
 
