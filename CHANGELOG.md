@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.11 
+ 
+**fix alignment in README.md table**
+* [876a46d7dc3d648](https://github.com/spgennard/vscode_cobol/commit/876a46d7dc3d648) *2021-10-09 21:21:08*
+ 
+**Update CHANGELOG.md**
+* [a1732c2cf6f97fe](https://github.com/spgennard/vscode_cobol/commit/a1732c2cf6f97fe) *2021-10-09 20:55:51*
+ 
+ 
 ## 7.10.9 
  
 **tweak**
