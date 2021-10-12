@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.9",
+  "version": "7.10.11",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -26,7 +26,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.60.0"
+    "vscode": "^1.61.0"
   },
   "extensionKind": [
     "workspace"
@@ -1849,7 +1849,7 @@
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.10.3",
-    "@types/vscode": "^1.60.0",
+    "@types/vscode": "^1.61.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "ansi-regex": ">=6.0.1",
