@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.11",
+  "version": "7.10.13",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -736,7 +736,7 @@
             "type": "string",
             "title": "Valid Visual Studio COBOL Language Id",
             "pattern": "(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^COBOL_MF_LISTFILE|^BITLANG-COBOL$)",
-            "patternErrorMessage" : "Invalid language id, can be cobol, COBOL, COBOLIT, ACUCOBOL or COBOL_MF_LISTFILE"  
+            "patternErrorMessage": "Invalid language id, can be cobol, COBOL, COBOLIT, ACUCOBOL or COBOL_MF_LISTFILE"
           },
           "default": [
             "COBOL",
@@ -744,7 +744,12 @@
             "COBOLIT",
             "ACUCOBOL"
           ],
-          "uniqueItems": true          
+          "uniqueItems": true
+        },
+        "coboleditor.xedit_keymap": {
+          "type": "boolean",
+          "description": "Enable experiemental 'xedit' key mapping",
+          "default": false
         }
       }
     },
@@ -762,7 +767,7 @@
         "editor.semanticHighlighting.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
-        "editor.guides.indentation":false,
+        "editor.guides.indentation": false,
         "editor.autoIndent": "advanced",
         "editor.insertSpaces": true,
         "editor.formatOnType": true,
@@ -780,7 +785,7 @@
         "editor.semanticHighlighting.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
-        "editor.guides.indentation":false,
+        "editor.guides.indentation": false,
         "editor.autoIndent": "advanced",
         "editor.insertSpaces": true,
         "editor.formatOnType": true,
@@ -797,7 +802,7 @@
       "[ACUCOBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "editor.insertSpaces": true,
-        "editor.guides.indentation":false,
+        "editor.guides.indentation": false,
         "files.autoGuessEncoding": false,
         "editor.autoIndent": "full",
         "editor.formatOnType": false,
@@ -812,7 +817,7 @@
       "[dir]": {
         "editor.semanticHighlighting.enabled": false,
         "editor.insertSpaces": true,
-        "editor.guides.indentation":false,
+        "editor.guides.indentation": false,
         "files.autoGuessEncoding": false,
         "editor.autoIndent": "keep",
         "editor.formatOnType": false,
@@ -823,7 +828,7 @@
       "[JCL]": {
         "editor.semanticHighlighting.enabled": false,
         "files.autoGuessEncoding": false,
-        "editor.guides.indentation":false,
+        "editor.guides.indentation": false,
         "editor.detectIndentation": false,
         "editor.formatOnType": false,
         "editor.autoIndent": "full",
@@ -843,7 +848,7 @@
           72,
           80
         ],
-        "editor.guides.indentation":false
+        "editor.guides.indentation": false
       },
       "[sql]": {
         "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
@@ -898,14 +903,13 @@
         ],
         "configuration": "./cobol.configuration.json"
       },
-
       {
         "id": "BITLANG-COBOL",
         "filenames": [
           "SQLCA"
         ],
         "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
-        "extensions": [ ],
+        "extensions": [],
         "configuration": "./cobol.configuration.json"
       },
       {
@@ -1360,7 +1364,7 @@
         "command": "cobolplugin.leftAdjustLine",
         "category": "COBOL",
         "title": "left adjust line"
-      }      
+      }
     ],
     "menus": {
       "editor/context": [
@@ -1480,11 +1484,80 @@
         "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
+        "key": "ctrl+l",
+        "command": "cobolplugin.leftAdjustLine",
+        "when": "config.coboleditor.xedit_keymap &&  &&editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
         "key": "ctrl+alt+l",
         "command": "cobolplugin.leftAdjustLine",
         "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
-      }
-      
+      },
+      {
+        "key": "alt+a",
+        "command": "editor.action.selectAll",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+a",
+        "command": "cursorLineStart",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+b",
+        "command": "cursorLeft",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+c",
+        "command": "editor.action.clipboardPasteAction",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+d",
+        "command": "deleteRight",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+e",
+        "command": "cursorLineEnd",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+f",
+        "command": "cursorRight",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+h",
+        "command": "deleteLeft",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+j",
+        "command": "editor.action.insertLineAfter",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },   
+      {
+        "key": "ctrl+k",
+        "command": "deleteAllRight",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },  
+      {
+        "key": "ctrl+m",
+        "command": "editor.action.insertLineBefore",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+z",
+        "command": "scrollLineUp",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "alt+z",
+        "command": "scrollLineDown",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      }      
     ],
     "snippets": [
       {
