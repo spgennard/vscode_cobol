@@ -762,7 +762,7 @@
         "editor.semanticHighlighting.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
-        "editor.renderIndentGuides": false,
+        "editor.guides.indentation":false,
         "editor.autoIndent": "advanced",
         "editor.insertSpaces": true,
         "editor.formatOnType": true,
@@ -780,7 +780,7 @@
         "editor.semanticHighlighting.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
-        "editor.renderIndentGuides": false,
+        "editor.guides.indentation":false,
         "editor.autoIndent": "advanced",
         "editor.insertSpaces": true,
         "editor.formatOnType": true,
@@ -797,7 +797,7 @@
       "[ACUCOBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "editor.insertSpaces": true,
-        "editor.renderIndentGuides": false,
+        "editor.guides.indentation":false,
         "files.autoGuessEncoding": false,
         "editor.autoIndent": "full",
         "editor.formatOnType": false,
@@ -812,7 +812,7 @@
       "[dir]": {
         "editor.semanticHighlighting.enabled": false,
         "editor.insertSpaces": true,
-        "editor.renderIndentGuides": false,
+        "editor.guides.indentation":false,
         "files.autoGuessEncoding": false,
         "editor.autoIndent": "keep",
         "editor.formatOnType": false,
@@ -823,7 +823,7 @@
       "[JCL]": {
         "editor.semanticHighlighting.enabled": false,
         "files.autoGuessEncoding": false,
-        "editor.renderIndentGuides": false,
+        "editor.guides.indentation":false,
         "editor.detectIndentation": false,
         "editor.formatOnType": false,
         "editor.autoIndent": "full",
@@ -843,7 +843,7 @@
           72,
           80
         ],
-        "editor.renderIndentGuides": false
+        "editor.guides.indentation":false
       },
       "[sql]": {
         "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
