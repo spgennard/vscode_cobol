@@ -3,6 +3,21 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.13 
+ 
+**add some simple keymaps for xedit enabled via config**
+* [57fbaea64bfb5c9](https://github.com/spgennard/vscode_cobol/commit/57fbaea64bfb5c9) *2021-10-13 21:50:27*
+ 
+**editor.renderIndentGuides has been removed in 1.61**
+* [2bec11212767673](https://github.com/spgennard/vscode_cobol/commit/2bec11212767673) *2021-10-13 20:42:15*
+ 
+**update**
+* [620a3d1f87c2b4a](https://github.com/spgennard/vscode_cobol/commit/620a3d1f87c2b4a) *2021-10-12 22:53:40*
+ 
+**Update CHANGELOG.md**
+* [ec521d7a346cef3](https://github.com/spgennard/vscode_cobol/commit/ec521d7a346cef3) *2021-10-12 22:52:28*
+ 
+ 
 ## 7.10.11 
  
 **fix alignment in README.md table**
