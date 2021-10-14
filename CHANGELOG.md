@@ -3,6 +3,18 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.14 
+ 
+**add transpose**
+* [755e5c5458ba524](https://github.com/spgennard/vscode_cobol/commit/755e5c5458ba524) *2021-10-14 21:21:51*
+ 
+**fix bug in "'perform" isense**
+* [d434d01a887756f](https://github.com/spgennard/vscode_cobol/commit/d434d01a887756f) *2021-10-14 20:06:57*
+ 
+**Update CHANGELOG.md**
+* [44aab1b31d4b87f](https://github.com/spgennard/vscode_cobol/commit/44aab1b31d4b87f) *2021-10-13 21:51:16*
+ 
+ 
 ## 7.10.13 
  
 **add some simple keymaps for xedit enabled via config**
