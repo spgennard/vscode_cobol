@@ -112,7 +112,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const workMap = new Map<string, string>();
 
         const items: CompletionItem[] = [];
-        const wordToCompleteLower = wordToComplete.toLowerCase();
         for (let c = 0; c < numberOfWordsInResults; c++) {
 
             //if the text is uppercase, the present the items as uppercase
@@ -125,10 +124,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             workMap.set(key.tokenNameLower, key.tokenNameLower);
 
             const orgKey = key.tokenName;
-            if (key.tokenNameLower.startsWith(wordToCompleteLower)) {
-                key.tokenName = key.tokenName.substring(wordToComplete.length);
-                key.tokenNameLower = key.tokenNameLower.substring(wordToComplete.length);
-            }
 
             if (includeAsIS) {
                 retKeys.push((key.tokenName));
@@ -242,7 +237,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         let items: CompletionItem[] = [];
 
         if (this.iconfig.enable_data_provider === false) {
-            return items;
+            return new CompletionList(items, false);
         }
 
         const startTime = VSExtensionUtils.performance_now();
@@ -250,7 +245,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         let wordBefore = "";
         let wordBeforeLower = "";
         let currentLine: string = document.lineAt(position.line).text.trimStart();
-
+        let listComplete = false;
+        
         const range = document.getWordRangeAtPosition(position);
         if (range) {
             wordToComplete = document.getText(new Range(range.start, position)); wordBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trimEnd();
@@ -298,12 +294,15 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             ) {
                 if (currentLine.toLowerCase().indexOf("call") !== -1) {
                     items = this.getCallTargets();
+                    listComplete = true;
                 }
                 if (currentLine.toLowerCase().indexOf("cancel") !== -1) {
                     items = this.getCallTargets();
+                    listComplete = true;
                 }
                 if (currentLine.toLowerCase().indexOf("copy") !== -1) {
                     items = this.getAllCopyBook(false);
+                    listComplete = true;
                 }
             }
 
@@ -311,9 +310,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 switch (wordBeforeLower) {
                     case "copy":
                         items = this.getAllCopyBook(true);
+                        listComplete = true;
                         break;
                     case "type": {
                         items = this.getAllTypes(wordToComplete);
+                        listComplete = true;
                         break;
                     }
                     case "thru":
@@ -323,9 +324,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         {
                             if (wordToComplete.length === 0) {
                                 items = this.getALlPerformTargets(document, this.iconfig);
+                                listComplete = true;
                             } else {
                                 const words = this.getPerformTargets(document);
                                 items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
+                                listComplete = false;
                             }
                             break;
                         }
@@ -352,6 +355,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                             // }
 
                             items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                            listComplete = false;
                             break;
                         }
 
@@ -387,9 +391,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         {
                             if (wordToComplete.length === 0) {
                                 items = this.getAllConstantsOrVariables(document, this.iconfig);
+                                listComplete = true;
                             } else {
                                 const words = this.getConstantsOrVariables(document, this.iconfig);
                                 items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                                listComplete = false;
                             }
                             break;
                         }
@@ -402,7 +408,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (totalTimeInMS > VSLogger.logTimeThreshold) {
             VSLogger.logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }
-        return items;
+
+        return Promise.resolve(new CompletionList(items, listComplete));
     }
 
     private getAllConstantsOrVariables(document: TextDocument, iconfig: ICOBOLSettings): CompletionItem[] {

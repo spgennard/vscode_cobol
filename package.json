@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.13",
+  "version": "7.10.14",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1537,12 +1537,12 @@
         "key": "ctrl+j",
         "command": "editor.action.insertLineAfter",
         "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
-      },   
+      },
       {
         "key": "ctrl+k",
         "command": "deleteAllRight",
         "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
-      },  
+      },
       {
         "key": "ctrl+m",
         "command": "editor.action.insertLineBefore",
@@ -1557,7 +1557,7 @@
         "key": "alt+z",
         "command": "scrollLineDown",
         "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
-      }      
+      }
     ],
     "snippets": [
       {
