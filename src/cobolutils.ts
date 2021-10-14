@@ -365,17 +365,17 @@ export class COBOLUtils {
             const lineTrimmed = line.trimStart();
 
             editor.edit(edit => {
-                const posStartOfLine = new vscode.Position(sel.start.line,0);
-                const endOfLine = new vscode.Position(sel.start.line,line.length);
+                const posStartOfLine = new vscode.Position(sel.start.line, 0);
+                const endOfLine = new vscode.Position(sel.start.line, line.length);
                 const ran = new vscode.Range(posStartOfLine, endOfLine);
                 edit.delete(ran);
-            // }).then(ok => {
-            //     editor.edit(edit => {
+                // }).then(ok => {
+                //     editor.edit(edit => {
                 // const posStartOfLine = new vscode.Position(sel.start.line,0);
-                const replaceLine = " ".repeat(sel.start.character)+lineTrimmed;
+                const replaceLine = " ".repeat(sel.start.character) + lineTrimmed;
                 edit.insert(posStartOfLine, replaceLine);
                 // })
-             }).then(ok => {
+            }).then(ok => {
                 editor.selection = sel;
             });
         }
@@ -387,17 +387,41 @@ export class COBOLUtils {
             const sel = editor.selection;
             const line = editor.document.lineAt(sel.start.line).text;
             const lineTrimmed = line.trimStart();
-            const posStartOfLine = new vscode.Position(sel.start.line,0);
+            const posStartOfLine = new vscode.Position(sel.start.line, 0);
 
             editor.edit(edit => {
-                const endOfLine = new vscode.Position(sel.start.line,line.length);
+                const endOfLine = new vscode.Position(sel.start.line, line.length);
                 const ran = new vscode.Range(posStartOfLine, endOfLine);
                 edit.delete(ran);
                 edit.insert(posStartOfLine, lineTrimmed);
                 // })
-             }).then(ok => {
-                editor.selection = new vscode.Selection(posStartOfLine,posStartOfLine);
+            }).then(ok => {
+                editor.selection = new vscode.Selection(posStartOfLine, posStartOfLine);
             });
+        }
+    }
+
+    public static transposeSelection(editor: vscode.TextEditor, textEditor: vscode.TextEditorEdit): void {
+        for (const selection of editor.selections) {
+            if (selection.anchor.isEqual(selection.active)) {
+                const position = new vscode.Position(selection.active.line, selection.active.character);
+                const lastPositionInLine = editor.document.lineAt(position.line).range.end;
+                if (!(position.isEqual(lastPositionInLine) || position.character == 0)) {
+                    const nextSelection = new vscode.Selection(position, new vscode.Position(position.line, position.character + 1));
+                    const nextChar = editor.document.getText(nextSelection);
+                    textEditor.delete(nextSelection);
+                    const prevPosition = new vscode.Position(position.line, position.character - 1);
+                    textEditor.insert(prevPosition, nextChar);
+                }
+            } else {
+                const startPosition = new vscode.Position(selection.anchor.line, selection.anchor.character);
+                const endPosition = new vscode.Position(selection.active.line, selection.active.character);
+                const nextSelection = new vscode.Selection(startPosition, new vscode.Position(startPosition.line, startPosition.character + 1));
+                const nextChar = editor.document.getText(nextSelection);
+                textEditor.delete(nextSelection);
+                const prevPosition = new vscode.Position(endPosition.line, endPosition.character);
+                textEditor.insert(prevPosition, nextChar);
+            }
         }
     }
 
@@ -562,7 +586,7 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    private static isValidKeywordOrStorageKeyword(languageId: string,keyword: string): boolean {
+    private static isValidKeywordOrStorageKeyword(languageId: string, keyword: string): boolean {
         const keywordLower = keyword.toLowerCase();
         const isKeyword = getCOBOLKeywordDictionary(languageId).has(keywordLower);
         if (isKeyword) {
@@ -576,7 +600,7 @@ export class COBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean, languageid:string): string {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean, languageid: string): string {
         let newtext = text;
         const args: string[] = [];
 
@@ -681,7 +705,7 @@ export class COBOLUtils {
                 break;      // eof
             }
 
-            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle, settings.format_constants_to_uppercase,languageid);
+            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle, settings.format_constants_to_uppercase, languageid);
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {

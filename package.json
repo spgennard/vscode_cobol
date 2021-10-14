@@ -1364,6 +1364,11 @@
         "command": "cobolplugin.leftAdjustLine",
         "category": "COBOL",
         "title": "left adjust line"
+      },
+      {
+        "command": "cobolplugin.transposeSelection",
+        "category": "COBOL",
+        "title": "transpose"
       }
     ],
     "menus": {
@@ -1546,6 +1551,11 @@
       {
         "key": "ctrl+m",
         "command": "editor.action.insertLineBefore",
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "ctrl+t",
+        "command": "cobolplugin.transposeSelection",
         "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {

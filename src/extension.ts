@@ -1299,6 +1299,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(leftAdjustLineCommand);
   
+
+    const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
+        COBOLUtils.transposeSelection(textEditor, edit);
+    });
+    context.subscriptions.push(transposeCommand);
+
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {
