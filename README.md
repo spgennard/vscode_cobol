@@ -57,6 +57,26 @@ Everywhere Visual Studio Code works.
 | ctrl+alt+a        |                 Adjust line to cursor position                  |
 | ctrl+alt+l        |                 Left adjust line to left margin                 |
 
+## Keybindings - xedit'ish
+
+Only active when `coboleditor.xedit_keymap` is set to true.
+
+| Keys   |       Description       |
+|--------|:-----------------------:|
+| ctrl+a | cursor to start of line |
+| ctrl+b |       cursor left       |
+| ctrl+c |     clipboard paste     |
+| ctrl+d | delete right character  |
+| ctrl+e |     cursor line end     |
+| ctrl+f |      cursor right       |
+| ctrl+h |       delete left       |
+| ctrl+j |    insert line after    |
+| ctrl+k |     delete to right     |
+| ctrl+m |   insert line before    |
+| ctrl+t |        transpose        |
+| ctrl+z |     scroll line up      |
+| alt+z  |    scroll line down     |
+
 ## Settings
 
 - COBOL tab stops can be changed by editing the ```coboleditor.tabstops``` setting.
