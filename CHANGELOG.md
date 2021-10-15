@@ -3,6 +3,18 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.15 
+ 
+**add some docs for xedit'ish keys**
+* [4d047a72d7e5d6c](https://github.com/spgennard/vscode_cobol/commit/4d047a72d7e5d6c) *2021-10-15 19:25:17*
+ 
+**update**
+* [e140f504d4a2599](https://github.com/spgennard/vscode_cobol/commit/e140f504d4a2599) *2021-10-14 21:27:25*
+ 
+**Update CHANGELOG.md**
+* [2bb4fc63e4c5939](https://github.com/spgennard/vscode_cobol/commit/2bb4fc63e4c5939) *2021-10-14 21:22:33*
+ 
+ 
 ## 7.10.14 
  
 **add transpose**
