@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.16 
+ 
+**Fix bracket issue with ref mod items**
+* [9204f81a11482f5](https://github.com/spgennard/vscode_cobol/commit/9204f81a11482f5) *2021-10-17 11:14:50*
+ 
+**Update CHANGELOG.md**
+* [19af0a8ef802f67](https://github.com/spgennard/vscode_cobol/commit/19af0a8ef802f67) *2021-10-15 20:52:51*
+ 
+ 
 ## 7.10.15 
  
 **add some docs for xedit'ish keys**
