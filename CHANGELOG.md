@@ -1,8 +1,17 @@
-# Changelog
+Need to install the following packages: git-changelog-command-line Ok to proceed? (y) # Changelog
 
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.17 
+ 
+**enable editor.bracketPairColorization.enabled on a per language basis**
+* [20d16c21654af43](https://github.com/spgennard/vscode_cobol/commit/20d16c21654af43) *2021-10-18 18:40:54*
+ 
+**Update CHANGELOG.md**
+* [a8cd2a25970ac14](https://github.com/spgennard/vscode_cobol/commit/a8cd2a25970ac14) *2021-10-17 11:16:22*
+ 
+ 
 ## 7.10.16 
  
 **Fix bracket issue with ref mod items**
