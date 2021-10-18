@@ -765,6 +765,7 @@
     "configurationDefaults": {
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
+        "editor.bracketPairColorization.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
         "editor.guides.indentation": false,
@@ -783,6 +784,7 @@
       },
       "[BITLANG-COBOL]": {
         "editor.semanticHighlighting.enabled": true,
+        "editor.bracketPairColorization.enabled": true,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
         "editor.guides.indentation": false,
@@ -801,6 +803,7 @@
       },
       "[ACUCOBOL]": {
         "editor.semanticHighlighting.enabled": true,
+        "editor.bracketPairColorization.enabled": true,
         "editor.insertSpaces": true,
         "editor.guides.indentation": false,
         "files.autoGuessEncoding": false,
@@ -1931,7 +1934,7 @@
     "@types/glob": "^7.1.4",
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.0",
+    "@types/node": "^16.11.1",
     "@types/vscode": "^1.61.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
