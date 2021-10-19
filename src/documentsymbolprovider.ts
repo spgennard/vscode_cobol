@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { COBOLToken, COBOLTokenStyle, splitArgument } from './cobolsourcescanner';
+import { COBOLToken, COBOLTokenStyle } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { VSLogger } from './extension';
 import { outlineFlag } from './iconfiguration';

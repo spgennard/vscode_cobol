@@ -375,6 +375,7 @@ export class COBOLUtils {
                 const replaceLine = " ".repeat(sel.start.character) + lineTrimmed;
                 edit.insert(posStartOfLine, replaceLine);
                 // })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }).then(ok => {
                 editor.selection = sel;
             });
@@ -395,6 +396,7 @@ export class COBOLUtils {
                 edit.delete(ran);
                 edit.insert(posStartOfLine, lineTrimmed);
                 // })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }).then(ok => {
                 editor.selection = new vscode.Selection(posStartOfLine, posStartOfLine);
             });

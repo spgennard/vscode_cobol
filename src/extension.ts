@@ -49,7 +49,7 @@ import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
 import { VSCOBOLFileUtils } from './vsfileutils';
 import { VSPreProc } from './vspreproc';
-import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
+// import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
