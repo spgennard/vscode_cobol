@@ -765,7 +765,7 @@
     "configurationDefaults": {
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
-        "editor.bracketPairColorization.enabled": true,
+        "editor.bracketPairColorization.enabled": false,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
         "editor.guides.indentation": false,
@@ -784,7 +784,7 @@
       },
       "[BITLANG-COBOL]": {
         "editor.semanticHighlighting.enabled": true,
-        "editor.bracketPairColorization.enabled": true,
+        "editor.bracketPairColorization.enabled": false,
         "files.autoGuessEncoding": false,
         "editor.snippetSuggestions": "bottom",
         "editor.guides.indentation": false,
@@ -803,7 +803,7 @@
       },
       "[ACUCOBOL]": {
         "editor.semanticHighlighting.enabled": true,
-        "editor.bracketPairColorization.enabled": true,
+        "editor.bracketPairColorization.enabled": false,
         "editor.insertSpaces": true,
         "editor.guides.indentation": false,
         "files.autoGuessEncoding": false,
