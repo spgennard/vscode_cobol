@@ -1,8 +1,20 @@
-Need to install the following packages: git-changelog-command-line Ok to proceed? (y) # Changelog
+# Changelog
 
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.19 
+ 
+**disable "editor.bracketPairColorization.enabled" as it causes odd**
+* [31b7012237587e1](https://github.com/spgennard/vscode_cobol/commit/31b7012237587e1) *2021-10-20 16:28:06*
+ 
+**tidy up**
+* [182d5c6ee794a0e](https://github.com/spgennard/vscode_cobol/commit/182d5c6ee794a0e) *2021-10-19 20:30:39*
+ 
+**Update CHANGELOG.md**
+* [5b16841a1ed2e3f](https://github.com/spgennard/vscode_cobol/commit/5b16841a1ed2e3f) *2021-10-18 23:12:03*
+ 
+ 
 ## 7.10.17 
  
 **enable editor.bracketPairColorization.enabled on a per language basis**
