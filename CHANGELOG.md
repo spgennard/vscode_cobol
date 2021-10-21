@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.20 
+ 
+**add some experimental support for web extension**
+* [dae3eb2f1812760](https://github.com/spgennard/vscode_cobol/commit/dae3eb2f1812760) *2021-10-21 22:58:32*
+ 
+**Update CHANGELOG.md**
+* [b3627016f4d8a06](https://github.com/spgennard/vscode_cobol/commit/b3627016f4d8a06) *2021-10-20 20:20:57*
+ 
+ 
 ## 7.10.19 
  
 **disable "editor.bracketPairColorization.enabled" as it causes odd**
