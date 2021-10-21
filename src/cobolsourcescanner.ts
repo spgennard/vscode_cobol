@@ -768,9 +768,9 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public sourceFileId: number;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public cpPerformTargets: any | undefined = undefined;
+    public cache4PerformTargets: any | undefined = undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public cpConstantsOrVars: any | undefined = undefined;
+    public cache4ConstantsOrVars: any | undefined = undefined;
 
     public ImplicitProgramId = "";
 
@@ -872,8 +872,8 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         this.methods = new Map<string, COBOLToken>();
         this.diagWarnings = new Map<string, COBOLFileSymbol>();
         this.parse4References = sourceHandler !== null;
-        this.cpPerformTargets = undefined;
-        this.cpConstantsOrVars = undefined;
+        this.cache4PerformTargets = undefined;
+        this.cache4ConstantsOrVars = undefined;
 
         let sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;

@@ -15,6 +15,23 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "npm",
+            "script": "watch-web",
+            "group": "build",
+            "isBackground": true,
+            "problemMatcher": [
+                "$ts-webpack-watch"
+            ]
+        },
+        {
+            "type": "npm",
+            "script": "compile-web",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: compile-web",
+            "detail": "webpack"
         }
     ]
 }

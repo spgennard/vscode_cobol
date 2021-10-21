@@ -20,9 +20,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.iconfig);
 
         if (sf !== undefined) {
-            if (sf.cpPerformTargets === undefined) {
-                sf.cpPerformTargets = new TrieSearch("tokenName");
-                const words = sf.cpPerformTargets;
+            if (sf.cache4PerformTargets === undefined) {
+                sf.cache4PerformTargets = new TrieSearch("tokenName");
+                const words = sf.cache4PerformTargets;
 
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 for (const [key, token] of sf.sections) {
@@ -39,7 +39,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 return words;
             }
             else {
-                return sf.cpPerformTargets;
+                return sf.cache4PerformTargets;
             }
         }
 
@@ -72,9 +72,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
 
         if (sf !== undefined) {
-            if (sf.cpConstantsOrVars === undefined) {
-                sf.cpPerformTargets = new TrieSearch('tokenName');
-                const words: TrieSearch = sf.cpPerformTargets;
+            if (sf.cache4ConstantsOrVars === undefined) {
+                sf.cache4PerformTargets = new TrieSearch('tokenName');
+                const words: TrieSearch = sf.cache4PerformTargets;
 
                 for (const key of sf.constantsOrVariables.keys()) {
                     const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
@@ -89,7 +89,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 }
                 return words;
             } else {
-                return sf.cpConstantsOrVars;
+                return sf.cache4ConstantsOrVars;
             }
         }
 

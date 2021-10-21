@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.19",
+  "version": "7.10.20",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -90,6 +90,7 @@
     "workspaceContains:**/*.jcl"
   ],
   "main": "./dist/extension",
+  "browser": "./dist/web/extension-web.js",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://github.com/spgennard/vscode_cobol",
   "author": {
@@ -1922,8 +1923,11 @@
     "vscode:prepublish": "npm run compile && webpack --mode production",
     "webpack": "npm run compile && webpack --mode development",
     "webpack-dev-not-used": "webpack --mode development --watch",
+    "package-web": "webpack --mode production --devtool hidden-source-map",
+    "watch-web":"webpack --watch",
     "just-compile": "tsc -b",
     "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
+    "compile-web": "webpack",
     "test-compile": "tsc -p ./",
     "watch": "tsc -b -w",
     "lint": "eslint src --ext ts",
@@ -1931,13 +1935,16 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.4",
+    "@types/glob": "^7.2.0",
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.1",
     "@types/vscode": "^1.61.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "@types/webpack-env": "^1.16.0",
+    "assert": "^2.0.0",
+		"process": "^0.11.10",
     "ansi-regex": ">=6.0.1",
     "depcheck": "^1.4.2",
     "nth-check": ">=2.0.1",
@@ -1949,8 +1956,8 @@
     "typescript": "^4.4.4",
     "vsce": "^1.100.1",
     "vscode-test": "^1.6.1",
-    "webpack": "^5.58.2",
-    "webpack-cli": "^4.9.0"
+    "webpack": "^5.59.0",
+    "webpack-cli": "^4.9.1"
   },
   "dependencies": {
     "ansi-regex": ">=6.0.1",
