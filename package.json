@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.20",
+  "version": "7.10.21",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1250,129 +1250,133 @@
         "command": "cobolplugin.removeAllComments",
         "category": "COBOL",
         "title": "Remove COBOL Comments",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.removeIdentificationArea",
         "category": "COBOL",
         "title": "Remove COBOL Identification Area",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.removeColumnNumbers",
         "category": "COBOL",
         "title": "Remove Column Numbers",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.resequenceColumnNumbers",
         "category": "COBOL",
         "title": "Re-sequence Column Numbers",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeKeywordsLowercase",
         "category": "COBOL",
         "title": "Make keywords lowercase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeKeywordsUppercase",
         "category": "COBOL",
         "title": "Make keywords uppercase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeKeywordsCamelCase",
         "category": "COBOL",
         "title": "Make keywords camelcase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeFieldsLowercase",
         "category": "COBOL",
         "title": "Make fields lowercase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeFieldsUppercase",
         "category": "COBOL",
         "title": "Make fields uppercase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makeFieldsCamelCase",
         "category": "COBOL",
         "title": "Make fields camelcase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makePerformTargetsLowerCase",
         "category": "COBOL",
         "title": "Make perform targets lowercase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makePerformTargetsUpperCase",
         "category": "COBOL",
         "title": "Make perform targets uppercase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.makePerformTargetsCamelCase",
         "category": "COBOL",
         "title": "Make perform targets camelcase",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.extractSelectionToParagraph",
         "category": "COBOL",
         "title": "Extract selection to paragraph",
-        "enablement": "editorFocus && isWorkspaceTrusted"
+        "enablement": "!isWeb && editorFocus && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.extractSelectionToSection",
         "category": "COBOL",
         "title": "Extract selection to section",
-        "enablement": "editorFocus && isWorkspaceTrusted"
+        "enablement": "!isWeb && editorFocus && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.extractSelectionToCopybook",
         "category": "COBOL",
         "title": "Extract selection to copybook",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.migrateCopybooksToWorkspace",
         "category": "COBOL",
         "title": "Migrate copybook settings to workspace (for performance)",
-        "enablement": "isWorkspaceTrusted"
+        "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.showCOBOLChannel",
         "category": "COBOL",
-        "title": "Show COBOL Channel"
+        "title": "Show COBOL Channel",
+        "enablement": "!isWeb"
       },
       {
         "command": "cobolplugin.migrateProblemMatchers",
         "category": "COBOL",
-        "enablement": "isWorkspaceTrusted && editorTextFocus",
+        "enablement": "!isWeb && isWorkspaceTrusted && editorTextFocus",
         "title": "Migrate task to Micro Focus"
       },
       {
         "command": "cobolplugin.indentToCursor",
         "category": "COBOL",
-        "title": "indent to cursor"
+        "title": "indent to cursor",
+        "enablement": "!isWeb"
       },
       {
         "command": "cobolplugin.leftAdjustLine",
         "category": "COBOL",
-        "title": "left adjust line"
+        "title": "left adjust line",
+        "enablement": "!isWeb"
       },
       {
         "command": "cobolplugin.transposeSelection",
         "category": "COBOL",
-        "title": "transpose"
+        "title": "transpose",
+        "enablement": "!isWeb"
       }
     ],
     "menus": {
@@ -1470,37 +1474,37 @@
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+/",
         "command": "cobolplugin.commentline",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/"
+        "when": "!isWeb && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/"
       },
       {
         "key": "alt+shift+a",
         "command": "cobolplugin.change_lang_to_acu",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+a",
         "command": "cobolplugin.indentToCursor",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "config.coboleditor.xedit_keymap &&  &&editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && config.coboleditor.xedit_keymap &&  &&editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+a",
@@ -1560,7 +1564,7 @@
       {
         "key": "ctrl+t",
         "command": "cobolplugin.transposeSelection",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "!isWeb && config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+z",
