@@ -1,24 +1,19 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { FileType, TextDocument, Uri, window, workspace, debug } from 'vscode';
+import { TextDocument, Uri, debug } from 'vscode';
 import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
-import { ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 import { COBOLSymbolTable } from "./cobolglobalcache";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLUtils } from "./cobolutils";
-import { ScanDataHelper, ScanStats } from "./cobscannerdata";
-import { COBOLFileUtils } from "./fileutils";
+import { ScanStats } from "./cobscannerdata";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { VSPreProc } from "./vspreproc";
 import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
+import { ExternalFeatures, VSExtensionUtils } from './extension';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -168,7 +163,7 @@ export default class VSCOBOLSourceScanner {
                     };
                 }
 
-                const cacheDirectory: string | undefined = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
+                const cacheDirectory: string | undefined = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
                 const startTime = VSExtensionUtils.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
@@ -205,195 +200,5 @@ export default class VSCOBOLSourceScanner {
         }
 
         return cachedObject;
-    }
-
-    public static async checkWorkspaceForMissingCopybookDirs(): Promise<void> {
-        VSLogger.logChannelSetPreserveFocus(false);
-        VSLogger.logMessage("Checking workspace for folders that are not present in copybookdirs setting");
-
-        const settings = VSCOBOLConfiguration.get();
-        const ws = getVSWorkspaceFolders();
-        if (ws !== undefined) {
-            for (const folder of ws) {
-                try {
-                    await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings, folder.uri, folder.uri);
-                } catch {
-                    continue;       // most likely an invalid directory
-                }
-            }
-        }
-        VSLogger.logMessage(" -- Analysis complete");
-    }
-
-    public static async checkWorkspaceForMissingCopybookDir(settings: ICOBOLSettings, topLevelFolder: Uri, folder: Uri): Promise<void> {
-        const entries = await workspace.fs.readDirectory(folder);
-
-        for (const [entry, fileType] of entries) {
-            switch (fileType) {
-                case FileType.Directory | FileType.SymbolicLink:
-                case FileType.Directory:
-                    if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                        const fullDirectory = path.join(folder.fsPath, entry);
-                        if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
-                            const topLevelLength = 1 + topLevelFolder.fsPath.length;
-                            const possibleCopydir = fullDirectory.substr(topLevelLength);
-
-                            if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
-                                const copyBookCount = await VSCOBOLSourceScanner.howManyCopyBooksInDirectory(fullDirectory, settings);
-                                if (copyBookCount !== 0) {
-                                    VSLogger.logMessage(`  Add: ${possibleCopydir} to coboleditor.copybookdirs (possible copybooks ${copyBookCount})`);
-                                }
-                            }
-                            await VSCOBOLSourceScanner.checkWorkspaceForMissingCopybookDir(settings, topLevelFolder, Uri.file(fullDirectory));
-                        }
-                    }
-                    break;
-            }
-        }
-        return;
-    }
-
-    public static async howManyCopyBooksInDirectory(directory: string, settings: ICOBOLSettings): Promise<number> {
-        const folder = Uri.file(directory);
-        const entries = await workspace.fs.readDirectory(folder);
-        let copyBookCount = 0;
-        for (const [entry, fileType] of entries) {
-            switch (fileType) {
-                case FileType.File | FileType.SymbolicLink:
-                case FileType.File:
-                    if (COBOLFileUtils.isValidCopybookExtension(entry, settings)) {
-                        copyBookCount++;
-                    }
-
-            }
-        }
-
-        return copyBookCount;
-    }
-
-    public static ignoreDirectory(partialName: string): boolean {
-        // do not traverse into . directories
-        if (partialName.startsWith('.')) {
-            return true;
-        }
-        return false;
-    }
-
-    private static wipeCacheDirectory(cacheDirectory: string) {
-        clearCOBOLCache();
-
-
-        for (const file of fs.readdirSync(cacheDirectory)) {
-            if (file.endsWith(".sym")) {
-                const fileName = path.join(cacheDirectory, file);
-                try {
-                    fs.unlinkSync(fileName);
-                }
-                catch {
-                    //continue
-                }
-            }
-        }
-        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
-        try {
-            fs.unlinkSync(jsonFile);
-        } catch {
-            //continue
-        }
-    }
-
-    public static deprecatedClearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
-        if (VSCobScanner_depreciated.isDeprecatedScannerActive(cacheDirectory)) {
-            window.showInformationMessage(" Unable to clear metadata while caching is already in progress");
-            return;
-        }
-
-        window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
-            if (data === 'Yes') {
-                VSCOBOLSourceScanner.wipeCacheDirectory(cacheDirectory);
-                VSLogger.logMessage("Metadata cache cleared");
-            }
-        });
-    }
-
-    public static getDeprecatedCacheDirectory(): string | undefined {
-
-        const settings = VSCOBOLConfiguration.get();
-
-        // turned off via the strategy
-        if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
-            return undefined;
-        }
-
-        if (getVSWorkspaceFolders()) {
-
-            if (settings.cache_metadata === CacheDirectoryStrategy.UserDefinedDirectory) {
-                const storageDirectory: string | undefined = VSCOBOLSourceScanner.getUserStorageDirectory(settings);
-
-                /* no storage directory */
-                if (storageDirectory === undefined) {
-                    return undefined;
-                }
-
-                /* not a directory, so ignore */
-                if (!COBOLFileUtils.isDirectory(storageDirectory)) {
-                    return undefined;
-                }
-
-                return storageDirectory;
-            }
-
-            let firstCacheDir = "";
-
-            const ws = getVSWorkspaceFolders();
-            if (ws !== undefined) {
-                for (const folder of ws) {
-                    const cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
-                    if (COBOLFileUtils.isDirectory(cacheDir2)) {
-                        return cacheDir2;
-                    }
-                    if (firstCacheDir === "") {
-                        firstCacheDir = cacheDir2;
-                    }
-                }
-            }
-
-            if (firstCacheDir.length === 0) {
-                return undefined;
-            }
-
-            if (COBOLFileUtils.isDirectory(firstCacheDir) === false) {
-                try {
-                    fs.mkdirSync(firstCacheDir);
-                }
-                catch {
-                    return undefined;
-                }
-            }
-
-            return firstCacheDir;
-        }
-
-        return undefined;
-    }
-
-    static getUserStorageDirectory(settings: ICOBOLSettings): string | undefined {
-        let str = settings.cache_metadata_user_directory;
-        if (str === null || str.length === 0) {
-            return undefined;
-        }
-
-        // if on Windows replace ${HOME} with ${USERPROFILE}
-        if (COBOLFileUtils.isWin32) {
-            // eslint-disable-next-line no-template-curly-in-string
-            str = str.replace(/\$\{HOME\}/, '${USERPROFILE}');
-        }
-
-        const replaced = str.replace(/\$\{([^%]+)\}/g, (_original, matched) => {
-            const r = process.env[matched];
-            return r ? r : '';
-        });
-
-        return replaced;
     }
 }

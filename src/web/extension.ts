@@ -3,10 +3,13 @@
 import * as vscode from 'vscode';
 import * as cobolProgram from '../cobolprogram';
 import * as tabstopper from '../tabstopper';
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+import * as commenter from '../commenter';
+// import { ICOBOLSettings } from '../iconfiguration';
+// import { VSCOBOLConfiguration } from '../vsconfiguration';
+
 export function activate(context: vscode.ExtensionContext) {
 	const commands = vscode.commands;
+    // const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     context.subscriptions.push(commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
@@ -34,6 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand('cobolplugin.revtab', function () {
         tabstopper.processTabKey(false);
+    }));
+
+    context.subscriptions.push(commands.registerCommand('cobolplugin.commentline', function () {
+        if (vscode.window.activeTextEditor !== undefined) {
+            commenter.processCommentLine();
+        }
     }));
 
 }

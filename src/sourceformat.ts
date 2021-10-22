@@ -33,7 +33,7 @@ function isValidFixedLine(line: string): boolean {
 
 
 
-export function getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
+export function getVSCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
     const langid = doc.getLanguageId();
 
     if (config.fileformat_strategy === "always_fixed") {

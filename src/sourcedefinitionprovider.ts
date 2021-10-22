@@ -3,7 +3,7 @@ import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from './cobolsourcesc
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { ICOBOLSettings } from './iconfiguration';
-import { VSLogger } from './extension';
+import { VSLogger } from './vslogger';
 import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {

@@ -1485,7 +1485,7 @@
       {
         "key": "ctrl+/",
         "command": "cobolplugin.commentline",
-        "when": "!isWeb && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/"
+        "when": "config.coboleditor.line_comment && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/"
       },
       {
         "key": "alt+shift+a",

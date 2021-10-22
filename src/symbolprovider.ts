@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { COBOLTokenStyle, splitArgument } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
-import { VSLogger } from './extension';
+import { VSLogger } from './vslogger';
 import { outlineFlag } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { VSPreProc } from './vspreproc';

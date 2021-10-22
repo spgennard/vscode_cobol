@@ -4,8 +4,9 @@ import { ICOBOLSettings } from './iconfiguration';
 import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import TrieSearch from 'trie-search';
-import { VSExtensionUtils, VSLogger } from './extension';
+import { VSLogger } from './vslogger';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
+import { VSExtensionUtils } from './extension';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 

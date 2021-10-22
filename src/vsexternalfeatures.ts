@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { FileType, Uri, workspace } from "vscode";
-import { VSExtensionUtils, VSLogger } from "./extension";
+import { VSLogger } from "./vslogger";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
 import { COBOLCopyBookProvider } from "./opencopybook";
-import { getCOBOLSourceFormat } from "./sourceformat";
+import { getVSCOBOLSourceFormat } from "./sourceformat";
+import { VSExtensionUtils } from "./extension";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSExternalFeatures implements IExternalFeatures {
@@ -32,7 +33,7 @@ export class VSExternalFeatures implements IExternalFeatures {
     }
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return getCOBOLSourceFormat(doc, config);
+        return getVSCOBOLSourceFormat(doc, config);
     }
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {

@@ -4,10 +4,11 @@ import fs from 'fs';
 import tempDirectory from 'temp-dir';
 import { VSCobScanner } from "./vscobscanner";
 import { VSCOBOLConfiguration } from './vsconfiguration';
-import VSCOBOLSourceScanner from "./vscobolscanner";
-import { progressStatusBarItem, VSLogger } from "./extension";
+import { clearCOBOLCache } from "./vscobolscanner";
+import { progressStatusBarItem } from "./extension";
+import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
-import { FileType, Uri, workspace } from "vscode";
+import { FileType, Uri, window, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 import { getVSWorkspaceFolders } from "./cobolfolders";
@@ -15,6 +16,8 @@ import { fork, ForkOptions } from "child_process";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDEP, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
+import { CacheDirectoryStrategy } from "./externalfeatures";
+import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 
 class FileScanStats {
     filesIgnored = 0;
@@ -115,9 +118,9 @@ export class VSCobScanner_depreciated {
                     }
                 // eslint-disable-next-line no-fallthrough
                 case FileType.Directory:
-                    if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
+                    if (!VSCOBOLSourceScannerTools.ignoreDirectory(entry)) {
                         const fullDirectory = path.join(folder.fsPath, entry);
-                        if (!VSCOBOLSourceScanner.ignoreDirectory(entry)) {
+                        if (!VSCOBOLSourceScannerTools.ignoreDirectory(entry)) {
                             try {
                                 dir2scan.push(Uri.file(fullDirectory));
                             } catch (ex) {
@@ -167,7 +170,7 @@ export class VSCobScanner_depreciated {
             return;
         }
 
-        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
+        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined && VSCobScanner_depreciated.isDeprecatedScannerActive(cacheDirectory)) {
             COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
             if (!viaCommand) {
@@ -359,7 +362,7 @@ export class VSCobScanner_depreciated {
         }
 
         // cleanup old sym files
-        const cacheDirectory = VSCOBOLSourceScanner.getDeprecatedCacheDirectory();
+        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
         }
@@ -380,5 +383,106 @@ export class VSCobScanner_depreciated {
             await VSCobScanner_depreciated.depreciatedForkScanner(settings, sf, "OnSave", true, false, -1);
         }
     }
+
+
+    public static deprecatedClearMetaData(settings: ICOBOLSettings, cacheDirectory: string): void {
+        if (VSCobScanner_depreciated.isDeprecatedScannerActive(cacheDirectory)) {
+            window.showInformationMessage(" Unable to clear metadata while caching is already in progress");
+            return;
+        }
+
+        window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
+            if (data === 'Yes') {
+                VSCobScanner_depreciated.wipeCacheDirectory(cacheDirectory);
+                VSLogger.logMessage("Metadata cache cleared");
+            }
+        });
+    }
+
+
+    private static wipeCacheDirectory(cacheDirectory: string) {
+        clearCOBOLCache();
+
+
+        for (const file of fs.readdirSync(cacheDirectory)) {
+            if (file.endsWith(".sym")) {
+                const fileName = path.join(cacheDirectory, file);
+                try {
+                    fs.unlinkSync(fileName);
+                }
+                catch {
+                    //continue
+                }
+            }
+        }
+        const jsonFile = path.join(cacheDirectory, ScanDataHelper.scanFilename);
+        try {
+            fs.unlinkSync(jsonFile);
+        } catch {
+            //continue
+        }
+    }
+
+    public static getDeprecatedCacheDirectory(): string | undefined {
+
+        const settings = VSCOBOLConfiguration.get();
+
+        // turned off via the strategy
+        if (settings.cache_metadata === CacheDirectoryStrategy.Off) {
+            return undefined;
+        }
+
+        if (getVSWorkspaceFolders()) {
+
+            if (settings.cache_metadata === CacheDirectoryStrategy.UserDefinedDirectory) {
+                const storageDirectory: string | undefined = VSCOBOLSourceScannerTools.getUserStorageDirectory(settings);
+
+                /* no storage directory */
+                if (storageDirectory === undefined) {
+                    return undefined;
+                }
+
+                /* not a directory, so ignore */
+                if (!COBOLFileUtils.isDirectory(storageDirectory)) {
+                    return undefined;
+                }
+
+                return storageDirectory;
+            }
+
+            let firstCacheDir = "";
+
+            const ws = getVSWorkspaceFolders();
+            if (ws !== undefined) {
+                for (const folder of ws) {
+                    const cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");
+                    if (COBOLFileUtils.isDirectory(cacheDir2)) {
+                        return cacheDir2;
+                    }
+                    if (firstCacheDir === "") {
+                        firstCacheDir = cacheDir2;
+                    }
+                }
+            }
+
+            if (firstCacheDir.length === 0) {
+                return undefined;
+            }
+
+            if (COBOLFileUtils.isDirectory(firstCacheDir) === false) {
+                try {
+                    fs.mkdirSync(firstCacheDir);
+                }
+                catch {
+                    return undefined;
+                }
+            }
+
+            return firstCacheDir;
+        }
+
+        return undefined;
+    }
+
 
 }
