@@ -1196,7 +1196,8 @@
       {
         "command": "cobolplugin.change_lang_to_acu",
         "category": "COBOL",
-        "title": "Select ACUCOBOL-GT language"
+        "title": "Select ACUCOBOL-GT language",
+        "enablement": "!isWeb"
       },
       {
         "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
