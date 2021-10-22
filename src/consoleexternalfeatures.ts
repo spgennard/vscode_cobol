@@ -99,4 +99,8 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
 
         return undefined;
     }
+
+    public isDirectory(possibleDirectory: string) : boolean {
+        return COBOLFileUtils.isDirectory(possibleDirectory);
+    }
 }

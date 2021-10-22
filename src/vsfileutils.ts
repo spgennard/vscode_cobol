@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { getWorkspaceFolders } from "./cobolfolders";
+import { getVSWorkspaceFolders } from "./cobolfolders";
 import { COBOLFileUtils } from "./fileutils";
 import { workspace } from "vscode";
 
@@ -10,7 +10,7 @@ import { VSExtensionUtils } from "./extension";
 export class VSCOBOLFileUtils {
 
     public static isPathInWorkspace(ddir: string): boolean {
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (workspace === undefined || ws === undefined) {
             return false;
         }
@@ -26,7 +26,7 @@ export class VSCOBOLFileUtils {
     }
 
     public static getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }
@@ -47,7 +47,7 @@ export class VSCOBOLFileUtils {
     }
 
     public static getShortWorkspaceFilename(ddir: string): string | undefined {
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }

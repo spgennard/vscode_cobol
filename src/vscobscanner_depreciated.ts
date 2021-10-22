@@ -10,7 +10,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { FileType, Uri, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
-import { getWorkspaceFolders } from "./cobolfolders";
+import { getVSWorkspaceFolders } from "./cobolfolders";
 import { fork, ForkOptions } from "child_process";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDEP, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
@@ -181,7 +181,7 @@ export class VSCobScanner_depreciated {
         }
 
 
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         const stats = new FileScanStats();
         const files: string[] = [];
 

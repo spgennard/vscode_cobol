@@ -1179,13 +1179,13 @@
         "command": "cobolplugin.tab",
         "category": "COBOL",
         "title": "Insert a tab",
-        "enablement": "editorFocus"
+        "enablement": "editorFocus && config.coboleditor.enable_tabstop"
       },
       {
         "command": "cobolplugin.revtab",
         "category": "COBOL",
         "title": "Remove a tab",
-        "enablement": "editorFocus"
+        "enablement": "editorFocus && config.coboleditor.enable_tabstop"
       },
       {
         "command": "cobolplugin.commentline",
@@ -1475,12 +1475,12 @@
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+/",

@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as cobolProgram from '../cobolprogram';
-
+import * as tabstopper from '../tabstopper';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -27,6 +27,15 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(commands.registerCommand('cobolplugin.move2anybackwards', function () {
         cobolProgram.move2anybackwards();
     }));
+
+    context.subscriptions.push(commands.registerCommand('cobolplugin.tab', function () {
+        tabstopper.processTabKey(true);
+    }));
+
+    context.subscriptions.push(commands.registerCommand('cobolplugin.revtab', function () {
+        tabstopper.processTabKey(false);
+    }));
+
 }
 
 // this method is called when your extension is deactivated

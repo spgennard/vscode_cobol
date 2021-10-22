@@ -4,7 +4,7 @@ import * as path from 'path';
 import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from 'vscode';
 import { ICOBOLSettings } from './iconfiguration';
-import { getWorkspaceFolders } from './cobolfolders';
+import { getVSWorkspaceFolders } from './cobolfolders';
 import {  VSLogger } from './extension';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { COBOLFileUtils } from './fileutils';
@@ -141,7 +141,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             this.topLevelItems.push(this.objectItem);
         }
 
-        const folders = getWorkspaceFolders();
+        const folders = getVSWorkspaceFolders();
         if (folders) {
             for (const folder of folders) {
                 this.addWorkspace(folder);

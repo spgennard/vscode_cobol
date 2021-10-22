@@ -16,6 +16,7 @@ export interface IExternalFeatures {
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(): string[];
+    isDirectory(possibleDirectory: string) : boolean;
 }
 
 export enum ESourceFormat {
@@ -77,5 +78,9 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public getWorkspaceFolders(): string[] {
         return [];
+    }
+
+    public isDirectory(possibleDirectory: string) : boolean {
+        return false;
     }
 }

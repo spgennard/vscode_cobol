@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 'use strict';
 
-import * as path from 'path';
-
 import { workspace } from 'vscode';
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from './iconfiguration';
-import { CacheDirectoryStrategy } from './externalfeatures';
-import { COBOLFileUtils } from './fileutils';
-import { VSLogger } from './extension';
-
+import { CacheDirectoryStrategy, EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
+
+    public static externalFeatures: IExternalFeatures = new EmptyExternalFeature();
 
     private static init(): ICOBOLSettings {
         const vsconfig = VSCOBOLConfiguration.config;
@@ -143,7 +140,7 @@ export class VSCOBOLConfiguration {
         if (removed_margin) {
             vsconfig.fileformat_strategy = "always_fixed";
             if (!VSCOBOLConfiguration.logMarginDone) {
-                VSLogger.logMessage("WARNING: coboleditor.margin is set, ignoring and using coboleditor.fileformat_strategy=always_fixed");
+                VSCOBOLConfiguration.externalFeatures.logMessage("WARNING: coboleditor.margin is set, ignoring and using coboleditor.fileformat_strategy=always_fixed");
                 VSCOBOLConfiguration.logMarginDone = true;
             }
         }
@@ -152,8 +149,8 @@ export class VSCOBOLConfiguration {
             vsconfig.maintain_metadata_cache = false;
 
             if (!VSCOBOLConfiguration.logCacheMetadataDone) {
-                VSLogger.logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
-                VSLogger.logMessage("         cache_metadata turned off, please review settings");
+                VSCOBOLConfiguration.externalFeatures.logMessage("WARNING: Both coboleditor.maintain_metadata_cache and the depreciated coboleditor.cache_metadata are active");
+                VSCOBOLConfiguration.externalFeatures.logMessage("         cache_metadata turned off, please review settings");
                 VSCOBOLConfiguration.logCacheMetadataDone = true;
             }
         }
@@ -330,6 +327,10 @@ function expandEnvVars(startEnv: string): string {
     return env;
 }
 
+function getPathDelimiter(): string {
+    return process.platform === 'win32' ? ";" : ":";
+}
+
 function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
     const editorConfig = workspace.getConfiguration('coboleditor');
     let dirs = editorConfig.get<string[]>('copybookdirs');
@@ -361,9 +362,9 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
             if (dir.startsWith("$")) {
                 const e = process.env[dir.substr(1)];
                 if (e !== undefined && e !== null) {
-                    e.split(path.delimiter).forEach(function (item) {
+                    e.split(getPathDelimiter()).forEach(function (item) {
                         if (item !== undefined && item !== null && item.length > 0) {
-                            if (COBOLFileUtils.isDirectory(item)) {
+                            if (VSCOBOLConfiguration.externalFeatures.isDirectory(item)) {
                                 extraDirs.push(item);
                             } else {
                                 invalidSearchDirectory.push(item);

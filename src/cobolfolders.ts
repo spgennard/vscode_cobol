@@ -1,7 +1,7 @@
 import { workspace, WorkspaceFolder } from "vscode";
 import { VSCOBOLConfiguration } from './vsconfiguration';
 
-export function getWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefined {
+export function getVSWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefined {
     const ws = workspace.workspaceFolders;
     if (ws === undefined) {
         return ws;

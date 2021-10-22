@@ -104,6 +104,10 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 
         return undefined;
     }
+
+    public isDirectory(possibleDirectory: string) : boolean {
+        return COBOLFileUtils.isDirectory(possibleDirectory);
+    }
 }
 
 class threadSender implements ICOBOLSourceScannerEventer {

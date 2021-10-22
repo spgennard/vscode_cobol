@@ -8,7 +8,7 @@ import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalca
 
 import { ExternalFeatures, VSExtensionUtils, VSLogger } from "./extension";
 import { VSCOBOLConfiguration } from './vsconfiguration';
-import { getWorkspaceFolders } from "./cobolfolders";
+import { getVSWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 import { COBOLSymbolTable } from "./cobolglobalcache";
@@ -212,7 +212,7 @@ export default class VSCOBOLSourceScanner {
         VSLogger.logMessage("Checking workspace for folders that are not present in copybookdirs setting");
 
         const settings = VSCOBOLConfiguration.get();
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (ws !== undefined) {
             for (const folder of ws) {
                 try {
@@ -325,7 +325,7 @@ export default class VSCOBOLSourceScanner {
             return undefined;
         }
 
-        if (getWorkspaceFolders()) {
+        if (getVSWorkspaceFolders()) {
 
             if (settings.cache_metadata === CacheDirectoryStrategy.UserDefinedDirectory) {
                 const storageDirectory: string | undefined = VSCOBOLSourceScanner.getUserStorageDirectory(settings);
@@ -345,7 +345,7 @@ export default class VSCOBOLSourceScanner {
 
             let firstCacheDir = "";
 
-            const ws = getWorkspaceFolders();
+            const ws = getVSWorkspaceFolders();
             if (ws !== undefined) {
                 for (const folder of ws) {
                     const cacheDir2: string = path.join(folder.uri.fsPath, ".vscode_cobol");

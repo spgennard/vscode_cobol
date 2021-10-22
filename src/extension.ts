@@ -30,7 +30,7 @@ import { ICOBOLSettings } from './iconfiguration';
 const propertiesReader = require('properties-reader');
 
 import util from 'util';
-import { getWorkspaceFolders } from './cobolfolders';
+import { getVSWorkspaceFolders } from './cobolfolders';
 // import { COBOLDocumentationGenerator } from './coboldocgenerator';
 // import { CobolCommentProvider } from './cobolcommentprovider';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
@@ -468,7 +468,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             }
             else if (COBOLFileUtils.isDirectPath(ddir)) {
                 VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
-                if (workspace !== undefined && getWorkspaceFolders() !== undefined) {
+                if (workspace !== undefined && getVSWorkspaceFolders() !== undefined) {
                     if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
@@ -494,7 +494,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
 
     // step 2
-    const ws = getWorkspaceFolders();
+    const ws = getVSWorkspaceFolders();
     if (ws !== undefined) {
         for (const folder of ws) {
             // place the workspace folder in the copybook path
@@ -528,7 +528,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (ws !== undefined) {
             VSLogger.logMessage("  Workspace Folders:");
             for (const folder of ws) {
@@ -584,6 +584,7 @@ export function getCurrentContext(): ExtensionContext {
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
+    VSCOBOLConfiguration.externalFeatures = ExternalFeatures;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     // re-init if something gets installed or removed
@@ -844,7 +845,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         VSExtensionUtils.flip_plaintext(doc);
 
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (ws !== undefined) {
             if (isSupportedLanguage(doc)) {
                 await COBOLUtils.populateDefaultCallableSymbols(settings, false);

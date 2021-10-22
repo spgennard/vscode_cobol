@@ -9,7 +9,7 @@ import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalca
 import { writeFileSync } from 'fs';
 import { COBOLFileUtils } from './fileutils';
 import { VSCOBOLConfiguration } from './vsconfiguration';
-import { getWorkspaceFolders } from './cobolfolders';
+import { getVSWorkspaceFolders } from './cobolfolders';
 import { ICOBOLSettings } from './iconfiguration';
 import { COBOLFileSymbol } from './cobolglobalcache';
 import { CacheDirectoryStrategy } from './externalfeatures';
@@ -74,7 +74,7 @@ export class COBOLUtils {
             return;
         }
 
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (ws === undefined) {
             return;
         }
@@ -128,7 +128,7 @@ export class COBOLUtils {
 
     public static clearGlobalCache(): void {
         // only update if we have a workspace
-        if (getWorkspaceFolders() === undefined) {
+        if (getVSWorkspaceFolders() === undefined) {
             return;
         }
 
@@ -143,7 +143,7 @@ export class COBOLUtils {
 
     public static saveGlobalCacheToWorkspace(settings: ICOBOLSettings, update = true): void {
         // only update if we have a workspace
-        if (getWorkspaceFolders() === undefined) {
+        if (getVSWorkspaceFolders() === undefined) {
             return;
         }
 
@@ -262,7 +262,7 @@ export class COBOLUtils {
             const ddir = extsdir[extsdirpos];
 
             if (COBOLFileUtils.isDirectPath(ddir)) {
-                const ws = getWorkspaceFolders();
+                const ws = getVSWorkspaceFolders();
                 if (vscode.workspace !== undefined && ws !== undefined) {
                     if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
@@ -276,7 +276,7 @@ export class COBOLUtils {
             }
         }
 
-        const ws = getWorkspaceFolders();
+        const ws = getVSWorkspaceFolders();
         if (ws !== undefined) {
             for (const folder of ws) {
                 for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {
