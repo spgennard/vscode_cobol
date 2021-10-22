@@ -3,6 +3,15 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.21 
+ 
+**update**
+* [5f4c5af53573563](https://github.com/spgennard/vscode_cobol/commit/5f4c5af53573563) *2021-10-21 23:00:31*
+ 
+**Update CHANGELOG.md**
+* [01ea9bac1681954](https://github.com/spgennard/vscode_cobol/commit/01ea9bac1681954) *2021-10-21 22:59:21*
+ 
+ 
 ## 7.10.20 
  
 **add some experimental support for web extension**
