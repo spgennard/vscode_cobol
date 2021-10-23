@@ -7,7 +7,6 @@ import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
 import { COBOLCopyBookProvider } from './opencopybook';
 import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
 import { VSLogger } from './vslogger';
-import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
 
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
     public provideDefinition(document: vscode.TextDocument,
@@ -29,7 +28,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
             return locations;
         }
 
-        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+        const cacheDirectory = config.get_depreciated_cache_directory();
         if (cacheDirectory === undefined) {
             return locations;
         }

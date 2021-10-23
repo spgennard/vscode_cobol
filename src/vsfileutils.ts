@@ -1,8 +1,8 @@
 import path from "path";
-import fs from "fs";
+import fs, { writeFileSync } from "fs";
 import { getVSWorkspaceFolders } from "./cobolfolders";
 import { COBOLFileUtils } from "./fileutils";
-import { workspace } from "vscode";
+import { Range, TextEditor, window, workspace } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSExtensionUtils } from "./extension";
@@ -136,4 +136,37 @@ export class VSCOBOLFileUtils {
 
         return "";
     }
+
+    public static extractSelectionToCopybook(activeTextEditor: TextEditor): void {
+        const sel = activeTextEditor.selection;
+
+        const ran = new Range(sel.start, sel.end);
+        const text = activeTextEditor.document.getText(ran);
+        const dir = path.dirname(activeTextEditor.document.fileName);
+
+        window.showInputBox({
+            prompt: 'Copybook name?',
+            validateInput: (copybook_filename: string): string | undefined => {
+                if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
+                    copybook_filename.indexOf(".") !== -1 ||
+                    COBOLFileUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
+                    return 'Invalid copybook';
+                } else {
+                    return undefined;
+                }
+            }
+        }).then(copybook_filename => {
+            // leave if we have no filename
+            if (copybook_filename === undefined) {
+                return;
+            }
+            const filename = path.join(dir, copybook_filename + ".cpy");
+            writeFileSync(filename, text);
+
+            activeTextEditor.edit(edit => {
+                edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
+            });
+        });
+    }
+
 }

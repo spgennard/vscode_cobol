@@ -2,9 +2,9 @@ import { Extension, extensions } from "vscode";
 import { COBAPIConstants, COBOLPreprocessor } from "./cobapi";
 import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
-import { ExternalFeatures} from "./extension";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
+import { ExternalFeatures } from "./vsexternalfeatures";
 
 export class VSPreProc {
 

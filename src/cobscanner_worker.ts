@@ -108,6 +108,16 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public isDirectory(possibleDirectory: string) : boolean {
         return COBOLFileUtils.isDirectory(possibleDirectory);
     }
+
+    public getFileModTimeStamp(filename: string):BigInt {
+        try {
+            return (BigInt)(fs.statSync(filename).mtimeMs);
+        } catch {
+            //
+        }
+
+        return (BigInt)(0);
+    }
 }
 
 class threadSender implements ICOBOLSourceScannerEventer {

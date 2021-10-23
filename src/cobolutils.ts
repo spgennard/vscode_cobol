@@ -6,7 +6,6 @@ import { VSLogger } from './vslogger';
 import { VSCodeSourceHandler } from './vscodesourcehandler';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
-import { writeFileSync } from 'fs';
 import { COBOLFileUtils } from './fileutils';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { getVSWorkspaceFolders } from './cobolfolders';
@@ -324,38 +323,6 @@ export class COBOLUtils {
 
     }
 
-    public static extractSelectionToCopybook(activeTextEditor: vscode.TextEditor): void {
-        const sel = activeTextEditor.selection;
-
-        const ran = new vscode.Range(sel.start, sel.end);
-        const text = activeTextEditor.document.getText(ran);
-        const dir = path.dirname(activeTextEditor.document.fileName);
-
-        vscode.window.showInputBox({
-            prompt: 'Copybook name?',
-            validateInput: (copybook_filename: string): string | undefined => {
-                if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
-                    copybook_filename.indexOf(".") !== -1 ||
-                    COBOLFileUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
-                    return 'Invalid copybook';
-                } else {
-                    return undefined;
-                }
-            }
-        }).then(copybook_filename => {
-            // leave if we have no filename
-            if (copybook_filename === undefined) {
-                return;
-            }
-            const filename = path.join(dir, copybook_filename + ".cpy");
-            writeFileSync(filename, text);
-
-            activeTextEditor.edit(edit => {
-                edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
-            });
-        });
-
-    }
 
     public static indentToCursor(): void {
         if (vscode.window.activeTextEditor) {

@@ -19,6 +19,10 @@ export interface IEditorMarginFiles {
     sourceformat: ESourceFormat;
 }
 
+export interface ICOBOLSettings_depreciated {
+    get_depreciated_cache_directory(): string|undefined;
+}
+
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_parse_line_limit: number;
@@ -93,6 +97,9 @@ export interface ICOBOLSettings {
     enable_source_scanner: boolean;
 
     valid_cobol_language_ids: string[];
+
+    get_depreciated_cache_directory(): string|undefined;
+    set_depreciated_cache_directory(config: ICOBOLSettings_depreciated|undefined):void;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -169,6 +176,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     public valid_cobol_language_ids: string[];
 
+    private depconfig: ICOBOLSettings_depreciated|undefined;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
@@ -239,5 +248,16 @@ export class COBOLSettings implements ICOBOLSettings {
             'ACUCOBOL',
             'COBOL_MF_LISTFILE'
         ];
+    }
+
+    public get_depreciated_cache_directory(): string|undefined {
+        if (this.depconfig !== undefined) {
+            return this.depconfig.get_depreciated_cache_directory();
+        }
+        return undefined;
+    }
+
+    public set_depreciated_cache_directory(config_depreciated: ICOBOLSettings_depreciated|undefined) {
+        this.depconfig = config_depreciated;
     }
 }

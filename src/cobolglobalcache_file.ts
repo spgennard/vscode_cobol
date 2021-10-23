@@ -85,7 +85,7 @@ export class COBOLSymbolTableHelper {
         if (fnStat[0]) {
             try {
                 const stat4cache = fnStat[1];
-                const stat4src = fs.statSync(filename);
+                const stat4src = fs.statSync(filename, {bigint:true} );
                 if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
                     // never return a out of date cache
                     try {

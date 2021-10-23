@@ -7,7 +7,7 @@ import { VSCOBOLConfiguration } from './vsconfiguration';
 import { clearCOBOLCache } from "./vscobolscanner";
 import { progressStatusBarItem } from "./extension";
 import { VSLogger } from "./vslogger";
-import { ICOBOLSettings } from "./iconfiguration";
+import { ICOBOLSettings, ICOBOLSettings_depreciated } from "./iconfiguration";
 import { FileType, Uri, window, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
@@ -29,7 +29,9 @@ class FileScanStats {
     directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
-export class VSCobScanner_depreciated {
+                // const cacheDirectory: string | undefined = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+
+export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
 
     public static deprecatedActivePid: number|undefined = undefined;
 
@@ -170,7 +172,7 @@ export class VSCobScanner_depreciated {
             return;
         }
 
-        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+        const cacheDirectory = settings.get_depreciated_cache_directory();
         if (cacheDirectory !== undefined && VSCobScanner_depreciated.isDeprecatedScannerActive(cacheDirectory)) {
             COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
             if (!viaCommand) {
@@ -362,7 +364,7 @@ export class VSCobScanner_depreciated {
         }
 
         // cleanup old sym files
-        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+        const cacheDirectory = settings.get_depreciated_cache_directory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.cleanUpOldMetadataFiles(settings, cacheDirectory);
         }
@@ -423,7 +425,7 @@ export class VSCobScanner_depreciated {
         }
     }
 
-    public static getDeprecatedCacheDirectory(): string | undefined {
+    public get_depreciated_cache_directory(): string | undefined {
 
         const settings = VSCOBOLConfiguration.get();
 

@@ -5,7 +5,7 @@ import ISourceHandler, { ICommentCallback } from './isourcehandler';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require('n-readlines');
 
-import { EmptyExternalFeature, ESourceFormat, IExternalFeatures } from './externalfeatures';
+import { ESourceFormat, IExternalFeatures } from './externalfeatures';
 import { pathToFileURL } from 'url';
 import path from 'path';
 import { StringBuilder } from 'typescript-string-operations';
@@ -26,7 +26,7 @@ export class FileSourceHandler implements ISourceHandler {
     languageId:string;
     format: ESourceFormat;
 
-    public constructor(document: string) {
+    public constructor(document: string, features: IExternalFeatures) {
         this.document = document;
         this.dumpNumbersInAreaA = false;
         this.commentCallback = undefined;
@@ -38,7 +38,6 @@ export class FileSourceHandler implements ISourceHandler {
         this.languageId = "COBOL";
         this.format = ESourceFormat.unknown;
 
-        const features = EmptyExternalFeature.Default;
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat = fs.statSync(document, { bigint: true });
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;

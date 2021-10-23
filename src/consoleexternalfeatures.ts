@@ -103,4 +103,9 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public isDirectory(possibleDirectory: string) : boolean {
         return COBOLFileUtils.isDirectory(possibleDirectory);
     }
+
+    public getFileModTimeStamp(filename:string):BigInt {
+        const f = fs.statSync(filename);
+        return (BigInt)(f.mtimeMs);
+    }
 }

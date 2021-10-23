@@ -6,7 +6,7 @@ import { FileSourceHandler } from "../../filesourcehandler";
 import COBOLSourceScanner, { EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
-import { ExternalFeatures } from '../../extension';
+import { ExternalFeatures } from '../../vsexternalfeatures';
 
 suite('Core Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
@@ -16,7 +16,7 @@ suite('Core Extension Test Suite', () => {
 	const features = ExternalFeatures;
 
 	test('Read file [basic] (test.cbl)', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"));
+		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -25,7 +25,7 @@ suite('Core Extension Test Suite', () => {
 	});
 
 	test('Parse file for constants/paragraphs/sections (test.cbl)', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"));
+		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -41,7 +41,7 @@ suite('Core Extension Test Suite', () => {
 	});
 
 	test('Parse file for functions (string.cbl)', () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"string.cbl"));
+		const f = new FileSourceHandler(path.join(baseForSource,"string.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}

@@ -6,9 +6,8 @@ import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBO
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from './cobapi';
-import * as fs from 'fs';
+// import * as fs from 'fs';
 import * as path from 'path';
-
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
@@ -748,7 +747,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
-    public lastModifiedTime = BigInt(0);
+    public lastModifiedTime:BigInt = BigInt(0);
 
     public tokensInOrder: COBOLToken[] = [];
 
@@ -899,13 +898,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
         /* mark this has been processed (to help copy of self) */
         state.copyBooksUsed.set(this.filename, COBOLToken.Null);
         if (this.sourceReferences.topLevel) {
-            try {
-                const stat: fs.BigIntStats = fs.statSync(this.filename, { bigint: true });
-                this.lastModifiedTime = stat.mtimeMs;
-            }
-            catch (e) {
-                //
-            }
+            this.lastModifiedTime = externalFeatures.getFileModTimeStamp(this.filename);
         }
 
         this.workspaceFile = new COBOLWorkspaceFile(this.lastModifiedTime, sourceHandler.getShortWorkspaceFilename());
@@ -2589,7 +2582,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
 
                         // add the specific version
                         this.copyBooksUsed.set(fileName, copybookToken);
-                        const qfile = new FileSourceHandler(fileName);
+                        const qfile = new FileSourceHandler(fileName, this.externalFeatures);
                         const currentTopLevel = this.sourceReferences.topLevel;
                         const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                         state.ignoreInOutlineView = true;
@@ -2729,7 +2722,7 @@ export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourc
                                 if (this.copyBooksUsed.has(fileName) === false) {
                                     this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
 
-                                    const qfile = new FileSourceHandler(fileName);
+                                    const qfile = new FileSourceHandler(fileName, this.externalFeatures);
                                     const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                                     this.sourceReferences.state.ignoreInOutlineView = true;
                                     this.sourceReferences.topLevel = true;

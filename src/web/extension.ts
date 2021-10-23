@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import * as cobolProgram from '../cobolprogram';
 import * as tabstopper from '../tabstopper';
-import * as commenter from '../commenter';
+// import * as commenter from '../commenter';
 // import { ICOBOLSettings } from '../iconfiguration';
 // import { VSCOBOLConfiguration } from '../vsconfiguration';
 
@@ -39,11 +39,11 @@ export function activate(context: vscode.ExtensionContext) {
         tabstopper.processTabKey(false);
     }));
 
-    context.subscriptions.push(commands.registerCommand('cobolplugin.commentline', function () {
-        if (vscode.window.activeTextEditor !== undefined) {
-            commenter.processCommentLine();
-        }
-    }));
+    // context.subscriptions.push(commands.registerCommand('cobolplugin.commentline', function () {
+    //     if (vscode.window.activeTextEditor !== undefined) {
+    //         commenter.processCommentLine();
+    //     }
+    // }));
 
 }
 

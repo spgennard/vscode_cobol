@@ -7,7 +7,6 @@ import { ICOBOLSettings } from "./iconfiguration";
 import ISourceHandler from "./isourcehandler";
 import { COBOLCopyBookProvider } from "./opencopybook";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
-import { VSExtensionUtils } from "./extension";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSExternalFeatures implements IExternalFeatures {
@@ -25,7 +24,7 @@ export class VSExternalFeatures implements IExternalFeatures {
     }
 
     public performance_now(): number {
-        return VSExtensionUtils.performance_now();
+        return Date.now();
     }
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
@@ -61,4 +60,20 @@ export class VSExternalFeatures implements IExternalFeatures {
 
         return false;
     }
+
+    public getFileModTimeStamp(filename:string):BigInt {
+
+        try {
+            async () => {
+                const stat = await workspace.fs.stat(Uri.file(filename));
+                return (BigInt)(stat.mtime);
+            }
+        } catch {
+                //
+        }
+
+        return (BigInt)(0);
+    }
 }
+
+export const ExternalFeatures = new VSExternalFeatures();

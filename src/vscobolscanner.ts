@@ -12,8 +12,8 @@ import { COBOLUtils } from "./cobolutils";
 import { ScanStats } from "./cobscannerdata";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { VSPreProc } from "./vspreproc";
-import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
-import { ExternalFeatures, VSExtensionUtils } from './extension';
+// import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
+import { ExternalFeatures } from "./vsexternalfeatures";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -163,18 +163,17 @@ export default class VSCOBOLSourceScanner {
                     };
                 }
 
-                const cacheDirectory: string | undefined = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
-                const startTime = VSExtensionUtils.performance_now();
+                const startTime = ExternalFeatures.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
-
+                const cacheDirectory = config.get_depreciated_cache_directory();
                 const qcpd = new COBOLSourceScanner(sourceHandler, config,
                     cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(config, true),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     ExternalFeatures);
 
-                VSLogger.logTimedMessage(VSExtensionUtils.performance_now() - startTime, " - Parsing " + fileName);
+                VSLogger.logTimedMessage(ExternalFeatures.performance_now() - startTime, " - Parsing " + fileName);
 
                 if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
                     // drop the smallest..

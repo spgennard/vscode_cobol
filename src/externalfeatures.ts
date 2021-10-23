@@ -17,6 +17,7 @@ export interface IExternalFeatures {
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(): string[];
     isDirectory(possibleDirectory: string) : boolean;
+    getFileModTimeStamp(filename:string):BigInt;
 }
 
 export enum ESourceFormat {
@@ -82,5 +83,9 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public isDirectory(possibleDirectory: string) : boolean {
         return false;
+    }
+
+    public getFileModTimeStamp(filename:string) : BigInt {
+        return (BigInt)(0);
     }
 }

@@ -24,7 +24,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from './cobollinter';
 import { VSSourceTreeViewHandler } from './sourceviewtree';
 import { CobolSourceCompletionItemProvider } from './cobolprovider';
 import { COBOLUtils, FoldStyle, FoldAction } from './cobolutils';
-import { ICOBOLSettings } from './iconfiguration';
+import { ICOBOLSettings, ICOBOLSettings_depreciated } from './iconfiguration';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require('properties-reader');
@@ -35,7 +35,7 @@ import { getVSWorkspaceFolders } from './cobolfolders';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
-import { VSExternalFeatures } from './vsexternalfeatures';
+import { ExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
@@ -55,11 +55,10 @@ import { COBOLOutputChannel, VSLogger } from './vslogger';
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
 let currentContext: ExtensionContext;
+let depconfig: ICOBOLSettings_depreciated|undefined = undefined;
 let bldscriptTaskProvider: vscode.Disposable | undefined;
 let shown_enable_semantic_token_provider = false;
 let messageBoxDone = false;
-
-export const ExternalFeatures = new VSExternalFeatures();
 
 export const currentHostInformation = `${os.hostname()}/${os.userInfo().username}`;
 
@@ -67,7 +66,6 @@ let fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
-
 
 export class VSExtensionUtils {
 
@@ -434,7 +432,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                 VSLogger.logMessage(" Caching");
                 VSLogger.logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
 
-                const cacheDir = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+                const cacheDir = settings.get_depreciated_cache_directory();
                 if (cacheDir !== undefined) {
                     VSLogger.logMessage(`  Cache directory  : ${cacheDir}`);
                 }
@@ -586,7 +584,8 @@ export function getCurrentContext(): ExtensionContext {
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
     VSCOBOLConfiguration.externalFeatures = ExternalFeatures;
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+    depconfig = new VSCobScanner_depreciated();
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
@@ -606,7 +605,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
 
         if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
@@ -795,7 +794,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const dumpMetadata = commands.registerCommand('cobolplugin.deprecated.dumpMetaData', function () {
-        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+        const cacheDirectory = settings.get_depreciated_cache_directory();
         if (cacheDirectory !== undefined) {
             COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);
         } else {
@@ -804,7 +803,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const clearMetaData = commands.registerCommand('cobolplugin.deprecated.clearMetaData', function () {
-        const cacheDirectory = VSCobScanner_depreciated.getDeprecatedCacheDirectory();
+        const cacheDirectory = settings.get_depreciated_cache_directory();
         if (cacheDirectory !== undefined) {
             VSCobScanner_depreciated.deprecatedClearMetaData(settings, cacheDirectory);
         } else {
@@ -823,7 +822,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(clearGlobalCache);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(async () => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
 
         activateLogChannelAndPaths(false, settings, true);
     });
@@ -1206,7 +1205,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.extractSelectionToCopybook(vscode.window.activeTextEditor);
+                VSCOBOLFileUtils.extractSelectionToCopybook(vscode.window.activeTextEditor);
             }
         }
     });
