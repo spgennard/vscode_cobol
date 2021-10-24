@@ -1,8 +1,8 @@
 import path from "path";
-import fs, { writeFileSync } from "fs";
+import fs from "fs";
 import { getVSWorkspaceFolders } from "./cobolfolders";
 import { COBOLFileUtils } from "./fileutils";
-import { Range, TextEditor, window, workspace } from "vscode";
+import { Range, TextEditor, Uri, window, workspace } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSExtensionUtils } from "./extension";
@@ -161,11 +161,13 @@ export class VSCOBOLFileUtils {
                 return;
             }
             const filename = path.join(dir, copybook_filename + ".cpy");
-            writeFileSync(filename, text);
-
-            activeTextEditor.edit(edit => {
-                edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            workspace.fs.writeFile(Uri.file(filename),Buffer.from(text)).then(onFullFilled => {
+                activeTextEditor.edit(edit => {
+                    edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
+                });
             });
+
         });
     }
 
