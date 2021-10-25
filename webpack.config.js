@@ -26,7 +26,7 @@ const webConfig = /** @type WebpackConfig */ {
       // for the list of Node.js core module polyfills.
       assert: require.resolve("assert"),
       buffer: require.resolve('buffer'),
-      fs: require.resolve('browserify-fs'),
+      // fs: require.resolve('browserify-fs'),
       //console: require.resolve('console-browserify'),
       //constants: require.resolve('constants-browserify'),
       crypto: require.resolve('crypto-browserify'),
@@ -64,6 +64,11 @@ const webConfig = /** @type WebpackConfig */ {
     ],
   },
   plugins: [
+    // Work around for Buffer is undefined:
+    // https://github.com/webpack/changelog-v5/issues/10
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
     new webpack.ProvidePlugin({
       process: "process/browser", // provide a shim for the global `process` variable
     }),
@@ -96,7 +101,7 @@ const config = {
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js'],
-    alias : {
+    alias: {
       perf_hooks: 'node_modules/performance-now/lib/performance-now.js'
     }
   },
@@ -114,4 +119,4 @@ const config = {
     ]
   }
 };
-module.exports = [ webConfig, config];
+module.exports = [webConfig, config];

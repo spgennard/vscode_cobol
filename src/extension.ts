@@ -60,12 +60,17 @@ let bldscriptTaskProvider: vscode.Disposable | undefined;
 let shown_enable_semantic_token_provider = false;
 let messageBoxDone = false;
 
+
 export const currentHostInformation = `${os.hostname()}/${os.userInfo().username}`;
 
-let fileSearchDirectory: string[] = [];
+const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
+
+// setup
+VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
+VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
 
 export class VSExtensionUtils {
 
@@ -91,9 +96,9 @@ export class VSExtensionUtils {
         return false;
     }
 
-    public static getCombinedCopyBookSearchPath(): string[] {
-        return fileSearchDirectory;
-    }
+    // public static getCombinedCopyBookSearchPath(): string[] {
+    //     return fileSearchDirectory;
+    // }
 
     public static flip_plaintext(doc: TextDocument): void {
         if (doc === undefined) {
@@ -523,7 +528,14 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
         }
     }
 
-    fileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
+
+    
+    const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
+    fileSearchDirectory.length = 0;
+    for(const fsd of filterfileSearchDirectory) {
+        fileSearchDirectory.push(fsd);
+    }
+    
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
@@ -535,7 +547,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             }
         }
 
-        let extsdir = VSExtensionUtils.getCombinedCopyBookSearchPath();
+        let extsdir = fileSearchDirectory;
         if (extsdir.length !== 0) {
             VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
             for (const sdir of extsdir) {
@@ -583,7 +595,6 @@ export function getCurrentContext(): ExtensionContext {
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
-    VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
     depconfig = new VSCobScanner_depreciated();
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
 
@@ -898,7 +909,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const copyBookProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            const ccbp = new opencopybook.COBOLCopyBookProvider();
+            const ccbp = new opencopybook.COBOLCopyBookProvider(VSExternalFeatures);
             return ccbp.provideDefinition(doc, pos, ct);
         }
     });
@@ -915,7 +926,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
         const cachedSourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
             provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-                const csdp = new CachedCOBOLSourceDefinition();
+                const csdp = new CachedCOBOLSourceDefinition(VSExternalFeatures);
                 return csdp.provideDefinition(doc, pos, ct);
             }
         });
@@ -924,7 +935,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const COBOLCallTargetProviderProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            const csdp = new COBOLCallTargetProvider();
+            const csdp = new COBOLCallTargetProvider(VSExternalFeatures);
             return csdp.provideDefinition(doc, pos, ct);
         }
     });

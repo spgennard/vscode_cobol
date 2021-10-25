@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { FileType, Uri, workspace } from "vscode";
 import { VSLogger } from "./vslogger";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -31,7 +30,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
-        return COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filename, inDirectory, config);
+        return COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filename, inDirectory, config, this);
     }
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
@@ -55,9 +54,25 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         return COBOLFileUtils.isDirectory(possibleDirectory);
     }
 
-     public getFileModTimeStamp(filename: string): BigInt {
-        const f = fs.statSync(filename, {bigint: true} );
-        return (BigInt)(f.mtimeMs);
+    private fileSearchDirectory: string[] = [];
+
+    public getFileModTimeStamp(filename: string): BigInt {
+        try {
+            const f = fs.statSync(filename, { bigint: true });
+            return (BigInt)(f.mtimeMs);
+        } catch (e) {
+            //
+        }
+
+        return (BigInt)(0);
+    }
+
+    public getCombinedCopyBookSearchPath(): string[] {
+        return this.fileSearchDirectory;
+    }
+
+    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]): void {
+        this.fileSearchDirectory = fileSearchDirectory;
     }
 }
 

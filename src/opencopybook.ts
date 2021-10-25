@@ -9,10 +9,18 @@ import { ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
 import COBOLSourceScanner from './cobolsourcescanner';
 import { VSCOBOLFileUtils } from './vsfileutils';
+import { IExternalFeatures } from './externalfeatures';
 
 
 
 export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
+
+    private features: IExternalFeatures;
+
+    constructor(features: IExternalFeatures) {
+        this.features = features;
+    }
+
     public provideDefinition(document: vscode.TextDocument,
         position: vscode.Position,
         token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
@@ -100,7 +108,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         }
 
         if (filename !== null && filename.length !== 0) {
-            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filename.trim(), inDirectory, config);
+            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filename.trim(), inDirectory, config, this.features);
             if (fullPath.length !== 0) {
                 return new vscode.Location(
                     Uri.file(fullPath),
@@ -113,10 +121,10 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     }
 
-    public static expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
+    public static expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
 
         if (inDirectory === null || inDirectory.length === 0) {
-            const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config);
+            const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);
             if (fullPath.length !== 0) {
                 return path.normalize(fullPath);
             }
@@ -124,7 +132,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             return fullPath;
         }
 
-        const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config);
+        const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
         if (fullPath.length !== 0) {
             return path.normalize(fullPath);
         }

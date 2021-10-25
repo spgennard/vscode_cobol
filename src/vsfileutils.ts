@@ -2,10 +2,10 @@ import path from "path";
 import fs from "fs";
 import { getVSWorkspaceFolders } from "./cobolfolders";
 import { COBOLFileUtils } from "./fileutils";
-import { Range, TextEditor, Uri, window, workspace } from "vscode";
+import { Range, TextEditor, window, workspace } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { VSExtensionUtils } from "./extension";
+import { IExternalFeatures } from "./externalfeatures";
 
 export class VSCOBOLFileUtils {
 
@@ -73,14 +73,14 @@ export class VSCOBOLFileUtils {
         return bestShortName.length === 0 ? undefined : bestShortName;
     }
 
-    public static findCopyBook(filename: string, config: ICOBOLSettings): string {
+    public static findCopyBook(filename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
         if (!filename) {
             return "";
         }
 
         const hasDot = filename.indexOf(".");
 
-        for (const copybookdir of VSExtensionUtils.getCombinedCopyBookSearchPath()) {
+        for (const copybookdir of features.getCombinedCopyBookSearchPath()) {
 
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
@@ -104,14 +104,14 @@ export class VSCOBOLFileUtils {
         return "";
     }
 
-    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings): string {
+    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
         if (!filename) {
             return "";
         }
 
         const hasDot = filename.indexOf(".");
 
-        for (const baseCopybookdir of VSExtensionUtils.getCombinedCopyBookSearchPath()) {
+        for (const baseCopybookdir of features.getCombinedCopyBookSearchPath()) {
             const copybookdir = path.join(baseCopybookdir, inDirectory);
 
             /* check for the file as is.. */
@@ -162,13 +162,13 @@ export class VSCOBOLFileUtils {
             }
             const filename = path.join(dir, copybook_filename + ".cpy");
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            workspace.fs.writeFile(Uri.file(filename),Buffer.from(text)).then(onFullFilled => {
-                activeTextEditor.edit(edit => {
-                    edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
-                });
+            fs.writeFileSync(filename, text);
+            activeTextEditor.edit(edit => {
+                edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
             });
 
         });
     }
 
 }
+

@@ -18,6 +18,8 @@ export interface IExternalFeatures {
     getWorkspaceFolders(): string[];
     isDirectory(possibleDirectory: string) : boolean;
     getFileModTimeStamp(filename:string):BigInt;
+    getCombinedCopyBookSearchPath(): string[];
+    setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void;
 }
 
 export enum ESourceFormat {
@@ -87,5 +89,15 @@ export class EmptyExternalFeature implements IExternalFeatures {
 
     public getFileModTimeStamp(filename:string) : BigInt {
         return (BigInt)(0);
+    }
+    
+    private fileSearchDirectory: string[] = [];
+    
+    public getCombinedCopyBookSearchPath(): string[] {
+        return this.fileSearchDirectory;
+    }
+
+    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void {
+        this.fileSearchDirectory = fileSearchDirectory;
     }
 }

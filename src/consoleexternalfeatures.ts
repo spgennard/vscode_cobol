@@ -108,4 +108,14 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         const f = fs.statSync(filename, {bigint:true});
         return (BigInt)(f.mtimeMs);
     }
+
+    private fileSearchDirectory: string[] = [];
+    
+    public getCombinedCopyBookSearchPath(): string[] {
+        return this.fileSearchDirectory;
+    }
+
+    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void {
+        this.fileSearchDirectory = fileSearchDirectory;
+    }
 }

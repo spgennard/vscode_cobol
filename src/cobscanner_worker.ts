@@ -118,6 +118,16 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 
         return (BigInt)(0);
     }
+
+    private fileSearchDirectory: string[] = [];
+    
+    public getCombinedCopyBookSearchPath(): string[] {
+        return this.fileSearchDirectory;
+    }
+
+    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void {
+        this.fileSearchDirectory = fileSearchDirectory;
+    }
 }
 
 class threadSender implements ICOBOLSourceScannerEventer {
