@@ -4,7 +4,7 @@ import { CobApiHandle } from "./cobapiimpl";
 import { COBOLPreprocessorHelper } from "./cobolsourcescanner";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
-import { ExternalFeatures } from "./vsexternalfeatures";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class VSPreProc {
 
@@ -43,7 +43,7 @@ export class VSPreProc {
 
                 const pp = VSPreProc.getCOBOLPreprocessor(ppExt, extName);
                 if (pp !== undefined) {
-                    const handle = new CobApiHandle(pp.getPackageJson(), ExternalFeatures);
+                    const handle = new CobApiHandle(pp.getPackageJson(), VSExternalFeatures);
                     try {
                         if (pp.getImplementedVersion() !== COBAPIConstants.COB_API_INTERFACE_VERSION) {
                             failed = true;

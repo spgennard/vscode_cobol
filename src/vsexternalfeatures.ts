@@ -9,7 +9,10 @@ import { COBOLCopyBookProvider } from "./opencopybook";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
-export class VSExternalFeatures implements IExternalFeatures {
+import fs from 'fs';
+import { COBOLFileUtils } from "./fileutils";
+
+class VSExternalFeaturesImpl implements IExternalFeatures {
     public logMessage(message: string): void {
         VSLogger.logMessage(message);
     }
@@ -49,31 +52,13 @@ export class VSExternalFeatures implements IExternalFeatures {
     }
 
     public isDirectory(possibleDirectory: string): boolean {
-        try {
-            async () => {
-                const stat = await workspace.fs.stat(Uri.file(possibleDirectory));
-                return stat.type === FileType.Directory;
-            }
-        } catch {
-            return false;
-        }
-
-        return false;
+        return COBOLFileUtils.isDirectory(possibleDirectory);
     }
 
-    public getFileModTimeStamp(filename:string):BigInt {
-
-        try {
-            async () => {
-                const stat = await workspace.fs.stat(Uri.file(filename));
-                return (BigInt)(stat.mtime);
-            }
-        } catch {
-                //
-        }
-
-        return (BigInt)(0);
+     public getFileModTimeStamp(filename: string): BigInt {
+        const f = fs.statSync(filename, {bigint: true} );
+        return (BigInt)(f.mtimeMs);
     }
 }
 
-export const ExternalFeatures = new VSExternalFeatures();
+export const VSExternalFeatures = new VSExternalFeaturesImpl();

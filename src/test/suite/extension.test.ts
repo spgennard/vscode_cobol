@@ -6,14 +6,14 @@ import { FileSourceHandler } from "../../filesourcehandler";
 import COBOLSourceScanner, { EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
 import { COBOLSettings } from '../../iconfiguration';
 import path from 'path';
-import { ExternalFeatures } from '../../vsexternalfeatures';
+import { VSExternalFeatures } from '../../vsexternalfeatures';
 
 suite('Core Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 	const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
-	const features = ExternalFeatures;
+	const features = VSExternalFeatures;
 
 	test('Read file [basic] (test.cbl)', () => {
 		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);

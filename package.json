@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.21",
+  "version": "7.10.22",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1929,7 +1929,7 @@
     "webpack": "npm run compile && webpack --mode development",
     "webpack-dev-not-used": "webpack --mode development --watch",
     "package-web": "webpack --mode production --devtool hidden-source-map",
-    "watch-web":"webpack --watch",
+    "watch-web": "webpack --watch",
     "just-compile": "tsc -b",
     "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
     "compile-web": "webpack",
@@ -1949,7 +1949,7 @@
     "@typescript-eslint/parser": "^5.1.0",
     "@types/webpack-env": "^1.16.3",
     "assert": "^2.0.0",
-		"process": "^0.11.10",
+    "process": "^0.11.10",
     "ansi-regex": ">=6.0.1",
     "depcheck": "^1.4.2",
     "nth-check": ">=2.0.1",
@@ -1975,7 +1975,14 @@
     "properties-reader": "^2.2.0",
     "temp-dir": "^2.0.0",
     "trie-search": "^1.3.5",
-    "typescript-string-operations": "^1.4.1"
+    "typescript-string-operations": "^1.4.1",
+    "browserify-fs": "^1.0.0",
+    "path-browserify": "^1.0.1",
+    "os-browserify": "^0.3.0",
+    "crypto-browserify": "^3.12.0",
+    "url": "^0.11.0",
+    "buffer": "^6.0.3",
+    "stream-browserify": "^3.0.0"
   },
   "extensionDependencies": []
 }

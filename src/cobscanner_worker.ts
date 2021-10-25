@@ -111,7 +111,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 
     public getFileModTimeStamp(filename: string):BigInt {
         try {
-            return (BigInt)(fs.statSync(filename).mtimeMs);
+            return (BigInt)(fs.statSync(filename, {bigint: true }).mtimeMs);
         } catch {
             //
         }

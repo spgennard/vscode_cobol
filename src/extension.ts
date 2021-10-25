@@ -35,7 +35,7 @@ import { getVSWorkspaceFolders } from './cobolfolders';
 import { COBOLSourceScannerUtils } from './cobolsourcescannerutils';
 import { COBOLSourceDefinition } from './sourcedefinitionprovider';
 import { CachedCOBOLSourceDefinition } from './cachedsourcedefinitionprovider';
-import { ExternalFeatures } from './vsexternalfeatures';
+import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCobScanner } from './vscobscanner';
 import { BldScriptTaskProvider } from './bldTaskProvider';
 import { COBOLCaseFormatter } from './caseformatter';
@@ -583,7 +583,7 @@ export function getCurrentContext(): ExtensionContext {
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
-    VSCOBOLConfiguration.externalFeatures = ExternalFeatures;
+    VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
     depconfig = new VSCobScanner_depreciated();
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
 
@@ -624,7 +624,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (md_metadata_files) {
-                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, ExternalFeatures, settings.metadata_files, true);
+                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, VSExternalFeatures, settings.metadata_files, true);
             }
 
             if (enable_semantic_token_provider && !shown_enable_semantic_token_provider) {
@@ -650,7 +650,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, false);
-    COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, ExternalFeatures, settings.metadata_files, false);
+    COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, VSExternalFeatures, settings.metadata_files, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, false);
 
     const insertIgnoreCommentLineCommand = commands.registerCommand("cobolplugin.insertIgnoreCommentLine", function (docUri: vscode.Uri, offset: number, code: string) {
