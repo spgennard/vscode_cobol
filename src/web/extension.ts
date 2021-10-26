@@ -4,12 +4,14 @@ import * as vscode from 'vscode';
 import * as cobolProgram from '../cobolprogram';
 import * as tabstopper from '../tabstopper';
 import * as commenter from '../commenter';
-// import { ICOBOLSettings } from '../iconfiguration';
-// import { VSCOBOLConfiguration } from '../vsconfiguration';
+import { VSCOBOLConfiguration } from '../vsconfiguration';
+import { ICOBOLSettings } from '../iconfiguration';
+import { VSExtensionUtils } from '../vsextutis';
+import { CobolSymbolInformationProvider } from '../symbolprovider';
 
 export function activate(context: vscode.ExtensionContext) {
-	const commands = vscode.commands;
-    // const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+    const commands = vscode.commands;
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
 
     context.subscriptions.push(commands.registerCommand('cobolplugin.move2pd', function () {
         cobolProgram.move2pd();
@@ -40,14 +42,18 @@ export function activate(context: vscode.ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand('cobolplugin.commentline', function () {
-         if (vscode.window.activeTextEditor !== undefined) {
-             commenter.processCommentLine();
-         }
-     }));
+        if (vscode.window.activeTextEditor !== undefined) {
+            commenter.processCommentLine();
+        }
+    }));
+
+    const cobolSelectors = VSExtensionUtils.getAllCobolSelectors(settings);
+
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(cobolSelectors, new CobolSymbolInformationProvider()));
 
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-	//
+    //
 }

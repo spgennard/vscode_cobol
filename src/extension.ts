@@ -50,6 +50,7 @@ import { VSCOBOLFileUtils } from './vsfileutils';
 import { VSPreProc } from './vspreproc';
 import { VSCOBOLSourceScannerTools } from './vssourcescannerutils';
 import { COBOLOutputChannel, VSLogger } from './vslogger';
+import { VSExtensionUtils } from './vsextutis';
 // import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -72,108 +73,33 @@ const terminalName = "UnitTest";
 VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
 VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
 
-export class VSExtensionUtils {
-
-    public static getAllCobolSelectors(config: ICOBOLSettings): vscode.DocumentSelector {
-        const ret = [];
-
-        for (const langid of config.valid_cobol_language_ids) {
-            ret.push(
-                { scheme: 'file', language: langid },
-            );
-        }
-
-        return ret;
-    }
-
-    public static isKnownCOBOLLanguageId(config: ICOBOLSettings, possibleLangid: string): boolean {
-        for (const langid of config.valid_cobol_language_ids) {
-            if (possibleLangid === langid) {
-                return true;
+function openChangeLog(): void {
+    const thisExtension = extensions.getExtension("bitlang.cobol");
+    if (thisExtension !== undefined) {
+        const extPath = `${thisExtension.extensionPath}`;
+        const version = `${thisExtension.packageJSON.version}`;
+        const glastVersion = currentContext.globalState.get("bitlang.cobol.version");
+        if (glastVersion !== version) {
+            const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
+            if (COBOLFileUtils.isFile(verFile)) {
+                const readmeUri = vscode.Uri.file(verFile);
+                commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
+                currentContext.globalState.update("bitlang.cobol.version", version);
             }
         }
+        const lastDot = version.lastIndexOf('.');
+        if (lastDot !== -1) {
+            const lastSVersion = version.substr(0, lastDot);
+            const glastsVersion = currentContext.globalState.get("bitlang.cobol.sversion");
 
-        return false;
-    }
-
-    // public static getCombinedCopyBookSearchPath(): string[] {
-    //     return fileSearchDirectory;
-    // }
-
-    public static flip_plaintext(doc: TextDocument): void {
-        if (doc === undefined) {
-            return;
-        }
-
-        if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
-            const lineCount = doc.lineCount;
-            if (lineCount >= 3) {
-                const firstLine = doc.lineAt((0)).text;
-                const secondLine = doc.lineAt(1).text;
-
-                if ((firstLine.length >= 1 && firstLine.charCodeAt(0) === 12) && secondLine.startsWith("* Micro Focus COBOL ")) {
-                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_MF_LISTFILE");
-                    return;
-                }
-
-                //NOTE: If we have more.. refactor..
-                if (firstLine.startsWith("Pro*COBOL: Release")) {
-                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_PCOB_LISTFILE");
-                    return;
-                }
-
-                if ((firstLine.indexOf("ACUCOBOL-GT ") !== -1) && (firstLine.indexOf("Page:") !== -1)) {
-                    vscode.languages.setTextDocumentLanguage(doc, "COBOL_ACU_LISTFILE");
-                    return;
-                }
-            }
-        }
-    }
-
-    public static performance_now(): number {
-        if (!process.env.BROWSER) {
-            try {
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                return require('performance-now').performance.now;
-            }
-            catch {
-                return Date.now();
-            }
-        }
-
-        return Date.now();
-    }
-
-    public static openChangeLog(): void {
-        const thisExtension = extensions.getExtension("bitlang.cobol");
-        if (thisExtension !== undefined) {
-            const extPath = `${thisExtension.extensionPath}`;
-            const version = `${thisExtension.packageJSON.version}`;
-            const glastVersion = currentContext.globalState.get("bitlang.cobol.version");
-            if (glastVersion !== version) {
-                const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
+            if (glastsVersion !== lastSVersion) {
+                const verFile = path.join(extPath, `CHANGELOG_${lastSVersion}.md`);
                 if (COBOLFileUtils.isFile(verFile)) {
                     const readmeUri = vscode.Uri.file(verFile);
                     commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
-                    currentContext.globalState.update("bitlang.cobol.version", version);
+                    currentContext.globalState.update("bitlang.cobol.sversion", lastSVersion);
                 }
             }
-            const lastDot = version.lastIndexOf('.');
-            if (lastDot !== -1) {
-                const lastSVersion = version.substr(0, lastDot);
-                const glastsVersion = currentContext.globalState.get("bitlang.cobol.sversion");
-
-                if (glastsVersion !== lastSVersion) {
-                    const verFile = path.join(extPath, `CHANGELOG_${lastSVersion}.md`);
-                    if (COBOLFileUtils.isFile(verFile)) {
-                        const readmeUri = vscode.Uri.file(verFile);
-                        commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
-                        currentContext.globalState.update("bitlang.cobol.sversion", lastSVersion);
-                    }
-                }
-
-            }
-
         }
     }
 }
@@ -480,9 +406,9 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
                     }
                 }
 
-                const startTime = VSExtensionUtils.performance_now();
+                const startTime = VSExternalFeatures.performance_now();
                 if (COBOLFileUtils.isDirectory(ddir)) {
-                    const totalTimeInMS = VSExtensionUtils.performance_now() - startTime;
+                    const totalTimeInMS = VSExternalFeatures.performance_now() - startTime;
                     const timeTaken = totalTimeInMS.toFixed(2);
                     if (totalTimeInMS <= 2000) {
                         fileSearchDirectory.push(ddir);
@@ -967,7 +893,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         // context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), documentSymbolProvider2));
     }
 
-    const cobolProvider = new CobolSourceCompletionItemProvider(settings);
+    const cobolProvider = new CobolSourceCompletionItemProvider(settings, VSExternalFeatures);
     const cobolProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 
@@ -1321,7 +1247,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
     }
 
-    VSExtensionUtils.openChangeLog();
+    openChangeLog();
 }
 
 export async function deactivateAsync(): Promise<void> {

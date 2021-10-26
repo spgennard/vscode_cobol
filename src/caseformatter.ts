@@ -7,7 +7,7 @@ import { COBOLUtils, FoldAction, FoldStyle } from './cobolutils';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { formatOnReturn, ICOBOLSettings } from './iconfiguration';
 import VSCOBOLSourceScanner from './vscobolscanner';
-import { VSExtensionUtils } from './extension';
+import { VSExtensionUtils } from './vsextutis';
 
 export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{
 

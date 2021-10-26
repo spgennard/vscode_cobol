@@ -6,14 +6,16 @@ import { VSCOBOLConfiguration } from './vsconfiguration';
 import TrieSearch from 'trie-search';
 import { VSLogger } from './vslogger';
 import { InMemoryGlobalSymbolCache } from './globalcachehelper';
-import { VSExtensionUtils } from './extension';
+import { IExternalFeatures } from './externalfeatures';
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
     private iconfig: ICOBOLSettings;
+    private features: IExternalFeatures;
 
-    public constructor(config: ICOBOLSettings) {
+    public constructor(config: ICOBOLSettings, features: IExternalFeatures) {
         this.iconfig = config;
+        this.features = features;
     }
 
 
@@ -241,7 +243,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             return new CompletionList(items, false);
         }
 
-        const startTime = VSExtensionUtils.performance_now();
+        const startTime = this.features.performance_now();
         let wordToComplete = '';
         let wordBefore = "";
         let wordBeforeLower = "";
@@ -404,7 +406,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
-        const totalTimeInMS = VSExtensionUtils.performance_now() - startTime;
+        const totalTimeInMS = this.features.performance_now() - startTime;
         const timeTaken = totalTimeInMS.toFixed(2);
         if (totalTimeInMS > VSLogger.logTimeThreshold) {
             VSLogger.logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
