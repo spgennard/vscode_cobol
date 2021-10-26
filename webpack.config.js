@@ -26,7 +26,7 @@ const webConfig = /** @type WebpackConfig */ {
       // for the list of Node.js core module polyfills.
       assert: require.resolve("assert"),
       buffer: require.resolve('buffer'),
-      // fs: require.resolve('browserify-fs'),
+      fs: require.resolve('memfs'),
       //console: require.resolve('console-browserify'),
       //constants: require.resolve('constants-browserify'),
       crypto: require.resolve('crypto-browserify'),
