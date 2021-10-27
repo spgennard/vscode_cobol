@@ -1,17 +1,17 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
-import { CacheDirectoryStrategy } from './externalfeatures';
-import { window, workspace } from 'vscode';
+import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
+import { CacheDirectoryStrategy } from "./externalfeatures";
+import { window, workspace } from "vscode";
 
-import tempDirectory from 'temp-dir';
-import { InMemoryGlobalSymbolCache } from './globalcachehelper';
-import { COBOLFileUtils } from './fileutils';
+import tempDirectory from "temp-dir";
+import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
+import { COBOLFileUtils } from "./fileutils";
 
 const myConsoleFile = path.join(tempDirectory, "vscode_" + process.pid) + ".txt";
 

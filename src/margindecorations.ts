@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType } from 'vscode';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { ESourceFormat } from './externalfeatures';
-import VSCOBOLSourceScanner from './vscobolscanner';
-import { getVSWorkspaceFolders } from './cobolfolders';
-import { VSCodeSourceHandler } from './vscodesourcehandler';
-import { getVSCOBOLSourceFormat } from './sourceformat';
+import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType } from "vscode";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ESourceFormat } from "./externalfeatures";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSCodeSourceHandler } from "./vscodesourcehandler";
+import { getVSCOBOLSourceFormat } from "./sourceformat";
 
 const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -14,14 +14,14 @@ const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEdit
         // color: "rgba(0,0,0,1)",
         color: new ThemeColor("editorLineNumber.foreground"),
         backgroundColor: new ThemeColor("editor.background"),
-        textDecoration: 'solid'
+        textDecoration: "solid"
     },
     dark: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)"
         color: new ThemeColor("editorLineNumber.foreground"),
         backgroundColor: new ThemeColor("editor.background"),
-        textDecoration: 'solid'
+        textDecoration: "solid"
     }
 
 });
@@ -31,8 +31,8 @@ function isEnabledViaWorkspace4jcl(): boolean {
         return false;
     }
 
-    const editorConfig = workspace.getConfiguration('jcleditor');
-    const marginOn = editorConfig.get<boolean>('margin');
+    const editorConfig = workspace.getConfiguration("jcleditor");
+    const marginOn = editorConfig.get<boolean>("margin");
     if (marginOn !== undefined) {
         return marginOn;
     }
@@ -116,7 +116,7 @@ export default async function updateDecorations(activeTextEditor: TextEditor | u
             const line = lineText.text;
 
             // only do it, if we have no tabs on the line..
-            const containsTab = line.indexOf('\t');
+            const containsTab = line.indexOf("\t");
 
             if (containsTab === -1) {
                 if (line.length > 6) {

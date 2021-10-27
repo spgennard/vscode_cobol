@@ -1,11 +1,11 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
+import * as vscode from "vscode";
+import * as path from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const themedIconPath = (name: string): any => {
 	return {
-		light: path.join(__filename, '..', '..', 'images', 'light', name),
-		dark: path.join(__filename, '..', '..', 'images', 'dark', name)
+		light: path.join(__filename, "..", "..", "images", "light", name),
+		dark: path.join(__filename, "..", "..", "images", "dark", name)
 	};
 };
 
@@ -21,7 +21,7 @@ export class SourceFolderItem extends vscode.TreeItem {
 
     public iconPath = themedIconPath("folder.svg");
 
-    contextValue = 'Source Folder';
+    contextValue = "Source Folder";
 }
 
 export class SourceItem extends vscode.TreeItem {
@@ -36,5 +36,5 @@ export class SourceItem extends vscode.TreeItem {
 
     public iconPath = themedIconPath("sourceitem.svg");
 
-    contextValue = 'Source';
+    contextValue = "Source";
 }

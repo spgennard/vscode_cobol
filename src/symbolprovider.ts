@@ -1,10 +1,10 @@
-import * as vscode from 'vscode';
-import { COBOLTokenStyle, splitArgument } from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { VSLogger } from './vslogger';
-import { outlineFlag } from './iconfiguration';
-import VSCOBOLSourceScanner from './vscobolscanner';
-import { VSPreProc } from './vspreproc';
+import * as vscode from "vscode";
+import { COBOLTokenStyle, splitArgument } from "./cobolsourcescanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSLogger } from "./vslogger";
+import { outlineFlag } from "./iconfiguration";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSPreProc } from "./vspreproc";
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
@@ -177,8 +177,8 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
                                 continue;
                             }
 
-                            if (token.extraInformation1 === 'fd' || token.extraInformation1 === 'sd'
-                                || token.extraInformation1 === 'rd' || token.extraInformation1 === 'select') {
+                            if (token.extraInformation1 === "fd" || token.extraInformation1 === "sd"
+                                || token.extraInformation1 === "rd" || token.extraInformation1 === "select") {
                                 symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
                             }
                             else {

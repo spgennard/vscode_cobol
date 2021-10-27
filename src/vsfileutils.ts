@@ -31,7 +31,7 @@ export class VSCOBOLFileUtils {
             return undefined;
         }
         for (const folder of ws) {
-            if (folder.uri.scheme === 'file') {
+            if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;
                 const possibleFile = path.join(folderPath, sdir);
                 if (COBOLFileUtils.isFile(possibleFile)) {
@@ -55,7 +55,7 @@ export class VSCOBOLFileUtils {
         const fullPath = path.normalize(ddir);
         let bestShortName = "";
         for (const folder of ws) {
-            if (folder.uri.scheme === 'file') {
+            if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;
                 if (fullPath.startsWith(folderPath)) {
                     const possibleShortPath = fullPath.substr(1 + folderPath.length);
@@ -145,12 +145,12 @@ export class VSCOBOLFileUtils {
         const dir = path.dirname(activeTextEditor.document.fileName);
 
         window.showInputBox({
-            prompt: 'Copybook name?',
+            prompt: "Copybook name?",
             validateInput: (copybook_filename: string): string | undefined => {
-                if (!copybook_filename || copybook_filename.indexOf(' ') !== -1 ||
+                if (!copybook_filename || copybook_filename.indexOf(" ") !== -1 ||
                     copybook_filename.indexOf(".") !== -1 ||
                     COBOLFileUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
-                    return 'Invalid copybook';
+                    return "Invalid copybook";
                 } else {
                     return undefined;
                 }

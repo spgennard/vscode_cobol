@@ -8,7 +8,7 @@ import { COBOLCopyBookProvider } from "./opencopybook";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
-import fs from 'fs';
+import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {

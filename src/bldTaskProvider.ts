@@ -1,7 +1,7 @@
-import path, { dirname } from 'path';
-import * as vscode from 'vscode';
-import { getVSWorkspaceFolders } from './cobolfolders';
-import { COBOLFileUtils } from './fileutils';
+import path, { dirname } from "path";
+import * as vscode from "vscode";
+import { getVSWorkspaceFolders } from "./cobolfolders";
+import { COBOLFileUtils } from "./fileutils";
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
 	arguments: string;
@@ -10,7 +10,7 @@ interface BldScriptDefinition extends vscode.TaskDefinition {
 export class BldScriptTaskProvider implements vscode.TaskProvider {
 	static scriptPlatform = COBOLFileUtils.isWin32 ? "Windows Batch" : "Unix Script";
 
-	static BldScriptType = 'COBOLBuildScript';
+	static BldScriptType = "COBOLBuildScript";
 	static BldSource = `${BldScriptTaskProvider.scriptPlatform} File`;
 
 	private bldScriptPromise: Thenable<vscode.Task[]> | undefined = undefined;
@@ -100,7 +100,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		const ws = getVSWorkspaceFolders();
 		if (ws !== undefined) {
 			for (const folder of ws) {
-				if (folder.uri.scheme === 'file') {
+				if (folder.uri.scheme === "file") {
 					const scriptName = BldScriptTaskProvider.scriptName;
 					const fname = path.join(folder.uri.fsPath, scriptName);
 

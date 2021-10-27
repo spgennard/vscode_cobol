@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import path from "path";
-import fs from 'fs';
-import tempDirectory from 'temp-dir';
+import fs from "fs";
+import tempDirectory from "temp-dir";
 import { VSCobScanner } from "./vscobscanner";
-import { VSCOBOLConfiguration } from './vsconfiguration';
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { clearCOBOLCache } from "./vscobolscanner";
 import { progressStatusBarItem } from "./extension";
 import { VSLogger } from "./vslogger";
@@ -45,7 +45,7 @@ export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         catch (e:any) {
-            return e.code === 'EPERM';
+            return e.code === "EPERM";
         }
     }
 
@@ -178,7 +178,7 @@ export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
             if (!viaCommand) {
                 VSLogger.logMessage(`Source scanner lock file is present on startup ${msgViaCommand}`);
                 VSCobScanner_depreciated.depreciatedRemoveScannerFile(cacheDirectory);
-                VSLogger.logMessage(` - lock file released`);
+                VSLogger.logMessage(" - lock file released");
             } else {
                 VSLogger.logMessage(`Source scanner already active, no action taken ${msgViaCommand}`);
                 return;
@@ -230,7 +230,7 @@ export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
 
         if (ws !== undefined) {
             for (const f of ws) {
-                if (f !== undefined && f.uri.scheme === 'file') {
+                if (f !== undefined && f.uri.scheme === "file") {
                     sf.workspaceFolders.push(f.uri.fsPath);
                 }
             }
@@ -267,14 +267,14 @@ export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
             }
         }, settings.cache_metadata_inactivity_timeout);
 
-        child.on('error', err => {
+        child.on("error", err => {
             if (tempDirectory !== undefined) {
                 VSCobScanner_depreciated.depreciatedRemoveScannerFile(tempDirectory);
             }
             VSLogger.logException(`Fork caused ${reason}`, err);
         });
 
-        child.on('exit', code => {
+        child.on("exit", code => {
             VSCobScanner_depreciated.deprecatedActivePid = 0;
             clearTimeout(timer);
 
@@ -288,7 +288,7 @@ export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
         });
 
         let percent = 0;
-        child.on('message', (msg) => {
+        child.on("message", (msg) => {
             timer.refresh();        // restart timer
             const message = msg as string;
             if (message.startsWith("@@")) {
@@ -394,7 +394,7 @@ export class VSCobScanner_depreciated implements ICOBOLSettings_depreciated {
         }
 
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
-            if (data === 'Yes') {
+            if (data === "Yes") {
                 VSCobScanner_depreciated.wipeCacheDirectory(cacheDirectory);
                 VSLogger.logMessage("Metadata cache cleared");
             }

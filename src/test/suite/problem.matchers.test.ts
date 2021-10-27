@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
-import * as assert from 'assert';
+import * as assert from "assert";
 
-import path from 'path';
-import { extensions } from 'vscode';
-import * as fs from 'fs';
+import path from "path";
+import { extensions } from "vscode";
+import * as fs from "fs";
 
-suite('Issues Raised Test Suite', () => {
-	test('Issue: Package.json checks', () => {
+suite("Issues Raised Test Suite", () => {
+	test("Issue: Package.json checks", () => {
 		const baseForSource = __dirname + "/../../../src/test/suite/";
 
 		const ext = extensions.getExtension("bitlang.cobol");

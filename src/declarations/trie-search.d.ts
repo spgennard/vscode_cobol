@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-declare module 'trie-search';
+declare module "trie-search";
 declare class TrieSearch {
 	constructor(keyFields?: string|string[], options?: any);
 

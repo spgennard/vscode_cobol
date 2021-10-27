@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-import { Range, Selection, TextEditorRevealType, window } from 'vscode';
+import { Range, Selection, TextEditorRevealType, window } from "vscode";
 
 export function move2pd():void {
     const line = findProcedureDivision();
     if (line > 0) {
         goToLine(line);
     } else {
-        window.setStatusBarMessage('ERROR: \'PROCEDURE DIVISION\' not found.', 4000);
+        window.setStatusBarMessage("ERROR: 'PROCEDURE DIVISION' not found.", 4000);
     }
 }
 
@@ -24,7 +24,7 @@ export function move2dd():void {
         return;
     }
 
-    window.setStatusBarMessage('ERROR: \'DATA DIVISION\' or \'WORKING-STORAGE SECTION\' not found.', 4000);
+    window.setStatusBarMessage("ERROR: 'DATA DIVISION' or 'WORKING-STORAGE SECTION' not found.", 4000);
 }
 
 export function move2ws():void {
@@ -34,7 +34,7 @@ export function move2ws():void {
         return;
     }
 
-    window.setStatusBarMessage('ERROR: \'WORKING-STORAGE SECTION\' not found.', 4000);
+    window.setStatusBarMessage("ERROR: 'WORKING-STORAGE SECTION' not found.", 4000);
 }
 
 export function move2anyforward():void {

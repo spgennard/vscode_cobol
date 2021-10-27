@@ -23,12 +23,12 @@ export interface IExternalFeatures {
 }
 
 export enum ESourceFormat {
-    unknown = 'unknown',
-    fixed = 'fixed',
-    free = 'free',
-    terminal = 'terminal',
-    variable = 'variable',
-    jcl = 'jcl'
+    unknown = "unknown",
+    fixed = "fixed",
+    free = "free",
+    terminal = "terminal",
+    variable = "variable",
+    jcl = "jcl"
 }
 
 export enum CacheDirectoryStrategy {

@@ -1,6 +1,6 @@
 // import * as assert from 'assert';
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 // import { FileSourceHandler } from "../../filesourcehandler";
 // import COBOLSourceScanner, { CobolDocStyle, EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
@@ -9,8 +9,8 @@ import * as vscode from 'vscode';
 // import { ExternalFeatures } from '../../extension';
 
 
-suite('Issues Raised Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
+suite("Issues Raised Test Suite", () => {
+	vscode.window.showInformationMessage("Start all tests.");
 
 	// const baseForSource = __dirname + "/../../../src/test/suite/";
 	// const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;

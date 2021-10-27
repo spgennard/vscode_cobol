@@ -1,10 +1,10 @@
-import { StringBuilder } from 'typescript-string-operations';
-import * as vscode from 'vscode';
-import { workspace } from 'vscode';
-import { ESourceFormat } from './externalfeatures';
-import ISourceHandler, { ICommentCallback } from './isourcehandler';
-import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
-import { VSCOBOLFileUtils } from './vsfileutils';
+import { StringBuilder } from "typescript-string-operations";
+import * as vscode from "vscode";
+import { workspace } from "vscode";
+import { ESourceFormat } from "./externalfeatures";
+import ISourceHandler, { ICommentCallback } from "./isourcehandler";
+import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSCodeSourceHandler implements ISourceHandler {
     commentCount: number;
@@ -88,16 +88,16 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
 
         // drop variable format line
-        if (line.length > 1 && line[0] === '*') {
+        if (line.length > 1 && line[0] === "*") {
             this.commentCount++;
             this.sendCommentCallback(line, lineNumber);
             return "";
         }
 
         // drop fixed format line
-        if (line.length >= 7 && (line[6] === '*' || line[6] === '/') ) {
+        if (line.length >= 7 && (line[6] === "*" || line[6] === "/") ) {
             this.commentCount++;
-            if (line[6] === '/') {
+            if (line[6] === "/") {
                 this.sendCommentCallback(line, lineNumber);
             }
             return "";
@@ -117,7 +117,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
             if (line.match(VSCodeSourceHandler.paraPrefixRegex1)) {
                 line = "      " + line.substr(6);
             } else {
-                if (line.length > 7 && line[6] === ' ') {
+                if (line.length > 7 && line[6] === " ") {
                     const possibleKeyword = line.substr(0, 6).trim();
                     if (this.isValidKeyword(possibleKeyword) === false) {
                         line = "       " + line.substr(6);
@@ -139,19 +139,19 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
 
         // do we have a tab?
-        if (unexpandedLine.indexOf('\t') === -1) {
+        if (unexpandedLine.indexOf("\t") === -1) {
             return unexpandedLine;
         }
 
-        const editorConfig = workspace.getConfiguration('editor');
-        const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>('tabSize', 4);
+        const editorConfig = workspace.getConfiguration("editor");
+        const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
 
         let col = 0;
         const buf = new StringBuilder();
         for (const c of unexpandedLine) {
-            if (c === '\t') {
+            if (c === "\t") {
                 do {
-                    buf.Append(' ');
+                    buf.Append(" ");
                 } while (++col % tabSize !== 0);
             } else {
                 buf.Append(c);

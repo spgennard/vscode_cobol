@@ -1,18 +1,18 @@
-import * as vscode from 'vscode';
-import path from 'path';
-import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from './cobolsourcescanner';
-import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
-import { VSLogger } from './vslogger';
-import { VSCodeSourceHandler } from './vscodesourcehandler';
-import VSCOBOLSourceScanner from './vscobolscanner';
+import * as vscode from "vscode";
+import path from "path";
+import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from "./cobolsourcescanner";
+import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { VSLogger } from "./vslogger";
+import { VSCodeSourceHandler } from "./vscodesourcehandler";
+import VSCOBOLSourceScanner from "./vscobolscanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
-import { COBOLFileUtils } from './fileutils';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { getVSWorkspaceFolders } from './cobolfolders';
-import { ICOBOLSettings } from './iconfiguration';
-import { COBOLFileSymbol } from './cobolglobalcache';
-import { CacheDirectoryStrategy } from './externalfeatures';
-import { VSCOBOLFileUtils } from './vsfileutils';
+import { COBOLFileUtils } from "./fileutils";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { getVSWorkspaceFolders } from "./cobolfolders";
+import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLFileSymbol } from "./cobolglobalcache";
+import { CacheDirectoryStrategy } from "./externalfeatures";
+import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -131,12 +131,12 @@ export class COBOLUtils {
             return;
         }
 
-        const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-        editorConfig.update('metadata_symbols', [], false);
-        editorConfig.update('metadata_entrypoints', [], false);
-        editorConfig.update('metadata_types', [], false);
-        editorConfig.update('metadata_files', [], false);
-        editorConfig.update('metadata_knowncopybooks', [], false);
+        const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+        editorConfig.update("metadata_symbols", [], false);
+        editorConfig.update("metadata_entrypoints", [], false);
+        editorConfig.update("metadata_types", [], false);
+        editorConfig.update("metadata_files", [], false);
+        editorConfig.update("metadata_knowncopybooks", [], false);
         InMemoryGlobalSymbolCache.isDirty = false;
     }
 
@@ -227,12 +227,12 @@ export class COBOLUtils {
 
             if (update) {
                 try {
-                    const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-                    editorConfig.update('metadata_symbols', symbols, false);
-                    editorConfig.update('metadata_entrypoints', entrypoints, false);
-                    editorConfig.update('metadata_types', types, false);
-                    editorConfig.update('metadata_files', files, false);
-                    editorConfig.update('metadata_knowncopybooks', knownCopybooks, false);
+                    const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+                    editorConfig.update("metadata_symbols", symbols, false);
+                    editorConfig.update("metadata_entrypoints", entrypoints, false);
+                    editorConfig.update("metadata_types", types, false);
+                    editorConfig.update("metadata_files", files, false);
+                    editorConfig.update("metadata_knowncopybooks", knownCopybooks, false);
                     InMemoryGlobalSymbolCache.isDirty = false;
                 } catch (e) {
                     VSLogger.logException("Failed to update metadata", e as Error);
@@ -314,8 +314,8 @@ export class COBOLUtils {
 
         // update copybookdirs with optimized version
         if (updateCopybookdirs) {
-            const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-            editorConfig.update('copybookdirs', fileSearchDirectory);
+            const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+            editorConfig.update("copybookdirs", fileSearchDirectory);
             VSLogger.logMessage("Copybook settings and workspace has been updated.");
         } else {
             VSLogger.logMessage("No copybook directories have been migrated");
@@ -405,10 +405,10 @@ export class COBOLUtils {
         //        to find the best position..
 
         vscode.window.showInputBox({
-            prompt: para ? 'New paragraph name?' : 'New section name?',
+            prompt: para ? "New paragraph name?" : "New section name?",
             validateInput: (text: string): string | undefined => {
-                if (!text || text.indexOf(' ') !== -1) {
-                    return 'Invalid paragraph or section';
+                if (!text || text.indexOf(" ") !== -1) {
+                    return "Invalid paragraph or section";
                 } else {
                     return undefined;
                 }
@@ -440,8 +440,8 @@ export class COBOLUtils {
     }
 
     public static getMFUnitAnsiColorConfig(): boolean {
-        const editorConfig = vscode.workspace.getConfiguration('coboleditor');
-        let expEnabled = editorConfig.get<boolean>('mfunit.diagnostic.color');
+        const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+        let expEnabled = editorConfig.get<boolean>("mfunit.diagnostic.color");
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;
         }

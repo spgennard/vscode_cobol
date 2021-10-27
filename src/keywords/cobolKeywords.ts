@@ -1107,12 +1107,12 @@ for (const key of cobolRegisters) {
 }
 
 export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> {
-	if (dialect === 'ACUCOBOL') {
+	if (dialect === "ACUCOBOL") {
 		return acucobolKeywordDictionaryMap;
 	}
 	return cobolKeywordDictionaryMap;
 }
 
 export function getCOBOLKeywordList(dialect: string): string[] {
-	return dialect === 'ACUCOBOL' ? acucobolList : cobolList;
+	return dialect === "ACUCOBOL" ? acucobolList : cobolList;
 }

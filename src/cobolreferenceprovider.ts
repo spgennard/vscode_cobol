@@ -1,10 +1,10 @@
 
-import * as vscode from 'vscode';
-import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import VSCOBOLSourceScanner from './vscobolscanner';
+import * as vscode from "vscode";
+import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import VSCOBOLSourceScanner from "./vscobolscanner";
 
-const wordRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
+const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
 export class CobolReferenceProvider implements vscode.ReferenceProvider {
     public provideReferences(
@@ -26,7 +26,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         position: vscode.Position): Thenable<vscode.Location[] | null> {
         const list: vscode.Location[] = [];
         const wordRange = document.getWordRangeAtPosition(position, wordRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
+        const word = wordRange ? document.getText(wordRange) : "";
         if (word === "") {
             return Promise.resolve(null);
         }

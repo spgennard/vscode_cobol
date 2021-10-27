@@ -1,5 +1,5 @@
 import { OutputChannel, window } from "vscode";
-import util from 'util';
+import util from "util";
 
 export const COBOLOutputChannel: OutputChannel = window.createOutputChannel("COBOL");
 

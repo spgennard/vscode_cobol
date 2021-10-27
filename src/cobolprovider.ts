@@ -1,12 +1,12 @@
-import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
-import VSCOBOLSourceScanner from './vscobolscanner';
-import { ICOBOLSettings } from './iconfiguration';
-import COBOLSourceScanner, { COBOLToken, camelize } from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import TrieSearch from 'trie-search';
-import { VSLogger } from './vslogger';
-import { InMemoryGlobalSymbolCache } from './globalcachehelper';
-import { IExternalFeatures } from './externalfeatures';
+import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import { ICOBOLSettings } from "./iconfiguration";
+import COBOLSourceScanner, { COBOLToken, camelize } from "./cobolsourcescanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import TrieSearch from "trie-search";
+import { VSLogger } from "./vslogger";
+import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
+import { IExternalFeatures } from "./externalfeatures";
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -46,7 +46,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
-        return new TrieSearch('tokenName');
+        return new TrieSearch("tokenName");
     }
 
     private getALlPerformTargets(document: TextDocument, settings: ICOBOLSettings): CompletionItem[] {
@@ -76,7 +76,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         if (sf !== undefined) {
             if (sf.cache4ConstantsOrVars === undefined) {
-                sf.cache4PerformTargets = new TrieSearch('tokenName');
+                sf.cache4PerformTargets = new TrieSearch("tokenName");
                 const words: TrieSearch = sf.cache4PerformTargets;
 
                 for (const key of sf.constantsOrVariables.keys()) {
@@ -96,7 +96,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
-        return new TrieSearch('tokenName');
+        return new TrieSearch("tokenName");
     }
 
 
@@ -244,7 +244,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         }
 
         const startTime = this.features.performance_now();
-        let wordToComplete = '';
+        let wordToComplete = "";
         let wordBefore = "";
         let wordBeforeLower = "";
         let currentLine: string = document.lineAt(position.line).text.trimStart();

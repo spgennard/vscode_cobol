@@ -1,13 +1,13 @@
-import * as vscode from 'vscode';
-import COBOLSourceScanner from './cobolsourcescanner';
+import * as vscode from "vscode";
+import COBOLSourceScanner from "./cobolsourcescanner";
 
-import VSCOBOLSourceScanner from './vscobolscanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
-import { COBOLCopyBookProvider } from './opencopybook';
-import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
-import { VSLogger } from './vslogger';
-import { IExternalFeatures } from './externalfeatures';
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { COBOLSymbol, COBOLSymbolTable } from "./cobolglobalcache";
+import { COBOLCopyBookProvider } from "./opencopybook";
+import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
+import { VSLogger } from "./vslogger";
+import { IExternalFeatures } from "./externalfeatures";
 
 export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
 
@@ -23,8 +23,8 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         return this.resolveDefinitions(document, position, token);
     }
 
-    readonly sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-    readonly variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
+    readonly sectionRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
+    readonly variableRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
     // readonly enableUrlOpenBodge = false;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,7 +51,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
             }
 
             const wordRange = document.getWordRangeAtPosition(position, this.sectionRegEx);
-            const word = wordRange ? document.getText(wordRange) : '';
+            const word = wordRange ? document.getText(wordRange) : "";
             const wordLower = word.toLowerCase();
 
             if (wordLower.length > 0) {
@@ -93,7 +93,7 @@ export class CachedCOBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         const wordRange = document.getWordRangeAtPosition(position, this.variableRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
+        const word = wordRange ? document.getText(wordRange) : "";
         const wordLower = word.toLowerCase();
 
         if (wordLower.length > 0 && cacheDirectory !== undefined) {

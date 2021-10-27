@@ -125,9 +125,9 @@ export class VSPreProc {
                 }
                 continue;
             }
-            VSLogger.logMessage('');
+            VSLogger.logMessage("");
             VSLogger.logMessage(` Registered preprocessor          : ${extName}`);
-            VSLogger.logMessage('');
+            VSLogger.logMessage("");
         }
     }
 }

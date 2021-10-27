@@ -1,10 +1,10 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { COBOLGlobalSymbolTable } from './cobolglobalcache';
-import { COBOLCopyBookProvider } from './opencopybook';
-import { InMemoryGlobalSymbolCache } from './globalcachehelper';
-import { IExternalFeatures } from './externalfeatures';
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { COBOLGlobalSymbolTable } from "./cobolglobalcache";
+import { COBOLCopyBookProvider } from "./opencopybook";
+import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
+import { IExternalFeatures } from "./externalfeatures";
 
 export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
 
@@ -20,7 +20,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
         return this.resolveDefinitions(document, position, token);
     }
 
-    readonly callRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+    readonly callRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
     // readonly enableUrlOpenBodge = false;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -32,7 +32,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
 
         if (theline.match(/.*(call|cancel|chain).*$/i)) {
             const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
-            const word = wordRange ? document.getText(wordRange) : '';
+            const word = wordRange ? document.getText(wordRange) : "";
             if (word !== "") {
                 const img: COBOLGlobalSymbolTable = InMemoryGlobalSymbolCache;
                 const wordLower = word.toLowerCase();

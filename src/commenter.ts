@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window } from 'vscode';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { ESourceFormat } from './externalfeatures';
-import VSCOBOLSourceScanner from './vscobolscanner';
+import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window } from "vscode";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ESourceFormat } from "./externalfeatures";
+import VSCOBOLSourceScanner from "./vscobolscanner";
 
 function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
     editor.edit(edit => {
@@ -33,7 +33,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
         }
         let defpos = -1;
         for (let w = 0; w < lineContents.length; w++) {
-            if (lineContents[w] === ' ') {
+            if (lineContents[w] === " ") {
                 defpos++;
             }
             else {
@@ -66,7 +66,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 
         let defpos = -1;
         for (let w = 0; w < lineContents.length; w++) {
-            if (lineContents[w] === ' ') {
+            if (lineContents[w] === " ") {
                 defpos++;
             }
             else {
@@ -76,7 +76,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 
         if (defpos !== -1) {
             // if we have a fixed column comment, convert it..
-            if (defpos === 5 && lineContents[6] === '*') {
+            if (defpos === 5 && lineContents[6] === "*") {
                 editor.insert(new Position(l, 7), "> ");
                 return;
             }
@@ -88,7 +88,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
             }
 
             if (var_free_insert_at_comment_column && defpos > 6) {
-                if (lineContents[6] === ' ' && lineContents[7] === ' ' && lineContents[8] === ' ') {
+                if (lineContents[6] === " " && lineContents[7] === " " && lineContents[8] === " ") {
                     editor.insert(new Position(l, 6), "*>" );
                     return;
                 }
@@ -98,7 +98,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
             return;
         }
 
-        if (lineContents.length > 6 && lineContents[6] === ' ' &&  lineContents[7] === ' ') {
+        if (lineContents.length > 6 && lineContents[6] === " " &&  lineContents[7] === " ") {
             const r = new Range(new Position(l, 6), new Position(l, 8));
             editor.replace(r, "*>");
             return;
@@ -109,13 +109,13 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 
     /* remove * from column 6 */
     if (lineContents.length > 6 &&
-        (lineContents[6] === '*' || lineContents[6] === '/')) {
+        (lineContents[6] === "*" || lineContents[6] === "/")) {
         const r = new Range(new Position(l, 6), new Position(l, 7));
         editor.replace(r, " ");
         return;
     }
 
-    if (lineContents.length > 6 && lineContents[6] === ' ') {
+    if (lineContents.length > 6 && lineContents[6] === " ") {
         const r = new Range(new Position(l, 6), new Position(l, 7));
         editor.replace(r, "*");
         return;

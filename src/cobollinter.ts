@@ -1,11 +1,11 @@
 
-import * as vscode from 'vscode';
-import COBOLSourceScanner, { SharedSourceReferences } from './cobolsourcescanner';
-import { CodeActionProvider, CodeAction } from 'vscode';
-import { isSupportedLanguage, TextLanguage } from './margindecorations';
-import { ICOBOLSettings } from './iconfiguration';
-import VSCOBOLSourceScanner from './vscobolscanner';
-import { CobolLinterProviderSymbols } from './externalfeatures';
+import * as vscode from "vscode";
+import COBOLSourceScanner, { SharedSourceReferences } from "./cobolsourcescanner";
+import { CodeActionProvider, CodeAction } from "vscode";
+import { isSupportedLanguage, TextLanguage } from "./margindecorations";
+import { ICOBOLSettings } from "./iconfiguration";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import { CobolLinterProviderSymbols } from "./externalfeatures";
 
 function makeRegex(partialRegEx: string): RegExp | undefined {
     try {
@@ -33,7 +33,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                     title: `Add COBOL lint ignore comment for '${diagnostic.message}'`,
                     diagnostics: [diagnostic],
                     command: {
-                        title: 'Add COBOL lint comment to ignore the warning',
+                        title: "Add COBOL lint comment to ignore the warning",
                         command: "cobolplugin.insertIgnoreCommentLine",
                         arguments: [document.uri, startOfline, insertCode],
                     },
@@ -174,7 +174,7 @@ export class CobolLinterProvider {
                         const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
 
-                        const d = new vscode.Diagnostic(r, key + ' breaks house standards rule for ' + token.inSection.tokenNameLower + " section", this.linterSev);
+                        const d = new vscode.Diagnostic(r, key + " breaks house standards rule for " + token.inSection.tokenNameLower + " section", this.linterSev);
                         d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                         if (diagRefs.has(token.filename)) {
@@ -211,7 +211,7 @@ export class CobolLinterProvider {
             if (sourceRefs.targetReferences.has(workLower) === false) {
                 const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                const d = new vscode.Diagnostic(r, key + ' paragraph is not referenced', this.linterSev);
+                const d = new vscode.Diagnostic(r, key + " paragraph is not referenced", this.linterSev);
                 d.tags = [vscode.DiagnosticTag.Unnecessary];
                 d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
 
@@ -248,7 +248,7 @@ export class CobolLinterProvider {
                     if (!ignore) {
                         const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                        const d = new vscode.Diagnostic(r, key + ' section is not referenced', this.linterSev);
+                        const d = new vscode.Diagnostic(r, key + " section is not referenced", this.linterSev);
                         d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
                         d.tags = [vscode.DiagnosticTag.Unnecessary];
 

@@ -38,9 +38,9 @@ export class ScanStats {
     showMessage = false;
 }
 
-export const COBSCANNER_STATUS = '@@STATUS';
-export const COBSCANNER_SENDPRGID = '@@SEND.PRGID';
-export const COBSCANNER_SENDEP = '@@SEND.EP';
+export const COBSCANNER_STATUS = "@@STATUS";
+export const COBSCANNER_SENDPRGID = "@@SEND.PRGID";
+export const COBSCANNER_SENDEP = "@@SEND.EP";
 export const COBSCANNER_SENDINTERFACE = "@@SEND.INTID";
 export const COBSCANNER_SENDENUM = "@@SEND.ENUMID";
 export const COBSCANNER_SENDCLASS = "@@SEND.CLASSID";
@@ -49,7 +49,7 @@ export const COBSCANNER_KNOWNCOPYBOOK = "@@SEND.KNOWNCOPYBOOK";
 
 function replacer(this: any, key: any, value: any): any {
 
-    if (typeof value === 'bigint') {
+    if (typeof value === "bigint") {
         return value.toString();
     }
 
@@ -57,7 +57,7 @@ function replacer(this: any, key: any, value: any): any {
 }
 
 function reviver(key: any, value: any): any {
-    if (typeof value === 'bigint' && value !== null) {
+    if (typeof value === "bigint" && value !== null) {
         return BigInt(value);
     }
     

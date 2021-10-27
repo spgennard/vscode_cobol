@@ -17,6 +17,7 @@
     ],
     "rules": {
         "no-console":"warn",
-        "no-duplicate-case": "error"
+        "no-duplicate-case": "error",
+        "quotes":"error"
     }
 }

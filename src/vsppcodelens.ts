@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as vscode from 'vscode';
-import COBOLSourceScanner from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { ICOBOLSettings } from './iconfiguration';
-import VSCOBOLSourceScanner from './vscobolscanner';
+import * as vscode from "vscode";
+import COBOLSourceScanner from "./cobolsourcescanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
+import VSCOBOLSourceScanner from "./vscobolscanner";
 
 export class VSPPCodeLens implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
@@ -128,7 +128,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
 
                         cl.command = {
-                            title: `View copybook repacement`,
+                            title: "View copybook repacement",
                             tooltip: prevSrc,
                             command: "coboleditor.ppcodelenaction",
                             arguments: [arg]
@@ -151,7 +151,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
     public static actionCodeLens(arg: string): void {
         vscode.workspace.openTextDocument({
             content: `${arg}`,
-            language: 'text'
+            language: "text"
         }).then((document: vscode.TextDocument) => {
             vscode.window.showTextDocument(document).then(editor => {
                 if (arg.startsWith("*>")) {

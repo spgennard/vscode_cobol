@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
+import * as fs from "fs";
+import * as path from "path";
+import * as crypto from "crypto";
 
 import { Hash } from "crypto";
-import { COBOLSymbol, COBOLSymbolTable, InMemoryFileSymbolCache } from './cobolglobalcache';
-import { COBOLFileUtils } from './fileutils';
+import { COBOLSymbol, COBOLSymbolTable, InMemoryFileSymbolCache } from "./cobolglobalcache";
+import { COBOLFileUtils } from "./fileutils";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const lzjs = require('lzjs');
+const lzjs = require("lzjs");
 
 // JSON callbacks to Map to something that can be serialized
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function replacer(this: any, key: any, value: any): any {
-    if (typeof value === 'bigint') {
+    if (typeof value === "bigint") {
         return value.toString();
     }
 
     const originalObject = this[key];
     if (originalObject instanceof Map) {
         return {
-            dataType: 'Map',
+            dataType: "Map",
             value: Array.from(originalObject.entries()), // or with spread: value: [...originalObject]
         };
     }
@@ -32,9 +32,9 @@ export function replacer(this: any, key: any, value: any): any {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function reviver(key: any, value: any): any {
-    if (typeof value === 'object' && value !== null) {
-        if (value.dataType === 'Map') {
-            if (key === 'sourceFilenameModified') {
+    if (typeof value === "object" && value !== null) {
+        if (value.dataType === "Map") {
+            if (key === "sourceFilenameModified") {
                 return new Map<string, number>(value.value);
             }
             return new Map<string, COBOLSymbol>(value.value);
@@ -50,9 +50,9 @@ function logMessage(mesg: string) {
 
 export class COBOLSymbolTableHelper {
     private static getHashForFilename(filename: string) {
-        const hash: Hash = crypto.createHash('sha256');
+        const hash: Hash = crypto.createHash("sha256");
         hash.update(filename);
-        return hash.digest('hex');
+        return hash.digest("hex");
     }
 
     public static saveToFile(cacheDirectory: string, st: COBOLSymbolTable): void {

@@ -74,7 +74,7 @@ export class VSCOBOLSourceScannerTools {
 
     public static ignoreDirectory(partialName: string): boolean {
         // do not traverse into . directories
-        if (partialName.startsWith('.')) {
+        if (partialName.startsWith(".")) {
             return true;
         }
         return false;
@@ -89,12 +89,12 @@ export class VSCOBOLSourceScannerTools {
         // if on Windows replace ${HOME} with ${USERPROFILE}
         if (COBOLFileUtils.isWin32) {
             // eslint-disable-next-line no-template-curly-in-string
-            str = str.replace(/\$\{HOME\}/, '${USERPROFILE}');
+            str = str.replace(/\$\{HOME\}/, "${USERPROFILE}");
         }
 
         const replaced = str.replace(/\$\{([^%]+)\}/g, (_original, matched) => {
             const r = process.env[matched];
-            return r ? r : '';
+            return r ? r : "";
         });
 
         return replaced;

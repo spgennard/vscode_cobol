@@ -1,13 +1,13 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
+import * as vscode from "vscode";
+import * as path from "path";
 
 import { SourceItem, SourceFolderItem } from "./sourceItem";
-import { workspace } from 'vscode';
-import { ICOBOLSettings } from './iconfiguration';
-import { getVSWorkspaceFolders } from './cobolfolders';
-import {  VSLogger } from './vslogger';
-import { COBOLFileUtils } from './fileutils';
-import { VSCOBOLSourceScannerTools } from './vssourcescannerutils';
+import { workspace } from "vscode";
+import { ICOBOLSettings } from "./iconfiguration";
+import { getVSWorkspaceFolders } from "./cobolfolders";
+import {  VSLogger } from "./vslogger";
+import { COBOLFileUtils } from "./fileutils";
+import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 
 let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
@@ -24,7 +24,7 @@ export class VSSourceTreeViewHandler {
 
         if (config.sourceview && sourceTreeView === undefined) {
             sourceTreeView = new SourceViewTree(config);
-            sourceTreeWatcher = workspace.createFileSystemWatcher('**/*');
+            sourceTreeWatcher = workspace.createFileSystemWatcher("**/*");
 
             sourceTreeWatcher.onDidCreate((uri) => {
                 if (sourceTreeView !== undefined) {
@@ -38,7 +38,7 @@ export class VSSourceTreeViewHandler {
                 }
             });
 
-            vscode.window.registerTreeDataProvider('flat-source-view', sourceTreeView);
+            vscode.window.registerTreeDataProvider("flat-source-view", sourceTreeView);
             return;
         }
 
@@ -186,7 +186,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         const location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
         let actionCommand = "vscode.open";
-        if (ext === 'acu' || ext === 'int' || ext === 'gnt') {
+        if (ext === "acu" || ext === "int" || ext === "gnt") {
             actionCommand = "";
         }
         return {
@@ -327,7 +327,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     public async checkFile(vuri: vscode.Uri): Promise<void> {
         try {
-            const fileExtension = vuri.fsPath.split('.').pop();
+            const fileExtension = vuri.fsPath.split(".").pop();
             if (fileExtension !== undefined) {
                 this.addExtension(fileExtension, vuri);
                 this.refreshItems();

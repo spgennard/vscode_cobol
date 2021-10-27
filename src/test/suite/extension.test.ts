@@ -1,21 +1,21 @@
-import * as assert from 'assert';
+import * as assert from "assert";
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 import { FileSourceHandler } from "../../filesourcehandler";
 import COBOLSourceScanner, { EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
-import { COBOLSettings } from '../../iconfiguration';
-import path from 'path';
-import { VSExternalFeatures } from '../../vsexternalfeatures';
+import { COBOLSettings } from "../../iconfiguration";
+import path from "path";
+import { VSExternalFeatures } from "../../vsexternalfeatures";
 
-suite('Core Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
+suite("Core Extension Test Suite", () => {
+	vscode.window.showInformationMessage("Start all tests.");
 
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 	const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
 	const features = VSExternalFeatures;
 
-	test('Read file [basic] (test.cbl)', () => {
+	test("Read file [basic] (test.cbl)", () => {
 		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
@@ -24,7 +24,7 @@ suite('Core Extension Test Suite', () => {
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 	});
 
-	test('Parse file for constants/paragraphs/sections (test.cbl)', () => {
+	test("Parse file for constants/paragraphs/sections (test.cbl)", () => {
 		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
@@ -40,7 +40,7 @@ suite('Core Extension Test Suite', () => {
 
 	});
 
-	test('Parse file for functions (string.cbl)', () => {
+	test("Parse file for functions (string.cbl)", () => {
 		const f = new FileSourceHandler(path.join(baseForSource,"string.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");

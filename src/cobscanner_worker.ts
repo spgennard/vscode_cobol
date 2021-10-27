@@ -1,16 +1,16 @@
-import { parentPort, workerData } from 'worker_threads';
-import { Scanner, workerThreadData } from './cobscanner';
-import { ScanStats } from './cobscannerdata';
-import { ESourceFormat, IExternalFeatures } from './externalfeatures';
+import { parentPort, workerData } from "worker_threads";
+import { Scanner, workerThreadData } from "./cobscanner";
+import { ScanStats } from "./cobscannerdata";
+import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 
-import * as fs from 'fs';
-import * as path from 'path';
-import util from 'util';
-import ISourceHandler from './isourcehandler';
-import { ICOBOLSettings } from './iconfiguration';
-import { ICOBOLSourceScannerEventer } from './cobolsourcescanner';
-import { COBOLFileUtils } from './fileutils';
-import { getVSCOBOLSourceFormat } from './sourceformat';
+import * as fs from "fs";
+import * as path from "path";
+import util from "util";
+import ISourceHandler from "./isourcehandler";
+import { ICOBOLSettings } from "./iconfiguration";
+import { ICOBOLSourceScannerEventer } from "./cobolsourcescanner";
+import { COBOLFileUtils } from "./fileutils";
+import { getVSCOBOLSourceFormat } from "./sourceformat";
 
 // class WorkerUtils {
 //     public static msleep(n: number) {

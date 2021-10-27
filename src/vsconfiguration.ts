@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-'use strict';
+"use strict";
 
-import { workspace } from 'vscode';
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, ICOBOLSettings_depreciated } from './iconfiguration';
-import { CacheDirectoryStrategy, EmptyExternalFeature, IExternalFeatures } from './externalfeatures';
+import { workspace } from "vscode";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, ICOBOLSettings_depreciated } from "./iconfiguration";
+import { CacheDirectoryStrategy, EmptyExternalFeature, IExternalFeatures } from "./externalfeatures";
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
@@ -13,19 +13,19 @@ export class VSCOBOLConfiguration {
 
     private static init(): ICOBOLSettings {
         const vsconfig = VSCOBOLConfiguration.config;
-        vsconfig.enable_tabstop = getBoolean('enable_tabstop', false);
-        vsconfig.copybooks_nested = getBoolean('copybooks_nested', false);
+        vsconfig.enable_tabstop = getBoolean("enable_tabstop", false);
+        vsconfig.copybooks_nested = getBoolean("copybooks_nested", false);
         vsconfig.outline = isOutlineEnabled();
         vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
         vsconfig.pre_parse_line_limit = getPreParseLineLimit();
         vsconfig.copybookexts = getCopybookExts();
         vsconfig.program_extensions = getProgram_extensions();
         vsconfig.tabstops = getTabStops();
-        vsconfig.linter = getBoolean('linter', false);
+        vsconfig.linter = getBoolean("linter", false);
         vsconfig.line_comment = getBoolean("line_comment", false);
         vsconfig.fileformat_strategy = getFileformatStrategy();
-        vsconfig.enable_data_provider = getBoolean('enable_data_provider', true);
-        vsconfig.disable_unc_copybooks_directories = getBoolean('disable_unc_copybooks_directories', false);
+        vsconfig.enable_data_provider = getBoolean("enable_data_provider", true);
+        vsconfig.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
         vsconfig.intellisense_include_unchanged = getBoolean("intellisense_include_unchanged", true);
         vsconfig.intellisense_include_camelcase = getBoolean("intellisense_include_camelcase", false);
         vsconfig.intellisense_include_uppercase = getBoolean("intellisense_include_uppercase", false);
@@ -53,7 +53,7 @@ export class VSCOBOLConfiguration {
         vsconfig.scan_comment_copybook_token = getscan_comment_copybook_token();
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
         vsconfig.cache_metadata_user_directory = getString("cache_metadata_user_directory", "");
-        vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration('editor').get<number>("maxTokenizationLineLength", 20000);
+        vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration("editor").get<number>("maxTokenizationLineLength", 20000);
 
         vsconfig.sourceview = getBoolean("sourceview", false);
         vsconfig.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
@@ -62,7 +62,7 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
         vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         vsconfig.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
-        vsconfig.format_on_return = workspace.getConfiguration('coboleditor').get<formatOnReturn>("format_on_return", formatOnReturn.Off);
+        vsconfig.format_on_return = workspace.getConfiguration("coboleditor").get<formatOnReturn>("format_on_return", formatOnReturn.Off);
 
         vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
         vsconfig.maintain_metadata_cache_single_folder = getBoolean("maintain_metadata_cache_single_folder", false);
@@ -72,17 +72,17 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_types = getmetadata_types(vsconfig);
         vsconfig.metadata_files = getmetadata_files(vsconfig);
         vsconfig.metadata_knowncopybooks = getmetadata_knowncopybooks(vsconfig);
-        vsconfig.enable_semantic_token_provider = getBoolean('enable_semantic_token_provider', false);
-        vsconfig.enable_text_replacement = getBoolean('enable_text_replacement', false);
+        vsconfig.enable_semantic_token_provider = getBoolean("enable_semantic_token_provider", false);
+        vsconfig.enable_text_replacement = getBoolean("enable_text_replacement", false);
         vsconfig.preprocessor_extensions = getpreprocessor_extensions();
 
         VSCOBOLConfiguration.flipDepreciatedSettings(vsconfig);
 
         vsconfig.editor_margin_files = getFixedFilenameConfiguration();
 
-        vsconfig.enable_source_scanner = getBoolean('enable_source_scanner', true);
+        vsconfig.enable_source_scanner = getBoolean("enable_source_scanner", true);
 
-        const user_cobol_language_ids = workspace.getConfiguration('coboleditor').get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
+        const user_cobol_language_ids = workspace.getConfiguration("coboleditor").get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
         let valid = true;
         
         for(const languageId of user_cobol_language_ids) {
@@ -185,7 +185,7 @@ export class VSCOBOLConfiguration {
 
 
 function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
+    const editorConfig = workspace.getConfiguration("coboleditor");
     const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
     if (files === undefined || files === null) {
         return [];
@@ -195,7 +195,7 @@ function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {
-    const editorConfig = workspace.getConfiguration('coboleditor');
+    const editorConfig = workspace.getConfiguration("coboleditor");
     let expEnabled = editorConfig.get<boolean>(configSection);
     if (expEnabled === undefined || expEnabled === null) {
         expEnabled = defaultValue;
@@ -204,7 +204,7 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
 }
 
 function getString(configSection: string, defaultValue: string): string {
-    const editorConfig = workspace.getConfiguration('coboleditor');
+    const editorConfig = workspace.getConfiguration("coboleditor");
     let strValue = editorConfig.get<string>(configSection);
     if (strValue === undefined || strValue === null) {
         strValue = defaultValue;
@@ -213,7 +213,7 @@ function getString(configSection: string, defaultValue: string): string {
 }
 
 function getNumber(configSection: string, defaultValue: number): number {
-    const editorConfig = workspace.getConfiguration('coboleditor');
+    const editorConfig = workspace.getConfiguration("coboleditor");
     let lineLimit = editorConfig.get<number>(configSection);
     if (lineLimit === undefined || lineLimit === null) {
         lineLimit = defaultValue;
@@ -222,8 +222,8 @@ function getNumber(configSection: string, defaultValue: number): number {
 }
 
 function getPreParseLineLimit(): number {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let lineLimit = editorConfig.get<number>('pre_parse_line_limit');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let lineLimit = editorConfig.get<number>("pre_parse_line_limit");
     if (lineLimit === undefined || lineLimit === null) {
         lineLimit = 25;
     }
@@ -231,8 +231,8 @@ function getPreParseLineLimit(): number {
 }
 
 function getCoboldoc_workspace_folder(): string {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    const coboldoc_folder = editorConfig.get<string>('coboldoc_workspace_folder');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    const coboldoc_folder = editorConfig.get<string>("coboldoc_workspace_folder");
     if (coboldoc_folder === undefined || coboldoc_folder === null) {
         return "coboldoc";
     }
@@ -240,8 +240,8 @@ function getCoboldoc_workspace_folder(): string {
 }
 
 function getcache_metadata(): CacheDirectoryStrategy {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let cacheDirStrategy = editorConfig.get<string>('cache_metadata');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let cacheDirStrategy = editorConfig.get<string>("cache_metadata");
 
     if (cacheDirStrategy === undefined || cacheDirStrategy === null) {
         return CacheDirectoryStrategy.Off;
@@ -253,17 +253,17 @@ function getcache_metadata(): CacheDirectoryStrategy {
     }
 
     switch (cacheDirStrategy) {
-        case 'workspace': return CacheDirectoryStrategy.Workspace;
-        case 'user_defined_directory': return CacheDirectoryStrategy.UserDefinedDirectory;
-        case 'off': return CacheDirectoryStrategy.Off;
+        case "workspace": return CacheDirectoryStrategy.Workspace;
+        case "user_defined_directory": return CacheDirectoryStrategy.UserDefinedDirectory;
+        case "off": return CacheDirectoryStrategy.Off;
     }
     return CacheDirectoryStrategy.Off;
 }
 
 
 function getscan_comment_copybook_token(): string {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let hintToken = editorConfig.get<string>('scan_comment_copybook_token');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let hintToken = editorConfig.get<string>("scan_comment_copybook_token");
     if (hintToken === undefined || hintToken === null) {
         hintToken = "source-dependency";
     }
@@ -271,8 +271,8 @@ function getscan_comment_copybook_token(): string {
 }
 
 function getIntellisense_item_limit(): number {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let itemLimit = editorConfig.get<number>('intellisense_item_limit');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let itemLimit = editorConfig.get<number>("intellisense_item_limit");
     if (itemLimit === undefined || itemLimit === null) {
         itemLimit = 0;
     }
@@ -280,8 +280,8 @@ function getIntellisense_item_limit(): number {
 }
 
 function getFileformatStrategy(): string {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    const fileStrat = editorConfig.get<string>('fileformat_strategy');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    const fileStrat = editorConfig.get<string>("fileformat_strategy");
 
     if (fileStrat === undefined || fileStrat === null) {
         return "normal";
@@ -292,8 +292,8 @@ function getFileformatStrategy(): string {
 
 
 function isOutlineEnabled(): outlineFlag {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    const outlineEnabled = editorConfig.get('outline');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    const outlineEnabled = editorConfig.get("outline");
     if (outlineEnabled === undefined || outlineEnabled === null) {
         return outlineFlag.On;
     }
@@ -330,12 +330,12 @@ function expandEnvVars(startEnv: string): string {
 }
 
 function getPathDelimiter(): string {
-    return process.platform === 'win32' ? ";" : ":";
+    return process.platform === "win32" ? ";" : ":";
 }
 
 function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let dirs = editorConfig.get<string[]>('copybookdirs');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let dirs = editorConfig.get<string[]>("copybookdirs");
     if (!dirs || (dirs !== null && dirs.length === 0)) {
         dirs = DEFAULT_COPYBOOK_DIR;
     }
@@ -354,7 +354,7 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
             dir = dir.replace("${workspaceFolder}", "").trim();
 
             // remove / or \ forward
-            if (dir.startsWith('/') || dir.startsWith('\\')) {
+            if (dir.startsWith("/") || dir.startsWith("\\")) {
                 dir = dir.substr(1).trim();
             }
         }
@@ -391,8 +391,8 @@ const DEFAULT_COPYBOOK_EXTS = ["cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", 
 const DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
 
 function getCopybookExts(): string[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let extensions = editorConfig.get<string[]>('copybookexts');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let extensions = editorConfig.get<string[]>("copybookexts");
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_COPYBOOK_EXTS;
     }
@@ -401,8 +401,8 @@ function getCopybookExts(): string[] {
 }
 
 function getProgram_extensions(): string[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let extensions = editorConfig.get<string[]>('program_extensions');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let extensions = editorConfig.get<string[]>("program_extensions");
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_PROGRAM_EXTS;
     }
@@ -413,8 +413,8 @@ function getProgram_extensions(): string[] {
 const DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
 
 function getTabStops(): number[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let tabStops = editorConfig.get<number[]>('tabstops');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let tabStops = editorConfig.get<number[]>("tabstops");
     if (!tabStops || (tabStops !== null && tabStops.length === 0)) {
         tabStops = DEFAULT_RULER;
     }
@@ -422,8 +422,8 @@ function getTabStops(): number[] {
 }
 
 function getWorkspacefolders_order(): string[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let dirs = editorConfig.get<string[]>('workspacefolders_order');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let dirs = editorConfig.get<string[]>("workspacefolders_order");
     if (!dirs || (dirs !== null && dirs.length === 0)) {
         dirs = [];
     }
@@ -432,8 +432,8 @@ function getWorkspacefolders_order(): string[] {
 
 
 function getlinter_house_standards_rules(): string[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let standards = editorConfig.get<string[]>('linter_house_standards_rules');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let standards = editorConfig.get<string[]>("linter_house_standards_rules");
     if (!standards || (standards !== null && standards.length === 0)) {
         standards = [];
     }
@@ -444,8 +444,8 @@ function getmetadata_symbols(settings: ICOBOLSettings): string[] {
     if (settings.maintain_metadata_cache === false) {
         return [];
     }
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let symbols = editorConfig.get<string[]>('metadata_symbols');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let symbols = editorConfig.get<string[]>("metadata_symbols");
     if (!symbols || (symbols !== null && symbols.length === 0)) {
         symbols = [];
     }
@@ -457,8 +457,8 @@ function getmetadata_entrypoints(settings: ICOBOLSettings): string[] {
     if (settings.maintain_metadata_cache === false) {
         return [];
     }
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let entrypoints = editorConfig.get<string[]>('metadata_entrypoints');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let entrypoints = editorConfig.get<string[]>("metadata_entrypoints");
     if (!entrypoints || (entrypoints !== null && entrypoints.length === 0)) {
         entrypoints = [];
     }
@@ -469,8 +469,8 @@ function getmetadata_types(settings: ICOBOLSettings): string[] {
     if (settings.maintain_metadata_cache === false) {
         return [];
     }
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let metadata_types = editorConfig.get<string[]>('metadata_types');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let metadata_types = editorConfig.get<string[]>("metadata_types");
     if (!metadata_types || (metadata_types !== null && metadata_types.length === 0)) {
         metadata_types = [];
     }
@@ -483,8 +483,8 @@ function getmetadata_files(config: ICOBOLSettings): string[] {
         return [];
     }
 
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let metadata_files = editorConfig.get<string[]>('metadata_files');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let metadata_files = editorConfig.get<string[]>("metadata_files");
     if (!metadata_files || (metadata_files !== null && metadata_files.length === 0)) {
         metadata_files = [];
     }
@@ -498,8 +498,8 @@ function getmetadata_knowncopybooks(config: ICOBOLSettings): string[] {
         return [];
     }
 
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let metadata_knowncopybooks = editorConfig.get<string[]>('metadata_knowncopybooks');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let metadata_knowncopybooks = editorConfig.get<string[]>("metadata_knowncopybooks");
     if (!metadata_knowncopybooks || (metadata_knowncopybooks !== null && metadata_knowncopybooks.length === 0)) {
         metadata_knowncopybooks = [];
     }
@@ -508,8 +508,8 @@ function getmetadata_knowncopybooks(config: ICOBOLSettings): string[] {
 }
 
 function getpreprocessor_extensions(): string[] {
-    const editorConfig = workspace.getConfiguration('coboleditor');
-    let preprocessor_extensions = editorConfig.get<string[]>('preprocessor_extensions');
+    const editorConfig = workspace.getConfiguration("coboleditor");
+    let preprocessor_extensions = editorConfig.get<string[]>("preprocessor_extensions");
     if (!preprocessor_extensions || (preprocessor_extensions !== null && preprocessor_extensions.length === 0)) {
         preprocessor_extensions = [];
     }

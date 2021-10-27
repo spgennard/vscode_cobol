@@ -3,12 +3,12 @@ import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBSCANNER_STATUS, ScanData, ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
 
-import * as crypto from 'crypto';
-import * as fs from 'fs';
-import * as os from 'os';
+import * as crypto from "crypto";
+import * as fs from "fs";
+import * as os from "os";
 import { Hash } from "crypto";
 import path from "path";
-import { Worker } from 'worker_threads';
+import { Worker } from "worker_threads";
 
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
@@ -34,9 +34,9 @@ class Utils {
 
 
     public static getHashForFilename(filename: string) {
-        const hash: Hash = crypto.createHash('sha256');
+        const hash: Hash = crypto.createHash("sha256");
         hash.update(filename);
-        return hash.digest('hex');
+        return hash.digest("hex");
     }
 
     public static cacheUpdateRequired(cacheDirectory: string, nfilename: string, features: IExternalFeatures): boolean {
@@ -72,7 +72,7 @@ class Utils {
         if (!process.env.BROWSER) {
             try {
                 // eslint-disable-next-line @typescript-eslint/no-var-requires
-                return require('performance-now').performance.now;
+                return require("performance-now").performance.now;
             }
             catch {
                 return Date.now();
@@ -138,7 +138,7 @@ export class Scanner {
         if (stats.entryPointsDefined !== 0) {
             features.logMessage(` Entry-Point Count     : ${stats.entryPointsDefined}`);
         }
-        const completedMessage = (aborted ? `Scan aborted (elapsed time ${stats.endTime})` : 'Scan completed');
+        const completedMessage = (aborted ? `Scan aborted (elapsed time ${stats.endTime})` : "Scan completed");
         if (features.logTimedMessage(stats.endTime, completedMessage) === false) {
             features.logMessage(completedMessage);
         }
@@ -234,7 +234,7 @@ for (const arg of args) {
     }
     else {
         switch (argLower) {
-            case 'useenv': {
+            case "useenv": {
                 const features = ConsoleExternalFeatures.Default;
                 try {
                     const SCANDATA_ENV = process.env.SCANDATA;
@@ -247,7 +247,7 @@ for (const arg of args) {
                         Scanner.processFiles(scanData, features, processSender.Default, scanStats);
                         features.logMessage(`${COBSCANNER_STATUS} 100`);
                     } else {
-                        features.logMessage(`SCANDATA not found in environment`);
+                        features.logMessage("SCANDATA not found in environment");
                     }
                 }
                 catch (e) {
@@ -259,7 +259,7 @@ for (const arg of args) {
                 }
             }
                 break;
-            case 'useenv_threaded': {
+            case "useenv_threaded": {
                 const features = ConsoleExternalFeatures.Default;
                 try {
                     const SCANDATA_ENV = process.env.SCANDATA;

@@ -1,14 +1,14 @@
-import util from 'util';
-import path from 'path';
-import fs from 'fs';
+import util from "util";
+import path from "path";
+import fs from "fs";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import ISourceHandler from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLFileUtils } from './fileutils';
-import { getVSCOBOLSourceFormat } from './sourceformat';
+import { COBOLFileUtils } from "./fileutils";
+import { getVSCOBOLSourceFormat } from "./sourceformat";
 
 export class ConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ConsoleExternalFeatures();

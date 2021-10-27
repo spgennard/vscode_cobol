@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-import * as path from 'path';
+import * as path from "path";
 
-import { COBOLGlobalSymbolTable, COBOLWorkspaceFile } from './cobolglobalcache';
-import { COBOLFileUtils } from './fileutils';
+import { COBOLGlobalSymbolTable, COBOLWorkspaceFile } from "./cobolglobalcache";
+import { COBOLFileUtils } from "./fileutils";
 
 export const InMemoryGlobalSymbolCache = new COBOLGlobalSymbolTable();
 

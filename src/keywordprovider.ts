@@ -1,9 +1,9 @@
-import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from 'vscode';
-import { camelize } from './cobolsourcescanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { ICOBOLSettings } from './iconfiguration';
-import { getCOBOLKeywordList } from './keywords/cobolKeywords';
-import { jclStatements } from './keywords/jclstatements';
+import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
+import { camelize } from "./cobolsourcescanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
+import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
+import { jclStatements } from "./keywords/jclstatements";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -74,8 +74,8 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
-		let wordToComplete = '';
-		let lineBefore = '';
+		let wordToComplete = "";
+		let lineBefore = "";
 		const currentLine: string = document.lineAt(position.line).text;
 
 		if (currentLine.endsWith(" ")) {
@@ -100,7 +100,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			if (lineBefore.indexOf("*>") !== -1) {
 				inComment = true;
 			}
-			if (lineBefore.length >= 7 && (lineBefore[6] === '*' || lineBefore[6] === '/')) {
+			if (lineBefore.length >= 7 && (lineBefore[6] === "*" || lineBefore[6] === "/")) {
 				inComment = true;
 			}
 

@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from 'vscode';
-import { VSCOBOLConfiguration } from './vsconfiguration';
+import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from "vscode";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 export class TabUtils {
     public static executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean): void {
@@ -29,14 +29,14 @@ export class TabUtils {
 
     private static singleSelectionTab(edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]): void {
         const size = TabUtils.cobolTabSize(pos.character, tabs);
-        edit.insert(pos, ' '.repeat(size));
+        edit.insert(pos, " ".repeat(size));
     }
 
     private static singleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]): void {
         const size = TabUtils.cobolUnTabSize(pos.character, tabs);
         const range = new Range(pos.line, pos.character - size, pos.line, pos.character);
         const txt = d.getText(range);
-        if (txt === ' '.repeat(size)) {
+        if (txt === " ".repeat(size)) {
             edit.delete(range);
         } else {
             for (let x = 0; x < size; x++) {

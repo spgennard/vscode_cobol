@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult } from "vscode";
 
 export class COBOLDocumentationCommentHandler {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static register(): any {
-        const langPlusSchemas = [{ scheme: 'file', language: 'COBOL' }];
+        const langPlusSchemas = [{ scheme: "file", language: "COBOL" }];
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 
                 // only do something if we are just pressed RETURN
-                if (ch !== '\n') {
+                if (ch !== "\n") {
                     return;
                 }
 
@@ -40,6 +40,6 @@ export class COBOLDocumentationCommentHandler {
                 }
                 return [];
             }
-        }, '\n');
+        }, "\n");
     }
 }

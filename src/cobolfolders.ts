@@ -1,5 +1,5 @@
 import { workspace, WorkspaceFolder } from "vscode";
-import { VSCOBOLConfiguration } from './vsconfiguration';
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 export function getVSWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefined {
     const ws = workspace.workspaceFolders;
@@ -12,7 +12,7 @@ export function getVSWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefi
     // make a map of the folders
     const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();
     for (const folder of ws) {
-        if (folder.uri.scheme === 'file') {             // filter out another other than file related
+        if (folder.uri.scheme === "file") {             // filter out another other than file related
             folderMap.set(folder.name, folder);
         }
     }

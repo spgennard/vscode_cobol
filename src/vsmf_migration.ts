@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 const problemMatches: string[][] = [
     [ "mfcobol-msbuild", "COBOLMSBuild"],

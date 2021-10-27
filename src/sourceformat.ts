@@ -1,10 +1,10 @@
-import { ESourceFormat } from './externalfeatures';
-import { ICOBOLSettings, IEditorMarginFiles } from './iconfiguration';
-import ISourceHandler from './isourcehandler';
-import minimatch from 'minimatch';
+import { ESourceFormat } from "./externalfeatures";
+import { ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
+import ISourceHandler from "./isourcehandler";
+import minimatch from "minimatch";
 
 
-export const sourceformatMessages: string[] = ['unknown', 'fixed', 'free', 'variable'];
+export const sourceformatMessages: string[] = ["unknown", "fixed", "free", "variable"];
 
 
 function isNumber(value: string | number): boolean {
@@ -15,16 +15,16 @@ function isNumber(value: string | number): boolean {
 }
 
 
-const inline_sourceformat: string[] = ['sourceformat', '>>source format'];
+const inline_sourceformat: string[] = ["sourceformat", ">>source format"];
 
 function isValidFixedLine(line: string): boolean {
     if (line.length >= 7) {
         switch (line[6]) {
-            case '*': return true;
-            case 'D': return true;
-            case '/': return true;
-            case ' ': return true;
-            case '-': return true;
+            case "*": return true;
+            case "D": return true;
+            case "/": return true;
+            case " ": return true;
+            case "-": return true;
         }
     }
 
@@ -45,7 +45,7 @@ export function getVSCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettin
     const maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
     let defFormat = ESourceFormat.unknown;
 
-    const checkForTerminalFormat: boolean = langid === 'acucobol' ? true : false;
+    const checkForTerminalFormat: boolean = langid === "acucobol" ? true : false;
     let prevRightMargin = "";
     let validFixedLines = 0;
     let skippedLines = 0;

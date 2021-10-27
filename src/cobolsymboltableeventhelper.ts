@@ -1,8 +1,8 @@
 import { InMemoryGlobalCacheHelper } from "./globalcachehelper";
 import { COBOLToken, COBOLTokenStyle, ICOBOLSourceScanner, ICOBOLSourceScannerEventer, ICOBOLSourceScannerEvents } from "./cobolsourcescanner";
-import { ICOBOLSettings } from './iconfiguration';
-import { COBOLSymbol, COBOLSymbolTable } from './cobolglobalcache';
-import { COBOLSymbolTableHelper } from './cobolglobalcache_file';
+import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLSymbol, COBOLSymbolTable } from "./cobolglobalcache";
+import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID } from "./cobscannerdata";

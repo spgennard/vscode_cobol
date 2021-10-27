@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-import * as path from 'path';
+import * as path from "path";
 
-import * as vscode from 'vscode';
-import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from 'vscode';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { ICOBOLSettings } from './iconfiguration';
-import VSCOBOLSourceScanner from './vscobolscanner';
-import COBOLSourceScanner from './cobolsourcescanner';
-import { VSCOBOLFileUtils } from './vsfileutils';
-import { IExternalFeatures } from './externalfeatures';
+import * as vscode from "vscode";
+import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from "vscode";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import COBOLSourceScanner from "./cobolsourcescanner";
+import { VSCOBOLFileUtils } from "./vsfileutils";
+import { IExternalFeatures } from "./externalfeatures";
 
 
 
@@ -157,14 +157,14 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             }
 
             // remove double quote
-            if (justCopyArg.startsWith('"') && justCopyArg.endsWith('"')) {
+            if (justCopyArg.startsWith("\"") && justCopyArg.endsWith("\"")) {
                 justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
                 justCopyArg = justCopyArg.trim();
                 return justCopyArg;
             }
 
             // remove single quote
-            if (justCopyArg.startsWith('\'') && justCopyArg.endsWith('\'')) {
+            if (justCopyArg.startsWith("'") && justCopyArg.endsWith("'")) {
                 justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
                 justCopyArg = justCopyArg.trim();
             }

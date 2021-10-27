@@ -1,17 +1,17 @@
-import * as vscode from 'vscode';
-import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from './cobolsourcescanner';
-import VSCOBOLSourceScanner from './vscobolscanner';
-import { VSCOBOLConfiguration } from './vsconfiguration';
-import { ICOBOLSettings } from './iconfiguration';
-import { VSLogger } from './vslogger';
-import { getCOBOLKeywordDictionary } from './keywords/cobolKeywords';
+import * as vscode from "vscode";
+import COBOLSourceScanner, { COBOLTokenStyle, COBOLToken } from "./cobolsourcescanner";
+import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
+import { VSLogger } from "./vslogger";
+import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
-    readonly sectionRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-    readonly variableRegEx = new RegExp('[#0-9a-zA-Z][a-zA-Z0-9-_]*');
-    readonly classRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
-    readonly methodRegEx = new RegExp('[0-9a-zA-Z][a-zA-Z0-9-_]*');
+    readonly sectionRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
+    readonly variableRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+    readonly classRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
+    readonly methodRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
 
     public provideDefinition( document: vscode.TextDocument,
         position: vscode.Position,
@@ -74,7 +74,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
     private getSectionOrParaLocation(document: vscode.TextDocument, sf: COBOLSourceScanner, position: vscode.Position): vscode.Location | undefined {
         const wordRange = document.getWordRangeAtPosition(position, this.sectionRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
+        const word = wordRange ? document.getText(wordRange) : "";
         if (word === "") {
             return undefined;
         }
@@ -115,7 +115,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
     
     private getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position, settings: ICOBOLSettings): boolean {
         const wordRange = document.getWordRangeAtPosition(position, this.variableRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
+        const word = wordRange ? document.getText(wordRange) : "";
         if (word === "") {
             return false;
         }
@@ -181,7 +181,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
     private getGenericTarget(queryRegEx: RegExp, tokenMap: Map<string, COBOLToken>, document: vscode.TextDocument, position: vscode.Position): vscode.Location | undefined {
         const wordRange = document.getWordRangeAtPosition(position, queryRegEx);
-        const word = wordRange ? document.getText(wordRange) : '';
+        const word = wordRange ? document.getText(wordRange) : "";
         if (word === "") {
             return undefined;
         }

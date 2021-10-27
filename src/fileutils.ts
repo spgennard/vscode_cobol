@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import { ICOBOLSettings } from './iconfiguration';
+import * as fs from "fs";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";
@@ -80,18 +80,18 @@ export class COBOLFileUtils {
         }
 
         if (COBOLFileUtils.isWin32) {
-            if (dir.length > 2 && dir[1] === ':') {
+            if (dir.length > 2 && dir[1] === ":") {
                 return true;
             }
 
-            if (dir.length > 1 && dir[0] === '\\') {
+            if (dir.length > 1 && dir[0] === "\\") {
                 return true;
             }
 
             return false;
         }
 
-        if (dir.length > 1 && dir[0] === '/') {
+        if (dir.length > 1 && dir[0] === "/") {
             return true;
         }
 
@@ -105,7 +105,7 @@ export class COBOLFileUtils {
         }
 
         if (COBOLFileUtils.isWin32) {
-            if (dir.length > 1 && dir[0] === '\\') {
+            if (dir.length > 1 && dir[0] === "\\") {
                 return true;
             }
         }

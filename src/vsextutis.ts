@@ -1,5 +1,5 @@
 import { ICOBOLSettings } from "./iconfiguration";
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 export class VSExtensionUtils {
 
@@ -8,7 +8,7 @@ export class VSExtensionUtils {
 
         for (const langid of config.valid_cobol_language_ids) {
             ret.push(
-                { scheme: 'file', language: langid },
+                { scheme: "file", language: langid },
             );
         }
 
@@ -30,7 +30,7 @@ export class VSExtensionUtils {
             return;
         }
 
-        if (doc.languageId === 'plaintext' || doc.languageId === 'tsql') {  // one tsql ext grabs .lst!
+        if (doc.languageId === "plaintext" || doc.languageId === "tsql") {  // one tsql ext grabs .lst!
             const lineCount = doc.lineCount;
             if (lineCount >= 3) {
                 const firstLine = doc.lineAt((0)).text;
