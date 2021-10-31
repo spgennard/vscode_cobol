@@ -3,6 +3,48 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.10.30 
+ 
+**remove empty impl, tidy up fs usage again**
+* [56ea60193019cd4](https://github.com/spgennard/vscode_cobol/commit/56ea60193019cd4) *2021-10-31 16:34:52*
+ 
+**tweak $set for ilusing**
+* [eea72b4a2c8b7ec](https://github.com/spgennard/vscode_cobol/commit/eea72b4a2c8b7ec) *2021-10-29 21:59:58*
+ 
+**flip quotes**
+* [c1bc020a11ed29d](https://github.com/spgennard/vscode_cobol/commit/c1bc020a11ed29d) *2021-10-27 20:36:25*
+ 
+**move vsextutils into sep file**
+* [263f9403cc48da1](https://github.com/spgennard/vscode_cobol/commit/263f9403cc48da1) *2021-10-26 20:20:37*
+ 
+**add document symbol provider**
+* [5541d5813b4bab8](https://github.com/spgennard/vscode_cobol/commit/5541d5813b4bab8) *2021-10-26 20:20:11*
+ 
+**move alway from browsify-fs**
+* [c8c636eb9d3f115](https://github.com/spgennard/vscode_cobol/commit/c8c636eb9d3f115) *2021-10-26 16:53:20*
+ 
+**contine work on moving 'fs' use**
+* [3802dc79de6acca](https://github.com/spgennard/vscode_cobol/commit/3802dc79de6acca) *2021-10-25 21:36:09*
+ 
+**apply rename to export & add more polyfills**
+* [c58aec44d1d668e](https://github.com/spgennard/vscode_cobol/commit/c58aec44d1d668e) *2021-10-25 17:04:59*
+ 
+**remove one use of fs**
+* [174c3f2b4baef28](https://github.com/spgennard/vscode_cobol/commit/174c3f2b4baef28) *2021-10-24 21:59:06*
+ 
+**start to move 'fs' related items into isolated area**
+* [4f7cd351e60c305](https://github.com/spgennard/vscode_cobol/commit/4f7cd351e60c305) *2021-10-23 23:29:06*
+ 
+**start to seperate out use of 'fs'**
+* [478ac162e878bbc](https://github.com/spgennard/vscode_cobol/commit/478ac162e878bbc) *2021-10-22 23:20:51*
+ 
+**rename miss-leading method**
+* [11380104b6b2199](https://github.com/spgennard/vscode_cobol/commit/11380104b6b2199) *2021-10-22 20:03:07*
+ 
+**Update CHANGELOG.md**
+* [c0f29e48632b096](https://github.com/spgennard/vscode_cobol/commit/c0f29e48632b096) *2021-10-22 17:59:29*
+ 
+ 
 ## 7.10.21 
  
 **missed one**
