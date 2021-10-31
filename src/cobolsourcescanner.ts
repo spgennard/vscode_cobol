@@ -6,7 +6,7 @@ import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBO
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from "./cobapi";
-// import * as fs from 'fs';
+
 import * as path from "path";
 import { ICOBOLSettings } from "./iconfiguration";
 import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";

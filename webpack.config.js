@@ -1,4 +1,6 @@
-const path = require('path');
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
+const path = require("path");
 const webpack = require("webpack");
 
 const webConfig = /** @type WebpackConfig */ {
@@ -25,26 +27,26 @@ const webConfig = /** @type WebpackConfig */ {
       // see https://webpack.js.org/configuration/resolve/#resolvefallback
       // for the list of Node.js core module polyfills.
       assert: require.resolve("assert"),
-      buffer: require.resolve('buffer'),
-      fs: require.resolve('memfs'),
+      buffer: require.resolve("buffer"),
+      fs: require.resolve("memfs"),
       //console: require.resolve('console-browserify'),
       //constants: require.resolve('constants-browserify'),
-      crypto: require.resolve('crypto-browserify'),
+      crypto: require.resolve("crypto-browserify"),
       //domain: require.resolve('domain-browser'),
       //events: require.resolve('events'),
       //http: require.resolve('stream-http'),
       //https: require.resolve('https-browserify'),
-      os: require.resolve('os-browserify/browser'),
-      path: require.resolve('path-browserify'),
+      os: require.resolve("os-browserify/browser"),
+      path: require.resolve("path-browserify"),
       //punycode: require.resolve('punycode'),
-      process: require.resolve('process/browser'),
+      process: require.resolve("process/browser"),
       //querystring: require.resolve('querystring-es3'),
-      stream: require.resolve('stream-browserify'),
+      stream: require.resolve("stream-browserify"),
       //string_decoder: require.resolve('string_decoder'),
       //sys: require.resolve('util'),
       //timers: require.resolve('timers-browserify'),
       //tty: require.resolve('tty-browserify'),
-      url: require.resolve('url'),
+      url: require.resolve("url"),
       //util: require.resolve('util'),
       //vm: require.resolve('vm-browserify'),
       //zlib: require.resolve('browserify-zlib'),
@@ -67,7 +69,7 @@ const webConfig = /** @type WebpackConfig */ {
     // Work around for Buffer is undefined:
     // https://github.com/webpack/changelog-v5/issues/10
     new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
+      Buffer: ["buffer", "Buffer"],
     }),
     new webpack.ProvidePlugin({
       process: "process/browser", // provide a shim for the global `process` variable
@@ -84,25 +86,25 @@ const webConfig = /** @type WebpackConfig */ {
 
 /**@type {import('webpack').Configuration}*/
 const config = {
-  target: 'node', // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
+  target: "node", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
 
-  entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'extension.js',
-    libraryTarget: 'commonjs2',
-    devtoolModuleFilenameTemplate: '../[resource-path]'
+    path: path.resolve(__dirname, "dist"),
+    filename: "extension.js",
+    libraryTarget: "commonjs2",
+    devtoolModuleFilenameTemplate: "../[resource-path]"
   },
-  devtool: 'source-map',
+  devtool: "source-map",
   externals: {
-    vscode: 'commonjs vscode' // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
+    vscode: "commonjs vscode" // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: ['.ts', '.js'],
+    extensions: [".ts", ".js"],
     alias: {
-      perf_hooks: 'node_modules/performance-now/lib/performance-now.js'
+      perf_hooks: "node_modules/performance-now/lib/performance-now.js"
     }
   },
   module: {
@@ -112,7 +114,7 @@ const config = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader'
+            loader: "ts-loader"
           }
         ]
       }
