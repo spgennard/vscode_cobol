@@ -4,7 +4,7 @@ export interface ICommentCallback {
     processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number) : void;
 }
 
-export default interface ISourceHandler {
+export interface ISourceHandler {
     getUriAsString(): string;
     getLineCount(): number;
     getCommentCount(): number;

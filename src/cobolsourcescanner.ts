@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import ISourceHandler, { ICommentCallback } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback } from "./isourcehandler";
 import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
@@ -743,7 +743,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
     }
 }
 
-export default class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner, COBOLPreprocessorCallbacks {
+export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner, COBOLPreprocessorCallbacks {
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;

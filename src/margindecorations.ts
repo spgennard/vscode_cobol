@@ -3,7 +3,7 @@
 import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, TextDocument, workspace, TextEditorDecorationType } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ESourceFormat } from "./externalfeatures";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { getVSWorkspaceFolders } from "./cobolfolders";
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
@@ -61,7 +61,7 @@ export function isSupportedLanguage(document: TextDocument): TextLanguage {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default async function updateDecorations(activeTextEditor: TextEditor | undefined) {
+export async function updateDecorations(activeTextEditor: TextEditor | undefined) {
     if (!activeTextEditor) {
         return;
     }

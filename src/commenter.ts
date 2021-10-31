@@ -3,7 +3,7 @@
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ESourceFormat } from "./externalfeatures";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 function commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
     editor.edit(edit => {

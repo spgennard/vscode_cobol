@@ -3,7 +3,7 @@ import { COBOLTokenStyle, splitArgument } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { outlineFlag } from "./iconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSPreProc } from "./vspreproc";
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as vscode from "vscode";
-import COBOLSourceScanner from "./cobolsourcescanner";
+import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 export class VSPPCodeLens implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();

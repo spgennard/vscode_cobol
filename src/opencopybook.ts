@@ -6,8 +6,8 @@ import * as vscode from "vscode";
 import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
-import COBOLSourceScanner from "./cobolsourcescanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 

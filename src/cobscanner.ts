@@ -1,4 +1,4 @@
-import COBOLSourceScanner, { ICOBOLSourceScannerEventer, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, ICOBOLSourceScannerEventer, SharedSourceReferences } from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBSCANNER_STATUS, ScanData, ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";

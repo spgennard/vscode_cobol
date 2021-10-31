@@ -3,7 +3,7 @@ import { COBOLToken, COBOLTokenStyle } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { outlineFlag } from "./iconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSPreProc } from "./vspreproc";
 
 class SimpleStack<T> {

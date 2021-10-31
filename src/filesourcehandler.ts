@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import ISourceHandler, { ICommentCallback } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback } from "./isourcehandler";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require("n-readlines");

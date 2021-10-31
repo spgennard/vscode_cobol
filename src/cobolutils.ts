@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import path from "path";
-import COBOLSourceScanner, { splitArgument, camelize, COBOLTokenStyle } from "./cobolsourcescanner";
+import { COBOLSourceScanner, splitArgument, camelize, COBOLTokenStyle } from "./cobolsourcescanner";
 import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSLogger } from "./vslogger";
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLFileUtils } from "./fileutils";
 import { VSCOBOLConfiguration } from "./vsconfiguration";

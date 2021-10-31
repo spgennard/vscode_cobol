@@ -2,11 +2,11 @@
 
 import * as vscode from "vscode";
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult, OnTypeFormattingEditProvider } from "vscode";
-import COBOLSourceScanner from "./cobolsourcescanner";
+import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { formatOnReturn, ICOBOLSettings } from "./iconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSExtensionUtils } from "./vsextutis";
 
 export class COBOLCaseFormatter implements OnTypeFormattingEditProvider{

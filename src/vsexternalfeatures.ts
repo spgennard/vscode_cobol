@@ -3,7 +3,7 @@
 import { VSLogger } from "./vslogger";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
-import ISourceHandler from "./isourcehandler";
+import { ISourceHandler } from "./isourcehandler";
 import { COBOLCopyBookProvider } from "./opencopybook";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
 import { VSCOBOLFileUtils } from "./vsfileutils";

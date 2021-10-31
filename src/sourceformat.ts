@@ -1,6 +1,6 @@
 import { ESourceFormat } from "./externalfeatures";
 import { ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
-import ISourceHandler from "./isourcehandler";
+import { ISourceHandler } from "./isourcehandler";
 import minimatch from "minimatch";
 
 

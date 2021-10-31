@@ -3,7 +3,7 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 
 import { FileSourceHandler } from "../../filesourcehandler";
-import COBOLSourceScanner, { EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
+import { COBOLSourceScanner, EmptyCOBOLSourceScannerEventHandler } from "../../cobolsourcescanner";
 import { COBOLSettings } from "../../iconfiguration";
 import path from "path";
 import { VSExternalFeatures } from "../../vsexternalfeatures";

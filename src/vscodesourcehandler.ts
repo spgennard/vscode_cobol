@@ -2,7 +2,7 @@ import { StringBuilder } from "typescript-string-operations";
 import * as vscode from "vscode";
 import { workspace } from "vscode";
 import { ESourceFormat } from "./externalfeatures";
-import ISourceHandler, { ICommentCallback } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback } from "./isourcehandler";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 

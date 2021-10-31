@@ -14,10 +14,10 @@ import { KeywordAutocompleteCompletionItemProvider } from "./keywordprovider";
 import { isSupportedLanguage } from "./margindecorations";
 import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./symbolprovider";
 
-import updateDecorations from "./margindecorations";
+import { updateDecorations } from "./margindecorations";
 import { COBOLFileUtils } from "./fileutils";
 
-import VSCOBOLSourceScanner, { clearCOBOLCache } from "./vscobolscanner";
+import { VSCOBOLSourceScanner, clearCOBOLCache } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { CobolReferenceProvider } from "./cobolreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";

@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import COBOLSourceScanner, { COBOLTokenStyle } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLTokenStyle } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 const tokenTypes = ["label", "variable", "function"];
 const tokenModifiers = ["declaration", "readonly"];

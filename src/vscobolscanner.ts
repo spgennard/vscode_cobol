@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { TextDocument, Uri, debug } from "vscode";
-import COBOLSourceScanner, { COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 import { VSLogger } from "./vslogger";
@@ -12,7 +12,7 @@ import { COBOLUtils } from "./cobolutils";
 import { ScanStats } from "./cobscannerdata";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { VSPreProc } from "./vspreproc";
-// import { VSCobScanner_depreciated } from './vscobscanner_depreciated';
+
 import { VSExternalFeatures } from "./vsexternalfeatures";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,7 +106,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 }
 
-export default class VSCOBOLSourceScanner {
+export class VSCOBOLSourceScanner {
     private static readonly MAX_MEM_CACHE_SIZE = 30;
 
     public static removeCachedObject(document: TextDocument, config: ICOBOLSettings): void {

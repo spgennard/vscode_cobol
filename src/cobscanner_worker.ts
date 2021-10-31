@@ -6,7 +6,7 @@ import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import * as fs from "fs";
 import * as path from "path";
 import util from "util";
-import ISourceHandler from "./isourcehandler";
+import { ISourceHandler } from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
 import { ICOBOLSourceScannerEventer } from "./cobolsourcescanner";
 import { COBOLFileUtils } from "./fileutils";

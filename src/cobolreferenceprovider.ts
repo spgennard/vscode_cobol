@@ -1,8 +1,8 @@
 
 import * as vscode from "vscode";
-import COBOLSourceScanner, { SourceReference, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceReference, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 

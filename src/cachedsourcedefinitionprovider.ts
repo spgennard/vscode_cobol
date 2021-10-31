@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import COBOLSourceScanner from "./cobolsourcescanner";
+import { COBOLSourceScanner } from "./cobolsourcescanner";
 
-import VSCOBOLSourceScanner from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { COBOLSymbol, COBOLSymbolTable } from "./cobolglobalcache";
 import { COBOLCopyBookProvider } from "./opencopybook";
