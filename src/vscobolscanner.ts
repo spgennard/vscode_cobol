@@ -121,7 +121,7 @@ export default class VSCOBOLSourceScanner {
         }
     }
 
-    public static   getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
+    public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
         if (config.enable_source_scanner === false) {
             return undefined;
         }

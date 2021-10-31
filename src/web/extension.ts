@@ -8,8 +8,11 @@ import { VSCOBOLConfiguration } from "../vsconfiguration";
 import { ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../symbolprovider";
+import { VSExternalFeatures } from "../vsexternalfeatures";
 
 export function activate(context: vscode.ExtensionContext) {
+    VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
+
     const commands = vscode.commands;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
 

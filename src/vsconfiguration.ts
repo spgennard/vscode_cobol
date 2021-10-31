@@ -3,13 +3,13 @@
 
 import { workspace } from "vscode";
 import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, ICOBOLSettings_depreciated } from "./iconfiguration";
-import { CacheDirectoryStrategy, EmptyExternalFeature, IExternalFeatures } from "./externalfeatures";
+import { CacheDirectoryStrategy, IExternalFeatures } from "./externalfeatures";
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
     private static config_depreciated: ICOBOLSettings_depreciated|undefined = undefined;
 
-    public static externalFeatures: IExternalFeatures = new EmptyExternalFeature();
+    public static externalFeatures: IExternalFeatures;
 
     private static init(): ICOBOLSettings {
         const vsconfig = VSCOBOLConfiguration.config;

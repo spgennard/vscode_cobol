@@ -25,7 +25,7 @@ export class VSCOBOLFileUtils {
         return false;
     }
 
-    public static getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
+    public static getFullWorkspaceFilename(features: IExternalFeatures, sdir: string, sdirMs: BigInt): string | undefined {
         const ws = getVSWorkspaceFolders();
         if (workspace === undefined || ws === undefined) {
             return undefined;
@@ -35,8 +35,8 @@ export class VSCOBOLFileUtils {
                 const folderPath = folder.uri.path;
                 const possibleFile = path.join(folderPath, sdir);
                 if (COBOLFileUtils.isFile(possibleFile)) {
-                    const stat4src = fs.statSync(possibleFile, { bigint: true });
-                    if (sdirMs === stat4src.mtimeMs) {
+                    const stat4srcMs = features.getFileModTimeStamp(possibleFile);
+                    if (sdirMs === stat4srcMs) {
                         return possibleFile;
                     }
                 }

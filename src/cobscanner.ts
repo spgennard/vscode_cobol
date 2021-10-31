@@ -45,9 +45,9 @@ class Utils {
         const cachedMtimeWS = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
         const cachedMtime = cachedMtimeWS?.lastModifiedTime;
         if (cachedMtime !== undefined) {
-            const stat4src = fs.statSync(filename, { bigint: true });
-            if (cachedMtime < stat4src.mtimeMs) {
-                features.logMessage(`cacheUpdateRequired : ${nfilename}, cachedMtime=${cachedMtime} < ${stat4src.mtimeMs}`);
+            const stat4srcMs =features.getFileModTimeStamp(filename);
+            if (cachedMtime < stat4srcMs) {
+                features.logMessage(`cacheUpdateRequired : ${nfilename}, cachedMtime=${cachedMtime} < ${stat4srcMs}`);
                 return true;
             }
             return false;
@@ -58,8 +58,8 @@ class Utils {
             const fnStat = COBOLFileUtils.isFileT(fn);
             if (fnStat[0]) {
                 const stat4cache = fnStat[1];
-                const stat4src = fs.statSync(filename, { bigint: true });
-                if (stat4cache !== undefined && stat4cache.mtimeMs < stat4src.mtimeMs) {
+                const stat4srcMS = features.getFileModTimeStamp(filename);
+                if (stat4cache !== undefined && stat4cache.mtimeMs < stat4srcMS) {
                     return true;
                 }
                 return false;

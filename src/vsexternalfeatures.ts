@@ -10,6 +10,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 
 import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
+import { getVSWorkspaceFolders } from "./cobolfolders";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
     public logMessage(message: string): void {
@@ -38,7 +39,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        return VSCOBOLFileUtils.getFullWorkspaceFilename(sdir, sdirMs);
+        return VSCOBOLFileUtils.getFullWorkspaceFilename(this,sdir, sdirMs);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,7 +48,16 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public getWorkspaceFolders(): string[] {
-        return [];
+        const folders = getVSWorkspaceFolders();
+        if (folders === undefined) {
+            return [];
+        }
+        const foldersArray:string[] = [];
+        for(const folder of folders) {
+            foldersArray.push(folder.uri.fsPath);
+        }
+
+        return foldersArray;
     }
 
     public isDirectory(possibleDirectory: string): boolean {
