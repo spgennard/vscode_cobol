@@ -31,8 +31,6 @@ class Utils {
         Utils.msleep(n * 1000);
     }
 
-
-
     public static getHashForFilename(filename: string) {
         const hash: Hash = crypto.createHash("sha256");
         hash.update(filename);

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.10.30",
+  "version": "7.11.1",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -271,17 +271,17 @@
           "type": "boolean",
           "description": "When enabled, process metadata on file save",
           "default": false,
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases"
+          "deprecationMessage": "This setting is depreciated and will be removed in future releases"
         },
         "coboleditor.copybooks_nested": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
           "type": "boolean",
           "markdownDescription": "nest copybooks in outline view (restart required)",
           "description": "nest copybooks in outline view (restart require)",
           "default": false
         },
         "coboleditor.cache_metadata": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
           "enum": [
             "workspace",
             "user_defined_directory",
@@ -297,7 +297,7 @@
           ]
         },
         "coboleditor.cache_metadata_user_directory": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
           "type": "string",
           "markdownDescription": "User specific directory for the workspace metadata cache (directory has to exist)",
           "title": "User specific directory for the workspace metadata cache (directory has to exist)",
@@ -310,21 +310,21 @@
           "default": 5000
         },
         "coboleditor.cache_metadata_max_directory_scan_depth": {
-          "markdownDeprecationMessage": "This setting is depreciated and may be removed in future releases. Please use `#coboleditor.maintain_metadata_cache#`",
+          "markdownDeprecationMessage": "This setting is depreciated and will be removed in future releases. Please use `#coboleditor.maintain_metadata_cache#`",
           "type": "number",
           "markdownDescription": "Limited the depth of the metadata cache directory scan",
           "title": "Limited the depth of the metadata cache directory scan",
           "default": 32
         },
         "coboleditor.cache_metadata_show_progress_messages": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
           "type": "boolean",
           "description": "Show log message during meta data processing",
           "default": false
         },
         "coboleditor.margin": {
           "type": "boolean",
-          "markdownDeprecationMessage": "This setting is depreciated and may be removed in future releases. Please use `#coboleditor.fileformat_strategy#` and set it to *always_fixed*.",
+          "markdownDeprecationMessage": "This setting is depreciated and will be removed in future releases. Please use `#coboleditor.fileformat_strategy#` and set it to *always_fixed*.",
           "default": false
         },
         "coboleditor.enable_data_provider": {
@@ -477,8 +477,8 @@
         },
         "coboleditor.line_comment": {
           "type": "boolean",
-          "title": "Replace standard comment in/out with COBOL specific",
-          "description": "Replace standard comment in/out with COBOL specific",
+          "title": "Replace standard comment in/out with COBOL aware version",
+          "description": "Replace standard comment in/out with COBOL specific version",
           "default": true
         },
         "coboleditor.mfunit.diagnostic.color": {
