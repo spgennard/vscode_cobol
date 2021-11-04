@@ -3,6 +3,24 @@
 Changelog for spgennardvscode_cobol.
 
 
+## 7.11.1 
+ 
+**add info about review**
+* [0d2436884d8303a](https://github.com/spgennard/vscode_cobol/commit/0d2436884d8303a) *2021-11-04 22:34:45*
+ 
+**change work to be more forceful with reguards dep to be removed features**
+* [ed5981499ddb7c9](https://github.com/spgennard/vscode_cobol/commit/ed5981499ddb7c9) *2021-11-04 20:42:32*
+ 
+**tidy up import/drop "export defaults"**
+* [51259f2d74891e2](https://github.com/spgennard/vscode_cobol/commit/51259f2d74891e2) *2021-10-31 22:51:29*
+ 
+**tidy up**
+* [f1b4e192e3bf835](https://github.com/spgennard/vscode_cobol/commit/f1b4e192e3bf835) *2021-10-31 21:03:21*
+ 
+**Update CHANGELOG.md**
+* [b8ac4a34acb1faf](https://github.com/spgennard/vscode_cobol/commit/b8ac4a34acb1faf) *2021-10-31 16:36:47*
+ 
+ 
 ## 7.10.30 
  
 **remove empty impl, tidy up fs usage again**
