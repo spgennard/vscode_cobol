@@ -26,7 +26,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.61.0"
+    "vscode": "^1.62.0"
   },
   "extensionKind": [
     "workspace"
@@ -61,9 +61,6 @@
     "onCommand:cobolplugin.change_lang_to_acu",
     "onCommand:cobolplugin.change_lang_to_cobol",
     "onCommand:cobolplugin.change_source_format",
-    "onCommand:cobolplugin.deprecated.dumpMetaData",
-    "onCommand:cobolplugin.deprecated.clearMetaData",
-    "onCommand:cobolplugin.deprecated.processAllFilesInWorkspace",
     "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
     "onCommand:cobolplugin.mfurunMenu",
     "onCommand:cobolplugin.removeAllComments",
@@ -267,65 +264,11 @@
           "description": "COBOL CopyBook directories to search into",
           "uniqueItems": true
         },
-        "coboleditor.process_metadata_cache_on_file_save": {
-          "type": "boolean",
-          "description": "When enabled, process metadata on file save",
-          "default": false,
-          "deprecationMessage": "This setting is depreciated and will be removed in future releases"
-        },
-        "coboleditor.copybooks_nested": {
-          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
-          "type": "boolean",
-          "markdownDescription": "nest copybooks in outline view (restart required)",
-          "description": "nest copybooks in outline view (restart require)",
-          "default": false
-        },
-        "coboleditor.cache_metadata": {
-          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
-          "enum": [
-            "workspace",
-            "user_defined_directory",
-            "off"
-          ],
-          "default": "off",
-          "markdownDescription": "Cache directory location",
-          "title": "Cache directory location",
-          "enumDescriptions": [
-            "Cache directory in workspace",
-            "User Defined Directory",
-            "Do not do any caching"
-          ]
-        },
-        "coboleditor.cache_metadata_user_directory": {
-          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
-          "type": "string",
-          "markdownDescription": "User specific directory for the workspace metadata cache (directory has to exist)",
-          "title": "User specific directory for the workspace metadata cache (directory has to exist)",
-          "default": ""
-        },
         "coboleditor.cache_metadata_inactivity_timeout": {
           "type": "number",
           "markdownDescription": "Inactivity timeout for metadata cache in ms",
           "title": "Inactivity timeout for metadata cache in ms",
           "default": 5000
-        },
-        "coboleditor.cache_metadata_max_directory_scan_depth": {
-          "markdownDeprecationMessage": "This setting is depreciated and will be removed in future releases. Please use `#coboleditor.maintain_metadata_cache#`",
-          "type": "number",
-          "markdownDescription": "Limited the depth of the metadata cache directory scan",
-          "title": "Limited the depth of the metadata cache directory scan",
-          "default": 32
-        },
-        "coboleditor.cache_metadata_show_progress_messages": {
-          "deprecationMessage": "This setting is depreciated and will be removed in future releases",
-          "type": "boolean",
-          "description": "Show log message during meta data processing",
-          "default": false
-        },
-        "coboleditor.margin": {
-          "type": "boolean",
-          "markdownDeprecationMessage": "This setting is depreciated and will be removed in future releases. Please use `#coboleditor.fileformat_strategy#` and set it to *always_fixed*.",
-          "default": false
         },
         "coboleditor.enable_data_provider": {
           "type": "boolean",
@@ -704,22 +647,6 @@
           "type": "boolean",
           "description": "When enabled, turn on the experimental semantic token provider",
           "default": false
-        },
-        "coboleditor.preprocessor_extensions": {
-          "deprecationMessage": "Deprecated to be removed in next monthly release (September)",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "title": "types",
-            "properties": {
-              "copybook": {
-                "type": "string",
-                "description": "internal preprocessor extensions"
-              }
-            }
-          },
-          "default": [],
-          "uniqueItems": true
         },
         "coboleditor.enable_text_replacement": {
           "type": "boolean",
@@ -1198,24 +1125,6 @@
         "category": "COBOL",
         "title": "Select ACUCOBOL-GT language",
         "enablement": "!isWeb"
-      },
-      {
-        "command": "cobolplugin.deprecated.processAllFilesInWorkspace",
-        "category": "COBOL",
-        "title": "Process files in workspace for metadata (deprecated)",
-        "enablement": "!isWeb && config.coboleditor.cache_metadata != off && isWorkspaceTrusted"
-      },
-      {
-        "command": "cobolplugin.deprecated.dumpMetaData",
-        "category": "COBOL",
-        "title": "Dump metadata for diagnostic (deprecated)",
-        "enablement": "!isWeb && config.coboleditor.cache_metadata != off && isWorkspaceTrusted"
-      },
-      {
-        "command": "cobolplugin.deprecated.clearMetaData",
-        "category": "COBOL",
-        "title": "Clear metadata (deprecated)",
-        "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache != off && isWorkspaceTrusted"
       },
       {
         "command": "cobolplugin.clearGlobalCache",
@@ -1943,11 +1852,11 @@
     "@types/glob": "^7.2.0",
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.5",
-    "@types/vscode": "^1.61.0",
+    "@types/node": "^16.11.6",
+    "@types/vscode": "^1.62.0",
     "@types/webpack-env": "^1.16.3",
-    "@typescript-eslint/eslint-plugin": "^5.2.0",
-    "@typescript-eslint/parser": "^5.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
     "ansi-regex": ">=6.0.1",
     "assert": "^2.0.0",
     "depcheck": "^1.4.2",
@@ -1959,9 +1868,9 @@
     "process": "^0.11.10",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
-    "vsce": "^1.100.2",
+    "vsce": "^2.2.0",
     "vscode-test": "^1.6.1",
-    "webpack": "^5.60.0",
+    "webpack": "^5.62.1",
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {

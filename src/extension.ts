@@ -24,7 +24,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./sourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./cobolprovider";
 import { COBOLUtils, FoldStyle, FoldAction } from "./cobolutils";
-import { ICOBOLSettings, ICOBOLSettings_depreciated } from "./iconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require("properties-reader");
@@ -34,7 +34,6 @@ import { getVSWorkspaceFolders } from "./cobolfolders";
 // import { CobolCommentProvider } from './cobolcommentprovider';
 import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 import { COBOLSourceDefinition } from "./sourcedefinitionprovider";
-import { CachedCOBOLSourceDefinition } from "./cachedsourcedefinitionprovider";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCobScanner } from "./vscobscanner";
 import { BldScriptTaskProvider } from "./bldTaskProvider";
@@ -44,10 +43,8 @@ import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { SourceItem } from "./sourceItem";
 import { VSSemanticProvider } from "./vssemanticprovider";
 import { VSPPCodeLens } from "./vsppcodelens";
-import { VSCobScanner_depreciated } from "./vscobscanner_depreciated";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { VSCOBOLFileUtils } from "./vsfileutils";
-import { VSPreProc } from "./vspreproc";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
@@ -56,7 +53,6 @@ import { VSExtensionUtils } from "./vsextutis";
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
 let currentContext: ExtensionContext;
-let depconfig: ICOBOLSettings_depreciated|undefined = undefined;
 let bldscriptTaskProvider: vscode.Disposable | undefined;
 let shown_enable_semantic_token_provider = false;
 let messageBoxDone = false;
@@ -355,23 +351,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             if (vscode.workspace.workspaceFile !== undefined) {
                 VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
             }
-
-            if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
-                VSLogger.logMessage("----------------------------------------------------------------------");
-                VSLogger.logMessage(" Deprecated Features settings");
-                VSLogger.logMessage("");
-                VSLogger.logMessage(" Caching");
-                VSLogger.logMessage(`  Cache Strategy   : ${settings.cache_metadata}`);
-
-                const cacheDir = settings.get_depreciated_cache_directory();
-                if (cacheDir !== undefined) {
-                    VSLogger.logMessage(`  Cache directory  : ${cacheDir}`);
-                }
-                VSLogger.logMessage("----------------------------------------------------------------------");
-            }
-
-            VSPreProc.dumpPreProcInfo(settings);
-
         }
         VSLogger.logMessage(` Is Workspace Trusted                       : ${workspace.isTrusted}`);
 
@@ -521,8 +500,7 @@ export function getCurrentContext(): ExtensionContext {
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
-    depconfig = new VSCobScanner_depreciated();
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
@@ -542,7 +520,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
 
         if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
@@ -677,17 +655,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await VSCOBOLSourceScannerTools.checkWorkspaceForMissingCopybookDirs();
     });
 
-    const processAllFilesInWorkspaceOutOfProcessDeprecated = commands.registerCommand("cobolplugin.deprecated.processAllFilesInWorkspace", async () => {
-        await VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(true);
-    });
-
-
     const processAllFilesInWorkspaceOutOfProcessOnStartup = commands.registerCommand("cobolplugin.processAllFilesInWorkspaceOnStartup", async () => {
         await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1);
-    });
-
-    const deprecated_processAllFilesInWorkspaceOutOfProcessOnStartup = commands.registerCommand("cobolplugin.deprecated.processAllFilesInWorkspaceOnStartup", async () => {
-        await VSCobScanner_depreciated.deprecated_processAllFilesInWorkspaceOutOfProcess(false);
     });
 
     const processAllFilesInWorkspaceOutOfProcess = commands.registerCommand("cobolplugin.processAllFilesInWorkspace", async () => {
@@ -730,24 +699,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         });
     });
 
-    const dumpMetadata = commands.registerCommand("cobolplugin.deprecated.dumpMetaData", function () {
-        const cacheDirectory = settings.get_depreciated_cache_directory();
-        if (cacheDirectory !== undefined) {
-            COBOLSourceScannerUtils.dumpMetaData(settings, cacheDirectory);
-        } else {
-            VSLogger.logMessage("Metadata caching is turned off (or invalid)");
-        }
-    });
-
-    const clearMetaData = commands.registerCommand("cobolplugin.deprecated.clearMetaData", function () {
-        const cacheDirectory = settings.get_depreciated_cache_directory();
-        if (cacheDirectory !== undefined) {
-            VSCobScanner_depreciated.deprecatedClearMetaData(settings, cacheDirectory);
-        } else {
-            VSLogger.logMessage("Metadata caching is turned off (or invalid)");
-        }
-    });
-
     const clearGlobalCache = commands.registerCommand("cobolplugin.clearGlobalCache", function () {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === "Yes") {
@@ -759,7 +710,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(clearGlobalCache);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(async () => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(depconfig);
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
 
         activateLogChannelAndPaths(false, settings, true);
     });
@@ -798,13 +749,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
 
-    const onDidSaveTextDocumentHandler = workspace.onDidSaveTextDocument(async (doc) => {
-        if (settings.process_metadata_cache_on_file_save) {
-            await VSCobScanner_depreciated.depreciatedProcessSavedFile(doc.uri.fsPath, settings);
-        }
-    });
-    context.subscriptions.push(onDidSaveTextDocumentHandler);
-
     context.subscriptions.push(move2pdCommand);
     context.subscriptions.push(move2ddCommand);
     context.subscriptions.push(move2wsCommand);
@@ -820,13 +764,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(changeLanguageToCOBOL);
 
     context.subscriptions.push(checkWorkspaceForMissingCopybookDirs);
-    context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessDeprecated);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcess);
     context.subscriptions.push(processAllFilesInWorkspaceOutOfProcessOnStartup);
-    context.subscriptions.push(deprecated_processAllFilesInWorkspaceOutOfProcessOnStartup);
-
-    context.subscriptions.push(dumpMetadata);
-    context.subscriptions.push(clearMetaData);
 
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
     context.subscriptions.push(COBOLCaseFormatter.register(settings));
@@ -848,16 +787,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
     });
     context.subscriptions.push(sourcedefProvider);
-
-    if (VSCOBOLConfiguration.isDepreciatedDiskCachingEnabled()) {
-        const cachedSourcedefProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
-            provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-                const csdp = new CachedCOBOLSourceDefinition(VSExternalFeatures);
-                return csdp.provideDefinition(doc, pos, ct);
-            }
-        });
-        context.subscriptions.push(cachedSourcedefProvider);
-    }
 
     const COBOLCallTargetProviderProvider = languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
@@ -1239,8 +1168,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         try {
             if (settings.maintain_metadata_cache) {
                 commands.executeCommand("cobolplugin.processAllFilesInWorkspaceOnStartup");
-            } else {
-                commands.executeCommand("cobolplugin.deprecated.processAllFilesInWorkspaceOnStartup");
             }
         } catch {
             // just incase
