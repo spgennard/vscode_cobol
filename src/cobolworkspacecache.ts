@@ -3,7 +3,7 @@
 
 import path from "path";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
-import { CacheDirectoryStrategy, IExternalFeatures } from "./externalfeatures";
+import { IExternalFeatures } from "./externalfeatures";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { ICOBOLSettings } from "./iconfiguration";
 
@@ -198,106 +198,90 @@ export class COBOLWorkspaceSymbolCacheHelper {
     }
 
     public static loadGlobalCacheFromArray(settings: ICOBOLSettings, symbols: string[], clear: boolean): void {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-
-        if (clear || depMode) {
+        if (clear) {
             InMemoryGlobalSymbolCache.callableSymbols.clear();
         }
 
-        if (!depMode) {
-            for (const symbol of symbols) {
-                const symbolValues = symbol.split(",");
-                if (symbolValues.length === 2) {
-                    COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], 0);
-                }
-                
-                if (symbolValues.length === 3) {
-                    COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
-                }
+        for (const symbol of symbols) {
+            const symbolValues = symbol.split(",");
+            if (symbolValues.length === 2) {
+                COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], 0);
+            }
+            
+            if (symbolValues.length === 3) {
+                COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
             }
         }
+        
     }
 
     public static loadGlobalEntryCacheFromArray(settings: ICOBOLSettings, symbols: string[], clear: boolean): void {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-
-        if (clear || depMode) {
+        if (clear) {
             InMemoryGlobalSymbolCache.entryPoints.clear();
         }
 
-        if (!depMode) {
-            for (const symbol of symbols) {
-                const symbolValues = symbol.split(",");
-                if (symbolValues.length === 3) {
-                    COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2], 10));
-                }
+        for (const symbol of symbols) {
+            const symbolValues = symbol.split(",");
+            if (symbolValues.length === 3) {
+                COBOLWorkspaceSymbolCacheHelper.addEntryPoint(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2], 10));
             }
         }
+        
     }
 
     public static loadGlobalKnownCopybooksFromArray(settings: ICOBOLSettings, copybookValues: string[], clear: boolean): void {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-
-        if (clear || depMode) {
+        if (clear) {
             InMemoryGlobalSymbolCache.knownCopybooks.clear();
         }
 
-        if (!depMode) {
-            for (const symbol of copybookValues) {
-                const encodedKey = symbol.split(",");
-                if (encodedKey.length === 2) {
-                    InMemoryGlobalSymbolCache.knownCopybooks.set(symbol, encodedKey[1]);
-                }
+        for (const symbol of copybookValues) {
+            const encodedKey = symbol.split(",");
+            if (encodedKey.length === 2) {
+                InMemoryGlobalSymbolCache.knownCopybooks.set(symbol, encodedKey[1]);
             }
         }
+        
     }
 
     public static loadGlobalTypesCacheFromArray(settings: ICOBOLSettings, symbols: string[], clear: boolean): void {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-
-        if (clear || depMode) {
+        if (clear) {
             InMemoryGlobalSymbolCache.enums.clear();
             InMemoryGlobalSymbolCache.interfaces.clear();
             InMemoryGlobalSymbolCache.types.clear();
         }
 
-        if (!depMode) {
-            for (const symbol of symbols) {
-                const symbolValues = symbol.split(",");
-                if (symbolValues.length === 4) {
-                    let cat = TypeCategory.ClassId;
-                    switch (symbolValues[0]) {
-                        case "I": cat = TypeCategory.InterfaceId; break;
-                        case "T": cat = TypeCategory.ClassId; break;
-                        case "E": cat = TypeCategory.EnumId; break;
-                    }
-                    COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3], 10), cat);
+        for (const symbol of symbols) {
+            const symbolValues = symbol.split(",");
+            if (symbolValues.length === 4) {
+                let cat = TypeCategory.ClassId;
+                switch (symbolValues[0]) {
+                    case "I": cat = TypeCategory.InterfaceId; break;
+                    case "T": cat = TypeCategory.ClassId; break;
+                    case "E": cat = TypeCategory.EnumId; break;
                 }
+                COBOLWorkspaceSymbolCacheHelper.addClass(symbolValues[2], symbolValues[1], Number.parseInt(symbolValues[3], 10), cat);
             }
         }
+        
     }
 
     public static loadFileCacheFromArray(settings: ICOBOLSettings, externalFeatures: IExternalFeatures, files: string[], clear: boolean): void {
-        const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-
-        if (clear || depMode) {
+        if (clear) {
             InMemoryGlobalSymbolCache.sourceFilenameModified.clear();
         }
 
-        if (!depMode) {
-            for (const symbol of files) {
-                const fileValues = symbol.split(",");
-                if (fileValues.length === 2) {
-                    const ms = BigInt(fileValues[0]);
-                    const fullDir = externalFeatures.getFullWorkspaceFilename(fileValues[1], ms);
-                    if (fullDir !== undefined) {
-                        const cws = new COBOLWorkspaceFile(ms, fileValues[1]);
-                        InMemoryGlobalSymbolCache.sourceFilenameModified.set(fullDir as string, cws);
-                    } else {
-                        COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(fileValues[1]);
-                        COBOLWorkspaceSymbolCacheHelper.removeAllTypes(fileValues[1]);
-                        // externalFeatures.logMessage(`loadFileCacheFromArray, could not ${fileValues[1]} with ${ms}`);
-                    }
+        for (const symbol of files) {
+            const fileValues = symbol.split(",");
+            if (fileValues.length === 2) {
+                const ms = BigInt(fileValues[0]);
+                const fullDir = externalFeatures.getFullWorkspaceFilename(fileValues[1], ms);
+                if (fullDir !== undefined) {
+                    const cws = new COBOLWorkspaceFile(ms, fileValues[1]);
+                    InMemoryGlobalSymbolCache.sourceFilenameModified.set(fullDir as string, cws);
+                } else {
+                    COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(fileValues[1]);
+                    COBOLWorkspaceSymbolCacheHelper.removeAllTypes(fileValues[1]);
+                    // externalFeatures.logMessage(`loadFileCacheFromArray, could not ${fileValues[1]} with ${ms}`);
                 }
             }
         }

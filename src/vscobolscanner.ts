@@ -5,9 +5,7 @@ import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalca
 
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLSymbolTableHelper } from "./cobolglobalcache_file";
 import { COBOLSymbolTable } from "./cobolglobalcache";
-import { CacheDirectoryStrategy } from "./externalfeatures";
 import { COBOLUtils } from "./cobolutils";
 import { ScanStats } from "./cobscannerdata";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
@@ -97,11 +95,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 
     public finish(): void {
-        if (this.config.cache_metadata !== CacheDirectoryStrategy.Off &&
-            this.qp !== undefined &&
-            this.st !== undefined) {
-            COBOLSymbolTableHelper.saveToFile(this.qp.deprecatedCacheDirectory, this.st);
-        }
         COBOLUtils.saveGlobalCacheToWorkspace(this.config);
     }
 }

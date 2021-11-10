@@ -1011,12 +1011,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 giveMetadataCacheWarning = true;
             }
 
-            if (giveMetadataCacheWarning) {
-                if (!this.parse_copybooks_for_references && configHandler.cache_metadata !== CacheDirectoryStrategy.Off) {
-                    this.externalFeatures.logMessage(` Warning - Unable to determine context of ${filename}, this may affect metadata caching for this file`);
-                }
-            }
-
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
                 if (sourceHandler.getLineCount() > maxLines) {

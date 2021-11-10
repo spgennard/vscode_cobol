@@ -98,11 +98,8 @@
     "untrustedWorkspaces": {
       "supported": "limited",
       "restrictedConfigurations": [
-        "coboleditor.process_metadata_cache_on_file_save",
-        "coboleditor.cache_metadata_inactivity_timeout",
-        "coboleditor.cache_metadata_max_directory_scan_depth",
         "coboleditor.cache_metadata_show_progress_messages",
-        "coboleditor.margin",
+        "coboleditor.cache_metadata_inactivity_timeout",
         "coboleditor.outline",
         "coboleditor.pre_parse_line_limit",
         "coboleditor.linter",
@@ -262,6 +259,13 @@
           "description": "COBOL CopyBook directories to search into",
           "uniqueItems": true
         },
+        "coboleditor.copybooks_nested": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "boolean",
+          "markdownDescription": "nest copybooks in outline view (restart required)",
+          "description": "nest copybooks in outline view (restart require)",
+          "default": false
+        },
         "coboleditor.cache_metadata_inactivity_timeout": {
           "type": "number",
           "markdownDescription": "Inactivity timeout for metadata cache in ms",
@@ -273,6 +277,12 @@
           "markdownDescription": "Enabled data/field completion provider",
           "title": "Enabled data/field completion provider",
           "default": true
+        },
+        "coboleditor.cache_metadata_show_progress_messages": {
+          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+          "type": "boolean",
+          "description": "Show log message during meta data processing",
+          "default": false
         },
         "jcleditor.margin": {
           "type": "boolean",

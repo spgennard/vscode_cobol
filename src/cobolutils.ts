@@ -11,7 +11,6 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { getVSWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
-import { CacheDirectoryStrategy } from "./externalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export enum FoldStyle {
@@ -69,10 +68,6 @@ export class COBOLUtils {
     }
 
     static async populateDefaultCallableSymbols(settings: ICOBOLSettings, reset: boolean): Promise<void> {
-        if (settings.cache_metadata !== CacheDirectoryStrategy.Off) {
-            return;
-        }
-
         const ws = getVSWorkspaceFolders();
         if (ws === undefined) {
             return;
@@ -157,8 +152,6 @@ export class COBOLUtils {
         }
 
         if (InMemoryGlobalSymbolCache.isDirty) {
-            const depMode = settings.cache_metadata !== CacheDirectoryStrategy.Off;
-
             const symbols: string[] = settings.metadata_symbols;
             const entrypoints: string[] = settings.metadata_entrypoints;
             const types: string[] = settings.metadata_types;
@@ -170,59 +163,55 @@ export class COBOLUtils {
             files.length = 0;
             knownCopybooks.length = 0;
 
-            if (!depMode) {
-                for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
-                    if (i !== null && i.length !== 0) {
-                        const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
-                        if (fileSymbol !== undefined) {
-                            fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                                update = true;
+            for (const [i] of InMemoryGlobalSymbolCache.callableSymbols.entries()) {
+                if (i !== null && i.length !== 0) {
+                    const fileSymbol = InMemoryGlobalSymbolCache.callableSymbols.get(i);
+                    if (fileSymbol !== undefined) {
+                        fileSymbol.forEach(function (value: COBOLFileSymbol) {
+                            update = true;
 
-                                // do not save a callable that is in the defaultCallableSymbol map
-                                if (InMemoryGlobalSymbolCache.defaultCallableSymbols.has(i) === false) {
-                                    if (value.lnum !== 0) {
-                                        symbols.push(`${i},${value.filename},${value.lnum}`);
-                                    } else {
-                                        symbols.push(`${i},${value.filename}`);
-                                    }
+                            // do not save a callable that is in the defaultCallableSymbol map
+                            if (InMemoryGlobalSymbolCache.defaultCallableSymbols.has(i) === false) {
+                                if (value.lnum !== 0) {
+                                    symbols.push(`${i},${value.filename},${value.lnum}`);
+                                } else {
+                                    symbols.push(`${i},${value.filename}`);
                                 }
-                            });
-                        }
-                    }
-                    else {
-                        update = true;
+                            }
+                        });
                     }
                 }
+                else {
+                    update = true;
+                }
+            }
 
-                for (const [i] of InMemoryGlobalSymbolCache.entryPoints.entries()) {
-                    if (i !== null && i.length !== 0) {
-                        const fileSymbol = InMemoryGlobalSymbolCache.entryPoints.get(i);
-                        if (fileSymbol !== undefined) {
-                            fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                                entrypoints.push(`${i},${value.filename},${value.lnum}`);
-                            });
-                        }
+            for (const [i] of InMemoryGlobalSymbolCache.entryPoints.entries()) {
+                if (i !== null && i.length !== 0) {
+                    const fileSymbol = InMemoryGlobalSymbolCache.entryPoints.get(i);
+                    if (fileSymbol !== undefined) {
+                        fileSymbol.forEach(function (value: COBOLFileSymbol) {
+                            entrypoints.push(`${i},${value.filename},${value.lnum}`);
+                        });
                     }
                 }
+            }
 
-                for (const [encodedKey,] of InMemoryGlobalSymbolCache.knownCopybooks.entries()) {
-                    knownCopybooks.push(encodedKey);
-                }
+            for (const [encodedKey,] of InMemoryGlobalSymbolCache.knownCopybooks.entries()) {
+                knownCopybooks.push(encodedKey);
+            }
 
-                COBOLUtils.typeToArray(types, "T", InMemoryGlobalSymbolCache.types);
-                COBOLUtils.typeToArray(types, "I", InMemoryGlobalSymbolCache.interfaces);
-                COBOLUtils.typeToArray(types, "E", InMemoryGlobalSymbolCache.enums);
+            COBOLUtils.typeToArray(types, "T", InMemoryGlobalSymbolCache.types);
+            COBOLUtils.typeToArray(types, "I", InMemoryGlobalSymbolCache.interfaces);
+            COBOLUtils.typeToArray(types, "E", InMemoryGlobalSymbolCache.enums);
 
-                for (const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
-                    if (fileName !== null && fileName.length !== 0) {
-                        const cws = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
-                        if (cws !== undefined) {
-                            files.push(`${cws.lastModifiedTime},${cws.workspaceFilename}`);
-                        }
+            for (const [fileName] of InMemoryGlobalSymbolCache.sourceFilenameModified.entries()) {
+                if (fileName !== null && fileName.length !== 0) {
+                    const cws = InMemoryGlobalSymbolCache.sourceFilenameModified.get(fileName);
+                    if (cws !== undefined) {
+                        files.push(`${cws.lastModifiedTime},${cws.workspaceFilename}`);
                     }
                 }
-            } else {
-                update = true;
             }
 
             if (update) {
@@ -342,7 +331,7 @@ export class COBOLUtils {
                 const replaceLine = " ".repeat(sel.start.character) + lineTrimmed;
                 edit.insert(posStartOfLine, replaceLine);
                 // })
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }).then(ok => {
                 editor.selection = sel;
             });
@@ -363,7 +352,7 @@ export class COBOLUtils {
                 edit.delete(ran);
                 edit.insert(posStartOfLine, lineTrimmed);
                 // })
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }).then(ok => {
                 editor.selection = new vscode.Selection(posStartOfLine, posStartOfLine);
             });

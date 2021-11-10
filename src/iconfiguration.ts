@@ -44,9 +44,8 @@ export interface ICOBOLSettings {
     intellisense_include_lowercase: boolean;
     intellisense_item_limit: number;
     process_metadata_cache_on_start: boolean;
-    cache_metadata: CacheDirectoryStrategy;
+    // cache_metadata: CacheDirectoryStrategy;
     cache_metadata_inactivity_timeout: number;
-    cache_metadata_max_directory_scan_depth: number;
     parse_copybooks_for_references: boolean;
     workspacefolders_order: string[];
     linter_mark_as_information: boolean;
@@ -61,7 +60,6 @@ export interface ICOBOLSettings {
     scan_comments_for_hints: boolean;
     cache_metadata_show_progress_messages: boolean;
     scan_comment_copybook_token: string;
-    process_metadata_cache_on_file_save: boolean;
     sourceview: boolean;
     sourceview_include_jcl_files: boolean;
     sourceview_include_hlasm_files: boolean;
@@ -123,7 +121,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public process_metadata_cache_on_start: boolean;
     public cache_metadata: CacheDirectoryStrategy;
     public cache_metadata_inactivity_timeout: number;
-    public cache_metadata_max_directory_scan_depth: number;
     public parse_copybooks_for_references: boolean;
     public workspacefolders_order: string[];
     public linter_mark_as_information: boolean;
@@ -138,7 +135,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public scan_comments_for_hints: boolean;
     public scan_comment_copybook_token: string;
     public cache_metadata_show_progress_messages: boolean;
-    public process_metadata_cache_on_file_save: boolean;
     public sourceview: boolean;
     public sourceview_include_jcl_files: boolean;
     public sourceview_include_hlasm_files: boolean;
@@ -199,7 +195,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.process_metadata_cache_on_start = false;
         this.cache_metadata = CacheDirectoryStrategy.Off;
         this.cache_metadata_inactivity_timeout = 5000;
-        this.cache_metadata_max_directory_scan_depth = 32;
         this.cache_metadata_show_progress_messages = false;
         this.parse_copybooks_for_references = false;
         this.workspacefolders_order = [];
@@ -212,7 +207,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_comments_for_hints = false;
         this.scan_comment_copybook_token = "source-dependency";
         this.coboldoc_workspace_folder = "coboldoc";
-        this.process_metadata_cache_on_file_save = false;
         this.editor_maxTokenizationLineLength = 20000;
         this.sourceview = false;
         this.sourceview_include_jcl_files = true;
