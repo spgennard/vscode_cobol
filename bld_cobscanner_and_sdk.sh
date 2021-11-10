@@ -16,7 +16,6 @@ rm -rf cobscanner && mkdir cobscanner
 cp ./out/cobscanner.js cobscanner/
 cp ./out/cobscannerdata.js cobscanner/
 cp ./out/consoleexternalfeatures.js cobscanner/
-cp ./out/cobolglobalcache_file.js cobscanner/
 cp ./out/globalcachehelper.js cobscanner/
 cp ./out/cobolsymboltableeventhelper.js cobscanner/
 cp ./out/iconfiguration.js cobscanner/
@@ -35,7 +34,6 @@ cp -r ./out/keywords cobscanner/
 cd cobscanner
 export npm_config_loglevel=silent
 npm init -y >/dev/null
-npm install lzjs
 npm install n-readlines
 npm install performance-now
 npm install minimatch
