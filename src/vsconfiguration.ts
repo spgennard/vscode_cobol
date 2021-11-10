@@ -52,7 +52,6 @@ export class VSCOBOLConfiguration {
 
         vsconfig.scan_comment_copybook_token = getscan_comment_copybook_token();
         vsconfig.process_metadata_cache_on_file_save = getBoolean("process_metadata_cache_on_file_save", false);
-        vsconfig.cache_metadata_user_directory = getString("cache_metadata_user_directory", "");
         vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration("editor").get<number>("maxTokenizationLineLength", 20000);
 
         vsconfig.sourceview = getBoolean("sourceview", false);
@@ -116,7 +115,6 @@ export class VSCOBOLConfiguration {
         vsconfig.cache_metadata_max_directory_scan_depth = 1;
         vsconfig.cache_metadata_show_progress_messages = false;
         vsconfig.process_metadata_cache_on_file_save = false;
-        vsconfig.cache_metadata_user_directory = "";
         vsconfig.editor_maxTokenizationLineLength = 1;
         vsconfig.sourceview = false;
         vsconfig.format_on_return = formatOnReturn.Off;
@@ -201,15 +199,6 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
         expEnabled = defaultValue;
     }
     return expEnabled;
-}
-
-function getString(configSection: string, defaultValue: string): string {
-    const editorConfig = workspace.getConfiguration("coboleditor");
-    let strValue = editorConfig.get<string>(configSection);
-    if (strValue === undefined || strValue === null) {
-        strValue = defaultValue;
-    }
-    return strValue;
 }
 
 function getNumber(configSection: string, defaultValue: number): number {

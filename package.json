@@ -99,8 +99,6 @@
       "supported": "limited",
       "restrictedConfigurations": [
         "coboleditor.process_metadata_cache_on_file_save",
-        "coboleditor.cache_metadata",
-        "coboleditor.cache_metadata_user_directory",
         "coboleditor.cache_metadata_inactivity_timeout",
         "coboleditor.cache_metadata_max_directory_scan_depth",
         "coboleditor.cache_metadata_show_progress_messages",

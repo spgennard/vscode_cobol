@@ -62,7 +62,6 @@ export interface ICOBOLSettings {
     cache_metadata_show_progress_messages: boolean;
     scan_comment_copybook_token: string;
     process_metadata_cache_on_file_save: boolean;
-    cache_metadata_user_directory: string;
     sourceview: boolean;
     sourceview_include_jcl_files: boolean;
     sourceview_include_hlasm_files: boolean;
@@ -140,7 +139,6 @@ export class COBOLSettings implements ICOBOLSettings {
     public scan_comment_copybook_token: string;
     public cache_metadata_show_progress_messages: boolean;
     public process_metadata_cache_on_file_save: boolean;
-    public cache_metadata_user_directory: string;
     public sourceview: boolean;
     public sourceview_include_jcl_files: boolean;
     public sourceview_include_hlasm_files: boolean;
@@ -215,7 +213,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_comment_copybook_token = "source-dependency";
         this.coboldoc_workspace_folder = "coboldoc";
         this.process_metadata_cache_on_file_save = false;
-        this.cache_metadata_user_directory = "";
         this.editor_maxTokenizationLineLength = 20000;
         this.sourceview = false;
         this.sourceview_include_jcl_files = true;

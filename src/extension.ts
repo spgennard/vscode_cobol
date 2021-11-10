@@ -30,9 +30,6 @@ import { ICOBOLSettings } from "./iconfiguration";
 const propertiesReader = require("properties-reader");
 
 import { getVSWorkspaceFolders } from "./cobolfolders";
-// import { COBOLDocumentationGenerator } from './coboldocgenerator';
-// import { CobolCommentProvider } from './cobolcommentprovider';
-import { COBOLSourceScannerUtils } from "./cobolsourcescannerutils";
 import { COBOLSourceDefinition } from "./sourcedefinitionprovider";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCobScanner } from "./vscobscanner";
@@ -1183,7 +1180,6 @@ export async function deactivateAsync(): Promise<void> {
 
 
 export async function deactivate(): Promise<void> {
-    COBOLSourceScannerUtils.cleanup();  // drop the tmp file
     if (bldscriptTaskProvider) {
         bldscriptTaskProvider.dispose();
     }
