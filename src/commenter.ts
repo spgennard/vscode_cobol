@@ -126,9 +126,7 @@ function toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: 
 
 function multipleToggleLine(edit: TextEditorEdit, d: TextDocument, sel: Selection, format: ESourceFormat) {
     for (let line = sel.start.line; line <= sel.end.line; line++) {
-        if (sel.start.character === 0) {
-            toggleLine(edit, d, line, format);
-        }
+        toggleLine(edit, d, line, format);
     }
 }
 
