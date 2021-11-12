@@ -1524,126 +1524,114 @@
     "problemPatterns": [
       {
         "name": "mfcobol-msbuild",
-        "regexp": "^.*(\\S+)\\((\\d+),(\\d+)\\).*(error|warning)(.*)\\[.*$",
+        "regexp": "^.*(\\S+)\\((\\d+,\\d+)\\).*(error|warning)(.*)\\[.*$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "severity": 4,
-        "message": 5
+        "location": 2,
+        "severity": 3,
+        "message": 4
       },
       {
         "name": "mfcobol-errformat2-netx-sx",
-        "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+),(\\d+).*\\).*$",
+        "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):\\s+(.*)\\((\\d+,\\d+).*\\).*$",
         "code": 1,
         "severity": 2,
         "message": 3,
         "file": 4,
-        "line": 5,
-        "column": 6
+        "location": 5
       },
       {
         "name": "mfcobol-errformat2-copybook-netx-sx",
-        "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):[^,]+,(.*)\\((\\d+),(\\d+).*\\).*$",
+        "regexp": "^\\*+\\s+(COBCH\\d+)([USEWI])\\s+([^:]+):[^,]+,(.*)\\((\\d+,\\d+).*\\).*$",
         "code": 1,
         "severity": 2,
         "message": 3,
         "file": 4,
-        "line": 5,
-        "column": 6
+        "location": 5
       },
       {
         "name": "mfcobol-errformat3-netx-sx",
-        "regexp": "^(.*)\\((\\d+),(\\d+)\\)\\s+:\\s+(unrecoverable|severe|error|warning|information)\\s+(\\d+)\\s+:\\s+(.*)$",
+        "regexp": "^(.*)\\((\\d+,\\d+)\\)\\s+:\\s+(unrecoverable|severe|error|warning|information)\\s+(\\d+)\\s+:\\s+(.*)$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "severity": 4,
-        "code": 5,
-        "message": 6
+        "location": 2,
+        "severity": 3,
+        "code": 4,
+        "message": 5
       },
       {
         "name": "mfcobol-errformat2",
-        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+),(\\d+),.*\\)$",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+,\\d+),.*\\)$",
         "code": 1,
         "severity": 2,
         "message": 3,
         "file": 4,
-        "line": 5,
-        "column": 6
+        "location": 5
       },
       {
         "name": "mfcobol-errformat2-copybook",
-        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]+,(\\S.*)\\((\\d+),(\\d+),.*\\).*$",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]+,(\\S.*)\\((\\d+,\\d+),.*\\).*$",
         "code": 1,
         "severity": 2,
         "message": 3,
         "file": 4,
-        "line": 5,
-        "column": 6
+        "location": 5
       },
       {
         "name": "mfcobol-errformat2-basefn",
-        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+)(\\d+)[,].*\\).*$",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([a-zA-Z])\\s+([^:]+):\\s+[\\.\\/].*[\\/](\\S*)\\((\\d+,\\d+)[,].*\\).*$",
         "code": 1,
         "severity": 2,
         "message": 3,
         "file": 4,
-        "line": 5,
-        "column": 6
+        "location": 5
       },
       {
         "name": "mfcobol-errformat3-absolute",
-        "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
+        "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+,\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "severity": 4,
-        "code": 5,
-        "message": 6
+        "location": 2
+        "severity": 3,
+        "code": 4,
+        "message": 5
       },
       {
         "name": "mfcobol-errformat3",
-        "regexp": "(.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "(.*)\\((\\d+,\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "severity": 4,
-        "code": 5,
-        "message": 6
+        "location": 2,
+        "severity": 3,
+        "code": 4,
+        "message": 5
       },
       {
         "name": "mfcobol-errformat3-info",
-        "regexp": "(.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "(.*)\\((\\d+,\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "code": 5,
-        "message": 6
+        "location": 2,
+        "code": 4,
+        "message": 5
       },
       {
         "name": "mfcobol-errformat3-basefn",
-        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+,\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "severity": 4,
-        "code": 5,
-        "message": 6
+        "location": 2,
+        "severity": 3,
+        "code": 4,
+        "message": 5
       },
       {
         "name": "mfcobol-errformat3-info-basefn",
-        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+,\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
-        "line": 2,
-        "column": 3,
-        "code": 4,
-        "message": 6
+        "location": 2,
+        "code": 3,
+        "message": 5
       },
       {
         "name": "cobolit-cobc",
         "regexp": "^(.*):(\\d+): ([eE]rror|[wW]arning):\\s+(.*)$",
         "file": 1,
-        "line": 2,
+        "location": 2,
         "severity": 3,
         "message": 4
       },
@@ -1651,14 +1639,14 @@
         "name": "cobolit-note-cobc",
         "regexp": "^(.*):(\\d+): ([nN]ote:|[wW]arning: ->)\\s+(.*)$",
         "file": 1,
-        "line": 2,
+        "location": 2,
         "message": 4
       },
       {
         "name": "acucobol-ccbl",
         "regexp": "^(.*),\\sline\\s(\\d+):\\s(.*)$",
         "file": 1,
-        "line": 2,
+        "location": 2,
         "message": 3,
         "loop": true
       },
@@ -1666,7 +1654,7 @@
         "name": "acucobol-warning-ccbl",
         "regexp": "^(.*),\\sline\\s(\\d+):\\s(Warning|warning):\\s(.*)$",
         "file": 1,
-        "line": 2,
+        "location": 2,
         "severity": 3,
         "message": 4,
         "loop": true
@@ -1676,7 +1664,7 @@
         "patterns": [
           {
             "regexp": "^Error at line (\\d+), column (\\d+) in file (.*)$",
-            "line": 1,
+            "location": 1,
             "column": 2,
             "file": 3
           },
