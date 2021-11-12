@@ -1,3 +1,4 @@
+100
 Error at line 1498, column 12 in file /tmp/MYPRG.pco
            EXEC SQL
 ...........1

@@ -1563,7 +1563,7 @@
       },
       {
         "name": "mfcobol-errformat2",
-        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+),(\\d+),.*\\)$",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+(.*)\\s+(.*)\\((\\d+),(\\d+),.*\\)$",
         "code": 1,
         "severity": 2,
         "message": 3,
@@ -1593,7 +1593,7 @@
       },
       {
         "name": "mfcobol-errformat3-absolute",
-        "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
+        "regexp": "(.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
         "file": 1,
         "line": 2,
         "column": 3,
@@ -1622,7 +1622,7 @@
       },
       {
         "name": "mfcobol-errformat3-basefn",
-        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "\\.\\..*[\/\\x5c](.*)\\((\\d+),(\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
         "line": 2,
         "column": 3,
@@ -1632,7 +1632,7 @@
       },
       {
         "name": "mfcobol-errformat3-info-basefn",
-        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "\\.\\..*[\/\\x5c](.*)\\((\\d+),(\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
         "line": 2,
         "column": 3,

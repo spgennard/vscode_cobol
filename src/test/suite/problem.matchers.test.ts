@@ -71,9 +71,6 @@ suite("Issues Raised Test Suite", () => {
 							if (!isNaN(possiblePassLevel)) {
 								passlevel = possiblePassLevel;
 								console.log(` % pass level set @ ${passlevel}`);
-							} else {
-								lines = lines.splice(0,0, firstLine);
-								console.log(` % pass level set @ ${passlevel} (default)`);
 							}
 						}
 						for (const compilerOutput of lines) {

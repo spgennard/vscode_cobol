@@ -1,3 +1,4 @@
+50
             move wid-pd00016                       to whs-arquivo
 \\10.10.10.1\Sistemas\P\11.68.00.26\usuario\uname\fontes\pw09017b.cbl(396,65) : warning 1247 : Truncated MOVE. Source length (265) exceeds target length (255)
             move wid-pd09400                       to whs-arquivo
