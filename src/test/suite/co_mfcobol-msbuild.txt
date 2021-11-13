@@ -1,0 +1,8 @@
+100
+ D:\Program1.cbl(4,1): error COBCH9999: wibble error [D:\Program1.cblproj]
+  D:\subdir\Program1.cbl(4,1): error COBCH9999: wibble error [D:\Program1.cblproj]
+  D:\Program1.cbl(4,1): error COBCH9999: wibble error [D:\Program1.cblproj]
+ D:\Program1.cbl(4,1): error COBCH9999: wibble error [D:\Program1.cblproj]
+  D:\subdir\Program1.cbl(4,1): error COBCH9999: wibble error [D:\subdir\Program1.cblproj]
+/subdir/Program1.cbl(4,1): error COBCH9999: wibble error [/subdir/Program1.cblproj]
+ /subdir/Program1.cbl(4,1): error COBCH9999: wibble error [/subdir/Program1.cblproj]
