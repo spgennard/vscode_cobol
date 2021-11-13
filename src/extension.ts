@@ -866,14 +866,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
         linter.updateLinter(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
-    progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
-    progressStatusBarItem.hide();
-    context.subscriptions.push(progressStatusBarItem);
-
     if (window.activeTextEditor !== undefined) {
         updateDecorations(window.activeTextEditor);
         linter.updateLinter(window.activeTextEditor.document);
     }
+
+    progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
+    progressStatusBarItem.hide();
+    context.subscriptions.push(progressStatusBarItem);
+
 
     // Open context menu on current file
     const disposable4mfurun = vscode.commands.registerCommand("cobolplugin.mfurunMenu", function (fileUri) {
