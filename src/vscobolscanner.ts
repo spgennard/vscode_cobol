@@ -151,6 +151,7 @@ export class VSCOBOLSourceScanner {
                         if (await VSPreProc.registerPreProcessors(config) === false) {
                             return undefined;
                         }
+                        return undefined;
                     };
                 }
 

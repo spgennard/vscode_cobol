@@ -20,7 +20,12 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
 	    "allowSyntheticDefaultImports" : true,
-        "noUnusedLocals": true
+        "noUnusedLocals": true,
+        "pretty": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true
     },
     "exclude": [
         "node_modules",
