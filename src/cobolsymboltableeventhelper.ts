@@ -7,20 +7,16 @@ import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COB
 
 
 export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
-    private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
     private parse_copybooks_for_references: boolean;
-    private config: ICOBOLSettings;
     private sender: ICOBOLSourceScannerEventer;
 
     public constructor(config: ICOBOLSettings, sender: ICOBOLSourceScannerEventer) {
         this.sender = sender;
-        this.config = config;
         this.parse_copybooks_for_references = config.parse_copybooks_for_references;
     }
 
     public start(qp: ICOBOLSourceScanner): void {
-        this.qp = qp;
         this.st = new COBOLSymbolTable();
         this.st.fileName = qp.filename;
         this.st.lastModifiedTime = qp.lastModifiedTime;

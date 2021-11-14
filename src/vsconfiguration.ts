@@ -2,12 +2,11 @@
 "use strict";
 
 import { workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, ICOBOLSettings_depreciated } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
-    private static config_depreciated: ICOBOLSettings_depreciated|undefined = undefined;
 
     public static externalFeatures: IExternalFeatures;
 
@@ -131,9 +130,8 @@ export class VSCOBOLConfiguration {
     }
 
 
-    public static reinit(depconfig: ICOBOLSettings_depreciated|undefined) : ICOBOLSettings {
+    public static reinit() : ICOBOLSettings {
         VSCOBOLConfiguration.config.init_required = true;
-        VSCOBOLConfiguration.config_depreciated = depconfig;
         return VSCOBOLConfiguration.get();
     }
 }

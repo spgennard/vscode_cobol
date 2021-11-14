@@ -46,7 +46,6 @@ class COBOLDocumentSymbols {
 }
 
 class ProgramSymbols extends COBOLDocumentSymbols {
-    private symCount = 0;
     private divCount = 0;
 
     private currentDivisionSymbols: vscode.DocumentSymbol[] | undefined;
@@ -65,7 +64,6 @@ class ProgramSymbols extends COBOLDocumentSymbols {
             this.currentDivisionSymbols?.push(currentDivisionSymbol);
         }
         this.divCount++;
-        this.symCount++;
 
         this.currentSectionSymbols = undefined;
 
@@ -76,7 +74,6 @@ class ProgramSymbols extends COBOLDocumentSymbols {
 
     public addSection(token: COBOLToken) {
         this.divCount++;
-        this.symCount++;
 
         const sym = super.newDocumentSymbol(token, vscode.SymbolKind.Method, false);
 
@@ -85,7 +82,6 @@ class ProgramSymbols extends COBOLDocumentSymbols {
     }
 
     public addParagraph(token: COBOLToken) {
-        this.symCount++;
 
         const sym = super.newDocumentSymbol(token, vscode.SymbolKind.Method, false);
         if (this.currentSectionSymbols !== undefined) {
@@ -243,13 +239,6 @@ class ProgramSymbols extends COBOLDocumentSymbols {
 }
 
 export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
-
-    private getDocumentSymbol(token: COBOLToken, symKind: vscode.SymbolKind): vscode.DocumentSymbol {
-        const srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-            new vscode.Position(token.endLine, token.endColumn));
-
-        return new vscode.DocumentSymbol(token.tokenName, token.description, symKind, srange, srange);
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.DocumentSymbol[]> {

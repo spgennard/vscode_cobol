@@ -497,7 +497,7 @@ export function getCurrentContext(): ExtensionContext {
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
@@ -517,7 +517,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
 
         if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
@@ -707,7 +707,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(clearGlobalCache);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(async () => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
         activateLogChannelAndPaths(false, settings, true);
     });

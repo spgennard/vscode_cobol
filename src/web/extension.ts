@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
     VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
 
     const commands = vscode.commands;
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(undefined);
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
         cobolProgram.move2pd();
