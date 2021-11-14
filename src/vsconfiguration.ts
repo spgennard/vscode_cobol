@@ -62,7 +62,6 @@ export class VSCOBOLConfiguration {
         vsconfig.format_on_return = workspace.getConfiguration("coboleditor").get<formatOnReturn>("format_on_return", formatOnReturn.Off);
 
         vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
-        vsconfig.maintain_metadata_cache_single_folder = getBoolean("maintain_metadata_cache_single_folder", false);
         vsconfig.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
         vsconfig.metadata_symbols = getmetadata_symbols(vsconfig);
         vsconfig.metadata_entrypoints = getmetadata_entrypoints(vsconfig);
@@ -113,7 +112,6 @@ export class VSCOBOLConfiguration {
         vsconfig.format_on_return = formatOnReturn.Off;
 
         vsconfig.maintain_metadata_cache = false;
-        vsconfig.maintain_metadata_cache_single_folder = false;
         vsconfig.maintain_metadata_recursive_search = false;
         vsconfig.metadata_symbols = [];
         vsconfig.metadata_entrypoints = [];

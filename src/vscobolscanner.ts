@@ -26,7 +26,6 @@ export class VSScanStats extends ScanStats {
 }
 
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
-    private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
     private config: ICOBOLSettings;
 
@@ -36,7 +35,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 
     public start(qp: ICOBOLSourceScanner): void {
-        this.qp = qp;
         this.st = new COBOLSymbolTable();
         this.st.fileName = qp.filename;
         this.st.lastModifiedTime = qp.lastModifiedTime;

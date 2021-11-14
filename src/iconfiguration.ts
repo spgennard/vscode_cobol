@@ -80,7 +80,6 @@ export interface ICOBOLSettings {
     metadata_knowncopybooks: string[];
 
     maintain_metadata_cache: boolean;
-    maintain_metadata_cache_single_folder: boolean;
     maintain_metadata_recursive_search: boolean;
 
     preprocessor_extensions: string[];
@@ -153,7 +152,6 @@ export class COBOLSettings implements ICOBOLSettings {
     metadata_knowncopybooks: string[];
 
     maintain_metadata_cache: boolean;
-    maintain_metadata_cache_single_folder: boolean;
     maintain_metadata_recursive_search: boolean;
 
     preprocessor_extensions: string[];
@@ -220,7 +218,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.metadata_files = [];
         this.metadata_knowncopybooks = [];
         this.maintain_metadata_cache = true;
-        this.maintain_metadata_cache_single_folder = false;
         this.maintain_metadata_recursive_search = false;
         this.enable_semantic_token_provider = false;
         this.enable_text_replacement = false;

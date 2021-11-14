@@ -139,7 +139,6 @@
         "coboleditor.metadata_knowncopybooks",
         "coboleditor.maintain_metadata_cache",
         "coboleditor.maintain_metadata_recursive_search",
-        "coboleditor.maintain_metadata_cache_single_folder",
         "coboleditor.enable_semantic_token_provider",
         "coboleditor.preprocessor_extensions",
         "coboleditor.enable_text_replacement",
@@ -643,11 +642,6 @@
         "coboleditor.maintain_metadata_recursive_search": {
           "type": "boolean",
           "description": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
-          "default": false
-        },
-        "coboleditor.maintain_metadata_cache_single_folder": {
-          "type": "boolean",
-          "description": "When 'Maintain Metadata Cache' is enabled, cache metadata using single folder",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {
