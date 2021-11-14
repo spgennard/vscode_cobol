@@ -84,7 +84,7 @@ export class Scanner {
 
         // may need more..
         settings.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
-        settings.cache_metadata_show_progress_messages = scanData.cache_metadata_show_progress_messages;
+        settings.cache_metadata_verbose_messages = scanData.cache_metadata_verbose_messages;
 
         // TODO: add in other metadata items
         COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, scanData.md_symbols, true);
@@ -157,7 +157,7 @@ export class Scanner {
                         }
                     }
 
-                    if (scanData.cache_metadata_show_progress_messages) {
+                    if (scanData.cache_metadata_verbose_messages) {
                         features.logMessage(`  Parse completed: ${file}`);
                     }
                     stats.filesScanned++;

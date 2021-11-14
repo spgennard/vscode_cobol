@@ -58,7 +58,7 @@ export interface ICOBOLSettings {
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
     scan_comments_for_hints: boolean;
-    cache_metadata_show_progress_messages: boolean;
+    cache_metadata_verbose_messages: boolean;
     scan_comment_copybook_token: string;
     sourceview: boolean;
     sourceview_include_jcl_files: boolean;
@@ -131,7 +131,7 @@ export class COBOLSettings implements ICOBOLSettings {
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
     scan_comments_for_hints: boolean;
-    cache_metadata_show_progress_messages: boolean;
+    cache_metadata_verbose_messages: boolean;
     scan_comment_copybook_token: string;
     sourceview: boolean;
     sourceview_include_jcl_files: boolean;
@@ -190,7 +190,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_item_limit = 30;
         this.process_metadata_cache_on_start = false;
         this.cache_metadata_inactivity_timeout = 5000;
-        this.cache_metadata_show_progress_messages = false;
+        this.cache_metadata_verbose_messages = false;
         this.parse_copybooks_for_references = false;
         this.workspacefolders_order = [];
         this.linter_mark_as_information = false;

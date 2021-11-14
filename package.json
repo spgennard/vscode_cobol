@@ -98,7 +98,7 @@
     "untrustedWorkspaces": {
       "supported": "limited",
       "restrictedConfigurations": [
-        "coboleditor.cache_metadata_show_progress_messages",
+        "coboleditor.cache_metadata_verbose_messages",
         "coboleditor.cache_metadata_inactivity_timeout",
         "coboleditor.outline",
         "coboleditor.pre_parse_line_limit",
@@ -278,8 +278,7 @@
           "title": "Enabled data/field completion provider",
           "default": true
         },
-        "coboleditor.cache_metadata_show_progress_messages": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+        "coboleditor.cache_metadata_verbose_messages": {
           "type": "boolean",
           "description": "Show log message during meta data processing",
           "default": false

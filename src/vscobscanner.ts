@@ -75,9 +75,9 @@ export class VSCobScanner {
             clearTimeout(timer);
 
             if (code !== 0) {
-                // if (sf.cache_metadata_show_progress_messages) {
-                VSLogger.logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
-                // }
+                if (sf.cache_metadata_verbose_messages) {
+                    VSLogger.logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
+                }
             } else {
                 progressStatusBarItem.hide();
             }
@@ -194,7 +194,7 @@ export class VSCobScanner {
 
         sf.parse_copybooks_for_references = settings.parse_copybooks_for_references;
         sf.Files = files;
-        sf.cache_metadata_show_progress_messages = settings.cache_metadata_show_progress_messages;
+        sf.cache_metadata_verbose_messages = settings.cache_metadata_verbose_messages;
         sf.md_symbols = settings.metadata_symbols;
         sf.md_entrypoints = settings.metadata_entrypoints;
         sf.md_metadata_files = settings.metadata_files;
@@ -215,7 +215,7 @@ export class VSCobScanner {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
         const settings = VSCOBOLConfiguration.get();
-      
+
         const ws = getVSWorkspaceFolders();
         const stats = new FileScanStats();
         const files: string[] = [];

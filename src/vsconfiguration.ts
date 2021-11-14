@@ -34,7 +34,7 @@ export class VSCOBOLConfiguration {
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         // vsconfig.cache_metadata = getcache_metadata();
         vsconfig.cache_metadata_inactivity_timeout = getNumber("cache_metadata_inactivity_timeout", 5000);
-        vsconfig.cache_metadata_show_progress_messages = getBoolean("cache_metadata_show_progress_messages", false);
+        vsconfig.cache_metadata_verbose_messages = getBoolean("cache_metadata_verbose_messages", false);
         vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
         vsconfig.workspacefolders_order = getWorkspacefolders_order();
         vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
@@ -107,7 +107,7 @@ export class VSCOBOLConfiguration {
         vsconfig.process_metadata_cache_on_start = false;
         vsconfig.parse_copybooks_for_references = false;
         // vsconfig.cache_metadata = CacheDirectoryStrategy.Off;
-        vsconfig.cache_metadata_show_progress_messages = false;
+        vsconfig.cache_metadata_verbose_messages = false;
         vsconfig.editor_maxTokenizationLineLength = 1;
         vsconfig.sourceview = false;
         vsconfig.format_on_return = formatOnReturn.Off;
