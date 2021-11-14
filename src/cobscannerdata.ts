@@ -12,7 +12,6 @@ export class ScanData {
     public fileCount = 0;
     public parse_copybooks_for_references = false;
     public cache_metadata_show_progress_messages = false;
-    public cacheDirectory = "";
     public Files: string[] = [];
     public showStats = true;
     public md_symbols: string[] = [];

@@ -9,7 +9,7 @@ import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from "./cobapi";
 
 import * as path from "path";
 import { ICOBOLSettings } from "./iconfiguration";
-import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
 
 export class COBOLPreprocResult {
@@ -716,8 +716,6 @@ export interface ICOBOLSourceScanner {
     filename: string;
     lastModifiedTime: BigInt;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
-    // tokensInOrder: COBOLToken[];
-    deprecatedCacheDirectory: string;
     workspaceFile: COBOLWorkspaceFile;
 }
 
@@ -793,8 +791,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    readonly deprecatedCacheDirectory: string;
-
     private eventHandler: ICOBOLSourceScannerEvents;
 
     private externalFeatures: IExternalFeatures;
@@ -812,7 +808,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
-            "",
             new SharedSourceReferences(configHandler, true),
             parse_copybooks_for_references,
             eventHandler,
@@ -834,7 +829,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
-            "",
             sharedSource,
             parse_copybooks_for_references,
             eventHandler,
@@ -842,7 +836,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
-        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true),
+        sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true),
         parse_copybooks_for_references: boolean,
         sourceEventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures) {
@@ -852,7 +846,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.sourceHandler = sourceHandler;
         this.id = sourceHandler.getUriAsString();
         this.configHandler = configHandler;
-        this.deprecatedCacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
         this.parse_copybooks_for_references = parse_copybooks_for_references;
@@ -904,19 +897,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.workspaceFile = new COBOLWorkspaceFile(this.lastModifiedTime, sourceHandler.getShortWorkspaceFilename());
 
         // setup the event handler
-        if (cacheDirectory !== null && cacheDirectory.length > 0) {
-            if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
-                this.externalFeatures.logMessage(` Skipping ${filename} as it is not a top level reference`);
-                this.eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
-            } else {
-                this.eventHandler = sourceEventHandler;
-                this.eventHandler.start(this);
-            }
-        } else {
-            if (this.sourceReferences.topLevel) {
-                this.eventHandler = sourceEventHandler;
-                this.eventHandler.start(this);
-            }
+        if (this.sourceReferences.topLevel) {
+            this.eventHandler = sourceEventHandler;
+            this.eventHandler.start(this);
         }
 
         if (this.sourceReferences.topLevel) {

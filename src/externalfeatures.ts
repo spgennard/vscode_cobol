@@ -31,12 +31,6 @@ export enum ESourceFormat {
     jcl = "jcl"
 }
 
-export enum CacheDirectoryStrategy {
-    Workspace = "workspace",
-    UserDefinedDirectory = "user_defined_directory",
-    Off = "off"
-}
-
 export class CobolLinterProviderSymbols {
     public static NotReferencedMarker_internal = "COBOL_NOT_REF";
     public static NotReferencedMarker_external = "ignore";

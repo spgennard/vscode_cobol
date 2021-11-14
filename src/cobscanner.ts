@@ -15,7 +15,6 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
-import { COBOLFileUtils } from "./fileutils";
 
 const args = process.argv.slice(2);
 const settings: ICOBOLSettings = new COBOLSettings();
@@ -37,7 +36,7 @@ class Utils {
         return hash.digest("hex");
     }
 
-    public static cacheUpdateRequired(cacheDirectory: string, nfilename: string, features: IExternalFeatures): boolean {
+    public static cacheUpdateRequired(nfilename: string, features: IExternalFeatures): boolean {
         const filename = path.normalize(nfilename);
 
         const cachedMtimeWS = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
@@ -51,18 +50,6 @@ class Utils {
             return false;
         }
 
-        if (cacheDirectory !== null && cacheDirectory.length !== 0) {
-            const fn: string = path.join(cacheDirectory, this.getHashForFilename(filename) + ".sym");
-            const fnStat = COBOLFileUtils.isFileT(fn);
-            if (fnStat[0]) {
-                const stat4cache = fnStat[1];
-                const stat4srcMS = features.getFileModTimeStamp(filename);
-                if (stat4cache !== undefined && stat4cache.mtimeMs < stat4srcMS) {
-                    return true;
-                }
-                return false;
-            }
-        }
         return true;
     }
 
@@ -157,14 +144,12 @@ export class Scanner {
         try {
             let fSendCount = 0;
             for (const file of scanData.Files) {
-                const cacheDir = scanData.cacheDirectory;
-
-                if (Utils.cacheUpdateRequired(cacheDir, file, features)) {
+                if (Utils.cacheUpdateRequired(file, features)) {
                     const filesHandler = new FileSourceHandler(file, features);
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);
-                    const qcp = new COBOLSourceScanner(filesHandler, config, cacheDir, new SharedSourceReferences(config, true), config.parse_copybooks_for_references, symbolCatcher, features);
+                    const qcp = new COBOLSourceScanner(filesHandler, config, new SharedSourceReferences(config, true), config.parse_copybooks_for_references, symbolCatcher, features);
                     if (qcp.callTargets.size > 0) {
                         stats.programsDefined++;
                         if (qcp.callTargets !== undefined) {
