@@ -31,7 +31,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
-        return COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filename, inDirectory, config, this);
+        return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, this);
     }
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
@@ -39,7 +39,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        return VSCOBOLFileUtils.getFullWorkspaceFilename(this,sdir, sdirMs);
+        return VSCOBOLFileUtils.getFullWorkspaceFilename(this, sdir, sdirMs);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,8 +52,8 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         if (folders === undefined) {
             return [];
         }
-        const foldersArray:string[] = [];
-        for(const folder of folders) {
+        const foldersArray: string[] = [];
+        for (const folder of folders) {
             foldersArray.push(folder.uri.fsPath);
         }
 
@@ -63,6 +63,30 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     public isDirectory(possibleDirectory: string): boolean {
         return COBOLFileUtils.isDirectory(possibleDirectory);
     }
+
+    public isFile(possibleFilename: string): boolean {
+        try {
+            if (fs.existsSync(possibleFilename)) {
+                // not on windows, do extra check for +x perms (protects exe & dirs)
+                // if (!COBOLFileUtils.isWin32) {
+                //     try {
+                //         fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
+                //         return false;
+                //     }
+                //     catch {
+                //         return true;
+                //     }
+                // }
+
+                return true;
+            }
+        }
+        catch {
+            return false;
+        }
+        return false;
+    }
+
 
     private fileSearchDirectory: string[] = [];
 

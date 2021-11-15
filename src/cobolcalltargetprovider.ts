@@ -50,7 +50,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename, "", config, this.features);
+                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(symbol.filename, "", config, this.features);
                                 if (fullFilename.length !== 0) {
                                     this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
                                 }
@@ -65,7 +65,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
-                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(symbol.filename, "", config, this.features);
+                                const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(symbol.filename, "", config, this.features);
                                 if (fullFilename.length !== 0) {
                                     this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
                                 }

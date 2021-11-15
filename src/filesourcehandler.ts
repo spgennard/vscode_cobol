@@ -39,7 +39,7 @@ export class FileSourceHandler implements ISourceHandler {
         this.format = ESourceFormat.unknown;
 
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
-        const docstat = fs.statSync(document, { bigint: true });
+        const docstat:fs.BigIntStats = fs.statSync(document, { bigint: true });
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
         this.documentVersionId = docstat.mtimeMs;

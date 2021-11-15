@@ -16,6 +16,7 @@ export interface IExternalFeatures {
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(): string[];
+    isFile(possibleFilename:string): boolean;
     isDirectory(possibleDirectory: string) : boolean;
     getFileModTimeStamp(filename:string):BigInt;
     getCombinedCopyBookSearchPath(): string[];

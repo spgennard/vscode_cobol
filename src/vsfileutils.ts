@@ -1,7 +1,6 @@
 import path from "path";
 import fs from "fs";
 import { getVSWorkspaceFolders } from "./cobolfolders";
-import { COBOLFileUtils } from "./fileutils";
 import { Range, TextEditor, window, workspace } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
@@ -34,7 +33,7 @@ export class VSCOBOLFileUtils {
             if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;
                 const possibleFile = path.join(folderPath, sdir);
-                if (COBOLFileUtils.isFile(possibleFile)) {
+                if (features.isFile(possibleFile)) {
                     const stat4srcMs = features.getFileModTimeStamp(possibleFile);
                     if (sdirMs === stat4srcMs) {
                         return possibleFile;
@@ -84,7 +83,7 @@ export class VSCOBOLFileUtils {
 
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
-            if (COBOLFileUtils.isFile(firstPossibleFile)) {
+            if (features.isFile(firstPossibleFile)) {
                 return firstPossibleFile;
             }
 
@@ -94,7 +93,7 @@ export class VSCOBOLFileUtils {
                 for (const ext of config.copybookexts) {
                     const possibleFile = path.join(copybookdir, filename + "." + ext);
 
-                    if (COBOLFileUtils.isFile(possibleFile)) {
+                    if (features.isFile(possibleFile)) {
                         return possibleFile;
                     }
                 }
@@ -116,7 +115,7 @@ export class VSCOBOLFileUtils {
 
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
-            if (COBOLFileUtils.isFile(firstPossibleFile)) {
+            if (features.isFile(firstPossibleFile)) {
                 return firstPossibleFile;
             }
 
@@ -126,7 +125,7 @@ export class VSCOBOLFileUtils {
                 for (const ext of config.copybookexts) {
                     const possibleFile = path.join(copybookdir, filename + "." + ext);
 
-                    if (COBOLFileUtils.isFile(possibleFile)) {
+                    if (features.isFile(possibleFile)) {
                         return possibleFile;
                     }
                 }
@@ -137,7 +136,7 @@ export class VSCOBOLFileUtils {
         return "";
     }
 
-    public static extractSelectionToCopybook(activeTextEditor: TextEditor): void {
+    public static extractSelectionToCopybook(activeTextEditor: TextEditor, features: IExternalFeatures): void {
         const sel = activeTextEditor.selection;
 
         const ran = new Range(sel.start, sel.end);
@@ -149,7 +148,7 @@ export class VSCOBOLFileUtils {
             validateInput: (copybook_filename: string): string | undefined => {
                 if (!copybook_filename || copybook_filename.indexOf(" ") !== -1 ||
                     copybook_filename.indexOf(".") !== -1 ||
-                    COBOLFileUtils.isFile(path.join(dir, copybook_filename + ".cpy"))) {
+                    features.isFile(path.join(dir, copybook_filename + ".cpy"))) {
                     return "Invalid copybook";
                 } else {
                     return undefined;

@@ -12,24 +12,10 @@ import { ICOBOLSourceScannerEventer } from "./cobolsourcescanner";
 import { COBOLFileUtils } from "./fileutils";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
 
-// class WorkerUtils {
-//     public static msleep(n: number) {
-//         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
-//     }
-
-//     public static sleep(n: number) {
-//         WorkerUtils.msleep(n * 1000);
-//     }
-// }
-
 export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ThreadConsoleExternalFeatures();
 
     public workspaceFolders: string[] = [];
-
-    private static isFile(sdir: string): boolean {
-        return COBOLFileUtils.isFile(sdir);
-    }
 
     public logMessage(message: string): void {
         if (parentPort !== null) {
@@ -94,7 +80,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
         for (const folder of this.workspaceFolders) {
             const possibleFile = path.join(folder, sdir);
-            if (ThreadConsoleExternalFeatures.isFile(possibleFile)) {
+            if (this.isFile(possibleFile)) {
                 const stat4src = fs.statSync(possibleFile, { bigint: true });
                 if (sdirMs === stat4src.mtimeMs) {
                     return possibleFile;
@@ -103,6 +89,29 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         }
 
         return undefined;
+    }
+
+    public isFile(possibleFilename:string): boolean {
+        try {
+            if (fs.existsSync(possibleFilename)) {
+                // not on windows, do extra check for +x perms (protects exe & dirs)
+                // if (!COBOLFileUtils.isWin32) {
+                //     try {
+                //         fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
+                //         return false;
+                //     }
+                //     catch {
+                //         return true;
+                //     }
+                // }
+
+                return true;
+            }
+        }
+        catch {
+            return false;
+        }
+        return false;
     }
 
     public isDirectory(possibleDirectory: string) : boolean {

@@ -74,7 +74,7 @@ function openChangeLog(): void {
         const glastVersion = currentContext.globalState.get("bitlang.cobol.version");
         if (glastVersion !== version) {
             const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
-            if (COBOLFileUtils.isFile(verFile)) {
+            if (VSExternalFeatures.isFile(verFile)) {
                 const readmeUri = vscode.Uri.file(verFile);
                 commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
                 currentContext.globalState.update("bitlang.cobol.version", version);
@@ -87,7 +87,7 @@ function openChangeLog(): void {
 
             if (glastsVersion !== lastSVersion) {
                 const verFile = path.join(extPath, `CHANGELOG_${lastSVersion}.md`);
-                if (COBOLFileUtils.isFile(verFile)) {
+                if (VSExternalFeatures.isFile(verFile)) {
                     const readmeUri = vscode.Uri.file(verFile);
                     commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
                     currentContext.globalState.update("bitlang.cobol.sversion", lastSVersion);
@@ -1069,7 +1069,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                VSCOBOLFileUtils.extractSelectionToCopybook(vscode.window.activeTextEditor);
+                VSCOBOLFileUtils.extractSelectionToCopybook(vscode.window.activeTextEditor, VSExternalFeatures);
             }
         }
     });
