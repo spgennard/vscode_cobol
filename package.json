@@ -98,7 +98,7 @@
     "untrustedWorkspaces": {
       "supported": "limited",
       "restrictedConfigurations": [
-        "coboleditor.cache_metadata_show_progress_messages",
+        "coboleditor.cache_metadata_verbose_messages",
         "coboleditor.cache_metadata_inactivity_timeout",
         "coboleditor.outline",
         "coboleditor.pre_parse_line_limit",
@@ -139,7 +139,6 @@
         "coboleditor.metadata_knowncopybooks",
         "coboleditor.maintain_metadata_cache",
         "coboleditor.maintain_metadata_recursive_search",
-        "coboleditor.maintain_metadata_cache_single_folder",
         "coboleditor.enable_semantic_token_provider",
         "coboleditor.preprocessor_extensions",
         "coboleditor.enable_text_replacement",
@@ -278,8 +277,7 @@
           "title": "Enabled data/field completion provider",
           "default": true
         },
-        "coboleditor.cache_metadata_show_progress_messages": {
-          "deprecationMessage": "This setting is depreciated and may be removed in future releases",
+        "coboleditor.cache_metadata_verbose_messages": {
           "type": "boolean",
           "description": "Show log message during meta data processing",
           "default": false
@@ -644,11 +642,6 @@
         "coboleditor.maintain_metadata_recursive_search": {
           "type": "boolean",
           "description": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
-          "default": false
-        },
-        "coboleditor.maintain_metadata_cache_single_folder": {
-          "type": "boolean",
-          "description": "When 'Maintain Metadata Cache' is enabled, cache metadata using single folder",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {
@@ -1524,7 +1517,7 @@
     "problemPatterns": [
       {
         "name": "mfcobol-msbuild",
-        "regexp": "^.*(\\S+)\\((\\d+,\\d+)\\).*(error|warning)(.*)\\[.*$",
+        "regexp": "^\\s*(.*)\\(\\d+,\\d+\\):\\s+(error|warning)\\s+(.*)\\s+\\[.*$",
         "file": 1,
         "location": 2,
         "severity": 3,
@@ -1559,7 +1552,7 @@
       },
       {
         "name": "mfcobol-errformat2",
-        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+([^:]+)[^,]\\s+(.*)\\((\\d+,\\d+),.*\\)$",
+        "regexp": "^\\*+\\s+(COB[A-Z][A-Z]\\d+)([USEWI])\\s+(.*)\\s+(.*)\\(\\d+,\\d+,.*\\)$",
         "code": 1,
         "severity": 2,
         "message": 3,
@@ -1586,7 +1579,7 @@
       },
       {
         "name": "mfcobol-errformat3-absolute",
-        "regexp": "(\\/.*|[a-zA-Z]:.*)\\((\\d+,\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
+        "regexp": "(.*)\\(\\d+,\\d+\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*)$",
         "file": 1,
         "location": 2
         "severity": 3,
@@ -1612,7 +1605,7 @@
       },
       {
         "name": "mfcobol-errformat3-basefn",
-        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+,\\d+)\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "\\.\\..*[\/\\x5c](.*)\\(\\d+,\\d+\\).*(unrecoverable|severe|error|warning|information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
         "location": 2,
         "severity": 3,
@@ -1621,7 +1614,7 @@
       },
       {
         "name": "mfcobol-errformat3-info-basefn",
-        "regexp": "\\.\\..*[/\\x5c](.*)\\((\\d+,\\d+)\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
+        "regexp": "\\.\\..*[\/\\x5c](.*)\\(\\d+,\\d+\\).*(information)\\s+(COB[A-Z][A-Z]\\d+)\\s+:\\s+(.*).*$",
         "file": 1,
         "location": 2,
         "code": 3,

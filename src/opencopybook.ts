@@ -108,7 +108,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         }
 
         if (filename !== null && filename.length !== 0) {
-            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookToFilenameOrEmpty(filename.trim(), inDirectory, config, this.features);
+            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename.trim(), inDirectory, config, this.features);
             if (fullPath.length !== 0) {
                 return new vscode.Location(
                     Uri.file(fullPath),
@@ -121,7 +121,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     }
 
-    public static expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
 
         if (inDirectory === null || inDirectory.length === 0) {
             const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);

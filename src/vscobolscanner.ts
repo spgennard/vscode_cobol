@@ -26,7 +26,6 @@ export class VSScanStats extends ScanStats {
 }
 
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
-    private qp: ICOBOLSourceScanner | undefined;
     private st: COBOLSymbolTable | undefined;
     private config: ICOBOLSettings;
 
@@ -36,7 +35,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 
     public start(qp: ICOBOLSourceScanner): void {
-        this.qp = qp;
         this.st = new COBOLSymbolTable();
         this.st.fileName = qp.filename;
         this.st.lastModifiedTime = qp.lastModifiedTime;
@@ -153,15 +151,14 @@ export class VSCOBOLSourceScanner {
                         if (await VSPreProc.registerPreProcessors(config) === false) {
                             return undefined;
                         }
+                        return undefined;
                     };
                 }
 
                 const startTime = VSExternalFeatures.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
-                const cacheDirectory = config.get_depreciated_cache_directory();
-                const qcpd = new COBOLSourceScanner(sourceHandler, config,
-                    cacheDirectory === undefined ? "" : cacheDirectory, new SharedSourceReferences(config, true),
+                const qcpd = new COBOLSourceScanner(sourceHandler, config, new SharedSourceReferences(config, true),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     VSExternalFeatures);

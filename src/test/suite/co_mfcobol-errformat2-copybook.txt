@@ -1,1 +1,2 @@
+100
 **    COBCH1209I COMP-5 is machine specific format. (future occurrences not indicated)  : X:\project\src\SOME.cob,X:\copies\STUFF.lib(49,57,52)

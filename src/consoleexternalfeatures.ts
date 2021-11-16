@@ -15,9 +15,6 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
 
     public workspaceFolders: string[] = [];
 
-    private static isFile(sdir: string): boolean {
-        return COBOLFileUtils.isFile(sdir);
-    }
 
     public logMessage(message: string): void {
         if (process.send) {
@@ -88,7 +85,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         }
         for (const folder of this.workspaceFolders) {
             const possibleFile = path.join(folder, sdir);
-            if (ConsoleExternalFeatures.isFile(possibleFile)) {
+            if (this.isFile(possibleFile)) {
                 const stat4src = fs.statSync(possibleFile, { bigint: true });
                 if (sdirMs === stat4src.mtimeMs) {
                     return possibleFile;
@@ -102,6 +99,29 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
 
     public isDirectory(possibleDirectory: string) : boolean {
         return COBOLFileUtils.isDirectory(possibleDirectory);
+    }
+
+    public isFile(possibleFilename:string): boolean {
+        try {
+            if (fs.existsSync(possibleFilename)) {
+                // not on windows, do extra check for +x perms (protects exe & dirs)
+                // if (!COBOLFileUtils.isWin32) {
+                //     try {
+                //         fs.accessSync(sdir, fs.constants.F_OK | fs.constants.X_OK);
+                //         return false;
+                //     }
+                //     catch {
+                //         return true;
+                //     }
+                // }
+
+                return true;
+            }
+        }
+        catch {
+            return false;
+        }
+        return false;
     }
 
     public getFileModTimeStamp(filename:string):BigInt {

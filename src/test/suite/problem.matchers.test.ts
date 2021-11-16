@@ -64,16 +64,13 @@ suite("Issues Raised Test Suite", () => {
 						const compilerOutputs = fs.readFileSync(possibleData);
 						let resultCount = 0;
 						let missingCount = 0;
-						let lines = compilerOutputs.toString().split("\n");
+						const lines = compilerOutputs.toString().split("\n");
 						const firstLine = lines.shift();
 						if (firstLine !== undefined) {
 							const possiblePassLevel = Number.parseInt(firstLine,10);
 							if (!isNaN(possiblePassLevel)) {
 								passlevel = possiblePassLevel;
 								console.log(` % pass level set @ ${passlevel}`);
-							} else {
-								lines = lines.splice(0,0, firstLine);
-								console.log(` % pass level set @ ${passlevel} (default)`);
 							}
 						}
 						for (const compilerOutput of lines) {

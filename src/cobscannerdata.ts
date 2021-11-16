@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import path from "path";
 import fs from "fs";
 
 export class ScanData {
@@ -11,8 +10,7 @@ export class ScanData {
     public maxDirectoryDepth = 0;
     public fileCount = 0;
     public parse_copybooks_for_references = false;
-    public cache_metadata_show_progress_messages = false;
-    public cacheDirectory = "";
+    public cache_metadata_verbose_messages = false;
     public Files: string[] = [];
     public showStats = true;
     public md_symbols: string[] = [];
@@ -64,15 +62,6 @@ function reviver(key: any, value: any): any {
     return value;
 }
 export class ScanDataHelper {
-    public static readonly scanFilename = "cobscanner.json";
-
-    public static save(cacheDirectory: string, st: ScanData): string {
-        const fn = path.join(cacheDirectory,ScanDataHelper.scanFilename);
-
-        fs.writeFileSync(fn, JSON.stringify(st,replacer));
-
-        return fn;
-    }
 
     public static load(fn: string) : ScanData {
         // const fn = path.join(cacheDirectory, ScanDataHelper.scanFilename);

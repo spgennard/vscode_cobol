@@ -79,11 +79,7 @@ export class VSPreProc {
 
         return !failed;
     }
-
-    private static msleep(n: number) {
-        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
-    }
-
+    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private static getExtension(extensionName: string): Extension<any> | undefined {
         for (const x of extensions.all) {

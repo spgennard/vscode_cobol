@@ -2,12 +2,11 @@
 "use strict";
 
 import { workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, ICOBOLSettings_depreciated } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 
 export class VSCOBOLConfiguration {
     private static config: ICOBOLSettings = new COBOLSettings();
-    private static config_depreciated: ICOBOLSettings_depreciated|undefined = undefined;
 
     public static externalFeatures: IExternalFeatures;
 
@@ -34,7 +33,7 @@ export class VSCOBOLConfiguration {
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         // vsconfig.cache_metadata = getcache_metadata();
         vsconfig.cache_metadata_inactivity_timeout = getNumber("cache_metadata_inactivity_timeout", 5000);
-        vsconfig.cache_metadata_show_progress_messages = getBoolean("cache_metadata_show_progress_messages", false);
+        vsconfig.cache_metadata_verbose_messages = getBoolean("cache_metadata_verbose_messages", false);
         vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
         vsconfig.workspacefolders_order = getWorkspacefolders_order();
         vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
@@ -62,7 +61,6 @@ export class VSCOBOLConfiguration {
         vsconfig.format_on_return = workspace.getConfiguration("coboleditor").get<formatOnReturn>("format_on_return", formatOnReturn.Off);
 
         vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
-        vsconfig.maintain_metadata_cache_single_folder = getBoolean("maintain_metadata_cache_single_folder", false);
         vsconfig.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
         vsconfig.metadata_symbols = getmetadata_symbols(vsconfig);
         vsconfig.metadata_entrypoints = getmetadata_entrypoints(vsconfig);
@@ -107,13 +105,12 @@ export class VSCOBOLConfiguration {
         vsconfig.process_metadata_cache_on_start = false;
         vsconfig.parse_copybooks_for_references = false;
         // vsconfig.cache_metadata = CacheDirectoryStrategy.Off;
-        vsconfig.cache_metadata_show_progress_messages = false;
+        vsconfig.cache_metadata_verbose_messages = false;
         vsconfig.editor_maxTokenizationLineLength = 1;
         vsconfig.sourceview = false;
         vsconfig.format_on_return = formatOnReturn.Off;
 
         vsconfig.maintain_metadata_cache = false;
-        vsconfig.maintain_metadata_cache_single_folder = false;
         vsconfig.maintain_metadata_recursive_search = false;
         vsconfig.metadata_symbols = [];
         vsconfig.metadata_entrypoints = [];
@@ -133,9 +130,8 @@ export class VSCOBOLConfiguration {
     }
 
 
-    public static reinit(depconfig: ICOBOLSettings_depreciated|undefined) : ICOBOLSettings {
+    public static reinit() : ICOBOLSettings {
         VSCOBOLConfiguration.config.init_required = true;
-        VSCOBOLConfiguration.config_depreciated = depconfig;
         return VSCOBOLConfiguration.get();
     }
 }

@@ -9,7 +9,7 @@ import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from "./cobapi";
 
 import * as path from "path";
 import { ICOBOLSettings } from "./iconfiguration";
-import { CacheDirectoryStrategy, CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
 
 export class COBOLPreprocResult {
@@ -37,7 +37,7 @@ export class COBOLPreprocessorHelper {
     }
 
     public static actionStartSection(source: string, divisionName: string): void {
-        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
+        for (const [, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
                 p.startSection(source, divisionName);
             } catch (e) {
@@ -47,7 +47,7 @@ export class COBOLPreprocessorHelper {
     }
 
     public static actionStartDivision(source: string, divisionName: string): void {
-        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
+        for (const [, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
                 p.startDivision(source, divisionName);
             } catch (e) {
@@ -92,7 +92,7 @@ export class COBOLPreprocessorHelper {
     }
 
     public static actionEnd(id: string): void {
-        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
+        for (const [, p] of COBOLPreprocessorHelper.preprocessors) {
             try {
                 p.end(id);
             } catch (e) {
@@ -716,8 +716,6 @@ export interface ICOBOLSourceScanner {
     filename: string;
     lastModifiedTime: BigInt;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
-    // tokensInOrder: COBOLToken[];
-    deprecatedCacheDirectory: string;
     workspaceFile: COBOLWorkspaceFile;
 }
 
@@ -793,8 +791,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    readonly deprecatedCacheDirectory: string;
-
     private eventHandler: ICOBOLSourceScannerEvents;
 
     private externalFeatures: IExternalFeatures;
@@ -812,7 +808,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
-            "",
             new SharedSourceReferences(configHandler, true),
             parse_copybooks_for_references,
             eventHandler,
@@ -834,7 +829,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         return new COBOLSourceScanner(sourceHandler,
             configHandler,
-            "",
             sharedSource,
             parse_copybooks_for_references,
             eventHandler,
@@ -842,7 +836,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
-        cacheDirectory: string, sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true),
+        sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true),
         parse_copybooks_for_references: boolean,
         sourceEventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures) {
@@ -852,7 +846,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.sourceHandler = sourceHandler;
         this.id = sourceHandler.getUriAsString();
         this.configHandler = configHandler;
-        this.deprecatedCacheDirectory = cacheDirectory;
         this.filename = path.normalize(filename);
         this.ImplicitProgramId = path.basename(filename, path.extname(filename));
         this.parse_copybooks_for_references = parse_copybooks_for_references;
@@ -904,19 +897,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.workspaceFile = new COBOLWorkspaceFile(this.lastModifiedTime, sourceHandler.getShortWorkspaceFilename());
 
         // setup the event handler
-        if (cacheDirectory !== null && cacheDirectory.length > 0) {
-            if (this.parse_copybooks_for_references && !this.sourceReferences.topLevel) {
-                this.externalFeatures.logMessage(` Skipping ${filename} as it is not a top level reference`);
-                this.eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
-            } else {
-                this.eventHandler = sourceEventHandler;
-                this.eventHandler.start(this);
-            }
-        } else {
-            if (this.sourceReferences.topLevel) {
-                this.eventHandler = sourceEventHandler;
-                this.eventHandler.start(this);
-            }
+        if (this.sourceReferences.topLevel) {
+            this.eventHandler = sourceEventHandler;
+            this.eventHandler.start(this);
         }
 
         if (this.sourceReferences.topLevel) {
@@ -966,8 +949,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
 
-            let giveMetadataCacheWarning = false;
-
             // Do we have some sections?
             if (preParseState.sectionsInToken === 0 && preParseState.divisionsInToken === 0) {
                 /* if we have items that could be in a data division */
@@ -995,8 +976,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     this.ImplicitProgramId = "";
                     fakeDivision.ignoreInOutlineView = true;
                     this.sourceIsCopybook = true;
-                } else {
-                    giveMetadataCacheWarning = true;
                 }
             }
 
@@ -1008,7 +987,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             // could it be COBOL (just by the comment area?)
             if (!sourceLooksLikeCOBOL && sourceHandler.getCommentCount() > 0) {
                 sourceLooksLikeCOBOL = true;
-                giveMetadataCacheWarning = true;
             }
 
             /* leave early */
@@ -1176,7 +1154,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             // setup references for unknown forward references
             const unknown = [];
             // console.log(`DEBUG: unknownReferences : ${this.sourceReferences.unknownReferences.size}`);
-            let scount = 0, vcount = 0, pcount = 0;
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
 
                 const possibleTokens = this.constantsOrVariables.get(strRef);
@@ -1193,14 +1170,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (addReference) {
                         this.transferReference(strRef, sourceRefs, this.sourceReferences.constantsOrVariablesReferences, ttype);
                     }
-                    vcount++;
                 }
                 else if (this.isVisibleSection(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Section);
-                    scount++;
                 } else if (this.isVisibleParagraph(strRef)) {
                     this.transferReference(strRef, sourceRefs, this.sourceReferences.targetReferences, COBOLTokenStyle.Paragraph);
-                    pcount++;
                 } else {
                     unknown.push(strRef);
                 }
@@ -2722,7 +2696,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     this.sourceReferences.topLevel = true;
 
                                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
+                                    COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
                                     this.sourceReferences.topLevel = true;
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                                 }

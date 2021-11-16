@@ -1,1 +1,2 @@
+100
 **    COBCH0642W Source and target start at same location  : /tmp/TO000.cob,/tmp/ext/SOME.lib(316,46)

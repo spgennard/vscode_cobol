@@ -16,6 +16,7 @@ export interface IExternalFeatures {
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(): string[];
+    isFile(possibleFilename:string): boolean;
     isDirectory(possibleDirectory: string) : boolean;
     getFileModTimeStamp(filename:string):BigInt;
     getCombinedCopyBookSearchPath(): string[];
@@ -29,12 +30,6 @@ export enum ESourceFormat {
     terminal = "terminal",
     variable = "variable",
     jcl = "jcl"
-}
-
-export enum CacheDirectoryStrategy {
-    Workspace = "workspace",
-    UserDefinedDirectory = "user_defined_directory",
-    Off = "off"
 }
 
 export class CobolLinterProviderSymbols {

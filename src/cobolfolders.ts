@@ -29,7 +29,7 @@ export function getVSWorkspaceFolders(): ReadonlyArray<WorkspaceFolder> | undefi
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const [k, v] of folderMap) {
+    for (const [, v] of folderMap) {
         rwFolder.push(v);
     }
 

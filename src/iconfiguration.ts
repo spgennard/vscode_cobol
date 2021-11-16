@@ -1,4 +1,4 @@
-import { CacheDirectoryStrategy, ESourceFormat } from "./externalfeatures";
+import { ESourceFormat } from "./externalfeatures";
 
 export enum outlineFlag {
     On = "on",
@@ -58,7 +58,7 @@ export interface ICOBOLSettings {
     ignore_unsafe_extensions: boolean;
     coboldoc_workspace_folder: string;
     scan_comments_for_hints: boolean;
-    cache_metadata_show_progress_messages: boolean;
+    cache_metadata_verbose_messages: boolean;
     scan_comment_copybook_token: string;
     sourceview: boolean;
     sourceview_include_jcl_files: boolean;
@@ -80,7 +80,6 @@ export interface ICOBOLSettings {
     metadata_knowncopybooks: string[];
 
     maintain_metadata_cache: boolean;
-    maintain_metadata_cache_single_folder: boolean;
     maintain_metadata_recursive_search: boolean;
 
     preprocessor_extensions: string[];
@@ -94,85 +93,80 @@ export interface ICOBOLSettings {
     enable_source_scanner: boolean;
 
     valid_cobol_language_ids: string[];
-
-    get_depreciated_cache_directory(): string|undefined;
-    set_depreciated_cache_directory(config: ICOBOLSettings_depreciated|undefined):void;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
-    public tabstops: number[];
-    public copybookexts: string[];
-    public copybooks_nested: boolean;
-    public enable_tabstop: boolean;
-    public pre_parse_line_limit: number;
-    public outline: outlineFlag;
-    public copybookdirs: string[];
-    public linter: boolean;
-    public line_comment: boolean;
-    public invalid_copybookdirs: string[];
-    public fileformat_strategy: string;
-    public enable_data_provider: boolean;
-    public disable_unc_copybooks_directories: boolean;
-    public intellisense_include_unchanged: boolean;
-    public intellisense_include_camelcase: boolean;
-    public intellisense_include_uppercase: boolean;
-    public intellisense_include_lowercase: boolean;
-    public intellisense_item_limit: number;
-    public process_metadata_cache_on_start: boolean;
-    public cache_metadata: CacheDirectoryStrategy;
-    public cache_metadata_inactivity_timeout: number;
-    public parse_copybooks_for_references: boolean;
-    public workspacefolders_order: string[];
-    public linter_mark_as_information: boolean;
-    public linter_unused_paragraphs_or_sections: boolean;
-    public linter_house_standards: boolean;
-    public linter_house_standards_rules: string[];
-    public linter_ignore_section_before_entry: boolean;
-    public linter_ignore_missing_copybook: boolean;
-    public ignore_unsafe_extensions: boolean;
-    public coboldoc_workspace_folder: string;
-    public program_extensions: string[];
-    public scan_comments_for_hints: boolean;
-    public scan_comment_copybook_token: string;
-    public cache_metadata_show_progress_messages: boolean;
-    public sourceview: boolean;
-    public sourceview_include_jcl_files: boolean;
-    public sourceview_include_hlasm_files: boolean;
-    public sourceview_include_pli_files: boolean;
-    public sourceview_include_doc_files: boolean;
-    public sourceview_include_script_files: boolean;
-    public sourceview_include_object_files: boolean;
-    public format_on_return: formatOnReturn;
-    public editor_maxTokenizationLineLength: number;
-    public format_constants_to_uppercase: boolean;
-    public init_required = true;
-    public metadata_symbols: string[];
-    public metadata_entrypoints: string[];
-    public metadata_types: string[];
-    public metadata_files: string[];
-    public metadata_knowncopybooks: string[];
+    enable_tabstop: boolean;
+    pre_parse_line_limit: number;
+    copybooks_nested: boolean;
+    outline: outlineFlag;
+    copybookdirs: string[];
+    invalid_copybookdirs: string[];
+    copybookexts: string[];
+    program_extensions: string[];
+    tabstops: number[];
+    linter: boolean;
+    line_comment: boolean;
+    fileformat_strategy: string;
+    enable_data_provider: boolean;
+    disable_unc_copybooks_directories: boolean;
+    intellisense_include_unchanged: boolean;
+    intellisense_include_camelcase: boolean;
+    intellisense_include_uppercase: boolean;
+    intellisense_include_lowercase: boolean;
+    intellisense_item_limit: number;
+    process_metadata_cache_on_start: boolean;
+    // cache_metadata: CacheDirectoryStrategy;
+    cache_metadata_inactivity_timeout: number;
+    parse_copybooks_for_references: boolean;
+    workspacefolders_order: string[];
+    linter_mark_as_information: boolean;
+    linter_unused_paragraphs_or_sections: boolean;
+    linter_house_standards: boolean;
+    linter_house_standards_rules: string[];
+    linter_ignore_section_before_entry: boolean;
+    linter_ignore_missing_copybook: boolean;
 
-    public maintain_metadata_cache: boolean;
-    public maintain_metadata_cache_single_folder: boolean;
-    public maintain_metadata_recursive_search: boolean;
+    ignore_unsafe_extensions: boolean;
+    coboldoc_workspace_folder: string;
+    scan_comments_for_hints: boolean;
+    cache_metadata_verbose_messages: boolean;
+    scan_comment_copybook_token: string;
+    sourceview: boolean;
+    sourceview_include_jcl_files: boolean;
+    sourceview_include_hlasm_files: boolean;
+    sourceview_include_pli_files: boolean;
+    sourceview_include_doc_files: boolean;
+    sourceview_include_script_files: boolean;
+    sourceview_include_object_files: boolean;
 
-    public preprocessor_extensions: string[];
+    format_constants_to_uppercase: boolean;
+    format_on_return: formatOnReturn;
+    editor_maxTokenizationLineLength: number;
+    init_required: boolean;
 
-    public enable_semantic_token_provider: boolean;
+    metadata_symbols: string[];
+    metadata_entrypoints: string[];
+    metadata_types: string[];
+    metadata_files: string[];
+    metadata_knowncopybooks: string[];
 
-    public enable_text_replacement: boolean;
+    maintain_metadata_cache: boolean;
+    maintain_metadata_recursive_search: boolean;
 
-    public removed_margin: boolean;
+    preprocessor_extensions: string[];
 
-    public editor_margin_files: IEditorMarginFiles[];
+    enable_semantic_token_provider: boolean;
 
-    public enable_source_scanner: boolean;
+    enable_text_replacement: boolean;
 
-    public valid_cobol_language_ids: string[];
+    editor_margin_files: IEditorMarginFiles[];
 
-    private depconfig: ICOBOLSettings_depreciated|undefined;
+    enable_source_scanner: boolean;
 
+    valid_cobol_language_ids: string[];
     constructor() {
+        this.init_required = true;
         this.enable_tabstop = true;
         this.pre_parse_line_limit = 25;
         this.copybooks_nested = false;
@@ -193,9 +187,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_include_lowercase = false;
         this.intellisense_item_limit = 30;
         this.process_metadata_cache_on_start = false;
-        this.cache_metadata = CacheDirectoryStrategy.Off;
         this.cache_metadata_inactivity_timeout = 5000;
-        this.cache_metadata_show_progress_messages = false;
+        this.cache_metadata_verbose_messages = false;
         this.parse_copybooks_for_references = false;
         this.workspacefolders_order = [];
         this.linter_mark_as_information = false;
@@ -225,11 +218,9 @@ export class COBOLSettings implements ICOBOLSettings {
         this.metadata_files = [];
         this.metadata_knowncopybooks = [];
         this.maintain_metadata_cache = true;
-        this.maintain_metadata_cache_single_folder = false;
         this.maintain_metadata_recursive_search = false;
         this.enable_semantic_token_provider = false;
         this.enable_text_replacement = false;
-        this.removed_margin = false;
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
         this.valid_cobol_language_ids = [
@@ -239,16 +230,5 @@ export class COBOLSettings implements ICOBOLSettings {
             "ACUCOBOL",
             "COBOL_MF_LISTFILE"
         ];
-    }
-
-    public get_depreciated_cache_directory(): string|undefined {
-        if (this.depconfig !== undefined) {
-            return this.depconfig.get_depreciated_cache_directory();
-        }
-        return undefined;
-    }
-
-    public set_depreciated_cache_directory(config_depreciated: ICOBOLSettings_depreciated|undefined) {
-        this.depconfig = config_depreciated;
     }
 }

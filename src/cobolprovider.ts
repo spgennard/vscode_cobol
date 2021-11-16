@@ -28,13 +28,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 const words = sf.cache4PerformTargets;
 
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                for (const [key, token] of sf.sections) {
+                for (const [, token] of sf.sections) {
                     if (token.inProcedureDivision) {
                         words.add(token);
                     }
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                for (const [key, token] of sf.paragraphs) {
+                for (const [, token] of sf.paragraphs) {
                     if (token.inProcedureDivision) {
                         words.add(token);
                     }
@@ -55,13 +55,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         if (sf !== undefined) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [key, token] of sf.sections) {
+            for (const [, token] of sf.sections) {
                 if (token.inProcedureDivision) {
                     items.push(new CompletionItem(token.tokenName, CompletionItemKind.Method));
                 }
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [key, token] of sf.paragraphs) {
+            for (const [, token] of sf.paragraphs) {
                 if (token.inProcedureDivision) {
                     items.push(new CompletionItem(token.tokenName, CompletionItemKind.Method));
                 }
