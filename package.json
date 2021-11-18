@@ -1657,9 +1657,9 @@
       },
       {
         "name": "acucobol-warning-ccbl",
-        "regexp": "^(.*),\\sline\\s(\\d+):\\s(Warning|warning):\\s(.*)$",
+        "regexp": "^(.*),\\sline\\s(\\d+):\\s([Ww]arning):\\s(.*)$",
         "file": 1,
-        "line": 2,
+        "location": 2,
         "severity": 3,
         "message": 4,
         "loop": true
