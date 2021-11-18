@@ -1,0 +1,4 @@
+100
+main.cbl, line 8: Illegal level number: STUFF
+main.cbl, line 10: Illegal level number: 0X
+./cpybook.cpy, line 1: VALUE type error: WS-CPYBOOK-ITEM1
