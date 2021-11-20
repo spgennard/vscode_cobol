@@ -4,9 +4,6 @@ import { ISourceHandler } from "./isourcehandler";
 import minimatch from "minimatch";
 
 
-export const sourceformatMessages: string[] = ["unknown", "fixed", "free", "variable"];
-
-
 function isNumber(value: string | number): boolean {
     if (value.toString().length === 0) {
         return false;

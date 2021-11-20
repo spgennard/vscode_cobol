@@ -135,21 +135,21 @@ export enum COBOLTokenStyle {
     Null = "Null"
 }
 
-export enum CobolDocStyle {
-    unknown = "unknown",
-    MSDN = "MSDN",
-    COBOLDOC = "COBOLDOC",
-    ISCOBOL = "ISCOBOL",
-    FUJITSU = "FUJITSU",
-    OCDOC = "OCDOC"
-}
+// export enum CobolDocStyle {
+//     unknown = "unknown",
+//     MSDN = "MSDN",
+//     COBOLDOC = "COBOLDOC",
+//     ISCOBOL = "ISCOBOL",
+//     FUJITSU = "FUJITSU",
+//     OCDOC = "OCDOC"
+// }
 
-export enum CobolTagStyle {
-    unknown = "unknown",
-    FREE = "FREE",
-    MICROFOCUS = "MICROFOCUS",
-    OCDOC = "OCDOC"
-}
+// export enum CobolTagStyle {
+//     unknown = "unknown",
+//     FREE = "FREE",
+//     MICROFOCUS = "MICROFOCUS",
+//     OCDOC = "OCDOC"
+// }
 
 export function camelize(text: string): string {
     let ret = "";
@@ -717,10 +717,6 @@ export interface ICOBOLSourceScanner {
     lastModifiedTime: BigInt;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
     workspaceFile: COBOLWorkspaceFile;
-}
-
-export interface ICOBOLLogger {
-    logMessage(message: string): void;
 }
 
 export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerEvents {

@@ -54,9 +54,6 @@ let bldscriptTaskProvider: vscode.Disposable | undefined;
 let shown_enable_semantic_token_provider = false;
 let messageBoxDone = false;
 
-
-export const currentHostInformation = `${os.hostname()}/${os.userInfo().username}`;
-
 const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
@@ -488,12 +485,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             });
     }
 }
-
-
-export function getCurrentContext(): ExtensionContext {
-    return currentContext;
-}
-
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;

@@ -77,7 +77,3 @@ export class COBOLSymbol {
         return Object.assign(new COBOLSymbol(), d);
     }
 }
-
-
-
-export const InMemoryFileSymbolCache: Map<string, COBOLSymbolTable> = new Map<string, COBOLSymbolTable>();

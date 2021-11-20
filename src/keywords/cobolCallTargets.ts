@@ -41,12 +41,12 @@ addApis(ile_datatime);
 addApis(cbl_apis);
 
 
-/* inline decl */
-export function getCallTarget(api: string):CallTarget|undefined {
+// /* inline decl */
+// export function getCallTarget(api: string):CallTarget|undefined {
 
-	if (typeof callTargets[api] === "undefined") {
-		return undefined;
-	}
+// 	if (typeof callTargets[api] === "undefined") {
+// 		return undefined;
+// 	}
 
-	return callTargets[api];
-}
+// 	return callTargets[api];
+// }

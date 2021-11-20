@@ -1,5 +1,5 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { TextDocument, Uri, debug } from "vscode";
+import { TextDocument, debug } from "vscode";
 import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
@@ -7,7 +7,6 @@ import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTable } from "./cobolglobalcache";
 import { COBOLUtils } from "./cobolutils";
-import { ScanStats } from "./cobscannerdata";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 import { VSPreProc } from "./vspreproc";
 
@@ -19,10 +18,6 @@ const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSour
 export function clearCOBOLCache(): void {
     InMemoryCache.clear();
     InMemoryGlobalSymbolCache.isDirty = false;
-}
-
-export class VSScanStats extends ScanStats {
-    directoriesScannedMap: Map<string, Uri> = new Map<string, Uri>();
 }
 
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {

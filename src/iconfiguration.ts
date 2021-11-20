@@ -19,10 +19,6 @@ export interface IEditorMarginFiles {
     sourceformat: ESourceFormat;
 }
 
-export interface ICOBOLSettings_depreciated {
-    get_depreciated_cache_directory(): string|undefined;
-}
-
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_parse_line_limit: number;
