@@ -450,5 +450,4 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         return targets;
     }
-
 }
