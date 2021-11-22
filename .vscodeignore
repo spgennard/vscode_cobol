@@ -26,4 +26,5 @@ rm_git_release.sh
 tsconfig.json
 tslint.json
 webpack.config.js
+workspace.code-workspace
 CODE_OF_CONDUCT.md

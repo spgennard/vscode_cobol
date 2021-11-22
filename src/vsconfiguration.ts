@@ -69,7 +69,6 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_knowncopybooks = getmetadata_knowncopybooks(vsconfig);
         vsconfig.enable_semantic_token_provider = getBoolean("enable_semantic_token_provider", false);
         vsconfig.enable_text_replacement = getBoolean("enable_text_replacement", false);
-        vsconfig.preprocessor_extensions = getpreprocessor_extensions();
         vsconfig.editor_margin_files = getFixedFilenameConfiguration();
 
         vsconfig.enable_source_scanner = getBoolean("enable_source_scanner", true);
@@ -118,7 +117,6 @@ export class VSCOBOLConfiguration {
         vsconfig.metadata_files = [];
         vsconfig.enable_semantic_token_provider = false;
         vsconfig.enable_text_replacement = false;
-        vsconfig.preprocessor_extensions = [];
     }
 
     public static get(): ICOBOLSettings {
@@ -427,13 +425,4 @@ function getmetadata_knowncopybooks(config: ICOBOLSettings): string[] {
     }
 
     return metadata_knowncopybooks;
-}
-
-function getpreprocessor_extensions(): string[] {
-    const editorConfig = workspace.getConfiguration("coboleditor");
-    let preprocessor_extensions = editorConfig.get<string[]>("preprocessor_extensions");
-    if (!preprocessor_extensions || (preprocessor_extensions !== null && preprocessor_extensions.length === 0)) {
-        preprocessor_extensions = [];
-    }
-    return preprocessor_extensions;
 }

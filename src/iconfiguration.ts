@@ -78,8 +78,6 @@ export interface ICOBOLSettings {
     maintain_metadata_cache: boolean;
     maintain_metadata_recursive_search: boolean;
 
-    preprocessor_extensions: string[];
-
     enable_semantic_token_provider: boolean;
 
     enable_text_replacement: boolean;
@@ -150,8 +148,6 @@ export class COBOLSettings implements ICOBOLSettings {
     maintain_metadata_cache: boolean;
     maintain_metadata_recursive_search: boolean;
 
-    preprocessor_extensions: string[];
-
     enable_semantic_token_provider: boolean;
 
     enable_text_replacement: boolean;
@@ -210,7 +206,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.metadata_symbols = [];
         this.metadata_entrypoints = [];
         this.metadata_types = [];
-        this.preprocessor_extensions = [];
         this.metadata_files = [];
         this.metadata_knowncopybooks = [];
         this.maintain_metadata_cache = true;

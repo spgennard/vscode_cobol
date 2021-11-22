@@ -140,7 +140,6 @@
         "coboleditor.maintain_metadata_cache",
         "coboleditor.maintain_metadata_recursive_search",
         "coboleditor.enable_semantic_token_provider",
-        "coboleditor.preprocessor_extensions",
         "coboleditor.enable_text_replacement",
         "coboleditor.enable_source_scanner",
         "coboleditor.enable_data_provider",

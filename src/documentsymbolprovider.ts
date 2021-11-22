@@ -4,7 +4,6 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { outlineFlag } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { VSPreProc } from "./vspreproc";
 
 class SimpleStack<T> {
     _store: T[] = [];
@@ -247,10 +246,6 @@ export class CobolDocumentSymbolProvider implements vscode.DocumentSymbolProvide
         const outlineLevel = settings.outline;
 
         if (outlineLevel === outlineFlag.Off) {
-            return topLevelSymbols;
-        }
-
-        if (await VSPreProc.areAllPreProcessorsReady(settings) === false) {
             return topLevelSymbols;
         }
 

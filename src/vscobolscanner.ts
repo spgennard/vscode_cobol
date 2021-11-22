@@ -8,7 +8,6 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTable } from "./cobolglobalcache";
 import { COBOLUtils } from "./cobolutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
-import { VSPreProc } from "./vspreproc";
 
 import { VSExternalFeatures } from "./vsexternalfeatures";
 
@@ -138,18 +137,6 @@ export class VSCOBOLSourceScanner {
         /* grab, the file parse it can cache it */
         if (cachedObject === undefined) {
             try {
-                // we have to delay the setup of the pp to avoid a race condition on startup.
-                //   eg: if the ext depends on this but its exports are queried before it has
-                //        completed the activation.. it just does not work
-                if (config.preprocessor_extensions.length !== 0) {
-                    async () => {
-                        if (await VSPreProc.registerPreProcessors(config) === false) {
-                            return undefined;
-                        }
-                        return undefined;
-                    };
-                }
-
                 const startTime = VSExternalFeatures.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();

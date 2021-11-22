@@ -4,7 +4,6 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { outlineFlag } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { VSPreProc } from "./vspreproc";
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
@@ -84,10 +83,6 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
         const outlineLevel = settings.outline;
 
         if (outlineLevel === outlineFlag.Off) {
-            return symbols;
-        }
-
-        if (await VSPreProc.areAllPreProcessorsReady(settings) === false) {
             return symbols;
         }
 
