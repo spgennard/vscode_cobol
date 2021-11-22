@@ -20,15 +20,6 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         });
     }
 
-    private padInteger(num: number, sizeNumber: number): string {
-        let numS = num.toString();
-        while (numS.length < sizeNumber) {
-            numS = "0" + numS;
-        }
-
-        return numS;
-    }
-
     public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
         const lens: vscode.CodeLens[] = [];
 
@@ -36,67 +27,6 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         if (current === undefined) {
             return lens;
         }
-
-        for (const result of current.ppResults) {
-            const r = new vscode.Range(new vscode.Position(result.atLine, 0), new vscode.Position(result.atLine, result.originalLine.length));
-            const cl = new vscode.CodeLens(r);
-            let tooltip = "", tooltipLines = "";
-
-            let maxLen = 2 + result.originalLine.length;
-            if (3 + result.ppHandle.description.length > maxLen) {
-                maxLen = 3 + result.ppHandle.description.length;
-            }
-            if (3 + result.ppHandle.bugReportEmail.length > maxLen) {
-                maxLen = 3 + result.ppHandle.bugReportEmail.length;
-            }
-            if (3 + result.ppHandle.bugReportUrl.length > maxLen) {
-                maxLen = 3 + result.ppHandle.bugReportUrl.length;
-            }
-
-            let c = 0;
-            for (const line of result.replacedLines) {
-                tooltip += `${line}\n`;
-                tooltipLines += `${this.padInteger(c, 5)} : "${line}"\n`;
-                if (10 + line.length > maxLen) {
-                    maxLen = line.length + 10;
-                }
-                c += 1;
-            }
-
-            let argCopybooks = "";
-            for (const [copybook, file] of result.copybooks) {
-                argCopybooks += `${copybook} = ${file}\n`;
-                if (argCopybooks.length > maxLen) {
-                    maxLen = argCopybooks.length;
-                }
-            }
-
-            let arg = `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines\n`;
-            arg += "Original Line:";
-            arg += `"${result.originalLine}"\n`;
-            arg += "-".repeat(maxLen) + "\n";
-            arg += argCopybooks;
-            arg += "-".repeat(maxLen) + "\n";
-            arg += "LNum:\n";
-            arg += `${tooltipLines}`;
-            arg += "-".repeat(maxLen) + "\n";
-            arg += ` ${result.ppHandle.description}\n`;
-            arg += ` ${result.ppHandle.bugReportEmail}\n`;
-            arg += ` ${result.ppHandle.bugReportUrl}\n`;
-            arg += "-".repeat(maxLen) + "\n";
-
-            cl.command = {
-                title: `Preprocessor ${result.ppHandle.id} changed ${result.replacedLines.length} lines`,
-                tooltip: tooltip,
-                command: "coboleditor.ppcodelenaction",
-                arguments: [arg]
-            };
-
-            this.resolveCodeLens(cl, token);
-
-            lens.push(cl);
-        }
-
 
         for (const [, cbInfo] of current.copyBooksUsed) {
             if (cbInfo.parsed) {

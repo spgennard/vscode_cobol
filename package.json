@@ -1840,7 +1840,7 @@
     "package-web": "webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch",
     "just-compile": "tsc -b",
-    "compile": "tsc -b && ./bld_cobscanner_and_sdk.sh",
+    "compile": "tsc -b && ./bld_cobscanner.sh",
     "compile-web": "webpack",
     "test-compile": "tsc -p ./",
     "watch": "tsc -b -w",

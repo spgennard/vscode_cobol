@@ -5,102 +5,10 @@ import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBO
 
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
-import { COBOLPreprocessor, COBOLPreprocessorCallbacks } from "./cobapi";
 
 import * as path from "path";
 import { ICOBOLSettings } from "./iconfiguration";
 import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { CobApiHandle, CobApiOutput } from "./cobapiimpl";
-
-export class COBOLPreprocResult {
-    public ppHandle: CobApiHandle;
-    public atLine: number;
-    public originalLine: string;
-    public replacedLines: string[];
-    public copybooks: Map<string, string>;
-
-    constructor(ppHandle: CobApiHandle, atLine: number, originalLine: string, replacedLines: string[], copybooks: Map<string, string>) {
-        this.ppHandle = ppHandle;
-        this.atLine = atLine;
-        this.originalLine = originalLine;
-        this.replacedLines = replacedLines;
-        this.copybooks = copybooks;
-    }
-}
-
-export class COBOLPreprocessorHelper {
-    public static preprocessors = new Map<CobApiHandle, COBOLPreprocessor>();
-    public static preprocessorsExts = new Map<string, CobApiHandle>();
-
-    public static isActive(): boolean {
-        return this.preprocessors.size !== 0;
-    }
-
-    public static actionStartSection(source: string, divisionName: string): void {
-        for (const [, p] of COBOLPreprocessorHelper.preprocessors) {
-            try {
-                p.startSection(source, divisionName);
-            } catch (e) {
-                //
-            }
-        }
-    }
-
-    public static actionStartDivision(source: string, divisionName: string): void {
-        for (const [, p] of COBOLPreprocessorHelper.preprocessors) {
-            try {
-                p.startDivision(source, divisionName);
-            } catch (e) {
-                //
-            }
-        }
-    }
-
-    public static actionStart(id: string, callbacks: COBOLPreprocessorCallbacks): void {
-        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
-            try {
-                p.start(id, handle, callbacks);
-            } catch (e) {
-                //
-            }
-        }
-    }
-
-    public static actionProcess(id: string, orgLine: string, allLines: string[], externalFiles: Map<string, string>, callbacks: COBOLPreprocessorCallbacks): CobApiHandle | undefined {
-        for (const [handle, p] of COBOLPreprocessorHelper.preprocessors) {
-
-            try {
-                const poutput = new CobApiOutput();
-                if (p.process(id, orgLine, poutput)) {
-                    for (const pline of poutput.lines) {
-                        allLines.push(pline);
-                    }
-                    for (const [symbol, internalCopybook] of poutput.externalFiles) {
-                        externalFiles.set(symbol, internalCopybook);
-                    }
-
-                    return handle;
-                }
-            }
-            catch (e) {
-                allLines.length = 0;
-                externalFiles.clear();
-            }
-        }
-
-        return undefined;
-    }
-
-    public static actionEnd(id: string): void {
-        for (const [, p] of COBOLPreprocessorHelper.preprocessors) {
-            try {
-                p.end(id);
-            } catch (e) {
-                //
-            }
-        }
-    }
-}
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -737,7 +645,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
     }
 }
 
-export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner, COBOLPreprocessorCallbacks {
+export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
@@ -790,10 +698,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private eventHandler: ICOBOLSourceScannerEvents;
 
     private externalFeatures: IExternalFeatures;
-
-    private isPreProcessorsActive = false;
-
-    public ppResults: COBOLPreprocResult[] = [];
 
     public static ParseUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
@@ -1024,12 +928,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
-        this.isPreProcessorsActive = COBOLPreprocessorHelper.isActive();
-        if (this.isPreProcessorsActive) {
-            // inform any pre-processors.
-            COBOLPreprocessorHelper.actionStart(this.id, this);
-        }
-
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 state.currentLineIsComment = false;
@@ -1049,56 +947,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // don't parse a empty line
                 if (line.length > 0) {
-                    const preProcLines: string[] = [];
-                    const copybooks = new Map<string, string>();
-                    let ppHandleOrUndef: CobApiHandle | undefined = undefined;
-                    if (this.isPreProcessorsActive) {
-                        try {
-                            ppHandleOrUndef = COBOLPreprocessorHelper.actionProcess(this.id, line, preProcLines, copybooks, this);
-                            if (ppHandleOrUndef === undefined) {
-                                preProcLines.length = 0;
-                                copybooks.clear();
-                            }
-                        } catch (e) {
-                            externalFeatures.logException("pp", e as Error);
-                        }
-                    }
-
-                    // if we have any pre-processed lines..
-                    if (preProcLines.length !== 0 && ppHandleOrUndef !== undefined) {
-                        this.ppResults.push(new COBOLPreprocResult(ppHandleOrUndef, l, line, preProcLines, copybooks));
-
-                        const currentOutlineView = state.ignoreInOutlineView;
-                        const current_parse_copybooks_for_references = this.parse_copybooks_for_references;
-                        const current_enable_text_replacement = configHandler.enable_text_replacement;
-
-                        this.parse_copybooks_for_references = false;
-                        state.ignoreInOutlineView = true;
-                        state.enable_text_replacement = false;
-
-                        try {
-                            for (const preProcLine of preProcLines) {
-                                if (preProcLine !== null && preProcLine !== undefined && preProcLine.trimLeft().length !== 0) {
-                                    const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
-                                    prevToken = this.parseLineByLine(l, prevTokenToParse, preProcLine);
-                                }
-                            }
-
-                            state.ignoreInOutlineView = currentOutlineView;
-                            for (const [symbol, copybook] of copybooks) {
-                                this.newCOBOLToken(COBOLTokenStyle.File, l, line, 0, copybook, symbol, state.currentDivision);
-                            }
-                        }
-                        finally {
-                            state.ignoreInOutlineView = currentOutlineView;
-                            state.enable_text_replacement = current_enable_text_replacement;
-                            this.parse_copybooks_for_references = current_parse_copybooks_for_references;
-                        }
-
-                    } else {
-                        const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
-                        prevToken = this.parseLineByLine(l, prevTokenToParse, line);
-                    }
+                    const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
+                    prevToken = this.parseLineByLine(l, prevTokenToParse, line);
                 }
             }
             catch (e) {
@@ -1178,11 +1028,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             // console.log(`DEBUG: unprocessed : ${unknown.length}, p=${pcount},v=${vcount},s=${scount}`);
             this.sourceReferences.unknownReferences.clear();
             this.eventHandler.finish();
-        }
-
-        // inform any pre-processors
-        if (this.isPreProcessorsActive) {
-            COBOLPreprocessorHelper.actionEnd(this.id);
         }
     }
 
@@ -1281,9 +1126,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             this.tokensInOrder.push(ctoken);
             this.eventHandler.processToken(ctoken);
 
-            if (this.isPreProcessorsActive) {
-                COBOLPreprocessorHelper.actionStartDivision(this.filename, ctoken.tokenName);
-            }
             return ctoken;
         }
 
@@ -1300,10 +1142,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 this.eventHandler.processToken(ctoken);
             }
             this.tokensInOrder.push(ctoken);
-
-            if (this.isPreProcessorsActive) {
-                COBOLPreprocessorHelper.actionStartSection(this.filename, ctoken.tokenName);
-            }
 
             return ctoken;
         }
