@@ -119,7 +119,7 @@ export async function updateDecorations(activeTextEditor: TextEditor | undefined
             const containsTab = line.indexOf("\t");
 
             if (containsTab === -1) {
-                if (line.length > 6) {
+                if (line.length >= 6) {
                     const startPos = new Position(i, 0);
                     const endPos = new Position(i, 6);
                     const decoration = { range: new Range(startPos, endPos) };
