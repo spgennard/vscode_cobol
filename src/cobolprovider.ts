@@ -391,6 +391,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "display":
                     case "value":
                     case "values":
+                    case "content":
+                    case "reference":
                         {
                             if (wordToComplete.length === 0) {
                                 items = this.getAllConstantsOrVariables(document, this.iconfig);

@@ -779,24 +779,36 @@ for (const key of acuKeywords) {
 for (const key of cobolProcedureKeywords) {
 	if (!cobolProcedureKeywordDictionary.has(key)) {
 		cobolProcedureKeywordDictionary.set(key, key);
-		cobolList.push(key);
-		acucobolList.push(key);
+		if (!cobolKeywordDictionaryMap.has(key)) {
+			cobolList.push(key);
+		}
+		if (!acucobolKeywordDictionaryMap.has(key)) {
+			acucobolList.push(key);
+		}
 	}
 }
 
 for (const key of cobolStorageKeywords) {
 	if (!cobolStorageKeywordDictionary.has(key)) {
 		cobolStorageKeywordDictionary.set(key, key);
-		cobolList.push(key);
-		acucobolList.push(key);
+		if (!cobolKeywordDictionaryMap.has(key)) {
+			cobolList.push(key);
+		}
+		if (!acucobolKeywordDictionaryMap.has(key)) {
+			acucobolList.push(key);
+		}
 	}
 }
 
 for (const key of cobolRegisters) {
 	if (!cobolRegistersDictionary.has(key)) {
 		cobolRegistersDictionary.set(key, key);
-		cobolList.push(key);
-		acucobolList.push(key);
+		if (!cobolKeywordDictionaryMap.has(key)) {
+			cobolList.push(key);
+		}
+		if (!acucobolKeywordDictionaryMap.has(key)) {
+			acucobolList.push(key);
+		}
 	}
 }
 

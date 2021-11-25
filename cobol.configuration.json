@@ -18,38 +18,6 @@
 		[
 			"'",
 			"'"
-		],
-		[
-			"if",
-			"end-if"
-		],
-		[
-			"call",
-			"end-call"
-		],
-		[
-			"evaluate",
-			"end-evaluate"
-		],
-		[
-			"perform",
-			"end-perform"
-		],
-		[
-			"string",
-			"end-string"
-		],
-		[
-			"unstring",
-			"end-unstring"
-		],
-		[
-			"compute",
-			"end-compute"
-		],
-		[
-			"$if",
-			"$end"
 		]
 	],
 	"autoClosingPairs": [
@@ -110,7 +78,7 @@
 			"end": "^\\s*\\$end-region\\b"
 		}
 	},
-	"wordPattern": "([#a-zA-Z0-9_-]+|[a-zA-Z0-9_-]+)",
+	"wordPattern": "(([#][a-zA-Z0-9_-]*[a-zA-Z0-9])|([a-zA-Z0-9]+))",
 	"onEnterRules": [
 		{
 			"beforeText": "^\\s*[cC][aA][lL][lL].*[uU][sS][iI][nN][gG]$",

@@ -27,40 +27,41 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		const wordToCompleteLower = wordToComplete.toLowerCase();
 		const words:string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
 
-		for (let key of words) {
+		for (const key of words) {
 			const keyLower = key.toLowerCase();
 			if (keyLower.startsWith(wordToCompleteLower) === false) {
 				continue;
 			}
-			const retKeys = [];
-
-			const orgKey = key;
-			key = orgKey.substr(wordToComplete.length);
+			const retKeys = new Map<string,string>();
 
 			//if the text is uppercase, the present the items as uppercase
 			if (includeAsIS) {
-				retKeys.push(key);
+				retKeys.set(key,key+" ");
 			}
 
-			if (this.isCOBOL && includeCamelCase) {
-				retKeys.push(camelize(key));
+			if (includeCamelCase) {
+				const camelKey = camelize(key);
+				if (!retKeys.has(camelKey)) {
+					retKeys.set(camelKey,camelKey+" ");
+				}
 			}
 
 			if (includeUpper) {
-				retKeys.push(key.toUpperCase());
+				const upperKey = key.toUpperCase();
+				if (!retKeys.has(upperKey)) {
+					retKeys.set(upperKey,upperKey+" ");
+				}
 			}
 
 			if (includeLower) {
-				retKeys.push(key.toLowerCase());
+				if (!retKeys.has(keyLower)) {
+					retKeys.set(keyLower,keyLower+" ");
+				}
 			}
 
-			const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
-				return index === self.indexOf(elem);
-			});
-
-			for (const uniqueRetKey of uniqueRetKeys) {
-				const ci = new CompletionItem(uniqueRetKey, CompletionItemKind.Keyword);
-				ci.detail = orgKey;
+			for(const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
+				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
+				ci.detail = `COBOL keyword ${uniqueRetKey}`;
 				items.push(ci);
 			}
 
