@@ -289,12 +289,28 @@
         "yyyyddd",
         "yyyymmdd"
     ],
-    "coboleditor.preprocessor_extensions": [
-        "wibble.mycobol"
-    ],
     "coboleditor.metadata_symbols": [
         "a,a.cbl"
     ],
+    "[COBOL]": {
+        "editor.semanticHighlighting.enabled": true,
+        "editor.bracketPairColorization.enabled": false,
+        "files.autoGuessEncoding": false,
+        "editor.snippetSuggestions": "bottom",
+        "editor.guides.indentation": false,
+        "editor.autoIndent": "advanced",
+        "editor.insertSpaces": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            6,
+            7,
+            11,
+            72
+        ],
+        "editor.detectIndentation": false,
+        "editor.useTabStops": false,
+        "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
+    },
     "coboleditor.metadata_entrypoints": [],
     "coboleditor.metadata_types": [],
     "coboleditor.metadata_files": []

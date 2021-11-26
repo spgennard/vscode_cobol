@@ -114,13 +114,16 @@ export class COBOLWorkspaceSymbolCacheHelper {
             return;
         }
         
+        let addSymbol = lineNumber !== 0;
         if (symbolUnchanged.toLowerCase() === callableSymbolFromFilenameLower) {
             InMemoryGlobalSymbolCache.defaultCallableSymbols.set(callableSymbolFromFilenameLower, srcfilename);
             return;
+        } else {
+            addSymbol = true;
         }
         
         // drop the defaultCallableSymbols if it has a real one
-        if (lineNumber !== 0) {
+        if (addSymbol) {
             if (InMemoryGlobalSymbolCache.defaultCallableSymbols.has(callableSymbolFromFilenameLower)) {
                 InMemoryGlobalSymbolCache.defaultCallableSymbols.delete(callableSymbolFromFilenameLower);
                 COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(fileName, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.callableSymbols);

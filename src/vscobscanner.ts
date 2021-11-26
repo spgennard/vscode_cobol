@@ -32,7 +32,7 @@ export class VSCobScanner {
         const thisExtension = extensions.getExtension("bitlang.cobol");
         if (thisExtension !== undefined) {
             const extPath = `${thisExtension.extensionPath}`;
-            return path.join(extPath, "cobscanner");
+            return path.join(extPath, "dist");
         }
         return "";
     }
