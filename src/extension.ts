@@ -16,7 +16,7 @@ import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./sym
 import { updateDecorations } from "./margindecorations";
 import { COBOLFileUtils } from "./fileutils";
 
-import { VSCOBOLSourceScanner, clearCOBOLCache } from "./vscobolscanner";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { CobolReferenceProvider } from "./cobolreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
@@ -510,7 +510,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
-                clearCOBOLCache();
+                VSCOBOLSourceScanner.clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
                 VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
             }

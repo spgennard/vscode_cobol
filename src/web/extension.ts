@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import * as cobolProgram from "../cobolprogram";
 import * as tabstopper from "../tabstopper";
 import * as commenter from "../commenter";
 import { VSCOBOLConfiguration } from "../vsconfiguration";
@@ -9,6 +8,7 @@ import { ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../symbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
+import { COBOLProgramCommands } from "../cobolprogram";
 
 export function activate(context: vscode.ExtensionContext) {
     VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
@@ -17,23 +17,23 @@ export function activate(context: vscode.ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
-        cobolProgram.move2pd();
+        COBOLProgramCommands.move2pd();
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2dd", function () {
-        cobolProgram.move2dd();
+        COBOLProgramCommands.move2dd();
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2ws", function () {
-        cobolProgram.move2ws();
+        COBOLProgramCommands.move2ws();
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2anyforward", function () {
-        cobolProgram.move2anyforward();
+        COBOLProgramCommands.move2anyforward();
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2anybackwards", function () {
-        cobolProgram.move2anybackwards();
+        COBOLProgramCommands.move2anybackwards();
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.tab", function () {

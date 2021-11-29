@@ -14,10 +14,7 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
 
-export function clearCOBOLCache(): void {
-    InMemoryCache.clear();
-    InMemoryGlobalSymbolCache.isDirty = false;
-}
+
 
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
     private st: COBOLSymbolTable | undefined;
@@ -171,5 +168,10 @@ export class VSCOBOLSourceScanner {
         }
 
         return cachedObject;
+    }
+
+    public static clearCOBOLCache(): void {
+        InMemoryCache.clear();
+        InMemoryGlobalSymbolCache.isDirty = false;
     }
 }
