@@ -104,14 +104,16 @@ export class TabUtils {
         }
         return 0;
     }
-}
 
-
-export function processTabKey(inserting: boolean): void {
-    const editor = window.activeTextEditor;
-    if (editor) {
-        const doc = editor.document;
-        const sel = editor.selections;
-        TabUtils.executeTab(editor, doc, sel, inserting);
+    public static processTabKey(inserting: boolean): void {
+        const editor = window.activeTextEditor;
+        if (editor) {
+            const doc = editor.document;
+            const sel = editor.selections;
+            TabUtils.executeTab(editor, doc, sel, inserting);
+        }
     }
 }
+
+
+

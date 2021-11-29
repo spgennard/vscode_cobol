@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import os from "os";
 
 import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, extensions, ViewColumn, ConfigurationChangeEvent } from "vscode";
-import * as tabstopper from "./tabstopper";
 import * as opencopybook from "./opencopybook";
 import * as commenter from "./commenter";
 
@@ -45,6 +44,7 @@ import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
 import { COBOLProgramCommands } from "./cobolprogram";
+import { TabUtils } from "./tabstopper";
 // import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -581,11 +581,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const tabCommand = commands.registerCommand("cobolplugin.tab", function () {
-        tabstopper.processTabKey(true);
+        TabUtils.processTabKey(true);
     });
 
     const unTabCommand = commands.registerCommand("cobolplugin.revtab", function () {
-        tabstopper.processTabKey(false);
+        TabUtils.processTabKey(false);
     });
 
     const commentLine = commands.registerCommand("cobolplugin.commentline", function () {
