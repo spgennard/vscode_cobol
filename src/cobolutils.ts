@@ -26,24 +26,7 @@ export enum FoldAction {
 }
 
 export class COBOLUtils {
-    static getCopybookGlobPattern(config: ICOBOLSettings): string {
-        let globString = "*.{";
-        for (const ext of config.copybookexts) {
-            if (ext.length !== 0) {
-                if (globString.endsWith("{")) {
-                    globString += ext;
-                } else {
-                    globString += "," + ext;
-                }
-            }
-        }
-
-        globString += "}";
-
-        return globString;
-    }
-
-    static getProgramGlobPattern(config: ICOBOLSettings): string {
+    private static getProgramGlobPattern(config: ICOBOLSettings): string {
         let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
 
         for (const ext of config.program_extensions) {

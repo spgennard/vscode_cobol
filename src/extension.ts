@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import os from "os";
 
 import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, extensions, ViewColumn, ConfigurationChangeEvent } from "vscode";
-import * as cobolProgram from "./cobolprogram";
 import * as tabstopper from "./tabstopper";
 import * as opencopybook from "./opencopybook";
 import * as commenter from "./commenter";
@@ -45,6 +44,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
+import { COBOLProgramCommands } from "./cobolprogram";
 // import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -561,23 +561,23 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
 
     const move2pdCommand = commands.registerCommand("cobolplugin.move2pd", function () {
-        cobolProgram.move2pd();
+        COBOLProgramCommands.move2pd();
     });
 
     const move2ddCommand = commands.registerCommand("cobolplugin.move2dd", function () {
-        cobolProgram.move2dd();
+        COBOLProgramCommands.move2dd();
     });
 
     const move2wsCommand = commands.registerCommand("cobolplugin.move2ws", function () {
-        cobolProgram.move2ws();
+        COBOLProgramCommands.move2ws();
     });
 
     const move2anyforwardCommand = commands.registerCommand("cobolplugin.move2anyforward", function () {
-        cobolProgram.move2anyforward();
+        COBOLProgramCommands.move2anyforward();
     });
 
     const move2anybackwardsCommand = commands.registerCommand("cobolplugin.move2anybackwards", function () {
-        cobolProgram.move2anybackwards();
+        COBOLProgramCommands.move2anybackwards();
     });
 
     const tabCommand = commands.registerCommand("cobolplugin.tab", function () {

@@ -7,16 +7,10 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { CobolLinterProviderSymbols } from "./externalfeatures";
 
-function makeRegex(partialRegEx: string): RegExp | undefined {
-    try {
-        return new RegExp("^" + partialRegEx + "$", "i");
-    }
-    catch {
-        return undefined;
-    }
-}
+
 
 export class CobolLinterActionFixer implements CodeActionProvider {
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
         const codeActions: CodeAction[] = [];
@@ -164,7 +158,7 @@ export class CobolLinterProvider {
                 if (rule !== undefined) {
                     let regexForRule = ruleRegexMap.get(token.inSection.tokenNameLower);
                     if (regexForRule === undefined) {
-                        regexForRule = makeRegex(rule);
+                        regexForRule = this.makeRegex(rule);
                         if (regexForRule === undefined) {
                             continue;
                         }
@@ -284,5 +278,13 @@ export class CobolLinterProvider {
         return false;
     }
 
+    private makeRegex(partialRegEx: string): RegExp | undefined {
+        try {
+            return new RegExp("^" + partialRegEx + "$", "i");
+        }
+        catch {
+            return undefined;
+        }
+    }
 
 }
