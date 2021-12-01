@@ -1,4 +1,5 @@
 # exit on error
+set -x
 set -e
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 # --ignore-commits-without-issue
