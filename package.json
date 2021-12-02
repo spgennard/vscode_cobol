@@ -1847,7 +1847,8 @@
     "lint": "eslint src --ext ts",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
-    "find-deadcode": "./node_modules/.bin/ts-prune | grep -v \"used in module\""
+    "find-deadcode": "./node_modules/.bin/ts-prune | grep -v \"used in module\"",
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ."
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
@@ -1858,6 +1859,7 @@
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
+    "@vscode/test-web": "*",
     "ansi-regex": ">=6.0.1",
     "assert": "^2.0.0",
     "depcheck": "^1.4.2",
