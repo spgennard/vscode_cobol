@@ -52,7 +52,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     const cobolSelectors = VSExtensionUtils.getAllCobolSelectors(settings);
 
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(cobolSelectors, new CobolSymbolInformationProvider()));
+    try {
+        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(cobolSelectors, new CobolSymbolInformationProvider()));
+    } catch(e) {
+        VSExternalFeatures.logException("during registerDocumentSymbolProvider",e as Error);
+    }
+
+    VSExternalFeatures.logMessage("COBOL.bitlang extension ready");
 
 }
 
