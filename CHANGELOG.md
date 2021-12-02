@@ -1,5 +1,14 @@
 # CHANGELOG
 
+* b646ff7 (HEAD -> main, tag: 7.12.1, origin/main) bump
+* 64adc11 Tweaks to fix #308
+* 9467360 remove use of path.normalise
+* ce7699a put try/catch in place (to remove at somepoint)
+* 2882f79 add external browser
+* b16ecc5 add in untitled schema
+* 0118ad6 move to simplier changelog, as the java version crashes too much
+* ec8b334 update
+* 9473e20 Update CHANGELOG.md
 * 671ed58 (tag: 7.12.0) tweak and prep
 * 8fb6320 continue tidyup
 * d02d322 continue tidyup
