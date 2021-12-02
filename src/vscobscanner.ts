@@ -138,7 +138,8 @@ export class VSCobScanner {
                     const args = message.split(",");
                     const ms = BigInt(args[1]);
                     const fullFilename = args[2];
-                    const shortFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(fullFilename);
+                    const fsUri = Uri.file(fullFilename);
+                    const shortFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(fsUri.scheme, fullFilename);
                     if (shortFilename !== undefined) {
                         const cws = new COBOLWorkspaceFile(ms, shortFilename);
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);

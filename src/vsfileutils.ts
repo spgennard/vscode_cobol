@@ -1,7 +1,8 @@
 import path from "path";
 import fs from "fs";
+
 import { getVSWorkspaceFolders } from "./cobolfolders";
-import { Range, TextEditor, window, workspace } from "vscode";
+import { Range, TextEditor, Uri, window, workspace } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
@@ -14,7 +15,7 @@ export class VSCOBOLFileUtils {
             return false;
         }
 
-        const fullPath = path.normalize(ddir);
+        const fullPath = Uri.file(ddir).fsPath;
         for (const folder of ws) {
             if (folder.uri.fsPath === fullPath) {
                 return true;
@@ -32,6 +33,7 @@ export class VSCOBOLFileUtils {
         for (const folder of ws) {
             if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;
+                
                 const possibleFile = path.join(folderPath, sdir);
                 if (features.isFile(possibleFile)) {
                     const stat4srcMs = features.getFileModTimeStamp(possibleFile);
@@ -45,16 +47,20 @@ export class VSCOBOLFileUtils {
         return undefined;
     }
 
-    public static getShortWorkspaceFilename(ddir: string): string | undefined {
+    public static getShortWorkspaceFilename(schema:string, ddir: string): string | undefined {
+        // if schema is untitle, we treat it as a non-workspace file, so it is never cached
+        if (schema === "untitled") {
+            return undefined;
+        }
         const ws = getVSWorkspaceFolders();
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }
 
-        const fullPath = path.normalize(ddir);
+        const fullPath = Uri.file(ddir).fsPath;
         let bestShortName = "";
         for (const folder of ws) {
-            if (folder.uri.scheme === "file") {
+            if (folder.uri.scheme === schema ) {
                 const folderPath = folder.uri.path;
                 if (fullPath.startsWith(folderPath)) {
                     const possibleShortPath = fullPath.substr(1 + folderPath.length);

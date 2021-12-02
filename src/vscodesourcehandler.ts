@@ -31,7 +31,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.languageId = document.languageId;
         this.format = ESourceFormat.unknown;
 
-        const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.fileName);
+        const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
         this.updatedSource = new Map<number, string>();
