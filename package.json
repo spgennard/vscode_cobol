@@ -1836,7 +1836,6 @@
   "scripts": {
     "vscode:prepublish": "npm run compile && webpack --mode production",
     "webpack": "npm run compile && webpack --mode development",
-    "webpack-dev-not-used": "webpack --mode development --watch",
     "package-web": "webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch",
     "just-compile": "tsc -b",

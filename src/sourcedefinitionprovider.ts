@@ -9,7 +9,7 @@ import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
     readonly sectionRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
-    readonly variableRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+    readonly variableRegEx = new RegExp("[#0-9a-zA-Z_][a-zA-Z0-9-_]*");
     readonly classRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
     readonly methodRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
 

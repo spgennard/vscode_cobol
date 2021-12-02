@@ -1176,7 +1176,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
 
-    private static readonly literalRegex = /^[#a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
+    // private static readonly literalRegexOld = /^[#a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
+    private static readonly literalRegex = /^([a-zA-Z-0-9_]*[a-zA-Z0-9]|([#]?[0-9a-zA-Z]+[a-zA-Z-0-9_]*[a-zA-Z0-9]))$/g;
 
     private isValidLiteral(id: string): boolean {
 
