@@ -9,7 +9,9 @@ export class VSExtensionUtils {
         for (const langid of config.valid_cobol_language_ids) {
             ret.push(
                 { scheme: "file", language: langid },
+                { scheme: "untitled", language: langid }
             );
+
         }
 
         return ret;
