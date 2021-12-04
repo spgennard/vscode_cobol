@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* b646ff7 (HEAD -> main, tag: 7.12.1, origin/main) bump
+* 37fc7d1 (HEAD -> main, tag: 7.12.2, origin/main) add diag code
+* 0d8c013 Update readme
+* a0f31f4 Update CHANGELOG.md
+* b646ff7 (tag: 7.12.1) bump
 * 64adc11 Tweaks to fix #308
 * 9467360 remove use of path.normalise
 * ce7699a put try/catch in place (to remove at somepoint)
