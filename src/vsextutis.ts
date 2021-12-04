@@ -1,6 +1,5 @@
 import { ICOBOLSettings } from "./iconfiguration";
 import * as vscode from "vscode";
-import { VSLogger } from "./vslogger";
 
 export class VSExtensionUtils {
 
