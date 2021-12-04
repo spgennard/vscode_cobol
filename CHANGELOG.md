@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 37fc7d1 (HEAD -> main, tag: 7.12.2, origin/main) add diag code
+* 393a3bd (HEAD -> main, tag: 7.12.3, origin/main) add more schema's in
+* df39ba2 Update CHANGELOG.md
+* 37fc7d1 (tag: 7.12.2) add diag code
 * 0d8c013 Update readme
 * a0f31f4 Update CHANGELOG.md
 * b646ff7 (tag: 7.12.1) bump
