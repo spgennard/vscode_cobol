@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 393a3bd (HEAD -> main, tag: 7.12.3, origin/main) add more schema's in
+* 27a0d3a (HEAD -> main, tag: 7.12.3, origin/main) remove line
+* 376e3d1 Update CHANGELOG.md
+* 393a3bd add more schema's in
 * df39ba2 Update CHANGELOG.md
 * 37fc7d1 (tag: 7.12.2) add diag code
 * 0d8c013 Update readme
