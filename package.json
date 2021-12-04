@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.12.2",
+  "version": "7.12.3",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1261,8 +1261,7 @@
       {
         "command": "cobolplugin.showCOBOLChannel",
         "category": "COBOL",
-        "title": "Show COBOL Channel",
-        "enablement": "!isWeb"
+        "title": "Show COBOL Channel"
       },
       {
         "command": "cobolplugin.migrateProblemMatchers",
@@ -1837,7 +1836,7 @@
     "vscode:prepublish": "npm run compile && webpack --mode production",
     "webpack": "npm run compile && webpack --mode development",
     "package-web": "webpack --mode production --devtool hidden-source-map",
-    "watch-web": "webpack --watch",
+    "watch-web": "webpack --watch --mode development",
     "just-compile": "tsc -b",
     "compile": "tsc -b",
     "compile-web": "webpack",
@@ -1847,7 +1846,7 @@
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
     "find-deadcode": "./node_modules/.bin/ts-prune | grep -v \"used in module\"",
-    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ."
+    "open-in-browser": "vscode-test-web -version=stable --browserType=chromium --extensionDevelopmentPath=. ."
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
@@ -1858,7 +1857,7 @@
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
-    "@vscode/test-web": "*",
+    "@vscode/test-web": "^0.0.15",
     "ansi-regex": ">=6.0.1",
     "assert": "^2.0.0",
     "depcheck": "^1.4.2",

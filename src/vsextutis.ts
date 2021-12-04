@@ -1,12 +1,14 @@
 import { ICOBOLSettings } from "./iconfiguration";
 import * as vscode from "vscode";
+import { VSLogger } from "./vslogger";
 
 export class VSExtensionUtils {
 
     private static readonly knownSchemes: string[] = [
-        "file", "untitled"
-        // "vscode-vfs"
-        //"ssh"
+        "file", 
+        "untitled",
+        "vscode-vfs",
+        "ssh"
     ];
 
     public static isKnownScheme(scheme: string): boolean {
@@ -22,7 +24,7 @@ export class VSExtensionUtils {
         const ret = [];
 
         for (const langid of config.valid_cobol_language_ids) {
-            for (const kscheme in VSExtensionUtils.knownSchemes) {
+            for (const kscheme of VSExtensionUtils.knownSchemes) {
                 ret.push(
                     { scheme: kscheme, language: langid },
                 )

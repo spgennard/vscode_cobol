@@ -15,6 +15,7 @@ const webConfig = /** @type WebpackConfig */ {
     filename: "[name].js",
     path: path.join(__dirname, "./dist/web"),
     libraryTarget: "commonjs",
+    devtoolModuleFilenameTemplate: "../../[resource-path]"
   },
   resolve: {
     mainFields: ["browser", "module", "main"], // look for `browser` entry point in imported node modules
@@ -68,9 +69,9 @@ const webConfig = /** @type WebpackConfig */ {
   plugins: [
     // Work around for Buffer is undefined:
     // https://github.com/webpack/changelog-v5/issues/10
-    new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-    }),
+    // new webpack.ProvidePlugin({
+    //   Buffer: ["buffer", "Buffer"],
+    // }),
     new webpack.ProvidePlugin({
       process: "process/browser", // provide a shim for the global `process` variable
     }),

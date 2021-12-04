@@ -9,6 +9,7 @@ import { CobolSymbolInformationProvider } from "../symbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
 import { COBOLProgramCommands } from "../cobolprogram";
 import { TabUtils } from "../tabstopper";
+import { VSLogger } from "../vslogger";
 
 export function activate(context: vscode.ExtensionContext) {
     VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
@@ -58,7 +59,12 @@ export function activate(context: vscode.ExtensionContext) {
         VSExternalFeatures.logException("during registerDocumentSymbolProvider",e as Error);
     }
 
-    VSExternalFeatures.logMessage("COBOL.bitlang extension ready");
+        // handle Micro Focus .lst files!
+    const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+        VSLogger.logMessage(`Open document ${doc.fileName} / ${doc.uri.scheme}`);
+    });
+    context.subscriptions.push(onDidOpenTextDocumentHandler);
+    VSExternalFeatures.logMessage("COBOL.bitlang extension ready - 2");
 
 }
 
