@@ -10,6 +10,7 @@ import { COBOLUtils } from "./cobolutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { VSExtensionUtils } from "./vsextutis";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -134,6 +135,9 @@ export class VSCOBOLSourceScanner {
         /* grab, the file parse it can cache it */
         if (cachedObject === undefined) {
             try {
+                if (!VSExtensionUtils.isKnownScheme(document.uri.scheme)) {
+                    VSLogger.logMessage(`Information: ${document.fileName} scheme is unknown ${document.uri.scheme}`);
+                }
                 const startTime = VSExternalFeatures.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
@@ -175,3 +179,4 @@ export class VSCOBOLSourceScanner {
         InMemoryGlobalSymbolCache.isDirty = false;
     }
 }
+

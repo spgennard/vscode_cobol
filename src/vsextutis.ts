@@ -3,15 +3,30 @@ import * as vscode from "vscode";
 
 export class VSExtensionUtils {
 
+    private static readonly knownSchemes: string[] = [
+        "file", "untitled"
+        // "vscode-vfs"
+        //"ssh"
+    ];
+
+    public static isKnownScheme(scheme: string): boolean {
+        for (const kscheme in VSExtensionUtils.knownSchemes) {
+            if (scheme === kscheme) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static getAllCobolSelectors(config: ICOBOLSettings): vscode.DocumentSelector {
         const ret = [];
 
         for (const langid of config.valid_cobol_language_ids) {
-            ret.push(
-                { scheme: "file", language: langid },
-                { scheme: "untitled", language: langid }
-            );
-
+            for (const kscheme in VSExtensionUtils.knownSchemes) {
+                ret.push(
+                    { scheme: kscheme, language: langid },
+                )
+            }
         }
 
         return ret;
