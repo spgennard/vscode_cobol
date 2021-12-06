@@ -59,12 +59,11 @@ export function activate(context: vscode.ExtensionContext) {
         VSExternalFeatures.logException("during registerDocumentSymbolProvider",e as Error);
     }
 
-        // handle Micro Focus .lst files!
-    const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
-        VSLogger.logMessage(`Open document ${doc.fileName} / ${doc.uri.scheme}`);
-    });
-    context.subscriptions.push(onDidOpenTextDocumentHandler);
-    VSExternalFeatures.logMessage("COBOL.bitlang extension ready - 2");
+    // const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+    //     VSLogger.logMessage(`Open document ${doc.fileName} / ${doc.uri.scheme}`);
+    // });
+    // context.subscriptions.push(onDidOpenTextDocumentHandler);
+    VSExternalFeatures.logMessage("COBOL.bitlang extension ready");
 
 }
 
