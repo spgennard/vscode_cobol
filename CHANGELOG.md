@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 27a0d3a (HEAD -> main, tag: 7.12.3, origin/main) remove line
+* 0e4ddec (HEAD -> main, tag: 7.12.4, origin/main) remove debug code
+* 20bab31 remove reference to dep'ed vsix extension and reconsiders it use
+* c8eb085 version bumps
+* 0a1a604 Update CHANGELOG.md
+* 27a0d3a (tag: 7.12.3) remove line
 * 376e3d1 Update CHANGELOG.md
 * 393a3bd add more schema's in
 * df39ba2 Update CHANGELOG.md
