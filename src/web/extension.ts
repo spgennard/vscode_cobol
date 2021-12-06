@@ -9,7 +9,7 @@ import { CobolSymbolInformationProvider } from "../symbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
 import { COBOLProgramCommands } from "../cobolprogram";
 import { TabUtils } from "../tabstopper";
-import { VSLogger } from "../vslogger";
+//import { VSLogger } from "../vslogger";
 
 export function activate(context: vscode.ExtensionContext) {
     VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
