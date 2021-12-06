@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 0e4ddec (HEAD -> main, tag: 7.12.4, origin/main) remove debug code
+* cf0ab6b (HEAD -> main, tag: 7.12.4, origin/main) tweak
+* c458f87 Update CHANGELOG.md
+* 0e4ddec remove debug code
 * 20bab31 remove reference to dep'ed vsix extension and reconsiders it use
 * c8eb085 version bumps
 * 0a1a604 Update CHANGELOG.md
