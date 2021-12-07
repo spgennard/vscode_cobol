@@ -6,7 +6,7 @@ import { ESourceFormat } from "./externalfeatures";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 export class commentUtils {
-    public static commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
+    private static commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
         editor.edit(edit => {
             for (let x = 0; x < sel.length; x++) {
                 if (sel[x].start.line === sel[x].end.line) {
@@ -21,7 +21,7 @@ export class commentUtils {
 
     static readonly var_free_insert_at_comment_column = true;
 
-    public static toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: ESourceFormat) {
+    private static toggleLine(editor: TextEditorEdit, d: TextDocument, l: number, format: ESourceFormat) {
         const line = d.lineAt(l);
         const lineContents = line.text;
 
@@ -124,7 +124,7 @@ export class commentUtils {
 
     }
 
-    static multipleToggleLine(edit: TextEditorEdit, d: TextDocument, sel: Selection, format: ESourceFormat) {
+    private static multipleToggleLine(edit: TextEditorEdit, d: TextDocument, sel: Selection, format: ESourceFormat) {
         for (let line = sel.start.line; line <= sel.end.line; line++) {
             commentUtils.toggleLine(edit, d, line, format);
         }
