@@ -9,10 +9,8 @@ import * as commenter from "./commenter";
 
 import { COBOLDocumentationCommentHandler } from "./doccomment";
 import { KeywordAutocompleteCompletionItemProvider } from "./keywordprovider";
-import { isSupportedLanguage } from "./margindecorations";
 import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./symbolprovider";
 
-import { updateDecorations } from "./margindecorations";
 import { COBOLFileUtils } from "./fileutils";
 
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -45,6 +43,7 @@ import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
 import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
+import { VSmargindecorations } from "./margindecorations";
 // import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -715,7 +714,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
         const ws = getVSWorkspaceFolders();
         if (ws !== undefined) {
-            if (isSupportedLanguage(doc)) {
+            if (VSExtensionUtils.isSupportedLanguage(doc)) {
                 await COBOLUtils.populateDefaultCallableSymbols(settings, false);
                 await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
             }
@@ -724,7 +723,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(onDidOpenTextDocumentHandler);
 
     const onDidCloseTextDocumentHandler = workspace.onDidCloseTextDocument(async (doc: vscode.TextDocument) => {
-        if (isSupportedLanguage(doc)) {
+        if (VSExtensionUtils.isSupportedLanguage(doc)) {
             VSCOBOLSourceScanner.removeCachedObject(doc, settings);
         }
     });
@@ -835,7 +834,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!editor) {
             return;
         }
-        updateDecorations(editor);
+        VSmargindecorations.updateDecorations(editor);
         linter.updateLinter(editor.document);
 
     }, null, context.subscriptions);
@@ -844,7 +843,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!event.textEditor) {
             return;
         }
-        updateDecorations(event.textEditor);
+        VSmargindecorations.updateDecorations(event.textEditor);
         //cobolusage.updateDiagnostics(event.textEditor.document);
     }, null, context.subscriptions);
 
@@ -853,12 +852,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!window.activeTextEditor) {
             return;
         }
-        updateDecorations(window.activeTextEditor);
+        VSmargindecorations.updateDecorations(window.activeTextEditor);
         linter.updateLinter(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
     if (window.activeTextEditor !== undefined) {
-        updateDecorations(window.activeTextEditor);
+        VSmargindecorations.updateDecorations(window.activeTextEditor);
         linter.updateLinter(window.activeTextEditor.document);
     }
 

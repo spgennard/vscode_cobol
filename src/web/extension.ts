@@ -9,6 +9,8 @@ import { CobolSymbolInformationProvider } from "../symbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
 import { COBOLProgramCommands } from "../cobolprogram";
 import { TabUtils } from "../tabstopper";
+import { VSCOBOLSourceScanner } from "../vscobolscanner";
+import { VSmargindecorations } from "../margindecorations";
 //import { VSLogger } from "../vslogger";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -59,6 +61,43 @@ export function activate(context: vscode.ExtensionContext) {
         VSExternalFeatures.logException("during registerDocumentSymbolProvider",e as Error);
     }
 
+    const onDidCloseTextDocumentHandler = vscode.workspace.onDidCloseTextDocument(async (doc: vscode.TextDocument) => {
+        if (VSExtensionUtils.isSupportedLanguage(doc)) {
+            VSCOBOLSourceScanner.removeCachedObject(doc, settings);
+        }
+    });
+    context.subscriptions.push(onDidCloseTextDocumentHandler);
+
+    vscode.window.onDidChangeActiveTextEditor(editor => {
+        if (!editor) {
+            return;
+        }
+        VSmargindecorations.updateDecorations(editor);
+        // linter.updateLinter(editor.document);
+
+    }, null, context.subscriptions);
+
+    vscode.window.onDidChangeTextEditorSelection(event => {
+        if (!event.textEditor) {
+            return;
+        }
+        VSmargindecorations.updateDecorations(event.textEditor);
+        //cobolusage.updateDiagnostics(event.textEditor.document);
+    }, null, context.subscriptions);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    vscode.workspace.onDidChangeTextDocument(event => {
+        if (!vscode.window.activeTextEditor) {
+            return;
+        }
+        VSmargindecorations.updateDecorations(vscode.window.activeTextEditor);
+        // linter.updateLinter(window.activeTextEditor.document);
+    }, null, context.subscriptions);
+
+    if (vscode.window.activeTextEditor !== undefined) {
+        VSmargindecorations.updateDecorations(vscode.window.activeTextEditor);
+        // linter.updateLinter(window.activeTextEditor.document);
+    }
     // const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
     //     VSLogger.logMessage(`Open document ${doc.fileName} / ${doc.uri.scheme}`);
     // });

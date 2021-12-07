@@ -1,8 +1,29 @@
 import { ICOBOLSettings } from "./iconfiguration";
 import * as vscode from "vscode";
 
+export enum TextLanguage {
+    Unknown = 0,
+    COBOL = 1,
+    JCL = 2
+}
+
 export class VSExtensionUtils {
 
+    public static isSupportedLanguage(document: vscode.TextDocument): TextLanguage {
+    
+        switch (document.languageId.toLowerCase()) {
+            case "cobolit":
+            case "cobol":
+            case "acucobol":
+                return TextLanguage.COBOL;
+            case "jcl":
+                return TextLanguage.JCL;
+        }
+    
+        /* not a supported language? */
+        return TextLanguage.Unknown;
+    }
+    
     private static readonly knownSchemes: string[] = [
         "file", 
         "untitled",

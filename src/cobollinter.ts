@@ -2,12 +2,10 @@
 import * as vscode from "vscode";
 import { COBOLSourceScanner, SharedSourceReferences } from "./cobolsourcescanner";
 import { CodeActionProvider, CodeAction } from "vscode";
-import { isSupportedLanguage, TextLanguage } from "./margindecorations";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { CobolLinterProviderSymbols } from "./externalfeatures";
-
-
+import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 
 export class CobolLinterActionFixer implements CodeActionProvider {
 
@@ -76,7 +74,7 @@ export class CobolLinterProvider {
         }
 
         /* drop out if not COBOL */
-        if (isSupportedLanguage(document) !== TextLanguage.COBOL) {
+        if (VSExtensionUtils.isSupportedLanguage(document) !== TextLanguage.COBOL) {
             return;
         }
 
