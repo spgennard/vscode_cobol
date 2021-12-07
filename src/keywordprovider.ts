@@ -1,5 +1,5 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
-import { camelize } from "./cobolsourcescanner";
+import { SourceScannerUtils } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
@@ -40,7 +40,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			}
 
 			if (includeCamelCase) {
-				const camelKey = camelize(key);
+				const camelKey = SourceScannerUtils.camelize(key);
 				if (!retKeys.has(camelKey)) {
 					retKeys.set(camelKey,camelKey+" ");
 				}

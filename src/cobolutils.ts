@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import path from "path";
-import { COBOLSourceScanner, splitArgument, camelize, COBOLTokenStyle } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle } from "./cobolsourcescanner";
 import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSLogger } from "./vslogger";
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
@@ -545,7 +545,7 @@ export class COBOLUtils {
         let newtext = text;
         const args: string[] = [];
 
-        splitArgument(text, true, args);
+        SourceScannerUtils.splitArgument(text, true, args);
         const textLower = text.toLowerCase();
         let lastPos = 0;
         for (let ic = 0; ic < args.length; ic++) {
@@ -608,7 +608,7 @@ export class COBOLUtils {
                         break;
                     case FoldStyle.CamelCase:
                         {
-                            const camelArg = camelize(arg);
+                            const camelArg = SourceScannerUtils.camelize(arg);
                             if (camelArg !== arg) {
                                 const tmpline = newtext.substr(0, ipos) + camelArg + newtext.substr(ipos + arg.length);
                                 newtext = tmpline;

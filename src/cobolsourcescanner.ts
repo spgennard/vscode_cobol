@@ -59,90 +59,92 @@ export enum COBOLTokenStyle {
 //     OCDOC = "OCDOC"
 // }
 
-export function camelize(text: string): string {
-    let ret = "";
-    let uppercaseNext = true;
-    for (let c = 0; c < text.length; c++) {
-        const ch = text[c];
-        if (uppercaseNext) {
-            ret += ch.toUpperCase();
-            uppercaseNext = false;
-        } else {
-            if (ch === "-" || ch === "_") {
-                uppercaseNext = true;
-            }
+export class SourceScannerUtils {
+    public static camelize(text: string): string {
+        let ret = "";
+        let uppercaseNext = true;
+        for (let c = 0; c < text.length; c++) {
+            const ch = text[c];
+            if (uppercaseNext) {
+                ret += ch.toUpperCase();
+                uppercaseNext = false;
+            } else {
+                if (ch === "-" || ch === "_") {
+                    uppercaseNext = true;
+                }
 
-            ret += ch.toLowerCase();
+                ret += ch.toLowerCase();
+            }
         }
+
+        return ret;
     }
 
-    return ret;
-}
+    public static splitArgument(input: string, splitBrackets: boolean, ret: string[]): void {
+        let inQuote = false;
+        let inQuoteSingle = false;
+        const lineLength = input.length;
+        let cArg = "";
 
-export function splitArgument(input: string, splitBrackets: boolean, ret: string[]): void {
-    let inQuote = false;
-    let inQuoteSingle = false;
-    const lineLength = input.length;
-    let cArg = "";
+        for (let i = 0; i < lineLength; i++) {
+            let c = input.charAt(i);
 
-    for (let i = 0; i < lineLength; i++) {
-        let c = input.charAt(i);
-
-        /* handle quotes */
-        if (c === "'" && !inQuote) {
-            inQuoteSingle = !inQuoteSingle;
-            cArg += c;
-            if (inQuoteSingle === false) {
-                ret.push(cArg);
-                cArg = "";
-            }
-            continue;
-        }
-
-        if (c === "\"" && !inQuoteSingle) {
-            inQuote = !inQuote;
-            cArg += c;
-            if (inQuote === false) {
-                ret.push(cArg);
-                cArg = "";
-            }
-            continue;
-        }
-
-        if (inQuote || inQuoteSingle) {
-            cArg += c;
-            continue;
-        }
-
-        /* skip white space */
-        if ((c === " ") || (c === "\t")) {
-            if (cArg.length !== 0) {
-                ret.push(cArg);
-                cArg = "";
-            }
-            while ((c === " ") || (c === "\t")) {
-                i++;
-                c = cArg.charAt(i);
-            }
-            i--;
-            continue;
-        }
-
-        if (splitBrackets) {
-            if (c === "(" || c === ")") {
-                ret.push(cArg);
-                cArg = "" + c;
-                ret.push(cArg);
-                cArg = "";
+            /* handle quotes */
+            if (c === "'" && !inQuote) {
+                inQuoteSingle = !inQuoteSingle;
+                cArg += c;
+                if (inQuoteSingle === false) {
+                    ret.push(cArg);
+                    cArg = "";
+                }
                 continue;
             }
 
-        }
-        cArg += c;
-    }
+            if (c === "\"" && !inQuoteSingle) {
+                inQuote = !inQuote;
+                cArg += c;
+                if (inQuote === false) {
+                    ret.push(cArg);
+                    cArg = "";
+                }
+                continue;
+            }
 
-    if (cArg.length !== 0) {
-        ret.push(cArg);
+            if (inQuote || inQuoteSingle) {
+                cArg += c;
+                continue;
+            }
+
+            /* skip white space */
+            if ((c === " ") || (c === "\t")) {
+                if (cArg.length !== 0) {
+                    ret.push(cArg);
+                    cArg = "";
+                }
+                while ((c === " ") || (c === "\t")) {
+                    i++;
+                    c = cArg.charAt(i);
+                }
+                i--;
+                continue;
+            }
+
+            if (splitBrackets) {
+                if (c === "(" || c === ")") {
+                    ret.push(cArg);
+                    cArg = "" + c;
+                    ret.push(cArg);
+                    cArg = "";
+                    continue;
+                }
+
+            }
+            cArg += c;
+        }
+
+        if (cArg.length !== 0) {
+            ret.push(cArg);
+        }
     }
 }
 
@@ -247,7 +249,7 @@ class Token {
         if (previousToken !== undefined) {
             this.prevToken = previousToken.currentToken;
         }
-        splitArgument(line, false, lineTokens);
+        SourceScannerUtils.splitArgument(line, false, lineTokens);
         let rollingColumn = 0;
         for (let c = 0; c < lineTokens.length; c++) {
             const currentToken = lineTokens[c];
@@ -649,7 +651,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
-    public lastModifiedTime:BigInt = BigInt(0);
+    public lastModifiedTime: BigInt = BigInt(0);
 
     public tokensInOrder: COBOLToken[] = [];
 

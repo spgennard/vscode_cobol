@@ -1,7 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLSourceScanner, COBOLToken, camelize } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken, SourceScannerUtils } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import TrieSearch from "trie-search";
 import { VSLogger } from "./vslogger";
@@ -141,7 +141,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
 
             if (includeCamelCase) {
-                retKeys.push(camelize(key.tokenName));
+                retKeys.push(SourceScannerUtils.camelize(key.tokenName));
             }
 
             const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
