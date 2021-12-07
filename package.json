@@ -1159,80 +1159,67 @@
       {
         "command": "cobolplugin.removeAllComments",
         "category": "COBOL",
-        "title": "Remove COBOL Comments",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Remove COBOL Comments"
       },
       {
         "command": "cobolplugin.removeIdentificationArea",
         "category": "COBOL",
-        "title": "Remove COBOL Identification Area",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Remove COBOL Identification Area"
       },
       {
         "command": "cobolplugin.removeColumnNumbers",
         "category": "COBOL",
-        "title": "Remove Column Numbers",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Remove Column Numbers"
       },
       {
         "command": "cobolplugin.resequenceColumnNumbers",
         "category": "COBOL",
-        "title": "Re-sequence Column Numbers",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Re-sequence Column Numbers"
       },
       {
         "command": "cobolplugin.makeKeywordsLowercase",
         "category": "COBOL",
-        "title": "Make keywords lowercase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make keywords lowercase"
       },
       {
         "command": "cobolplugin.makeKeywordsUppercase",
         "category": "COBOL",
-        "title": "Make keywords uppercase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make keywords uppercase"
       },
       {
         "command": "cobolplugin.makeKeywordsCamelCase",
         "category": "COBOL",
-        "title": "Make keywords camelcase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make keywords camelcase"
       },
       {
         "command": "cobolplugin.makeFieldsLowercase",
         "category": "COBOL",
-        "title": "Make fields lowercase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make fields lowercase"
       },
       {
         "command": "cobolplugin.makeFieldsUppercase",
         "category": "COBOL",
-        "title": "Make fields uppercase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make fields uppercase"
       },
       {
         "command": "cobolplugin.makeFieldsCamelCase",
         "category": "COBOL",
-        "title": "Make fields camelcase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make fields camelcase"
       },
       {
         "command": "cobolplugin.makePerformTargetsLowerCase",
         "category": "COBOL",
-        "title": "Make perform targets lowercase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make perform targets lowercase"
       },
       {
         "command": "cobolplugin.makePerformTargetsUpperCase",
         "category": "COBOL",
-        "title": "Make perform targets uppercase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make perform targets uppercase"
       },
       {
         "command": "cobolplugin.makePerformTargetsCamelCase",
         "category": "COBOL",
-        "title": "Make perform targets camelcase",
-        "enablement": "!isWeb && isWorkspaceTrusted"
+        "title": "Make perform targets camelcase"
       },
       {
         "command": "cobolplugin.extractSelectionToParagraph",
@@ -1272,20 +1259,17 @@
       {
         "command": "cobolplugin.indentToCursor",
         "category": "COBOL",
-        "title": "indent to cursor",
-        "enablement": "!isWeb"
+        "title": "indent to cursor"
       },
       {
         "command": "cobolplugin.leftAdjustLine",
         "category": "COBOL",
-        "title": "left adjust line",
-        "enablement": "!isWeb"
+        "title": "left adjust line"
       },
       {
         "command": "cobolplugin.transposeSelection",
         "category": "COBOL",
-        "title": "transpose",
-        "enablement": "!isWeb"
+        "title": "transpose"
       }
     ],
     "menus": {
@@ -1403,17 +1387,17 @@
       {
         "key": "ctrl+alt+a",
         "command": "cobolplugin.indentToCursor",
-        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "!isWeb && config.coboleditor.xedit_keymap &&  &&editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap &&  &&editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+a",
@@ -1473,7 +1457,7 @@
       {
         "key": "ctrl+t",
         "command": "cobolplugin.transposeSelection",
-        "when": "!isWeb && config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$/^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+z",
