@@ -8,7 +8,7 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLFileUtils } from "./fileutils";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
@@ -51,7 +51,7 @@ export class COBOLUtils {
     }
 
     static async populateDefaultCallableSymbols(settings: ICOBOLSettings, reset: boolean): Promise<void> {
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (ws === undefined) {
             return;
         }
@@ -105,7 +105,7 @@ export class COBOLUtils {
 
     public static clearGlobalCache(): void {
         // only update if we have a workspace
-        if (getVSWorkspaceFolders() === undefined) {
+        if (VSWorkspaceFolders.get() === undefined) {
             return;
         }
 
@@ -120,7 +120,7 @@ export class COBOLUtils {
 
     public static saveGlobalCacheToWorkspace(settings: ICOBOLSettings, update = true): void {
         // only update if we have a workspace
-        if (getVSWorkspaceFolders() === undefined) {
+        if (VSWorkspaceFolders.get() === undefined) {
             return;
         }
 
@@ -233,7 +233,7 @@ export class COBOLUtils {
             const ddir = extsdir[extsdirpos];
 
             if (COBOLFileUtils.isDirectPath(ddir)) {
-                const ws = getVSWorkspaceFolders();
+                const ws = VSWorkspaceFolders.get();
                 if (vscode.workspace !== undefined && ws !== undefined) {
                     if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
@@ -247,7 +247,7 @@ export class COBOLUtils {
             }
         }
 
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
             for (const folder of ws) {
                 for (let extsdirpos = 0; extsdirpos < extsdir.length; extsdirpos++) {

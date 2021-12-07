@@ -1,6 +1,6 @@
 import path, { dirname } from "path";
 import * as vscode from "vscode";
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 import { COBOLFileUtils } from "./fileutils";
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
@@ -97,7 +97,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 	}
 
 	private getFileFromWorkspace(): string | undefined {
-		const ws = getVSWorkspaceFolders();
+		const ws = VSWorkspaceFolders.get();
 		if (ws !== undefined) {
 			for (const folder of ws) {
 				if (folder.uri.scheme === "file") {

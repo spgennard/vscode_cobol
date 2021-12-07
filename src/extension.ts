@@ -25,7 +25,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require("properties-reader");
 
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 import { COBOLSourceDefinition } from "./sourcedefinitionprovider";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCobScanner } from "./vscobscanner";
@@ -370,7 +370,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             }
             else if (COBOLFileUtils.isDirectPath(ddir)) {
                 VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
-                if (workspace !== undefined && getVSWorkspaceFolders() !== undefined) {
+                if (workspace !== undefined && VSWorkspaceFolders.get() !== undefined) {
                     if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
@@ -396,7 +396,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
 
     // step 2
-    const ws = getVSWorkspaceFolders();
+    const ws = VSWorkspaceFolders.get();
     if (ws !== undefined) {
         for (const folder of ws) {
             // place the workspace folder in the copybook path
@@ -437,7 +437,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
             VSLogger.logMessage("  Workspace Folders:");
             for (const folder of ws) {
@@ -712,7 +712,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         VSExtensionUtils.flip_plaintext(doc);
 
         //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
             if (VSExtensionUtils.isSupportedLanguage(doc)) {
                 await COBOLUtils.populateDefaultCallableSymbols(settings, false);

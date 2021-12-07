@@ -4,7 +4,7 @@ import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, Tex
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ESourceFormat } from "./externalfeatures";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { getVSCOBOLSourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
@@ -31,7 +31,7 @@ export class VSmargindecorations {
 
 
     private static isEnabledViaWorkspace4jcl(): boolean {
-        if (getVSWorkspaceFolders() === undefined) {
+        if (VSWorkspaceFolders.get() === undefined) {
             return false;
         }
 

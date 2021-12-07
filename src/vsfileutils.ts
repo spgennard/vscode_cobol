@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 import { Range, TextEditor, Uri, window, workspace } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
@@ -10,7 +10,7 @@ import { IExternalFeatures } from "./externalfeatures";
 export class VSCOBOLFileUtils {
 
     public static isPathInWorkspace(ddir: string): boolean {
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (workspace === undefined || ws === undefined) {
             return false;
         }
@@ -26,7 +26,7 @@ export class VSCOBOLFileUtils {
     }
 
     public static getFullWorkspaceFilename(features: IExternalFeatures, sdir: string, sdirMs: BigInt): string | undefined {
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }
@@ -52,7 +52,7 @@ export class VSCOBOLFileUtils {
         if (schema === "untitled") {
             return undefined;
         }
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }

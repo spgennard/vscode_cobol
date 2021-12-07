@@ -10,7 +10,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 
 import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
     public logMessage(message: string): void {
@@ -48,7 +48,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public getWorkspaceFolders(): string[] {
-        const folders = getVSWorkspaceFolders();
+        const folders = VSWorkspaceFolders.get();
         if (folders === undefined) {
             return [];
         }

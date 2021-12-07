@@ -1,6 +1,6 @@
 import path from "path";
 import { FileType, Uri, workspace } from "vscode";
-import { getVSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./cobolfolders";
 import { COBOLUtils } from "./cobolutils";
 import { VSLogger } from "./vslogger";
 import { COBOLFileUtils } from "./fileutils";
@@ -13,7 +13,7 @@ export class VSCOBOLSourceScannerTools {
         VSLogger.logMessage("Checking workspace for folders that are not present in copybookdirs setting");
 
         const settings = VSCOBOLConfiguration.get();
-        const ws = getVSWorkspaceFolders();
+        const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
             for (const folder of ws) {
                 try {
