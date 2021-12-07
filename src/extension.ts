@@ -5,7 +5,6 @@ import os from "os";
 
 import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, extensions, ViewColumn, ConfigurationChangeEvent } from "vscode";
 import * as opencopybook from "./opencopybook";
-import * as commenter from "./commenter";
 
 import { COBOLDocumentationCommentHandler } from "./doccomment";
 import { KeywordAutocompleteCompletionItemProvider } from "./keywordprovider";
@@ -44,6 +43,7 @@ import { VSExtensionUtils } from "./vsextutis";
 import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSmargindecorations } from "./margindecorations";
+import { commentUtils } from "./commenter";
 // import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -593,7 +593,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 if (settings.line_comment) {
-                    commenter.processCommentLine();
+                    commentUtils.processCommentLine();
                 } else {
                     commands.executeCommand("editor.action.commentLine");
                 }

@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import * as commenter from "../commenter";
 import { VSCOBOLConfiguration } from "../vsconfiguration";
 import { ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
@@ -11,6 +10,7 @@ import { COBOLProgramCommands } from "../cobolprogram";
 import { TabUtils } from "../tabstopper";
 import { VSCOBOLSourceScanner } from "../vscobolscanner";
 import { VSmargindecorations } from "../margindecorations";
+import { commentUtils } from "../commenter";
 //import { VSLogger } from "../vslogger";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -49,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.commentline", function () {
         if (vscode.window.activeTextEditor !== undefined) {
-            commenter.processCommentLine();
+            commentUtils.processCommentLine();
         }
     }));
 
