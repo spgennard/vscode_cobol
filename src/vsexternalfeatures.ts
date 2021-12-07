@@ -5,7 +5,7 @@ import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 import { COBOLCopyBookProvider } from "./opencopybook";
-import { getVSCOBOLSourceFormat } from "./sourceformat";
+import { VSSourceFormat } from "./sourceformat";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 import fs from "fs";
@@ -35,7 +35,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return getVSCOBOLSourceFormat(doc, config);
+        return VSSourceFormat.get(doc, config);
     }
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {

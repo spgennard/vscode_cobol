@@ -6,7 +6,7 @@ import { ESourceFormat } from "./externalfeatures";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
-import { getVSCOBOLSourceFormat } from "./sourceformat";
+import { VSSourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 
 const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
@@ -73,7 +73,7 @@ export class VSmargindecorations {
                 let sf: ESourceFormat = ESourceFormat.unknown;
                 if (gcp === undefined) {
                     const vsfile = new VSCodeSourceHandler(doc, false);
-                    sf = getVSCOBOLSourceFormat(vsfile, configHandler);
+                    sf = VSSourceFormat.get(vsfile, configHandler);
                 } else {
                     sf = gcp.sourceFormat;
                 }
