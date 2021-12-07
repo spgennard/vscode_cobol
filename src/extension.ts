@@ -346,7 +346,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
             }
         }
         VSLogger.logMessage(` Is Workspace Trusted                       : ${workspace.isTrusted}`);
-
     }
 
     fileSearchDirectory.length = 0;

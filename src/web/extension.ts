@@ -11,14 +11,31 @@ import { TabUtils } from "../tabstopper";
 import { VSCOBOLSourceScanner } from "../vscobolscanner";
 import { VSmargindecorations } from "../margindecorations";
 import { commentUtils } from "../commenter";
-//import { VSLogger } from "../vslogger";
+import { VSLogger } from "../vslogger";
 
+function showExtensionInformation():void {
+    const thisExtension = vscode.extensions.getExtension("bitlang.cobol");
+
+    if (thisExtension !== undefined) {
+        if (vscode.env.uriScheme !== "vscode") {
+            VSLogger.logMessage("----------------------------------------------------------------------");
+            VSLogger.logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
+            VSLogger.logMessage("----------------------------------------------------------------------");
+            VSLogger.logMessage(`Version                                     : ${vscode.version}`);
+        } else {
+            VSLogger.logMessage(`VSCode version                              : ${vscode.version}`);
+        }
+        VSLogger.logMessage("Extension Information:");
+        VSLogger.logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
+        VSLogger.logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);
+    }
+}
 export function activate(context: vscode.ExtensionContext) {
     VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
 
     const commands = vscode.commands;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
-
+    
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
         COBOLProgramCommands.move2pd();
     }));
@@ -102,7 +119,9 @@ export function activate(context: vscode.ExtensionContext) {
     //     VSLogger.logMessage(`Open document ${doc.fileName} / ${doc.uri.scheme}`);
     // });
     // context.subscriptions.push(onDidOpenTextDocumentHandler);
-    VSExternalFeatures.logMessage("COBOL.bitlang extension ready");
+
+    showExtensionInformation();
+
 
 }
 

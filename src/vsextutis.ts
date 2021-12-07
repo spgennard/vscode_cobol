@@ -32,7 +32,7 @@ export class VSExtensionUtils {
     ];
 
     public static isKnownScheme(scheme: string): boolean {
-        for (const kscheme in VSExtensionUtils.knownSchemes) {
+        for (const kscheme of VSExtensionUtils.knownSchemes) {
             if (scheme === kscheme) {
                 return true;
             }
