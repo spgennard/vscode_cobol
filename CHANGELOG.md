@@ -1,6 +1,16 @@
 # CHANGELOG
 
-* cf0ab6b (HEAD -> main, tag: 7.12.4, origin/main) tweak
+* a3b143b (HEAD -> main, tag: 7.12.6, origin/main) bump and publish
+* acfff9a add more functionality, hopefully avoiding everything depend on fs
+* 80ecd45 add info message
+* b865cf4 change scope
+* 0f245e8 move function to class
+* 893a417 move two function into util class
+* f4fc515 refactor VSSourceFormat
+* 3963081 refactor VSWorkspaceFolders
+* 671991c refactor margindec into class add margin support to web ext
+* e1430f7 Update CHANGELOG.md
+* cf0ab6b (tag: 7.12.4) tweak
 * c458f87 Update CHANGELOG.md
 * 0e4ddec remove debug code
 * 20bab31 remove reference to dep'ed vsix extension and reconsiders it use
