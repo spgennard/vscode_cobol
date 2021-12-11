@@ -21,6 +21,7 @@ export interface IExternalFeatures {
     getFileModTimeStamp(filename:string):BigInt;
     getCombinedCopyBookSearchPath(): string[];
     setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void;
+    getSourceTimeout(): number;
 }
 
 export enum ESourceFormat {

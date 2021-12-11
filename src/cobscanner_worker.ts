@@ -137,6 +137,10 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void {
         this.fileSearchDirectory = fileSearchDirectory;
     }
+
+    public getSourceTimeout(): number {
+        return Number.MAX_VALUE;
+    }
 }
 
 class threadSender implements ICOBOLSourceScannerEventer {

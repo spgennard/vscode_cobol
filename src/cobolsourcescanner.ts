@@ -448,9 +448,10 @@ export class SharedSourceReferences {
 
     public topLevel: boolean;
 
-    constructor(configHandler: ICOBOLSettings, topLevel: boolean) {
-        this.filenames = [];
+    public startTime: number;
 
+    constructor(configHandler: ICOBOLSettings, topLevel: boolean, startTime: number) {
+        this.filenames = [];
         this.targetReferences = new Map<string, SourceReference[]>();
         this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
         this.unknownReferences = new Map<string, SourceReference[]>();
@@ -462,7 +463,22 @@ export class SharedSourceReferences {
         this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
         this.topLevel = topLevel;
+        this.startTime = startTime;
         this.ignoreUnusedSymbol = new Map<string, string>();
+    }
+
+    public reset(configHandler: ICOBOLSettings) {
+        this.filenames = [];
+        this.targetReferences.clear();
+        this.constantsOrVariablesReferences.clear();
+        this.unknownReferences.clear();
+        this.sharedConstantsOrVariables.clear();
+        this.sharedSections.clear();
+        this.sharedParagraphs.clear();
+        this.copyBooksUsed.clear();
+        this.state = new ParseState(configHandler);
+        this.tokensInOrder = [];
+        this.ignoreUnusedSymbol.clear();
     }
 }
 
@@ -662,7 +678,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public functionTargets: Map<string, CallTargetInformation>;
     public classes: Map<string, COBOLToken>;
     public methods: Map<string, COBOLToken>;
-    public isCached: boolean;
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
     public diagWarnings: Map<string, COBOLFileSymbol>;
 
@@ -698,8 +713,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     parseHint_ScreenSectionFiles: string[] = [];
 
     private eventHandler: ICOBOLSourceScannerEvents;
-
     private externalFeatures: IExternalFeatures;
+
+    public parseAborted: boolean;
 
     public static ParseUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
@@ -708,16 +724,19 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         externalFeatures: IExternalFeatures
     ): COBOLSourceScanner {
 
-        return new COBOLSourceScanner(sourceHandler,
+        const startTime = externalFeatures.performance_now();
+        return new COBOLSourceScanner(
+            startTime,
+            sourceHandler,
             configHandler,
-            new SharedSourceReferences(configHandler, true),
+            new SharedSourceReferences(configHandler, true, startTime),
             parse_copybooks_for_references,
             eventHandler,
             externalFeatures
         );
     }
 
-    public static ParseUncachedInlineCopybook(
+    private static ParseUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: COBOLSourceScanner,
         parse_copybooks_for_references: boolean,
@@ -729,7 +748,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
 
-        return new COBOLSourceScanner(sourceHandler,
+        return new COBOLSourceScanner(
+            externalFeatures.performance_now(),
+            sourceHandler,
             configHandler,
             sharedSource,
             parse_copybooks_for_references,
@@ -737,12 +758,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             externalFeatures);
     }
 
-    public constructor(sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
-        sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true),
+    public constructor(
+        startTime: number,
+        sourceHandler: ISourceHandler, configHandler: ICOBOLSettings,
+        sourceReferences: SharedSourceReferences = new SharedSourceReferences(configHandler, true, startTime),
         parse_copybooks_for_references: boolean,
         sourceEventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures) {
-
         const filename = sourceHandler.getFilename();
 
         this.sourceHandler = sourceHandler;
@@ -756,7 +778,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
-        this.isCached = false;
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
         this.constantsOrVariables = new Map<string, COBOLToken[]>();
@@ -768,7 +789,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;
-
+        this.parseAborted = false;
         let sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;
 
@@ -930,6 +951,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
+        const sourceTimeout = externalFeatures.getSourceTimeout();
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 state.currentLineIsComment = false;
@@ -951,6 +973,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (line.length > 0) {
                     const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
                     prevToken = this.parseLineByLine(l, prevTokenToParse, line);
+                }
+
+                // check for timeout every 1000 lines
+                if (l % 1000 !== 0) {
+                    const elapsedTime = externalFeatures.performance_now() - this.sourceReferences.startTime;
+                    if (elapsedTime > sourceTimeout) {
+                        this.abortParse(elapsedTime);
+                        return;
+                    }
                 }
             }
             catch (e) {
@@ -1031,6 +1062,24 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             this.sourceReferences.unknownReferences.clear();
             this.eventHandler.finish();
         }
+    }
+
+    private abortParse(elapsedTime: number):void {
+        this.externalFeatures.logMessage(`Aborted parsing after ${elapsedTime}`);
+        this.tokensInOrder = [];
+        this.copyBooksUsed.clear();
+        this.sections.clear();
+        this.paragraphs.clear();
+        this.constantsOrVariables.clear();
+        this.callTargets.clear();
+        this.functionTargets.clear();
+        this.classes.clear();
+        this.methods.clear();
+        this.diagWarnings.clear();
+        this.cache4PerformTargets = undefined;
+        this.cache4ConstantsOrVars = undefined;
+        this.parseAborted = true;
+        this.sourceReferences.reset(this.configHandler);
     }
 
     private isVisibleSection(sectionName: string): boolean {

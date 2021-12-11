@@ -149,7 +149,15 @@ export class Scanner {
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);
-                    const qcp = new COBOLSourceScanner(filesHandler, config, new SharedSourceReferences(config, true), config.parse_copybooks_for_references, symbolCatcher, features);
+                    const startTime = features.performance_now();
+                    const qcp = new COBOLSourceScanner(
+                        startTime,
+                        filesHandler, 
+                        config, 
+                        new SharedSourceReferences(config, true, startTime), 
+                        config.parse_copybooks_for_references, 
+                        symbolCatcher, 
+                        features);
                     if (qcp.callTargets.size > 0) {
                         stats.programsDefined++;
                         if (qcp.callTargets !== undefined) {

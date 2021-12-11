@@ -138,31 +138,36 @@ export class VSCOBOLSourceScanner {
                 // if (!VSExtensionUtils.isKnownScheme(document.uri.scheme)) {
                 //     VSLogger.logMessage(`Information: ${document.fileName} scheme is unknown ${document.uri.scheme}`);
                 // }
-                const startTime = VSExternalFeatures.performance_now();
                 const sourceHandler = new VSCodeSourceHandler(document, false);
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
-                const qcpd = new COBOLSourceScanner(sourceHandler, config, new SharedSourceReferences(config, true),
+                const startTime = VSExternalFeatures.performance_now();
+                const qcpd = new COBOLSourceScanner(
+                    startTime,
+                    sourceHandler, 
+                    config, 
+                    new SharedSourceReferences(config, true, startTime),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     VSExternalFeatures);
 
-                VSLogger.logTimedMessage(VSExternalFeatures.performance_now() - startTime, " - Parsing " + fileName);
+                if (qcpd.parseAborted === false) {
+                    VSLogger.logTimedMessage(VSExternalFeatures.performance_now() - startTime, " - Parsing of " + fileName + " complete");
 
-                if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
-                    // drop the smallest..
-                    let smallest = Number.MAX_VALUE;
-                    let dropKey = "";
-                    for (const [key, val] of InMemoryCache) {
-                        if (val.tokensInOrder.length < smallest) {
-                            dropKey = key;
-                            smallest = val.tokensInOrder.length;
+                    if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
+                        // drop the smallest..
+                        let smallest = Number.MAX_VALUE;
+                        let dropKey = "";
+                        for (const [key, val] of InMemoryCache) {
+                            if (val.tokensInOrder.length < smallest) {
+                                dropKey = key;
+                                smallest = val.tokensInOrder.length;
+                            }
+                        }
+                        if (dropKey.length !== 0) {
+                            InMemoryCache.delete(dropKey);
                         }
                     }
-                    if (dropKey.length !== 0) {
-                        InMemoryCache.delete(dropKey);
-                    }
                 }
-
                 InMemoryCache.set(fileName, qcpd);
                 return qcpd;
             }
@@ -171,7 +176,7 @@ export class VSCOBOLSourceScanner {
             }
         }
 
-        return cachedObject;
+        return cachedObject?.parseAborted ? undefined : cachedObject;
     }
 
     public static clearCOBOLCache(): void {
