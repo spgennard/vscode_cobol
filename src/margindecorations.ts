@@ -87,17 +87,15 @@ export class VSmargindecorations {
                 }
             }
 
-            // fixed format from here onwards...
-            const lineLimit = configHandler.editor_maxTokenizationLineLength;
-            const maxLinesInFile = doc.lineCount;
-            let maxLines = maxLinesInFile;
-            if (maxLines > lineLimit) {
-                maxLines = lineLimit;
-            }
+            const maxLineLength = configHandler.editor_maxTokenizationLineLength;
+            const maxLines = doc.lineCount;
 
             for (let i = 0; i < maxLines; i++) {
                 const lineText = doc.lineAt(i);
                 const line = lineText.text;
+                if (line.length > maxLineLength) {
+                    continue;
+                }
 
                 // only do it, if we have no tabs on the line..
                 const containsTab = line.indexOf("\t");

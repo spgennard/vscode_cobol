@@ -6,9 +6,10 @@ import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBO
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 
-import * as path from "path";
 import { ICOBOLSettings } from "./iconfiguration";
 import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+
+import * as path from "path";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -166,10 +167,6 @@ export class COBOLToken {
 
     static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, 0, "", "", undefined, false, "");
 
-    public getEndDelimiterToken(): COBOLToken {
-        return new COBOLToken(this.filename, COBOLTokenStyle.EndDelimiter, this.startLine, 0, this.tokenName, this.description, this.parentToken, this.inProcedureDivision, "");
-    }
-
     public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, startColumn: number, token: string, description: string,
         parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
         this.ignoreInOutlineView = false;
@@ -212,14 +209,13 @@ export class SourceReference {
     }
 }
 
-
-class SToken {
+class StreamToken {
     public currentToken: string;
     public currentTokenLower: string;
     public endsWithDot: boolean;
     public currentCol: number;
 
-    public static Blank = new SToken("", "", false, 0);
+    public static Blank = new StreamToken("", "", false, 0);
 
     public constructor(currentToken: string, currentTokenLower: string, endsWithDot: boolean, currentCol: number) {
         this.currentToken = currentToken;
@@ -241,7 +237,7 @@ class Token {
 
     public endsWithDot = false;
 
-    private stokens: SToken[] = [];
+    private stokens: StreamToken[] = [];
 
     public constructor(line: string, previousToken: Token | undefined) {
         const lineTokens: string[] = [];
@@ -258,7 +254,7 @@ class Token {
             rollingColumn = line.indexOf(currentToken, rollingColumn);
 
             const endsWithDot = currentToken.length === 0 ? false : currentToken.charAt(currentToken.length - 1) === ".";
-            this.stokens.push(new SToken(currentToken, currentTokenLower, endsWithDot, rollingColumn));
+            this.stokens.push(new StreamToken(currentToken, currentTokenLower, endsWithDot, rollingColumn));
         }
         this.tokenIndex = 0;
         this.setupNextToken();
@@ -275,17 +271,17 @@ class Token {
 
     public static Blank = new Token("", undefined);
 
-    public nextSTokenOrBlank(): SToken {
+    public nextSTokenOrBlank(): StreamToken {
         if (1 + this.tokenIndex >= this.stokens.length) {
-            return SToken.Blank;
+            return StreamToken.Blank;
         }
 
         return this.stokens[1 + this.tokenIndex];
     }
 
-    public nextSTokenPlusOneOrBlank(): SToken {
+    public nextSTokenPlusOneOrBlank(): StreamToken {
         if (2 + this.tokenIndex >= this.stokens.length) {
-            return SToken.Blank;
+            return StreamToken.Blank;
         }
 
         return this.stokens[2 + this.tokenIndex];
@@ -326,7 +322,7 @@ class Token {
         this.prevToken = this.currentToken;
         this.prevTokenLower = this.currentTokenLower;
 
-        const stok: SToken = this.stokens[this.tokenIndex];
+        const stok: StreamToken = this.stokens[this.tokenIndex];
         if (stok !== undefined) {
             this.currentToken = stok.currentToken;
             this.currentTokenLower = stok.currentTokenLower;
@@ -825,6 +821,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             this.eventHandler.start(this);
         }
 
+        const maxLineLength = configHandler.editor_maxTokenizationLineLength;
+
         if (this.sourceReferences.topLevel) {
             /* if we have an extension, then don't do a relaxed parse to determine if it is COBOL or not */
             const lineLimit = configHandler.pre_parse_line_limit;
@@ -849,6 +847,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
 
                     line = line.trimRight();
+
+                    // ignore large lines
+                    if (line.length > maxLineLength) {
+                        this.externalFeatures.logMessage(`Aborted parsing ${this.filename} max line length exceeded`);
+                        this.clearScanData();
+                        continue;
+                    }
 
                     // don't parse a empty line
                     if (line.length > 0) {
@@ -979,7 +984,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (l % 1000 !== 0) {
                     const elapsedTime = externalFeatures.performance_now() - this.sourceReferences.startTime;
                     if (elapsedTime > sourceTimeout) {
-                        this.abortParse(elapsedTime);
+                        this.externalFeatures.logMessage(`Aborted parsing ${this.filename} after ${elapsedTime}`);
+                        this.clearScanData();
                         return;
                     }
                 }
@@ -1064,8 +1070,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
-    private abortParse(elapsedTime: number):void {
-        this.externalFeatures.logMessage(`Aborted parsing after ${elapsedTime}`);
+    private clearScanData() {
         this.tokensInOrder = [];
         this.copyBooksUsed.clear();
         this.sections.clear();

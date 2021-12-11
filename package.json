@@ -678,6 +678,21 @@
           "type": "boolean",
           "description": "Enable experiemental 'xedit' key mapping",
           "default": false
+        },
+        "coboleditor.files_exclude": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "types",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "list of files to exclude from scanning"
+              }
+            }
+          },
+          "default": [],
+          "uniqueItems": true
         }
       }
     },

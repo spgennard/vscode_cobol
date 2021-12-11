@@ -87,6 +87,8 @@ export interface ICOBOLSettings {
     enable_source_scanner: boolean;
 
     valid_cobol_language_ids: string[];
+
+    files_exclude: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -157,6 +159,9 @@ export class COBOLSettings implements ICOBOLSettings {
     enable_source_scanner: boolean;
 
     valid_cobol_language_ids: string[];
+
+    files_exclude: string[];
+
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
@@ -221,5 +226,7 @@ export class COBOLSettings implements ICOBOLSettings {
             "ACUCOBOL",
             "COBOL_MF_LISTFILE"
         ];
+
+        this.files_exclude = [];
     }
 }

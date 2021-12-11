@@ -88,6 +88,8 @@ export class VSCOBOLConfiguration {
             vsconfig.valid_cobol_language_ids = user_cobol_language_ids;
         }
 
+        vsconfig.files_exclude = workspace.getConfiguration("coboleditor").get<string[]>("files_exclude", vsconfig.files_exclude);
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
@@ -105,7 +107,7 @@ export class VSCOBOLConfiguration {
         vsconfig.parse_copybooks_for_references = false;
         // vsconfig.cache_metadata = CacheDirectoryStrategy.Off;
         vsconfig.cache_metadata_verbose_messages = false;
-        vsconfig.editor_maxTokenizationLineLength = 1;
+        vsconfig.editor_maxTokenizationLineLength = 0;
         vsconfig.sourceview = false;
         vsconfig.format_on_return = formatOnReturn.Off;
 

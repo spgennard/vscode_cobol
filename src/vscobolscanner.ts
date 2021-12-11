@@ -109,12 +109,6 @@ export class VSCOBOLSourceScanner {
             return undefined;
         }
 
-        // file is too large to parse
-        if (document.lineCount > config.editor_maxTokenizationLineLength) {
-            VSLogger.logMessage(` ${document.fileName} is not parsed, line count is ${document.lineCount} and editor.maxTokenizationLineLength is ${config.editor_maxTokenizationLineLength}`);
-            return undefined;
-        }
-
         const fileName: string = document.fileName;
         let cachedObject = InMemoryCache.get(fileName);
         if (cachedObject !== undefined) {
