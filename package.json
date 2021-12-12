@@ -101,7 +101,7 @@
         "coboleditor.cache_metadata_verbose_messages",
         "coboleditor.cache_metadata_inactivity_timeout",
         "coboleditor.outline",
-        "coboleditor.pre_parse_line_limit",
+        "coboleditor.pre_scan_line_limit",
         "coboleditor.linter",
         "coboleditor.linter_mark_as_information",
         "coboleditor.linter_unused_paragraphs_or_sections",
@@ -365,7 +365,7 @@
           ],
           "default": "on"
         },
-        "coboleditor.pre_parse_line_limit": {
+        "coboleditor.pre_scan_line_limit": {
           "type": "number",
           "title": "Set pre-parse line limit",
           "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
@@ -688,12 +688,19 @@
           },
           "uniqueItems": true
         },
-        "coboleditor.parse_line_limit": {
+        "coboleditor.scan_line_limit": {
           "type": "number",
           "title": "Set parse line limit",
-          "description": "Set parse line limit, can be used to avoid 'unresponsive' messages",
+          "description": "Set parse line limit, it can be used to avoid 'unresponsive' messages",
           "default": 15000,
           "minimum": 255
+        },
+        "coboleditor.scan_time_limit": {
+          "type": "number",
+          "title": "Set parse time limit in ms",
+          "description": "Set parse time limit, it can be used to avoid 'unresponsive' messages",
+          "default": 4000,
+          "minimum": 500
         }
       }
     },

@@ -825,7 +825,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         if (this.sourceReferences.topLevel) {
             /* if we have an extension, then don't do a relaxed parse to determine if it is COBOL or not */
-            const lineLimit = configHandler.pre_parse_line_limit;
+            const lineLimit = configHandler.pre_scan_line_limit;
             const maxLinesInFile = sourceHandler.getLineCount();
             let maxLines = maxLinesInFile;
             if (maxLines > lineLimit) {
@@ -850,7 +850,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                     // ignore large lines
                     if (line.length > maxLineLength) {
-                        this.externalFeatures.logMessage(`Aborted parsing ${this.filename} max line length exceeded`);
+                        this.externalFeatures.logMessage(`Aborted scanning ${this.filename} max line length exceeded`);
                         this.clearScanData();
                         continue;
                     }
@@ -919,10 +919,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
-                if (sourceHandler.getLineCount() > maxLines) {
-                    this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_parse_line_limit setting)`);
-                } else {
-                    this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
+                if (filename.length > 0) {
+                    if (sourceHandler.getLineCount() > maxLines) {
+                        this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_scan_line_limit setting)`);
+                    } else {
+                        this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
+                    }
                 }
             }
 
@@ -956,7 +958,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         prevToken = Token.Blank;
         sourceHandler.resetCommentCount();
 
-        const sourceTimeout = externalFeatures.getSourceTimeout();
+        const sourceTimeout = externalFeatures.getSourceTimeout(this.configHandler);
         for (let l = 0; l < sourceHandler.getLineCount(); l++) {
             try {
                 state.currentLineIsComment = false;
@@ -984,7 +986,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (l % 1000 !== 0) {
                     const elapsedTime = externalFeatures.performance_now() - this.sourceReferences.startTime;
                     if (elapsedTime > sourceTimeout) {
-                        this.externalFeatures.logMessage(`Aborted parsing ${this.filename} after ${elapsedTime}`);
+                        this.externalFeatures.logMessage(`Aborted scanning ${this.filename} after ${elapsedTime}`);
                         this.clearScanData();
                         return;
                     }

@@ -138,7 +138,8 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         this.fileSearchDirectory = fileSearchDirectory;
     }
 
-    public getSourceTimeout(): number {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getSourceTimeout(config: ICOBOLSettings): number {
         return Number.MAX_VALUE;
     }
 }

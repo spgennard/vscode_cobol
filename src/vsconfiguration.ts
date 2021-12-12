@@ -16,7 +16,7 @@ export class VSCOBOLConfiguration {
         vsconfig.copybooks_nested = getBoolean("copybooks_nested", false);
         vsconfig.outline = isOutlineEnabled();
         vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
-        vsconfig.pre_parse_line_limit = getPreParseLineLimit();
+        vsconfig.pre_scan_line_limit = getPreParseLineLimit();
         vsconfig.copybookexts = getCopybookExts();
         vsconfig.program_extensions = getProgram_extensions();
         vsconfig.tabstops = getTabStops();
@@ -90,10 +90,10 @@ export class VSCOBOLConfiguration {
 
         vsconfig.files_exclude = workspace.getConfiguration("coboleditor").get<string[]>("files_exclude", vsconfig.files_exclude);
 
-        vsconfig.parse_line_limit = workspace.getConfiguration("coboleditor").get<number>("parse_line_limit", vsconfig.parse_line_limit
-        
-        );
+        vsconfig.scan_line_limit = workspace.getConfiguration("coboleditor").get<number>("scan_line_limit", vsconfig.scan_line_limit);
 
+        vsconfig.scan_time_limit = workspace.getConfiguration("coboleditor").get<number>("scan_time_limit", vsconfig.scan_time_limit);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
@@ -171,7 +171,7 @@ function getNumber(configSection: string, defaultValue: number): number {
 
 function getPreParseLineLimit(): number {
     const editorConfig = workspace.getConfiguration("coboleditor");
-    let lineLimit = editorConfig.get<number>("pre_parse_line_limit");
+    let lineLimit = editorConfig.get<number>("pre_scan_line_limit");
     if (lineLimit === undefined || lineLimit === null) {
         lineLimit = 25;
     }

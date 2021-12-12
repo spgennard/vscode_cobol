@@ -13,6 +13,8 @@ import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./cobolfolders";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
+
+
     public logMessage(message: string): void {
         VSLogger.logMessage(message);
     }
@@ -109,8 +111,8 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         this.fileSearchDirectory = fileSearchDirectory;
     }
 
-    public getSourceTimeout(): number {
-        return Number.MAX_VALUE;
+    public getSourceTimeout(config: ICOBOLSettings): number {
+        return config.scan_time_limit;
     }
 }
 

@@ -21,7 +21,7 @@ export interface IExternalFeatures {
     getFileModTimeStamp(filename:string):BigInt;
     getCombinedCopyBookSearchPath(): string[];
     setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void;
-    getSourceTimeout(): number;
+    getSourceTimeout(config: ICOBOLSettings): number;
 }
 
 export enum ESourceFormat {

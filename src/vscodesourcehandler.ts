@@ -20,6 +20,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
     updatedSource: Map<number, string>;
     languageId: string;
     format: ESourceFormat;
+    externalFeatures: IExternalFeatures
 
     public constructor(externalFeatures: IExternalFeatures,     
                        document: vscode.TextDocument, 
@@ -35,6 +36,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         this.documentVersionId = BigInt(this.document.version);
         this.languageId = document.languageId;
         this.format = ESourceFormat.unknown;
+        this.externalFeatures = externalFeatures;
 
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
@@ -60,9 +62,9 @@ export class VSCodeSourceHandler implements ISourceHandler {
     private isFileExcluded(): boolean {
         const config = VSCOBOLConfiguration.get();
 
-
         if (this.document !== undefined) {
-            if (this.document.lineCount > config.parse_line_limit) {
+            if (this.document.lineCount > config.scan_line_limit) {
+                this.externalFeatures.logMessage(`Aborted scanning ${this.shortWorkspaceFilename} after line limit of ${config.scan_line_limit} has been exceeded`);
                 return true;
             }
 
@@ -72,6 +74,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
                 };
 
                 if (vscode.languages.match(documentFilter, this.document) !== 0) {
+                    this.externalFeatures.logMessage(`Aborted scanning ${this.shortWorkspaceFilename} (files_exclude)`);
                     return true;
                 }
             }

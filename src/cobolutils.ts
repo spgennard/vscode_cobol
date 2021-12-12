@@ -636,11 +636,11 @@ export class COBOLUtils {
             languageid: string): void {
         const uri = activeEditor.document.uri;
         const settings = VSCOBOLConfiguration.get();
-        
+
         const file = new VSCodeSourceHandler(externalFeatures, activeEditor.document, false);
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
-            VSLogger.logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);
+            VSLogger.logMessage(`Unable to fold ${file.externalFeatures}, as it is has not been parsed`);
             return;
         }
 

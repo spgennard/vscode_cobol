@@ -21,7 +21,7 @@ export interface IEditorMarginFiles {
 
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
-    pre_parse_line_limit: number;
+    pre_scan_line_limit: number;
     copybooks_nested: boolean;
     outline: outlineFlag;
     copybookdirs: string[];
@@ -90,12 +90,14 @@ export interface ICOBOLSettings {
 
     files_exclude: string[];
 
-    parse_line_limit: number;
+    scan_line_limit: number;
+
+    scan_time_limit: number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
     enable_tabstop: boolean;
-    pre_parse_line_limit: number;
+    pre_scan_line_limit: number;
     copybooks_nested: boolean;
     outline: outlineFlag;
     copybookdirs: string[];
@@ -164,12 +166,14 @@ export class COBOLSettings implements ICOBOLSettings {
 
     files_exclude: string[];
 
-    parse_line_limit: number;
+    scan_line_limit: number;
+
+    scan_time_limit: number;
 
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
-        this.pre_parse_line_limit = 25;
+        this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;
         this.fileformat_strategy = "normal";
         this.outline = outlineFlag.Off;
@@ -232,6 +236,7 @@ export class COBOLSettings implements ICOBOLSettings {
         ];
 
         this.files_exclude = [];
-        this.parse_line_limit = 15000;
+        this.scan_line_limit = 15000;
+        this.scan_time_limit = 4000;
     }
 }
