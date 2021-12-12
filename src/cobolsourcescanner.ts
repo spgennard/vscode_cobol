@@ -416,12 +416,12 @@ export class COBOLCopybookToken {
     static Null: COBOLCopybookToken = new COBOLCopybookToken(COBOLToken.Null, true, new copybookState());
 
     public readonly token: COBOLToken;
-    public parsed: boolean;
+    public scanComplete: boolean;
     public statementInformation: copybookState;
 
     constructor(token: COBOLToken, parsed: boolean, statementInformation: copybookState) {
         this.token = token;
-        this.parsed = parsed;
+        this.scanComplete = parsed;
         this.statementInformation = statementInformation;
     }
 }
@@ -711,9 +711,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private eventHandler: ICOBOLSourceScannerEvents;
     private externalFeatures: IExternalFeatures;
 
-    public parseAborted: boolean;
+    public scanAborted: boolean;
 
-    public static ParseUncached(sourceHandler: ISourceHandler,
+    public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean,
         eventHandler: ICOBOLSourceScannerEvents,
@@ -732,7 +732,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         );
     }
 
-    private static ParseUncachedInlineCopybook(
+    private static ScanUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: COBOLSourceScanner,
         parse_copybooks_for_references: boolean,
@@ -785,7 +785,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;
-        this.parseAborted = false;
+        this.scanAborted = false;
         let sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;
 
@@ -1085,7 +1085,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.diagWarnings.clear();
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;
-        this.parseAborted = true;
+        this.scanAborted = true;
         this.sourceReferences.reset(this.configHandler);
     }
 
@@ -2454,13 +2454,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             this.sourceReferences.state.replaceMap = new Map<string, replaceToken>([...cbInfo.copyReplaceMap, ...prevRepMap]);
                         }
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        const qps = COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
+                        const qps = COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
                         cbInfo.sourceHandler = qps.sourceHandler;
                         this.sourceReferences.state.replaceMap = prevRepMap;
                         this.sourceReferences.topLevel = currentTopLevel;
                         state.ignoreInOutlineView = currentIgnoreInOutlineView;
 
-                        copybookToken.parsed = true;
+                        copybookToken.scanComplete = true;
                     }
                 } else {
                     if (this.configHandler.linter_ignore_missing_copybook === false) {
@@ -2589,7 +2589,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     this.sourceReferences.topLevel = true;
 
                                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    COBOLSourceScanner.ParseUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
+                                    COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
                                     this.sourceReferences.topLevel = true;
                                     this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                                 }

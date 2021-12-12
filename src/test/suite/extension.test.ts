@@ -32,7 +32,7 @@ suite("Core Extension Test Suite", () => {
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 		const settings = new COBOLSettings();
-		const s = COBOLSourceScanner.ParseUncached(f, settings, false, eventHandler, features);
+		const s = COBOLSourceScanner.ScanUncached(f, settings, false, eventHandler, features);
 
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");
 		assert.ok(s.paragraphs.size > 0, "should contain at least one paragraph");
@@ -48,7 +48,7 @@ suite("Core Extension Test Suite", () => {
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
 		const settings = new COBOLSettings();
-		const s =  COBOLSourceScanner.ParseUncached(f, settings, false, eventHandler, features);
+		const s =  COBOLSourceScanner.ScanUncached(f, settings, false, eventHandler, features);
 
 		assert.ok(s.functionTargets.size > 0, `should contain at least one function (got: ${s.functionTargets.size})`);
 	});

@@ -13,8 +13,6 @@ import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./cobolfolders";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
-
-
     public logMessage(message: string): void {
         VSLogger.logMessage(message);
     }

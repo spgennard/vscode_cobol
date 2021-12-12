@@ -367,8 +367,8 @@
         },
         "coboleditor.pre_scan_line_limit": {
           "type": "number",
-          "title": "Set pre-parse line limit",
-          "description": "Set pre-parse line limit, used to determine if source is COBOL or a CopyBook.",
+          "title": "Set pre-scan line limit",
+          "description": "Set pre-scan line limit, used to determine if source is COBOL or a CopyBook.",
           "default": 25,
           "minimum": 5,
           "maximum": 255
@@ -473,7 +473,7 @@
         },
         "coboleditor.parse_copybooks_for_references": {
           "type": "boolean",
-          "description": "Parse copybook for reference (default false)",
+          "description": "Scan copybook for reference (default false)",
           "default": false
         },
         "coboleditor.workspacefolders_order": {
@@ -690,15 +690,15 @@
         },
         "coboleditor.scan_line_limit": {
           "type": "number",
-          "title": "Set parse line limit",
-          "description": "Set parse line limit, it can be used to avoid 'unresponsive' messages",
+          "title": "Set scan line limit",
+          "description": "Set scan line limit, it can be used to avoid 'unresponsive' messages",
           "default": 15000,
           "minimum": 255
         },
         "coboleditor.scan_time_limit": {
           "type": "number",
-          "title": "Set parse time limit in ms",
-          "description": "Set parse time limit, it can be used to avoid 'unresponsive' messages",
+          "title": "Set scan time limit in ms",
+          "description": "Set scan time limit, it can be used to avoid 'unresponsive' messages",
           "default": 4000,
           "minimum": 500
         }

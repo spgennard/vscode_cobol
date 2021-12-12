@@ -144,7 +144,7 @@ export class VSCOBOLSourceScanner {
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
                     VSExternalFeatures);
 
-                if (qcpd.parseAborted === false) {
+                if (qcpd.scanAborted === false) {
                     VSLogger.logTimedMessage(VSExternalFeatures.performance_now() - startTime, " - Parsing of " + fileName + " complete");
 
                     if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
@@ -170,7 +170,7 @@ export class VSCOBOLSourceScanner {
             }
         }
 
-        return cachedObject?.parseAborted ? undefined : cachedObject;
+        return cachedObject?.scanAborted ? undefined : cachedObject;
     }
 
     public static clearCOBOLCache(): void {

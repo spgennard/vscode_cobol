@@ -97,7 +97,7 @@ export class CobolLinterProvider {
             this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
 
             if (qp.configHandler.linter_unused_paragraphs_or_sections) {
-                this.processParsedDocumentForUnusedSymbols(qp, diagRefs);
+                this.processScannedDocumentForUnusedSymbols(qp, diagRefs);
             }
 
             if (qp.configHandler.linter_house_standards_rules) {
@@ -187,7 +187,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processParsedDocumentForUnusedSymbols(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>) {
+    private processScannedDocumentForUnusedSymbols(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>) {
 
         if (this.sourceRefs === undefined) {
             return;
