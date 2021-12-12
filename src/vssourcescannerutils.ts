@@ -65,7 +65,6 @@ export class VSCOBOLSourceScannerTools {
                     if (COBOLFileUtils.isValidCopybookExtension(entry, settings)) {
                         copyBookCount++;
                     }
-
             }
         }
 

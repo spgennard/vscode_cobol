@@ -846,7 +846,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         break; // eof
                     }
 
-                    line = line.trimRight();
+                    line = line.trimEnd();
 
                     // ignore large lines
                     if (line.length > maxLineLength) {
@@ -972,7 +972,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     continue;
                 }
 
-                const line = processedLine.trimRight();
+                const line = processedLine.trimEnd();
 
                 // don't parse a empty line
                 if (line.length > 0) {
@@ -2480,7 +2480,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const startOfComment: number = commentLine.indexOf("*>");
 
         if (startOfComment !== undefined && startOfComment !== -1) {
-            const trimmedLine = commentLine.substring(0, startOfComment).trimRight();
+            const trimmedLine = commentLine.substring(0, startOfComment).trimEnd();
             if (trimmedLine.length !== 0) {
                 // we still have something to process
                 this.sourceReferences.state.currentLineIsComment = false;

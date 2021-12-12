@@ -90,6 +90,10 @@ export class VSCOBOLConfiguration {
 
         vsconfig.files_exclude = workspace.getConfiguration("coboleditor").get<string[]>("files_exclude", vsconfig.files_exclude);
 
+        vsconfig.parse_line_limit = workspace.getConfiguration("coboleditor").get<number>("parse_line_limit", vsconfig.parse_line_limit
+        
+        );
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

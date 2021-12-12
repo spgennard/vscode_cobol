@@ -1,14 +1,15 @@
 import { StringBuilder } from "typescript-string-operations";
 import * as vscode from "vscode";
 import { workspace } from "vscode";
-import { ESourceFormat } from "./externalfeatures";
+import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ISourceHandler, ICommentCallback } from "./isourcehandler";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSCodeSourceHandler implements ISourceHandler {
     commentCount: number;
-    document: vscode.TextDocument|undefined;
+    document: vscode.TextDocument | undefined;
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
     commentCallback?: ICommentCallback;
@@ -20,7 +21,11 @@ export class VSCodeSourceHandler implements ISourceHandler {
     languageId: string;
     format: ESourceFormat;
 
-    public constructor(document: vscode.TextDocument, dumpNumbersInAreaA: boolean, commentCallback?: ICommentCallback) {
+    public constructor(externalFeatures: IExternalFeatures,     
+                       document: vscode.TextDocument, 
+                       dumpNumbersInAreaA: boolean, 
+                       commentCallback?: ICommentCallback) 
+    {
         this.document = document;
         this.dumpNumbersInAreaA = dumpNumbersInAreaA;
         this.dumpAreaBOnwards = false;
@@ -38,9 +43,41 @@ export class VSCodeSourceHandler implements ISourceHandler {
 
         // if we cannot be trusted and the file is outside the workspace, dont read it
         if (vscode.workspace.isTrusted === false && !this.isSourceInWorkSpace) {
-            this.commentCallback = undefined;
-            this.document = undefined;
+            this.clear();
         }
+
+        if (this.isFileExcluded()) {
+            this.clear();
+        }
+    }
+
+    private clear(): void {
+        this.commentCallback = undefined;
+        this.document = undefined;
+        this.lineCount = 0;
+    }
+    
+    private isFileExcluded(): boolean {
+        const config = VSCOBOLConfiguration.get();
+
+
+        if (this.document !== undefined) {
+            if (this.document.lineCount > config.parse_line_limit) {
+                return true;
+            }
+
+            for (const fileEx of config.files_exclude) {
+                const documentFilter: vscode.DocumentFilter = {
+                    pattern: fileEx
+                };
+
+                if (vscode.languages.match(documentFilter, this.document) !== 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     getDocumentVersionId(): BigInt {
@@ -95,7 +132,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         }
 
         // drop fixed format line
-        if (line.length >= 7 && (line[6] === "*" || line[6] === "/") ) {
+        if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
             this.commentCount++;
             if (line[6] === "/") {
                 this.sendCommentCallback(line, lineNumber);
@@ -132,7 +169,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         return line;
     }
 
-    getLineTabExpanded(lineNumber: number):string|undefined {
+    getLineTabExpanded(lineNumber: number): string | undefined {
         const unexpandedLine = this.getLine(lineNumber, true);
         if (unexpandedLine === undefined) {
             return undefined;
@@ -209,7 +246,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
         return this.languageId;
     }
 
-    setSourceFormat(format: ESourceFormat):void {
+    setSourceFormat(format: ESourceFormat): void {
         this.format = format;
     }
 }

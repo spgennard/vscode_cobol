@@ -12,6 +12,7 @@ import { VSWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
+import { IExternalFeatures } from "./externalfeatures";
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -627,11 +628,16 @@ export class COBOLUtils {
         return text;
     }
 
-    public static foldToken(activeEditor: vscode.TextEditor, action: FoldAction, foldstyle: FoldStyle, languageid: string): void {
+    public static foldToken(
+            externalFeatures: IExternalFeatures,
+            activeEditor: vscode.TextEditor, 
+            action: FoldAction, 
+            foldstyle: FoldStyle, 
+            languageid: string): void {
         const uri = activeEditor.document.uri;
-
         const settings = VSCOBOLConfiguration.get();
-        const file = new VSCodeSourceHandler(activeEditor.document, false);
+        
+        const file = new VSCodeSourceHandler(externalFeatures, activeEditor.document, false);
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
             VSLogger.logMessage(`Unable to fold ${file.getFilename}, as it is has not been parsed`);

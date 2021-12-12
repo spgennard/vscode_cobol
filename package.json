@@ -683,16 +683,17 @@
           "type": "array",
           "items": {
             "type": "string",
-            "title": "types",
-            "properties": {
-              "copybook": {
-                "type": "string",
-                "description": "list of files to exclude from scanning"
-              }
-            }
+            "format": "regex",
+            "description": "list of files to exclude from source scanning, can be used to avoid 'unresponsive' messages"
           },
-          "default": [],
           "uniqueItems": true
+        },
+        "coboleditor.parse_line_limit": {
+          "type": "number",
+          "title": "Set parse line limit",
+          "description": "Set parse line limit, can be used to avoid 'unresponsive' messages",
+          "default": 15000,
+          "minimum": 255
         }
       }
     },

@@ -89,6 +89,8 @@ export interface ICOBOLSettings {
     valid_cobol_language_ids: string[];
 
     files_exclude: string[];
+
+    parse_line_limit: number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -162,6 +164,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     files_exclude: string[];
 
+    parse_line_limit: number;
+
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
@@ -228,5 +232,6 @@ export class COBOLSettings implements ICOBOLSettings {
         ];
 
         this.files_exclude = [];
+        this.parse_line_limit = 15000;
     }
 }

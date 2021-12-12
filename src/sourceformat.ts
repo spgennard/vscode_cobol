@@ -56,7 +56,7 @@ export class VSSourceFormat {
                 break;
             }
 
-            lineText = lineText.trimRight();
+            lineText = lineText.trimEnd();
             if (lineText.length === 0) {
                 skippedLines++;
                 continue;
