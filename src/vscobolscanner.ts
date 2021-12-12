@@ -15,7 +15,7 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
 
-
+const InProgress: Map<string,number> = new Map<string,number>();
 
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
     private st: COBOLSymbolTable | undefined;
@@ -128,11 +128,23 @@ export class VSCOBOLSourceScanner {
 
         /* grab, the file parse it can cache it */
         if (cachedObject === undefined) {
+            let removeInFinally = false;
             try {
+                const inProgressDocVer = InProgress.get(fileName);
+                if (inProgressDocVer === undefined) {
+                    InProgress.set(fileName, document.version);
+                    removeInFinally = true;
+                } else {
+                    if (inProgressDocVer === document.version) {
+                        // avoid double parsing.. seen this happen but not when debuging
+                        return undefined;
+                    }
+                }
                 // if (!VSExtensionUtils.isKnownScheme(document.uri.scheme)) {
                 //     VSLogger.logMessage(`Information: ${document.fileName} scheme is unknown ${document.uri.scheme}`);
                 // }
                 const sourceHandler = new VSCodeSourceHandler(VSExternalFeatures,document, false);
+                const lineCount = sourceHandler.getLineCount();
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
                 const startTime = VSExternalFeatures.performance_now();
                 const qcpd = new COBOLSourceScanner(
@@ -145,8 +157,15 @@ export class VSCOBOLSourceScanner {
                     VSExternalFeatures);
 
                 if (qcpd.scanAborted === false) {
-                    VSLogger.logTimedMessage(VSExternalFeatures.performance_now() - startTime, " - Parsing of " + fileName + " complete");
+                    const elapsedTime = VSExternalFeatures.performance_now() - startTime;
+                    const elapsedTimeF2 = elapsedTime.toFixed(2);
+                    const linesPerSeconds = (lineCount / (elapsedTime/1000)).toFixed(2);
 
+                    // if over 2.5seconds
+                    if (elapsedTime > 2500) {
+                        VSLogger.logMessage(` - Parsing of ${sourceHandler.getShortWorkspaceFilename()} complete ${elapsedTimeF2}ms / ${linesPerSeconds}ls `);
+                    }
+                    
                     if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
                         // drop the smallest..
                         let smallest = Number.MAX_VALUE;
@@ -167,6 +186,11 @@ export class VSCOBOLSourceScanner {
             }
             catch (e) {
                 VSLogger.logException("getCachedObject", e as Error);
+            }
+            finally {
+                if (removeInFinally) {
+                    InProgress.delete(fileName);
+                }
             }
         }
 
