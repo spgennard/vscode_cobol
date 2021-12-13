@@ -1,6 +1,18 @@
 # CHANGELOG
 
-* a3b143b (HEAD -> main, tag: 7.12.6, origin/main) bump and publish
+* 2d08278 (HEAD -> main, tag: 7.12.12, origin/main) tweak settings
+* 8e15dd3 add in-memory cache prop
+* 2619b94 extend diag information
+* 41e3d70 bump
+* c368826 tweaks
+* a5b2d38 make prop consistent
+* 2fc81c4 remove dep method use add line length prop (WIP)
+* 650442c fix use of editor_maxTokenizationLineLength, start to include settings for file exclusions
+* 35b3566 start to setup some core for aborting a source scan early
+* 8bd3987 tweaks
+* f075d40 bump versions
+* 65b3d7f Update CHANGELOG.md
+* a3b143b (tag: 7.12.6) bump and publish
 * acfff9a add more functionality, hopefully avoiding everything depend on fs
 * 80ecd45 add info message
 * b865cf4 change scope
