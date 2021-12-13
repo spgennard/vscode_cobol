@@ -94,6 +94,8 @@ export class VSCOBOLConfiguration {
 
         vsconfig.scan_time_limit = workspace.getConfiguration("coboleditor").get<number>("scan_time_limit", vsconfig.scan_time_limit);
         
+        vsconfig.in_memory_cache_size = workspace.getConfiguration("coboleditor").get<number>("in_memory_cache_size", vsconfig.in_memory_cache_size);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

@@ -701,6 +701,14 @@
           "description": "Set scan time limit, it can be used to avoid 'unresponsive' messages",
           "default": 4000,
           "minimum": 500
+        },
+        "coboleditor.in_memory_cache_size" : {
+          "type": "number",
+          "title": "Size of internal memory cache",
+          "description": "Size of internal memory cache for scanned source code",
+          "default": 6,
+          "minimum": 2,
+          "maximum": 24
         }
       }
     },

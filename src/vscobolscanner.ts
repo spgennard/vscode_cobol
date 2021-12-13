@@ -90,8 +90,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 }
 
 export class VSCOBOLSourceScanner {
-    private static readonly MAX_MEM_CACHE_SIZE = 30;
-
     public static removeCachedObject(document: TextDocument, config: ICOBOLSettings): void {
         if (config.enable_source_scanner === false) {
             return undefined;
@@ -161,12 +159,12 @@ export class VSCOBOLSourceScanner {
                     const elapsedTimeF2 = elapsedTime.toFixed(2);
                     const linesPerSeconds = (lineCount / (elapsedTime/1000)).toFixed(2);
 
-                    // if over 2.5seconds
-                    if (elapsedTime > 2500) {
+                    // if over 3seconds
+                    if (elapsedTime > 3000) {
                         VSLogger.logMessage(` - Parsing of ${sourceHandler.getShortWorkspaceFilename()} complete ${elapsedTimeF2}ms / ${linesPerSeconds}ls `);
                     }
                     
-                    if (InMemoryCache.size > VSCOBOLSourceScanner.MAX_MEM_CACHE_SIZE) {
+                    if (1+InMemoryCache.size >= config.in_memory_cache_size) {
                         // drop the smallest..
                         let smallest = Number.MAX_VALUE;
                         let dropKey = "";
