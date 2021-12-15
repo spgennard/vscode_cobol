@@ -6,7 +6,7 @@ import { ESourceFormat } from "./externalfeatures";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 export class commentUtils {
-    private static commentLine(editor: TextEditor, doc: TextDocument, sel: Selection[], format: ESourceFormat) {
+    private static commentLine(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], format: ESourceFormat) {
         editor.edit(edit => {
             for (let x = 0; x < sel.length; x++) {
                 if (sel[x].start.line === sel[x].end.line) {

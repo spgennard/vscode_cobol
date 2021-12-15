@@ -4,7 +4,7 @@ import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, w
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 export class TabUtils {
-    public static executeTab(editor: TextEditor, doc: TextDocument, sel: Selection[], inserting: boolean): void {
+    public static executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): void {
         const tabs = VSCOBOLConfiguration.get().tabstops;
         editor.edit(edit => {
             for (let x = 0; x < sel.length; x++) {
