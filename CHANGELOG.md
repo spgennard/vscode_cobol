@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 2d08278 (HEAD -> main, tag: 7.12.12, origin/main) tweak settings
+* d9806dc (HEAD -> main, tag: 7.12.14, origin/main) bump
+* 1bbb045 keep cobol-it keywords insync fix changes found by later typescript compiler
+* fd60b81 update
+* e7986d9 Update CHANGELOG.md
+* 2d08278 (tag: 7.12.12) tweak settings
 * 8e15dd3 add in-memory cache prop
 * 2619b94 extend diag information
 * 41e3d70 bump
