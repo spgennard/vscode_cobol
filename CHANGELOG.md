@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 11b326b (HEAD -> main, tag: 7.12.14, origin/main) update engine
+* a0bf96f (HEAD -> main, tag: 7.12.16, origin/main) Update COBOL-IT functions
+* da976f7 Update CHANGELOG.md
+* 11b326b (tag: 7.12.14) update engine
 * ed612d8 Update CHANGELOG.md
 * d9806dc bump
 * 1bbb045 keep cobol-it keywords insync fix changes found by later typescript compiler
