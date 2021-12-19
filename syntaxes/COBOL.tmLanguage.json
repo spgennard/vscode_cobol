@@ -761,43 +761,73 @@
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV][-+sS\\*$09aAbBxXpPnNzZ/,\\.]*\\([0-9]*\\)[-|+]",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture10.cobol"
     },
     {
-      "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV][-+sS\\*$09aAbBxXpPnNzZ/,\\.]*\\([0-9]*\\)",
-      "name": "storage.type.picture.cobol"
+      "match": "(?<![-_])((?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*)\\(([0-9]*)\\)([vV][-+sS\\*$09aAbBxXpPnNzZ/,\\.]*)\\(([0-9]*)\\)",
+      "captures": {
+        "1" : {
+          "name": "storage.type.picture9.cobol"
+        },
+        "2" :{
+          "name" : "constant.numeric.cobol"
+        },
+        "3" : {
+          "name": "storage.type.picture9.cobol"
+        },
+        "4" :{
+          "name" : "constant.numeric.cobol"
+        }
+      }
     },
     {
-      "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*\\([0-9]*\\)[vV\\.][-+s\\*$09aAbBsSnNxXzZ/,]*[0-9\\.()]*",
-      "name": "storage.type.picture.cobol"
+      "match": "(?<![-_])((?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBxXpPnNzZ/,.]*)\\(([0-9]*)\\)([vV\\.][-+s\\*$09aAbBsSnNxXzZ/,]*[0-9\\.()])*",
+      "captures": {
+        "1" : {
+          "name": "storage.type.picture8.cobol"
+        },
+        "2" :{
+          "name" : "constant.numeric.cobol"
+        },
+        "3" : {
+          "name": "storage.type.picture8.cobol"
+        }
+      }
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBsSnpPNxXzZ/,.]*\\([0-9]*\\)[Vv\\.][-+s\\*0$9aAbBsSnNxpPXzZ/,]*",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture7.cobol"
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBsSnpPNxXzZ/,.]*\\([0-9]*\\)[-+s\\*0$9aAbBsSnNxpPXzZ/,]*[Vv\\.][-+s\\*0$9aAbBsSnNxpPXzZ/,]*",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture6.cobol"
     },
     {
-      "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBsSnpPNxXzZ/,.]*\\([0-9]*\\)[-+s\\*0$9aAbBsSnNxpPXzZ/,]*",
-      "name": "storage.type.picture.cobol"
+      "match": "(?<![-_])((?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBsSnpPNxXzZ/,.]*)\\(([0-9]*)\\)[-+s\\*0$9aAbBsSnNxpPXzZ/,]*",
+      "captures": {
+        "1" : {
+          "name": "storage.type.picture5.cobol"
+        },
+        "2" :{
+          "name" : "constant.numeric.cobol"
+        }
+      }
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+sS\\*$09aAbBsSnpNNxXzZ/,.]*\\([0-9]*\\)",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture4.cobol"
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[sS]?[9aAbBsSnNxXzZ]*[Vv][9aAxbXzZ]*\\([0-9]*\\)",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture3.cobol"
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[sS]?[9aAbBsSnNxXzZ]*[Vv][9aAxbXzZ]*",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture2.cobol"
     },
     {
       "match": "(?<![-_])(?i:picture\\s+is|picture|pic\\s+is|pic)\\s+[-+\\*$9aAbBsSnpPNxXzZ/,.vV]*",
-      "name": "storage.type.picture.cobol"
+      "name": "storage.type.picture1.cobol"
     },
     {
       "match": "((?<![-_])(?i:binary|computational-4|comp-4|computational-5|comp-5))\\(([0-9]*)\\)",
