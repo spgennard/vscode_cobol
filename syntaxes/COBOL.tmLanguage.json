@@ -352,7 +352,7 @@
     },
     {
       "begin": "(?i:exec\\s+sqlims|exec\\s+sql)",
-      "name": "string.quoted.cobol.sql-sqlims",
+      "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
@@ -371,9 +371,13 @@
     },
     {
       "begin": "(?i:exec\\s+cics)",
-      "name": "string.quoted.cobol.cics",
+      "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.cics",
       "patterns": [
+        {
+          "match": "(\\()",
+          "name" : "meta.symbol.cobol"
+        },
         {
           "include": "#cics-keywords"
         },
@@ -398,7 +402,7 @@
     },
     {
       "begin": "(?i:exec\\s+sqlims)",
-      "name": "string.quoted.cobol.sqlims",
+      "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
@@ -413,7 +417,7 @@
     },
     {
       "begin": "(?i:exec\\s+ado)",
-      "name": "string.quoted.cobol.ado",
+      "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
@@ -428,7 +432,7 @@
     },
     {
       "begin": "(?i:exec\\s+html)",
-      "name": "string.quoted.cobol.html",
+      "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.html",
       "patterns": [
         {
@@ -439,7 +443,7 @@
     },
     {
       "begin": "(?i:exec\\s+java)",
-      "name": "string.quoted.cobol.java",
+      "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.java",
       "patterns": [
         {
@@ -641,7 +645,7 @@
     },
     {
       "match": "(?<![-_])(?i:implements|inherits|constraints|constrain)(?=\\s|\\.)",
-      "name": "keyword.verbs.cobol"
+      "name": "keyword.verb.cobol"
     },
     {
       "match": "(?<![-_])(?i:end\\s+enum|end\\s+interface|end\\s+class|end\\s+property|end\\s+method|end\\s+object|end\\s+iterator|end\\s+function|end\\s+operator|end\\s+program|end\\s+indexer|create|reset|instance|delegate|end-delegate|delegate-id|declare|exception-object|as|stop\\s+iterator|stop\\s+run|stop)(?=\\s|\\.|,|\\))",
@@ -661,7 +665,7 @@
     },
     {
       "match": "(?<![-_])(?i:select|use|thru|varying|giving|remainder|tallying|through|until|execute|returning|using|chaining|yielding|\\+\\+include|copy|replace)(?=\\s)",
-      "name": "keyword.otherverbs.cobol"
+      "name": "keyword.otherverb.cobol"
     },
     {
       "match": "(?<![-_])(?i:assign|external|prototype|organization|organisation|indexed|column|plus|line\\*s*sequential|sequential|access|dynamic|relative|label|block|contains|standard|records|record\\s+key|record|is|alternate|duplicates|reel|tape|terminal|disk\\sfilename|disk|disc|recording\\smode|mode|random)(?=\\s|\\.)",
@@ -673,11 +677,11 @@
     },
     {
       "match": "(?<![-_])(?i:function)(?=\\s|\\.)",
-      "name": "keyword.verbs.cobol"
+      "name": "keyword.verb.cobol"
     },
     {
       "match": "(?<![-_])(?i:end-accept|end-add|end-sync|end-compute|end-delete|end-display|end-divide|end-set|end-multiply|end-of-page|end-read|end-receive|end-return|end-rewrite|end-search|end-start|end-string|end-subtract|end-unstring|end-write|program|class|interface|enum|interface)(?![0-9A-Za-z_-])",
-      "name": "keyword.verbs.cobol"
+      "name": "keyword.verb.cobol"
     },
     {
       "match": "(?<![-_])(?:by value|by reference|by content|property-value)(?![0-9A-Za-z_-])",
@@ -691,7 +695,7 @@
       "match": "(?<![-_])(?i:type|new)\\s+([a-zA-Z][a-zA-Z0-9\\$\\-\\._]*|[a-zA-Z])(?=\\.$)",
       "captures": {
         "0": {
-          "name": "keyword.verbs.cobol"
+          "name": "keyword.verb.cobol"
         },
         "1": {
           "name": "storage.type.cobol"
@@ -748,7 +752,7 @@
       "match": "(?<![-_])(?i:type)\\s+([0-9a-zA-Z\\.]*)",
       "captures": {
         "0": {
-          "name": "keyword.verbs.cobol.aa"
+          "name": "keyword.verb.cobol.aa"
         },
         "1": {
           "name": "storage.type.cobol.bb"
@@ -833,7 +837,7 @@
       "match": "((?<![-_])(?i:binary|computational-4|comp-4|computational-5|comp-5))\\(([0-9]*)\\)",
       "captures": {
         "1": {
-          "name": "invalid.illegal.keyword.verbs.acu.cobol"
+          "name": "invalid.illegal.keyword.verb.acu.cobol"
         },
         "2": {
           "name": "invalid.illegal.constant.numeric.integer"
@@ -850,11 +854,11 @@
     },
     {
       "match": "(?<![-_])(?i:accept|add|address|allocate|cancel|close|commit|compute|continue|delete|disable|display|bell|divide|eject|enable|enter|evaluate|exhibit|named|exit|free|generate|go\\s+to|initialize\\sonly|initialize|initiate|inspect|merge|end-set|set|end-invoke|invoke\\s+run|invoke|move|corresponding|corr|multiply|otherwise|open|sharing|sort-merge|purge|ready|read|kept|receive|release|return|rewrite|rounded|rollback|search|send|sort|collating\\s+sequence|collating|start|service|subtract|suppress|terminate|then|unlock|string|unstring|validate|write|next|statement|sentence)(?![0-9A-Za-z_-])",
-      "name": "keyword.verbs.cobol"
+      "name": "keyword.verb.cobol"
     },
     {
       "match": "(?<![-_])(?i:thread-local)(?![0-9A-Za-z_-])",
-      "name": "keyword.verbs.cobol"
+      "name": "keyword.verb.cobol"
     },
     {
       "match": "(\\s+|^)(?i:foreground-color|background-color|prompt|underline|reverse-video|no-echo|highlight|blink)(?![0-9A-Za-z_-])",
@@ -874,7 +878,7 @@
     },
     {
       "match": "(?i:not\\s+at\\s+end)(?![0-9A-Za-z_-])",
-      "name": "keyword.verbs.cobol"
+      "name": "keyword.verb.cobol"
     },
     {
       "match": "(?<![-_])(?i:not)(?![0-9A-Za-z_-])",
