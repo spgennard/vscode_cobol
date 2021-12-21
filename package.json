@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.12.16",
+  "version": "7.12.20",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -702,13 +702,19 @@
           "default": 4000,
           "minimum": 500
         },
-        "coboleditor.in_memory_cache_size" : {
+        "coboleditor.in_memory_cache_size": {
           "type": "number",
           "title": "Size of internal memory cache",
           "description": "Size of internal memory cache for scanned source code",
           "default": 6,
           "minimum": 2,
           "maximum": 24
+        },
+        "coboleditor.suggest_variables_when_context_is_unknown" : {
+          "type" : "boolean",
+          "title": "Suggest variables when context is unknown",
+          "description": "Suggest variables when context for a verb is unknown",
+          "default": true
         }
       }
     },

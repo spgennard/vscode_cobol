@@ -249,7 +249,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         let wordBeforeLower = "";
         let currentLine: string = document.lineAt(position.line).text.trimStart();
         let listComplete = false;
-        
+
         const range = document.getWordRangeAtPosition(position);
         if (range) {
             wordToComplete = document.getText(new Range(range.start, position)); wordBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trimEnd();
@@ -275,7 +275,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     if (lastSpace === -1) {
                         wordBefore = currentLine;
                     } else {
-                        wordBefore = currentLine.substr(1+lastSpace);
+                        wordBefore = currentLine.substr(1 + lastSpace);
                     }
                 } else {
                     const lastSpaceLine = currentLine.substr(0, lastSpace);
@@ -414,6 +414,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             VSLogger.logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }
 
+        if (items.length === 0) {
+            const settings = VSCOBOLConfiguration.get();
+            if (settings.suggest_variables_when_context_is_unknown) {
+                items = this.getAllConstantsOrVariables(document, this.iconfig);
+                listComplete = false;
+            }
+        }
         return Promise.resolve(new CompletionList(items, listComplete));
     }
 

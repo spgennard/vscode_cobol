@@ -96,6 +96,8 @@ export class VSCOBOLConfiguration {
         
         vsconfig.in_memory_cache_size = workspace.getConfiguration("coboleditor").get<number>("in_memory_cache_size", vsconfig.in_memory_cache_size);
         
+        vsconfig.suggest_variables_when_context_is_unknown = workspace.getConfiguration("coboleditor").get<boolean>("suggest_variables_when_context_is_unknown", vsconfig.suggest_variables_when_context_is_unknown);
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

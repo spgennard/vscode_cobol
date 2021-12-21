@@ -95,6 +95,8 @@ export interface ICOBOLSettings {
     scan_time_limit: number;
 
     in_memory_cache_size: number;
+
+    suggest_variables_when_context_is_unknown: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -174,6 +176,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     in_memory_cache_size: number;
 
+    suggest_variables_when_context_is_unknown: boolean;
+
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
@@ -243,5 +247,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_line_limit = 15000;
         this.scan_time_limit = 4000;
         this.in_memory_cache_size = 6;
+        this.suggest_variables_when_context_is_unknown = true;
     }
 }
