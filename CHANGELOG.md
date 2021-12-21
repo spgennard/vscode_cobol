@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* a0bf96f (HEAD -> main, tag: 7.12.16, origin/main) Update COBOL-IT functions
+* 5a6e33e (HEAD -> main, tag: 7.12.20, origin/main) add support for suggest_variables_when_context_unknown
+* ef35284 ensure exec blocks are handled like other verbs
+* b479501 break numbers out of picture clauses
+* 841835c some tweaks for "exec cics" start to move some duplicated items to the repo (for use with exec' blocks)
+* c31222e tweak for cobol-it
+* 3fb6cbe add COBOL-IT keywords list
+* db2b589 Update CHANGELOG.md
+* a0bf96f (tag: 7.12.16) Update COBOL-IT functions
 * da976f7 Update CHANGELOG.md
 * 11b326b (tag: 7.12.14) update engine
 * ed612d8 Update CHANGELOG.md
