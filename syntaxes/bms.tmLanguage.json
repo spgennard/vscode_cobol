@@ -1,32 +1,32 @@
 {
-  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2021 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/bms.tmLanguage.json",
-  "$schema" : "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
-  "fileTypes": [],
-  "name": "bms",
-  "patterns": [
-    {
-      "match": "^(\\*.*)$",
-      "name": "comment.line.set.bms"
-    },
-    {
-      "begin": "'",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.bms"
-        }
-      },
-      "end": "('|$)",
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.bms"
-        }
-      },
-      "name": "string.quoted.single.bms"
-    },
-    {
-      "match" : "(?i:attrb)(\\=)\\((?i:ASKIP|PROT|UNPROT\\s+[0-9]*|UNPROT|BRT|NORM|DRK|DET|IC|FSET|,)*\\)",
-      "name": "entity.name.function.bms",
-      "captures": {
+	"_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2021 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/bms.tmLanguage.json",
+	"$schema": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
+	"fileTypes": [],
+	"name": "bms",
+	"patterns": [
+		{
+			"match": "^(\\*.*)$",
+			"name": "comment.line.set.bms"
+		},
+		{
+			"begin": "'",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.bms"
+				}
+			},
+			"end": "('|$)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.bms"
+				}
+			},
+			"name": "string.quoted.single.bms"
+		},
+		{
+			"match": "(?i:attrb)(\\=)\\((?i:ASKIP|PROT|UNPROT\\s+[0-9]*|UNPROT|BRT|NORM|DRK|DET|IC|FSET|,)*\\)",
+			"name": "entity.name.function.bms",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
@@ -34,29 +34,29 @@
 					"name": "keyword.operator.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(attrb|initial)(\\=))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(attrb|initial)(\\=))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
 				}
-      }
-    },
-    {
-      "match": "(?i:UNPROTECTED|UNPROT|PROTECTED|BRIGHT|NORMAL|DARK|FSET|NUMERIC|ASKIP|IC|BRT)",
-      "name": "entity.name.function.bms"
-    },
-    {
-      "match": "(?i:DFHMSD|DFHMDI|DFHMDF|END)",
-      "name": "keyword.bms"
-    },
-    {
-      "match" : "((?i:length|occurs|line|column)(\\=)([0-9]+))",
-      "captures": {
+			}
+		},
+		{
+			"match": "(?i:UNPROTECTED|UNPROT|PROTECTED|BRIGHT|NORMAL|DARK|FSET|NUMERIC|ASKIP|IC|BRT)",
+			"name": "entity.name.function.bms"
+		},
+		{
+			"match": "(?i:DFHMSD|DFHMDI|DFHMDF|END)",
+			"name": "keyword.bms"
+		},
+		{
+			"match": "((?i:length|occurs|line|column)(\\=)([0-9]+))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
@@ -67,19 +67,19 @@
 					"name": "constant.numeric.integer.bms"
 				}
 			}
-    },
-    {
-      "match" : "((?i:size|pos)(\\=)(\\()([0-9]+)(\\,)([0-9]+)(\\)))",
-      "captures": {
+		},
+		{
+			"match": "((?i:size|pos)(\\=)(\\()([0-9]+)(\\,)([0-9]+)(\\)))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3" : {
-          "name" : "keyword.bracket.bms"
-        },
+				},
+				"3": {
+					"name": "keyword.bracket.bms"
+				},
 				"4": {
 					"name": "constant.numeric.integer.bms"
 				},
@@ -89,15 +89,15 @@
 				"6": {
 					"name": "constant.numeric.integer.bms"
 				},
-        "7" : {
-          "name" : "keyword.bracket.bms"
-        }
+				"7": {
+					"name": "keyword.bracket.bms"
+				}
 			}
-    },
-    {
-      "match" : "(?i:ctrl)(\\=)\\((?i:print|length|freekb|alarm|frset|no|,)*\\)",
-      "name": "entity.name.function.bms",
-      "captures": {
+		},
+		{
+			"match": "(?i:ctrl)(\\=)\\((?i:print|length|freekb|alarm|frset|no|,)*\\)",
+			"name": "entity.name.function.bms",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
@@ -105,10 +105,10 @@
 					"name": "keyword.operator.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(data)(\\=)(field|block))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(data)(\\=)(field|block))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
@@ -116,13 +116,13 @@
 					"name": "keyword.operator.bms"
 				},
 				"3": {
-          "name": "entity.name.function.bms"
+					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(type)(\\=)(dsect|map|final|&&.*)$)",
-      "captures": {
+		},
+		{
+			"match": "(?i:(type)(\\=)(dsect|map|final|&&.*)$)",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
@@ -130,112 +130,112 @@
 					"name": "keyword.operator.bms"
 				},
 				"3": {
-          "name": "entity.name.function.bms"
-				}
-			}
-    },
-    {
-      "match" : "(?i:(mode)(\\=)(inout|out|in))",
-      "captures": {
-				"1": {
-					"name": "keyword.verb.bms"
-				},
-				"2": {
-					"name": "keyword.operator.bms"
-        },
-        "3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(fold)(\\=)(upper|no|in))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(mode)(\\=)(inout|out|in))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(hilight)(\\=)(off|blink|reverse|underline))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(fold)(\\=)(upper|no|in))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(CTRL)(\\=)([0-9]*))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(hilight)(\\=)(off|blink|reverse|underline))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+		},
+		{
+			"match": "(?i:(CTRL)(\\=)([0-9]*))",
+			"captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
 					"name": "constant.numeric.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(CTRL)(\\=)(PRINT|FREEKB|ALARM|FRSET))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(CTRL)(\\=)(PRINT|FREEKB|ALARM|FRSET))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(obfmt)(\\=)(yes|no))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(obfmt)(\\=)(yes|no))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(tioapfx|sosi|trigraph|extatt)(\\=)(yes|no))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(tioapfx|sosi|trigraph|extatt)(\\=)(yes|no))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(lang)(\\=)(COBOL|ASM|PLI|RPG))",
-      "name": "entity.name.function.bms",
-      "captures": {
+		},
+		{
+			"match": "(?i:(lang)(\\=)(COBOL|ASM|PLI|RPG))",
+			"name": "entity.name.function.bms",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.1.bms"
 				},
@@ -243,43 +243,43 @@
 					"name": "keyword.operator.2.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(storage)(\\=)(auto))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(storage)(\\=)(auto))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match" : "(?i:(term)(\\=)([a-zA-Z0-9]+))",
-      "captures": {
+		},
+		{
+			"match": "(?i:(term)(\\=)([a-zA-Z0-9]+))",
+			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
-        },
-        "3": {
+				},
+				"3": {
 					"name": "entity.name.function.bms"
 				}
 			}
-    },
-    {
-      "match": "([0-9]+)",
-      "name": "constant.numeric.integer.bms"
-    },
-    {
-      "match": "^([0-9a-zA-Z\\-_]+)",
-      "name": "variable.bms"
-    }
-  ],
-  "scopeName": "source.bms"
+		},
+		{
+			"match": "([0-9]+)",
+			"name": "constant.numeric.integer.bms"
+		},
+		{
+			"match": "^([0-9a-zA-Z\\-_]+)",
+			"name": "variable.bms"
+		}
+	],
+	"scopeName": "source.bms"
 }
