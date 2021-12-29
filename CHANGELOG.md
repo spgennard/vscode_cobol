@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* 5a6e33e (HEAD -> main, tag: 7.12.20, origin/main) add support for suggest_variables_when_context_unknown
+* a054c96 (HEAD -> main, tag: 7.12.28, origin/main) bump
+* ea3894d fix some problems with regex's in bms and add color
+* 354098f tweak bms to fix some obvious errors
+* 660517e update
+* 21e579b add support for bmsmap files  - selected automatically when .map extension is used and it looks    like a listing file and has a bms definition in the first 10 lines
+* 80a544f upd
+* 0bedf74 Update CHANGELOG.md
+* 5a6e33e (tag: 7.12.20) add support for suggest_variables_when_context_unknown
 * ef35284 ensure exec blocks are handled like other verbs
 * b479501 break numbers out of picture clauses
 * 841835c some tweaks for "exec cics" start to move some duplicated items to the repo (for use with exec' blocks)
