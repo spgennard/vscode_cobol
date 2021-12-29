@@ -95,7 +95,7 @@ export class VSExtensionUtils {
             }
         }
 
-        if (doc.uri.fsPath.endsWith(".map")) {
+        if (doc.uri.fsPath.endsWith(".map") && !doc.languageId.startsWith("bms")) {
             const maxLines = doc.lineCount < 10 ? doc.lineCount : 10;
             for (let lcount = 1; lcount <= maxLines; lcount++) {
                 const qline = doc.lineAt(lcount).text;

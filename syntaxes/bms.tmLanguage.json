@@ -24,25 +24,44 @@
 			"name": "string.quoted.single.bms"
 		},
 		{
-			"match": "(?i:attrb)(\\=)\\((?i:ASKIP|PROT|UNPROT\\s+[0-9]*|UNPROT|BRT|NORM|DRK|DET|IC|FSET|,)*\\)",
-			"name": "entity.name.function.bms",
+			"match": "((?i:attrb)(\\=)\\(((?i:ASKIP|PROT|UNPROT\\s+[0-9]*|UNPROT|BRT|NORM|DRK|DET|IC|FSET|,)*)\\))",
 			"captures": {
 				"1": {
-					"name": "keyword.verb.bms"
+					"name": "keyword.verb.attrb1.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "entity.name.function.bms"
 				}
 			}
 		},
 		{
-			"match": "(?i:(attrb|initial)(\\=))",
+			"match": "(?i:(attrb|initial))(\\=)",
 			"captures": {
 				"1": {
-					"name": "keyword.verb.bms"
+					"name": "keyword.verb.attrb2.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+		},
+		{
+			"match": "(?i:(MAPATTS))(\\=)(?i:(COLOR|HILIGHT|OUTLINE|PS|SOSI|TRANSP|VALIDN))",
+			"captures": {
+				"1": {
+					"name": "keyword.verb.mapatts.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "entity.name.function.bms"
 				}
 			}
 		},
@@ -95,14 +114,30 @@
 			}
 		},
 		{
+			"match": "((?i:ctrl)(\\=)((?i:print|length|freekb|alarm|frset|no|,)))",
+			"captures": {
+				"1": {
+					"name": "keyword.verb.ctrl.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+		},
+		{
 			"match": "(?i:ctrl)(\\=)\\((?i:print|length|freekb|alarm|frset|no|,)*\\)",
-			"name": "entity.name.function.bms",
 			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
 				},
 				"2": {
 					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "entity.name.function.bms"
 				}
 			}
 		},
@@ -191,7 +226,7 @@
 			}
 		},
 		{
-			"match": "(?i:(CTRL)(\\=)(PRINT|FREEKB|ALARM|FRSET))",
+			"match": "(?i:(CTRL))(\\=)((?i:PRINT|FREEKB|ALARM|FRSET))",
 			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
@@ -259,7 +294,7 @@
 			}
 		},
 		{
-			"match": "(?i:(term)(\\=)([a-zA-Z0-9]+))",
+			"match": "(?i:(term)(\\=)([a-zA-Z0-9\\-]+))",
 			"captures": {
 				"1": {
 					"name": "keyword.verb.bms"
@@ -273,7 +308,7 @@
 			}
 		},
 		{
-			"match": "([0-9]+)",
+			"match": "(?![0-9A-Za-z_-])([0-9]+)",
 			"name": "constant.numeric.integer.bms"
 		},
 		{
