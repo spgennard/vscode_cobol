@@ -10,7 +10,7 @@ export enum TextLanguage {
 export class VSExtensionUtils {
 
     public static isSupportedLanguage(document: vscode.TextDocument): TextLanguage {
-    
+
         switch (document.languageId.toLowerCase()) {
             case "cobolit":
             case "cobol":
@@ -19,13 +19,13 @@ export class VSExtensionUtils {
             case "jcl":
                 return TextLanguage.JCL;
         }
-    
+
         /* not a supported language? */
         return TextLanguage.Unknown;
     }
-    
+
     private static readonly knownSchemes: string[] = [
-        "file", 
+        "file",
         "untitled",
         "vscode-vfs",
         "ssh"
@@ -64,6 +64,8 @@ export class VSExtensionUtils {
         return false;
     }
 
+    private static readonly bmsColumnNumber = /^([0-9][0-9][0-9][0-9][0-9][0-9]).*$/g;
+
     public static flip_plaintext(doc: vscode.TextDocument): void {
         if (doc === undefined) {
             return;
@@ -92,5 +94,22 @@ export class VSExtensionUtils {
                 }
             }
         }
+
+        if (doc.uri.fsPath.endsWith(".map")) {
+            const maxLines = doc.lineCount < 10 ? doc.lineCount : 10;
+            for (let lcount = 1; lcount <= maxLines; lcount++) {
+                const qline = doc.lineAt(lcount).text;
+                if (qline.indexOf("DFHMSD") !== -1) {
+                    if (qline.match(VSExtensionUtils.bmsColumnNumber)) {
+                        vscode.languages.setTextDocumentLanguage(doc, "bmsmap");
+                        return;
+                    }
+                    vscode.languages.setTextDocumentLanguage(doc, "bms");
+                    return;
+                }
+            }
+        }
     }
+
+
 }

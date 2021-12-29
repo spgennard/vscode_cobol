@@ -961,6 +961,12 @@
         "aliases": []
       },
       {
+        "id": "bmsmap",
+        "extensions": [
+        ],
+        "aliases": []
+      },
+      {
         "id": "hlasm",
         "extensions": [
           ".hlasm",
@@ -1091,6 +1097,11 @@
         "language": "bms",
         "scopeName": "source.bms",
         "path": "./syntaxes/bms.tmLanguage.json"
+      },
+      {
+        "language": "bmsmap",
+        "scopeName": "source.bmsmap",
+        "path": "./syntaxes/bmsmap.tmLanguage.json"
       },
       {
         "language": "hlasm",
