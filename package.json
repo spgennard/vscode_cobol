@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "7.12.20",
+  "version": "7.12.28",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
