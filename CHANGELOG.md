@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* a054c96 (HEAD -> main, tag: 7.12.28, origin/main) bump
+* 395bcc3 (HEAD -> main, tag: 7.12.29, origin/main) bump
+* f0d2197 put a bit more colour into the pp syntax/simplify
+* 768cbc6 version updates
+* c44ef4f don't need this in git
+* e9ab052 Update CHANGELOG.md
+* a054c96 (tag: 7.12.28) bump
 * ea3894d fix some problems with regex's in bms and add color
 * 354098f tweak bms to fix some obvious errors
 * 660517e update
