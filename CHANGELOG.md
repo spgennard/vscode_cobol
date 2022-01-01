@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 395bcc3 (HEAD -> main, tag: 7.12.29, origin/main) bump
+* 80f6a37 (HEAD -> main, tag: 8.1.1, origin/main) fix outstanding bug with tab/detab activation on ACUCOBOL/COBOLIT langs
+* d29d4d1 Update CHANGELOG.md
+* 395bcc3 (tag: 7.12.29) bump
 * f0d2197 put a bit more colour into the pp syntax/simplify
 * 768cbc6 version updates
 * c44ef4f don't need this in git
