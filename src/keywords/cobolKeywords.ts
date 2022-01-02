@@ -624,6 +624,7 @@ const cobolRegisters: string[] = [
 	"json-code",
 	"json-status",
 	"long-varbinary",
+	"long-varchar",
 	"longint1",
 	"longint2",
 	"longint3",
