@@ -143,7 +143,7 @@ export class VSCodeSourceHandler implements ISourceHandler {
             return "";
         }
 
-        // only handle debug
+        // handle debug and terminal
         if (this.format === ESourceFormat.terminal) {
             if (line.startsWith("\\D") || line.startsWith("|")) {
                 this.commentCount++;

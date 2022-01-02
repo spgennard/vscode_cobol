@@ -26,7 +26,7 @@ export class commentUtils {
         const lineContents = line.text;
 
         if (format === ESourceFormat.terminal) {
-            const firstInlineIndex = lineContents.indexOf("| ");
+            const firstInlineIndex = lineContents.indexOf("|");
             if (firstInlineIndex !== -1) {
                 const r = new Range(new Position(l, firstInlineIndex), new Position(l, 2 + firstInlineIndex));
                 editor.delete(r);

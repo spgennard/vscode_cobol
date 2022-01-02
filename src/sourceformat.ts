@@ -43,7 +43,7 @@ export class VSSourceFormat {
         const maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
         let defFormat = ESourceFormat.unknown;
 
-        const checkForTerminalFormat: boolean = langid === "acucobol" ? true : false;
+        const checkForTerminalFormat: boolean = langid.toLocaleLowerCase() === "acucobol" ? true : false;
         let prevRightMargin = "";
         let validFixedLines = 0;
         let skippedLines = 0;
@@ -115,7 +115,9 @@ export class VSSourceFormat {
                         }
                     } else {
                         // if we cannot be sure, then let the default be variable
-                        defFormat = ESourceFormat.variable;
+                        if (defFormat === ESourceFormat.unknown) {
+                            defFormat = ESourceFormat.variable;
+                        }
                     }
                 }
                 continue;

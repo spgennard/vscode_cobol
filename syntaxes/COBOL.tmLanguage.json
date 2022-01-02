@@ -208,7 +208,7 @@
       }
     },
     {
-      "match": "((?i:\\$set))\\s+(\\w+)\\s*(\\()(\\w*)(\\))",
+      "match": "((?i:\\$set))\\s+(\\w+)\\s*(\\()(.*)(\\))",
       "captures": {
         "1": {
           "name": "keyword.control.directive.conditional.cobol"
