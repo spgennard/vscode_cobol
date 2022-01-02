@@ -992,6 +992,10 @@
       "name": "variable.language"
     },
     {
+      "match": "(?<![-_])(?i:shortint1|shortint2|shortint3|shortint4|shortint5|shortint6|shortint7|longint1|longint2|longint3|longint4|longint5|longint6|bigint1|bigint2|blob-locator|clob-locator|dbclob-locator|dbclob-file|blob-file|clob-file|clob|dbclob|blob|varbinary|long-varbinary|time-record|timestamp-record|timestamp-offset-record|timestamp-offset|timestamp|rowid|xml)(?=\\s|\\.|\\)|\\()",
+      "name": "storage.type.sql.picture.cobol"
+    },
+    {
       "match": "(?<![-_])(?i:self)",
       "name": "keyword.other.self.cobol"
     },
