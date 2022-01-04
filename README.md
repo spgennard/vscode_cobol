@@ -2,21 +2,9 @@
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This extension was originally aimed at providing syntax highlighting for COBOL but overtime is has been extended to provide syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and Micro Focus Unit Test Reports.
+This extension provides syntax highlighting for Micro Focus based COBOL compilers, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and Micro Focus Unit Test Reports.
 
-## What can I expect from this extension
-
-This extension is certainly not an Integrated Development Environment for COBOL.   It does provide enough functionality for the casual developer to view, edit and compile source code (via tasks & problem matchers).
-
-## Does this extension include a language server protocol for COBOL
-
-Visual Studio Code has two ways of providing language extensions, the first is provided by the use of a [language server protocol](https://langserver.org/) and the second is via a set of Visual Studio Code APIs.
-
-This extension uses the Visual Studio Code APIs because the Language Server Protocol did not exist when this extension was created.
-
-## What platform can it be used on?
-
-Everywhere Visual Studio Code works.
+Problem matchers are provided to allow the capture of a error messages, allowing code navigation to error/warning messages.
 
 ## Code colorization for COBOL, PL/I and JCL
 
@@ -280,7 +268,7 @@ You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a d
 Dockerfile:
 
 ```dockerfile
-FROM microfocus/vcdevhub:sles15_5.1_x64_login
+FROM microfocus/vcdevhub:sles15_6.0_x64_login
 
 USER root
 
@@ -374,7 +362,7 @@ For example to enforce all working-storage items must start with ws and local-st
 
 ### Metadata caching
 
-By default the metadata caching is turned on and is stored in the current code workspace but it can be turned off via the ```coboleditor.maintain_metadata_cache``` setting.    
+By default the metadata caching is turned on and is stored in the current code workspace but it can be turned off via the ```coboleditor.maintain_metadata_cache``` setting.
 
 ## Pre-Processor support for "hidden" source code
 
