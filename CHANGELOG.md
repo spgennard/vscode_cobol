@@ -1,6 +1,12 @@
 # CHANGELOG
 
-* 80f6a37 (HEAD -> main, tag: 8.1.1, origin/main) fix outstanding bug with tab/detab activation on ACUCOBOL/COBOLIT langs
+* 713a628 (HEAD -> main, tag: 8.1.2, origin/main) prep
+* d0c0752 add a missed one
+* 738ff13 add some openesql types
+* 924b1ba add 'sql' type
+* 7898095 tweak $set items remove space with terminal format check
+* 97d7097 Update CHANGELOG.md
+* 80f6a37 (tag: 8.1.1) fix outstanding bug with tab/detab activation on ACUCOBOL/COBOLIT langs
 * d29d4d1 Update CHANGELOG.md
 * 395bcc3 (tag: 7.12.29) bump
 * f0d2197 put a bit more colour into the pp syntax/simplify
