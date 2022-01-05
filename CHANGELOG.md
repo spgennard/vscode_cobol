@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* 713a628 (HEAD -> main, tag: 8.1.2, origin/main) prep
+* 2e7c06e (HEAD -> main, tag: 8.1.4, origin/main) bump
+* 48e157d update
+* 97b94ca update
+* 771642e update
+* 2c2f89c Update CHANGELOG.md
+* 713a628 (tag: 8.1.2) prep
 * d0c0752 add a missed one
 * 738ff13 add some openesql types
 * 924b1ba add 'sql' type
