@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.1.4",
+  "version": "8.1.8",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -10,6 +10,7 @@
     "pl/i",
     "pli",
     "visualcobol",
+    "net express",
     "serverexpress",
     "ocds",
     "cobol-it",
@@ -1529,7 +1530,7 @@
       },
       {
         "language": "ACUCOBOL",
-        "path": "./snippets/cobol.json"
+        "path": "./snippets/acucobol.json"
       },
       {
         "language": "dir",
@@ -1884,7 +1885,7 @@
     "@types/glob": "^7.2.0",
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^17.0.7",
+    "@types/node": "^17.0.8",
     "@types/vscode": "^1.63.1",
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
