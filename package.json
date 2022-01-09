@@ -1533,6 +1533,10 @@
         "path": "./snippets/acucobol.json"
       },
       {
+        "language": "COBOLIT",
+        "path": "./snippets/cobolit.json"
+      },
+      {
         "language": "dir",
         "path": "./snippets/dir.json"
       },
