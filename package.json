@@ -1533,6 +1533,10 @@
         "path": "./snippets/acucobol.json"
       },
       {
+        "language": "BITLANG-COBOL",
+        "path": "./snippets/cobol.json"
+      },
+      {
         "language": "COBOLIT",
         "path": "./snippets/cobolit.json"
       },
