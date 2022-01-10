@@ -1,7 +1,12 @@
 # CHANGELOG
 
-* 0fef2ef (HEAD -> main, tag: 8.1.8) add snippets for bitlang-cobol
-* 7419901 (origin/main) breakout cobolit snippets
+* dfab2d0 (HEAD -> main, tag: 8.1.9, origin/main) bump
+* 8d89af2 update
+* bc1aa14 tweak cond/set syntax
+* 451f952 update
+* fc9910e Update CHANGELOG.md
+* 0fef2ef (tag: 8.1.8) add snippets for bitlang-cobol
+* 7419901 breakout cobolit snippets
 * 71578c4 break cobol snippets out, so the acucobol one can evolve
 * 9306919 Update CHANGELOG.md
 * 2e7c06e (tag: 8.1.4) bump
