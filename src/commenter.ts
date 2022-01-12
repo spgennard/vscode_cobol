@@ -134,7 +134,7 @@ export class commentUtils {
         const editor = window.activeTextEditor;
         if (editor) {
             const doc = editor.document;
-            const sel = editor.selections;
+            const sels = editor.selections;
             let sourceformatStyle: ESourceFormat = ESourceFormat.variable;
 
             const settings = VSCOBOLConfiguration.get();
@@ -143,7 +143,7 @@ export class commentUtils {
                 sourceformatStyle = gcp.sourceFormat;
             }
 
-            commentUtils.commentLine(editor, doc, sel, sourceformatStyle);
+            commentUtils.commentLine(editor, doc, sels, sourceformatStyle);
         }
     }
 }

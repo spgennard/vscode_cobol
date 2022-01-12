@@ -109,8 +109,8 @@ export class TabUtils {
         const editor = window.activeTextEditor;
         if (editor) {
             const doc = editor.document;
-            const sel = editor.selections;
-            TabUtils.executeTab(editor, doc, sel, inserting);
+            const sels = editor.selections;
+            TabUtils.executeTab(editor, doc, sels, inserting);
         }
     }
 }

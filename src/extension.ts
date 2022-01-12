@@ -1151,6 +1151,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(transposeCommand);
 
+    const alignStorage = vscode.commands.registerCommand("cobolplugin.alignStorage", () => {
+        COBOLUtils.alignStorage();
+    });
+    context.subscriptions.push(alignStorage);
+
+
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

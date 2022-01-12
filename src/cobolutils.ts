@@ -629,11 +629,11 @@ export class COBOLUtils {
     }
 
     public static foldToken(
-            externalFeatures: IExternalFeatures,
-            activeEditor: vscode.TextEditor, 
-            action: FoldAction, 
-            foldstyle: FoldStyle, 
-            languageid: string): void {
+        externalFeatures: IExternalFeatures,
+        activeEditor: vscode.TextEditor,
+        action: FoldAction,
+        foldstyle: FoldStyle,
+        languageid: string): void {
         const uri = activeEditor.document.uri;
         const settings = VSCOBOLConfiguration.get();
 
@@ -665,4 +665,80 @@ export class COBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
+    private static readonly storageAlignItems: string[] = [
+        "picture",
+        "pic",
+        "usage",
+        "binary-char",
+        "binary-double",
+        "binary-long",
+        "binary-short",
+        "boolean",
+        "character",
+        "comp-1",
+        "comp-2",
+        "comp-3",
+        "comp-4",
+        "comp-5",
+        "comp-n",
+        "comp-x",
+        "comp",
+        "computational-1",
+        "computational-2",
+        "computational-3",
+        "computational-4",
+        "computational-5",
+        "computational-n",
+        "computational-x",
+        "computational",
+        "conditional-value",
+        "constant",
+        "decimal",
+        "external",
+        "float-long",
+        "float-short",
+        "signed-int",
+        "signed-long",
+        "signed-short"
+    ];
+
+    private static getStorageItemPosition(line: string): number {
+        for (const storageAlignItem of this.storageAlignItems) {
+            const pos = line.indexOf(storageAlignItem);
+            if (pos !== -1) {
+                return pos;
+            }
+        }
+        return -1;
+    }
+
+    public static alignStorage(): void {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const sels = editor.selections;
+            editor.edit(edits => {
+                let siposa_first = -1;
+
+                for (const sel of sels) {
+                    for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
+                        const textSelection = editor.document.lineAt(startLine).text;
+                        const ran = new vscode.Range(new vscode.Position(startLine, 0),
+                            new vscode.Position(startLine, textSelection.length));
+                        const line = textSelection.trimEnd();
+                        const sipos = this.getStorageItemPosition(line);
+                        if (siposa_first === -1) {
+                            siposa_first = sipos;
+                        }
+                        if (sipos !== -1) {
+                            const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first)
+                            const line_right = line.substring(sipos);
+                            const newtext = line_left + line_right;
+                            edits.replace(ran, newtext);
+                        }
+                    }
+                }
+            });
+        }
+
+    }
 }

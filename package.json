@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.1.10",
+  "version": "8.1.11",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1319,6 +1319,12 @@
         "command": "cobolplugin.transposeSelection",
         "category": "COBOL",
         "title": "transpose"
+      },
+      {
+        "command": "cobolplugin.alignStorage",
+        "category": "COBOL",
+        "enablement": "editorTextFocus && editorHasSelection",
+        "title": "Align Data Items"
       }
     ],
     "menus": {
@@ -1347,6 +1353,11 @@
           "command": "cobolplugin.move2anybackwards",
           "group": "cobolplugin",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.alignStorage",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.extractSelectionToParagraph",
