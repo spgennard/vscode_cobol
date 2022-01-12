@@ -261,14 +261,14 @@ If you do, all that is required is another image that contains extra tools and a
 
 The following ```Dockerfile``` is an example on how you can extend your existing base image with java configured, ant, git and lsb tools.
 
-This example uses the SLES 15.1 base images using Visual COBOL 5.0.
+This example uses the SLES 15.1 base images using Visual COBOL 6.0.
 
 You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different commands eg: yum, microdnf etc..).
 
 Dockerfile:
 
 ```dockerfile
-FROM microfocus/vcdevhub:sles15_6.0_x64_login
+FROM microfocus/vcdevhub:sles15.1_6.0_x64_login
 
 USER root
 
