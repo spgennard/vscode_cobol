@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 67e6c84 (HEAD -> main, tag: 8.1.9, origin/main, origin/HEAD) Update CHANGELOG.md
+* 676b449 (HEAD -> main, tag: 8.1.10, origin/main, origin/HEAD) Merge branch 'main' of github.com:spgennard/vscode_cobol
+* 9015d11 Update CHANGELOG.md
+* d260086 tweak README
+* 67e6c84 (tag: 8.1.9) Update CHANGELOG.md
 * dfab2d0 bump
 * 8d89af2 update
 * bc1aa14 tweak cond/set syntax
