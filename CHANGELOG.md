@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* dfab2d0 (HEAD -> main, tag: 8.1.9, origin/main) bump
+* 67e6c84 (HEAD -> main, tag: 8.1.9, origin/main, origin/HEAD) Update CHANGELOG.md
+* dfab2d0 bump
 * 8d89af2 update
 * bc1aa14 tweak cond/set syntax
 * 451f952 update
