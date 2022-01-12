@@ -1,10 +1,13 @@
 # CHANGELOG
 
-* 676b449 (HEAD -> main, tag: 8.1.10, origin/main, origin/HEAD) Merge branch 'main' of github.com:spgennard/vscode_cobol
+* 182ed63 (HEAD -> main, tag: 8.1.11, origin/main) merge branch 'main' of github.com:spgennard/vscode_cobol
+* b3be2f5 add "align storage items"
+* 88ff554 Update CHANGELOG.md
+* 676b449 (tag: 8.1.10) Merge branch 'main' of github.com:spgennard/vscode_cobol
 * 9015d11 Update CHANGELOG.md
 * d260086 tweak README
-* 67e6c84 (tag: 8.1.9) Update CHANGELOG.md
-* dfab2d0 bump
+* 67e6c84 Update CHANGELOG.md
+* dfab2d0 (tag: 8.1.9) bump
 * 8d89af2 update
 * bc1aa14 tweak cond/set syntax
 * 451f952 update
