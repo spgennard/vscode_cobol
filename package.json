@@ -996,6 +996,12 @@
           "*-report.txt"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "xml",
+        "extensions": [
+            ".cblproj"
+        ]
       }
     ],
     "grammars": [
