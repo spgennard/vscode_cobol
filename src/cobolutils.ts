@@ -699,14 +699,16 @@ export class COBOLUtils {
         "float-short",
         "signed-int",
         "signed-long",
-        "signed-short"
+        "signed-short",
+        "value",
+        "as"
     ];
 
-    private static getStorageItemPosition(line: string): number {
+    public static getStorageItemPosition(line: string): number {
         for (const storageAlignItem of this.storageAlignItems) {
-            const pos = line.indexOf(storageAlignItem);
+            const pos = line.toLowerCase().indexOf(" " + storageAlignItem+" ");
             if (pos !== -1) {
-                return pos;
+                return pos+1;
             }
         }
         return -1;
@@ -729,11 +731,13 @@ export class COBOLUtils {
                         if (siposa_first === -1) {
                             siposa_first = sipos;
                         }
-                        if (sipos !== -1) {
-                            const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first)
-                            const line_right = line.substring(sipos);
-                            const newtext = line_left + line_right;
-                            edits.replace(ran, newtext);
+                        if (sipos !== -1 && siposa_first !== -1) {
+                            if (1 + sipos <= siposa_first) {
+                                const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first);
+                                const line_right = line.substring(sipos);
+                                const newtext = line_left + line_right;
+                                edits.replace(ran, newtext);
+                            }
                         }
                     }
                 }

@@ -1156,6 +1156,23 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(alignStorage);
 
+    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+    window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
+        let enableStorageAlign = false;
+        for (const sel of e.selections) {
+            for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
+                const textSelection = e.textEditor.document.lineAt(startLine).text;
+                const line = textSelection.trimEnd();
+                const sipos = COBOLUtils.getStorageItemPosition(line);
+                if (sipos !== -1) {
+                    enableStorageAlign = true;
+                    break;
+                }
+            }
+        }
+
+        vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", enableStorageAlign);
+    })
 
     if (settings.process_metadata_cache_on_start) {
         try {
