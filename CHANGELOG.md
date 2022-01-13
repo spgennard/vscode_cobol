@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 182ed63 (HEAD -> main, tag: 8.1.11, origin/main) merge branch 'main' of github.com:spgennard/vscode_cobol
+* 7460440 (HEAD -> main, tag: 8.1.12, origin/main) continue to refine the align storage items
+* 23d57f6 add cblproj as xml
+* 285ec49 update
+* c4106db Update CHANGELOG.md
+* 182ed63 (tag: 8.1.11) merge branch 'main' of github.com:spgennard/vscode_cobol
 * b3be2f5 add "align storage items"
 * 88ff554 Update CHANGELOG.md
 * 676b449 (tag: 8.1.10) Merge branch 'main' of github.com:spgennard/vscode_cobol
