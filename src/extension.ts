@@ -44,7 +44,6 @@ import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSmargindecorations } from "./margindecorations";
 import { commentUtils } from "./commenter";
-import { VSCodeSourceHandler } from "./vscodesourcehandler";
 // import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -427,13 +426,13 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
 
 
-
+    
     const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
     fileSearchDirectory.length = 0;
-    for (const fsd of filterfileSearchDirectory) {
+    for(const fsd of filterfileSearchDirectory) {
         fileSearchDirectory.push(fsd);
     }
-
+    
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
@@ -1145,7 +1144,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         COBOLUtils.leftAdjustLine();
     });
     context.subscriptions.push(leftAdjustLineCommand);
-
+  
 
     const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
         COBOLUtils.transposeSelection(textEditor, edit);
@@ -1162,18 +1161,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;
         }
-
+        
         for (const sel of e.selections) {
-            const sourceHandler = new VSCodeSourceHandler(e.textEditor.document);
             for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
-                const textSelection = sourceHandler.getLine(startLine, false);
-                if (textSelection !== undefined) {
-                    const line = textSelection.trimEnd();
-                    const sipos = COBOLUtils.getStorageItemPosition(line);
-                    if (sipos !== -1) {
-                        vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
-                        return;
-                    }
+                const textSelection = e.textEditor.document.lineAt(startLine).text;
+                const line = textSelection.trimEnd();
+                const sipos = COBOLUtils.getStorageItemPosition(line);
+                if (sipos !== -1) {
+                    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+                    return;
                 }
             }
         }
