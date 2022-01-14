@@ -5,6 +5,7 @@ import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ISourceHandler, ICommentCallback } from "./isourcehandler";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class VSCodeSourceHandler implements ISourceHandler {
@@ -22,21 +23,18 @@ export class VSCodeSourceHandler implements ISourceHandler {
     format: ESourceFormat;
     externalFeatures: IExternalFeatures
 
-    public constructor(externalFeatures: IExternalFeatures,     
-                       document: vscode.TextDocument, 
-                       dumpNumbersInAreaA: boolean, 
-                       commentCallback?: ICommentCallback) 
+    public constructor(document: vscode.TextDocument) 
     {
         this.document = document;
-        this.dumpNumbersInAreaA = dumpNumbersInAreaA;
+        this.dumpNumbersInAreaA = false;
         this.dumpAreaBOnwards = false;
         this.commentCount = 0;
-        this.commentCallback = commentCallback;
+        this.commentCallback = undefined;
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
         this.languageId = document.languageId;
         this.format = ESourceFormat.unknown;
-        this.externalFeatures = externalFeatures;
+        this.externalFeatures = VSExternalFeatures;
 
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;

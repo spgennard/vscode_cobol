@@ -637,7 +637,7 @@ export class COBOLUtils {
         const uri = activeEditor.document.uri;
         const settings = VSCOBOLConfiguration.get();
 
-        const file = new VSCodeSourceHandler(externalFeatures, activeEditor.document, false);
+        const file = new VSCodeSourceHandler(activeEditor.document);
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
             VSLogger.logMessage(`Unable to fold ${file.externalFeatures}, as it is has not been parsed`);

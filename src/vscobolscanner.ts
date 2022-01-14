@@ -141,7 +141,7 @@ export class VSCOBOLSourceScanner {
                 // if (!VSExtensionUtils.isKnownScheme(document.uri.scheme)) {
                 //     VSLogger.logMessage(`Information: ${document.fileName} scheme is unknown ${document.uri.scheme}`);
                 // }
-                const sourceHandler = new VSCodeSourceHandler(VSExternalFeatures,document, false);
+                const sourceHandler = new VSCodeSourceHandler(document);
                 const lineCount = sourceHandler.getLineCount();
                 const cacheData = sourceHandler.getIsSourceInWorkSpace();
                 const startTime = VSExternalFeatures.performance_now();
