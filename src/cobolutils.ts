@@ -708,10 +708,10 @@ export class COBOLUtils {
         for (const storageAlignItem of this.storageAlignItems) {
             const pos = line.toLowerCase().indexOf(" " + storageAlignItem);
             if (pos !== -1) {
-                const afterCharPos = 1+pos+storageAlignItem.length;
+                const afterCharPos = 1 + pos + storageAlignItem.length;
                 const afterChar = line.charAt(afterCharPos);
-                if (afterChar === " " || afterChar === "." ) {
-                    return pos+1;
+                if (afterChar === " " || afterChar === ".") {
+                    return pos + 1;
                 }
                 // VSLogger.logMessage(`afterChar is [${afterChar}]`);
             }
@@ -725,28 +725,31 @@ export class COBOLUtils {
             const sels = editor.selections;
             editor.edit(edits => {
                 let siposa_first = -1;
+                const sourceHandler = new VSCodeSourceHandler(editor.document);
 
                 for (const sel of sels) {
                     for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
-                        const textSelection = editor.document.lineAt(startLine).text;
-                        const ran = new vscode.Range(new vscode.Position(startLine, 0),
-                            new vscode.Position(startLine, textSelection.length));
-                        const line = textSelection.trimEnd();
-                        const sipos = this.getStorageItemPosition(line);
-                        if (siposa_first === -1) {
-                            siposa_first = sipos;
-                        }
-                        if (sipos !== -1 && siposa_first !== -1) {
-                            if (sipos !== siposa_first) {
-                                const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first-1)+" ";
-                                const line_right = line.substring(sipos).trimStart();
-                                const newtext = line_left + line_right;
-                                edits.replace(ran, newtext);
+                        const textSelection = sourceHandler.getLine(startLine, false);
+                        if (textSelection !== undefined) {
+                            const ran = new vscode.Range(new vscode.Position(startLine, 0),
+                                new vscode.Position(startLine, textSelection.length));
+                            const line = textSelection.trimEnd();
+                            const sipos = this.getStorageItemPosition(line);
+                            if (siposa_first === -1) {
+                                siposa_first = sipos;
                             }
-                            // else {
-                            //     VSLogger.logMessage(`Ignoring ${line} sipos=${sipos} / siposa_first=${siposa_first}}` );
-                            // }
-                        } 
+                            if (sipos !== -1 && siposa_first !== -1) {
+                                if (sipos !== siposa_first) {
+                                    const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first - 1) + " ";
+                                    const line_right = line.substring(sipos).trimStart();
+                                    const newtext = line_left + line_right;
+                                    edits.replace(ran, newtext);
+                                }
+                                // else {
+                                //     VSLogger.logMessage(`Ignoring ${line} sipos=${sipos} / siposa_first=${siposa_first}}` );
+                                // }
+                            }
+                        }
                     }
                 }
             });
