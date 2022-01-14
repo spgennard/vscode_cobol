@@ -706,9 +706,14 @@ export class COBOLUtils {
 
     public static getStorageItemPosition(line: string): number {
         for (const storageAlignItem of this.storageAlignItems) {
-            const pos = line.toLowerCase().indexOf(" " + storageAlignItem+" ");
+            const pos = line.toLowerCase().indexOf(" " + storageAlignItem);
             if (pos !== -1) {
-                return pos+1;
+                const afterCharPos = 1+pos+storageAlignItem.length;
+                const afterChar = line.charAt(afterCharPos);
+                if (afterChar === " " || afterChar === "." ) {
+                    return pos+1;
+                }
+                // VSLogger.logMessage(`afterChar is [${afterChar}]`);
             }
         }
         return -1;
@@ -732,13 +737,16 @@ export class COBOLUtils {
                             siposa_first = sipos;
                         }
                         if (sipos !== -1 && siposa_first !== -1) {
-                            if (1 + sipos <= siposa_first) {
-                                const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first);
-                                const line_right = line.substring(sipos);
+                            if (sipos !== siposa_first) {
+                                const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first-1)+" ";
+                                const line_right = line.substring(sipos).trimStart();
                                 const newtext = line_left + line_right;
                                 edits.replace(ran, newtext);
                             }
-                        }
+                            // else {
+                            //     VSLogger.logMessage(`Ignoring ${line} sipos=${sipos} / siposa_first=${siposa_first}}` );
+                            // }
+                        } 
                     }
                 }
             });

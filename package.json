@@ -711,8 +711,8 @@
           "minimum": 2,
           "maximum": 24
         },
-        "coboleditor.suggest_variables_when_context_is_unknown" : {
-          "type" : "boolean",
+        "coboleditor.suggest_variables_when_context_is_unknown": {
+          "type": "boolean",
           "title": "Suggest variables when context is unknown",
           "description": "Suggest variables when context for a verb is unknown",
           "default": true
@@ -963,8 +963,7 @@
       },
       {
         "id": "bmsmap",
-        "extensions": [
-        ],
+        "extensions": [],
         "aliases": []
       },
       {
@@ -1000,7 +999,7 @@
       {
         "id": "xml",
         "extensions": [
-            ".cblproj"
+          ".cblproj"
         ]
       }
     ],
@@ -1911,7 +1910,7 @@
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.8",
-    "@types/vscode": "^1.63.1",
+    "@types/vscode": "^1.63.0",
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
     "@typescript-eslint/parser": "^5.9.1",
