@@ -129,19 +129,19 @@ export class FileSourceHandler implements ISourceHandler {
             // todo - this is a bit messy and should be revised
             if (this.dumpNumbersInAreaA) {
                 if (line.match(FileSourceHandler.paraPrefixRegex1)) {
-                    line = "      " + line.substr(6);
+                    line = "      " + line.substring(6);
                 } else {
                     if (line.length > 7 && line[6] === " ") {
-                        const possibleKeyword = line.substr(0, 6).trim();
+                        const possibleKeyword = line.substring(0, 6).trim();
                         if (this.isValidKeyword(possibleKeyword) === false) {
-                            line = "       " + line.substr(6);
+                            line = "       " + line.substring(6);
                         }
                     }
                 }
             }
             
             if (this.dumpAreaBOnwards && line.length >= 73) {
-                line = line.substr(0, 72);
+                line = line.substring(0, 72);
             }
         }
         catch {
