@@ -63,7 +63,7 @@ export class VSCOBOLFileUtils {
             if (folder.uri.scheme === schema ) {
                 const folderPath = folder.uri.path;
                 if (fullPath.startsWith(folderPath)) {
-                    const possibleShortPath = fullPath.substr(1 + folderPath.length);
+                    const possibleShortPath = fullPath.substring(1 + folderPath.length);
                     if (bestShortName.length === 0) {
                         bestShortName = possibleShortPath;
                     } else {

@@ -37,7 +37,7 @@ export class VSCOBOLSourceScannerTools {
                         const fullDirectory = path.join(folder.fsPath, entry);
                         if (!VSCOBOLSourceScannerTools.ignoreDirectory(entry)) {
                             const topLevelLength = 1 + topLevelFolder.fsPath.length;
-                            const possibleCopydir = fullDirectory.substr(topLevelLength);
+                            const possibleCopydir = fullDirectory.substring(topLevelLength);
 
                             if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
                                 const copyBookCount = await VSCOBOLSourceScannerTools.howManyCopyBooksInDirectory(fullDirectory, settings);
