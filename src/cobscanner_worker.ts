@@ -10,7 +10,7 @@ import { ISourceHandler } from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
 import { ICOBOLSourceScannerEventer } from "./cobolsourcescanner";
 import { COBOLFileUtils } from "./fileutils";
-import { VSSourceFormat } from "./sourceformat";
+import { SourceFormat } from "./sourceformat";
 
 export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ThreadConsoleExternalFeatures();
@@ -65,7 +65,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return VSSourceFormat.get(doc,config);
+        return SourceFormat.get(doc,config);
     }
 
     public setWorkspaceFolders(folders: string[]):void {

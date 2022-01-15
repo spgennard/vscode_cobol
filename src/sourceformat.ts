@@ -3,18 +3,9 @@ import { ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
 import { ISourceHandlerLite } from "./isourcehandler";
 import minimatch from "minimatch";
 
-
-function isNumber(value: string | number): boolean {
-    if (value.toString().length === 0) {
-        return false;
-    }
-    return !isNaN(Number(value.toString()));
-}
-
-
 const inline_sourceformat: string[] = ["sourceformat", ">>source format"];
 
-export class VSSourceFormat {
+export class SourceFormat {
 
     private static isValidFixedLine(line: string): boolean {
         if (line.length >= 7) {
@@ -28,6 +19,13 @@ export class VSSourceFormat {
         }
     
         return false;
+    }
+
+    private static isNumber(value: string | number): boolean {
+        if (value.toString().length === 0) {
+            return false;
+        }
+        return !isNaN(Number(value.toString()));
     }
 
     public static get(doc: ISourceHandlerLite, config: ICOBOLSettings): ESourceFormat {
@@ -62,7 +60,7 @@ export class VSSourceFormat {
             }
 
             const line = lineText.toLowerCase();
-            const validFixedLine = VSSourceFormat.isValidFixedLine(line);
+            const validFixedLine = SourceFormat.isValidFixedLine(line);
             if (validFixedLine) {
                 validFixedLines++;
             }
@@ -98,14 +96,14 @@ export class VSSourceFormat {
                     linesGT80++;
                     continue;
                 } else {
-                    if (VSSourceFormat.isValidFixedLine(line)) {
+                    if (SourceFormat.isValidFixedLine(line)) {
                         if (line.length > 72) {
                             const rightMargin = line.substring(72).trim();
 
                             if (prevRightMargin === rightMargin) {
                                 linesWithIdenticalAreaB++;
                             } else {
-                                if (isNumber(rightMargin)) {
+                                if (SourceFormat.isNumber(rightMargin)) {
                                     linesWithJustNumbers++;
                                 }
                             }
