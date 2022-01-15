@@ -100,7 +100,7 @@ export class VSSourceFormat {
                 } else {
                     if (VSSourceFormat.isValidFixedLine(line)) {
                         if (line.length > 72) {
-                            const rightMargin = line.substr(72).trim();
+                            const rightMargin = line.substring(72).trim();
 
                             if (prevRightMargin === rightMargin) {
                                 linesWithIdenticalAreaB++;
@@ -122,7 +122,7 @@ export class VSSourceFormat {
                 continue;
             } else {
                 // got a inline comment,yes
-                const line2right = line.substr(pos4sourceformat_after);
+                const line2right = line.substring(pos4sourceformat_after);
 
                 if (line2right.indexOf("fixed") !== -1) {
                     return ESourceFormat.fixed;

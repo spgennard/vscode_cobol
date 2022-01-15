@@ -163,7 +163,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                     const filename = entry[0];
                     const lastDot = filename.lastIndexOf(".");
                     if (lastDot !== -1) {
-                        const ext = filename.substr(1 + lastDot);
+                        const ext = filename.substring(1 + lastDot);
                         const subDir = path.join(topLevel, entry[0]);
                         this.addExtension(ext, vscode.Uri.file(subDir));
                     }
