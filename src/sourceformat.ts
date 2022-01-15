@@ -14,33 +14,32 @@ function isNumber(value: string | number): boolean {
 
 const inline_sourceformat: string[] = ["sourceformat", ">>source format"];
 
-function isValidFixedLine(line: string): boolean {
-    if (line.length >= 7) {
-        switch (line[6]) {
-            case "*": return true;
-            case "D": return true;
-            case "/": return true;
-            case " ": return true;
-            case "-": return true;
+export class VSSourceFormat {
+
+    private static isValidFixedLine(line: string): boolean {
+        if (line.length >= 7) {
+            switch (line[6]) {
+                case "*": return true;
+                case "D": return true;
+                case "/": return true;
+                case " ": return true;
+                case "-": return true;
+            }
         }
+    
+        return false;
     }
 
-    return false;
-}
-
-
-
-export class VSSourceFormat {
     public static get(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
         const langid = doc.getLanguageId();
 
         if (config.fileformat_strategy === "always_fixed") {
             return ESourceFormat.fixed;
         }
-
+        
         let linesWithJustNumbers = 0;
         let linesWithIdenticalAreaB = 0;
-        const maxLines = doc.getLineCount() > 10 ? 10 : doc.getLineCount();
+        const maxLines = doc.getLineCount() > config.pre_scan_line_limit ? config.pre_scan_line_limit : doc.getLineCount();
         let defFormat = ESourceFormat.unknown;
 
         const checkForTerminalFormat: boolean = langid.toLocaleLowerCase() === "acucobol" ? true : false;
@@ -63,7 +62,7 @@ export class VSSourceFormat {
             }
 
             const line = lineText.toLowerCase();
-            const validFixedLine = isValidFixedLine(line);
+            const validFixedLine = VSSourceFormat.isValidFixedLine(line);
             if (validFixedLine) {
                 validFixedLines++;
             }
@@ -99,7 +98,7 @@ export class VSSourceFormat {
                     linesGT80++;
                     continue;
                 } else {
-                    if (isValidFixedLine(line)) {
+                    if (VSSourceFormat.isValidFixedLine(line)) {
                         if (line.length > 72) {
                             const rightMargin = line.substr(72).trim();
 
