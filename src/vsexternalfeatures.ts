@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { VSLogger } from "./vslogger";
-import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
-import { ISourceHandler } from "./isourcehandler";
 import { COBOLCopyBookProvider } from "./opencopybook";
-import { SourceFormat } from "./sourceformat";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 import fs from "fs";
@@ -32,10 +30,6 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
         return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, this);
-    }
-
-    public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return SourceFormat.get(doc, config);
     }
 
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {

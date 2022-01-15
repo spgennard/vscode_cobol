@@ -10,6 +10,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 
 import * as path from "path";
+import { SourceFormat } from "./sourceformat";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -943,7 +944,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
         sourceHandler.resetCommentCount();
 
-        this.sourceFormat = this.externalFeatures.getCOBOLSourceFormat(sourceHandler, configHandler);
+        this.sourceFormat = SourceFormat.get(sourceHandler, configHandler);
         switch (this.sourceFormat) {
             case ESourceFormat.free: sourceHandler.setDumpAreaBOnwards(false);
                 break;

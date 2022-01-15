@@ -1,16 +1,14 @@
 import { parentPort, workerData } from "worker_threads";
 import { Scanner, workerThreadData } from "./cobscanner";
 import { ScanStats } from "./cobscannerdata";
-import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { IExternalFeatures } from "./externalfeatures";
 
 import * as fs from "fs";
 import * as path from "path";
 import util from "util";
-import { ISourceHandler } from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
 import { ICOBOLSourceScannerEventer } from "./cobolsourcescanner";
 import { COBOLFileUtils } from "./fileutils";
-import { SourceFormat } from "./sourceformat";
 
 export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ThreadConsoleExternalFeatures();
@@ -61,11 +59,6 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
         return "";
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return SourceFormat.get(doc,config);
     }
 
     public setWorkspaceFolders(folders: string[]):void {

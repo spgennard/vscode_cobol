@@ -4,11 +4,9 @@ import fs from "fs";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { ISourceHandler } from "./isourcehandler";
+import { IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./fileutils";
-import { SourceFormat } from "./sourceformat";
 
 export class ConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ConsoleExternalFeatures();
@@ -63,11 +61,6 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
         return "";
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
-        return SourceFormat.get(doc,config);
     }
 
     public setWorkspaceFolders(folders: string[]) {

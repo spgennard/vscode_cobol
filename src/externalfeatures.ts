@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ISourceHandler } from "./isourcehandler";
 import { ICOBOLSettings } from "./iconfiguration";
 
 export interface IExternalFeatures {
@@ -12,7 +11,6 @@ export interface IExternalFeatures {
     logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean;
     performance_now(): number;
     expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string;
-    getCOBOLSourceFormat(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat;
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(): string[];
