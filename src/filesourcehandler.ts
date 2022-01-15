@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { ISourceHandler, ICommentCallback } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require("n-readlines");
@@ -12,7 +12,7 @@ import { StringBuilder } from "typescript-string-operations";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 
-export class FileSourceHandler implements ISourceHandler {
+export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     document: string;
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;

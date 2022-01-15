@@ -3,7 +3,6 @@ import path from "path";
 import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle } from "./cobolsourcescanner";
 import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSLogger } from "./vslogger";
-import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLFileUtils } from "./fileutils";
@@ -637,14 +636,14 @@ export class COBOLUtils {
         const uri = activeEditor.document.uri;
         const settings = VSCOBOLConfiguration.get();
 
-        const file = new VSCodeSourceHandler(activeEditor.document);
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
-            VSLogger.logMessage(`Unable to fold ${file.externalFeatures}, as it is has not been parsed`);
+            VSLogger.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
             return;
         }
-
+        const file = current.sourceHandler;
         const edits = new vscode.WorkspaceEdit();
+        
         // traverse all the lines
         for (let l = 0; l < file.getLineCount(); l++) {
             const text = file.getLine(l, false);

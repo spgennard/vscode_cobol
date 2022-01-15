@@ -1,6 +1,6 @@
 import { ESourceFormat } from "./externalfeatures";
 import { ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
-import { ISourceHandler } from "./isourcehandler";
+import { ISourceHandlerLite } from "./isourcehandler";
 import minimatch from "minimatch";
 
 
@@ -30,7 +30,7 @@ export class VSSourceFormat {
         return false;
     }
 
-    public static get(doc: ISourceHandler, config: ICOBOLSettings): ESourceFormat {
+    public static get(doc: ISourceHandlerLite, config: ICOBOLSettings): ESourceFormat {
         const langid = doc.getLanguageId();
 
         if (config.fileformat_strategy === "always_fixed") {

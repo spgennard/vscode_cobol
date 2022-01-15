@@ -2,13 +2,77 @@ import { StringBuilder } from "typescript-string-operations";
 import * as vscode from "vscode";
 import { workspace } from "vscode";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { ISourceHandler, ICommentCallback } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
-export class VSCodeSourceHandler implements ISourceHandler {
+export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
+    document: vscode.TextDocument | undefined;
+    lineCount: number;
+    languageId: string;
+
+    public constructor(document: vscode.TextDocument) 
+    {
+        this.document = document;
+        this.lineCount = this.document.lineCount;
+        this.languageId = document.languageId;
+    }
+
+    public getLineCount(): number {
+        return this.lineCount;
+    }
+
+    getLanguageId(): string {
+        return this.languageId;
+    }
+
+    getFilename(): string {
+        return this.document !== undefined ? this.document.fileName : "";
+    }
+
+    getRawLine(lineNumber: number): string | undefined {
+        if (this.document === undefined || lineNumber >= this.lineCount) {
+            return undefined;
+        }
+
+        const lineText = this.document.lineAt(lineNumber);
+
+        return lineText === undefined ? undefined : lineText.text;
+    }
+
+    getLineTabExpanded(lineNumber: number):string|undefined {
+        const unexpandedLine = this.getRawLine(lineNumber);
+        if (unexpandedLine === undefined) {
+            return undefined;
+        }
+
+        // do we have a tab?
+        if (unexpandedLine.indexOf("\t") === -1) {
+            return unexpandedLine;
+        }
+
+        const editorConfig = workspace.getConfiguration("editor");
+        const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
+
+        let col = 0;
+        const buf = new StringBuilder();
+        for (const c of unexpandedLine) {
+            if (c === "\t") {
+                do {
+                    buf.Append(" ");
+                } while (++col % tabSize !== 0);
+            } else {
+                buf.Append(c);
+            }
+            col++;
+        }
+        return buf.ToString();
+    }
+}
+
+export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     commentCount: number;
     document: vscode.TextDocument | undefined;
     dumpNumbersInAreaA: boolean;

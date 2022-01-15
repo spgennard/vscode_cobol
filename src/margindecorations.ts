@@ -5,7 +5,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ESourceFormat } from "./externalfeatures";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSWorkspaceFolders } from "./cobolfolders";
-import { VSCodeSourceHandler } from "./vscodesourcehandler";
+import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { VSSourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 
@@ -72,7 +72,7 @@ export class VSmargindecorations {
                 const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
                 let sf: ESourceFormat = ESourceFormat.unknown;
                 if (gcp === undefined) {
-                    const vsfile = new VSCodeSourceHandler(doc);
+                    const vsfile = new VSCodeSourceHandlerLite(doc);
                     sf = VSSourceFormat.get(vsfile, configHandler);
                 } else {
                     sf = gcp.sourceFormat;

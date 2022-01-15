@@ -3,6 +3,12 @@ import { ESourceFormat } from "./externalfeatures";
 export interface ICommentCallback {
     processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number) : void;
 }
+export interface ISourceHandlerLite {
+    getLineCount(): number;
+    getLanguageId():string;
+    getFilename(): string;
+    getLineTabExpanded(lineNumber: number):string|undefined;
+}
 
 export interface ISourceHandler {
     getUriAsString(): string;
