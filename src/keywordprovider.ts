@@ -91,7 +91,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			wordToComplete = currentLine.trim();
 			const prevSpace = wordToComplete.lastIndexOf(" ");
 			if (prevSpace !== -1) {
-				wordToComplete = wordToComplete.substr(prevSpace).trim();
+				wordToComplete = wordToComplete.substring(prevSpace).trim();
 			}
 		}
 

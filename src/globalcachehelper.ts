@@ -12,7 +12,7 @@ export class InMemoryGlobalCacheHelper {
         if (lastSlash === -1) {
             return fullPath;
         }
-        return fullPath.substr(1 + lastSlash);
+        return fullPath.substring(1 + lastSlash);
     }
 
     public static addFilename(filename: string, wsf: COBOLWorkspaceFile): void {
