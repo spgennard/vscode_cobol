@@ -31,7 +31,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
             }
 
             if (textText.startsWith("//")) {
-                const textLineClean = textText.substr(2);
+                const textLineClean = textText.substring(2);
                 const lineTokens = [];
                 const possibleTokens:string[] = [];
                 SourceScannerUtils.splitArgument(textLineClean, false, possibleTokens);
