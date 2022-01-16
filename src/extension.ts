@@ -44,7 +44,6 @@ import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSmargindecorations } from "./margindecorations";
 import { commentUtils } from "./commenter";
-// import { CobolDocumentSymbolProvider } from './documentsymbolprovider';
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -803,9 +802,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         /* TODO: add .DIR keywords too */
         const symbolInformationProvider = new CobolSymbolInformationProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), symbolInformationProvider));
-
-        // const documentSymbolProvider2 = new CobolDocumentSymbolProvider();
-        // context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), documentSymbolProvider2));
     }
 
     const cobolProvider = new CobolSourceCompletionItemProvider(settings, VSExternalFeatures);
