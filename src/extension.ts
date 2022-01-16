@@ -1091,7 +1091,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
                     prompt: "Enter start line number and increment",
                     validateInput: (text: string): string | undefined => {
                         if (!text || text.indexOf(" ") === -1) {
-                            return "You must enter two numbers";
+                            return "You must enter two spaced delimited numbers (start increment)";
                         } else {
                             return undefined;
                         }
