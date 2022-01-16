@@ -1,6 +1,24 @@
 # CHANGELOG
 
-* 7460440 (HEAD -> main, tag: 8.1.12, origin/main) continue to refine the align storage items
+* 580ccbe (HEAD -> main, tag: 8.1.15, origin/main) add "align storage wide" support
+* c54b8df tweak
+* fecee91 drop document symbol provider
+* 9ec23ae simplify sourceformat get
+* 30e00b8 remove VS from class, as it is missleading
+* 559b3a9 introduce lite source reader
+* 45bce3f substr to substring flip
+* 2498e1e flip substr/substring
+* c3d8e09 flip substr
+* 27e4a75 change substr to substring
+* 8986ba3 move function
+* 9a92ef5 revert
+* ae76574 flip to using a source handler (next, source format)
+* bcde529 simplify ctor
+* 87958cc flip substr to substring
+* 0a831be improve align data items
+* f952760 drop boolean and just do it
+* 8620d84 Update CHANGELOG.md
+* 7460440 (tag: 8.1.12) continue to refine the align storage items
 * 23d57f6 add cblproj as xml
 * 285ec49 update
 * c4106db Update CHANGELOG.md
