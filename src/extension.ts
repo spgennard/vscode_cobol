@@ -18,7 +18,7 @@ import { CobolReferenceProvider } from "./cobolreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./sourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./cobolprovider";
-import { COBOLUtils, FoldStyle, FoldAction } from "./cobolutils";
+import { COBOLUtils, FoldStyle, FoldAction, AlignStyle } from "./cobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -1147,10 +1147,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(transposeCommand);
 
-    const alignStorage = vscode.commands.registerCommand("cobolplugin.alignStorage", () => {
-        COBOLUtils.alignStorage();
+    const alignStorageFirst = vscode.commands.registerCommand("cobolplugin.alignStorageFirst", () => {
+        COBOLUtils.alignStorage(AlignStyle.First);
     });
-    context.subscriptions.push(alignStorage);
+    context.subscriptions.push(alignStorageFirst);
+
+    const alignStorageWide= vscode.commands.registerCommand("cobolplugin.alignStorageWide", () => {
+        COBOLUtils.alignStorage(AlignStyle.Wide);
+    });
+    context.subscriptions.push(alignStorageWide);
 
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
     window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.1.12",
+  "version": "8.1.15",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1326,10 +1326,16 @@
         "title": "transpose"
       },
       {
-        "command": "cobolplugin.alignStorage",
+        "command": "cobolplugin.alignStorageFirst",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align Data Items"
+        "title": "Align Data Items (First)"
+      },
+      {
+        "command": "cobolplugin.alignStorageWide",
+        "category": "COBOL",
+        "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
+        "title": "Align Data Items (Wide)"
       }
     ],
     "menus": {
@@ -1360,7 +1366,12 @@
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
-          "command": "cobolplugin.alignStorage",
+          "command": "cobolplugin.alignStorageFirst",
+          "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.alignStorageWide",
           "group": "cobolplugin",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         },

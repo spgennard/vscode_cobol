@@ -25,6 +25,11 @@ export enum FoldAction {
     Keywords = 3
 }
 
+export enum AlignStyle {
+    First = 1,
+    Wide = 2
+}
+
 export class COBOLUtils {
     private static getProgramGlobPattern(config: ICOBOLSettings): string {
         let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
@@ -643,7 +648,7 @@ export class COBOLUtils {
         }
         const file = current.sourceHandler;
         const edits = new vscode.WorkspaceEdit();
-        
+
         // traverse all the lines
         for (let l = 0; l < file.getLineCount(); l++) {
             const text = file.getLine(l, false);
@@ -707,10 +712,10 @@ export class COBOLUtils {
         for (const storageAlignItem of this.storageAlignItems) {
             const pos = line.toLowerCase().indexOf(" " + storageAlignItem);
             if (pos !== -1) {
-                const afterCharPos = 1+pos+storageAlignItem.length;
+                const afterCharPos = 1 + pos + storageAlignItem.length;
                 const afterChar = line.charAt(afterCharPos);
-                if (afterChar === " " || afterChar === "." ) {
-                    return pos+1;
+                if (afterChar === " " || afterChar === ".") {
+                    return pos + 1;
                 }
                 // VSLogger.logMessage(`afterChar is [${afterChar}]`);
             }
@@ -718,34 +723,59 @@ export class COBOLUtils {
         return -1;
     }
 
-    public static alignStorage(): void {
+    private static getAlignItemFromSelections(editor: vscode.TextEditor, sels: readonly vscode.Selection[], style:AlignStyle): number {
+        let siposa_first = -1;
+        let siposa_wide = -1;
+
+        for (const sel of sels) {
+            for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
+                const textSelection = editor.document.lineAt(startLine).text;
+                const line = textSelection.trimEnd();
+                const sipos = this.getStorageItemPosition(line);
+
+                if (siposa_first === -1) {
+                    siposa_first = sipos;
+                }
+
+                if (sipos > siposa_wide) {
+                    siposa_wide = sipos;
+                }
+            }
+        }
+
+        switch(style) {
+            case AlignStyle.First:  return siposa_first;
+            case AlignStyle.Wide:  return siposa_wide;
+        }
+    }
+    
+    public static alignStorage(style: AlignStyle): void {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
             const sels = editor.selections;
             editor.edit(edits => {
-                let siposa_first = -1;
+                const siposa_first = COBOLUtils.getAlignItemFromSelections(editor, sels, style);
 
-                for (const sel of sels) {
-                    for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
-                        const textSelection = editor.document.lineAt(startLine).text;
-                        const ran = new vscode.Range(new vscode.Position(startLine, 0),
-                            new vscode.Position(startLine, textSelection.length));
-                        const line = textSelection.trimEnd();
-                        const sipos = this.getStorageItemPosition(line);
-                        if (siposa_first === -1) {
-                            siposa_first = sipos;
-                        }
-                        if (sipos !== -1 && siposa_first !== -1) {
-                            if (sipos !== siposa_first) {
-                                const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first-1)+" ";
-                                const line_right = line.substring(sipos).trimStart();
-                                const newtext = line_left + line_right;
-                                edits.replace(ran, newtext);
+                if (siposa_first !== -1) {
+                    for (const sel of sels) {
+                        for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
+                            const textSelection = editor.document.lineAt(startLine).text;
+                            const ran = new vscode.Range(new vscode.Position(startLine, 0),
+                                new vscode.Position(startLine, textSelection.length));
+                            const line = textSelection.trimEnd();
+                            const sipos = this.getStorageItemPosition(line);
+                            if (sipos !== -1) {
+                                if (sipos !== siposa_first) {
+                                    const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first - 1) + " ";
+                                    const line_right = line.substring(sipos).trimStart();
+                                    const newtext = line_left + line_right;
+                                    edits.replace(ran, newtext);
+                                }
+                                // else {
+                                //     VSLogger.logMessage(`Ignoring ${line} sipos=${sipos} / siposa_first=${siposa_first}}` );
+                                // }
                             }
-                            // else {
-                            //     VSLogger.logMessage(`Ignoring ${line} sipos=${sipos} / siposa_first=${siposa_first}}` );
-                            // }
-                        } 
+                        }
                     }
                 }
             });
