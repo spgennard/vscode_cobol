@@ -1329,50 +1329,61 @@
         "command": "cobolplugin.alignStorageFirst",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align Data Items (First)"
+        "title": "Align Data Items [Left]"
       },
+      {
+        "command": "cobolplugin.alignStorageCenter",
+        "category": "COBOL",
+        "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
+        "title": "Align Data Items [Middle]"
+      },      
       {
         "command": "cobolplugin.alignStorageWide",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align Data Items (Wide)"
+        "title": "Align Data Items [Right]"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "command": "cobolplugin.move2dd",
-          "group": "cobolplugin",
+          "group": "navigation_cobol",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2ws",
-          "group": "cobolplugin",
+          "group": "navigation_cobol",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2pd",
-          "group": "cobolplugin",
+          "group": "navigation_cobol",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2anyforward",
-          "group": "cobolplugin",
+          "group": "navigation_cobol",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2anybackwards",
-          "group": "cobolplugin",
+          "group": "navigation_cobol",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.alignStorageFirst",
-          "group": "cobolplugin",
+          "group": "aligncobol@1",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.alignStorageCenter",
+          "group": "aligncobol@2",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.alignStorageWide",
-          "group": "cobolplugin",
+          "group": "aligncobol@3",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {

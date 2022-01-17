@@ -27,7 +27,8 @@ export enum FoldAction {
 
 export enum AlignStyle {
     First = 1,
-    Wide = 2
+    Center = 2,
+    Wide = 3
 }
 
 export class COBOLUtils {
@@ -746,6 +747,7 @@ export class COBOLUtils {
         switch(style) {
             case AlignStyle.First:  return siposa_first;
             case AlignStyle.Wide:  return siposa_wide;
+            case AlignStyle.Center : return Math.trunc((siposa_first+siposa_wide)/2);
         }
     }
     
