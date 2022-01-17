@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 580ccbe (HEAD -> main, tag: 8.1.15, origin/main) add "align storage wide" support
+* be793e7 (HEAD -> main, tag: 8.1.16, origin/main) bump
+* 616fbe5 drop it
+* c5c9d9a tweak 'program-id'
+* 3fb1ee9 Update CHANGELOG.md
+* 580ccbe (tag: 8.1.15) add "align storage wide" support
 * c54b8df tweak
 * fecee91 drop document symbol provider
 * 9ec23ae simplify sourceformat get
