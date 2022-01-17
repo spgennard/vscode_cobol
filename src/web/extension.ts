@@ -15,7 +15,7 @@ import { VSLogger } from "../vslogger";
 import { COBOLSourceDefinition } from "../sourcedefinitionprovider";
 import { KeywordAutocompleteCompletionItemProvider } from "../keywordprovider";
 import { CobolSourceCompletionItemProvider } from "../cobolprovider";
-import { COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
+import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 
 function showExtensionInformation():void {
@@ -335,9 +335,18 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(transposeCommand);
 
+    const alignStorageFirst = vscode.commands.registerCommand("cobolplugin.alignStorageFirst", () => {
+        COBOLUtils.alignStorage(AlignStyle.First);
+    });
+    context.subscriptions.push(alignStorageFirst);
+
+    const alignStorageWide= vscode.commands.registerCommand("cobolplugin.alignStorageWide", () => {
+        COBOLUtils.alignStorage(AlignStyle.Wide);
+    });
+    context.subscriptions.push(alignStorageWide);
+    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+
     showExtensionInformation();
-
-
 }
 
 // this method is called when your extension is deactivated

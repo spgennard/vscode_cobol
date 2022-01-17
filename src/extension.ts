@@ -1156,8 +1156,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         COBOLUtils.alignStorage(AlignStyle.Wide);
     });
     context.subscriptions.push(alignStorageWide);
-
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+
     window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;
