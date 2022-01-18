@@ -340,10 +340,21 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(alignStorageFirst);
 
-    const alignStorageWide= vscode.commands.registerCommand("cobolplugin.alignStorageWide", () => {
-        COBOLUtils.alignStorage(AlignStyle.Wide);
+    const alignStorageLeft = vscode.commands.registerCommand("cobolplugin.alignStorageLeft", () => {
+        COBOLUtils.alignStorage(AlignStyle.Left);
     });
-    context.subscriptions.push(alignStorageWide);
+    context.subscriptions.push(alignStorageLeft);
+    
+    const alignStorageRight= vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
+        COBOLUtils.alignStorage(AlignStyle.Right);
+    });
+    context.subscriptions.push(alignStorageRight);
+
+    const alignStorageCenters= vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
+        COBOLUtils.alignStorage(AlignStyle.Center);
+    });
+    context.subscriptions.push(alignStorageCenters);
+    
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
 
     showExtensionInformation();

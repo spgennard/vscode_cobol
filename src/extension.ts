@@ -1152,15 +1152,20 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(alignStorageFirst);
 
+    const alignStorageLeft = vscode.commands.registerCommand("cobolplugin.alignStorageLeft", () => {
+        COBOLUtils.alignStorage(AlignStyle.Left);
+    });
+    context.subscriptions.push(alignStorageLeft);
+
     const alignStorageCenters= vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
         COBOLUtils.alignStorage(AlignStyle.Center);
     });
     context.subscriptions.push(alignStorageCenters);
   
-    const alignStorageWide= vscode.commands.registerCommand("cobolplugin.alignStorageWide", () => {
-        COBOLUtils.alignStorage(AlignStyle.Wide);
+    const alignStorageRight= vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
+        COBOLUtils.alignStorage(AlignStyle.Right);
     });
-    context.subscriptions.push(alignStorageWide);
+    context.subscriptions.push(alignStorageRight);
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
 
     window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {

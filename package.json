@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.1.16",
+  "version": "8.1.17",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1329,19 +1329,25 @@
         "command": "cobolplugin.alignStorageFirst",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align to first data item"
+        "title": "Align to first"
+      },
+      {
+        "command": "cobolplugin.alignStorageLeft",
+        "category": "COBOL",
+        "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
+        "title": "Align to left"
       },
       {
         "command": "cobolplugin.alignStorageCenter",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align to center of data items"
+        "title": "Align to center"
       },
       {
-        "command": "cobolplugin.alignStorageWide",
+        "command": "cobolplugin.alignStorageRight",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align to right of data items"
+        "title": "Align to right"
       }
     ],
     "menus": {
@@ -1404,13 +1410,18 @@
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
-          "command": "cobolplugin.alignStorageCenter",
+          "command": "cobolplugin.alignStorageLeft",
           "group": "aligncobol@2",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
-          "command": "cobolplugin.alignStorageWide",
+          "command": "cobolplugin.alignStorageCenter",
           "group": "aligncobol@3",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.alignStorageRight",
+          "group": "aligncobol@4",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],

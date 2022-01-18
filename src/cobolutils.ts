@@ -27,8 +27,9 @@ export enum FoldAction {
 
 export enum AlignStyle {
     First = 1,
-    Center = 2,
-    Wide = 3
+    Left = 2,
+    Center = 3,
+    Right = 4
 }
 
 export class COBOLUtils {
@@ -726,7 +727,8 @@ export class COBOLUtils {
 
     private static getAlignItemFromSelections(editor: vscode.TextEditor, sels: readonly vscode.Selection[], style:AlignStyle): number {
         let siposa_first = -1;
-        let siposa_wide = -1;
+        let siposa_left = -1;
+        let siposa_right = -1;
 
         for (const sel of sels) {
             for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
@@ -738,16 +740,25 @@ export class COBOLUtils {
                     siposa_first = sipos;
                 }
 
-                if (sipos > siposa_wide) {
-                    siposa_wide = sipos;
+                if (siposa_left === -1 ) {
+                    siposa_left = sipos;
+                }
+
+                if (sipos > siposa_right) {
+                    siposa_right = sipos;
+                }
+
+                if (sipos < siposa_left) {
+                    siposa_left = sipos;
                 }
             }
         }
 
         switch(style) {
             case AlignStyle.First:  return siposa_first;
-            case AlignStyle.Wide:  return siposa_wide;
-            case AlignStyle.Center : return Math.trunc((siposa_first+siposa_wide)/2);
+            case AlignStyle.Left:  return siposa_left;
+            case AlignStyle.Right:  return siposa_right;
+            case AlignStyle.Center : return Math.trunc((siposa_left+siposa_right)/2);
         }
     }
     
