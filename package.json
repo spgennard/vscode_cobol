@@ -1329,19 +1329,19 @@
         "command": "cobolplugin.alignStorageFirst",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align Data Items [Left]"
+        "title": "Align to first data item"
       },
       {
         "command": "cobolplugin.alignStorageCenter",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align Data Items [Middle]"
-      },      
+        "title": "Align to center of data items"
+      },
       {
         "command": "cobolplugin.alignStorageWide",
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
-        "title": "Align Data Items [Right]"
+        "title": "Align to right of data items"
       }
     ],
     "menus": {
@@ -1372,20 +1372,15 @@
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
-          "command": "cobolplugin.alignStorageFirst",
-          "group": "aligncobol@1",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+          "submenu": "cobolplugin.aligndataitemsmenu",
+          "group": "navigation_cobol"
         },
         {
-          "command": "cobolplugin.alignStorageCenter",
-          "group": "aligncobol@2",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-        },
-        {
-          "command": "cobolplugin.alignStorageWide",
-          "group": "aligncobol@3",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-        },
+          "submenu": "cobolplugin.selectionmenu",
+          "group": "navigation_cobol"
+        }
+      ],
+      "cobolplugin.selectionmenu" : [
         {
           "command": "cobolplugin.extractSelectionToParagraph",
           "group": "cobolplugin",
@@ -1399,6 +1394,23 @@
         {
           "command": "cobolplugin.extractSelectionToCopybook",
           "group": "cobolplugin",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        }
+      ],
+      "cobolplugin.aligndataitemsmenu": [
+        {
+          "command": "cobolplugin.alignStorageFirst",
+          "group": "aligncobol@1",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.alignStorageCenter",
+          "group": "aligncobol@2",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.alignStorageWide",
+          "group": "aligncobol@3",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],
@@ -1420,6 +1432,16 @@
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "cobolplugin.aligndataitemsmenu",
+        "label": "Align Data Items"
+      },
+      {
+        "id" : "cobolplugin.selectionmenu",
+        "label": "Extract Selection"
+      }
+    ],
     "keybindings": [
       {
         "key": "ctrl+k ctrl+j",
