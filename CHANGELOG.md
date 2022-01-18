@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* be793e7 (HEAD -> main, tag: 8.1.16, origin/main) bump
+* 29cd246 (HEAD -> main, tag: 8.1.17, origin/main) continue work on align storage items
+* 8365aea add submenus
+* ebe98c8 add align center
+* 96043d4 sync extension
+* 64a4682 Update CHANGELOG.md
+* be793e7 (tag: 8.1.16) bump
 * 616fbe5 drop it
 * c5c9d9a tweak 'program-id'
 * 3fb1ee9 Update CHANGELOG.md
