@@ -769,9 +769,9 @@ export class COBOLUtils {
         if (editor) {
             const sels = editor.selections;
             editor.edit(edits => {
-                const siposa_first = COBOLUtils.getAlignItemFromSelections(editor, sels, style);
+                const siposa_from_selection = COBOLUtils.getAlignItemFromSelections(editor, sels, style);
 
-                if (siposa_first !== -1) {
+                if (siposa_from_selection !== -1) {
                     for (const sel of sels) {
                         for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
                             const textSelection = editor.document.lineAt(startLine).text;
@@ -780,15 +780,12 @@ export class COBOLUtils {
                             const line = textSelection.trimEnd();
                             const sipos = this.getStorageItemPosition(line);
                             if (sipos !== -1) {
-                                if (sipos !== siposa_first) {
-                                    const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_first - 1) + " ";
+                                if (sipos !== siposa_from_selection) {
+                                    const line_left = line.substring(0, sipos).trimEnd().padEnd(siposa_from_selection - 1) + " ";
                                     const line_right = line.substring(sipos).trimStart();
                                     const newtext = line_left + line_right;
                                     edits.replace(ran, newtext);
                                 }
-                                // else {
-                                //     VSLogger.logMessage(`Ignoring ${line} sipos=${sipos} / siposa_first=${siposa_first}}` );
-                                // }
                             }
                         }
                     }
