@@ -707,7 +707,9 @@ export class COBOLUtils {
         "signed-long",
         "signed-short",
         "value",
-        "as"
+        "as",
+        "redefines",
+        "renames"
     ];
 
     public static getStorageItemPosition(line: string): number {
