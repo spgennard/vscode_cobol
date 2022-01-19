@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 29cd246 (HEAD -> main, tag: 8.1.17, origin/main) continue work on align storage items
+* 0fbaa1e (HEAD -> main, tag: 8.1.18, origin/main) add couple of extra "align" split items
+* 018b695 update packages
+* 4919488 Update CHANGELOG.md
+* 29cd246 (tag: 8.1.17) continue work on align storage items
 * 8365aea add submenus
 * ebe98c8 add align center
 * 96043d4 sync extension
