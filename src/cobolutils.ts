@@ -709,7 +709,8 @@ export class COBOLUtils {
         "value",
         "as",
         "redefines",
-        "renames"
+        "renames",
+        "pointer"
     ];
 
     public static getStorageItemPosition(line: string): number {
