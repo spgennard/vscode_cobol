@@ -2517,7 +2517,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         // should consider other inline comments (aka terminal) and fixed position comments
         const startOfComment: number = commentLine.indexOf("*>");
-
         if (startOfComment !== undefined && startOfComment !== -1) {
             const trimmedLine = commentLine.substring(0, startOfComment).trimEnd();
             if (trimmedLine.length !== 0) {
@@ -2525,15 +2524,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 this.sourceReferences.state.currentLineIsComment = false;
                 commentLine = trimmedLine;
             }
-
-            const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
-            if (startOfCOBOLLint !== -1) {
-                this.processCommentForLinter(commentLine, startOfCOBOLLint);
-            }
-
-            if (this.scan_comments_for_hints) {
-                this.processHintComments(commentLine, sourceFilename, sourceLineNumber);
-            }
         }
+
+        const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
+        if (startOfCOBOLLint !== -1) {
+            this.processCommentForLinter(commentLine, startOfCOBOLLint);
+        }
+
+        if (this.scan_comments_for_hints) {
+            this.processHintComments(commentLine, sourceFilename, sourceLineNumber);
+        }
+
     }
 }
