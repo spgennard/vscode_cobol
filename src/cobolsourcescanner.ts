@@ -683,6 +683,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     // public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
 
     public readonly parse_copybooks_for_references: boolean;
+    public readonly scan_comments_for_hints: boolean;
 
     readonly copybookNestedInSection: boolean;
 
@@ -756,6 +757,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.parse_copybooks_for_references = parse_copybooks_for_references;
         this.eventHandler = sourceEventHandler;
         this.externalFeatures = externalFeatures;
+        this.scan_comments_for_hints = configHandler.scan_comments_for_hints;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
@@ -2459,8 +2461,43 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private cobolLintLiteral = "cobol-lint";
 
-    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
 
+    private processHintComments(commentLine: string, sourceFilename: string, sourceLineNumber: number) {
+        const startOfTokenFor = this.configHandler.scan_comment_copybook_token;
+        const startOfSourceDepIndex: number = commentLine.indexOf(startOfTokenFor);
+        if (startOfSourceDepIndex !== -1) {
+            const commentCommandArgs = commentLine.substring(startOfTokenFor.length + startOfSourceDepIndex).trim();
+            const args = commentCommandArgs.split(" ");
+            if (args.length !== 0) {
+                for (const offset in args) {
+                    const filenameTrimmed = args[offset].trim();
+                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
+                    if (fileName.length > 0) {
+                        if (this.copyBooksUsed.has(fileName) === false) {
+                            this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
+
+                            const qfile = new FileSourceHandler(fileName, this.externalFeatures);
+                            const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
+                            this.sourceReferences.state.ignoreInOutlineView = true;
+                            this.sourceReferences.topLevel = true;
+
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
+                            this.sourceReferences.topLevel = true;
+                            this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
+                        }
+                    } else {
+                        if (this.configHandler.linter_ignore_missing_copybook === false) {
+                            const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
+                            this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
         this.sourceReferences.state.currentLineIsComment = true;
 
         // should consider other inline comments (aka terminal) and fixed position comments
@@ -2471,9 +2508,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             if (trimmedLine.length !== 0) {
                 // we still have something to process
                 this.sourceReferences.state.currentLineIsComment = false;
+                commentLine = trimmedLine;
             }
-            const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
 
+            const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
             if (startOfCOBOLLint !== -1) {
                 const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLLint).trim();
                 let args = commentCommandArgs.split(" ");
@@ -2489,41 +2527,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
 
-            // only enable scanner hint when scan_comments_for_hints is set
-            if (this.configHandler.scan_comments_for_hints) {
-                const startOfTokenFor = this.configHandler.scan_comment_copybook_token;
-
-                const startOfSourceDepIndex: number = commentLine.indexOf(startOfTokenFor);
-                if (startOfSourceDepIndex !== -1) {
-                    const commentCommandArgs = commentLine.substring(startOfTokenFor.length + startOfSourceDepIndex).trim();
-                    const args = commentCommandArgs.split(" ");
-                    if (args.length !== 0) {
-                        for (const offset in args) {
-                            const filenameTrimmed = args[offset].trim();
-                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
-                            if (fileName.length > 0) {
-                                if (this.copyBooksUsed.has(fileName) === false) {
-                                    this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
-
-                                    const qfile = new FileSourceHandler(fileName, this.externalFeatures);
-                                    const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
-                                    this.sourceReferences.state.ignoreInOutlineView = true;
-                                    this.sourceReferences.topLevel = true;
-
-                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                    COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
-                                    this.sourceReferences.topLevel = true;
-                                    this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
-                                }
-                            } else {
-                                if (this.configHandler.linter_ignore_missing_copybook === false) {
-                                    const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
-                                    this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
-                                }
-                            }
-                        }
-                    }
-                }
+            if (this.scan_comments_for_hints) {
+                this.processHintComments(commentLine, sourceFilename, sourceLineNumber);
             }
         }
     }
