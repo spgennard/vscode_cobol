@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* 0fbaa1e (HEAD -> main, tag: 8.1.18, origin/main) add couple of extra "align" split items
+* eb1ed35 (HEAD -> main, tag: 8.1.19, origin/main) bump
+* 8c329ff add pointer
+* 36db9b4 tidy up
+* 3f64501 bump version
+* b6e6fcc Update CHANGELOG.md
+* 0fbaa1e (tag: 8.1.18) add couple of extra "align" split items
 * 018b695 update packages
 * 4919488 Update CHANGELOG.md
 * 29cd246 (tag: 8.1.17) continue work on align storage items
