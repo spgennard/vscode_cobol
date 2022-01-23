@@ -2497,6 +2497,21 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
+    private processCommentForLinter(commentLine: string, startOfCOBOLLint: number): void {
+        const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLLint).trim();
+        let args = commentCommandArgs.split(" ");
+        const command = args[0];
+        args = args.slice(1);
+        const commandTrimmed = command !== undefined ? command.trim() : undefined;
+        if (commandTrimmed !== undefined) {
+            if (commandTrimmed === CobolLinterProviderSymbols.NotReferencedMarker_external) {
+                for (const offset in args) {
+                    this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLowerCase(), args[offset]);
+                }
+            }
+        }
+    }
+
     public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
         this.sourceReferences.state.currentLineIsComment = true;
 
@@ -2513,18 +2528,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
             const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
             if (startOfCOBOLLint !== -1) {
-                const commentCommandArgs = commentLine.substring(this.cobolLintLiteral.length + startOfCOBOLLint).trim();
-                let args = commentCommandArgs.split(" ");
-                const command = args[0];
-                args = args.slice(1);
-                const commandTrimmed = command !== undefined ? command.trim() : undefined;
-                if (commandTrimmed !== undefined) {
-                    if (commandTrimmed === CobolLinterProviderSymbols.NotReferencedMarker_external) {
-                        for (const offset in args) {
-                            this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLowerCase(), args[offset]);
-                        }
-                    }
-                }
+                this.processCommentForLinter(commentLine, startOfCOBOLLint);
             }
 
             if (this.scan_comments_for_hints) {
