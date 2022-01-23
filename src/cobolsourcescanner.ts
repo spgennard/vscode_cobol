@@ -45,22 +45,6 @@ export enum COBOLTokenStyle {
     Null = "Null"
 }
 
-// export enum CobolDocStyle {
-//     unknown = "unknown",
-//     MSDN = "MSDN",
-//     COBOLDOC = "COBOLDOC",
-//     ISCOBOL = "ISCOBOL",
-//     FUJITSU = "FUJITSU",
-//     OCDOC = "OCDOC"
-// }
-
-// export enum CobolTagStyle {
-//     unknown = "unknown",
-//     FREE = "FREE",
-//     MICROFOCUS = "MICROFOCUS",
-//     OCDOC = "OCDOC"
-// }
-
 export class SourceScannerUtils {
     public static camelize(text: string): string {
         let ret = "";
@@ -2488,69 +2472,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 // we still have something to process
                 this.sourceReferences.state.currentLineIsComment = false;
             }
-
-            // if (this.commentTagStyle === CobolTagStyle.unknown) {
-            //     // is it a coboldoc?
-            //     if (commentLine.indexOf("*>*") !== -1) {
-            //         this.commentTagStyle = CobolTagStyle.FREE;
-            //     } else {
-            //         if (commentLine.indexOf("*>") !== -1) {
-            //             this.commentTagStyle = CobolTagStyle.MICROFOCUS;
-            //         }
-            //     }
-
-            //     if (this.commentTagStyle === CobolTagStyle.unknown) {
-            //         if (commentLine.indexOf("*><[") !== -1) {
-            //             this.commentTagStyle = CobolTagStyle.OCDOC;
-            //         }
-            //     }
-            // }
-
-            // if (this.commentDocStyle === CobolDocStyle.unknown) {
-            //     const possilexmltags: string[] = ["<summary>", "<param>", "<returns>"];
-            //     for (const possibleTag of possilexmltags) {
-            //         if (commentLine.indexOf(possibleTag) !== -1) {
-            //             this.commentDocStyle = CobolDocStyle.MSDN;
-            //         }
-            //     }
-
-            //     const possiblecobdoc: string[] = ["@author", "@license"];
-            //     for (const possibleTag of possiblecobdoc) {
-            //         if (commentLine.indexOf(possibleTag) !== -1) {
-            //             this.commentDocStyle = CobolDocStyle.COBOLDOC;
-            //         }
-            //     }
-
-            //     const possibleICOBOLs: string[] = ["((DOC))", "((END-DOC))"];
-            //     for (const possibleICOBOL of possibleICOBOLs) {
-            //         if (commentLine.indexOf(possibleICOBOL) !== -1) {
-            //             this.commentDocStyle = CobolDocStyle.ISCOBOL;
-            //         }
-            //     }
-
-            //     const possibleFUJITSUs: string[] = ["@**", "H ", "D "];
-            //     for (const possibleFUJITSU of possibleFUJITSUs) {
-            //         const trimLine = commentLine.trimLeft();
-            //         if (trimLine.startsWith(possibleFUJITSU)) {
-            //             this.commentDocStyle = CobolDocStyle.FUJITSU;
-            //         }
-            //     }
-
-            //     const possibleOCDOCs: string[] = ["Author:", ":Date: ", ":Rights:"];
-            //     for (const possibleOCDOC of possibleOCDOCs) {
-            //         const trimLine = commentLine.trimLeft();
-            //         if (trimLine.startsWith(possibleOCDOC)) {
-            //             this.commentDocStyle = CobolDocStyle.OCDOC;
-            //         }
-            //     }
-
-            //     // leave early, if comment style found
-            //     if (this.commentDocStyle !== CobolDocStyle.unknown) {
-            //         return;
-            //     }
-            // }
-
-            // const comment = commentLine.substring(2 + startOfComment).trim();
             const startOfCOBOLLint: number = commentLine.indexOf(this.cobolLintLiteral);
 
             if (startOfCOBOLLint !== -1) {
