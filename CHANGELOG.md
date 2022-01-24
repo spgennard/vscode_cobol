@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 1e723b3 (HEAD -> main, tag: 8.1.23, origin/main) bump
+* ce41266 (HEAD -> main, tag: 8.1.24, origin/main) add member to know schemas
+* c8a71ee Update CHANGELOG.md
+* 1e723b3 (tag: 8.1.23) bump
 * 3b7ab37 reload window if outline view opt has changed
 * 980e8c5 add streamfile
 * cb1a52c fix bug, where fixed comments would not work with hint comments
