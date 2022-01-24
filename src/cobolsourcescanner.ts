@@ -2517,6 +2517,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         // should consider other inline comments (aka terminal) and fixed position comments
         const startOfComment: number = commentLine.indexOf("*>");
+
         if (startOfComment !== undefined && startOfComment !== -1) {
             const trimmedLine = commentLine.substring(0, startOfComment).trimEnd();
             if (trimmedLine.length !== 0) {
