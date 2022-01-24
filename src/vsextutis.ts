@@ -29,6 +29,7 @@ export class VSExtensionUtils {
         "untitled",
         "vscode-vfs",
         "ssh",
+        "member", 
         "streamfile"
     ];
 
