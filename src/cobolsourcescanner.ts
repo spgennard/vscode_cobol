@@ -154,8 +154,7 @@ export class COBOLToken {
 
     public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, 
                        startColumn: number, token: string, description: string, 
-                       parentToken: COBOLToken | undefined, inProcedureDivision: boolean, 
-                       extraInformation1: string) {
+                       parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
         this.ignoreInOutlineView = false;
         this.filename = filename;
         this.tokenType = tokenType;

@@ -341,7 +341,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
                     case "move":
                         {
-                            const words = this.getConstantsOrVariables(document, this.iconfig, true);
+                            const words = this.getConstantsOrVariables(document, this.iconfig, false);
 
                             // TODO:
                             //
@@ -401,12 +401,12 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                                 items = this.getAllConstantsOrVariables(document, this.iconfig,false);
                                 listComplete = true;
                             } else {
-                                const words = this.getConstantsOrVariables(document, this.iconfig, true);
+                                const words = this.getConstantsOrVariables(document, this.iconfig, false);
                                 items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
                                 listComplete = false;
                             }
-                            break;
                         }
+                        break;
                     case "of":
                         {
                             if (wordToComplete.length === 0) {
@@ -417,9 +417,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                                 items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
                                 listComplete = false;
                             }
-                            break;
                         }
-                }
+                        break;
+                    }
             }
         }
 
@@ -432,7 +432,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (items.length === 0) {
             const settings = VSCOBOLConfiguration.get();
             if (settings.suggest_variables_when_context_is_unknown) {
-                items = this.getAllConstantsOrVariables(document, this.iconfig, true);
+                items = this.getAllConstantsOrVariables(document, this.iconfig, false);
                 listComplete = false;
             }
         }
