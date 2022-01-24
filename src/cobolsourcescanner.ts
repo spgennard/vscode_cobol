@@ -700,6 +700,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     public scanAborted: boolean;
 
+    readonly COBOLKeywordDictionary: Map<string,string>;
+
+
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean,
@@ -774,6 +777,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;
         this.scanAborted = false;
+        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(this.sourceHandler.getLanguageId());
         let sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;
 
@@ -1259,7 +1263,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private isValidKeyword(keyword: string): boolean {
-        return getCOBOLKeywordDictionary(this.sourceHandler.getLanguageId()).has(keyword);
+        return this.COBOLKeywordDictionary.has(keyword);
     }
 
     private isValidProcedureKeyword(keyword: string): boolean {
