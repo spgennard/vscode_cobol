@@ -28,7 +28,8 @@ export class VSExtensionUtils {
         "file",
         "untitled",
         "vscode-vfs",
-        "ssh"
+        "ssh",
+        "streamfile"
     ];
 
     public static isKnownScheme(scheme: string): boolean {
