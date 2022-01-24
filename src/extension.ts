@@ -425,13 +425,13 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
 
 
-    
+
     const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
     fileSearchDirectory.length = 0;
-    for(const fsd of filterfileSearchDirectory) {
+    for (const fsd of filterfileSearchDirectory) {
         fileSearchDirectory.push(fsd);
     }
-    
+
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
@@ -496,6 +496,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
         const updated = event.affectsConfiguration("coboleditor");
+        const outline_changed = event.affectsConfiguration("coboleditor.outline");
         const md_syms = event.affectsConfiguration("coboleditor.metadata_symbols");
         const md_eps = event.affectsConfiguration("coboleditor.metadata_entrypoints");
         const md_types = event.affectsConfiguration("coboleditor.metadata_types");
@@ -503,6 +504,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_metadata_knowncopybooks = event.affectsConfiguration("coboleditor.metadata_knowncopybooks");
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
+
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
@@ -538,6 +540,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (maintain_metadata_recursive_search) {
                 COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+            }
+
+            if (outline_changed) {
+                vscode.commands.executeCommand("workbench.action.reloadWindow");
             }
         }
     });
@@ -1140,7 +1146,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         COBOLUtils.leftAdjustLine();
     });
     context.subscriptions.push(leftAdjustLineCommand);
-  
+
 
     const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
         COBOLUtils.transposeSelection(textEditor, edit);
@@ -1157,12 +1163,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(alignStorageLeft);
 
-    const alignStorageCenters= vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
+    const alignStorageCenters = vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
         COBOLUtils.alignStorage(AlignStyle.Center);
     });
     context.subscriptions.push(alignStorageCenters);
-  
-    const alignStorageRight= vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
+
+    const alignStorageRight = vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
         COBOLUtils.alignStorage(AlignStyle.Right);
     });
     context.subscriptions.push(alignStorageRight);
@@ -1172,7 +1178,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;
         }
-        
+
         for (const sel of e.selections) {
             for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
                 const textSelection = e.textEditor.document.lineAt(startLine).text;
