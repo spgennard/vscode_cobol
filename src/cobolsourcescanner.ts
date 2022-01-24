@@ -152,8 +152,10 @@ export class COBOLToken {
 
     static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, 0, "", "", undefined, false, "");
 
-    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, startColumn: number, token: string, description: string,
-        parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
+    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, 
+                       startColumn: number, token: string, description: string, 
+                       parentToken: COBOLToken | undefined, inProcedureDivision: boolean, 
+                       extraInformation1: string) {
         this.ignoreInOutlineView = false;
         this.filename = filename;
         this.tokenType = tokenType;

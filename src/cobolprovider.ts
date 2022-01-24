@@ -71,7 +71,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         return items;
     }
 
-    private getConstantsOrVariables(document: TextDocument, settings: ICOBOLSettings): TrieSearch {
+    private getConstantsOrVariables(document: TextDocument, settings: ICOBOLSettings, filterOnGroups: boolean): TrieSearch {
         const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
 
         if (sf !== undefined) {
@@ -85,6 +85,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         for (const token of tokens) {
                             if (token.tokenNameLower === "filler") {
                                 continue;
+                            }
+                            if (filterOnGroups && token.extraInformation1.indexOf("GROUP") === -1) {
+                                continue
                             }
                             words.add(token);
                         }
@@ -338,7 +341,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
                     case "move":
                         {
-                            const words = this.getConstantsOrVariables(document, this.iconfig);
+                            const words = this.getConstantsOrVariables(document, this.iconfig, true);
 
                             // TODO:
                             //
@@ -395,10 +398,22 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "reference":
                         {
                             if (wordToComplete.length === 0) {
-                                items = this.getAllConstantsOrVariables(document, this.iconfig);
+                                items = this.getAllConstantsOrVariables(document, this.iconfig,false);
                                 listComplete = true;
                             } else {
-                                const words = this.getConstantsOrVariables(document, this.iconfig);
+                                const words = this.getConstantsOrVariables(document, this.iconfig, true);
+                                items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                                listComplete = false;
+                            }
+                            break;
+                        }
+                    case "of":
+                        {
+                            if (wordToComplete.length === 0) {
+                                items = this.getAllConstantsOrVariables(document, this.iconfig,true);
+                                listComplete = true;
+                            } else {
+                                const words = this.getConstantsOrVariables(document, this.iconfig, true);
                                 items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
                                 listComplete = false;
                             }
@@ -417,14 +432,14 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (items.length === 0) {
             const settings = VSCOBOLConfiguration.get();
             if (settings.suggest_variables_when_context_is_unknown) {
-                items = this.getAllConstantsOrVariables(document, this.iconfig);
+                items = this.getAllConstantsOrVariables(document, this.iconfig, true);
                 listComplete = false;
             }
         }
         return Promise.resolve(new CompletionList(items, listComplete));
     }
 
-    private getAllConstantsOrVariables(document: TextDocument, iconfig: ICOBOLSettings): CompletionItem[] {
+    private getAllConstantsOrVariables(document: TextDocument, iconfig: ICOBOLSettings, filterOnGroups: boolean): CompletionItem[] {
         const words: CompletionItem[] = [];
         const sf = VSCOBOLSourceScanner.getCachedObject(document, iconfig);
 
@@ -436,6 +451,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     for (const token of tokens) {
                         if (token.tokenNameLower === "filler") {
                             continue;
+                        }
+                        if (filterOnGroups && token.extraInformation1.indexOf("GROUP") === -1) {
+                            continue
                         }
                         words.push(new CompletionItem(token.tokenName, CompletionItemKind.Variable));
                     }
