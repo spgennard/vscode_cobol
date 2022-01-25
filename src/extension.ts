@@ -542,7 +542,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (outline_changed) {
-                vscode.window.showInformationMessage("The configuration setting 'coboleditor.outline_changed' has changed but you may not see the affects until you have either reloaded your window or restarted this session");
+                vscode.window.showInformationMessage("The configuration setting 'coboleditor.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session");
             }
         }
     });
