@@ -505,7 +505,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
 
-
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
@@ -543,7 +542,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (outline_changed) {
-                vscode.commands.executeCommand("workbench.action.reloadWindow");
+                vscode.window.showInformationMessage("The configuration setting 'coboleditor.outline_changed' has changed but you may not see the affects until you have either reloaded your window or restarted this session");
             }
         }
     });
