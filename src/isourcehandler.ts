@@ -22,7 +22,7 @@ export interface ISourceHandler {
     setDumpAreaA(flag: boolean): void;
     setDumpAreaBOnwards(flag: boolean): void;
     getFilename(): string;
-    setCommentCallback(commentCallback: ICommentCallback):void;
+    addCommentCallback(commentCallback: ICommentCallback):void;
     getDocumentVersionId(): BigInt;
     getIsSourceInWorkSpace(): boolean;
     getShortWorkspaceFilename(): string;

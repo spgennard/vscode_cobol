@@ -18,18 +18,18 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     dumpAreaBOnwards: boolean;
     lines: string[];
     commentCount: number;
-    commentCallback?: ICommentCallback;
+    commentCallbacks?: ICommentCallback[];
     documentVersionId: BigInt;
     isSourceInWorkspace: boolean;
     updatedSource: Map<number, string>;
     shortFilename: string;
-    languageId:string;
+    languageId: string;
     format: ESourceFormat;
 
     public constructor(document: string, features: IExternalFeatures) {
         this.document = document;
         this.dumpNumbersInAreaA = false;
-        this.commentCallback = undefined;
+        this.commentCallbacks = [];
         this.dumpAreaBOnwards = false;
         this.lines = [];
         this.commentCount = 0;
@@ -39,7 +39,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.format = ESourceFormat.unknown;
 
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
-        const docstat:fs.BigIntStats = fs.statSync(document, { bigint: true });
+        const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
         const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
         let line: string;
         this.documentVersionId = docstat.mtimeMs;
@@ -61,8 +61,10 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     private sendCommentCallback(line: string, lineNumber: number) {
-        if (this.commentCallback !== undefined) {
-            this.commentCallback.processComment(line, this.getFilename(), lineNumber);
+        if (this.commentCallbacks !== undefined) {
+            for (const commentCallback of this.commentCallbacks) {
+                commentCallback.processComment(line, this.getFilename(), lineNumber);
+            }
         }
     }
 
@@ -109,7 +111,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             }
 
             // drop fixed format line
-            if (line.length >= 7 && (line[6] === "*" || line[6] === "/") ) {
+            if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
                 this.commentCount++;
                 if (line[6] === "/") {
                     this.sendCommentCallback(line, lineNumber);
@@ -139,7 +141,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
                     }
                 }
             }
-            
+
             if (this.dumpAreaBOnwards && line.length >= 73) {
                 line = line.substring(0, 72);
             }
@@ -151,7 +153,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return line;
     }
 
-    getLineTabExpanded(lineNumber: number):string|undefined {
+    getLineTabExpanded(lineNumber: number): string | undefined {
         const unexpandedLine = this.getLine(lineNumber, true);
         if (unexpandedLine === undefined) {
             return undefined;
@@ -195,8 +197,8 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return this.document;
     }
 
-    setCommentCallback(commentCallback: ICommentCallback): void {
-        this.commentCallback = commentCallback;
+    addCommentCallback(commentCallback: ICommentCallback): void {
+        this.commentCallbacks?.push(commentCallback);
     }
 
     resetCommentCount(): void {
@@ -247,11 +249,11 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return bestShortName;
     }
 
-    getLanguageId():string {
+    getLanguageId(): string {
         return this.languageId;
     }
 
-    setSourceFormat(format: ESourceFormat):void {
+    setSourceFormat(format: ESourceFormat): void {
         this.format = format;
     }
 }

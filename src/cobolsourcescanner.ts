@@ -795,7 +795,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.copyBooksUsed = sourceReferences.copyBooksUsed;
 
         // set the source handler for the comment parsing
-        sourceHandler.setCommentCallback(this);
+        sourceHandler.addCommentCallback(this);
 
         const state: ParseState = this.sourceReferences.state;
 

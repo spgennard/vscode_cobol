@@ -77,7 +77,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     document: vscode.TextDocument | undefined;
     dumpNumbersInAreaA: boolean;
     dumpAreaBOnwards: boolean;
-    commentCallback?: ICommentCallback;
+    commentCallbacks: ICommentCallback[] = [];
     lineCount: number;
     documentVersionId: BigInt;
     isSourceInWorkSpace: boolean;
@@ -93,7 +93,6 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.dumpNumbersInAreaA = false;
         this.dumpAreaBOnwards = false;
         this.commentCount = 0;
-        this.commentCallback = undefined;
         this.lineCount = this.document.lineCount;
         this.documentVersionId = BigInt(this.document.version);
         this.languageId = document.languageId;
@@ -116,7 +115,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     private clear(): void {
-        this.commentCallback = undefined;
+        this.commentCallbacks = [];
         this.document = undefined;
         this.lineCount = 0;
     }
@@ -164,8 +163,10 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     private static paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
     private sendCommentCallback(line: string, lineNumber: number) {
-        if (this.commentCallback !== undefined) {
-            this.commentCallback.processComment(line, this.getFilename(), lineNumber);
+        if (this.commentCallbacks !== undefined) {
+            for (const commentCallback of this.commentCallbacks) {
+                commentCallback.processComment(line, this.getFilename(), lineNumber);
+            }
         }
     }
 
@@ -279,8 +280,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return this.document !== undefined ? this.document.fileName : "";
     }
 
-    setCommentCallback(commentCallback: ICommentCallback): void {
-        this.commentCallback = commentCallback;
+    addCommentCallback(commentCallback: ICommentCallback): void {
+        this.commentCallbacks.push(commentCallback);
     }
 
     resetCommentCount(): void {
