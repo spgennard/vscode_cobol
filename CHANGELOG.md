@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* ce41266 (HEAD -> main, tag: 8.1.24, origin/main) add member to know schemas
+* 87de700 (HEAD -> main, tag: 8.1.25, origin/main) tweak
+* 017022a bump
+* 673e6f6 update
+* f7ade4e apply a small opt that should help scanning performance
+* e590709 fix typo
+* f73603d add some crude "of" support
+* 0cf8070 Update CHANGELOG.md
+* ce41266 (tag: 8.1.24) add member to know schemas
 * c8a71ee Update CHANGELOG.md
 * 1e723b3 (tag: 8.1.23) bump
 * 3b7ab37 reload window if outline view opt has changed
