@@ -2517,7 +2517,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
-    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number): void {
+    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
         this.sourceReferences.state.currentLineIsComment = true;
 
         // should consider other inline comments (aka terminal) and fixed position comments

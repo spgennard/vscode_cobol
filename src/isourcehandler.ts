@@ -1,7 +1,7 @@
 import { ESourceFormat } from "./externalfeatures";
 
 export interface ICommentCallback {
-    processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number) : void;
+    processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number, startPos: number, format: ESourceFormat) : void;
 }
 export interface ISourceHandlerLite {
     getLineCount(): number;

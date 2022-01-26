@@ -60,10 +60,10 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return this.documentVersionId;
     }
 
-    private sendCommentCallback(line: string, lineNumber: number) {
+    private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
-                commentCallback.processComment(line, this.getFilename(), lineNumber);
+                commentCallback.processComment(line, this.getFilename(), lineNumber, startPos, format);
             }
         }
     }
@@ -98,7 +98,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
             const startComment = line.indexOf("*>");
             if (startComment !== -1) {
-                this.sendCommentCallback(line, lineNumber);
+                this.sendCommentCallback(line, lineNumber, startComment, ESourceFormat.variable);
                 line = line.substring(0, startComment);
                 this.commentCount++;
             }
@@ -106,16 +106,15 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             // drop fixed format line
             if (line.length > 1 && line[0] === "*") {
                 this.commentCount++;
-                this.sendCommentCallback(line, lineNumber);
+                this.sendCommentCallback(line, lineNumber,0, ESourceFormat.free);
                 return "";
             }
 
             // drop fixed format line
             if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
                 this.commentCount++;
-                if (line[6] === "/") {
-                    this.sendCommentCallback(line, lineNumber);
-                }
+                this.sendCommentCallback(line, lineNumber,6, ESourceFormat.fixed);
+
                 return "";
             }
 
@@ -123,7 +122,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             if (this.format === ESourceFormat.terminal) {
                 if (line.startsWith("\\D") || line.startsWith("|")) {
                     this.commentCount++;
-                    this.sendCommentCallback(line, lineNumber);
+                    this.sendCommentCallback(line, lineNumber,0, ESourceFormat.terminal);
                     return "";
                 }
             }
