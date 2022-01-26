@@ -829,36 +829,35 @@ export async function activate(context: ExtensionContext): Promise<void> {
     //     }
     // });
     // context.subscriptions.push(disposable4hover_more_info);
-
-    window.onDidChangeActiveTextEditor(editor => {
+    window.onDidChangeActiveTextEditor(async (editor) => {
         if (!editor) {
             return;
         }
-        VSmargindecorations.updateDecorations(editor);
-        linter.updateLinter(editor.document);
+        await VSmargindecorations.updateDecorations(editor);
+        await linter.updateLinter(editor.document);
 
     }, null, context.subscriptions);
 
-    window.onDidChangeTextEditorSelection(event => {
+    window.onDidChangeTextEditorSelection(async (event) => {
         if (!event.textEditor) {
             return;
         }
-        VSmargindecorations.updateDecorations(event.textEditor);
+        await VSmargindecorations.updateDecorations(event.textEditor);
         //cobolusage.updateDiagnostics(event.textEditor.document);
     }, null, context.subscriptions);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    workspace.onDidChangeTextDocument(event => {
+    workspace.onDidChangeTextDocument(async(event) => {
         if (!window.activeTextEditor) {
             return;
         }
-        VSmargindecorations.updateDecorations(window.activeTextEditor);
-        linter.updateLinter(window.activeTextEditor.document);
+        await VSmargindecorations.updateDecorations(window.activeTextEditor);
+        await linter.updateLinter(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
     if (window.activeTextEditor !== undefined) {
-        VSmargindecorations.updateDecorations(window.activeTextEditor);
-        linter.updateLinter(window.activeTextEditor.document);
+        await VSmargindecorations.updateDecorations(window.activeTextEditor);
+        await linter.updateLinter(window.activeTextEditor.document);
     }
 
     progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
