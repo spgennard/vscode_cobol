@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 8453123 (HEAD -> main, tag: 8.1.25, origin/main) add coboleditor.hover_show_known_api property to enable known api hover support.
+* 4778a83 (HEAD -> main, tag: 8.1.26, origin/main) bump
+* 56cfcb5 Update CHANGELOG.md
+* 8453123 (tag: 8.1.25) add coboleditor.hover_show_known_api property to enable known api hover support.
 * 541628c start to reenable the API hover support #313
 * 19cae44 continue work on comment handling
 * cfb0606 make on 'events' to be full async
