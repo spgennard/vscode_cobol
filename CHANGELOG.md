@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* 87de700 (HEAD -> main, tag: 8.1.25, origin/main) tweak
+* 8453123 (HEAD -> main, tag: 8.1.25, origin/main) add coboleditor.hover_show_known_api property to enable known api hover support.
+* 541628c start to reenable the API hover support #313
+* 19cae44 continue work on comment handling
+* cfb0606 make on 'events' to be full async
+* 402cb4f expand callback interface
+* 1d37a00 start to setup support for multiple comment callback handlers
+* a329d18 Update CHANGELOG.md
+* 87de700 tweak
 * 017022a bump
 * 673e6f6 update
 * f7ade4e apply a small opt that should help scanning performance
