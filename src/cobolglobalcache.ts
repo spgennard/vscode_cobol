@@ -77,3 +77,20 @@ export class COBOLSymbol {
         return Object.assign(new COBOLSymbol(), d);
     }
 }
+
+export class COBOLFileAndColumnSymbol {
+    public filename: string;
+    public lnum: number;
+    public startColumn: number;
+
+    public constructor(symbol?: string, lineNumber?: number, startColumn?: number) {
+        this.filename = symbol === undefined ? "" : symbol;
+        this.lnum = lineNumber === undefined ? 0 : lineNumber;
+        this.startColumn = startColumn === undefined ? 0 : startColumn;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    static fromJSON(d: Object): COBOLFileSymbol {
+        return Object.assign(new COBOLFileSymbol(), d);
+    }
+}

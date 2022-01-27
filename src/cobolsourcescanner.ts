@@ -4,7 +4,7 @@ import { ISourceHandler, ICommentCallback } from "./isourcehandler";
 import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
-import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
+import { COBOLFileAndColumnSymbol, COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
@@ -662,6 +662,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public methods: Map<string, COBOLToken>;
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
     public diagWarnings: Map<string, COBOLFileSymbol>;
+    public commentReferences: COBOLFileAndColumnSymbol[];
 
     public parse4References: boolean;
     public sourceReferences: SharedSourceReferences;
@@ -773,6 +774,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.diagWarnings = new Map<string, COBOLFileSymbol>();
+        this.commentReferences = [];
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;

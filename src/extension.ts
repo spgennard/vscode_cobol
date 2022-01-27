@@ -77,7 +77,7 @@ function openChangeLog(): void {
         }
         const lastDot = version.lastIndexOf(".");
         if (lastDot !== -1) {
-            const lastSVersion = version.substr(0, lastDot);
+            const lastSVersion = version.substring(0, lastDot);
             const glastsVersion = currentContext.globalState.get("bitlang.cobol.sversion");
 
             if (glastsVersion !== lastSVersion) {
