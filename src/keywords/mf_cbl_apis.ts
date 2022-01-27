@@ -1,8 +1,9 @@
 export default {
-    "url": "https://documentation.microfocus.com/help/topic/GUID-0E0191D8-C39A-44D1-BA4C-D67107BAF784/HRCLRHCALL18.html?cp=6_7_5_6_0",
+    "url": "https://www.microfocus.com/documentation/visual-cobol/vc70/DevHub/HRCLRHCALL17.html",
+    "url.windows": "https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/HRCLRHCALL17.html",
     "name": "Micro Focus CBL library routines",
     "apis": {
-        "CBL_ABORT_RUN_UNIT": "Aborts the current run unit irrespective of the e of existing threads",
+        "CBL_ABORT_RUN_UNIT": "Aborts the current run unit irrespective of thee of existing threads",
         "CBL_ALLOC_DYN_MEM": "Dynamically allocates memory, and can associate it with the calling program.",
         "CBL_ALLOC_MEM": "Dynamically allocates memory, and can associate allocated heap data with a thread and/or the calling program.",
         "CBL_ALLOC_SHMEM": ",Dynamically allocates shared memory.",

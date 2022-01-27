@@ -44,6 +44,7 @@ import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSmargindecorations } from "./margindecorations";
 import { commentUtils } from "./commenter";
+import { CallTarget, getCallTarget } from "./keywords/cobolCallTargets";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -818,17 +819,20 @@ export async function activate(context: ExtensionContext): Promise<void> {
     // context.subscriptions.push(cobolCommentProviderDisposible);
 
     /* hover provider */
-    // const disposable4hover_more_info = languages.registerHoverProvider(allCobolSelectors, {
-    //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //     provideHover(document: vscode.DocumentSelector, position: vscode.HoverProvider, token: vscode.CancellationToken) {
-    //         const txt = document.getText(document.getWordRangeAtPosition(position));
-    //         const txtTarget: CallTarget | undefined = getCallTarget(txt);
-    //         if (txtTarget !== undefined) {
-    //             return new Hover("### " + txtTarget.api + "\n" + txtTarget.description + "\n\n#### [More information?](" + txtTarget.url + ")");
-    //         }
-    //     }
-    // });
-    // context.subscriptions.push(disposable4hover_more_info);
+    const disposable4hover_more_info = languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+        
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
+            const txt = document.getText(document.getWordRangeAtPosition(position));
+            const txtTarget: CallTarget | undefined = getCallTarget(txt);
+            if (txtTarget !== undefined) {
+                return new vscode.Hover(`### ${txtTarget.api}\n${txtTarget.description}\n\n#### [More information?](${txtTarget.url})`);
+            }
+
+            return undefined;
+        }
+    });
+    context.subscriptions.push(disposable4hover_more_info);
     window.onDidChangeActiveTextEditor(async (editor) => {
         if (!editor) {
             return;
