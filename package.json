@@ -716,6 +716,11 @@
           "title": "Suggest variables when context is unknown",
           "description": "Suggest variables when context for a verb is unknown",
           "default": true
+        },
+        "coboleditor.hover_show_known_api": {
+          "type": "boolean",
+          "title": "Show short description of known api during 'hover'",
+          "default": false
         }
       }
     },

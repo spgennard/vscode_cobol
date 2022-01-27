@@ -823,10 +823,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
         
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
+            if (!settings.hover_show_known_api) {
+                return undefined;
+            }
             const txt = document.getText(document.getWordRangeAtPosition(position));
             const txtTarget: CallTarget | undefined = getCallTarget(txt);
             if (txtTarget !== undefined) {
-                return new vscode.Hover(`### ${txtTarget.api}\n${txtTarget.description}\n\n#### [More information?](${txtTarget.url})`);
+                return new vscode.Hover(`\`\`${txtTarget.api}\`\` - ${txtTarget.description}\n\n[\u2192 ${txtTarget.name}](${txtTarget.url})`);
             }
 
             return undefined;

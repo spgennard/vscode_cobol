@@ -98,6 +98,8 @@ export class VSCOBOLConfiguration {
         
         vsconfig.suggest_variables_when_context_is_unknown = workspace.getConfiguration("coboleditor").get<boolean>("suggest_variables_when_context_is_unknown", vsconfig.suggest_variables_when_context_is_unknown);
 
+        vsconfig.hover_show_known_api =workspace.getConfiguration("coboleditor").get<boolean>("hover_show_known_api", vsconfig.hover_show_known_api);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

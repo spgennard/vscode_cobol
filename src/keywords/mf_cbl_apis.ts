@@ -1,7 +1,6 @@
 export default {
     "url": "https://www.microfocus.com/documentation/visual-cobol/vc70/DevHub/HRCLRHCALL17.html",
-    "url.windows": "https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/HRCLRHCALL17.html",
-    "name": "Micro Focus CBL library routines",
+    "name": "Micro Focus CBL Library Routines",
     "apis": {
         "CBL_ABORT_RUN_UNIT": "Aborts the current run unit irrespective of thee of existing threads",
         "CBL_ALLOC_DYN_MEM": "Dynamically allocates memory, and can associate it with the calling program.",
