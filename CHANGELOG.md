@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 4778a83 (HEAD -> main, tag: 8.1.26, origin/main) bump
+* debc4f1 (HEAD -> main, tag: 8.1.27, origin/main) bump
+* 36593a7 remove 'old' coboldoc snippets and useless 'ruler'
+* 33acf36 update
+* b701b47 Update CHANGELOG.md
+* 4778a83 (tag: 8.1.26) bump
 * 56cfcb5 Update CHANGELOG.md
 * 8453123 (tag: 8.1.25) add coboleditor.hover_show_known_api property to enable known api hover support.
 * 541628c start to reenable the API hover support #313
