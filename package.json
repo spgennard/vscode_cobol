@@ -720,6 +720,7 @@
         "coboleditor.hover_show_known_api": {
           "type": "boolean",
           "title": "Show short description of known api during 'hover'",
+          "description": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus Library apis' and some ILE apis.",
           "default": false
         }
       }
