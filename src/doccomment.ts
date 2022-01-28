@@ -28,14 +28,6 @@ export class COBOLDocumentationCommentHandler {
                                 TextEdit.insert(position, "*>> ")
                             ];
                         }
-
-                        // // coboldoc
-                        // if (lineTrimmed.startsWith("*>**")) {
-                        //     return [
-                        //         // Insert *>> when RETURN is pressed
-                        //         TextEdit.insert(position, "*>> ")
-                        //     ];
-                        // }
                     }
                 }
                 return [];

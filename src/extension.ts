@@ -1071,17 +1071,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(extractSelectionToCopybookCommand);
 
-    // const showDocumentationCommand = vscode.commands.registerCommand('cobolplugin.showDocumentation', () => {
-    //     if (vscode.window.activeTextEditor) {
-    //         const langid = vscode.window.activeTextEditor.document.languageId;
-
-    //         if (langid === 'COBOL' ||  langid === 'ACUCOBOL') {
-    //             COBOLDocumentationGenerator.showCOBOLDOCDocumentation(vscode.window.activeTextEditor, settings);
-    //         }
-    //     }
-    // });
-    // context.subscriptions.push(showDocumentationCommand);
-
     const migrateCopybooksToWorkspaceCommand = vscode.commands.registerCommand("cobolplugin.migrateCopybooksToWorkspace", () => {
         COBOLUtils.migrateCopybooksToWorkspace();
     });

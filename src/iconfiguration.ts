@@ -52,7 +52,6 @@ export interface ICOBOLSettings {
     linter_ignore_missing_copybook: boolean;
 
     ignore_unsafe_extensions: boolean;
-    coboldoc_workspace_folder: string;
     scan_comments_for_hints: boolean;
     cache_metadata_verbose_messages: boolean;
     scan_comment_copybook_token: string;
@@ -134,7 +133,6 @@ export class COBOLSettings implements ICOBOLSettings {
     linter_ignore_missing_copybook: boolean;
 
     ignore_unsafe_extensions: boolean;
-    coboldoc_workspace_folder: string;
     scan_comments_for_hints: boolean;
     cache_metadata_verbose_messages: boolean;
     scan_comment_copybook_token: string;
@@ -216,7 +214,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.ignore_unsafe_extensions = false;
         this.scan_comments_for_hints = false;
         this.scan_comment_copybook_token = "source-dependency";
-        this.coboldoc_workspace_folder = "coboldoc";
         this.editor_maxTokenizationLineLength = 20000;
         this.sourceview = false;
         this.sourceview_include_jcl_files = true;

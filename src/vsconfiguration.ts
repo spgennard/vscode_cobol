@@ -43,7 +43,6 @@ export class VSCOBOLConfiguration {
         vsconfig.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
         vsconfig.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
         vsconfig.ignore_unsafe_extensions = getBoolean("ignore_unsafe_extensions", false);
-        vsconfig.coboldoc_workspace_folder = getCoboldoc_workspace_folder();
 
         // scan for comments can cause a file access.. so it cannot be trusted
         vsconfig.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
@@ -182,15 +181,6 @@ function getPreScanLineLimit(): number {
         lineLimit = 25;
     }
     return lineLimit;
-}
-
-function getCoboldoc_workspace_folder(): string {
-    const editorConfig = workspace.getConfiguration("coboleditor");
-    const coboldoc_folder = editorConfig.get<string>("coboldoc_workspace_folder");
-    if (coboldoc_folder === undefined || coboldoc_folder === null) {
-        return "coboldoc";
-    }
-    return coboldoc_folder;
 }
 
 function getscan_comment_copybook_token(): string {

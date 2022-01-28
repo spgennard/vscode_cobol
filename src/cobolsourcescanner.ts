@@ -681,9 +681,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     public workspaceFile: COBOLWorkspaceFile;
 
-    // public commentDocStyle: CobolDocStyle = CobolDocStyle.unknown;
-    // public commentTagStyle: CobolTagStyle = CobolTagStyle.unknown;
-
     public readonly parse_copybooks_for_references: boolean;
     public readonly scan_comments_for_hints: boolean;
 
