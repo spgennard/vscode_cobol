@@ -2366,42 +2366,5 @@
 			"*>> </summary>"
 		],
 		"scope": "cobol"
-	},
-	"<returns>": {
-		"prefix": "<returns>",
-		"body": [
-			"<returns>${1:description}</returns>",
-			"*>> $0"
-		],
-		"scope": "cobol"
-	},
-	"<param": {
-		"prefix": "<param>",
-		"body": [
-			"<param name=\"${1:Int}\">${2}</param>",
-			"*>> $0"
-		],
-		"scope": "cobol"
-	},
-	"<exception": {
-		"prefix": "<exception",
-		"body": [
-			"<exception cref=\"${1:member}\">${2:description}</exception>",
-			"*>> $0"
-		],
-		"scope": "cobol"
-	},
-	"<value": {
-		"prefix": "<value>",
-		"body": [
-			"value>${1:property-description}</value>",
-			"*>> $0"
-		],
-		"scope": "cobol"
-	},
-	"ruler": {
-		"prefix": "ruler",
-		"body": "|...+.*..1....+....2....+....3....+....4....+....5....+....6....+....7..",
-		"scope": "cobol"
 	}
 }
