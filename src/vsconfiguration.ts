@@ -101,6 +101,8 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_comment_tags = workspace.getConfiguration("coboleditor").get<boolean>("enable_comment_tags", vsconfig.enable_comment_tags);
         
+        vsconfig.comment_tag_word = workspace.getConfiguration("coboleditor").get<boolean>("comment_tag_word", vsconfig.comment_tag_word);
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

@@ -728,6 +728,11 @@
           "description": "Enable coloured comments",
           "default": false
         },
+        "coboleditor.comment_tag_word" : {
+          "type": "boolean",
+          "description": "Colourise the tag only",
+          "default": false
+        },        
         "coboleditor.comments_tags": {
           "type": "array",
           "description": "Tags which are used to color the comments.",

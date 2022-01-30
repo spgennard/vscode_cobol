@@ -7,13 +7,12 @@ import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { VSLogger } from "./vslogger";
 
 class CommentColourHandlerImpl implements ICommentCallback {
-
     static readonly commentDec = window.createTextEditorDecorationType({
-
+        //
     });
 
     private tags = new Map<string, TextEditorDecorationType>();
-    private currentLanguage: string = "";
+    // private currentLanguage = "";
 
     constructor() {
         this.setupTags();
@@ -62,18 +61,20 @@ class CommentColourHandlerImpl implements ICommentCallback {
             return;
         }
         
-        this.currentLanguage = sourceHandler.getLanguageId();
         const ranges = sourceHandler.getNotedComments();
         const commentLineUpper = commentLine.toUpperCase();
-        const skipPos = format === ESourceFormat.variable ? 2 : 1;
-        // let added = false;
+        // const skipPos = format === ESourceFormat.variable ? 2 : 1;
+        const comment_tag_word = configHandler.comment_tag_word;
+
         for (const [tag,] of this.tags) {
-            const pos = commentLineUpper.indexOf(tag, skipPos + startPos);
+            const pos = commentLineUpper.indexOf(tag, 1+startPos);
 
             if (pos !== -1) {
-                // ranges.push(new commentRange(sourceLineNumber, pos, tag.length, tag));+
-                ranges.push(new commentRange(sourceLineNumber, skipPos + startPos, commentLineUpper.length - (startPos + skipPos - 1), tag));
-                // added=true;
+                if (comment_tag_word) {
+                    ranges.push(new commentRange(sourceLineNumber, pos, tag.length, tag));
+                } else {
+                    ranges.push(new commentRange(sourceLineNumber, pos, commentLineUpper.length - startPos, tag));
+                }
             }
         }
     }
@@ -84,6 +85,12 @@ class CommentColourHandlerImpl implements ICommentCallback {
             return;
         }
 
+        // get rid of all decorations
+        const decorationOptions: DecorationOptions[] = [];
+        for (const [, dec] of this.tags) {
+            activeTextEditor.setDecorations(dec, decorationOptions);
+        }
+        
         const configHandler = VSCOBOLConfiguration.get();
         if (!configHandler.enable_comment_tags) {
             return;
@@ -96,11 +103,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
             return;
         }
 
-        const currentLanguage = doc.languageId;
-        if (this.currentLanguage !== currentLanguage) {
-            this.blastTags(activeTextEditor);
-        }
-
+            
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         if (gcp !== undefined) {
             const ranges = gcp.sourceHandler.getNotedComments();
@@ -133,15 +136,6 @@ class CommentColourHandlerImpl implements ICommentCallback {
                     } 
                 }
             }
-        } else {
-            this.blastTags(activeTextEditor);
-        }
-    }
-
-    private blastTags(activeTextEditor: TextEditor) : void {
-        const decorationOptions: DecorationOptions[] = [];
-        for (const [, dec] of this.tags) {
-            activeTextEditor.setDecorations(dec, decorationOptions);
         }
     }
 }

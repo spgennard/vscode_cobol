@@ -100,6 +100,8 @@ export interface ICOBOLSettings {
     hover_show_known_api: boolean;
 
     enable_comment_tags: boolean;
+
+    comment_tag_word: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -184,6 +186,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_comment_tags: boolean;
 
+    comment_tag_word: boolean;
+
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
@@ -255,5 +259,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.suggest_variables_when_context_is_unknown = true;
         this.hover_show_known_api = false;
         this.enable_comment_tags = false;
+        this.comment_tag_word = false;
     }
 }
