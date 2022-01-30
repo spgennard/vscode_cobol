@@ -7,7 +7,7 @@ import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { VSLogger } from "./vslogger";
 
 class CommentColourHandlerImpl implements ICommentCallback {
-    static readonly commentDec = window.createTextEditorDecorationType({
+    static readonly emptyCommentDecoration = window.createTextEditorDecorationType({
         //
     });
 
@@ -151,7 +151,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
                 const decorationOption = mapOfDecorations.get(decTagName);
                 if (decorationOption === undefined) {
                     const empty: DecorationOptions[] = [];
-                    activeTextEditor.setDecorations(CommentColourHandlerImpl.commentDec, empty);
+                    activeTextEditor.setDecorations(CommentColourHandlerImpl.emptyCommentDecoration, empty);
                 } else {
                     const dec = this.tags.get(decTagName);
                     if (dec !== undefined) {
