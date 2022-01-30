@@ -12,7 +12,6 @@ class CommentColourHandlerImpl implements ICommentCallback {
     });
 
     private tags = new Map<string, TextEditorDecorationType>();
-    // private currentLanguage = "";
 
     constructor() {
         this.setupTags();
@@ -78,10 +77,9 @@ class CommentColourHandlerImpl implements ICommentCallback {
 
         const ranges = sourceHandler.getNotedComments();
         const commentLineUpper = commentLine.toUpperCase();
-        // const skipPos = format === ESourceFormat.variable ? 2 : 1;
         const comment_tag_word = configHandler.comment_tag_word;
 
-        let lowestTag: commentRange|undefined = undefined;
+        let lowestTag: commentRange | undefined = undefined;
         let lowestPos = commentLine.length;
         for (const [tag,] of this.tags) {
             const pos = commentLineUpper.indexOf(tag, 1 + startPos);
