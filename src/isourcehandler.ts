@@ -1,13 +1,29 @@
 import { ESourceFormat } from "./externalfeatures";
 
 export interface ICommentCallback {
-    processComment(commentLine: string, sourceFilename: string, sourceLineNumber:number, startPos: number, format: ESourceFormat) : void;
+    processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber:number, startPos: number, format: ESourceFormat) : void;
 }
+
+export class commentRange {
+    public startLine: number;
+    public startColumn: number;
+    public length: number;
+    public commentStyle: string;
+
+    constructor(startLine: number, startColumn: number, length: number, commentStyle: string) {
+        this.startLine = startLine;
+        this.startColumn = startColumn;
+        this.length = length;
+        this.commentStyle = commentStyle;
+    }
+}
+
 export interface ISourceHandlerLite {
     getLineCount(): number;
     getLanguageId():string;
     getFilename(): string;
     getLineTabExpanded(lineNumber: number):string|undefined;
+    getNotedComments(): commentRange[];
 }
 
 export interface ISourceHandler {
@@ -28,4 +44,5 @@ export interface ISourceHandler {
     getShortWorkspaceFilename(): string;
     getLanguageId():string;
     setSourceFormat(format: ESourceFormat):void;
+    getNotedComments(): commentRange[];
 }

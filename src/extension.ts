@@ -45,6 +45,7 @@ import { TabUtils } from "./tabstopper";
 import { VSmargindecorations } from "./margindecorations";
 import { commentUtils } from "./commenter";
 import { CallTarget, getCallTarget } from "./keywords/cobolCallTargets";
+import { colourCommentHandler } from "./vscolourcomments";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -52,6 +53,7 @@ let currentContext: ExtensionContext;
 let bldscriptTaskProvider: vscode.Disposable | undefined;
 let shown_enable_semantic_token_provider = false;
 let messageBoxDone = false;
+let activeEditor: vscode.TextEditor;
 
 const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -92,6 +94,8 @@ function openChangeLog(): void {
         }
     }
 }
+
+
 
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",    // code scanner
@@ -719,8 +723,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
             if (VSExtensionUtils.isSupportedLanguage(doc)) {
-                await COBOLUtils.populateDefaultCallableSymbols(settings, false);
+                if (window.activeTextEditor) {
+                    activeEditor = window.activeTextEditor;
+                    await updateDecorations();
+                }
                 await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
+                await COBOLUtils.populateDefaultCallableSymbols(settings, false);
             }
         }
     });
@@ -820,7 +828,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     /* hover provider */
     const disposable4hover_more_info = languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
-        
+
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
             if (!settings.hover_show_known_api) {
@@ -835,13 +843,26 @@ export async function activate(context: ExtensionContext): Promise<void> {
             return undefined;
         }
     });
+
+    const updateDecorations = async () => {
+        // * if no active window is open
+        if (!activeEditor) return;
+    
+        await VSmargindecorations.updateDecorations(activeEditor);
+        await linter.updateLinter(activeEditor.document);
+        await colourCommentHandler.updateDecorations(activeEditor);
+    };
+
     context.subscriptions.push(disposable4hover_more_info);
     window.onDidChangeActiveTextEditor(async (editor) => {
         if (!editor) {
             return;
         }
-        await VSmargindecorations.updateDecorations(editor);
-        await linter.updateLinter(editor.document);
+        activeEditor = editor;
+        // await VSmargindecorations.updateDecorations(editor);
+        // await linter.updateLinter(editor.document);
+        // await colourCommentHandler.updateDecorations(editor);
+        updateDecorations();
 
     }, null, context.subscriptions);
 
@@ -849,22 +870,35 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!event.textEditor) {
             return;
         }
-        await VSmargindecorations.updateDecorations(event.textEditor);
-        //cobolusage.updateDiagnostics(event.textEditor.document);
+        // await VSmargindecorations.updateDecorations(event.textEditor);
+        // //cobolusage.updateDiagnostics(event.textEditor.document);
+        // await colourCommentHandler.updateDecorations(event.textEditor);
+        updateDecorations();
+
     }, null, context.subscriptions);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    workspace.onDidChangeTextDocument(async(event) => {
+    workspace.onDidChangeTextDocument(async (event) => {
         if (!window.activeTextEditor) {
             return;
         }
-        await VSmargindecorations.updateDecorations(window.activeTextEditor);
-        await linter.updateLinter(window.activeTextEditor.document);
+
+        if (event.document === activeEditor.document) {
+            activeEditor = window.activeTextEditor;
+            // await VSmargindecorations.updateDecorations(window.activeTextEditor);
+            // await linter.updateLinter(window.activeTextEditor.document);
+            // await colourCommentHandler.updateDecorations(window.activeTextEditor);
+            updateDecorations();
+        }
+
     }, null, context.subscriptions);
 
     if (window.activeTextEditor !== undefined) {
-        await VSmargindecorations.updateDecorations(window.activeTextEditor);
-        await linter.updateLinter(window.activeTextEditor.document);
+        activeEditor = window.activeTextEditor;
+        updateDecorations();
+        // await VSmargindecorations.updateDecorations(window.activeTextEditor);
+        // await linter.updateLinter(window.activeTextEditor.document);
+        // await colourCommentHandler.updateDecorations(window.activeTextEditor);
     }
 
     progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";

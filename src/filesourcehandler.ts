@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { ISourceHandler, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback, ISourceHandlerLite, commentRange } from "./isourcehandler";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const lineByLine = require("n-readlines");
@@ -25,6 +25,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     shortFilename: string;
     languageId: string;
     format: ESourceFormat;
+    notedCommentRanges: commentRange[];
 
     public constructor(document: string, features: IExternalFeatures) {
         this.document = document;
@@ -37,6 +38,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.updatedSource = new Map<number, string>();
         this.languageId = "COBOL";
         this.format = ESourceFormat.unknown;
+        this.notedCommentRanges = [];
 
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
@@ -63,7 +65,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
-                commentCallback.processComment(line, this.getFilename(), lineNumber, startPos, format);
+                commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
             }
         }
     }
@@ -254,5 +256,9 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     setSourceFormat(format: ESourceFormat): void {
         this.format = format;
+    }
+
+    getNotedComments(): commentRange[] {
+        return this.notedCommentRanges;
     }
 }

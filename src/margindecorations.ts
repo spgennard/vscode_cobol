@@ -82,6 +82,7 @@ export class VSmargindecorations {
                     case ESourceFormat.free:
                     case ESourceFormat.variable:
                     case ESourceFormat.unknown:
+                    case ESourceFormat.terminal:
                         activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
                         return;
                 }

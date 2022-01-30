@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ISourceHandler, ICommentCallback } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
 import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 import { FileSourceHandler } from "./filesourcehandler";
@@ -943,6 +943,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             case ESourceFormat.fixed:
                 sourceHandler.setDumpAreaA(true);
                 sourceHandler.setDumpAreaBOnwards(true);
+                break;
+            case ESourceFormat.terminal:
+                sourceHandler.setSourceFormat(this.sourceFormat);
                 break;
         }
 
@@ -2516,7 +2519,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
-    public processComment(commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
+    public processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
         this.sourceReferences.state.currentLineIsComment = true;
 
         // should consider other inline comments (aka terminal) and fixed position comments

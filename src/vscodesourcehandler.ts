@@ -1,9 +1,11 @@
 import { StringBuilder } from "typescript-string-operations";
 import * as vscode from "vscode";
 import { workspace } from "vscode";
+// import { colourCommentHandler } from "./extension";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
-import { ISourceHandler, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
+import { ISourceHandler, ICommentCallback, ISourceHandlerLite, commentRange } from "./isourcehandler";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { colourCommentHandler } from "./vscolourcomments";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
@@ -12,12 +14,14 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     document: vscode.TextDocument | undefined;
     lineCount: number;
     languageId: string;
+    notedCommentRanges: commentRange[];
 
     public constructor(document: vscode.TextDocument) 
     {
         this.document = document;
         this.lineCount = this.document.lineCount;
         this.languageId = document.languageId;
+        this.notedCommentRanges = [];
     }
 
     public getLineCount(): number {
@@ -70,6 +74,11 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
         }
         return buf.ToString();
     }
+
+
+    getNotedComments(): commentRange[] {
+        return this.notedCommentRanges;
+    }
 }
 
 export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
@@ -86,6 +95,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     languageId: string;
     format: ESourceFormat;
     externalFeatures: IExternalFeatures
+    notedCommentRanges: commentRange[];
 
     public constructor(document: vscode.TextDocument) 
     {
@@ -98,6 +108,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.languageId = document.languageId;
         this.format = ESourceFormat.unknown;
         this.externalFeatures = VSExternalFeatures;
+        this.notedCommentRanges = [];
 
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
@@ -112,6 +123,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         if (this.isFileExcluded()) {
             this.clear();
         }
+
+        this.addCommentCallback(colourCommentHandler);
     }
 
     private clear(): void {
@@ -165,7 +178,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
-                commentCallback.processComment(line, this.getFilename(), lineNumber, startPos, format);
+                commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
             }
         }
     }
@@ -185,9 +198,9 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
         const startComment = line.indexOf("*>");
         if (startComment !== -1) {
+            this.commentCount++;
             this.sendCommentCallback(line, lineNumber, startComment, ESourceFormat.variable);
             line = line.substring(0, startComment);
-            this.commentCount++;
         }
 
         // drop variable format line
@@ -226,6 +239,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 }
             }
         }
+
         if (this.dumpAreaBOnwards && line.length >= 73) {
             line = line.substring(0, 72);
         }
@@ -312,5 +326,9 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     setSourceFormat(format: ESourceFormat): void {
         this.format = format;
+    }
+
+    getNotedComments(): commentRange[] {
+        return this.notedCommentRanges;
     }
 }

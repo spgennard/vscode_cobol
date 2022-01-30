@@ -722,6 +722,57 @@
           "title": "Show short description of known api during 'hover'",
           "description": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus Library apis' and some ILE apis.",
           "default": false
+        },
+        "coboleditor.comments_tags": {
+          "type": "array",
+          "description": "Tags which are used to color the comments.",
+          "default": [
+            {
+              "tag": "!",
+              "color": "#FF2D00",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "?",
+              "color": "#3498DB",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "todo",
+              "color": "#FF8C00",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "* ",
+              "color": "#98C379",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "//",
+              "color": "#474747",
+              "strikethrough": true,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            }
+          ]
         }
       }
     },
@@ -1392,7 +1443,7 @@
           "group": "navigation_cobol"
         }
       ],
-      "cobolplugin.selectionmenu" : [
+      "cobolplugin.selectionmenu": [
         {
           "command": "cobolplugin.extractSelectionToParagraph",
           "group": "cobolplugin",
@@ -1455,7 +1506,7 @@
         "label": "Align Data Items"
       },
       {
-        "id" : "cobolplugin.selectionmenu",
+        "id": "cobolplugin.selectionmenu",
         "label": "Extract Selection"
       }
     ],
