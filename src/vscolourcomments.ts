@@ -83,7 +83,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
         if (!activeTextEditor) {
             return;
         }
-        
+
         const configHandler = VSCOBOLConfiguration.get();
         if (!configHandler.enable_comment_tags) {
             return;
@@ -98,10 +98,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
 
         const currentLanguage = doc.languageId;
         if (this.currentLanguage !== currentLanguage) {
-            const decorationOptions: DecorationOptions[] = [];
-            for (const [, dec] of this.tags) {
-                activeTextEditor.setDecorations(dec, decorationOptions);
-            }
+            this.blastTags(activeTextEditor);
         }
 
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
@@ -137,10 +134,14 @@ class CommentColourHandlerImpl implements ICommentCallback {
                 }
             }
         } else {
-            const decorationOptions: DecorationOptions[] = [];
-            for (const [, dec] of this.tags) {
-                activeTextEditor.setDecorations(dec, decorationOptions);
-            }
+            this.blastTags(activeTextEditor);
+        }
+    }
+
+    private blastTags(activeTextEditor: TextEditor) : void {
+        const decorationOptions: DecorationOptions[] = [];
+        for (const [, dec] of this.tags) {
+            activeTextEditor.setDecorations(dec, decorationOptions);
         }
     }
 }
