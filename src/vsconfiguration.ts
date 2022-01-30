@@ -142,7 +142,6 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration.config;
     }
 
-
     public static reinit() : ICOBOLSettings {
         VSCOBOLConfiguration.config.init_required = true;
         return VSCOBOLConfiguration.get();

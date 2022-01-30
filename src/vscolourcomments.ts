@@ -1,4 +1,4 @@
-import { DecorationOptions, DecorationRenderOptions, Position, Range, TextDocument, TextEditor, TextEditorDecorationType, window, workspace } from "vscode";
+import { DecorationOptions, DecorationRenderOptions, Position, Range, TextDocument, TextEditor, TextEditorDecorationType, ThemeColor, window, workspace } from "vscode";
 import { ESourceFormat } from "./externalfeatures";
 import { commentRange, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -18,19 +18,25 @@ class CommentColourHandlerImpl implements ICommentCallback {
         this.setupTags();
     }
 
-    private setupTags(): void {
+    public setupTags(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const items = workspace.getConfiguration("coboleditor").get("comments_tags") as any;
         if (items === undefined) {
             return;
         }
 
+        this.tags.clear();
+
         for (const item of items) {
             try {
-                const options: DecorationRenderOptions = { color: item.color, backgroundColor: item.backgroundColor };
+                const options: DecorationRenderOptions = {
+                    color: item.color,
+                    backgroundColor: item.backgroundColor,
+                    textDecoration: ""
+                };
 
                 if (item.strikethrough) {
-                    options.textDecoration += "line-through";
+                    options.textDecoration += " line-through";
                 }
 
                 if (item.underline) {
@@ -43,6 +49,11 @@ class CommentColourHandlerImpl implements ICommentCallback {
 
                 if (item.italic) {
                     options.fontStyle = "italic";
+                }
+
+                if (item.reverse) {
+                    options.backgroundColor = new ThemeColor("editor.foreground");
+                    options.color = new ThemeColor("editor.background");
                 }
 
                 const decl = window.createTextEditorDecorationType(options);
@@ -60,22 +71,32 @@ class CommentColourHandlerImpl implements ICommentCallback {
         if (!configHandler.enable_comment_tags) {
             return;
         }
-        
+
         const ranges = sourceHandler.getNotedComments();
         const commentLineUpper = commentLine.toUpperCase();
         // const skipPos = format === ESourceFormat.variable ? 2 : 1;
         const comment_tag_word = configHandler.comment_tag_word;
 
+        let lowestTag: commentRange|undefined = undefined;
+        let lowestPos = commentLine.length;
         for (const [tag,] of this.tags) {
-            const pos = commentLineUpper.indexOf(tag, 1+startPos);
+            const pos = commentLineUpper.indexOf(tag, 1 + startPos);
 
             if (pos !== -1) {
-                if (comment_tag_word) {
-                    ranges.push(new commentRange(sourceLineNumber, pos, tag.length, tag));
-                } else {
-                    ranges.push(new commentRange(sourceLineNumber, pos, commentLineUpper.length - startPos, tag));
+                if (pos < lowestPos) {
+                    lowestPos = pos;
+                    if (comment_tag_word) {
+                        lowestTag = new commentRange(sourceLineNumber, pos, tag.length, tag);
+                    } else {
+                        lowestTag = new commentRange(sourceLineNumber, pos, commentLineUpper.length - startPos, tag);
+                    }
                 }
             }
+        }
+
+        // default to left most tag
+        if (lowestTag !== undefined) {
+            ranges.push(lowestTag);
         }
     }
 
@@ -90,7 +111,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
         for (const [, dec] of this.tags) {
             activeTextEditor.setDecorations(dec, decorationOptions);
         }
-        
+
         const configHandler = VSCOBOLConfiguration.get();
         if (!configHandler.enable_comment_tags) {
             return;
@@ -103,7 +124,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
             return;
         }
 
-            
+
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         if (gcp !== undefined) {
             const ranges = gcp.sourceHandler.getNotedComments();
@@ -133,7 +154,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
                     const dec = this.tags.get(decTagName);
                     if (dec !== undefined) {
                         activeTextEditor.setDecorations(dec, decorationOption)
-                    } 
+                    }
                 }
             }
         }

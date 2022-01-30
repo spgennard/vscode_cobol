@@ -723,16 +723,16 @@
           "description": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus Library apis' and some ILE apis.",
           "default": false
         },
-        "coboleditor.enable_comment_tags" : {
+        "coboleditor.enable_comment_tags": {
           "type": "boolean",
           "description": "Enable coloured comments",
           "default": false
         },
-        "coboleditor.comment_tag_word" : {
+        "coboleditor.comment_tag_word": {
           "type": "boolean",
           "description": "Colourise the tag only",
           "default": false
-        },        
+        },
         "coboleditor.comments_tags": {
           "type": "array",
           "description": "Tags which are used to color the comments.",
@@ -781,6 +781,16 @@
               "backgroundColor": "transparent",
               "bold": false,
               "italic": false
+            },
+            {
+              "tag": "note",
+              "color": "#FF8C00",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false,
+              "reverse": true
             }
           ]
         }

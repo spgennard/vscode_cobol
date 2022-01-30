@@ -509,6 +509,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_metadata_knowncopybooks = event.affectsConfiguration("coboleditor.metadata_knowncopybooks");
         const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
         const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
+        const md_comments_tags = event.affectsConfiguration("coboleditor.comments_tags");
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
@@ -548,6 +549,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (outline_changed) {
                 vscode.window.showInformationMessage("The configuration setting 'coboleditor.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session");
+            }
+
+            if (md_comments_tags) {
+                colourCommentHandler.setupTags();
             }
         }
     });
