@@ -98,6 +98,8 @@ export interface ICOBOLSettings {
     suggest_variables_when_context_is_unknown: boolean;
 
     hover_show_known_api: boolean;
+
+    enable_comment_tags: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -180,6 +182,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     hover_show_known_api: boolean;
 
+    enable_comment_tags: boolean;
+
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
@@ -249,6 +253,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_time_limit = 4000;
         this.in_memory_cache_size = 6;
         this.suggest_variables_when_context_is_unknown = true;
-        this.hover_show_known_api = true;
+        this.hover_show_known_api = false;
+        this.enable_comment_tags = false;
     }
 }

@@ -57,7 +57,11 @@ class CommentColourHandlerImpl implements ICommentCallback {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
-
+        const configHandler = VSCOBOLConfiguration.get();
+        if (!configHandler.enable_comment_tags) {
+            return;
+        }
+        
         this.currentLanguage = sourceHandler.getLanguageId();
         const ranges = sourceHandler.getNotedComments();
         const commentLineUpper = commentLine.toUpperCase();
@@ -79,6 +83,12 @@ class CommentColourHandlerImpl implements ICommentCallback {
         if (!activeTextEditor) {
             return;
         }
+        
+        const configHandler = VSCOBOLConfiguration.get();
+        if (!configHandler.enable_comment_tags) {
+            return;
+        }
+
         const doc: TextDocument = activeTextEditor.document;
         const textLanguage: TextLanguage = VSExtensionUtils.isSupportedLanguage(doc);
 
@@ -94,7 +104,6 @@ class CommentColourHandlerImpl implements ICommentCallback {
             }
         }
 
-        const configHandler = VSCOBOLConfiguration.get();
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         if (gcp !== undefined) {
             const ranges = gcp.sourceHandler.getNotedComments();
