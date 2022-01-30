@@ -36,11 +36,15 @@ class CommentColourHandlerImpl implements ICommentCallback {
                 };
 
                 if (item.strikethrough) {
-                    options.textDecoration += " line-through";
+                    options.textDecoration = "line-through solid";
                 }
 
                 if (item.underline) {
-                    options.textDecoration += " underline";
+                    options.textDecoration += " underline solid";
+                }
+
+                if (item.undercurl) {
+                    options.textDecoration += " underline wavy";
                 }
 
                 if (item.bold) {
