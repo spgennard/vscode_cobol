@@ -479,6 +479,7 @@
         },
         "coboleditor.workspacefolders_order": {
           "type": "array",
+          "description": "List of ordered workspace folders",
           "items": {
             "type": "string",
             "title": "workspacefolders",
@@ -661,6 +662,7 @@
         },
         "coboleditor.valid_cobol_language_ids": {
           "type": "array",
+          "description": "Valid Visual Studio COBOL Language Id",
           "items": {
             "type": "string",
             "title": "Valid Visual Studio COBOL Language Id",
@@ -681,6 +683,7 @@
           "default": false
         },
         "coboleditor.files_exclude": {
+          "description": "list of files to exclude from source scanning, it can be used to avoid 'unresponsive' messages",
           "type": "array",
           "items": {
             "type": "string",

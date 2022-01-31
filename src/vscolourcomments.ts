@@ -126,7 +126,6 @@ class CommentColourHandlerImpl implements ICommentCallback {
             return;
         }
 
-
         const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         if (gcp !== undefined) {
             const ranges = gcp.sourceHandler.getNotedComments();
