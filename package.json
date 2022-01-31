@@ -1428,6 +1428,11 @@
         "category": "COBOL",
         "enablement": "editorTextFocus && editorHasSelection && cobolplugin.enableStorageAlign",
         "title": "Align to right"
+      },
+      {
+        "command": "cobolplugin.dumpCallTargets",
+        "category": "COBOL",
+        "title": "Diagnostic: dump call targets"
       }
     ],
     "menus": {

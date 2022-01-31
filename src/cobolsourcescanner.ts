@@ -152,9 +152,9 @@ export class COBOLToken {
 
     static Null: COBOLToken = new COBOLToken("", COBOLTokenStyle.Null, -1, 0, "", "", undefined, false, "");
 
-    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number, 
-                       startColumn: number, token: string, description: string, 
-                       parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
+    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number,
+        startColumn: number, token: string, description: string,
+        parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
         this.ignoreInOutlineView = false;
         this.filename = filename;
         this.tokenType = tokenType;
@@ -698,7 +698,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     public scanAborted: boolean;
 
-    readonly COBOLKeywordDictionary: Map<string,string>;
+    readonly COBOLKeywordDictionary: Map<string, string>;
 
 
     public static ScanUncached(sourceHandler: ISourceHandler,
@@ -1631,7 +1631,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             break;
                         default:
                             if (this.sourceReferences !== undefined) {
-                                if ((this.isValidKeyword(tcurrentLower) === false) && (this.isNumber(tcurrentLower) === false)) {
+                                let isNotKeywordOrAny = this.isValidKeyword(tcurrentLower) === false;
+                                if (tcurrentLower === "any") {
+                                    isNotKeywordOrAny = true;
+                                }
+                                if (isNotKeywordOrAny && (this.isNumber(tcurrentLower) === false)) {
                                     // no forward validation can be done, as this is a one pass scanner
                                     this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                                     state.parameters.push(new COBOLParameter(state.using, tcurrent));

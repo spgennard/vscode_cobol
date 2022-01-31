@@ -1227,6 +1227,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     })
 
+    const dumpCallTargets = vscode.commands.registerCommand("cobolplugin.dumpCallTargets", () => {
+        if (vscode.window.activeTextEditor) {
+            COBOLUtils.dumpCallTargets(vscode.window.activeTextEditor, VSExternalFeatures);
+        }
+    });
+    context.subscriptions.push(dumpCallTargets);
+
+    
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

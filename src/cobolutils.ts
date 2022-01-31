@@ -728,7 +728,7 @@ export class COBOLUtils {
         return -1;
     }
 
-    private static getAlignItemFromSelections(editor: vscode.TextEditor, sels: readonly vscode.Selection[], style:AlignStyle): number {
+    private static getAlignItemFromSelections(editor: vscode.TextEditor, sels: readonly vscode.Selection[], style: AlignStyle): number {
         let siposa_first = -1;
         let siposa_left = -1;
         let siposa_right = -1;
@@ -743,7 +743,7 @@ export class COBOLUtils {
                     siposa_first = sipos;
                 }
 
-                if (siposa_left === -1 ) {
+                if (siposa_left === -1) {
                     siposa_left = sipos;
                 }
 
@@ -757,14 +757,14 @@ export class COBOLUtils {
             }
         }
 
-        switch(style) {
-            case AlignStyle.First:  return siposa_first;
-            case AlignStyle.Left:  return siposa_left;
-            case AlignStyle.Right:  return siposa_right;
-            case AlignStyle.Center : return Math.trunc((siposa_left+siposa_right)/2);
+        switch (style) {
+            case AlignStyle.First: return siposa_first;
+            case AlignStyle.Left: return siposa_left;
+            case AlignStyle.Right: return siposa_right;
+            case AlignStyle.Center: return Math.trunc((siposa_left + siposa_right) / 2);
         }
     }
-    
+
     public static alignStorage(style: AlignStyle): void {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
@@ -794,5 +794,25 @@ export class COBOLUtils {
             });
         }
 
+    }
+
+    public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
+        const settings = VSCOBOLConfiguration.get();
+
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+        if (current === undefined) {
+            externalFeatures.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
+            return;
+        }
+
+        const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+        if (gcf !== undefined) {
+            for (const [target, params] of gcf.callTargets) {
+                externalFeatures.logMessage(`Target: ${target}`);
+                for(const param of params.CallParameters) {
+                    externalFeatures.logMessage(` ${param.using} ${param.name}`);
+                }
+            }
+        }
     }
 }
