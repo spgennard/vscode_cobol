@@ -1,6 +1,19 @@
 # CHANGELOG
 
-* debc4f1 (HEAD -> main, tag: 8.1.27, origin/main) bump
+* ae3b711 (HEAD -> main, tag: 8.1.31) bump
+* 4801f9f (origin/main) add more description messages
+* 3616897 quick rename
+* 5f7a81d tidy up
+* afceb71 tweak attrs on colour
+* 3adbe05 continue to build out the coloured comment support
+* 27317ab add comment word tag
+* f4aed2b tidy up
+* 7fcf73a add config for coloured comments
+* 75a8961 start to add comment support, that works will fixed, modern and acu style comments.
+* 8484e2f remove anything todo with coboldoc
+* 1af3567 update description
+* f9386f6 Update CHANGELOG.md
+* debc4f1 (tag: 8.1.27) bump
 * 36593a7 remove 'old' coboldoc snippets and useless 'ruler'
 * 33acf36 update
 * b701b47 Update CHANGELOG.md
