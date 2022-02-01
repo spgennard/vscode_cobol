@@ -44,7 +44,7 @@ import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSmargindecorations } from "./margindecorations";
 import { commentUtils } from "./commenter";
-import { CallTarget, getCallTarget } from "./keywords/cobolCallTargets";
+import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
@@ -840,7 +840,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 return undefined;
             }
             const txt = document.getText(document.getWordRangeAtPosition(position));
-            const txtTarget: CallTarget | undefined = getCallTarget(txt);
+            const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
             if (txtTarget !== undefined) {
                 return new vscode.Hover(`\`\`${txtTarget.api}\`\` - ${txtTarget.description}\n\n[\u2192 ${txtTarget.name}](${txtTarget.url})`);
             }

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import path from "path";
-import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle, COBOLToken, UsingState } from "./cobolsourcescanner";
 import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -12,6 +12,8 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
+import { FileSourceHandler } from "./filesourcehandler";
+import { KnownAPIs } from "./keywords/cobolCallTargets";
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -808,9 +810,40 @@ export class COBOLUtils {
         const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (gcf !== undefined) {
             for (const [target, params] of gcf.callTargets) {
-                externalFeatures.logMessage(`Target: ${target}`);
-                for(const param of params.CallParameters) {
-                    externalFeatures.logMessage(` ${param.using} ${param.name}`);
+                let actualName = params.OriginalToken;
+                if (actualName.length > 1 && (actualName[0] !== "\"")) {
+                    const possibleName = gcf.constantsOrVariables.get(target.toLowerCase());
+                    if (possibleName !== undefined) {
+                        const firstToken: COBOLToken = possibleName[0];
+                        const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
+                        const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
+                        if (lineAtToken !== undefined) {
+                            const lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trimStart();
+                            const lineAfterTokenLower = lineAfterToken.toLowerCase();
+                            const indexOfValue = lineAfterTokenLower.indexOf("value");
+                            if (indexOfValue !== -1) {
+                                actualName = lineAfterToken.substring(indexOfValue + 5).trim();
+                            }
+                        }
+                    }
+                }
+
+                actualName = COBOLSourceScanner.trimLiteral(actualName);
+                const targetCall = KnownAPIs.getCallTarget(actualName);
+                externalFeatures.logMessage(` description : "${targetCall?.description}"`);
+
+                if (params.CallParameters.length === 0) {
+                    externalFeatures.logMessage(`call "${actualName}"`);
+                } else {
+                    externalFeatures.logMessage(`call "${actualName}" using`);
+                    for (const param of params.CallParameters) {
+                        if (param.using === UsingState.BY_VALUE) {
+                            externalFeatures.logMessage(` by value ${param.name}`);
+                        } else {
+                            externalFeatures.logMessage(` by reference ${param.name}`);
+                        }
+                    }
+                    externalFeatures.logMessage("end-call");
                 }
             }
         }
