@@ -1,6 +1,13 @@
-import ile_datatime from "./ile_datetime";
-import cbl_apis from "./mf_cbl_apis";
-import mfunit_apis from "./mf_mfunit";
+import { ILE_APIs } from "./ile_datetime";
+import { CBL_APIs } from "./mf_cbl_apis";
+import { MFUNIT_APIs } from "./mf_mfunit";
+
+export interface IKnownApis
+{
+    url: string;
+    name: string;
+    apis: Map<string, string>;
+}
 
 export class CallTarget {
 	public api: string;
@@ -17,34 +24,21 @@ export class CallTarget {
 	}
 }
 
-interface IAPIDictionary {
-	[index: string]: string;
-}
-
-interface CallTargetInterfaces {
-	url: string;
-	name: string;
-	apis: IAPIDictionary;
-}
-
 const callTargets = new Map<string, CallTarget>();
 
-function addApis(a: CallTargetInterfaces) {
-	const values = Object.keys(a.apis);
-	for (let c = 0; c < values.length; c++) {
-		const value = values[c];
-		callTargets.set(value, new CallTarget(a.name, a.url, value, a.apis[value]));
+function addApis(a: IKnownApis) {
+	for(const [key, description] of a.apis) {
+		callTargets.set(key, new CallTarget(a.name, a.url, key, description));
 	}
 }
 
-addApis(ile_datatime);
-addApis(cbl_apis);
-addApis(mfunit_apis);
+addApis(new CBL_APIs());
+addApis(new MFUNIT_APIs());
+addApis(new ILE_APIs());
 
 export class KnownAPIs {
 	// /* inline decl */
 	public static getCallTarget(api: string): CallTarget | undefined {
-
 		return callTargets.get(api);
 	}
 }
