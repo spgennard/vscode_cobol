@@ -12,13 +12,12 @@ export interface IKnownApis
 export class CallTarget {
 	public api: string;
 	public url: string;
-	public name: string;
-
+	public apiGroup: string;
 	public description: string;
 
 	constructor(_name: string, _url: string, _api: string, _description: string) {
 		this.api = _api;
-		this.name = _name;
+		this.apiGroup = _name;
 		this.url = _url;
 		this.description = _description;
 	}

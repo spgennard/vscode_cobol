@@ -842,7 +842,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const txt = document.getText(document.getWordRangeAtPosition(position));
             const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
             if (txtTarget !== undefined) {
-                return new vscode.Hover(`\`\`${txtTarget.api}\`\` - ${txtTarget.description}\n\n[\u2192 ${txtTarget.name}](${txtTarget.url})`);
+                return new vscode.Hover(`\`\`${txtTarget.api}\`\` - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})`);
             }
 
             return undefined;

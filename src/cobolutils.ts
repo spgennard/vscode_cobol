@@ -806,7 +806,7 @@ export class COBOLUtils {
             externalFeatures.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
             return;
         }
-
+1
         const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (gcf !== undefined) {
             for (const [target, params] of gcf.callTargets) {
