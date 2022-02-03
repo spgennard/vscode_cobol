@@ -14,6 +14,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
+import { StringBuilder } from "typescript-string-operations";
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -806,7 +807,9 @@ export class COBOLUtils {
             externalFeatures.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
             return;
         }
-1
+
+        const exampleMap = new Map<string,string>();
+
         const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (gcf !== undefined) {
             for (const [target, params] of gcf.callTargets) {
@@ -832,20 +835,26 @@ export class COBOLUtils {
                 const targetCall = KnownAPIs.getCallTarget(actualName);
                 externalFeatures.logMessage(` description : "${targetCall?.description}"`);
 
+                const sb = new StringBuilder();
+
                 if (params.CallParameters.length === 0) {
-                    externalFeatures.logMessage(`call "${actualName}"`);
+                    sb.AppendLine(`call "${actualName}"`);
                 } else {
-                    externalFeatures.logMessage(`call "${actualName}" using`);
+                    sb.AppendLine(`call "${actualName}" using`);
                     for (const param of params.CallParameters) {
                         if (param.using === UsingState.BY_VALUE) {
-                            externalFeatures.logMessage(` by value ${param.name}`);
+                            sb.AppendLine(` by value ${param.name}`);
                         } else {
-                            externalFeatures.logMessage(` by reference ${param.name}`);
+                            sb.AppendLine(` by reference ${param.name}`);
                         }
                     }
-                    externalFeatures.logMessage("end-call");
+                    sb.AppendLine("end-call");
                 }
+
+                exampleMap.set(actualName,sb.ToString());
             }
+            const result = Object.fromEntries(exampleMap);
+            externalFeatures.logMessage(`\n${JSON.stringify(result)}\n`);
         }
     }
 }
