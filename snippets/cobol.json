@@ -2356,15 +2356,5 @@
 			"$0"
 		],
 		"scope": "cobol"
-	},
-	"*>> <summary": {
-		"prefix": "*>> <summary",
-		"body": [
-			"*>> <summary>${1:XX is a method in the YY class.}",
-			"*>> <para>${2}</para>",
-			"*>> $0",
-			"*>> </summary>"
-		],
-		"scope": "cobol"
 	}
 }

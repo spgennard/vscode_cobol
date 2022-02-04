@@ -62,6 +62,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			for(const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
 				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
 				ci.detail = `COBOL keyword ${uniqueRetKey}`;
+				
 				items.push(ci);
 			}
 
@@ -110,20 +111,6 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				return items;
 			}
 		}
-
-		// subjective code, checks to see if the previous word is know
-		//  tries to have "verb verb" but that can be problematic
-		//  so need to re-think it and remove it or replace it..
-		//
-		// const lastSpace = lineBefore.lastIndexOf(" ");
-		// if (lastSpace !== -1) {
-		// 	lineBefore = lineBefore.substr(1 + lastSpace);
-		// }
-		// const prevWords = this.words.get(lineBefore);
-		// if (prevWords.length !== 0) {
-		// 	const items: CompletionItem[] = [];
-		// 	return items;
-		// }
 
 		return this.getKeywordsGivenPartialWord(wordToComplete, 128, document.languageId);
 	}

@@ -46,6 +46,7 @@ import { VSmargindecorations } from "./margindecorations";
 import { commentUtils } from "./commenter";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
+import { SnippetCompletionItemProvider } from "./snippetprovider";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -813,6 +814,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const keywordProvider = new KeywordAutocompleteCompletionItemProvider(true);
     const keywordProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
+
+    const snippetProvider = new SnippetCompletionItemProvider();
+    const snippetProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), snippetProvider);
+    context.subscriptions.push(snippetProviderDisposible);
+
 
     if (settings.outline) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
