@@ -163,21 +163,6 @@
 		"description": "ENTRY statement",
 		"scope": "acucobol"
 	},
-	"enum-id": {
-		"prefix": [
-			"enum-id",
-			"ei"
-		],
-		"body": [
-			"*>> <summary>enum-id $1</summary>",
-			"enum-id. $1 as \"Status\".",
-			"    78 ${2:Item}  value ${3:1}.",
-			"end enum $1.",
-			""
-		],
-		"description": "enum-id",
-		"scope": "acucobol"
-	},
 	"evaluate": {
 		"prefix": [
 			"evaluate",
