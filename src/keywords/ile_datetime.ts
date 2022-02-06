@@ -21,6 +21,9 @@ export class ILE_APIs implements IKnownApis
          [ "CEEFMDT", "Return Default Date and Time Strings for Country or Region, returns the default date and time picture strings for the country or region specified in the country/region_code parameter." ],
          [ "CEEFMDA", "Return Default Date String for Country or Region, returns the default date picture string for the country or region specified in the country/region_code parameter." ],
          [ "CEEFMTM", "Return Default Time String for Country or Region, returns the default time picture string for the country or region specified in the country/region_code parameter." ],
-         [ "CEESCEN", "Set Century, sets the century within which 2-digit year values are assumed to lie.]" ]
+         [ "CEESCEN", "Sets the century Window" ]
     ]);
+
+    public examples = new Map<string, string>();
+    public snippets = new Map<string, string>();
 }

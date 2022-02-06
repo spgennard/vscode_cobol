@@ -1,7 +1,6 @@
 import { IKnownApis } from "./cobolCallTargets";
 
-export class CBL_APIs implements IKnownApis
-{
+export class CBL_APIs implements IKnownApis {
     public url = "https,//www.microfocus.com/documentation/visual-cobol/vc70/DevHub/HRCLRHCALL17.html";
     public name = "Micro Focus CBL Library Routines";
     public apis = new Map<string, string>([
@@ -168,6 +167,14 @@ export class CBL_APIs implements IKnownApis
         ["CBL_WRITE_VFILE", "Writes bytes to a heap."],
         ["CBL_XOR", "Does a logical XOR between the bits of two data items."],
         ["CBL_YIELD_RUN_UNIT", "Yields the remainder of a run-unit's time-slice."]
+    ]);
+
+    public examples = new Map<string, string>([
+        ["CBL_CLOSE_FILE", "call \"CBL_CLOSE_FILE\" using HANDLE\n  returning STATUS-CODE\nend-call"]
+    ]);
+
+    public snippets = new Map<string, string>([
+        ["CBL_CLOSE_FILE", "call \"CBL_CLOSE_FILE\" using ${1:HANDLE}\n  returning ${2:STATUS-CODE}\nend-call\n$0"]
     ]);
 }
 

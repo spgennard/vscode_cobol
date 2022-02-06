@@ -7,6 +7,8 @@ export interface IKnownApis
     url: string;
     name: string;
     apis: Map<string, string>;
+	examples: Map<string, string>;
+	snippets: Map<string, string>;
 }
 
 export class CallTarget {
@@ -14,12 +16,16 @@ export class CallTarget {
 	public url: string;
 	public apiGroup: string;
 	public description: string;
+	public example: string;
+	public snippet: string;
 
-	constructor(_name: string, _url: string, _api: string, _description: string) {
+	constructor(_name: string, _url: string, _api: string, _description: string, _example: string, _snippet: string) {
 		this.api = _api;
 		this.apiGroup = _name;
 		this.url = _url;
 		this.description = _description;
+		this.example = _example;
+		this.snippet = _snippet;
 	}
 }
 
@@ -27,7 +33,12 @@ const callTargets = new Map<string, CallTarget>();
 
 function addApis(a: IKnownApis) {
 	for(const [key, description] of a.apis) {
-		callTargets.set(key, new CallTarget(a.name, a.url, key, description));
+		const possibleExample = a.examples.get(key);
+		const possibleSnippet = a.snippets.get(key);
+		callTargets.set(key, new CallTarget(a.name, a.url, key, description, 
+			(possibleExample === undefined ? "" : possibleExample),
+			(possibleSnippet === undefined ? "" : possibleSnippet)
+			));
 	}
 }
 

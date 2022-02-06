@@ -13,7 +13,7 @@ import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
-import { KnownAPIs } from "./keywords/cobolCallTargets";
+// import { KnownAPIs } from "./keywords/cobolCallTargets";
 import { StringBuilder } from "typescript-string-operations";
 
 export enum FoldStyle {
@@ -809,6 +809,7 @@ export class COBOLUtils {
         }
 
         const exampleMap = new Map<string,string>();
+        const snippetMap = new Map<string,string>();
 
         const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (gcf !== undefined) {
@@ -832,29 +833,41 @@ export class COBOLUtils {
                 }
 
                 actualName = COBOLSourceScanner.trimLiteral(actualName);
-                const targetCall = KnownAPIs.getCallTarget(actualName);
-                externalFeatures.logMessage(` description : "${targetCall?.description}"`);
+                // const targetCall = KnownAPIs.getCallTarget(actualName);
+                // externalFeatures.logMessage(` description : "${targetCall?.description}"`);
 
-                const sb = new StringBuilder();
-
+                const sbExample = new StringBuilder();
+                const sbSnippetBody = new StringBuilder();
                 if (params.CallParameters.length === 0) {
-                    sb.AppendLine(`call "${actualName}"`);
+                    sbExample.AppendLine(`call "${actualName}"`);
+                    sbSnippetBody.AppendLine(`call "${actualName}"`);
                 } else {
-                    sb.AppendLine(`call "${actualName}" using`);
+                    sbExample.AppendLine(`call "${actualName}" using`);
+                    sbSnippetBody.AppendLine(`call "${actualName}" using`);
+                    let paramCounter = 1;
                     for (const param of params.CallParameters) {
+                        //${1:CONDITION}"
                         if (param.using === UsingState.BY_VALUE) {
-                            sb.AppendLine(` by value ${param.name}`);
+                            sbExample.AppendLine(` by value ${param.name}`);
+                            sbSnippetBody.AppendLine(` by value \${${paramCounter}:${param.name}}`);
                         } else {
-                            sb.AppendLine(` by reference ${param.name}`);
+                            sbExample.AppendLine(` by reference ${param.name}`);
+                            sbSnippetBody.AppendLine(` by reference \${${paramCounter}:${param.name}}`);
                         }
+                        paramCounter++;
                     }
-                    sb.AppendLine("end-call");
+                    sbExample.AppendLine("end-call");
+                    sbSnippetBody.AppendLine("end-call");
+                    sbSnippetBody.AppendLine("${0}");
                 }
 
-                exampleMap.set(actualName,sb.ToString());
+                exampleMap.set(actualName,sbExample.ToString());
+                snippetMap.set(actualName,sbSnippetBody.ToString());
             }
-            const result = Object.fromEntries(exampleMap);
-            externalFeatures.logMessage(`\n${JSON.stringify(result)}\n`);
+            const exampleArray = Object.fromEntries(exampleMap);
+            externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
+            // const snipperArray = Object.fromEntries(snippetMap);
+            // externalFeatures.logMessage(`{JSON.stringify(snipperArray)}`);
         }
     }
 }

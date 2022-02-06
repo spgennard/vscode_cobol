@@ -2,10 +2,10 @@ import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKin
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
 
-const snippetMap = new Map<string, SnippetString>(
-    [
-        ["CBL_CLOSE_FILE", new SnippetString("call \"CBL_CLOSE_FILE\" using ${1:HANDLE}\n  returning ${2:STATUS-CODE}\nend-call\n$0")]
-    ]);
+// const snippetMap = new Map<string, SnippetString>(
+//     [
+//         ["CBL_CLOSE_FILE", new SnippetString("call \"CBL_CLOSE_FILE\" using ${1:HANDLE}\n  returning ${2:STATUS-CODE}\nend-call\n$0")]
+//     ]);
 
 
 
@@ -13,8 +13,10 @@ const snippetMap = new Map<string, SnippetString>(
 export class SnippetCompletionItemProvider implements CompletionItemProvider {
 
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getCompletionItemForAPI(api: string, position: Position): CompletionItem | undefined {
-        const snippet = snippetMap.get(api);
+        const ki = KnownAPIs.getCallTarget(api);
+        const snippet = ki === undefined ? undefined : ki.snippet;
         if (snippet === undefined) {
             return snippet;
         }
@@ -22,14 +24,19 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         const ci = new CompletionItem(preselect);
         ci.keepWhitespace = false;
         ci.kind = CompletionItemKind.Snippet;
-        ci.insertText = snippet;
+        ci.insertText = new SnippetString(snippet);
         ci.preselect = true;
         ci.filterText = preselect;
         ci.commitCharacters = [`call "${api}"`];
 
-        const ki = KnownAPIs.getCallTarget(api);
         if (ki !== undefined) {
             ci.documentation = ki.description;
+        } else {
+            ci.documentation = "";
+        }
+
+        if (ki !== undefined && ki.example.length !== 0) {
+            ci.documentation += `\r\n\r\nExample:\r\n${ki.example}`;
         }
         return ci;
     }
