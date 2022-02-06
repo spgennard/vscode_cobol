@@ -808,8 +808,8 @@ export class COBOLUtils {
             return;
         }
 
-        const exampleMap = new Map<string,string>();
-        const snippetMap = new Map<string,string>();
+        const exampleMap = new Map<string, string>();
+        const snippetMap = new Map<string, string>();
 
         const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (gcf !== undefined) {
@@ -847,12 +847,19 @@ export class COBOLUtils {
                     let paramCounter = 1;
                     for (const param of params.CallParameters) {
                         //${1:CONDITION}"
-                        if (param.using === UsingState.BY_VALUE) {
-                            sbExample.AppendLine(` by value ${param.name}`);
-                            sbSnippetBody.AppendLine(` by value \${${paramCounter}:${param.name}}`);
-                        } else {
-                            sbExample.AppendLine(` by reference ${param.name}`);
-                            sbSnippetBody.AppendLine(` by reference \${${paramCounter}:${param.name}}`);
+                        switch (param.using) {
+                            case UsingState.BY_VALUE:
+                                sbExample.AppendLine(` by value ${param.name}`);
+                                sbSnippetBody.AppendLine(` by value \${${paramCounter}:${param.name}}`);
+                                break;
+                            case UsingState.BY_REF:
+                                sbExample.AppendLine(` by reference ${param.name}`);
+                                sbSnippetBody.AppendLine(` by reference \${${paramCounter}:${param.name}}`);
+                                break;
+                            case UsingState.RETURNING:
+                                sbExample.AppendLine(` returning ${param.name}`);
+                                sbSnippetBody.AppendLine(` returning \${${paramCounter}:${param.name}}`);
+                                break;
                         }
                         paramCounter++;
                     }
@@ -861,13 +868,18 @@ export class COBOLUtils {
                     sbSnippetBody.AppendLine("${0}");
                 }
 
-                exampleMap.set(actualName,sbExample.ToString());
-                snippetMap.set(actualName,sbSnippetBody.ToString());
+                exampleMap.set(actualName, sbExample.ToString());
+                snippetMap.set(actualName, sbSnippetBody.ToString());
             }
-            const exampleArray = Object.fromEntries(exampleMap);
-            externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
-            // const snipperArray = Object.fromEntries(snippetMap);
-            // externalFeatures.logMessage(`{JSON.stringify(snipperArray)}`);
+            // const exampleArray = Object.fromEntries(exampleMap);
+            // externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
+            const snipperArray = Object.fromEntries(snippetMap);
+            externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
+            // for (const [a, b] of snippetMap) {
+            //     externalFeatures.logMessage(a);
+            //     externalFeatures.logMessage(" "+b);
+            //     externalFeatures.logMessage("--------------------------------------------------");
+            // }
         }
     }
 }

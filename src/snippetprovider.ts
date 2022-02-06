@@ -65,19 +65,18 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
                     return snippets;
                 }
                 const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
-                if (preTrimmedWork === "CBL_CLOSE_FILE") {
-                    const ci = this.getCompletionItemForAPI(preTrimmedWork, position);
-                    if (ci !== undefined) {
-                        if (ci.insertText !== undefined) {
-                            const before = new Range(new Position(position.line, charPosForCall),
-                                new Position(position.line, charPosForCall + ci.insertText.valueOf.length)
-                            );
+                const ci = this.getCompletionItemForAPI(preTrimmedWork, position);
+                if (ci !== undefined) {
+                    if (ci.insertText !== undefined) {
+                        const before = new Range(new Position(position.line, charPosForCall),
+                            new Position(position.line, charPosForCall + ci.insertText.valueOf.length)
+                        );
 
-                            ci.range = before;
-                        }
-                        snippets.push(ci);
+                        ci.range = before;
                     }
+                    snippets.push(ci);
                 }
+
             }
         }
 

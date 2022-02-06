@@ -468,7 +468,8 @@ export enum UsingState {
     BY_VALUE,
     BY_REF,
     BY_CONTENT,
-    RETURNING
+    RETURNING,
+    UNKNOWN
 }
 
 export class COBOLParameter {
@@ -1634,16 +1635,24 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.using = UsingState.RETURNING;
                             break;
                         default:
+                            if (state.using === UsingState.UNKNOWN) {
+                                break;
+                            }
                             if (this.sourceReferences !== undefined) {
                                 let isNotKeywordOrAny = this.isValidKeyword(tcurrentLower) === false;
                                 if (tcurrentLower === "any") {
                                     isNotKeywordOrAny = true;
+                                    state.parameters.push(new COBOLParameter(state.using, tcurrent));
                                 }
                                 if (isNotKeywordOrAny && (this.isNumber(tcurrentLower) === false)) {
                                     // no forward validation can be done, as this is a one pass scanner
                                     this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                                     state.parameters.push(new COBOLParameter(state.using, tcurrent));
                                 }
+                            }
+
+                            if (state.using === UsingState.RETURNING) {
+                                state.using = UsingState.UNKNOWN;
                             }
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
                     }
