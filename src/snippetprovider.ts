@@ -11,8 +11,6 @@ import { KnownAPIs } from "./keywords/cobolCallTargets";
 
 
 export class SnippetCompletionItemProvider implements CompletionItemProvider {
-
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getCompletionItemForAPI(api: string, position: Position): CompletionItem | undefined {
         const ki = KnownAPIs.getCallTarget(api);
@@ -51,7 +49,20 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
             if (preWord.toUpperCase() === "CALL") {
-                //TODO: return all CALL's
+                const callMap = KnownAPIs.getCallTargetMap();
+                for (const [api,] of callMap) {
+                    const ci = this.getCompletionItemForAPI(api, position);
+                    if (ci !== undefined) {
+                        if (ci.insertText !== undefined) {
+                            const line = document.lineAt(position.line);
+                            const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
+                            const before = new Range(new Position(position.line, charPosForCall), position);
+
+                            ci.range = before;
+                            snippets.push(ci);
+                        }
+                    }
+                }
                 return snippets;
             }
 

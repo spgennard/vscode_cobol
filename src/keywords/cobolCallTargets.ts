@@ -51,4 +51,8 @@ export class KnownAPIs {
 	public static getCallTarget(api: string): CallTarget | undefined {
 		return callTargets.get(api);
 	}
+
+	public static getCallTargetMap() : Map<string, CallTarget> {
+		return callTargets;
+	}
 }

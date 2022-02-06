@@ -1367,9 +1367,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         /* remove end . */
         if (literalTrimmed.endsWith(".")) {
-            literalTrimmed=literalTrimmed.substr(0, literalTrimmed.length - 1);
+            literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
         }
-        
+
         /* remove quotes */
         if (literalTrimmed[0] === "\"" && literalTrimmed.endsWith("\"")) {
             return literalTrimmed.substr(1, literalTrimmed.length - 2);
@@ -1639,12 +1639,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 break;
                             }
                             if (this.sourceReferences !== undefined) {
-                                let isNotKeywordOrAny = this.isValidKeyword(tcurrentLower) === false;
                                 if (tcurrentLower === "any") {
-                                    isNotKeywordOrAny = true;
                                     state.parameters.push(new COBOLParameter(state.using, tcurrent));
-                                }
-                                if (isNotKeywordOrAny && (this.isNumber(tcurrentLower) === false)) {
+                                } else if ((this.isValidKeyword(tcurrentLower) === false) && (this.isNumber(tcurrentLower) === false)) {
                                     // no forward validation can be done, as this is a one pass scanner
                                     this.addReference(this.sourceReferences.unknownReferences, tcurrentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable);
                                     state.parameters.push(new COBOLParameter(state.using, tcurrent));

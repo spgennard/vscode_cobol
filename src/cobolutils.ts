@@ -873,13 +873,13 @@ export class COBOLUtils {
             }
             // const exampleArray = Object.fromEntries(exampleMap);
             // externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
-            const snipperArray = Object.fromEntries(snippetMap);
-            externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
-            // for (const [a, b] of snippetMap) {
-            //     externalFeatures.logMessage(a);
-            //     externalFeatures.logMessage(" "+b);
-            //     externalFeatures.logMessage("--------------------------------------------------");
-            // }
+            // const snipperArray = Object.fromEntries(snippetMap);
+            // externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
+            for (const [a, b] of snippetMap) {
+                externalFeatures.logMessage(a);
+                externalFeatures.logMessage(" "+b);
+                externalFeatures.logMessage("--------------------------------------------------");
+            }
         }
     }
 }
