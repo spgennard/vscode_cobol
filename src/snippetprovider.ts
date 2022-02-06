@@ -45,6 +45,8 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2)); // 1 space -1
         if (!wordRange) return [];
 
+        const position_plus1 = new Position(position.line, position.character + 1);
+        const position_plus1_char = document.getText(new Range(position, position_plus1));
         const snippets: CompletionItem[] = [];
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
@@ -56,9 +58,11 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
                         if (ci.insertText !== undefined) {
                             const line = document.lineAt(position.line);
                             const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
-                            const before = new Range(new Position(position.line, charPosForCall), position);
-
-                            ci.range = before;
+                            if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                                ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                            } else {
+                                ci.range = new Range(new Position(position.line, charPosForCall), position);
+                            }
                             snippets.push(ci);
                         }
                     }
@@ -79,11 +83,11 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
                 const ci = this.getCompletionItemForAPI(preTrimmedWork, position);
                 if (ci !== undefined) {
                     if (ci.insertText !== undefined) {
-                        const before = new Range(new Position(position.line, charPosForCall),
-                            new Position(position.line, charPosForCall + ci.insertText.valueOf.length)
-                        );
-
-                        ci.range = before;
+                        if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                            ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                        } else {
+                            ci.range = new Range(new Position(position.line, charPosForCall), position);
+                        }
                     }
                     snippets.push(ci);
                 }
