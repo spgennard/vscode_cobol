@@ -810,6 +810,7 @@ export class COBOLUtils {
 
         const exampleMap = new Map<string, string>();
         const snippetMap = new Map<string, string>();
+        const paramDeclarationMap = new Map<string, string>();
 
         const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (gcf !== undefined) {
@@ -838,6 +839,8 @@ export class COBOLUtils {
 
                 const sbExample = new StringBuilder();
                 const sbSnippetBody = new StringBuilder();
+                const sbParamDecl = new StringBuilder();
+                
                 if (params.CallParameters.length === 0) {
                     sbExample.AppendLine(`call "${actualName}"`);
                     sbSnippetBody.AppendLine(`call "${actualName}"`);
@@ -861,25 +864,44 @@ export class COBOLUtils {
                                 sbSnippetBody.AppendLine(` returning \${${paramCounter}:${param.name}}`);
                                 break;
                         }
+
+                        const possibleName = gcf.constantsOrVariables.get(param.name.toLowerCase());
+                        if (possibleName !== undefined) {
+                            const firstToken: COBOLToken = possibleName[0];
+                            const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
+                            const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
+                            if (lineAtToken !== undefined) {
+                                const lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trimStart();
+                                if (lineAfterToken.toLowerCase().indexOf("typedef") === -1) {
+                                    sbParamDecl.AppendLine(`${param.name} => ${lineAfterToken}`);
+                                }
+                            }
+                        }
                         paramCounter++;
                     }
                     sbExample.AppendLine("end-call");
                     sbSnippetBody.AppendLine("end-call");
                     sbSnippetBody.AppendLine("${0}");
+
                 }
 
                 exampleMap.set(actualName, sbExample.ToString());
                 snippetMap.set(actualName, sbSnippetBody.ToString());
+                paramDeclarationMap.set(actualName, sbParamDecl.ToString());
             }
             // const exampleArray = Object.fromEntries(exampleMap);
             // externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
-            const snipperArray = Object.fromEntries(snippetMap);
-            externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
-            // for (const [a, b] of snippetMap) {
-            //     externalFeatures.logMessage(a);
-            //     externalFeatures.logMessage(" "+b);
-            //     externalFeatures.logMessage("--------------------------------------------------");
-            // }
+            // const snipperArray = Object.fromEntries(snippetMap);
+            // externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
+            for (const [a, b] of snippetMap) {
+                externalFeatures.logMessage(a);
+                const decls = paramDeclarationMap.get(a);
+                if (decls !== undefined) {
+                    externalFeatures.logMessage(decls);
+                }
+                externalFeatures.logMessage(" "+b);
+                externalFeatures.logMessage("--------------------------------------------------");
+            }
         }
     }
 }
