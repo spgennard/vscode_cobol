@@ -858,7 +858,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const updateDecorations = async () => {
         // * if no active window is open
         if (!activeEditor) return;
-    
+
         await VSmargindecorations.updateDecorations(activeEditor);
         await linter.updateLinter(activeEditor.document);
         await colourCommentHandler.updateDecorations(activeEditor);
@@ -1240,7 +1240,36 @@ export async function activate(context: ExtensionContext): Promise<void> {
     });
     context.subscriptions.push(dumpCallTargets);
 
-    
+    // vscode.languages.registerSignatureHelpProvider(VSExtensionUtils.getAllCobolSelectors(settings), new class implements vscode.SignatureHelpProvider {
+    //     provideSignatureHelp(
+    //         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //         document: vscode.TextDocument,
+    //         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //         position: vscode.Position,
+    //         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //         token: vscode.CancellationToken,
+    //         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //         context: vscode.SignatureHelpContext
+    //     ): vscode.ProviderResult<vscode.SignatureHelp> {
+
+    //         // console.log(context.activeSignatureHelp);
+
+    //         // Return fake signature help result
+    //         const sigHelp = new vscode.SignatureHelp();
+    //         sigHelp.activeParameter = 0;
+    //         sigHelp.activeSignature = 0;
+    //         sigHelp.signatures = [
+    //             new vscode.SignatureInformation("1", "Paramter 1"),
+    //             new vscode.SignatureInformation("2")
+    //         ];
+    //         return sigHelp;
+    //     }
+    // }, {
+    //     triggerCharacters: ["by"],
+    //     retriggerCharacters: [","]
+    // });
+
+
     if (settings.process_metadata_cache_on_start) {
         try {
             if (settings.maintain_metadata_cache) {

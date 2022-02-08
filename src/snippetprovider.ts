@@ -11,8 +11,21 @@ import { KnownAPIs } from "./keywords/cobolCallTargets";
 
 
 export class SnippetCompletionItemProvider implements CompletionItemProvider {
+
+    private allCallTargets = new Map<string, CompletionItem>();
+
+    constructor() {
+        const callMap = KnownAPIs.getCallTargetMap();
+        for (const [api,] of callMap) {
+            const ci = this.getCompletionItemForAPI(api);
+            if (ci !== undefined) {
+                this.allCallTargets.set(api, ci);
+            }
+        }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private getCompletionItemForAPI(api: string, position: Position): CompletionItem | undefined {
+    private getCompletionItemForAPI(api: string): CompletionItem | undefined {
         const ki = KnownAPIs.getCallTarget(api);
         const snippet = ki === undefined ? undefined : ki.snippet;
         if (snippet === undefined) {
@@ -39,6 +52,7 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         return ci;
     }
 
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
 
@@ -51,20 +65,16 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
             if (preWord.toUpperCase() === "CALL") {
-                const callMap = KnownAPIs.getCallTargetMap();
-                for (const [api,] of callMap) {
-                    const ci = this.getCompletionItemForAPI(api, position);
-                    if (ci !== undefined) {
-                        if (ci.insertText !== undefined) {
-                            const line = document.lineAt(position.line);
-                            const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
-                            if (position_plus1_char !== undefined && position_plus1_char === "\"") {
-                                ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
-                            } else {
-                                ci.range = new Range(new Position(position.line, charPosForCall), position);
-                            }
-                            snippets.push(ci);
+                 for (const [, ci] of this.allCallTargets) {
+                    if (ci.insertText !== undefined) {
+                        const line = document.lineAt(position.line);
+                        const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
+                        if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                            ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                        } else {
+                            ci.range = new Range(new Position(position.line, charPosForCall), position);
                         }
+                        snippets.push(ci);
                     }
                 }
                 return snippets;
@@ -80,7 +90,8 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
                     return snippets;
                 }
                 const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
-                const ci = this.getCompletionItemForAPI(preTrimmedWork, position);
+                const preTrimmedWorkUpper = preTrimmedWork.toUpperCase();
+                const ci = this.allCallTargets.get(preTrimmedWorkUpper);
                 if (ci !== undefined) {
                     if (ci.insertText !== undefined) {
                         if (position_plus1_char !== undefined && position_plus1_char === "\"") {
@@ -90,6 +101,19 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
                         }
                     }
                     snippets.push(ci);
+                } else {
+                    for (const [api, ci] of this.allCallTargets) {
+                        if (ci.insertText !== undefined) {
+                            if (api.startsWith(preTrimmedWorkUpper)) {
+                                if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                                    ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                                } else {
+                                    ci.range = new Range(new Position(position.line, charPosForCall), position);
+                                }
+                                snippets.push(ci);
+                            }
+                        }
+                    }    
                 }
 
             }

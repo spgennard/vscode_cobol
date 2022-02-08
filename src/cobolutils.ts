@@ -13,7 +13,6 @@ import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
-// import { KnownAPIs } from "./keywords/cobolCallTargets";
 import { StringBuilder } from "typescript-string-operations";
 
 export enum FoldStyle {
@@ -840,7 +839,7 @@ export class COBOLUtils {
                 const sbExample = new StringBuilder();
                 const sbSnippetBody = new StringBuilder();
                 const sbParamDecl = new StringBuilder();
-                
+
                 if (params.CallParameters.length === 0) {
                     sbExample.AppendLine(`call "${actualName}"`);
                     sbSnippetBody.AppendLine(`call "${actualName}"`);
@@ -899,7 +898,7 @@ export class COBOLUtils {
                 if (decls !== undefined) {
                     externalFeatures.logMessage(decls);
                 }
-                externalFeatures.logMessage(" "+b);
+                externalFeatures.logMessage(" " + b);
                 externalFeatures.logMessage("--------------------------------------------------");
             }
         }
