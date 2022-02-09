@@ -1,7 +1,29 @@
 # CHANGELOG
 
-* ae3b711 (HEAD -> main, tag: 8.1.31) bump
-* 4801f9f (origin/main) add more description messages
+* 0c185a0 (HEAD -> main, tag: 8.2.8, origin/main) bump
+* 5ff2dc6 add prop for snippets activation
+* 9351d88 add schema/format for color entries
+* 315ee87 add a bit more support for dynamic snippets
+* 36bb5b4 save param info
+* df48e96 add -const's, allow quotes to be replaced
+* f9a5196 redo mf-cbl_apis after 'any' param fix
+* 1b7b59f start to fix problem with "any" paramter
+* 1e0688f add some static/defined prototypes
+* 340bca0 move dynamic snippets into api lists
+* b3989f4 refactor
+* 8d5ad29 add v0 of the dynamic snippet provider
+* 2376ad1 continue work on dynamic snippets
+* 300912d remove snippet
+* 85e62e0 remove item
+* 3466a0e wip
+* cf2425d quick prop rename
+* 86e05ac move from the loose json impl to a class/interface
+* 50acef9 add mfunit api to list of known apis
+* c5087f9 add some diag code (which will be removed before publish)
+* c909ccd bump versions
+* 7350f55 Update CHANGELOG.md
+* ae3b711 (tag: 8.1.31) bump
+* 4801f9f add more description messages
 * 3616897 quick rename
 * 5f7a81d tidy up
 * afceb71 tweak attrs on colour
