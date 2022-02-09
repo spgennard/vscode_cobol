@@ -739,6 +739,35 @@
         "coboleditor.comments_tags": {
           "type": "array",
           "description": "Tags which are used to color the comments.",
+          "items": {
+            "title": "Comment tag",
+            "type": "object",
+            "properties": {
+              "tag" : {
+                "type":"string"
+              },
+              "color" : {
+                "type": "string",
+                "format": "color"
+              },
+              "strikethrough" : {
+                "type": "boolean"
+              },
+              "underline" : {
+                "type": "boolean"
+              },
+              "backgroundColor" : {
+                "type": "string",
+                "format": "color"
+              },
+              "bold" : {
+                "type": "boolean"
+              },
+              "italic" : {
+                "type": "boolean"
+              }
+            }
+          },
           "default": [
             {
               "tag": "!",
