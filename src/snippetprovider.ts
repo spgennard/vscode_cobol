@@ -1,6 +1,7 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, Position, ProviderResult, Range, SnippetString, TextDocument } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 // const snippetMap = new Map<string, SnippetString>(
 //     [
@@ -13,7 +14,7 @@ import { KnownAPIs } from "./keywords/cobolCallTargets";
 export class SnippetCompletionItemProvider implements CompletionItemProvider {
 
     private allCallTargets = new Map<string, CompletionItem>();
-
+    
     constructor() {
         const callMap = KnownAPIs.getCallTargetMap();
         for (const [api,] of callMap) {
@@ -55,6 +56,10 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
+        const config = VSCOBOLConfiguration.get();
+        if (config.snippets === false) {
+            return [];
+        }
 
         const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2)); // 1 space -1
         if (!wordRange) return [];

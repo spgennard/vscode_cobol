@@ -27,7 +27,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.64.0"
   },
   "extensionKind": [
     "workspace"
@@ -825,6 +825,11 @@
               "reverse": true
             }
           ]
+        },
+        "coboleditor.snippets": {
+          "type": "boolean",
+          "description": "Enable experimental dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
+          "default": false
         }
       }
     },
