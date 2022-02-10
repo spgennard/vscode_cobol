@@ -870,7 +870,10 @@ export class COBOLUtils {
                             const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
                             const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
                             if (lineAtToken !== undefined) {
-                                const lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trimStart();
+                                let lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trim();
+                                if (lineAfterToken.endsWith(".")) {
+                                    lineAfterToken = lineAfterToken.slice(0,-1);
+                                }
                                 if (lineAfterToken.toLowerCase().indexOf("typedef") === -1) {
                                     sbParamDecl.AppendLine(`${param.name} => ${lineAfterToken}`);
                                 }
@@ -893,13 +896,10 @@ export class COBOLUtils {
             // const snipperArray = Object.fromEntries(snippetMap);
             // externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
             for (const [a, b] of exampleMap) {
-                externalFeatures.logMessage(a);
                 const decls = paramDeclarationMap.get(a);
-                if (decls !== undefined) {
-                    externalFeatures.logMessage(decls);
-                }
-                externalFeatures.logMessage(" " + b);
-                externalFeatures.logMessage("--------------------------------------------------");
+                const declString = decls === undefined ? "" : decls+"\r\n"+b;
+                const varDecls = `[ "${a}", ${JSON.stringify(declString)} ],`;
+                externalFeatures.logMessage(varDecls);
             }
         }
     }
