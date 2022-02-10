@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 0c185a0 (HEAD -> main, tag: 8.2.8, origin/main) bump
+* 2d78cae (HEAD -> main, tag: 8.2.9, origin/main) fix snippet config and showing of the example
+* 53dde28 Update CHANGELOG.md
+* 0c185a0 (tag: 8.2.8) bump
 * 5ff2dc6 add prop for snippets activation
 * 9351d88 add schema/format for color entries
 * 315ee87 add a bit more support for dynamic snippets
