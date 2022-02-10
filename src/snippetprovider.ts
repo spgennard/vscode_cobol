@@ -1,4 +1,4 @@
-import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, Position, ProviderResult, Range, SnippetString, TextDocument } from "vscode";
+import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
@@ -41,15 +41,13 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         ci.filterText = preselect;
         ci.commitCharacters = [`call "${api}"`];
 
-        if (ki !== undefined) {
-            ci.documentation = ki.description;
-        } else {
-            ci.documentation = "";
-        }
+        let documentation = ki === undefined ? "" : ki.description;
 
         if (ki !== undefined && ki.example.length !== 0) {
-            ci.documentation += `\r\n\r\nExample:\r\n${ki.example}`;
+            documentation += `\r\n\r\nExample:\r\n~~~\r\n${ki.example}\r\n~~~`;
         }
+
+        ci.documentation = new MarkdownString(documentation);
         return ci;
     }
 

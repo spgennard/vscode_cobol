@@ -103,7 +103,7 @@ export class VSCOBOLConfiguration {
         
         vsconfig.comment_tag_word = workspace.getConfiguration("coboleditor").get<boolean>("comment_tag_word", vsconfig.comment_tag_word);
 
-        vsconfig.comment_tag_word = workspace.getConfiguration("coboleditor").get<boolean>("snippets", vsconfig.snippets);
+        vsconfig.snippets = workspace.getConfiguration("coboleditor").get<boolean>("snippets", vsconfig.snippets);
 
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
