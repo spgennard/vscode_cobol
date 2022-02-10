@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 2d78cae (HEAD -> main, tag: 8.2.9, origin/main) fix snippet config and showing of the example
+* 1b6e348 (HEAD -> main, tag: 8.2.10, origin/main) include decls in the example for the snippets
+* 5830426 Update CHANGELOG.md
+* 2d78cae (tag: 8.2.9) fix snippet config and showing of the example
 * 53dde28 Update CHANGELOG.md
 * 0c185a0 (tag: 8.2.8) bump
 * 5ff2dc6 add prop for snippets activation
