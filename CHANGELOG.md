@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 8f23fc0 (HEAD -> main, tag: 8.2.11, origin/main) enable short hover and change from a boolean enabler to a enum
+* 82fe6f4 (HEAD -> main, tag: 8.2.12, origin/main) change "full" to "long" in enum for snippet style
+* cacd337 update packages, flip to new test package for vscode/electron
+* d9e9704 Update CHANGELOG.md
+* 8f23fc0 (tag: 8.2.11) enable short hover and change from a boolean enabler to a enum
 * 300949f Update CHANGELOG.md
 * 1b6e348 (tag: 8.2.10) include decls in the example for the snippets
 * 5830426 Update CHANGELOG.md
