@@ -1161,7 +1161,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings), provider, VSSemanticProvider.getLegend());
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const actionCodelens = commands.registerCommand(`${ExtensionDefaults.defaultEditorConfig}.ppcodelenaction`, (args: string) => {
+    const actionCodelens = commands.registerCommand("cobolplugin.ppcodelenaction", (args: string) => {
         VSPPCodeLens.actionCodeLens(args);
     });
     context.subscriptions.push(actionCodelens);

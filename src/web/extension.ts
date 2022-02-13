@@ -27,10 +27,8 @@ function showExtensionInformation():void {
             VSLogger.logMessage("----------------------------------------------------------------------");
             VSLogger.logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
             VSLogger.logMessage("----------------------------------------------------------------------");
-            VSLogger.logMessage(`Version                                     : ${vscode.version}`);
-        } else {
-            VSLogger.logMessage(`VSCode version                              : ${vscode.version}`);
         }
+        VSLogger.logMessage(`Version                                     : ${vscode.version}`);
         VSLogger.logMessage("Extension Information:");
         VSLogger.logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
         VSLogger.logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);

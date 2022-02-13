@@ -4,7 +4,6 @@ import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { ExtensionDefaults } from "./extensionDefaults";
 
 export class VSPPCodeLens implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
@@ -61,7 +60,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         cl.command = {
                             title: "View copybook repacement",
                             tooltip: prevSrc,
-                            command: `${ExtensionDefaults.defaultEditorConfig}.ppcodelenaction`,
+                            command: "cobolplugin.ppcodelenaction",
                             arguments: [arg]
                         };
                         this.resolveCodeLens(cl, token);
