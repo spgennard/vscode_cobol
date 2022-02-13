@@ -14,6 +14,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { FileSourceHandler } from "./filesourcehandler";
 import { StringBuilder } from "typescript-string-operations";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export enum FoldStyle {
     LowerCase = 1,
@@ -118,7 +119,7 @@ export class COBOLUtils {
             return;
         }
 
-        const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+        const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
         editorConfig.update("metadata_symbols", [], false);
         editorConfig.update("metadata_entrypoints", [], false);
         editorConfig.update("metadata_types", [], false);
@@ -208,7 +209,7 @@ export class COBOLUtils {
 
             if (update) {
                 try {
-                    const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+                    const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
                     editorConfig.update("metadata_symbols", symbols, false);
                     editorConfig.update("metadata_entrypoints", entrypoints, false);
                     editorConfig.update("metadata_types", types, false);
@@ -295,7 +296,7 @@ export class COBOLUtils {
 
         // update copybookdirs with optimized version
         if (updateCopybookdirs) {
-            const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+            const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
             editorConfig.update("copybookdirs", fileSearchDirectory);
             VSLogger.logMessage("Copybook settings and workspace has been updated.");
         } else {
@@ -421,7 +422,7 @@ export class COBOLUtils {
     }
 
     public static getMFUnitAnsiColorConfig(): boolean {
-        const editorConfig = vscode.workspace.getConfiguration("coboleditor");
+        const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
         let expEnabled = editorConfig.get<boolean>("mfunit.diagnostic.color");
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;

@@ -17,6 +17,7 @@ import { KeywordAutocompleteCompletionItemProvider } from "../keywordprovider";
 import { CobolSourceCompletionItemProvider } from "../cobolprovider";
 import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
+import { ExtensionDefaults } from "../extensionDefaults";
 
 function showExtensionInformation():void {
     const thisExtension = vscode.extensions.getExtension("bitlang.cobol");
@@ -42,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
     
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
-        const updated = event.affectsConfiguration("coboleditor");
+        const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig);
 
         if (updated) {
             VSCOBOLConfiguration.reinit();

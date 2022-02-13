@@ -6,6 +6,7 @@ import { VSLogger } from "./vslogger";
 import { COBOLFileUtils } from "./fileutils";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export class VSCOBOLSourceScannerTools {
     public static async checkWorkspaceForMissingCopybookDirs(): Promise<void> {
@@ -42,7 +43,7 @@ export class VSCOBOLSourceScannerTools {
                             if (COBOLUtils.inCopybookdirs(settings, possibleCopydir) === false) {
                                 const copyBookCount = await VSCOBOLSourceScannerTools.howManyCopyBooksInDirectory(fullDirectory, settings);
                                 if (copyBookCount !== 0) {
-                                    VSLogger.logMessage(`  Add: ${possibleCopydir} to coboleditor.copybookdirs (possible copybooks ${copyBookCount})`);
+                                    VSLogger.logMessage(`  Add: ${possibleCopydir} to ${ExtensionDefaults.defaultEditorConfig}.copybookdirs (possible copybooks ${copyBookCount})`);
                                 }
                             }
                             await VSCOBOLSourceScannerTools.checkWorkspaceForMissingCopybookDir(settings, topLevelFolder, Uri.file(fullDirectory));

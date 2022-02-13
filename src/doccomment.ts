@@ -1,11 +1,12 @@
 "use strict";
 
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult } from "vscode";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export class COBOLDocumentationCommentHandler {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static register(): any {
-        const langPlusSchemas = [{ scheme: "file", language: "COBOL" }];
+        const langPlusSchemas = [{ scheme: "file", language: ExtensionDefaults.defaultCOBOLLanguage }];
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

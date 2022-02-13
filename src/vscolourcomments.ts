@@ -1,4 +1,5 @@
 import { DecorationOptions, DecorationRenderOptions, Position, Range, TextDocument, TextEditor, TextEditorDecorationType, ThemeColor, window, workspace } from "vscode";
+import { ExtensionDefaults } from "./extensionDefaults";
 import { ESourceFormat } from "./externalfeatures";
 import { commentRange, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -19,7 +20,7 @@ class CommentColourHandlerImpl implements ICommentCallback {
 
     public setupTags(): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const items = workspace.getConfiguration("coboleditor").get("comments_tags") as any;
+        const items = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get("comments_tags") as any;
         if (items === undefined) {
             return;
         }

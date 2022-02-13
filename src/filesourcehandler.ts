@@ -10,6 +10,7 @@ import { pathToFileURL } from "url";
 import path from "path";
 import { StringBuilder } from "typescript-string-operations";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 
 export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
@@ -36,7 +37,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.commentCount = 0;
         this.isSourceInWorkspace = false;
         this.updatedSource = new Map<number, string>();
-        this.languageId = "COBOL";
+        this.languageId = ExtensionDefaults.defaultCOBOLLanguage;
         this.format = ESourceFormat.unknown;
         this.notedCommentRanges = [];
 

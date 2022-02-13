@@ -47,6 +47,7 @@ import { commentUtils } from "./commenter";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./snippetprovider";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -207,7 +208,7 @@ function checkForExtensionConflicts(): string {
                                 const element = grammarsBody[key];
                                 if (element !== undefined && element.language !== undefined) {
                                     const l = `${element.language}`.toUpperCase();
-                                    if (l === "COBOL") {
+                                    if (l === ExtensionDefaults.defaultCOBOLLanguage) {
                                         reason.push("contributes conflicting grammar");
                                     }
                                 }
@@ -225,7 +226,7 @@ function checkForExtensionConflicts(): string {
 
                                 if (languageElement !== undefined && languageElement.id !== undefined) {
                                     const l = `${languageElement.id}`.toUpperCase();
-                                    if (l === "COBOL") {
+                                    if (l === ExtensionDefaults.defaultCOBOLLanguage) {
                                         reason.push("contributes language id");
                                     }
                                 }
@@ -248,7 +249,7 @@ function checkForExtensionConflicts(): string {
                                             for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
                                                 const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
                                                 const l = `${languageElement}`.toUpperCase();
-                                                if (l === "COBOL") {
+                                                if (l === ExtensionDefaults.defaultCOBOLLanguage) {
                                                     reason.push("extension includes debugger for a different COBOL vendor");
                                                 }
                                             }
@@ -267,7 +268,7 @@ function checkForExtensionConflicts(): string {
                                 try {
                                     if (bpLangKey !== undefined && bpLangKey.language !== undefined) {
                                         const bpLang = `${bpLangKey.language}`;
-                                        if (bpLang === "COBOL") {
+                                        if (bpLang === ExtensionDefaults.defaultCOBOLLanguage) {
                                             reason.push("extension includes debugger for a different COBOL vendor");
                                         }
                                     }
@@ -332,7 +333,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
             try {
                 const editor_semanticHighlighting_enabled = workspace.getConfiguration("editor.semanticHighlighting",
-                    { languageId: "COBOL" }).get<number>("enabled");
+                    { languageId: ExtensionDefaults.defaultCOBOLLanguage }).get<number>("enabled");
                 VSLogger.logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
             } catch
             {
@@ -501,16 +502,16 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(onExtChange);
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
-        const updated = event.affectsConfiguration("coboleditor");
-        const outline_changed = event.affectsConfiguration("coboleditor.outline");
-        const md_syms = event.affectsConfiguration("coboleditor.metadata_symbols");
-        const md_eps = event.affectsConfiguration("coboleditor.metadata_entrypoints");
-        const md_types = event.affectsConfiguration("coboleditor.metadata_types");
-        const md_metadata_files = event.affectsConfiguration("coboleditor.metadata_files");
-        const md_metadata_knowncopybooks = event.affectsConfiguration("coboleditor.metadata_knowncopybooks");
-        const enable_semantic_token_provider = event.affectsConfiguration("coboleditor.enable_semantic_token_provider");
-        const maintain_metadata_recursive_search = event.affectsConfiguration("coboleditor.maintain_metadata_recursive_search");
-        const md_comments_tags = event.affectsConfiguration("coboleditor.comments_tags");
+        const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig);
+        const outline_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.outline`);
+        const md_syms = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_symbols`);
+        const md_eps = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_entrypoints`);
+        const md_types = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_types`);
+        const md_metadata_files = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_files`);
+        const md_metadata_knowncopybooks = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_knowncopybooks`);
+        const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
+        const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
+        const md_comments_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.comments_tags`);
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
@@ -537,7 +538,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (enable_semantic_token_provider && !shown_enable_semantic_token_provider) {
                 shown_enable_semantic_token_provider = true;
-                vscode.window.showInformationMessage("The configuration setting 'coboleditor.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session");
+                vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session`);
             }
 
             if (md_metadata_knowncopybooks) {
@@ -549,7 +550,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (outline_changed) {
-                vscode.window.showInformationMessage("The configuration setting 'coboleditor.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session");
+                vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session`);
             }
 
             if (md_comments_tags) {
@@ -621,7 +622,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const changeSourceFormat = commands.registerCommand("cobolplugin.change_source_format", function () {
         // margindecorations.changeSourceFormat();
         const action = "Open Settings";
-        window.showWarningMessage("Change coboleditor setting?", action).then((selection) => {
+        window.showWarningMessage(`Change ${ExtensionDefaults.defaultEditorConfig} setting?`, action).then((selection) => {
             if (action === selection) {
                 const ws = workspace.workspaceFile;
                 if (ws === undefined || ws === null) {
@@ -649,7 +650,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             return;
         }
 
-        languages.setTextDocumentLanguage(act.document, "COBOL");
+        languages.setTextDocumentLanguage(act.document, ExtensionDefaults.defaultCOBOLLanguage);
     });
 
     const checkWorkspaceForMissingCopybookDirs = commands.registerCommand("cobolplugin.checkWorkspaceForMissingCopybookDirs", async () => {
@@ -718,7 +719,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(onDidChangeWorkspaceFolders);
 
     // default to on.. but only when "extend mf" is enabled via "when" clause.. 
-    vscode.commands.executeCommand("setContext", "coboleditor.enable_migrate2mf_tasks", true);
+    vscode.commands.executeCommand("setContext", `${ExtensionDefaults.defaultEditorConfig}.enable_migrate2mf_tasks`, true);
 
     // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
@@ -874,9 +875,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
             return;
         }
         activeEditor = editor;
-        // await VSmargindecorations.updateDecorations(editor);
-        // await linter.updateLinter(editor.document);
-        // await colourCommentHandler.updateDecorations(editor);
         updateDecorations();
 
     }, null, context.subscriptions);
@@ -885,9 +883,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!event.textEditor) {
             return;
         }
-        // await VSmargindecorations.updateDecorations(event.textEditor);
-        // //cobolusage.updateDiagnostics(event.textEditor.document);
-        // await colourCommentHandler.updateDecorations(event.textEditor);
         updateDecorations();
 
     }, null, context.subscriptions);
@@ -900,9 +895,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         if (event.document === activeEditor.document) {
             activeEditor = window.activeTextEditor;
-            // await VSmargindecorations.updateDecorations(window.activeTextEditor);
-            // await linter.updateLinter(window.activeTextEditor.document);
-            // await colourCommentHandler.updateDecorations(window.activeTextEditor);
             updateDecorations();
         }
 
@@ -911,15 +903,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     if (window.activeTextEditor !== undefined) {
         activeEditor = window.activeTextEditor;
         updateDecorations();
-        // await VSmargindecorations.updateDecorations(window.activeTextEditor);
-        // await linter.updateLinter(window.activeTextEditor.document);
-        // await colourCommentHandler.updateDecorations(window.activeTextEditor);
     }
 
     progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
     progressStatusBarItem.hide();
     context.subscriptions.push(progressStatusBarItem);
-
 
     // Open context menu on current file
     const disposable4mfurun = vscode.commands.registerCommand("cobolplugin.mfurunMenu", function (fileUri) {
@@ -1173,7 +1161,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings), provider, VSSemanticProvider.getLegend());
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const actionCodelens = commands.registerCommand("coboleditor.ppcodelenaction", (args: string) => {
+    const actionCodelens = commands.registerCommand(`${ExtensionDefaults.defaultEditorConfig}.ppcodelenaction`, (args: string) => {
         VSPPCodeLens.actionCodeLens(args);
     });
     context.subscriptions.push(actionCodelens);
