@@ -13,6 +13,11 @@ export enum formatOnReturn {
     UpperCase = "uppercase"
 }
 
+export enum hoverApi {
+    Off = "off",
+    Short = "short",
+    Full = "full"
+}
 
 export interface IEditorMarginFiles {
     pattern: string;
@@ -97,7 +102,7 @@ export interface ICOBOLSettings {
 
     suggest_variables_when_context_is_unknown: boolean;
 
-    hover_show_known_api: boolean;
+    hover_show_known_api: hoverApi;
 
     enable_comment_tags: boolean;
 
@@ -184,7 +189,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     suggest_variables_when_context_is_unknown: boolean;
 
-    hover_show_known_api: boolean;
+    hover_show_known_api: hoverApi;
 
     enable_comment_tags: boolean;
 
@@ -250,7 +255,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_source_scanner = true;
         this.valid_cobol_language_ids = [
             "BITLANG-COBOL",
-            "COBOL", 
+            "COBOL",
             "COBOLIT",
             "ACUCOBOL",
             "COBOL_MF_LISTFILE"
@@ -261,7 +266,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_time_limit = 4000;
         this.in_memory_cache_size = 6;
         this.suggest_variables_when_context_is_unknown = true;
-        this.hover_show_known_api = false;
+        this.hover_show_known_api = hoverApi.Short;
         this.enable_comment_tags = false;
         this.comment_tag_word = false;
         this.snippets = false;

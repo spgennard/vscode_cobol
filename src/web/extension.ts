@@ -282,6 +282,11 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(makePerformTargetsCamelCaseCommand);
 
+    const showCOBOLChannel = vscode.commands.registerCommand("cobolplugin.showCOBOLChannel", () => {
+        VSLogger.logChannelSetPreserveFocus(true);
+    });
+    context.subscriptions.push(showCOBOLChannel);
+
     const resequenceColumnNumbersCommands = vscode.commands.registerCommand("cobolplugin.resequenceColumnNumbers", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
@@ -292,7 +297,7 @@ export function activate(context: vscode.ExtensionContext) {
                     prompt: "Enter start line number and increment",
                     validateInput: (text: string): string | undefined => {
                         if (!text || text.indexOf(" ") === -1) {
-                            return "You must enter two numbers";
+                            return "You must enter two spaced delimited numbers (start increment)";
                         } else {
                             return undefined;
                         }
@@ -329,7 +334,6 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(leftAdjustLineCommand);
   
-
     const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
         COBOLUtils.transposeSelection(textEditor, edit);
     });
@@ -356,7 +360,25 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(alignStorageCenters);
     
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+    vscode.window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
+        if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
+            return;
+        }
 
+        for (const sel of e.selections) {
+            for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
+                const textSelection = e.textEditor.document.lineAt(startLine).text;
+                const line = textSelection.trimEnd();
+                const sipos = COBOLUtils.getStorageItemPosition(line);
+                if (sipos !== -1) {
+                    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+                    return;
+                }
+            }
+        }
+
+        vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
+    })
     showExtensionInformation();
 }
 

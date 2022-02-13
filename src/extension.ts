@@ -19,7 +19,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./sourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./cobolprovider";
 import { COBOLUtils, FoldStyle, FoldAction, AlignStyle } from "./cobolutils";
-import { ICOBOLSettings } from "./iconfiguration";
+import { hoverApi, ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require("properties-reader");
@@ -842,13 +842,17 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
-            if (!settings.hover_show_known_api) {
+            if (settings.hover_show_known_api === hoverApi.Off) {
                 return undefined;
             }
             const txt = document.getText(document.getWordRangeAtPosition(position));
             const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
             if (txtTarget !== undefined) {
-                return new vscode.Hover(`\`\`${txtTarget.api}\`\` - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})`);
+                let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example}\n~~~\n` : "";
+                if (settings.hover_show_known_api === hoverApi.Short) {
+                    example = "";
+                }
+                return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
             }
 
             return undefined;

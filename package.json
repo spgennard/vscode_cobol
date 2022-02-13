@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.2.10",
+  "version": "8.2.11",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -721,10 +721,19 @@
           "default": true
         },
         "coboleditor.hover_show_known_api": {
-          "type": "boolean",
-          "title": "Show short description of known api during 'hover'",
-          "description": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus Library apis' and some ILE apis.",
-          "default": false
+          "title": "Show description of known api during 'hover'",
+          "markdownDescription": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus Library apis' and some ILE apis.",
+          "enum": [
+            "off",
+            "short",
+            "full"
+          ],
+          "default": "short",
+          "enumDescriptions": [
+            "Off",
+            "Short description",
+            "Full description including example (when available)"
+          ]
         },
         "coboleditor.enable_comment_tags": {
           "type": "boolean",
