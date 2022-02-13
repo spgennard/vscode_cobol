@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 1b6e348 (HEAD -> main, tag: 8.2.10, origin/main) include decls in the example for the snippets
+* 8f23fc0 (HEAD -> main, tag: 8.2.11, origin/main) enable short hover and change from a boolean enabler to a enum
+* 300949f Update CHANGELOG.md
+* 1b6e348 (tag: 8.2.10) include decls in the example for the snippets
 * 5830426 Update CHANGELOG.md
 * 2d78cae (tag: 8.2.9) fix snippet config and showing of the example
 * 53dde28 Update CHANGELOG.md
