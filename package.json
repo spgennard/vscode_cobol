@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.2.11",
+  "version": "8.2.12",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -726,13 +726,13 @@
           "enum": [
             "off",
             "short",
-            "full"
+            "long"
           ],
           "default": "short",
           "enumDescriptions": [
             "Off",
-            "Short description",
-            "Full description including example (when available)"
+            "Short message (description & link)",
+            "Longer message (description, link & example)"
           ]
         },
         "coboleditor.enable_comment_tags": {

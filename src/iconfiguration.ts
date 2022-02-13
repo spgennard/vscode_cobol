@@ -16,7 +16,7 @@ export enum formatOnReturn {
 export enum hoverApi {
     Off = "off",
     Short = "short",
-    Full = "full"
+    Long = "long"
 }
 
 export interface IEditorMarginFiles {
