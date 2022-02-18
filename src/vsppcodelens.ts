@@ -4,6 +4,7 @@ import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export class VSPPCodeLens implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
@@ -85,7 +86,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         }).then((document: vscode.TextDocument) => {
             vscode.window.showTextDocument(document).then(editor => {
                 if (arg.startsWith("*>")) {
-                    vscode.languages.setTextDocumentLanguage(editor.document, "COBOL");
+                    vscode.languages.setTextDocumentLanguage(editor.document, ExtensionDefaults.defaultCOBOLLanguage);
                     return;
                 }
             });
