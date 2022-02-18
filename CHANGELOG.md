@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* 82fe6f4 (HEAD -> main, tag: 8.2.12, origin/main) change "full" to "long" in enum for snippet style
+* 85ab197 (HEAD -> main, tag: 8.2.18, origin/main) update
+* 2a6f4b2 sync the two variants of extension
+* a7e3e1c start to tighten up checking of debugger extensions that do not provide support for the dialects provided by this extension.
+* f757ab0 fix typo
+* fdc7fa7 centralise 'coboleditor' and default lang
+* 87f7493 update for minmatch versions
+* 19f4f3d Update CHANGELOG.md
+* 82fe6f4 (tag: 8.2.12) change "full" to "long" in enum for snippet style
 * cacd337 update packages, flip to new test package for vscode/electron
 * d9e9704 Update CHANGELOG.md
 * 8f23fc0 (tag: 8.2.11) enable short hover and change from a boolean enabler to a enum
