@@ -531,7 +531,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         if (conflictingDebuggerFound) {
             const msg = "This Extension is now inactive until conflict is resolved";
-            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once conflict is resolved or you have disabled 'bitlang.cobol'`);
+            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the 'bitlang.cobol' extension`);
             throw new Error(msg);
         }
     }

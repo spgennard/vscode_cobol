@@ -11,6 +11,7 @@ import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./
 
 import * as path from "path";
 import { SourceFormat } from "./sourceformat";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -915,7 +916,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             if (sourceLooksLikeCOBOL === false) {
                 if (filename.length > 0) {
                     if (sourceHandler.getLineCount() > maxLines) {
-                        this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via coboleditor.pre_scan_line_limit setting)`);
+                        this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via ${ExtensionDefaults.defaultEditorConfig}.pre_scan_line_limit setting)`);
                     } else {
                         this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
                     }
