@@ -51,9 +51,17 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     let dupExtensionMessage = "";
 
     dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
+    dupExtensionMessage += " Solution      : Disable or uninstall this extension\n";
     if (reasons.length !== 0) {
+        let rcount = 1;
+        const reasonMessage = reasons.length === 1 ? "Reason " : "Reasons";
         for (const reason of reasons) {
-            dupExtensionMessage += ` Reason        : ${reason}\n`;
+            if (rcount === 1) {
+                dupExtensionMessage += ` ${reasonMessage}       : ${reason}\n`;
+            } else {
+                dupExtensionMessage += `               : ${reason}\n`;
+            }
+            rcount++;
         }
     }
 
@@ -182,13 +190,24 @@ function checkForExtensionConflicts(): string {
                             for (const key in debuggerBody) {
                                 try {
                                     const debuggerElement = debuggerBody[key];
-                                    if (debuggerElement !== undefined && debuggerElement.enableBreakpointsFor !== undefined) {
-                                        if (debuggerElement.enableBreakpointsFor.languageIds !== undefined) {
-                                            for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
-                                                const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
-                                                const l = `${languageElement}`.toUpperCase();
-                                                if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                                    reason.push("extension includes debugger for a different COBOL vendor");
+                                    if (debuggerElement !== undefined) {
+                                        // if (debuggerElement.enableBreakpointsFor !== undefined) {
+                                        //     if (debuggerElement.enableBreakpointsFor.languageIds !== undefined) {
+                                        //         for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
+                                        //             const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
+                                        //             const l = `${languageElement}`;
+                                        //             if (l === ExtensionDefaults.defaultCOBOLLanguage) {
+                                        //                 reason.push("extension includes a debug breakpoint support for a different COBOL vendor");
+                                        //                 conflictingDebuggerFound = true;
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }
+                                        const debuggerLanguages = debuggerElement.languages;
+                                        if (debuggerLanguages !== undefined && debuggerLanguages instanceof Object) {
+                                            for (const keyLanguage of debuggerLanguages) {
+                                                if (keyLanguage === ExtensionDefaults.defaultCOBOLLanguage) {
+                                                    reason.push(`extension includes a debugger for a different COBOL vendor -> ${debuggerElement.label} of debugger type ${debuggerElement.type}`);
                                                     conflictingDebuggerFound = true;
                                                 }
                                             }
@@ -202,20 +221,19 @@ function checkForExtensionConflicts(): string {
                         }
 
                         if (breakpointsBody !== undefined && breakpointsBody instanceof Object) {
-                            for (const key in breakpointsBody) {
-                                const bpLangKey = breakpointsBody[key];
-                                try {
+                            try {
+                                for (const bpLangKey of breakpointsBody) {
                                     if (bpLangKey !== undefined && bpLangKey.language !== undefined) {
                                         const bpLang = `${bpLangKey.language}`;
                                         if (bpLang === ExtensionDefaults.defaultCOBOLLanguage) {
-                                            reason.push("extension includes debugger for a different COBOL vendor");
+                                            reason.push("extension includes debug breakpoint support for a different COBOL vendor");
                                             conflictingDebuggerFound = true;
                                         }
                                     }
                                 }
-                                catch {
-                                    // just incase
-                                }
+                            }
+                            catch {
+                                // just incase
                             }
                         }
                     }
@@ -268,8 +286,8 @@ export function activate(context: vscode.ExtensionContext) {
         VSLogger.logChannelSetPreserveFocus(false);
 
         if (conflictingDebuggerFound) {
-            const msg = "COBOL Extension is now inactive until conflict is resolved";
-            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once conflict is resolved or disable 'bitlang.cobol'`);
+            const msg = "This Extension is now inactive until conflict is resolved";
+            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once conflict is resolved or you have disabled 'bitlang.cobol'`);
             throw new Error(msg);
         }
     }

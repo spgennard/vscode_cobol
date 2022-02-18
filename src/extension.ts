@@ -534,7 +534,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
             VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once conflict is resolved or you have disabled 'bitlang.cobol'`);
             throw new Error(msg);
         }
-
     }
 
     if (conflictsFound && conflictingDebuggerFound) {
