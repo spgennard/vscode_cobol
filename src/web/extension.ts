@@ -20,7 +20,7 @@ import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
 
 function showExtensionInformation():void {
-    const thisExtension = vscode.extensions.getExtension("bitlang.cobol");
+    const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
 
     if (thisExtension !== undefined) {
         if (vscode.env.uriScheme !== "vscode") {
@@ -101,7 +101,7 @@ function checkForExtensionConflicts(): string {
         let ignore_blessed = false;
         if (ext !== undefined && ext.packageJSON !== undefined) {
             if (ext.packageJSON.id !== undefined) {
-                if (ext.packageJSON.id === "bitlang.cobol") {
+                if (ext.packageJSON.id === ExtensionDefaults.thisExtensionName) {
                     continue;
                 }
 
@@ -269,14 +269,14 @@ export function activate(context: vscode.ExtensionContext) {
             for (const veditor of vscode.window.visibleTextEditors) {
                 const doc = veditor.document;
                 if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as COBOL extension is inactive`);
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
                     vscode.languages.setTextDocumentLanguage(doc, "plaintext");
                 }
             }
 
             const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
                 if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as COBOL extension is inactive`);
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
                     vscode.languages.setTextDocumentLanguage(doc, "plaintext");
                 }
             });
@@ -287,7 +287,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (conflictingDebuggerFound) {
             const msg = "This Extension is now inactive until conflict is resolved";
-            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the 'bitlang.cobol' extension`);
+            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
             throw new Error(msg);
         }
     }

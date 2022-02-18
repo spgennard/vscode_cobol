@@ -4,13 +4,14 @@ import * as assert from "assert";
 import path from "path";
 import { extensions } from "vscode";
 import * as fs from "fs";
+import { ExtensionDefaults } from "../../extensionDefaults";
 
 suite("Issues Raised Test Suite", () => {
 	test("Issue: Package.json checks", () => {
 		const baseForSource = __dirname + "/../../../src/test/suite/";
 
-		const ext = extensions.getExtension("bitlang.cobol");
-		assert.ok(ext !== undefined, "bitlang.cobol not found");
+		const ext = extensions.getExtension(ExtensionDefaults.thisExtensionName);
+		assert.ok(ext !== undefined, `${ExtensionDefaults.thisExtensionName} not found`);
 
 		if (ext.packageJSON.id === undefined) {
 			assert.fail("No .id found");

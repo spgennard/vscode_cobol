@@ -66,30 +66,30 @@ VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
 VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
 
 function openChangeLog(): void {
-    const thisExtension = extensions.getExtension("bitlang.cobol");
+    const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
     if (thisExtension !== undefined) {
         const extPath = `${thisExtension.extensionPath}`;
         const version = `${thisExtension.packageJSON.version}`;
-        const glastVersion = currentContext.globalState.get("bitlang.cobol.version");
+        const glastVersion = currentContext.globalState.get(`${ExtensionDefaults.thisExtensionName}.version`);
         if (glastVersion !== version) {
             const verFile = path.join(extPath, `CHANGELOG_${version}.md`);
             if (VSExternalFeatures.isFile(verFile)) {
                 const readmeUri = vscode.Uri.file(verFile);
                 commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
-                currentContext.globalState.update("bitlang.cobol.version", version);
+                currentContext.globalState.update(`${ExtensionDefaults.thisExtensionName}.version`, version);
             }
         }
         const lastDot = version.lastIndexOf(".");
         if (lastDot !== -1) {
             const lastSVersion = version.substring(0, lastDot);
-            const glastsVersion = currentContext.globalState.get("bitlang.cobol.sversion");
+            const glastsVersion = currentContext.globalState.get(`${ExtensionDefaults.thisExtensionName}.sversion`);
 
             if (glastsVersion !== lastSVersion) {
                 const verFile = path.join(extPath, `CHANGELOG_${lastSVersion}.md`);
                 if (VSExternalFeatures.isFile(verFile)) {
                     const readmeUri = vscode.Uri.file(verFile);
                     commands.executeCommand("markdown.showPreview", readmeUri, ViewColumn.One, { locked: true });
-                    currentContext.globalState.update("bitlang.cobol.sversion", lastSVersion);
+                    currentContext.globalState.update(`${ExtensionDefaults.thisExtensionName}.sversion`, lastSVersion);
                 }
             }
         }
@@ -163,7 +163,7 @@ function checkForExtensionConflicts(): string {
         let ignore_blessed = false;
         if (ext !== undefined && ext.packageJSON !== undefined) {
             if (ext.packageJSON.id !== undefined) {
-                if (ext.packageJSON.id === "bitlang.cobol") {
+                if (ext.packageJSON.id === ExtensionDefaults.thisExtensionName) {
                     continue;
                 }
 
@@ -321,7 +321,7 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
     }
     COBOLOutputChannel.clear();
 
-    const thisExtension = extensions.getExtension("bitlang.cobol");
+    const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
 
     if (thisExtension !== undefined) {
         if (vscode.env.uriScheme !== "vscode") {
@@ -506,14 +506,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
             for (const veditor of vscode.window.visibleTextEditors) {
                 const doc = veditor.document;
                 if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as COBOL extension is inactive`);
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
                     languages.setTextDocumentLanguage(doc, "plaintext");
                 }
             }
 
             const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
                 if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as COBOL extension is inactive`);
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
                     languages.setTextDocumentLanguage(doc, "plaintext");
                 }
             });
@@ -521,7 +521,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
 
         window.showInformationMessage(
-            "BitLang.COBOL Extension has located duplicate or conflicting functionality",
+            `${ExtensionDefaults.thisExtensionName} Extension has located duplicate or conflicting functionality`,
             { modal: true })
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .then(function (data) {
@@ -531,7 +531,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         if (conflictingDebuggerFound) {
             const msg = "This Extension is now inactive until conflict is resolved";
-            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the 'bitlang.cobol' extension`);
+            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
             throw new Error(msg);
         }
     }
@@ -545,7 +545,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         activateLogChannelAndPaths(true, settings, false);
         VSLogger.logMessage("extensions changed");
     });
-
     context.subscriptions.push(onExtChange);
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {

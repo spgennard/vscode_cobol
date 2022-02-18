@@ -15,6 +15,7 @@ import { COBOLUtils } from "./cobolutils";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 
 class FileScanStats {
@@ -29,7 +30,7 @@ export class VSCobScanner {
     public static readonly scannerBinDir = VSCobScanner.getCobScannerDirectory();
 
     private static getCobScannerDirectory(): string {
-        const thisExtension = extensions.getExtension("bitlang.cobol");
+        const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
         if (thisExtension !== undefined) {
             const extPath = `${thisExtension.extensionPath}`;
             return path.join(extPath, "dist");
