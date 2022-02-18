@@ -127,7 +127,6 @@
         "coboleditor.linter_ignore_section_before_entry",
         "coboleditor.linter_house_standards_rules",
         "coboleditor.linter_ignore_missing_copybook",
-        "coboleditor.ignore_unsafe_extensions",
         "coboleditor.scan_comments_for_hints",
         "coboleditor.scan_comment_copybook_token",
         "coboleditor.fileformat_strategy",
@@ -533,12 +532,6 @@
           "description": "When enabled, do not generate missing copybook warnings",
           "default": false
         },
-        "coboleditor.ignore_unsafe_extensions": {
-          "type": "boolean",
-          "title": "When enabled, turn off unsafe extension check",
-          "description": "When enabled, turn off unsafe extension check",
-          "default": false
-        },
         "coboleditor.scan_comments_for_hints": {
           "type": "boolean",
           "description": "When enabled, process scanner hints embedded in comments",
@@ -752,27 +745,27 @@
             "title": "Comment tag",
             "type": "object",
             "properties": {
-              "tag" : {
-                "type":"string"
+              "tag": {
+                "type": "string"
               },
-              "color" : {
+              "color": {
                 "type": "string",
                 "format": "color"
               },
-              "strikethrough" : {
+              "strikethrough": {
                 "type": "boolean"
               },
-              "underline" : {
+              "underline": {
                 "type": "boolean"
               },
-              "backgroundColor" : {
+              "backgroundColor": {
                 "type": "string",
                 "format": "color"
               },
-              "bold" : {
+              "bold": {
                 "type": "boolean"
               },
-              "italic" : {
+              "italic": {
                 "type": "boolean"
               }
             }
