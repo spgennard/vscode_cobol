@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* 85ab197 (HEAD -> main, tag: 8.2.18, origin/main) update
+* 6bab561 (HEAD -> main, tag: 8.2.19, origin/main) add more help with conflicts
+* 3ed97ba use default lang
+* 994d645 move 'bitlang.cobol' to extensionDefaults
+* 8f17b59 package update
+* 5eede5b Update CHANGELOG.md
+* 85ab197 (tag: 8.2.18) update
 * 2a6f4b2 sync the two variants of extension
 * a7e3e1c start to tighten up checking of debugger extensions that do not provide support for the dialects provided by this extension.
 * f757ab0 fix typo
