@@ -51,7 +51,10 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     let dupExtensionMessage = "";
 
     dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
-    dupExtensionMessage += " Solution      : Disable or uninstall this extension\n";
+    dupExtensionMessage += " Solution      : Disable or uninstall this extension, eg: use command:\n";
+    if (grab_info_for_ext.packageJSON.id !== undefined) {
+        dupExtensionMessage += `                 code --uninstall-extension ${grab_info_for_ext.packageJSON.id}\n`;
+    }
     if (reasons.length !== 0) {
         let rcount = 1;
         const reasonMessage = reasons.length === 1 ? "Reason " : "Reasons";
@@ -288,6 +291,13 @@ export function activate(context: vscode.ExtensionContext) {
         if (conflictingDebuggerFound) {
             const msg = "This Extension is now inactive until conflict is resolved";
             VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
+
+            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            if (mfExt !== undefined) {
+                VSLogger.logMessage("\nYou already have a 'Micro Focus COBOL' compatible debugger installed, so may not need the above extension(s)");
+            } else {
+                VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.microFocusCOBOLExtension}`);
+            } 
             throw new Error(msg);
         }
     }
