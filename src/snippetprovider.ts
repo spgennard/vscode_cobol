@@ -21,24 +21,33 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         }
     }
 
+    private foldKeywordLine(texts: string[], foldstyle: FoldStyle, languageid: string): string {
+        const sb = [];
+        for(const text of texts) {
+            sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords,foldstyle, false, languageid));
+        }
+
+        return sb.join("");
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getCompletionItemForAPI(settings:ICOBOLSettings, langId: string, api: string): CompletionItem | undefined {
         const ki = KnownAPIs.getCallTarget(api);
         if (ki === undefined) {
             return undefined;
         }
-        let snippet = ki.snippet;
+        let kiSnippet = ki.snippet.join("");
         let callStatement = "call";
-        let kiExample = ki.example;
+        let kiExample = ki.example.join("");
         switch(settings.format_on_return) {
             case formatOnReturn.CamelCase:
-                snippet = COBOLUtils.foldTokenLine(snippet, undefined, FoldAction.Keywords, FoldStyle.CamelCase, false, langId);
-                kiExample = COBOLUtils.foldTokenLine(kiExample, undefined, FoldAction.Keywords, FoldStyle.CamelCase, false, langId);
+                kiSnippet = this.foldKeywordLine(ki.snippet, FoldStyle.CamelCase, langId);
+                kiExample = this.foldKeywordLine(ki.example, FoldStyle.CamelCase, langId);
                 callStatement = "Call";
                 break;
             case formatOnReturn.UpperCase:
-                snippet = COBOLUtils.foldTokenLine(snippet, undefined, FoldAction.Keywords, FoldStyle.UpperCase, false, langId);
-                kiExample = COBOLUtils.foldTokenLine(kiExample, undefined, FoldAction.Keywords, FoldStyle.CamelCase, false, langId);
+                kiSnippet = this.foldKeywordLine(ki.snippet, FoldStyle.UpperCase, langId);
+                kiExample = this.foldKeywordLine(ki.example, FoldStyle.UpperCase, langId);
                 callStatement = "CALL";
                 break;
         }
@@ -46,12 +55,12 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         const ci = new CompletionItem(preselect);
         ci.keepWhitespace = false;
         ci.kind = CompletionItemKind.Snippet;
-        ci.insertText = new SnippetString(snippet);
+        ci.insertText = new SnippetString(kiSnippet);
         ci.preselect = true;
         ci.filterText = preselect;
         ci.commitCharacters = [`${callStatement} "${api}"`];
 
-        let documentation = ki === undefined ? "" : ki.description;
+        let documentation = ki === undefined ? "" : ki.description.join("");
 
         if (ki !== undefined && ki.example.length !== 0) {
             documentation += `\r\n\r\nExample:\r\n~~~\r\n${kiExample}\r\n~~~`;

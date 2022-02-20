@@ -6,20 +6,20 @@ import { MFUNIT_APIs } from "./mf_mfunit";
 export interface IKnownApis {
 	url: string;
 	name: string;
-	apis: Map<string, string>;
-	examples: Map<string, string>;
-	snippets: Map<string, string>;
+	apis: Map<string, string[]>;
+	examples: Map<string, string[]>;
+	snippets: Map<string, string[]>;
 }
 
 export class CallTarget {
 	public api: string;
 	public url: string;
 	public apiGroup: string;
-	public description: string;
-	public example: string;
-	public snippet: string;
+	public description: string[];
+	public example: string[];
+	public snippet: string[];
 
-	constructor(_name: string, _url: string, _api: string, _description: string, _example: string, _snippet: string) {
+	constructor(_name: string, _url: string, _api: string, _description: string[], _example: string[], _snippet: string[]) {
 		this.api = _api;
 		this.apiGroup = _name;
 		this.url = _url;
@@ -39,8 +39,8 @@ function addApis(a: IKnownApis) {
 		const possibleExample = a.examples.get(key);
 		const possibleSnippet = a.snippets.get(key);
 		callTargets.set(key, new CallTarget(a.name, a.url, key, description,
-			(possibleExample === undefined ? "" : possibleExample),
-			(possibleSnippet === undefined ? "" : possibleSnippet)
+			(possibleExample === undefined ? [] : possibleExample),
+			(possibleSnippet === undefined ? [] : possibleSnippet)
 		));
 	}
 
