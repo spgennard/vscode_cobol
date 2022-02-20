@@ -1,24 +1,20 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
+import { COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
+import { ExtensionDefaults } from "./extensionDefaults";
+import { formatOnReturn, ICOBOLSettings } from "./iconfiguration";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
+import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
-
-// const snippetMap = new Map<string, SnippetString>(
-//     [
-//         ["CBL_CLOSE_FILE", new SnippetString("call \"CBL_CLOSE_FILE\" using ${1:HANDLE}\n  returning ${2:STATUS-CODE}\nend-call\n$0")]
-//     ]);
-
-
-
 
 export class SnippetCompletionItemProvider implements CompletionItemProvider {
 
     private allCallTargets = new Map<string, CompletionItem>();
     
-    constructor() {
+    constructor(settings: ICOBOLSettings) {
         const callMap = KnownAPIs.getCallTargetMap();
         for (const [api,] of callMap) {
-            const ci = this.getCompletionItemForAPI(api);
+            const ci = this.getCompletionItemForAPI(settings,ExtensionDefaults.defaultCOBOLLanguage, api);
             if (ci !== undefined) {
                 this.allCallTargets.set(api, ci);
             }
@@ -26,25 +22,39 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private getCompletionItemForAPI(api: string): CompletionItem | undefined {
+    private getCompletionItemForAPI(settings:ICOBOLSettings, langId: string, api: string): CompletionItem | undefined {
         const ki = KnownAPIs.getCallTarget(api);
-        const snippet = ki === undefined ? undefined : ki.snippet;
-        if (snippet === undefined) {
-            return snippet;
+        if (ki === undefined) {
+            return undefined;
         }
-        const preselect = `call "${api}"`;
+        let snippet = ki.snippet;
+        let callStatement = "call";
+        let kiExample = ki.example;
+        switch(settings.format_on_return) {
+            case formatOnReturn.CamelCase:
+                snippet = COBOLUtils.foldTokenLine(snippet, undefined, FoldAction.Keywords, FoldStyle.CamelCase, false, langId);
+                kiExample = COBOLUtils.foldTokenLine(kiExample, undefined, FoldAction.Keywords, FoldStyle.CamelCase, false, langId);
+                callStatement = "Call";
+                break;
+            case formatOnReturn.UpperCase:
+                snippet = COBOLUtils.foldTokenLine(snippet, undefined, FoldAction.Keywords, FoldStyle.UpperCase, false, langId);
+                kiExample = COBOLUtils.foldTokenLine(kiExample, undefined, FoldAction.Keywords, FoldStyle.CamelCase, false, langId);
+                callStatement = "CALL";
+                break;
+        }
+        const preselect = `${callStatement} "${api}"`;
         const ci = new CompletionItem(preselect);
         ci.keepWhitespace = false;
         ci.kind = CompletionItemKind.Snippet;
         ci.insertText = new SnippetString(snippet);
         ci.preselect = true;
         ci.filterText = preselect;
-        ci.commitCharacters = [`call "${api}"`];
+        ci.commitCharacters = [`${callStatement} "${api}"`];
 
         let documentation = ki === undefined ? "" : ki.description;
 
         if (ki !== undefined && ki.example.length !== 0) {
-            documentation += `\r\n\r\nExample:\r\n~~~\r\n${ki.example}\r\n~~~`;
+            documentation += `\r\n\r\nExample:\r\n~~~\r\n${kiExample}\r\n~~~`;
         }
 
         ci.documentation = new MarkdownString(documentation);
@@ -58,7 +68,10 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         if (config.snippets === false) {
             return [];
         }
-
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
+        if (qcp === undefined) {
+            return [];
+        }
         const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2)); // 1 space -1
         if (!wordRange) return [];
 

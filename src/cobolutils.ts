@@ -551,7 +551,7 @@ export class COBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean, languageid: string): string {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner | undefined, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean, languageid: string): string {
         let newtext = text;
         const args: string[] = [];
 
@@ -570,20 +570,24 @@ export class COBOLUtils {
 
             switch (action) {
                 case FoldAction.PerformTargets:
-                    actionIt = current.sections.has(argLower);
-                    if (actionIt === false) {
-                        actionIt = current.paragraphs.has(argLower);
+                    if (current !== undefined) {
+                        actionIt = current.sections.has(argLower);
+                        if (actionIt === false) {
+                            actionIt = current.paragraphs.has(argLower);
+                        }
                     }
                     break;
 
                 case FoldAction.ConstantsOrVariables:
-                    actionIt = current.constantsOrVariables.has(argLower);
-                    if (actionIt && foldConstantsToUpper) {
-                        const cvars = current.constantsOrVariables.get(argLower);
-                        if (cvars !== undefined) {
-                            for (const cvar of cvars) {
-                                if (cvar.tokenType === COBOLTokenStyle.Constant) {
-                                    foldstyle = FoldStyle.UpperCase;
+                    if (current !== undefined) {
+                        actionIt = current.constantsOrVariables.has(argLower);
+                        if (actionIt && foldConstantsToUpper) {
+                            const cvars = current.constantsOrVariables.get(argLower);
+                            if (cvars !== undefined) {
+                                for (const cvar of cvars) {
+                                    if (cvar.tokenType === COBOLTokenStyle.Constant) {
+                                        foldstyle = FoldStyle.UpperCase;
+                                    }
                                 }
                             }
                         }
@@ -873,7 +877,7 @@ export class COBOLUtils {
                             if (lineAtToken !== undefined) {
                                 let lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trim();
                                 if (lineAfterToken.endsWith(".")) {
-                                    lineAfterToken = lineAfterToken.slice(0,-1);
+                                    lineAfterToken = lineAfterToken.slice(0, -1);
                                 }
                                 if (lineAfterToken.toLowerCase().indexOf("typedef") === -1) {
                                     sbParamDecl.AppendLine(`${param.name} => ${lineAfterToken}`);
@@ -898,7 +902,7 @@ export class COBOLUtils {
             // externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
             for (const [a, b] of exampleMap) {
                 const decls = paramDeclarationMap.get(a);
-                const declString = decls === undefined ? "" : decls+"\r\n"+b;
+                const declString = decls === undefined ? "" : decls + "\r\n" + b;
                 const varDecls = `[ "${a}", ${JSON.stringify(declString)} ],`;
                 externalFeatures.logMessage(varDecls);
             }

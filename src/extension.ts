@@ -872,7 +872,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const keywordProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
-    const snippetProvider = new SnippetCompletionItemProvider();
+    const snippetProvider = new SnippetCompletionItemProvider(settings);
     const snippetProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), snippetProvider);
     context.subscriptions.push(snippetProviderDisposible);
 
