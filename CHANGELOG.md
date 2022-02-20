@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* 6bab561 (HEAD -> main, tag: 8.2.19, origin/main) add more help with conflicts
+* 33eaac4 (HEAD -> main, tag: 8.2.20, origin/main) bump
+* 04b57f9 complete the support for 'folding' snippets
+* 8ca9a8c add support for changing case of setting
+* cd408cc sync extension to web.extension
+* 76e696d Update CHANGELOG.md
+* 6bab561 (tag: 8.2.19) add more help with conflicts
 * 3ed97ba use default lang
 * 994d645 move 'bitlang.cobol' to extensionDefaults
 * 8f17b59 package update
