@@ -15,22 +15,22 @@ export class MFUNIT_APIs implements IKnownApis {
     ]);
 
     public snippets = new Map<string, string[]>([
-        ["MFUFMSG", ["call \"MFUFMSG\" using", "\r\n", " by reference ${1:any}", "\r\n", " by value ${2:msg-len}", "\r\n", "end-call"]],
-        ["MFU_ASSERT_FAIL_Z", ["call \"MFU_ASSERT_FAIL_Z\" using", "\r\n", " by reference ${1:any}", "\r\n", "end-call"]],
-        ["MFUFMSGZ", ["call \"MFUFMSGZ\" using", "\r\n", " by reference ${1:any}", "\r\n", "end-call"]],
-        ["MFUCATCP", ["call \"MFUCATCP\" using", "\r\n", " by reference ${1:any}", "\r\n", " by value ${2:fn-len}", "\r\n", "end-call"]],
-        ["MFUCATCPZ", ["call \"MFUCATCPZ\" using", "\r\n", " by reference ${1:any}", "\r\n", "end-call"]],
-        ["MFUGETF", ["call \"MFUGETF\" using", "\r\n", " by reference ${1:get-filename}", "\r\n", " by reference ${2:data-ptr}", "\r\n", " by reference ${3:data-size}", "\r\n", "end-call"]],
-        ["MFU_GET_FILE", ["call \"MFU_GET_FILE\" using", "\r\n", " by reference ${1:get-filename}", "\r\n", " by reference ${2:data-ptr}", "\r\n", " by reference ${3:data-size}", "\r\n", "end-call"]]
+        ["MFUFMSG", ["call \"MFUFMSG\" using", " by reference ${1:any}", " by value ${2:msg-len}", "end-call"]],
+        ["MFU_ASSERT_FAIL_Z", ["call \"MFU_ASSERT_FAIL_Z\" using", " by reference ${1:any}", "end-call"]],
+        ["MFUFMSGZ", ["call \"MFUFMSGZ\" using", " by reference ${1:any}", "end-call"]],
+        ["MFUCATCP", ["call \"MFUCATCP\" using", " by reference ${1:any}", " by value ${2:fn-len}", "end-call"]],
+        ["MFUCATCPZ", ["call \"MFUCATCPZ\" using", " by reference ${1:any}", "end-call"]],
+        ["MFUGETF", ["call \"MFUGETF\" using", " by reference ${1:get-filename}", " by reference ${2:data-ptr}", " by reference ${3:data-size}", "end-call"]],
+        ["MFU_GET_FILE", ["call \"MFU_GET_FILE\" using", " by reference ${1:get-filename}", " by reference ${2:data-ptr}", " by reference ${3:data-size}", "end-call"]]
     ]);
 
     public examples = new Map<string, string[]>([
-        ["MFUFMSG", ["call \"MFUFMSG\" using", "\r\n", " by reference any", "\r\n", " by value msg-len", "\r\n", "end-call"]],
-        ["MFU_ASSERT_FAIL_Z", ["call \"MFU_ASSERT_FAIL_Z\" using", "\r\n", " by reference any", "\r\n", "end-call"]],
-        ["MFUFMSGZ", ["call \"MFUFMSGZ\" using", "\r\n", " by reference any", "\r\n", "end-call"]],
-        ["MFUCATCP", ["call \"MFUCATCP\" using", "\r\n", " by reference any", "\r\n", " by value fn-len", "\r\n", "end-call"]],
-        ["MFUCATCPZ", ["call \"MFUCATCPZ\" using", "\r\n", " by reference any", "\r\n", "end-call"]],
-        ["MFUGETF", ["call \"MFUGETF\" using", "\r\n", " by reference get-filename", "\r\n", " by reference data-ptr", "\r\n", " by reference data-size", "\r\n", "end-call"]]
+        ["MFUFMSG", ["call \"MFUFMSG\" using", " by reference any", " by value msg-len", "end-call"]],
+        ["MFU_ASSERT_FAIL_Z", ["call \"MFU_ASSERT_FAIL_Z\" using", " by reference any", "end-call"]],
+        ["MFUFMSGZ", ["call \"MFUFMSGZ\" using", " by reference any", "end-call"]],
+        ["MFUCATCP", ["call \"MFUCATCP\" using", " by reference any", " by value fn-len", "end-call"]],
+        ["MFUCATCPZ", ["call \"MFUCATCPZ\" using", " by reference any", "end-call"]],
+        ["MFUGETF", ["call \"MFUGETF\" using", " by reference get-filename", " by reference data-ptr", " by reference data-size", "end-call"]]
     ]);
 
 }

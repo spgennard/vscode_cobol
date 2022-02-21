@@ -1,11 +1,13 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument } from "vscode";
-import { COBOLSourceScanner } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceScannerUtils } from "./cobolsourcescanner";
 import { COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { formatOnReturn, ICOBOLSettings } from "./iconfiguration";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
+
+const jsonCRLF = "\r\n";
 
 export class SnippetCompletionItemProvider implements CompletionItemProvider {
 
@@ -27,7 +29,7 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
             sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords,foldstyle, false, languageid));
         }
 
-        return sb.join("");
+        return sb.join(jsonCRLF);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -36,19 +38,19 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         if (ki === undefined) {
             return undefined;
         }
-        let kiSnippet = ki.snippet.join("");
+        let kiSnippet = ki.snippet.join(jsonCRLF);
         let callStatement = "call";
-        let kiExample = ki.example.join("");
+        let kiExample = ki.example.join(jsonCRLF);
         switch(settings.format_on_return) {
             case formatOnReturn.CamelCase:
                 kiSnippet = this.foldKeywordLine(ki.snippet, FoldStyle.CamelCase, langId);
                 kiExample = this.foldKeywordLine(ki.example, FoldStyle.CamelCase, langId);
-                callStatement = "Call";
+                callStatement = SourceScannerUtils.camelize(callStatement);
                 break;
             case formatOnReturn.UpperCase:
                 kiSnippet = this.foldKeywordLine(ki.snippet, FoldStyle.UpperCase, langId);
                 kiExample = this.foldKeywordLine(ki.example, FoldStyle.UpperCase, langId);
-                callStatement = "CALL";
+                callStatement = callStatement.toUpperCase();
                 break;
         }
         const preselect = `${callStatement} "${api}"`;
@@ -60,10 +62,10 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         ci.filterText = preselect;
         ci.commitCharacters = [`${callStatement} "${api}"`];
 
-        let documentation = ki === undefined ? "" : ki.description.join("");
+        let documentation = ki === undefined ? "" : ki.description.join(jsonCRLF);
 
         if (ki !== undefined && ki.example.length !== 0) {
-            documentation += `\r\n\r\nExample:\r\n~~~\r\n${kiExample}\r\n~~~`;
+            documentation += `${jsonCRLF}${jsonCRLF}Example:${jsonCRLF}~~~${jsonCRLF}${kiExample}${jsonCRLF}~~~`;
         }
 
         ci.documentation = new MarkdownString(documentation);
@@ -89,7 +91,8 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         const snippets: CompletionItem[] = [];
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
-            if (preWord.toUpperCase() === "CALL") {
+            const preWordUpper = preWord.toUpperCase();
+            if (preWordUpper === "CALL") {
                  for (const [, ci] of this.allCallTargets) {
                     if (ci.insertText !== undefined) {
                         const line = document.lineAt(position.line);
