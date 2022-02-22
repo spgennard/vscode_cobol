@@ -3,6 +3,8 @@ set -e
 set -x
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 MSG="Update CHANGELOG.md"
+git tag -f $PACKAGE_VERSION
+git push --tags --force
 
 echo "# CHANGELOG" >CHANGELOG.md
 echo >>CHANGELOG.md
