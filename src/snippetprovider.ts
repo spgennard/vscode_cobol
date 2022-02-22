@@ -14,6 +14,11 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
     private allCallTargets = new Map<string, CompletionItem>();
     
     constructor(settings: ICOBOLSettings) {
+        this.reInitCallMap(settings);
+    }
+
+    public reInitCallMap(settings: ICOBOLSettings) {
+        this.allCallTargets.clear();
         const callMap = KnownAPIs.getCallTargetMap();
         for (const [api,] of callMap) {
             const ci = this.getCompletionItemForAPI(settings,ExtensionDefaults.defaultCOBOLLanguage, api);

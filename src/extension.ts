@@ -60,6 +60,7 @@ const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
+let snippetProvider: SnippetCompletionItemProvider;
 
 // setup
 VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
@@ -541,7 +542,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 VSLogger.logMessage("\nYou already have a 'Micro Focus COBOL' compatible debugger installed, so may not need the above extension(s)");
             } else {
                 VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.microFocusCOBOLExtension}`);
-            } 
+            }
             throw new Error(msg);
         }
     }
@@ -568,6 +569,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
         const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
         const md_comments_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.comments_tags`);
+        const md_format_on_return = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.format_on_return`);
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
@@ -611,6 +613,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (md_comments_tags) {
                 colourCommentHandler.setupTags();
+            }
+
+            // ensure we update the map
+            if (md_format_on_return) {
+                snippetProvider.reInitCallMap(settings);
             }
         }
     });
@@ -872,7 +879,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const keywordProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
-    const snippetProvider = new SnippetCompletionItemProvider(settings);
+    snippetProvider = new SnippetCompletionItemProvider(settings);
     const snippetProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), snippetProvider);
     context.subscriptions.push(snippetProviderDisposible);
 
