@@ -1,7 +1,8 @@
 # CHANGELOG
 
-* 3af6e2f (HEAD -> main, tag: 8.2.21) fix
-* 524556c (origin/main) Update
+* a27e378 (HEAD -> main, tag: 8.2.21, origin/main) Update
+* 3af6e2f fix
+* 524556c Update
 * f4634b3 update changelog
 * a4f5756 ensure map is reloaded if format_on_return has changed
 * e9059d6 reduce complexity of snippetprovider
