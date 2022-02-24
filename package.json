@@ -115,10 +115,6 @@
         "coboleditor.sourceview_include_object_files",
         "coboleditor.mfunit.diagnostic.color",
         "coboleditor.disable_unc_copybooks_directories",
-        "coboleditor.intellisense_include_unchanged",
-        "coboleditor.intellisense_include_camelcase",
-        "coboleditor.intellisense_include_uppercase",
-        "coboleditor.intellisense_include_lowercase",
         "coboleditor.intellisense_item_limit",
         "coboleditor.process_metadata_cache_on_start",
         "coboleditor.parse_copybooks_for_references",
@@ -439,25 +435,16 @@
           "description": "Disable UNC Copybooks (default false)",
           "default": false
         },
-        "coboleditor.intellisense_include_unchanged": {
-          "type": "boolean",
-          "description": "Include result unchanged in intellisense results (default true)",
-          "default": true
-        },
-        "coboleditor.intellisense_include_camelcase": {
-          "type": "boolean",
-          "description": "Include camelcase in intellisense results (default false)",
-          "default": false
-        },
-        "coboleditor.intellisense_include_uppercase": {
-          "type": "boolean",
-          "description": "Include uppercase results in intellisense results (default false)",
-          "default": false
-        },
-        "coboleditor.intellisense_include_lowercase": {
-          "type": "boolean",
-          "description": "Include lowercase results in intellisense results (default false)",
-          "default": false
+        "coboleditor.intellisense_style": {
+          "enum": [
+            "unchanged",
+            "camelcase",
+            "lowercase",
+            "uppercase"
+          ],
+          "default": "unchanged",
+          "markdownDescription": "Include results in specific format",
+          "title": "Include results in specific format"
         },
         "coboleditor.intellisense_item_limit": {
           "type": "number",

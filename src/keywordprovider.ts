@@ -1,7 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
 import { SourceScannerUtils } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
-import { ICOBOLSettings } from "./iconfiguration";
+import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
 
@@ -18,51 +18,51 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		}
 
 		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
-		const includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
-		const includeUpper: boolean = iconfig.intellisense_include_uppercase;
-		const includeLower: boolean = iconfig.intellisense_include_lowercase;
-		const includeAsIS: boolean = iconfig.intellisense_include_unchanged;
+
 
 		const items: CompletionItem[] = [];
 		const wordToCompleteLower = wordToComplete.toLowerCase();
-		const words:string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
+		const words: string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
 
 		for (const key of words) {
 			const keyLower = key.toLowerCase();
 			if (keyLower.startsWith(wordToCompleteLower) === false) {
 				continue;
 			}
-			const retKeys = new Map<string,string>();
+			const retKeys = new Map<string, string>();
 
-			//if the text is uppercase, the present the items as uppercase
-			if (includeAsIS) {
-				retKeys.set(key,key+" ");
+			switch (iconfig.intellisense_style) {
+				case intellisenseStyle.CamelCase:
+					{
+						const camelKey = SourceScannerUtils.camelize(key);
+						if (!retKeys.has(camelKey)) {
+							retKeys.set(camelKey, camelKey + " ");
+						}
+					}
+					break;
+				case intellisenseStyle.UpperCase:
+					{
+						const upperKey = key.toUpperCase();
+						if (!retKeys.has(upperKey)) {
+							retKeys.set(upperKey, upperKey + " ");
+						}
+					}
+					break;
+				case intellisenseStyle.LowerCase:
+					if (!retKeys.has(keyLower)) {
+						retKeys.set(keyLower, keyLower + " ");
+					}
+					break;
+				case intellisenseStyle.Unchanged:
+					retKeys.set(key, key + " ");
+					break;
 			}
 
-			if (includeCamelCase) {
-				const camelKey = SourceScannerUtils.camelize(key);
-				if (!retKeys.has(camelKey)) {
-					retKeys.set(camelKey,camelKey+" ");
-				}
-			}
 
-			if (includeUpper) {
-				const upperKey = key.toUpperCase();
-				if (!retKeys.has(upperKey)) {
-					retKeys.set(upperKey,upperKey+" ");
-				}
-			}
-
-			if (includeLower) {
-				if (!retKeys.has(keyLower)) {
-					retKeys.set(keyLower,keyLower+" ");
-				}
-			}
-
-			for(const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
+			for (const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
 				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
 				ci.detail = `COBOL keyword ${uniqueRetKey}`;
-				
+
 				items.push(ci);
 			}
 

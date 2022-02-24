@@ -1,6 +1,6 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { ICOBOLSettings } from "./iconfiguration";
+import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { COBOLSourceScanner, COBOLToken, SourceScannerUtils } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import TrieSearch from "trie-search";
@@ -106,10 +106,6 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
         const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
 
-        const includeUpper: boolean = iconfig.intellisense_include_uppercase;
-        const includeLower: boolean = iconfig.intellisense_include_lowercase;
-        const includeAsIS: boolean = iconfig.intellisense_include_unchanged;
-        const includeCamelCase: boolean = iconfig.intellisense_include_camelcase;
         const limit: number = iconfig.intellisense_item_limit;
 
         const words: COBOLToken[] = tsearch.get(wordToComplete);
@@ -131,22 +127,25 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
             const orgKey = key.tokenName;
 
-            if (includeAsIS) {
-                retKeys.push((key.tokenName));
+            switch (iconfig.intellisense_style) {
+                case intellisenseStyle.Unchanged:
+                    retKeys.push((key.tokenName));
+                    break;
+                case intellisenseStyle.LowerCase:
+                    if (key.tokenName !== key.tokenNameLower) {
+                        retKeys.push(key.tokenNameLower);
+                    }
+                    break;
+                case intellisenseStyle.UpperCase:
+                    if (key.tokenName !== key.tokenName.toUpperCase()) {
+                        retKeys.push(key.tokenName.toUpperCase());
+                    }
+                    break;
+                case intellisenseStyle.CamelCase:
+                    retKeys.push(SourceScannerUtils.camelize(key.tokenName));
+                    break;
             }
-
-            if (includeLower && key.tokenName !== key.tokenNameLower) {
-                retKeys.push(key.tokenNameLower);
-            }
-
-            if (includeUpper && key.tokenName !== key.tokenName.toUpperCase()) {
-                retKeys.push(key.tokenName.toUpperCase());
-            }
-
-            if (includeCamelCase) {
-                retKeys.push(SourceScannerUtils.camelize(key.tokenName));
-            }
-
+            
             const uniqueRetKeys = retKeys.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
             });
@@ -398,7 +397,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "reference":
                         {
                             if (wordToComplete.length === 0) {
-                                items = this.getAllConstantsOrVariables(document, this.iconfig,false);
+                                items = this.getAllConstantsOrVariables(document, this.iconfig, false);
                                 listComplete = true;
                             } else {
                                 const words = this.getConstantsOrVariables(document, this.iconfig, false);
@@ -410,7 +409,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "of":
                         {
                             if (wordToComplete.length === 0) {
-                                items = this.getAllConstantsOrVariables(document, this.iconfig,true);
+                                items = this.getAllConstantsOrVariables(document, this.iconfig, true);
                                 listComplete = true;
                             } else {
                                 const words = this.getConstantsOrVariables(document, this.iconfig, true);
@@ -419,7 +418,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                             }
                         }
                         break;
-                    }
+                }
             }
         }
 

@@ -569,7 +569,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
         const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
         const md_comments_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.comments_tags`);
-        const md_format_on_return = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.format_on_return`);
+        const md_intellisense_style = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_style`);
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
@@ -616,7 +616,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             // ensure we update the map
-            if (md_format_on_return) {
+            if (md_intellisense_style) {
                 snippetProvider.reInitCallMap(settings);
             }
         }

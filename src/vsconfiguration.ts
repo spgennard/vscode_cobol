@@ -2,7 +2,7 @@
 "use strict";
 
 import { workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi, intellisenseStyle } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 
@@ -26,10 +26,6 @@ export class VSCOBOLConfiguration {
         vsconfig.fileformat_strategy = getFileformatStrategy();
         vsconfig.enable_data_provider = getBoolean("enable_data_provider", true);
         vsconfig.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
-        vsconfig.intellisense_include_unchanged = getBoolean("intellisense_include_unchanged", true);
-        vsconfig.intellisense_include_camelcase = getBoolean("intellisense_include_camelcase", false);
-        vsconfig.intellisense_include_uppercase = getBoolean("intellisense_include_uppercase", false);
-        vsconfig.intellisense_include_lowercase = getBoolean("intellisense_include_lowercase", false);
         vsconfig.intellisense_item_limit = getIntellisense_item_limit();
         vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         // vsconfig.cache_metadata = getcache_metadata();
@@ -58,7 +54,7 @@ export class VSCOBOLConfiguration {
         vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         vsconfig.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
         vsconfig.format_on_return = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<formatOnReturn>("format_on_return", formatOnReturn.Off);
-
+        vsconfig.intellisense_style = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
         vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
         vsconfig.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
         vsconfig.metadata_symbols = getmetadata_symbols(vsconfig);

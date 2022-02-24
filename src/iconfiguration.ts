@@ -13,6 +13,13 @@ export enum formatOnReturn {
     UpperCase = "uppercase"
 }
 
+export enum intellisenseStyle {
+    Unchanged = "unchanged",
+    CamelCase = "camelcase",
+    LowerCase = "lowercase",
+    UpperCase = "uppercase"
+}
+
 export enum hoverApi {
     Off = "off",
     Short = "short",
@@ -39,10 +46,6 @@ export interface ICOBOLSettings {
     fileformat_strategy: string;
     enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
-    intellisense_include_unchanged: boolean;
-    intellisense_include_camelcase: boolean;
-    intellisense_include_uppercase: boolean;
-    intellisense_include_lowercase: boolean;
     intellisense_item_limit: number;
     process_metadata_cache_on_start: boolean;
     // cache_metadata: CacheDirectoryStrategy;
@@ -69,6 +72,7 @@ export interface ICOBOLSettings {
 
     format_constants_to_uppercase: boolean;
     format_on_return: formatOnReturn;
+    intellisense_style: intellisenseStyle;
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
 
@@ -125,10 +129,6 @@ export class COBOLSettings implements ICOBOLSettings {
     fileformat_strategy: string;
     enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
-    intellisense_include_unchanged: boolean;
-    intellisense_include_camelcase: boolean;
-    intellisense_include_uppercase: boolean;
-    intellisense_include_lowercase: boolean;
     intellisense_item_limit: number;
     process_metadata_cache_on_start: boolean;
     // cache_metadata: CacheDirectoryStrategy;
@@ -155,6 +155,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     format_constants_to_uppercase: boolean;
     format_on_return: formatOnReturn;
+    intellisense_style: intellisenseStyle;
+
     editor_maxTokenizationLineLength: number;
     init_required: boolean;
 
@@ -211,10 +213,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.line_comment = false;
         this.enable_data_provider = true;
         this.disable_unc_copybooks_directories = false;
-        this.intellisense_include_unchanged = true;
-        this.intellisense_include_camelcase = false;
-        this.intellisense_include_uppercase = false;
-        this.intellisense_include_lowercase = false;
         this.intellisense_item_limit = 30;
         this.process_metadata_cache_on_start = false;
         this.cache_metadata_inactivity_timeout = 5000;
@@ -267,5 +265,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_comment_tags = false;
         this.comment_tag_word = false;
         this.snippets = false;
+        this.intellisense_style = intellisenseStyle.Unchanged;
     }
 }
