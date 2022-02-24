@@ -533,11 +533,12 @@
           "enum": [
             "camelcase",
             "uppercase",
+            "lowercase",
             "off"
           ],
           "default": "off",
-          "markdownDescription": "Format line on return key (camelcase or uppercase)",
-          "title": "Format line on return key (camelcase or uppercase)"
+          "markdownDescription": "Format line on return key (camelcase,uppercase or lowercase)",
+          "title": "Format line on return key (camelcase,uppercase or lowercase)"
         },
         "coboleditor.metadata_symbols": {
           "type": "array",

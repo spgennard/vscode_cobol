@@ -10,7 +10,8 @@ export enum outlineFlag {
 export enum formatOnReturn {
     Off = "off",
     CamelCase = "camelcase",
-    UpperCase = "uppercase"
+    UpperCase = "uppercase",
+    LowerCase = "lowercase"
 }
 
 export enum intellisenseStyle {
