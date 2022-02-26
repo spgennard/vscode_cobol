@@ -1035,6 +1035,22 @@
         "configuration": "./jcl.configuration.json"
       },
       {
+        "id": "mfupp_dir",
+        "aliases": [
+          "MFUPP_DIR"
+        ],
+        "filenames": [
+          "mfupp.dir"
+        ],
+        "configuration": "./mfupp_dir-configuration.json"
+      },
+      {
+        "id": "xml",
+        "extensions": [
+          ".cblproj"
+        ]
+      },
+      {
         "id": "dir",
         "extensions": [
           ".dir"
@@ -1098,7 +1114,7 @@
         "filenamePatterns": [
           "*-report.txt"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./utreport-configuration.json"
       },
       {
         "id": "xml",
@@ -1192,6 +1208,11 @@
         "language": "jcl",
         "scopeName": "source.jcl",
         "path": "./syntaxes/jcl.tmLanguage.json"
+      },
+      {
+        "language": "mfupp_dir",
+        "scopeName": "source.mfupp_dir",
+        "path": "./syntaxes/mfupp_dir.json"
       },
       {
         "language": "dir",

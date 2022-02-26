@@ -1,0 +1,37 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2022 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/dir.tmLanguage.json",
+  "$schema": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
+  "name": "mfupp_dir",
+  "fileTypes": [],
+  "patterns": [
+    {
+      "name": "comment.line.mfupp_dir",
+      "match": "^(\\s*)&.*$"
+    },
+    {
+      "match": "(\\(.*\\))",
+      "name": "string.brackets.mfupp_dir"
+    },
+    {
+      "match": "(\".*\")$",
+      "name": "string.quoted.mfupp_dir"
+    },
+    {
+      "match": "^(\\s*)(?i:(NOMOCK|NOCONFIRM|NOPD-PREFIX|NOPDP|NOVERBOSE|NOWS-PREFIX|NOWSP|NOC|NOIPP|NOIL|NOM|NOPDP|NOWSP|NOV))(?=\"|\\(|\\s+|$)",
+      "name": "keyword.mfupp_dir"
+    },
+    {
+      "match": "^(\\s*)(?i:(CONFIRM|IGNORE-PRG-PREFIX|INSERT-LS|MOCK|PD-PREFIX|WS-PREFIX|C|IPP|IL|M|PDP|WSP|VERBOSE|V))(?=\"|\\(|\\s+|$)",
+      "name": "keyword.other.unit.mfupp_dir"
+    },
+    {
+      "match": "^(\\s*\\+.*)",
+      "name": "token.warn-token"
+    },
+    {
+      "match": "([0-9a-zA-Z\\-]+)",
+      "name": "invalid.illegal.mfupp_dir"
+    }
+  ],
+  "scopeName": "source.mfupp_dir"
+}
