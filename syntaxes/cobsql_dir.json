@@ -1,0 +1,37 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2022 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/dir.tmLanguage.json",
+  "$schema": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
+  "name": "cobsql_dir",
+  "fileTypes": [],
+  "patterns": [
+    {
+      "name": "comment.line.cobsql_dir",
+      "match": "^(\\s*)&.*$"
+    },
+    {
+      "match": "(\\(.*\\))",
+      "name": "string.brackets.cobsql_dir"
+    },
+    {
+      "match": "(\".*\")$",
+      "name": "string.quoted.cobsql_dir"
+    },
+    {
+      "match": "^(\\s*)(?i:(NOCOBSQLTYPE|NOCSQLT|NOCSTART|NOCST|NOCSTOP|NOCSP|NODEBUGFILE|NODEB|NODISPLAY|NODIS|NOEND-COBSQL|NOEND-C|NOEND|NOHSFTRACE|NOKEEPCBL|NOKEEPCOMP|NOMAKESYN|NOSQLDEBUG|NOSTOPCHK|NOTRACE|NOVERBOSE|NOXAID))(?=\"|\\(|\\s+|$)",
+      "name": "keyword.cobsql_dir"
+    },
+    {
+      "match": "^(\\s*)(?i:(COBSQLTYPE|CSQLT|CSTART|CST|CSTOP|CSP|DEBUGFILE|DEB|DISPLAY|DIS|END-COBSQL|END-C|END|HSFTRACE|KEEPCBL|KEEPCOMP|MAKESYN|SQLDEBUG|STOPCHK|TRACE|VERBOSE|XAID))(?=\"|\\(|\\s+|$)",
+      "name": "keyword.other.cobsql_dir"
+    },
+    {
+      "match": "^(\\s*\\+.*)",
+      "name": "token.warn-token"
+    },
+    {
+      "match": "([0-9a-zA-Z\\-]+)",
+      "name": "invalid.illegal.cobsql_dir"
+    }
+  ],
+  "scopeName": "source.cobsql_dir"
+}
