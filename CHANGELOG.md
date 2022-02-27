@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* a27e378 (HEAD -> main, tag: 8.2.21, origin/main) Update
+* 7f018fb (origin/main) add untested cobsql_dir (for future consideration)
+* 7a1f103 add initial version of lang file for mfupp preprocessor mfupp.dir file
+* 0cc295e add lowercase support for format on return.
+* 17a4063 centralise intellisense style into one enum
+* 675b3ec (tag: 8.2.21) Update
+* a27e378 Update
 * 3af6e2f fix
 * 524556c Update
 * f4634b3 update changelog
