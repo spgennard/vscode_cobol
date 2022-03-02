@@ -4,7 +4,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
-import { SnippetCompletionItemProvider } from "./snippetprovider";
+import { KeywordSnippetProvider } from "./snippetprovider";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -64,7 +64,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				items.push(ci);
 			}
 
-			for(const snip of SnippetCompletionItemProvider.Default.getKeywordSnippet(key)) {
+			for(const snip of KeywordSnippetProvider.Default.getKeywordSnippet(key)) {
 				items.push(snip);
 			}
 
