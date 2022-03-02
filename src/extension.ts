@@ -60,7 +60,7 @@ const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
-let snippetProvider: SnippetCompletionItemProvider;
+
 
 // setup
 VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
@@ -617,7 +617,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             // ensure we update the map
             if (md_intellisense_style) {
-                snippetProvider.reInitCallMap(settings);
+                SnippetCompletionItemProvider.Default.reInitCallMap(settings);
             }
         }
     });
@@ -879,7 +879,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const keywordProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
-    snippetProvider = new SnippetCompletionItemProvider(settings);
+    const snippetProvider = SnippetCompletionItemProvider.Default.reInitCallMap(settings);
     const snippetProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), snippetProvider);
     context.subscriptions.push(snippetProviderDisposible);
 

@@ -9,15 +9,49 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 const jsonCRLF = "\r\n";
 
-export class SnippetCompletionItemProvider implements CompletionItemProvider {
+interface ISimpleSnippet {
+    prefix: string;
+    body: string[];
+    description: string;
+    scope: string;
+}
 
+const simpleSnippets: ISimpleSnippet[] = [
+    {
+        "prefix": "add",
+        "body": [
+            "add ${1:a} to ${2:b} giving ${3:c}"
+        ],
+        "description": "Add a to b giving c",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "accept",
+        "body": [
+            "accept ${1:variable}",
+            "$0"
+        ],
+        "scope": "cobol",
+        "description": "Accept variable"
+    },
+    {
+        "prefix": "accept",
+        "body": [
+            "accept ${1:variable} ${2|from date,from day,from day-of-week,time|}",
+            "$0"
+        ],
+        "description": "accept from date/day/week/time",
+        "scope": "cobol"
+    }
+];
+
+export class SnippetCompletionItemProvider implements CompletionItemProvider {
+    public static Default: SnippetCompletionItemProvider = new SnippetCompletionItemProvider()
+
+    private keywordTargets = new Map<string, Map<string, CompletionItem>>();
     private allCallTargets = new Map<string, CompletionItem>();
 
-    constructor(settings: ICOBOLSettings) {
-        this.reInitCallMap(settings);
-    }
-
-    public reInitCallMap(settings: ICOBOLSettings) {
+    public reInitCallMap(settings: ICOBOLSettings):SnippetCompletionItemProvider {
         this.allCallTargets.clear();
         const callMap = KnownAPIs.getCallTargetMap();
         for (const [api,] of callMap) {
@@ -26,6 +60,54 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
                 this.allCallTargets.set(api, ci);
             }
         }
+
+        for (const simpleSnippet of simpleSnippets) {
+            this.addKeywordSnippet(settings, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage);
+        }
+
+        return this;
+    }
+
+    private addKeywordSnippet(settings: ICOBOLSettings, snippet: ISimpleSnippet, langId: string): void {
+        if (!this.keywordTargets.has(snippet.prefix)) {
+            this.keywordTargets.set(snippet.prefix, new Map<string, CompletionItem>());
+        }
+
+        const target = this.keywordTargets.get(snippet.prefix);
+        if (target === undefined) {
+            return;
+        }
+
+        let preselect = snippet.prefix;
+        let kiSnippet = "";
+        switch (settings.intellisense_style) {
+            case intellisenseStyle.CamelCase:
+                preselect = SourceScannerUtils.camelize(snippet.prefix);
+                kiSnippet = this.foldKeywordLine(snippet.body, FoldStyle.CamelCase, langId);
+                break;
+            case intellisenseStyle.UpperCase:
+                preselect = preselect.toUpperCase();
+                kiSnippet = this.foldKeywordLine(snippet.body, FoldStyle.UpperCase, langId);
+                break;
+            case intellisenseStyle.LowerCase:
+                preselect = preselect.toLowerCase();
+                kiSnippet = this.foldKeywordLine(snippet.body, FoldStyle.LowerCase, langId);
+                break;
+            case intellisenseStyle.Unchanged:
+                kiSnippet = snippet.body.join(jsonCRLF);
+                break;
+
+        }
+
+        const ci = new CompletionItem(preselect);
+        ci.keepWhitespace = false;
+        ci.kind = CompletionItemKind.Keyword;
+        ci.insertText = new SnippetString(kiSnippet);
+        ci.preselect = true;
+        ci.commitCharacters = [];
+        ci.documentation = snippet.description;
+        ci.detail = snippet.description;
+        target.set(snippet.prefix, ci);
     }
 
     private foldKeywordLine(texts: string[], foldstyle: FoldStyle, languageid: string): string {
@@ -106,6 +188,22 @@ export class SnippetCompletionItemProvider implements CompletionItemProvider {
         }
         return snippets;
     }
+
+    public getKeywordSnippet(word: string): CompletionItem[] {
+        const snippets: CompletionItem[] = [];
+        const targets = this.keywordTargets.get(word.toLowerCase());
+        if (targets === undefined) {
+            return snippets;
+        }
+
+        for (const [, ci] of targets) {
+            if (ci.insertText !== undefined) {
+                snippets.push(ci);
+            }
+        }
+        return snippets;
+    }
+
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {

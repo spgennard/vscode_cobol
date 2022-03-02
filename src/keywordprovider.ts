@@ -4,6 +4,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
+import { SnippetCompletionItemProvider } from "./snippetprovider";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -18,7 +19,6 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		}
 
 		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
-
 
 		const items: CompletionItem[] = [];
 		const wordToCompleteLower = wordToComplete.toLowerCase();
@@ -58,12 +58,14 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 					break;
 			}
 
-
 			for (const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
 				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
 				ci.detail = `COBOL keyword ${uniqueRetKey}`;
-
 				items.push(ci);
+			}
+
+			for(const snip of SnippetCompletionItemProvider.Default.getKeywordSnippet(key)) {
+				items.push(snip);
 			}
 
 			if (items.length >= limit) {
