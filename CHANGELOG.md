@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 7f018fb (origin/main) add untested cobsql_dir (for future consideration)
+* e62f47c (origin/main) move a couple more to the snippet provider
+* 2180e60 break snippet provider in two, allow for multiple of same keyword
+* 4c41c7a start to add support for extended keyword snippets
+* 4f94b88 (tag: 8.2.27) Update
+* 7f018fb add untested cobsql_dir (for future consideration)
 * 7a1f103 add initial version of lang file for mfupp preprocessor mfupp.dir file
 * 0cc295e add lowercase support for format on return.
 * 17a4063 centralise intellisense style into one enum
