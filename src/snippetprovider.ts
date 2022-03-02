@@ -11,6 +11,7 @@ const jsonCRLF = "\r\n";
 
 interface ISimpleSnippet {
     prefix: string;
+    label: string;
     body: string[];
     description: string;
     scope: string;
@@ -19,35 +20,107 @@ interface ISimpleSnippet {
 const simpleSnippets: ISimpleSnippet[] = [
     {
         "prefix": "add",
+        "label": "add ⦃⦄ to ⦃⦄ giving ⦃⦄",
         "body": [
             "add ${1:a} to ${2:b} giving ${3:c}",
             "$0"
         ],
-        "description": "Add a to b giving c",
+        "description": "Add {identifier-1|literal-1} to {identifier-2} giving {identifier-3}",
         "scope": "cobol"
     },
     {
         "prefix": "accept",
+        "label": "accept ⦃⦄",
         "body": [
             "accept ${1:variable}",
             "$0"
         ],
         "scope": "cobol",
-        "description": "Accept variable"
+        "description": "Accept identifier-1"
     },
     {
         "prefix": "accept",
+        "label": "accept ⦃⦄ from ⦃date/time/..⦄",
         "body": [
-            "accept ${1:variable} ${2|from date,from day,from day-of-week,time|}",
+            "accept ${1:variable} ${2|from date,from day,from day-of-week,from time|}",
             "$0"
         ],
-        "description": "accept from date/day/week/time",
+        "description": "Accept identifier-1 from {date/day/week/time}",
         "scope": "cobol"
-    }
+    },
+    {
+        "prefix": "copy",
+        "label": "copy ⦃⦄ replacing ==⦃⦄== by ==⦃⦄==",
+        "body": [
+            "copy \"${1:subprog.cpy}\"",
+            "    replacing ==${2:ABC}== by ==${3:DEF}==.",
+        ],
+        "description": "Copy {text-name-1|literal-1} replacing =={}== by =={}==",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "divide",
+        "label": "divide ⦃⦄ by ⦃⦄ giving ⦃⦄ [remainder ⦃⦄]",
+        "body": [
+            "divide ${1:a} by ${2:b} giving ${3:c} ${4:remainder ${5:d}}"
+        ],
+        "description": "divide a by b giving [remainder}",
+        "scope": "cobol"
+    }, {
+        "prefix": "entry",
+        "label": "entry ⦃literlal-1⦄",
+        "body": [
+            "${1:AlternateEP}-ep section.",
+            "entry \"$1\".",
+            "    $0\t",
+            "    goback.",
+            ""
+        ],
+        "description": "entry ⦃literlal-1⦄",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "evaluate",
+        "label": "evaluate ⦃⦄ .. when..",
+        "body": [
+            "evaluate ${1:Expression}",
+            "    when ${2:Phrase}",
+            "       $0",
+            "    when other",
+            "       continue",
+            "end-evaluate",
+            ""
+        ],
+        "description": "evaluate ⦃⦄.. when.. when continue",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "if",
+        "label": "if ⦃⦄ end-if",
+        "body": [
+            "if ${1:condition}",
+            "   $0",
+            "end-if"
+        ],
+        "description": "if ⦃⦄ end-if",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "if",
+        "label": "if ⦃⦄ else ⦃⦄  end-if",
+        "body": [
+            "if ${1:condition}",
+            "   $2",
+            "else",
+            "   $0",
+            "end-if"
+        ],
+        "description": "if ⦃⦄ else ⦃⦄  end-if",
+        "scope": "cobol"
+    },
 ];
 
 class SnippetHelper {
-
     protected foldKeywordLine(texts: string[], foldstyle: FoldStyle, languageid: string): string {
         const sb = [];
         for (const text of texts) {
@@ -82,11 +155,11 @@ export class KeywordSnippetProvider extends SnippetHelper {
             return;
         }
 
-        let preselect = snippet.prefix;
+        let preselect = snippet.label;
         let kiSnippet = "";
         switch (settings.intellisense_style) {
             case intellisenseStyle.CamelCase:
-                preselect = SourceScannerUtils.camelize(snippet.prefix);
+                preselect = SourceScannerUtils.camelize(snippet.label);
                 kiSnippet = super.foldKeywordLine(snippet.body, FoldStyle.CamelCase, langId);
                 break;
             case intellisenseStyle.UpperCase:
@@ -108,7 +181,7 @@ export class KeywordSnippetProvider extends SnippetHelper {
         ci.insertText = new SnippetString(kiSnippet);
         ci.preselect = true;
         ci.commitCharacters = [];
-        ci.documentation = snippet.description;
+        ci.documentation = "";
         ci.detail = snippet.description;
 
         const cisU: CompletionItem[] | undefined = target.get(snippet.prefix);

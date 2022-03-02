@@ -15,24 +15,6 @@
 		"description": "class with ctor",
 		"scope": "cobol"
 	},
-	"copy": {
-		"prefix": "copy",
-		"body": [
-			"copy \"${1:subprog.cpy}\"",
-			"    replacing ==${2:()}== by ==${3:lnk-}==."
-		],
-		"description": "Copy replacing",
-		"scope": "cobol"
-	},
-	"COPY": {
-		"prefix": "COPY",
-		"body": [
-			"COPY \"${1:SUBPROG.CPY}\"",
-			"    REPLACING ==${2:()}== BY ==${3:lnk-}==."
-		],
-		"description": "COPY REPLACING",
-		"scope": "cobol"
-	},
 	"delimited": {
 		"prefix": [
 			"delimited by size",
@@ -77,58 +59,6 @@
 		"description": "DELIMITED BY SPACE (string)",
 		"scope": "cobol"
 	},
-	"divide": {
-		"prefix": [
-			"divide",
-			"dgr"
-		],
-		"body": [
-			"divide ${1:a} by ${2:b} giving ${3:c} ${4:remainder ${5:d}}"
-		],
-		"description": "divide a by b giving [remainder}",
-		"scope": "cobol"
-	},
-	"DIVIDE": {
-		"prefix": [
-			"DIVIDE",
-			"DGR"
-		],
-		"body": [
-			"DIVIDE ${1:a} BY ${2:b} GIVING ${3:c} ${4:REMAINDER ${5:d}}"
-		],
-		"description": "DIVIDE a BY b GIVING [REMAINDER}",
-		"scope": "cobol"
-	},
-	"entry": {
-		"prefix": [
-			"entry",
-			"eg"
-		],
-		"body": [
-			"$1-ep section.",
-			"entry \"$1\".",
-			"    $0\t",
-			"    goback.",
-			""
-		],
-		"description": "entry statement",
-		"scope": "cobol"
-	},
-	"ENTRY": {
-		"prefix": [
-			"ENTRY",
-			"GB"
-		],
-		"body": [
-			"$1-EP SECTON.",
-			"ENTRY \"$1\".",
-			"    $0\t",
-			"    GOBACK.",
-			""
-		],
-		"description": "ENTRY statement",
-		"scope": "cobol"
-	},
 	"enum-id": {
 		"prefix": [
 			"enum-id",
@@ -142,37 +72,6 @@
 			""
 		],
 		"description": "enum-id",
-		"scope": "cobol"
-	},
-	"evaluate": {
-		"prefix": [
-			"evaluate",
-			"ee"
-		],
-		"body": [
-			"evaluate $1",
-			"    when $2",
-			"       $0",
-			"    when other",
-			"       continue",
-			"end-evaluate",
-			""
-		],
-		"description": "evaluate",
-		"scope": "cobol"
-	},
-	"EVALUATE": {
-		"prefix": "EVALUATE",
-		"body": [
-			"EVALUATE $1",
-			"    WHEN $2",
-			"       $0",
-			"    WHEN OTHER",
-			"       CONTINUE",
-			"END-EVALUATE",
-			""
-		],
-		"description": "EVALUATE",
 		"scope": "cobol"
 	},
 	"exec-sql": {
@@ -191,58 +90,6 @@
 			"exec sql end declare section end-exec."
 		],
 		"description": "exec sql declare",
-		"scope": "cobol"
-	},
-	"if": {
-		"prefix": [
-			"if",
-			"ie"
-		],
-		"body": [
-			"if ${1:condition}",
-			"   $0",
-			"end-if"
-		],
-		"scope": "cobol"
-	},
-	"IF": {
-		"prefix": [
-			"IF",
-			"ie"
-		],
-		"body": [
-			"IF ${1:CONDITION}",
-			"   $0",
-			"END-IF"
-		],
-		"scope": "cobol"
-	},
-	"if else": {
-		"prefix": [
-			"if",
-			"iee"
-		],
-		"body": [
-			"if ${1:condition}",
-			"   $0",
-			"else",
-			"   ",
-			"end-if"
-		],
-		"scope": "cobol"
-	},
-	"IF ELSE": {
-		"prefix": [
-			"IF",
-			"IEE"
-		],
-		"body": [
-			"IF ${1:CONDITION}",
-			"   $0",
-			"ELSE",
-			"   ",
-			"END-IF"
-		],
 		"scope": "cobol"
 	},
 	"inspect converting": {
