@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* e62f47c (origin/main) move a couple more to the snippet provider
+* dbea506 (HEAD -> main, tag: 8.3.3, origin/main) continue to move more snippets to the snippet provider
+* b2148b6 dev: allow debuggers to get breakpoints
+* bd3f978 (tag: 8.3.2) Update
+* e62f47c move a couple more to the snippet provider
 * 2180e60 break snippet provider in two, allow for multiple of same keyword
 * 4c41c7a start to add support for extended keyword snippets
 * 4f94b88 (tag: 8.2.27) Update
