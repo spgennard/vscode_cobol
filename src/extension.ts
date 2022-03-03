@@ -61,7 +61,6 @@ let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
 
-
 // setup
 VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
 VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);

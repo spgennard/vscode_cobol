@@ -118,6 +118,131 @@ const simpleSnippets: ISimpleSnippet[] = [
         "description": "if ⦃⦄ else ⦃⦄  end-if",
         "scope": "cobol"
     },
+    {
+        "prefix": "delimited",
+        "label": "delimited by size",
+        "body": [
+            "delimited by size"
+        ],
+        "description": "delimited by size (string)",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "delimited",
+        "label": "delimited by space",
+        "body": [
+            "delimited by space"
+        ],
+        "description": "delimited by size (string)",
+        "scope": "cobol"
+    }, {
+        "prefix": "inspect",
+        "label": "inspect converting",
+        "body": [
+            "inspect $1 converting '${2:ABCDEFGHIJKLMNOPQRSTUVWXYZ}' to '${3:abcdefghijklmnopqrstuvwxyz}'"
+        ],
+        "description": "inspect converting",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "inspect",
+        "label": "inspect replacing",
+        "body": [
+            "inspect $1 replacing all ${2|spaces,zero|} by '${3}'"
+        ],
+        "description": "inspect replacing",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "inspect",
+        "label": "inspect tallying",
+        "body": [
+            "move 0 to ${2:counter}",
+            "inspect ${1:source} tallying ${2:counter} for ${3|all spaces,all \"abc\",characters|}"
+        ],
+        "description": "Inspect a tallying counter for ...",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "linkage",
+        "label": "linkage section.",
+        "body": [
+            "linkage section.",
+            "$0"
+        ],
+        "description": "linkage section.",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "procedure",
+        "label": "procedure division",
+        "body": [
+            "procedure division.",
+            "$0"
+        ],
+        "description": "procedure division",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "program-id",
+        "label": "program-id",
+        "body": [
+            "program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
+            "$0"
+        ],
+        "description": "program-id. literal-1",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "local-storage",
+        "label": "local-storage section",
+        "description": "local-storage section",
+        "body": [
+            "local-storage section.",
+            "$0"
+        ],
+        "scope": "cobol"
+    },
+    {
+        "prefix": "working-storage",
+        "label": "working-storage section",
+        "description": "working-storage section",
+        "body": [
+            "working-storage section.",
+            "$0"
+        ],
+        "scope": "cobol"
+    },
+    {
+        "prefix": "data",
+        "label": "data division",
+        "description": "data division",
+        "body": [
+            "data division.",
+            "$0"
+        ],
+        "scope": "cobol"
+    },
+    {
+        "prefix": "environment",
+        "label": "environment division",
+        "description": "environment division",
+        "body": [
+            "environment division.",
+            "$0"
+        ],
+        "scope": "cobol"
+    },
+    {
+        "prefix": "identification",
+        "label": "identification division",
+        "description": "identification division",
+        "body": [
+            "identification division.",
+            "$0"
+        ],
+        "scope": "cobol"
+    }
 ];
 
 class SnippetHelper {
