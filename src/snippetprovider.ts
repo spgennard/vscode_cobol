@@ -141,7 +141,7 @@ const simpleSnippets: ISimpleSnippet[] = [
         "body": [
             "inspect $1 converting '${2:ABCDEFGHIJKLMNOPQRSTUVWXYZ}' to '${3:abcdefghijklmnopqrstuvwxyz}'"
         ],
-        "description": "inspect converting",
+        "description": "inspect converting ⦃⦄ to ⦃⦄",
         "scope": "cobol"
     },
     {
@@ -150,7 +150,7 @@ const simpleSnippets: ISimpleSnippet[] = [
         "body": [
             "inspect $1 replacing all ${2|spaces,zero|} by '${3}'"
         ],
-        "description": "inspect replacing",
+        "description": "inspect ⦃⦄ replacing [⦃⦄|spaces,zero] by ⦃⦄",
         "scope": "cobol"
     },
     {
@@ -160,7 +160,7 @@ const simpleSnippets: ISimpleSnippet[] = [
             "move 0 to ${2:counter}",
             "inspect ${1:source} tallying ${2:counter} for ${3|all spaces,all \"abc\",characters|}"
         ],
-        "description": "Inspect a tallying counter for ...",
+        "description": "Inspect ⦃⦄ tallying ⦃⦄ for [⦃⦄|all spaces,all ⦃⦄]]..",
         "scope": "cobol"
     },
     {
@@ -242,7 +242,112 @@ const simpleSnippets: ISimpleSnippet[] = [
             "$0"
         ],
         "scope": "cobol"
-    }
+    },
+    {
+        "prefix": "cancel",
+        "label": "cancel",
+        "body": [
+            "cancel \"$1\"",
+            "$0"
+        ],
+        "description": "CANCEL literal",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "call",
+        "label": "call literal",
+        "body": [
+            "call \"$1\" using",
+            "    by ${2|value,reference,content|} ${3:identifer}",
+            "    returning ${4:return-code}",
+            "end-call",
+            "$0"
+        ],
+        "description": "CALL literal",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "exit",
+        "label": "exit program",
+        "body": [
+            "exit program returning ${1:item}"
+        ],
+        "description": "exit program returning ⦃⦄",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "string",
+        "label": "string",
+        "body": [
+            "string ${1:item1} delimited by size",
+            "       ${2:item2} delimited by size",
+            "       into ${3:result}",
+            "end-string",
+            "$0"
+        ],
+        "description": "string delimited by size",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "subtract",
+        "label": "subtract",
+        "body": [
+            "subtract ${1:a} from ${2:b} giving ${3:c}"
+        ],
+        "description": "subtract ⦃⦄ from ⦃⦄ giving ⦃⦄",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "multiply",
+        "label": "multiply",
+        "body": [
+            "multiply ${1:a} by ${2:b} giving ${3:c}"
+        ],
+        "description": "Multiply ⦃⦄ by ⦃⦄ giving ⦃⦄",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
+        "label": "perform paragraph ⦃⦄ times",
+        "body": [
+            "perform ${1:paragraph-name} ${2:value-1} times"
+        ],
+        "description": "perform paragraph ⦃⦄ times",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
+        "label": "perform .. end-perform",
+        "body": [
+            "perform ${1}",
+            "\t${2}",
+            "end-perform",
+            "${0}"
+        ],
+        "description": "perform <block> end-perform",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
+        "label": "perform paragraph varying",
+        "body": [
+            "perform ${1:paragraph-name} varying ${2:field-1}",
+            " from ${3:value-1} by ${4:value-2}",
+            " until ${5:condition}",
+            "$0"
+        ],
+        "description": "perform paragraph varying",
+        "scope": "cobol"
+    },
+	{
+		"prefix": "end",
+        "label": "end program",
+		"body": [
+			"end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
+		],
+		"description": "end program literal.",
+		"scope": "cobol"
+	},
 ];
 
 class SnippetHelper {
@@ -440,6 +545,11 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         if (config.snippets === false) {
             return [];
         }
+		const currentLine: string = document.lineAt(position.line).text;
+        if (currentLine.endsWith(" ")) {
+			return [];
+		}
+
         const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {
             return [];

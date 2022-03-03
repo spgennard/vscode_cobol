@@ -123,106 +123,6 @@
 		"description": "MFUNIT skelton program",
 		"scope": "cobol"
 	},
-	"multiply": {
-		"prefix": [
-			"multiply",
-			"mg"
-		],
-		"body": [
-			"multiply ${1:a} by ${2:b} giving ${3:c}"
-		],
-		"description": "Multiply a by y giving z",
-		"scope": "cobol"
-	},
-	"MULTIPLY": {
-		"prefix": [
-			"MULTIPLY",
-			"MG"
-		],
-		"body": [
-			"MULTIPLY ${1:a} BY ${2:b} GIVING ${3:c}"
-		],
-		"description": "MULTIPLY a BY y GIVING z",
-		"scope": "cobol"
-	},
-	"perform": {
-		"prefix": [
-			"perform",
-			"pt"
-		],
-		"body": [
-			"perform ${1:paragraph-name} ${2:value-1} times"
-		],
-		"description": "perform paragraph x times",
-		"scope": "cobol"
-	},
-	"PERFORM": {
-		"prefix": [
-			"PERFORM",
-			"PE"
-		],
-		"body": [
-			"PERFORM ${1:paragraph-name} ${2:value-1} TIMES"
-		],
-		"description": "PERFORM paragraph x TIMES",
-		"scope": "cobol"
-	},
-	"perform-end-perform": {
-		"prefix": [
-			"perform",
-			"pe"
-		],
-		"body": [
-			"perform ${1}",
-			"\t${2}",
-			"end-perform",
-			"${0}"
-		],
-		"description": "perform .. end-perform",
-		"scope": "cobol"
-	},
-	"PERFORM-END-PERFORM": {
-		"prefix": [
-			"PERFORM",
-			"PE"
-		],
-		"body": [
-			"PERFORM ${1}",
-			"\t${2}",
-			"END-PERFORM",
-			"${0}"
-		],
-		"description": "PERFORM .. END-PERFORM",
-		"scope": "cobol"
-	},
-	"perform varying": {
-		"prefix": [
-			"perform",
-			"pv"
-		],
-		"body": [
-			"perform ${1:paragraph-name} varying ${2:field-1}",
-			" from ${3:value-1} by ${4:value-2}",
-			" until ${5:condition}",
-			"$0"
-		],
-		"description": "inline perform varying",
-		"scope": "cobol"
-	},
-	"PERFORM VARYING": {
-		"prefix": [
-			"PERFORM",
-			"PV"
-		],
-		"body": [
-			"PERFORM ${1:paragraph-name} VARYING ${2:field-1}",
-			" FROM ${3:value-1} BY ${4:value-2}",
-			" UNTIL ${5:condition}",
-			"$0"
-		],
-		"description": "INLINE PERFORM VARYING",
-		"scope": "cobol"
-	},
 	"IDENTIFICATION (CICS)": {
 		"prefix": "IDENTIFICATION",
 		"body": [
@@ -371,22 +271,6 @@
 		"description": "Minimum template",
 		"scope": "cobol"
 	},
-	"END PROGRAM": {
-		"prefix": "END PROGRAM",
-		"body": [
-			"END PROGRAM ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
-		],
-		"description": "END PROGRAM prg.",
-		"scope": "cobol"
-	},
-	"end program": {
-		"prefix": "end program",
-		"body": [
-			"end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
-		],
-		"description": "end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
-		"scope": "cobol"
-	},
 	"property": {
 		"prefix": "property",
 		"body": [
@@ -402,22 +286,6 @@
 			""
 		],
 		"description": "set/get property",
-		"scope": "cobol"
-	},
-	"subtract": {
-		"prefix": "subtract",
-		"body": [
-			"subtract ${1:a} from ${2:b} giving ${3:c}"
-		],
-		"description": "subtract a from b giving c",
-		"scope": "cobol"
-	},
-	"SUBTRACT": {
-		"prefix": "SUBTRACT",
-		"body": [
-			"SUBTRACT ${1:a} FROM ${2:b} GIVING ${3:c}"
-		],
-		"description": "SUBTRACT a FROM b GIVING c",
 		"scope": "cobol"
 	},
 	"try": {
@@ -476,30 +344,6 @@
 			"   exit section."
 		],
 		"description": "select-tosection",
-		"scope": "cobol"
-	},
-	"string": {
-		"prefix": "string",
-		"body": [
-			"string ${1:item1} delimited by size",
-			"       ${2:item2} delimited by size",
-			"       into ${3:result}",
-			"end-string",
-			"$0"
-		],
-		"description": "string delimited by size",
-		"scope": "cobol"
-	},
-	"STRING": {
-		"prefix": "STRING",
-		"body": [
-			"STRING ${1:item1} DELIMITED BY SIZE",
-			"       ${2:item2} DELIMITED BY SIZE",
-			"       INTO ${3:result}",
-			"END-STRING",
-			"$0"
-		],
-		"description": "string delimited by size",
 		"scope": "cobol"
 	},
 	"function-abs": {
@@ -1161,17 +1005,6 @@
 		],
 		"description": "convert yy to yyyy with optional yy-cutoff to delineate centuries",
 		"scope": "cobol"
-	},
-	"call": {
-		"prefix": "call",
-		"body": [
-			"call \"$1\" using",
-			"    by ${2|value,reference,content|} ${3:identifer}",
-			"    returning ${4:return-code}",
-			"end-call",
-			"$0"
-		],
-		"description": "CALL literal"
 	},
 	"FUNCTION-ABS": {
 		"prefix": [
@@ -1837,53 +1670,6 @@
 		],
 		"description": "convert yy to yyyy with optional yy-cutoff to delineate centuries",
 		"scope": "cobol"
-	},
-	"CALL": {
-		"prefix": "CALL",
-		"body": [
-			"CALL \"$1\" USING",
-			"    BY ${2|VALUE,REFERENCE,CONTENT|} ${3:IDENTIFER}",
-			"    RETURNING ${4:RETURN-CODE}",
-			"END-CALL",
-			"$0"
-		],
-		"description": "CALL literal"
-	},
-	"cancel": {
-		"prefix": "cancel",
-		"body": [
-			"cancel \"$1\"",
-			"$0"
-		],
-		"description": "CANCEL literal"
-	},
-	"CANCEL": {
-		"prefix": "CANCEL",
-		"body": [
-			"CANCEL \"$1\"",
-			"$0"
-		],
-		"description": "CANCEL literal"
-	},
-	"exit program": {
-		"prefix": [
-			"ep",
-			"exit"
-		],
-		"body": [
-			"exit program returning ${1:item}"
-		],
-		"description": "EXIT PROGRAM"
-	},
-	"EXIT PROGRAM": {
-		"prefix": [
-			"EP",
-			"EXIT"
-		],
-		"body": [
-			"EXIT PROGRAM RETURNING ${1:item}"
-		],
-		"description": "EXIT PROGRAM"
 	},
 	"dialect": {
 		"prefix": "$set",
