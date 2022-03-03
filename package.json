@@ -823,6 +823,17 @@
         }
       }
     },
+    "breakpoints": [
+      {
+        "language": "COBOL"
+      },
+      {
+        "language": "BITLANG-COBOL"
+      },
+      {
+        "language": "ACUCOBOL"
+      }
+    ],
     "views": {
       "explorer": [
         {
@@ -833,6 +844,7 @@
       ]
     },
     "configurationDefaults": {
+      "microFocusCOBOL.suppressFileAssociationsPrompt": true,
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,
