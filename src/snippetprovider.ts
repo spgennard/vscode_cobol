@@ -339,15 +339,24 @@ const simpleSnippets: ISimpleSnippet[] = [
         "description": "perform paragraph varying",
         "scope": "cobol"
     },
-	{
-		"prefix": "end",
+    {
+        "prefix": "end",
         "label": "end program",
-		"body": [
-			"end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
-		],
-		"description": "end program literal.",
-		"scope": "cobol"
-	},
+        "body": [
+            "end program ${1:${TM_FILENAME/(.*)\\..+$/$1/}}."
+        ],
+        "description": "end program literal.",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "display",
+        "label": "display",
+        "body": [
+            "display \"$0\""
+        ],
+        "description": "display literal",
+        "scope": "cobol"
+    }
 ];
 
 class SnippetHelper {
@@ -545,10 +554,10 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         if (config.snippets === false) {
             return [];
         }
-		const currentLine: string = document.lineAt(position.line).text;
+        const currentLine: string = document.lineAt(position.line).text;
         if (currentLine.endsWith(" ")) {
-			return [];
-		}
+            return [];
+        }
 
         const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {

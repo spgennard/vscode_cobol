@@ -319,22 +319,6 @@
 		"description": "valuetype",
 		"scope": "cobol"
 	},
-	"display": {
-		"prefix": "display",
-		"body": [
-			"display \"$0\""
-		],
-		"description": "display literal",
-		"scope": "cobol"
-	},
-	"DISPLAY": {
-		"prefix": "DISPLAY",
-		"body": [
-			"DISPLAY \"$0\""
-		],
-		"description": "DISPLAY literal",
-		"scope": "cobol"
-	},
 	"select-to-section": {
 		"prefix": "perform",
 		"body": [
