@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* dbea506 (HEAD -> main, tag: 8.3.3, origin/main) continue to move more snippets to the snippet provider
+* c6fe3b7 fix bug in hover
+* c9185fc continue to simplify
+* 2327887 move display to dynamic snippets
+* ed876ce update engine
+* 41c59a3 convert more snippets
+* afe7f87 update versions
+* f191496 (tag: 8.3.3) Update
+* dbea506 continue to move more snippets to the snippet provider
 * b2148b6 dev: allow debuggers to get breakpoints
 * bd3f978 (tag: 8.3.2) Update
 * e62f47c move a couple more to the snippet provider
