@@ -1,4 +1,4 @@
-import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument } from "vscode";
+import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument, TextLine } from "vscode";
 import { COBOLSourceScanner, SourceScannerUtils } from "./cobolsourcescanner";
 import { COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
 import { ExtensionDefaults } from "./extensionDefaults";
@@ -525,7 +525,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         return ci;
     }
 
-    private getSnippetForPreviousWord(document: TextDocument, position: Position, prevWordLower: string,  targets: Map<string, CompletionItem>) {
+    private getAllSnippets(document: TextDocument, position: Position, prevWordLower: string, targets: Map<string, CompletionItem>) {
         const position_plus1 = new Position(position.line, position.character + 1);
         const position_plus1_char = document.getText(new Range(position, position_plus1));
         const snippets: CompletionItem[] = [];
@@ -544,9 +544,6 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         }
         return snippets;
     }
-
-
-
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
@@ -571,9 +568,9 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         const snippets: CompletionItem[] = [];
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
-            const prevWordLower = preWord.toLowerCase();
+            const prevWordLower = preWord. toLowerCase();
             if (prevWordLower === "call") {
-                return this.getSnippetForPreviousWord(document, position, prevWordLower, this.allCallTargets);
+                return this.getAllSnippets(document, position, prevWordLower, this.allCallTargets);
             }
 
             const prevWordChar = position.character - preWord.length - 3; // 2 spaces -1
@@ -581,40 +578,44 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
                 const line = document.lineAt(position.line);
                 const wordRangeForCall = document.getWordRangeAtPosition(new Position(position.line, prevWordChar));
                 const pre2Word = document.getText(wordRangeForCall);
-                if (pre2Word !== undefined && pre2Word.toLowerCase() === "call") {
-                    const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
-                    const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
-                    const preTrimmedWorkUpper = preTrimmedWork.toUpperCase();
-                    const ci = this.allCallTargets.get(preTrimmedWorkUpper);
-                    if (ci !== undefined) {
-                        if (ci.insertText !== undefined) {
-                            if (position_plus1_char !== undefined && position_plus1_char === "\"") {
-                                ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
-                            } else {
-                                ci.range = new Range(new Position(position.line, charPosForCall), position);
-                            }
-                        }
-                        snippets.push(ci);
-                    } else {
-                        for (const [api, ci] of this.allCallTargets) {
-                            if (ci.insertText !== undefined) {
-                                if (api.startsWith(preTrimmedWorkUpper)) {
-                                    if (position_plus1_char !== undefined && position_plus1_char === "\"") {
-                                        ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
-                                    } else {
-                                        ci.range = new Range(new Position(position.line, charPosForCall), position);
-                                    }
-                                    snippets.push(ci);
-                                }
-                            }
-                        }
-                    }
-                }
 
+                if (pre2Word !== undefined && pre2Word.toLowerCase() === "call") {
+                    this.getExactCallSnipetOrPartialSnippet(position, position_plus1, preWord, line, position_plus1_char, snippets);
+                }
             }
         }
 
         return snippets;
     }
 
+    private getExactCallSnipetOrPartialSnippet(position: Position, position_plus1: Position, preWord: string, line: TextLine, position_plus1_char: string, snippets: CompletionItem[]) {
+        const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
+        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
+        const preTrimmedWorkUpper = preTrimmedWork.toUpperCase();
+        const ci = this.allCallTargets.get(preTrimmedWorkUpper);
+        if (ci !== undefined) {
+            if (ci.insertText !== undefined) {
+                if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                    ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                } else {
+                    ci.range = new Range(new Position(position.line, charPosForCall), position);
+                }
+            }
+            snippets.push(ci);
+        } else {
+            // get partial snippets
+            for (const [api, ci] of this.allCallTargets) {
+                if (ci.insertText !== undefined) {
+                    if (api.startsWith(preTrimmedWorkUpper)) {
+                        if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                            ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                        } else {
+                            ci.range = new Range(new Position(position.line, charPosForCall), position);
+                        }
+                        snippets.push(ci);
+                    }
+                }
+            }
+        }
+    }
 }

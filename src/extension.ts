@@ -911,7 +911,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const txt = document.getText(document.getWordRangeAtPosition(position));
             const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
             if (txtTarget !== undefined) {
-                let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example}\n~~~\n` : "";
+                let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
                 if (settings.hover_show_known_api === hoverApi.Short) {
                     example = "";
                 }
