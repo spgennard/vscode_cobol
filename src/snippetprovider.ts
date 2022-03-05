@@ -525,15 +525,15 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         return ci;
     }
 
-    private getSnippetForPreviousWord(document: TextDocument, position: Position, preWordLower: string) {
+    private getSnippetForPreviousWord(document: TextDocument, position: Position, prevWordLower: string,  targets: Map<string, CompletionItem>) {
         const position_plus1 = new Position(position.line, position.character + 1);
         const position_plus1_char = document.getText(new Range(position, position_plus1));
         const snippets: CompletionItem[] = [];
 
-        for (const [, ci] of this.allCallTargets) {
+        for (const [, ci] of targets) {
             if (ci.insertText !== undefined) {
                 const line = document.lineAt(position.line);
-                const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf(preWordLower);
+                const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf(prevWordLower);
                 if (position_plus1_char !== undefined && position_plus1_char === "\"") {
                     ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
                 } else {
@@ -571,9 +571,9 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         const snippets: CompletionItem[] = [];
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
-            const preWordLower = preWord.toLowerCase();
-            if (preWordLower === "call") {
-                return this.getSnippetForPreviousWord(document, position, preWordLower);
+            const prevWordLower = preWord.toLowerCase();
+            if (prevWordLower === "call") {
+                return this.getSnippetForPreviousWord(document, position, prevWordLower, this.allCallTargets);
             }
 
             const prevWordChar = position.character - preWord.length - 3; // 2 spaces -1
