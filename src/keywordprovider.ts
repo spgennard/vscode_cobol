@@ -4,7 +4,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
-import { KeywordSnippetProvider } from "./snippetprovider";
+import {  KeywordSnippetProvider, SnippetCompletionItemProvider } from "./snippetprovider";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -23,6 +23,14 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		const items: CompletionItem[] = [];
 		const wordToCompleteLower = wordToComplete.toLowerCase();
 		const words: string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
+
+		switch(wordToCompleteLower) {
+			case "function": 
+				for(const snip of SnippetCompletionItemProvider.Default.getFunctions()) {
+					items.push(snip);
+				}
+				break;
+		}
 
 		for (const key of words) {
 			const keyLower = key.toLowerCase();
@@ -64,6 +72,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				items.push(ci);
 			}
 
+			// do we have any specific keyword snippets?
 			for(const snip of KeywordSnippetProvider.Default.getKeywordSnippet(key)) {
 				items.push(snip);
 			}
