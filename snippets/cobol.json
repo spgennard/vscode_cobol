@@ -330,16 +330,6 @@
 		"description": "select-tosection",
 		"scope": "cobol"
 	},
-	"function-abs": {
-		"prefix": [
-			"function abs"
-		],
-		"body": [
-			"function abs(${1:number})$0"
-		],
-		"description": "function absolute value of number",
-		"scope": "cobol"
-	},
 	"function-acos": {
 		"prefix": [
 			"function acos"
@@ -988,16 +978,6 @@
 			"function year-to-yyyy(${1:yy},${2:[yy-cutoff, default: 50},${3:yy-execution-time, default: now})$0"
 		],
 		"description": "convert yy to yyyy with optional yy-cutoff to delineate centuries",
-		"scope": "cobol"
-	},
-	"FUNCTION-ABS": {
-		"prefix": [
-			"FUNCTION ABS"
-		],
-		"body": [
-			"FUNCTION ABS(${1:number})$0"
-		],
-		"description": "function absolute value of number",
 		"scope": "cobol"
 	},
 	"FUNCTION-ACOS": {

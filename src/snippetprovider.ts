@@ -359,6 +359,18 @@ const simpleSnippets: ISimpleSnippet[] = [
     }
 ];
 
+const functionSnippets: ISimpleSnippet[] = [
+    {
+        "prefix": "abs",
+        "label": "function abs",
+        "body": [
+            "function abs(${1:number})$0"
+        ],
+        "description": "function absolute value of number",
+        "scope": "cobol"
+    }
+];
+
 class SnippetHelper {
     protected foldKeywordLine(texts: string[], foldstyle: FoldStyle, languageid: string): string {
         const sb = [];
@@ -368,29 +380,15 @@ class SnippetHelper {
 
         return sb.join(jsonCRLF);
     }
-}
 
-export class KeywordSnippetProvider extends SnippetHelper {
-
-    public static Default: KeywordSnippetProvider = new KeywordSnippetProvider()
-
-    private keywordTargets = new Map<string, Map<string, CompletionItem[]>>();
-
-    public reInitKeyMap(settings: ICOBOLSettings): KeywordSnippetProvider {
-        for (const simpleSnippet of simpleSnippets) {
-            this.addKeywordSnippet(settings, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage);
+    protected addKeywordSnippet(settings: ICOBOLSettings, snippet: ISimpleSnippet, langId: string, targets: Map<string, CompletionItem[]>): void {
+        let items = targets.get(snippet.prefix);
+        if (items === undefined) {
+            targets.set(snippet.prefix, []);
+            items = targets.get(snippet.prefix);
         }
 
-        return this;
-    }
-
-    private addKeywordSnippet(settings: ICOBOLSettings, snippet: ISimpleSnippet, langId: string): void {
-        if (!this.keywordTargets.has(snippet.prefix)) {
-            this.keywordTargets.set(snippet.prefix, new Map<string, CompletionItem[]>());
-        }
-
-        const target = this.keywordTargets.get(snippet.prefix);
-        if (target === undefined) {
+        if (items === undefined) {
             return;
         }
 
@@ -399,7 +397,7 @@ export class KeywordSnippetProvider extends SnippetHelper {
         switch (settings.intellisense_style) {
             case intellisenseStyle.CamelCase:
                 preselect = SourceScannerUtils.camelize(snippet.label);
-                kiSnippet = super.foldKeywordLine(snippet.body, FoldStyle.CamelCase, langId);
+                kiSnippet = this.foldKeywordLine(snippet.body, FoldStyle.CamelCase, langId);
                 break;
             case intellisenseStyle.UpperCase:
                 preselect = preselect.toUpperCase();
@@ -423,16 +421,21 @@ export class KeywordSnippetProvider extends SnippetHelper {
         ci.documentation = "";
         ci.detail = snippet.description;
 
-        const cisU: CompletionItem[] | undefined = target.get(snippet.prefix);
-        let cis: CompletionItem[];
-        if (cisU === undefined) {
-            cis = [];
-            target.set(snippet.prefix, cis);
-        } else {
-            cis = cisU;
+        items.push(ci);
+    }
+}
+
+export class KeywordSnippetProvider extends SnippetHelper {
+
+    public static Default: KeywordSnippetProvider = new KeywordSnippetProvider()
+
+    private keywordTargets = new Map<string, CompletionItem[]>();
+
+    public reInitKeyMap(settings: ICOBOLSettings): KeywordSnippetProvider {
+        for (const simpleSnippet of simpleSnippets) {
+            this.addKeywordSnippet(settings, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.keywordTargets);
         }
-        cis.push(ci);
-        target.set(snippet.prefix, cis);
+        return this;
     }
 
     public getKeywordSnippet(word: string): CompletionItem[] {
@@ -442,11 +445,9 @@ export class KeywordSnippetProvider extends SnippetHelper {
             return snippets;
         }
 
-        for (const [, cis] of targets) {
-            for (const ci of cis) {
-                if (ci.insertText !== undefined) {
-                    snippets.push(ci);
-                }
+        for (const ci of targets) {
+            if (ci.insertText !== undefined) {
+                snippets.push(ci);
             }
         }
         return snippets;
@@ -456,7 +457,8 @@ export class KeywordSnippetProvider extends SnippetHelper {
 export class SnippetCompletionItemProvider extends SnippetHelper implements CompletionItemProvider {
     public static Default: SnippetCompletionItemProvider = new SnippetCompletionItemProvider()
 
-    private allCallTargets = new Map<string, CompletionItem>();
+    private allCallTargets = new Map<string, CompletionItem[]>();
+    private functionTargets = new Map<string, CompletionItem[]>();
 
     public reInitCallMap(settings: ICOBOLSettings): SnippetCompletionItemProvider {
         this.allCallTargets.clear();
@@ -464,11 +466,22 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         for (const [api,] of callMap) {
             const ci = this.getCompletionItemForAPI(settings, ExtensionDefaults.defaultCOBOLLanguage, api);
             if (ci !== undefined) {
-                this.allCallTargets.set(api, ci);
+                let cis = this.allCallTargets.get(api);
+                if (cis === undefined) {
+                    this.allCallTargets.set(api, []);
+                    cis = this.allCallTargets.get(api);
+                }
+                if (cis !== undefined) {
+                    cis.push(ci);
+                }
             }
         }
 
         KeywordSnippetProvider.Default.reInitKeyMap(settings);
+
+        for (const simpleSnippet of functionSnippets) {
+            this.addKeywordSnippet(settings, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.functionTargets);
+        }
 
         return this;
     }
@@ -525,21 +538,23 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         return ci;
     }
 
-    private getAllSnippets(document: TextDocument, position: Position, prevWordLower: string, targets: Map<string, CompletionItem>) {
+    private getAllSnippets(document: TextDocument, position: Position, prevWordLower: string, targets: Map<string, CompletionItem[]>) {
         const position_plus1 = new Position(position.line, position.character + 1);
         const position_plus1_char = document.getText(new Range(position, position_plus1));
         const snippets: CompletionItem[] = [];
 
-        for (const [, ci] of targets) {
-            if (ci.insertText !== undefined) {
-                const line = document.lineAt(position.line);
-                const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf(prevWordLower);
-                if (position_plus1_char !== undefined && position_plus1_char === "\"") {
-                    ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
-                } else {
-                    ci.range = new Range(new Position(position.line, charPosForCall), position);
+        for (const [, cis] of targets) {
+            for (const ci of cis) {
+                if (ci.insertText !== undefined) {
+                    const line = document.lineAt(position.line);
+                    const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf(prevWordLower);
+                    if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                        ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                    } else {
+                        ci.range = new Range(new Position(position.line, charPosForCall), position);
+                    }
+                    snippets.push(ci);
                 }
-                snippets.push(ci);
             }
         }
         return snippets;
@@ -568,9 +583,10 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         const snippets: CompletionItem[] = [];
         const preWord = document.getText(wordRange);
         if (preWord !== undefined) {
-            const prevWordLower = preWord. toLowerCase();
-            if (prevWordLower === "call") {
-                return this.getAllSnippets(document, position, prevWordLower, this.allCallTargets);
+            const prevWordLower = preWord.toLowerCase();
+            switch (prevWordLower) {
+                case "call": return this.getAllSnippets(document, position, prevWordLower, this.allCallTargets);
+                case "function": return this.getAllSnippets(document, position, prevWordLower, this.functionTargets);
             }
 
             const prevWordChar = position.character - preWord.length - 3; // 2 spaces -1
@@ -579,8 +595,11 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
                 const wordRangeForCall = document.getWordRangeAtPosition(new Position(position.line, prevWordChar));
                 const pre2Word = document.getText(wordRangeForCall);
 
-                if (pre2Word !== undefined && pre2Word.toLowerCase() === "call") {
-                    this.getExactCallSnipetOrPartialSnippet(position, position_plus1, preWord, line, position_plus1_char, snippets);
+                if (pre2Word !== undefined) {
+                    switch (pre2Word) {
+                        case "call":
+                            this.getExactCallSnipetOrPartialSnippet(position, position_plus1, preWord, line, position_plus1_char, snippets);
+                    }
                 }
             }
         }
@@ -592,27 +611,31 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
         const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
         const preTrimmedWorkUpper = preTrimmedWork.toUpperCase();
-        const ci = this.allCallTargets.get(preTrimmedWorkUpper);
-        if (ci !== undefined) {
-            if (ci.insertText !== undefined) {
-                if (position_plus1_char !== undefined && position_plus1_char === "\"") {
-                    ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
-                } else {
-                    ci.range = new Range(new Position(position.line, charPosForCall), position);
+        const cis = this.allCallTargets.get(preTrimmedWorkUpper);
+        if (cis !== undefined) {
+            for (const ci of cis) {
+                if (ci.insertText !== undefined) {
+                    if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                        ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                    } else {
+                        ci.range = new Range(new Position(position.line, charPosForCall), position);
+                    }
                 }
+                snippets.push(ci);
             }
-            snippets.push(ci);
         } else {
             // get partial snippets
-            for (const [api, ci] of this.allCallTargets) {
-                if (ci.insertText !== undefined) {
-                    if (api.startsWith(preTrimmedWorkUpper)) {
-                        if (position_plus1_char !== undefined && position_plus1_char === "\"") {
-                            ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
-                        } else {
-                            ci.range = new Range(new Position(position.line, charPosForCall), position);
+            for (const [api, cis] of this.allCallTargets) {
+                for (const ci of cis) {
+                    if (ci.insertText !== undefined) {
+                        if (api.startsWith(preTrimmedWorkUpper)) {
+                            if (position_plus1_char !== undefined && position_plus1_char === "\"") {
+                                ci.range = new Range(new Position(position.line, charPosForCall), position_plus1);
+                            } else {
+                                ci.range = new Range(new Position(position.line, charPosForCall), position);
+                            }
+                            snippets.push(ci);
                         }
-                        snippets.push(ci);
                     }
                 }
             }
