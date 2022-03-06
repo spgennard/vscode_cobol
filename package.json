@@ -1487,9 +1487,9 @@
         "title": "Align to right"
       },
       {
-        "command": "cobolplugin.dumpCallTargets",
+        "command": "cobolplugin.enforceExtensions",
         "category": "COBOL",
-        "title": "Diagnostic: dump call targets"
+        "title": "Enforce extension via file.assocations"
       }
     ],
     "menus": {

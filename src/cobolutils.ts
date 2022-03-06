@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import path from "path";
-import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle, COBOLToken, UsingState } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle } from "./cobolsourcescanner";
 import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -12,8 +12,6 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
-import { FileSourceHandler } from "./filesourcehandler";
-import { StringBuilder } from "typescript-string-operations";
 import { ExtensionDefaults } from "./extensionDefaults";
 
 export enum FoldStyle {
@@ -803,109 +801,120 @@ export class COBOLUtils {
 
     }
 
-    public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
-        const settings = VSCOBOLConfiguration.get();
+    public static enforceExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures)  {
+        const filesConfig = vscode.workspace.getConfiguration();
+        const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("files.associations") ?? {};
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
-        if (current === undefined) {
-            externalFeatures.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
-            return;
-        }
-
-        const exampleMap = new Map<string, string>();
-        const snippetMap = new Map<string, string>();
-        const paramDeclarationMap = new Map<string, string>();
-
-        const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
-        if (gcf !== undefined) {
-            for (const [target, params] of gcf.callTargets) {
-                let actualName = params.OriginalToken;
-                if (actualName.length > 1 && (actualName[0] !== "\"")) {
-                    const possibleName = gcf.constantsOrVariables.get(target.toLowerCase());
-                    if (possibleName !== undefined) {
-                        const firstToken: COBOLToken = possibleName[0];
-                        const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
-                        const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
-                        if (lineAtToken !== undefined) {
-                            const lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trimStart();
-                            const lineAfterTokenLower = lineAfterToken.toLowerCase();
-                            const indexOfValue = lineAfterTokenLower.indexOf("value");
-                            if (indexOfValue !== -1) {
-                                actualName = lineAfterToken.substring(indexOfValue + 5).trim();
-                            }
-                        }
-                    }
-                }
-
-                actualName = COBOLSourceScanner.trimLiteral(actualName);
-                // const targetCall = KnownAPIs.getCallTarget(actualName);
-                // externalFeatures.logMessage(` description : "${targetCall?.description}"`);
-
-                const sbExample = new StringBuilder();
-                const sbSnippetBody = new StringBuilder();
-                const sbParamDecl = new StringBuilder();
-
-                if (params.CallParameters.length === 0) {
-                    sbExample.AppendLine(`call "${actualName}"`);
-                    sbSnippetBody.AppendLine(`call "${actualName}"`);
-                } else {
-                    sbExample.AppendLine(`call "${actualName}" using`);
-                    sbSnippetBody.AppendLine(`call "${actualName}" using`);
-                    let paramCounter = 1;
-                    for (const param of params.CallParameters) {
-                        //${1:CONDITION}"
-                        switch (param.using) {
-                            case UsingState.BY_VALUE:
-                                sbExample.AppendLine(` by value ${param.name}`);
-                                sbSnippetBody.AppendLine(` by value \${${paramCounter}:${param.name}}`);
-                                break;
-                            case UsingState.BY_REF:
-                                sbExample.AppendLine(` by reference ${param.name}`);
-                                sbSnippetBody.AppendLine(` by reference \${${paramCounter}:${param.name}}`);
-                                break;
-                            case UsingState.RETURNING:
-                                sbExample.AppendLine(` returning ${param.name}`);
-                                sbSnippetBody.AppendLine(` returning \${${paramCounter}:${param.name}}`);
-                                break;
-                        }
-
-                        const possibleName = gcf.constantsOrVariables.get(param.name.toLowerCase());
-                        if (possibleName !== undefined) {
-                            const firstToken: COBOLToken = possibleName[0];
-                            const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
-                            const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
-                            if (lineAtToken !== undefined) {
-                                let lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trim();
-                                if (lineAfterToken.endsWith(".")) {
-                                    lineAfterToken = lineAfterToken.slice(0, -1);
-                                }
-                                if (lineAfterToken.toLowerCase().indexOf("typedef") === -1) {
-                                    sbParamDecl.AppendLine(`${param.name} => ${lineAfterToken}`);
-                                }
-                            }
-                        }
-                        paramCounter++;
-                    }
-                    sbExample.AppendLine("end-call");
-                    sbSnippetBody.AppendLine("end-call");
-                    sbSnippetBody.AppendLine("${0}");
-
-                }
-
-                exampleMap.set(actualName, sbExample.ToString());
-                snippetMap.set(actualName, sbSnippetBody.ToString());
-                paramDeclarationMap.set(actualName, sbParamDecl.ToString());
-            }
-            // const exampleArray = Object.fromEntries(exampleMap);
-            // externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
-            // const snipperArray = Object.fromEntries(snippetMap);
-            // externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
-            for (const [a, b] of exampleMap) {
-                const decls = paramDeclarationMap.get(a);
-                const declString = decls === undefined ? "" : decls + "\r\n" + b;
-                const varDecls = `[ "${a}", ${JSON.stringify(declString)} ],`;
-                externalFeatures.logMessage(varDecls);
-            }
+        const fileAssocMap = new Map<string, string>();
+        for(const assoc in filesAssociationsConfig) {
+            externalFeatures.logMessage(` Extension: ${assoc} = ${filesAssociationsConfig[assoc]}`)
+            fileAssocMap.set(assoc, filesAssociationsConfig[assoc]);
         }
     }
+
+    // public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
+    //     const settings = VSCOBOLConfiguration.get();
+
+    //     const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+    //     if (current === undefined) {
+    //         externalFeatures.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
+    //         return;
+    //     }
+
+    //     const exampleMap = new Map<string, string>();
+    //     const snippetMap = new Map<string, string>();
+    //     const paramDeclarationMap = new Map<string, string>();
+
+    //     const gcf = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+    //     if (gcf !== undefined) {
+    //         for (const [target, params] of gcf.callTargets) {
+    //             let actualName = params.OriginalToken;
+    //             if (actualName.length > 1 && (actualName[0] !== "\"")) {
+    //                 const possibleName = gcf.constantsOrVariables.get(target.toLowerCase());
+    //                 if (possibleName !== undefined) {
+    //                     const firstToken: COBOLToken = possibleName[0];
+    //                     const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
+    //                     const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
+    //                     if (lineAtToken !== undefined) {
+    //                         const lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trimStart();
+    //                         const lineAfterTokenLower = lineAfterToken.toLowerCase();
+    //                         const indexOfValue = lineAfterTokenLower.indexOf("value");
+    //                         if (indexOfValue !== -1) {
+    //                             actualName = lineAfterToken.substring(indexOfValue + 5).trim();
+    //                         }
+    //                     }
+    //                 }
+    //             }
+
+    //             actualName = COBOLSourceScanner.trimLiteral(actualName);
+    //             // const targetCall = KnownAPIs.getCallTarget(actualName);
+    //             // externalFeatures.logMessage(` description : "${targetCall?.description}"`);
+
+    //             const sbExample = new StringBuilder();
+    //             const sbSnippetBody = new StringBuilder();
+    //             const sbParamDecl = new StringBuilder();
+
+    //             if (params.CallParameters.length === 0) {
+    //                 sbExample.AppendLine(`call "${actualName}"`);
+    //                 sbSnippetBody.AppendLine(`call "${actualName}"`);
+    //             } else {
+    //                 sbExample.AppendLine(`call "${actualName}" using`);
+    //                 sbSnippetBody.AppendLine(`call "${actualName}" using`);
+    //                 let paramCounter = 1;
+    //                 for (const param of params.CallParameters) {
+    //                     //${1:CONDITION}"
+    //                     switch (param.using) {
+    //                         case UsingState.BY_VALUE:
+    //                             sbExample.AppendLine(` by value ${param.name}`);
+    //                             sbSnippetBody.AppendLine(` by value \${${paramCounter}:${param.name}}`);
+    //                             break;
+    //                         case UsingState.BY_REF:
+    //                             sbExample.AppendLine(` by reference ${param.name}`);
+    //                             sbSnippetBody.AppendLine(` by reference \${${paramCounter}:${param.name}}`);
+    //                             break;
+    //                         case UsingState.RETURNING:
+    //                             sbExample.AppendLine(` returning ${param.name}`);
+    //                             sbSnippetBody.AppendLine(` returning \${${paramCounter}:${param.name}}`);
+    //                             break;
+    //                     }
+
+    //                     const possibleName = gcf.constantsOrVariables.get(param.name.toLowerCase());
+    //                     if (possibleName !== undefined) {
+    //                         const firstToken: COBOLToken = possibleName[0];
+    //                         const sourceHandler = new FileSourceHandler(firstToken.filename, externalFeatures);
+    //                         const lineAtToken = sourceHandler.getLine(firstToken.startLine, true);
+    //                         if (lineAtToken !== undefined) {
+    //                             let lineAfterToken = lineAtToken.substring(firstToken.startColumn + firstToken.tokenName.length).trim();
+    //                             if (lineAfterToken.endsWith(".")) {
+    //                                 lineAfterToken = lineAfterToken.slice(0, -1);
+    //                             }
+    //                             if (lineAfterToken.toLowerCase().indexOf("typedef") === -1) {
+    //                                 sbParamDecl.AppendLine(`${param.name} => ${lineAfterToken}`);
+    //                             }
+    //                         }
+    //                     }
+    //                     paramCounter++;
+    //                 }
+    //                 sbExample.AppendLine("end-call");
+    //                 sbSnippetBody.AppendLine("end-call");
+    //                 sbSnippetBody.AppendLine("${0}");
+
+    //             }
+
+    //             exampleMap.set(actualName, sbExample.ToString());
+    //             snippetMap.set(actualName, sbSnippetBody.ToString());
+    //             paramDeclarationMap.set(actualName, sbParamDecl.ToString());
+    //         }
+    //         // const exampleArray = Object.fromEntries(exampleMap);
+    //         // externalFeatures.logMessage(`${JSON.stringify(exampleArray)}`);
+    //         // const snipperArray = Object.fromEntries(snippetMap);
+    //         // externalFeatures.logMessage(`${JSON.stringify(snipperArray)}`);
+    //         for (const [a, b] of exampleMap) {
+    //             const decls = paramDeclarationMap.get(a);
+    //             const declString = decls === undefined ? "" : decls + "\r\n" + b;
+    //             const varDecls = `[ "${a}", ${JSON.stringify(declString)} ],`;
+    //             externalFeatures.logMessage(varDecls);
+    //         }
+    //     }
+    // }
 }

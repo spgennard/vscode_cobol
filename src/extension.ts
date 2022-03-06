@@ -1287,12 +1287,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     })
 
-    const dumpCallTargets = vscode.commands.registerCommand("cobolplugin.dumpCallTargets", () => {
+    const enforceExtensions = vscode.commands.registerCommand("cobolplugin.enforceExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            COBOLUtils.dumpCallTargets(vscode.window.activeTextEditor, VSExternalFeatures);
+            COBOLUtils.enforceExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures);
         }
     });
-    context.subscriptions.push(dumpCallTargets);
+    context.subscriptions.push(enforceExtensions);
 
     // vscode.languages.registerSignatureHelpProvider(VSExtensionUtils.getAllCobolSelectors(settings), new class implements vscode.SignatureHelpProvider {
     //     provideSignatureHelp(

@@ -26,7 +26,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 
 		switch(wordToCompleteLower) {
 			case "function": 
-				for(const snip of SnippetCompletionItemProvider.Default.getFunctions()) {
+				for(const snip of SnippetCompletionItemProvider.Default.getAllFunctions()) {
 					items.push(snip);
 				}
 				break;

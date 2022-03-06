@@ -967,7 +967,7 @@ class SnippetHelper {
         return sb.join(jsonCRLF);
     }
 
-    protected addKeywordSnippet(settings: ICOBOLSettings, kind: CompletionItemKind, snippet: ISimpleSnippet, langId: string, targets: Map<string, CompletionItem[]>): void {
+    protected addSnippet(settings: ICOBOLSettings, kind: CompletionItemKind, snippet: ISimpleSnippet, langId: string, targets: Map<string, CompletionItem[]>): void {
         let items = targets.get(snippet.prefix);
         if (items === undefined) {
             targets.set(snippet.prefix, []);
@@ -999,13 +999,13 @@ class SnippetHelper {
         }
 
         const ci = new CompletionItem(preselect);
-        ci.keepWhitespace = false;
-        ci.kind = kind; //CompletionItemKind.Keyword;
+        ci.keepWhitespace = true;
+        ci.kind = kind;
         ci.insertText = new SnippetString(kiSnippet);
         ci.preselect = true;
         ci.commitCharacters = [];
         ci.documentation = snippet.description;
-        ci.detail = "";
+        ci.detail = snippet.detail;
 
         items.push(ci);
     }
@@ -1021,7 +1021,7 @@ export class KeywordSnippetProvider extends SnippetHelper {
         this.keywordTargets.clear();
         
         for (const simpleSnippet of simpleSnippets) {
-            this.addKeywordSnippet(settings, CompletionItemKind.Keyword, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.keywordTargets);
+            this.addSnippet(settings, CompletionItemKind.Keyword, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.keywordTargets);
         }
         return this;
     }
@@ -1070,7 +1070,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         KeywordSnippetProvider.Default.reInitKeyMap(settings);
 
         for (const simpleSnippet of functionSnippets) {
-            this.addKeywordSnippet(settings, CompletionItemKind.Snippet, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.functionTargets);
+            this.addSnippet(settings, CompletionItemKind.Snippet, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.functionTargets);
         }
 
         return this;
