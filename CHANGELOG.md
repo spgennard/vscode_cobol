@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 979ced6 continue with the function support
+* 94a2ec6 move function's to snippet provider
+* f82d3c6 start to refactor for "function" snippets
+* 430e276 (tag: 8.3.5) Update
 * c6fe3b7 fix bug in hover
 * c9185fc continue to simplify
 * 2327887 move display to dynamic snippets
