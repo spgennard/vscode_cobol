@@ -1018,6 +1018,8 @@ export class KeywordSnippetProvider extends SnippetHelper {
     private keywordTargets = new Map<string, CompletionItem[]>();
 
     public reInitKeyMap(settings: ICOBOLSettings): KeywordSnippetProvider {
+        this.keywordTargets.clear();
+        
         for (const simpleSnippet of simpleSnippets) {
             this.addKeywordSnippet(settings, CompletionItemKind.Keyword, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.keywordTargets);
         }
@@ -1048,6 +1050,8 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     public reInitCallMap(settings: ICOBOLSettings): SnippetCompletionItemProvider {
         this.allCallTargets.clear();
+        this.functionTargets.clear();
+
         const callMap = KnownAPIs.getCallTargetMap();
         for (const [api,] of callMap) {
             const ci = this.getCompletionItemForAPI(settings, ExtensionDefaults.defaultCOBOLLanguage, api);
@@ -1073,7 +1077,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
     }
 
 
-    public getFunctions(): CompletionItem[] {
+    public getAllFunctions(): CompletionItem[] {
         const snippets: CompletionItem[] = [];
 
         for (const [, cis] of this.functionTargets) {
