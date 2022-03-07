@@ -106,7 +106,7 @@
             "name" : "source.utreport"
         },
         {
-            "match" : "(?i:Fixture filename|Test case|Test Run Summary)",
+            "match" : "(^\\s*)(?i:Fixture filename|Test case|Test Run Summary)",
             "name" : "entity.name.section.markdown heading.2.markdown markup.heading.markdown"
         },
         {
