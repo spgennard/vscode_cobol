@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* a839272 (HEAD -> main, tag: 8.3.7, origin/main) tweak keywords to include intellisense if snippets exists
+* 15d928b fix type and update skeleton
+* f49888d remove diag and start work on file.associations code
+* 467c23f add clear to ensure maps dont expand on re-init
+* 371cec9 (tag: 8.3.6) Update
 * 979ced6 continue with the function support
 * 94a2ec6 move function's to snippet provider
 * f82d3c6 start to refactor for "function" snippets
