@@ -66,14 +66,19 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 					break;
 			}
 
+			const keywordSnippets = KeywordSnippetProvider.Default.getKeywordSnippet(key);
 			for (const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
 				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
 				ci.detail = `COBOL keyword ${uniqueRetKey}`;
 				items.push(ci);
+				if (keywordSnippets.length > 1 || keyLower === "call" || keyLower === "function") {
+					ci.command = { command: "editor.action.triggerSuggest", title: "Re-trigger completions..." };
+				}
 			}
 
 			// do we have any specific keyword snippets?
-			for(const snip of KeywordSnippetProvider.Default.getKeywordSnippet(key)) {
+			for(const snip of keywordSnippets) {
+				snip.preselect = false;
 				items.push(snip);
 			}
 

@@ -16,6 +16,7 @@ interface ISimpleSnippet {
     description: string;
     detail?: string;
     scope: string;
+    triggerIntellisense?: boolean;
 }
 
 const simpleSnippets: ISimpleSnippet[] = [
@@ -320,12 +321,13 @@ const simpleSnippets: ISimpleSnippet[] = [
         "prefix": "perform",
         "label": "perform .. end-perform",
         "body": [
-            "perform ${1}",
+            "perform ${1:paragraph-name}",
             "\t${2}",
             "end-perform",
             "${0}"
         ],
         "description": "perform <block> end-perform",
+        "triggerIntellisense": true,
         "scope": "cobol"
     },
     {
@@ -999,12 +1001,15 @@ class SnippetHelper {
         }
 
         const ci = new CompletionItem(preselect);
-        ci.keepWhitespace = true;
+        ci.keepWhitespace = false;
         ci.kind = kind;
         ci.insertText = new SnippetString(kiSnippet);
         ci.preselect = true;
         ci.commitCharacters = [];
         ci.documentation = snippet.description;
+        if (snippet.triggerIntellisense) {
+            ci.command = { command: "editor.action.triggerSuggest", title: "Re-trigger completions..." };
+        }
         ci.detail = snippet.detail;
 
         items.push(ci);
