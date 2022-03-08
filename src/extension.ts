@@ -1289,7 +1289,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const enforceExtensions = vscode.commands.registerCommand("cobolplugin.enforceExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            COBOLUtils.enforceExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures);
+            COBOLUtils.enforceExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures,true);
         }
     });
     context.subscriptions.push(enforceExtensions);

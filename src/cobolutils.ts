@@ -801,14 +801,44 @@ export class COBOLUtils {
 
     }
 
-    public static enforceExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures)  {
-        const filesConfig = vscode.workspace.getConfiguration();
-        const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("files.associations") ?? {};
-
+    public static enforceExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean) {
+        const filesConfig = vscode.workspace.getConfiguration("files");
+        const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("associations") ?? {} as { [key: string]: string }
         const fileAssocMap = new Map<string, string>();
-        for(const assoc in filesAssociationsConfig) {
-            externalFeatures.logMessage(` Extension: ${assoc} = ${filesAssociationsConfig[assoc]}`)
-            fileAssocMap.set(assoc, filesAssociationsConfig[assoc]);
+        let fileAssocCount = 0;
+        for (const assoc in filesAssociationsConfig) {
+            const assocTo = filesAssociationsConfig[assoc];
+            if (verbose && fileAssocCount === 0) {
+                externalFeatures.logMessage("Active File associations");
+            }
+            if (verbose) {
+                externalFeatures.logMessage(` ${assoc} = ${assocTo}`)
+            }
+            fileAssocMap.set(assoc, assocTo);
+            fileAssocCount++;
+        }
+
+        let updateRequired = false;
+        for (const ext of settings.program_extensions) {
+            const key = `*.${ext}`;
+            const assocTo = fileAssocMap.get(key);
+            if (assocTo !== undefined) {
+                if (assocTo !== ExtensionDefaults.defaultCOBOLLanguage) {
+                    // steal back
+                    if (verbose) {
+                        externalFeatures.logMessage(` WARNING: ${ext} is associated with ${assocTo}`);
+                    }
+                    filesAssociationsConfig[key] = ExtensionDefaults.defaultCOBOLLanguage;
+                    updateRequired = true;
+                }
+            } else {
+                filesAssociationsConfig[key] = ExtensionDefaults.defaultCOBOLLanguage
+                updateRequired = true;
+            }
+        }
+
+        if (updateRequired) {
+            filesConfig.update("associations", filesAssociationsConfig,false);
         }
     }
 
@@ -918,3 +948,4 @@ export class COBOLUtils {
     //     }
     // }
 }
+
