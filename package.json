@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.3.7",
+  "version": "8.3.8",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1487,7 +1487,7 @@
         "title": "Align to right"
       },
       {
-        "command": "cobolplugin.enforceExtensions",
+        "command": "cobolplugin.enforceFileExtensions",
         "category": "COBOL",
         "title": "Enforce extension via file.assocations"
       }

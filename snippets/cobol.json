@@ -90,7 +90,7 @@
 			"       working-storage section.",
 			"       78 TEST-Program value \"${1}\".",
 			"       copy \"mfunit.cpy\".",
-			"       78 TEST-PRELOAD-LIBRARY value \"${3}\".          ",
+			"       78 TEST-PRELOAD-LIBRARY value \"${3}\".",
 			"       01 TEST-PP              procedure-pointer.",
 			"",
 			"       *> Testcase     : $1",
@@ -313,7 +313,7 @@
 			"try",
 			"$2",
 			"catch ${1:Exception}",
-			"$0",
+			"   $0",
 			"end-try"
 		],
 		"description": "try catch",

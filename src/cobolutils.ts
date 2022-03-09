@@ -798,12 +798,14 @@ export class COBOLUtils {
                 }
             });
         }
-
     }
 
-    public static enforceExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean) {
+    public static enforceFileExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean) {
+        // const fileConfig = vscode.workspace
         const filesConfig = vscode.workspace.getConfiguration("files");
+        
         const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("associations") ?? {} as { [key: string]: string }
+
         const fileAssocMap = new Map<string, string>();
         let fileAssocCount = 0;
         for (const assoc in filesAssociationsConfig) {
@@ -838,7 +840,11 @@ export class COBOLUtils {
         }
 
         if (updateRequired) {
-            filesConfig.update("associations", filesAssociationsConfig,false);
+            if (VSWorkspaceFolders.get() === undefined) {
+                filesConfig.update("associations", filesAssociationsConfig,vscode.ConfigurationTarget.Global);
+            } else {
+                filesConfig.update("associations", filesAssociationsConfig,vscode.ConfigurationTarget.Workspace);
+            }
         }
     }
 
