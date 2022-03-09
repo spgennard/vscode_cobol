@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* a839272 (HEAD -> main, tag: 8.3.7, origin/main) tweak keywords to include intellisense if snippets exists
+* 76bab7d (HEAD -> main, tag: 8.3.8, origin/main) tweak enforce extensions
+* 740f62d continue work on files.assocations
+* 7d9fd6d fix over active colourisation if "test case" is used
+* ece398d (tag: 8.3.7) Update
+* a839272 tweak keywords to include intellisense if snippets exists
 * 15d928b fix type and update skeleton
 * f49888d remove diag and start work on file.associations code
 * 467c23f add clear to ensure maps dont expand on re-init
