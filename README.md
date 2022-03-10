@@ -6,14 +6,6 @@ This extension provides syntax highlighting for Micro Focus based COBOL compiler
 
 Problem matchers are provided to allow the capture of a error messages, allowing code navigation to error/warning messages.
 
-## Feature Matrix
-
-| Syntax | Description | |
-| --- | ----------- |-|
-|  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images2/screenshot_three.png) | ![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images2/perform_add.gif) |
-| ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images2/outline.png) | ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images2/gotodef.gif) |
-| ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images2/peekdef.gif) | |
-
 ## Code colorization for COBOL, PL/I and JCL
 
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/screenshot_three.png)
