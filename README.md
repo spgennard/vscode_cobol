@@ -30,6 +30,11 @@ Problem matchers are provided to allow the capture of a error messages, allowing
 
 ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/peekdef.gif)
 
+## Coloured comments
+
+![coloured_comments](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/coloured_comments.png)
+
+
 ## Keybindings
 
 | Keys              |                           Description                           |
