@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 5448f4b use different url for the information
+* bd03568 (tag: 8.3.10) Update
 * 9bcdc37 tweak README.. more todo..
 * dbc9b13 add comment
 * b575183 remove odd looking matrix
