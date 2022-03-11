@@ -1,6 +1,13 @@
 # CHANGELOG
 
-* 76bab7d (HEAD -> main, tag: 8.3.8, origin/main) tweak enforce extensions
+* 9bcdc37 tweak README.. more todo..
+* dbc9b13 add comment
+* b575183 remove odd looking matrix
+* d8b014e x 400
+* 93defae x400
+* c4e6888 add 200x
+* 0b00bc1 (tag: 8.3.8) Update
+* 76bab7d tweak enforce extensions
 * 740f62d continue work on files.assocations
 * 7d9fd6d fix over active colourisation if "test case" is used
 * ece398d (tag: 8.3.7) Update
