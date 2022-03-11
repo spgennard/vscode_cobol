@@ -7,7 +7,7 @@ This unofficial extension provides syntax highlighting for `Micro Focus` based C
 Some of the features this extension provides are:
 
 - Colourisation and problem matchers for the following Micro Focus COBOL dialects:
-  - From [Net Express](https://www.microfocus.com/en-us/products/net-express-server-express/overview) to [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
+  - [Net Express](https://www.microfocus.com/en-us/products/net-express-server-express/overview) to the latest [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
 - COBOL tab key support (configurable)
