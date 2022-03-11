@@ -24,34 +24,48 @@ Some of the features this extension provides are:
 - Source linter for in house/internal COBOL standards
 - Directive file colourisation
 - Unit test report colourisation
+- COBOL Source Utilities
+  - Remove column numbers
+  - Remove identification area
+  - Remove all comments
+  - Make all keywords/fields/sections uppercased, lowercased or camelcased
+  - Resequence column numbers
+  - optional xedit'ish key bindings
+  - align storage items
+- Documentation for using development containers with Visual COBOL 
+- and more..
 
 While also being able to use it with the official Micro Focus COBOL extension (for debugging for example).
-  
-## Code colorization for COBOL, PL/I and JCL
+
+________________________________________________________________________________
+
+## Examples of features provided
+
+### Code colorization for COBOL, PL/I and JCL
 
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/screenshot_three.png)
 
-## IntelliSense example
+### IntelliSense example
 
 ![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/perform_add.gif)
 
-## Breadcrumb support
+### Breadcrumb support
 
 ![breadcrumbs](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/breadcrumb.png)
 
-## Outline support
+### Outline support
 
 ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/outline.png)
 
-## Go to definition
+### Go to definition
 
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/gotodef.gif)
 
-## Peek definition
+### Peek definition
 
 ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/peekdef.gif)
 
-## COBOL specific coloured comments
+### COBOL specific coloured comments
 
 ![coloured_comments](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/coloured_comments.png)
 
