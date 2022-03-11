@@ -2,10 +2,31 @@
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadge.apphb.com/rating-star/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This extension provides syntax highlighting for Micro Focus based COBOL compilers, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and Micro Focus Unit Test Reports.
+This unofficial extension provides syntax highlighting for `Micro Focus` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
-Problem matchers are provided to allow the capture of a error messages, allowing code navigation to error/warning messages.
+Some of the features this extension provides are:
 
+- Colourisation and problem matchers for the following Micro Focus COBOL dialects:
+  - From [Net Express](https://www.microfocus.com/en-us/products/net-express-server-express/overview) to [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
+  - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
+  - [COBOL-IT](https://www.cobol-it.com/)
+- COBOL tab key support (configurable)
+- Source navigation helpers (goto divisions etc)
+- Fixed margin support
+- Outline view/breadcrumb support
+- Find all references
+- Peek definition
+- Copybook navigation
+- Intellisense support Keyword in lowercase, uppercase and camelcase
+- Snippet support for various keywords
+  - including callable COBOL library routines
+  - and intrinisic functions
+- Source linter for in house/internal COBOL standards
+- Directive file colourisation
+- Unit test report colourisation
+
+While also being able to use it with the official Micro Focus COBOL extension (for debugging for example).
+  
 ## Code colorization for COBOL, PL/I and JCL
 
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/screenshot_three.png)
@@ -30,10 +51,9 @@ Problem matchers are provided to allow the capture of a error messages, allowing
 
 ![peekdef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/peekdef.gif)
 
-## Coloured comments
+## COBOL specific coloured comments
 
 ![coloured_comments](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/coloured_comments.png)
-
 
 ## Keybindings
 
