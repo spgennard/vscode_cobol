@@ -26,7 +26,7 @@ Some of the features this extension provides are:
 - Unit test report colourisation
 - COBOL Source Utilities
   - Remove column numbers
-  - Remove identification area
+  - Remove program identification area
   - Remove all comments
   - Make all keywords/fields/sections uppercased, lowercased or camelcased
   - Resequence column numbers
