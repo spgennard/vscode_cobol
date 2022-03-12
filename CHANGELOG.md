@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* ede4a06 (HEAD -> main, tag: 8.3.12, origin/main) tweak tab usage
+* 1068a2a remove warning
+* 0d832d2 be "more" specific
+* f023b70 (tag: 8.3.11) Update
 * 075a3b2 Update
 * 5448f4b use different url for the information
 * bd03568 (tag: 8.3.10) Update
