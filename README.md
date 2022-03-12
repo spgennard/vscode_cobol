@@ -32,7 +32,7 @@ Some of the features this extension provides are:
   - Resequence column numbers
   - optional xedit'ish key bindings
   - align storage items
-- Documentation for using development containers with Visual COBOL 
+- Documentation for using development containers with Visual COBOL
 - and more..
 
 While also being able to use it with the official Micro Focus COBOL extension (for debugging for example).
