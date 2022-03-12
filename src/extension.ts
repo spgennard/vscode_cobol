@@ -658,6 +658,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const tabCommand = commands.registerCommand("cobolplugin.tab", function () {
         TabUtils.processTabKey(true);
+        // might be required for "copilot"
+        // also might need to look @ editor.suggest.snippetsPreventQuickSuggestions
+        //vscode.commands.executeCommand("acceptSelectedSuggestion");
     });
 
     const unTabCommand = commands.registerCommand("cobolplugin.revtab", function () {

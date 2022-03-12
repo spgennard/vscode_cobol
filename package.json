@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.3.11",
+  "version": "8.3.12",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1629,17 +1629,27 @@
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible"
+      },
+      {
+        "key": "tab",
+        "command": "selectNextSuggestion",
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetVisible && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible"
+      },
+      {
+        "key": "shift+tab",
+        "command": "selectPrevSuggestion",
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetVisible && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "ctrl+/",
         "command": "cobolplugin.commentline",
-        "when": "config.coboleditor.comment_line && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/"
+        "when": "config.coboleditor.comment_line && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorReadonly"
       },
       {
         "key": "alt+shift+a",
