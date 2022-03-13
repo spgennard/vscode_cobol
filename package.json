@@ -818,14 +818,15 @@
         },
         "coboleditor.snippets": {
           "type": "boolean",
-          "description": "Enable experimental dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
+          "description": "Dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
           "default": false
         },
         "coboleditor.columns_tags": {
           "type": "array",
           "description": "Tags which are used to color the margins.",
+          "deprecationMessage": "This feature is not enabled.. this message will be removed when it is...",
           "items": {
-            "title": "Column tag",
+            "title": "Margin tag",
             "type": "object",
             "properties": {
               "tag": {
