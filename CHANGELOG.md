@@ -1,6 +1,14 @@
 # CHANGELOG
 
-* ede4a06 (HEAD -> main, tag: 8.3.12, origin/main) tweak tab usage
+* b68f317 (HEAD -> main, tag: 8.3.13, origin/main) tweak
+* 95ca364 empty package area out
+* 6cff80f refactor part of comment support, so tags can be comsumed in the margin part
+* 2626cb2 wire in more events
+* d2493ed try using collapsed sections
+* 4a231cd make embedded tab inline & margin's more function on the first margin area
+* 66b17d1 update versions
+* 83085eb (tag: 8.3.12) Update
+* ede4a06 tweak tab usage
 * 1068a2a remove warning
 * 0d832d2 be "more" specific
 * f023b70 (tag: 8.3.11) Update
