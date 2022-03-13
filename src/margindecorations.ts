@@ -101,14 +101,16 @@ export class VSmargindecorations {
                 // only do it, if we have no tabs on the line..
                 const containsTab = line.indexOf("\t");
 
-                if (containsTab === -1) {
+                if (containsTab === -1 || containsTab >= 6 ) {
                     if (line.length >= 6) {
                         const startPos = new Position(i, 0);
                         const endPos = new Position(i, 6);
                         const decoration = { range: new Range(startPos, endPos) };
                         decorationOptions.push(decoration);
                     }
+                }
 
+                if (containsTab === -1 || containsTab > 80) {
                     if (line.length > 72) {
                         const startPos = new Position(i, 72);
                         // only colour 72-80
