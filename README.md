@@ -11,7 +11,7 @@ Some of the features this extension provides are:
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
 - COBOL tab key support (configurable)
-- COBOL Source navigation support
+- COBOL source navigation support
   - Shortcuts/Commands for navigation to divisions
   - Fixed format margin support
   - Outline view/breadcrumb support
