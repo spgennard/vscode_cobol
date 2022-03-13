@@ -11,36 +11,32 @@ Some of the features this extension provides are:
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
 - COBOL tab key support (configurable)
-- Source navigation helpers (goto divisions etc)
-- Fixed margin support
-- Outline view/breadcrumb support
-- Find all references
-- Peek definition
-- Copybook navigation
-- Intellisense support Keyword in lowercase, uppercase and camelcase
-- <details><summary>Snippet support for various keywords</summary>
-  
+- COBOL Source navigation support
+  - Shortcuts/Commands for navigation to divisions
+  - Fixed format margin support
+  - Outline view/breadcrumb support
+  - Find all references
+  - Peek definition
+  - Copybook navigation
+- Intellisense support for keywords in lowercase, uppercase and camelcase
+- Snippet support for various keywords
   - including callable COBOL library routines
   - and intrinisic functions
-  </details>
-- Source linter for in house/internal COBOL standards
-- Directive file colourisation
+- Source code linter for in house/internal COBOL standards
+- Compiler directive file colourisation
 - Unit test report colourisation
-- <details><summary>COBOL Source Utilities</summary>
-  
+- COBOL Source Utilities  
   - Remove column numbers
   - Remove program identification area
   - Remove all comments
   - Make all keywords/fields/sections uppercased, lowercased or camelcased
-  - Resequence column numbers
-  - optional xedit'ish key bindings
-  - align storage items
-  </details>
+  - Re-sequence column numbers
+  - Optional xedit'ish key bindings
+  - Align storage items
 - Documentation for using development containers with Visual COBOL
 - and more..
 
-While also being able to use it with the official Micro Focus COBOL extension (for debugging for example).
-</details>
+While also being able to use it with the official `Micro Focus COBOL extension` (for debugging for example).
 
 ## Examples of features provided
 

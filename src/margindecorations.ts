@@ -8,6 +8,7 @@ import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
+import { ColourTagHandler } from "./vscolourcomments";
 
 const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -27,8 +28,18 @@ const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEdit
 
 });
 
-export class VSmargindecorations {
+export class VSmargindecorations extends ColourTagHandler {
 
+    private tags = new Map<string, TextEditorDecorationType>();
+
+    constructor() {
+        super();
+        this.setupTags();
+    }
+
+    public setupTags() {
+        super.setupTags("columns_tags",this.tags);
+    }
 
     private static isEnabledViaWorkspace4jcl(): boolean {
         if (VSWorkspaceFolders.get() === undefined) {

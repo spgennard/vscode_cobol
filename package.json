@@ -820,6 +820,96 @@
           "type": "boolean",
           "description": "Enable experimental dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
           "default": false
+        },
+        "coboleditor.columns_tags": {
+          "type": "array",
+          "description": "Tags which are used to color the comments.",
+          "items": {
+            "title": "Column tag",
+            "type": "object",
+            "properties": {
+              "tag": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string",
+                "format": "color"
+              },
+              "strikethrough": {
+                "type": "boolean"
+              },
+              "underline": {
+                "type": "boolean"
+              },
+              "backgroundColor": {
+                "type": "string",
+                "format": "color"
+              },
+              "bold": {
+                "type": "boolean"
+              },
+              "italic": {
+                "type": "boolean"
+              }
+            }
+          },
+          "default": [
+            {
+              "tag": "!",
+              "color": "#FF2D00",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "?",
+              "color": "#3498DB",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "todo",
+              "color": "#FF8C00",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "* ",
+              "color": "#98C379",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "//",
+              "color": "#474747",
+              "strikethrough": true,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false
+            },
+            {
+              "tag": "note",
+              "color": "#FF8C00",
+              "strikethrough": false,
+              "underline": false,
+              "backgroundColor": "transparent",
+              "bold": false,
+              "italic": false,
+              "reverse": true
+            }
+          ]
         }
       }
     },

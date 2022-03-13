@@ -7,25 +7,16 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { VSLogger } from "./vslogger";
 
-class CommentColourHandlerImpl implements ICommentCallback {
-    static readonly emptyCommentDecoration = window.createTextEditorDecorationType({
-        //
-    });
+export class ColourTagHandler {
 
-    private tags = new Map<string, TextEditorDecorationType>();
-
-    constructor() {
-        this.setupTags();
-    }
-
-    public setupTags(): void {
+    public setupTags(configElement: string,tags: Map<string, TextEditorDecorationType>): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const items = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get("comments_tags") as any;
+        const items = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get(configElement) as any;
         if (items === undefined) {
             return;
         }
 
-        this.tags.clear();
+        tags.clear();
 
         for (const item of items) {
             try {
@@ -62,13 +53,30 @@ class CommentColourHandlerImpl implements ICommentCallback {
 
                 const decl = window.createTextEditorDecorationType(options);
                 const tag = item.tag as string;
-                this.tags.set(tag.toUpperCase(), decl);
+                tags.set(tag.toUpperCase(), decl);
             } catch (e) {
                 VSLogger.logException("Invalid comments_tags entry", e as Error);
             }
         }
     }
+}
 
+class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallback {
+    static readonly emptyCommentDecoration = window.createTextEditorDecorationType({
+        //
+    });
+
+    private tags = new Map<string, TextEditorDecorationType>();
+
+    constructor() {
+        super();
+        this.setupTags();
+    }
+
+    public setupTags() {
+        super.setupTags("comments_tags",this.tags);
+    }
+ 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
         const configHandler = VSCOBOLConfiguration.get();
