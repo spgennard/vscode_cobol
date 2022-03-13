@@ -18,13 +18,16 @@ Some of the features this extension provides are:
 - Peek definition
 - Copybook navigation
 - Intellisense support Keyword in lowercase, uppercase and camelcase
-- Snippet support for various keywords
+- <details><summary>Snippet support for various keywords</summary>
+  
   - including callable COBOL library routines
   - and intrinisic functions
+  </details>
 - Source linter for in house/internal COBOL standards
 - Directive file colourisation
 - Unit test report colourisation
-- COBOL Source Utilities
+- <details><summary>COBOL Source Utilities</summary>
+  
   - Remove column numbers
   - Remove program identification area
   - Remove all comments
@@ -32,12 +35,12 @@ Some of the features this extension provides are:
   - Resequence column numbers
   - optional xedit'ish key bindings
   - align storage items
+  </details>
 - Documentation for using development containers with Visual COBOL
 - and more..
 
 While also being able to use it with the official Micro Focus COBOL extension (for debugging for example).
-
-________________________________________________________________________________
+</details>
 
 ## Examples of features provided
 
@@ -72,7 +75,7 @@ ________________________________________________________________________________
 ## Keybindings
 
 | Keys              |                           Description                           |
-|-------------------|:---------------------------------------------------------------:|
+| ----------------- | :-------------------------------------------------------------: |
 | ctrl+alt+p        |                    Go to procedure division                     |
 | ctrl+alt+w        |                  Go to working-storage section                  |
 | ctrl+alt+d        | Go to data division (or working-storage section if not present) |
@@ -89,7 +92,7 @@ ________________________________________________________________________________
 Only active when `coboleditor.xedit_keymap` is set to true.
 
 | Keys   |       Description       |
-|--------|:-----------------------:|
+| ------ | :---------------------: |
 | ctrl+a | cursor to start of line |
 | ctrl+b |       cursor left       |
 | ctrl+c |     clipboard paste     |
@@ -276,7 +279,7 @@ The example below shows you how you can create a single task to compile one prog
 ### Task: Breakdown of problem matchers
 
 | Product and Version                           | Tools                                                            | Problem matcher(s)                       |
-|-----------------------------------------------|------------------------------------------------------------------|------------------------------------------|
+| --------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------- |
 | COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                            |
 | COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc |
 | ACUCOBOL-GT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl  |
