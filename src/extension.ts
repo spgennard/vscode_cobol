@@ -786,25 +786,39 @@ export async function activate(context: ExtensionContext): Promise<void> {
     // default to on.. but only when "extend mf" is enabled via "when" clause.. 
     vscode.commands.executeCommand("setContext", `${ExtensionDefaults.defaultEditorConfig}.enable_migrate2mf_tasks`, true);
 
-    // handle Micro Focus .lst files!
     const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
 
         VSExtensionUtils.flip_plaintext(doc);
 
-        //no metadata, then seed it work basic implicit program-id symbols based on the files in workspace
+        if (VSExtensionUtils.isSupportedLanguage(doc)) {
+            if (window.activeTextEditor) {
+                activeEditor = window.activeTextEditor;
+                await triggerUpdateDecorations();
+            }
+        }
+
+        //no metadata, then seed it with basic implicit program-id symbols based on the files in workspace
         const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
-            if (VSExtensionUtils.isSupportedLanguage(doc)) {
-                if (window.activeTextEditor) {
-                    activeEditor = window.activeTextEditor;
-                    await updateDecorations();
-                }
-                await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
-                await COBOLUtils.populateDefaultCallableSymbols(settings, false);
-            }
+            await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
+            await COBOLUtils.populateDefaultCallableSymbols(settings, false);
         }
     });
     context.subscriptions.push(onDidOpenTextDocumentHandler);
+
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onDidChangeVisibleTextEditors = vscode.window.onDidChangeVisibleTextEditors(async (viewEditors) => {
+        for (const textEditor of viewEditors) {
+            await updateDecorationsOnTextEditor(textEditor);
+        }
+    });
+    context.subscriptions.push(onDidChangeVisibleTextEditors);
+
+    // const onDidChangeTextEditorVisibleRanges = vscode.window.onDidChangeTextEditorVisibleRanges(async (tevr) => {
+    //     activeEditor = tevr.textEditor;
+    //     await triggerUpdateDecorations();
+    // });
+    // context.subscriptions.push(onDidChangeTextEditorVisibleRanges);
 
     const onDidCloseTextDocumentHandler = workspace.onDidCloseTextDocument(async (doc: vscode.TextDocument) => {
         if (VSExtensionUtils.isSupportedLanguage(doc)) {
@@ -925,14 +939,27 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
     });
 
-    const updateDecorations = async () => {
-        // * if no active window is open
-        if (!activeEditor) return;
 
-        await VSmargindecorations.updateDecorations(activeEditor);
-        await linter.updateLinter(activeEditor.document);
-        await colourCommentHandler.updateDecorations(activeEditor);
+    const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
+        await VSmargindecorations.updateDecorations(editor);
+        await linter.updateLinter(editor.document);
+        await colourCommentHandler.updateDecorations(editor);
     };
+
+    const activeEditorupdateDecorations = async () => {
+        await updateDecorationsOnTextEditor(activeEditor);
+    };
+
+    let timeout: NodeJS.Timer | undefined = undefined;
+
+    const triggerUpdateDecorations = async () => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(activeEditorupdateDecorations, 200);
+    }
+
+
 
     context.subscriptions.push(disposable4hover_more_info);
     window.onDidChangeActiveTextEditor(async (editor) => {
@@ -940,7 +967,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             return;
         }
         activeEditor = editor;
-        updateDecorations();
+        triggerUpdateDecorations();
 
     }, null, context.subscriptions);
 
@@ -948,7 +975,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!event.textEditor) {
             return;
         }
-        updateDecorations();
+        triggerUpdateDecorations();
 
     }, null, context.subscriptions);
 
@@ -960,14 +987,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         if (event.document === activeEditor.document) {
             activeEditor = window.activeTextEditor;
-            updateDecorations();
+            triggerUpdateDecorations();
         }
 
     }, null, context.subscriptions);
 
     if (window.activeTextEditor !== undefined) {
         activeEditor = window.activeTextEditor;
-        updateDecorations();
+        triggerUpdateDecorations();
     }
 
     progressStatusBarItem.command = "cobolplugin.showCOBOLChannel";
@@ -1292,7 +1319,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     const enforceFileExtensions = vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures,true);
+            COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true);
         }
     });
     context.subscriptions.push(enforceFileExtensions);
@@ -1326,6 +1353,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     //     retriggerCharacters: [","]
     // });
 
+    for (const vte of vscode.window.visibleTextEditors) {
+       await updateDecorationsOnTextEditor(vte);
+    }
 
     if (settings.process_metadata_cache_on_start) {
         try {
