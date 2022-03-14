@@ -113,6 +113,8 @@ export interface ICOBOLSettings {
     comment_tag_word: boolean;
 
     snippets: boolean;
+
+    enable_columns_tags: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -198,6 +200,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     snippets: boolean;
 
+    enable_columns_tags: boolean;
+
     constructor() {
         this.init_required = true;
         this.enable_tabstop = true;
@@ -267,5 +271,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.comment_tag_word = false;
         this.snippets = false;
         this.intellisense_style = intellisenseStyle.Unchanged;
+        this.enable_columns_tags = false;
     }
 }

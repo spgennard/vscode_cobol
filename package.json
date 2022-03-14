@@ -821,6 +821,11 @@
           "description": "Dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
           "default": false
         },
+        "coboleditor.enable_columns_tags": {
+          "type": "boolean",
+          "description": "Enable coloured margin",
+          "default": false
+        },
         "coboleditor.columns_tags": {
           "type": "array",
           "description": "Tags which are used to color the margins.",

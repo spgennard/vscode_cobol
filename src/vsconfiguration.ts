@@ -101,6 +101,8 @@ export class VSCOBOLConfiguration {
 
         vsconfig.snippets = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("snippets", vsconfig.snippets);
 
+        vsconfig.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", vsconfig.enable_columns_tags);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }
