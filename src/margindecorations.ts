@@ -125,7 +125,7 @@ export class VSmargindecorations extends ColourTagHandler {
                         const rangePos = new Range(startPos, endPos);
                         const decoration = { range: rangePos };
 
-                        const text = doc.getText(rangePos).trim();
+                        const text = doc.getText(rangePos);
                         if (text.length !== 0) {
                             let useDefault = true;
 
@@ -145,7 +145,7 @@ export class VSmargindecorations extends ColourTagHandler {
                                             items.push(decoration);
                                         }
                                         else {
-                                            const rangePosX = new Range(new Position(i, tagIndex), new Position(i, tagIndex+tag.length));
+                                            const rangePosX = new Range(new Position(i, tagIndex), new Position(i, tagIndex + tag.length));
                                             items.push({ range: rangePosX });
 
                                             // add left colour
@@ -155,8 +155,8 @@ export class VSmargindecorations extends ColourTagHandler {
                                             }
 
                                             // add right color
-                                            if (tagIndex+tag.length !== 6) {
-                                                const rangePosR = new Range(new Position(i, tagIndex+tag.length), new Position(i, 6));
+                                            if (tagIndex + tag.length !== 6) {
+                                                const rangePosR = new Range(new Position(i, tagIndex + tag.length), new Position(i, 6));
                                                 defaultDecorationOptions.push({ range: rangePosR });
                                             }
                                         }
@@ -172,11 +172,53 @@ export class VSmargindecorations extends ColourTagHandler {
 
                 if (containsTab === -1 || containsTab > 80) {
                     if (line.length > 72) {
-                        const startPos = new Position(i, 72);
                         // only colour 72-80
-                        const endPos = new Position(i, (line.length < 80 ? line.length : 80));
-                        const decoration = { range: new Range(startPos, endPos) };
-                        defaultDecorationOptions.push(decoration);
+                        const rangePos =  new Range( new Position(i, 72), new Position(i, (line.length < 80 ? line.length : 80)));
+                        const decoration = { range: rangePos};
+
+
+                        const text = doc.getText(rangePos);
+                        if (text.length !== 0) {
+                            let useDefault = true;
+
+                            for (const [tag,] of this.tags) {
+                                // ignore tags too large for the left margin
+                                if (tag.length > 8) {
+                                    continue;
+                                }
+                                const tagIndex = text.indexOf(tag);
+                                if (tagIndex !== -1) {
+                                    const items = declsMap.get(tag);
+                                    if (items !== undefined) {
+                                        useDefault = false;
+
+                                        if (tagIndex === 0 && tag.length === 8) {
+                                            items.push(decoration);
+                                        }
+                                        else {
+                                            const rangePosX = new Range(new Position(i, 72+tagIndex), new Position(i, 72+tagIndex + tag.length));
+                                            items.push({ range: rangePosX });
+
+                                            // add left colour
+                                            if (tagIndex !== 0) {
+                                                const rangePosL = new Range(new Position(i, 72), new Position(i, 72+tagIndex));
+                                                defaultDecorationOptions.push({ range: rangePosL });
+                                            }
+
+                                            // add right color
+                                            if (tagIndex + tag.length !== 8) {
+                                                const rangePosR = new Range(new Position(i, 72+tagIndex + tag.length), new Position(i, 72+8));
+                                                defaultDecorationOptions.push({ range: rangePosR });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (useDefault) {
+                                defaultDecorationOptions.push(decoration);
+                            }
+                        }
                     }
                 }
             }
