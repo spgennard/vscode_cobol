@@ -10,7 +10,7 @@ import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { ColourTagHandler } from "./vscolourcomments";
 
-const trailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
+const defaultTrailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
         // backgroundColor: "rgba(255,0,0,1)",
         // color: "rgba(0,0,0,1)",
@@ -41,7 +41,7 @@ export class VSmargindecorations extends ColourTagHandler {
         super.setupTags("columns_tags",this.tags);
     }
 
-    private static isEnabledViaWorkspace4jcl(): boolean {
+    private isEnabledViaWorkspace4jcl(): boolean {
         if (VSWorkspaceFolders.get() === undefined) {
             return false;
         }
@@ -54,29 +54,29 @@ export class VSmargindecorations extends ColourTagHandler {
         return true;
     }
 
-
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public static async updateDecorations(activeTextEditor: TextEditor | undefined) {
+    public async updateDecorations(activeTextEditor: TextEditor | undefined) {
         if (!activeTextEditor) {
             return;
         }
 
         const doc: TextDocument = activeTextEditor.document;
-        const decorationOptions: DecorationOptions[] = [];
+        const defaultDecorationOptions: DecorationOptions[] = [];
 
         const textLanguage: TextLanguage = VSExtensionUtils.isSupportedLanguage(doc);
 
         if (textLanguage === TextLanguage.Unknown) {
-            activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+            activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
             return;
         }
 
         /* is it enabled? (COBOL) */
-        if (textLanguage === TextLanguage.JCL && !VSmargindecorations.isEnabledViaWorkspace4jcl()) {
-            activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+        if (textLanguage === TextLanguage.JCL && !this.isEnabledViaWorkspace4jcl()) {
+            activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
             return;
         }
 
+        const declsMap = new Map<string, DecorationOptions[]>();
         if (textLanguage === TextLanguage.COBOL) {
             const configHandler = VSCOBOLConfiguration.get();
             if (configHandler.fileformat_strategy !== "always_fixed") {
@@ -94,14 +94,16 @@ export class VSmargindecorations extends ColourTagHandler {
                     case ESourceFormat.variable:
                     case ESourceFormat.unknown:
                     case ESourceFormat.terminal:
-                        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+                        activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
                         return;
                 }
             }
 
             const maxLineLength = configHandler.editor_maxTokenizationLineLength;
             const maxLines = doc.lineCount;
-
+            for(const [tag,] of this.tags) {
+                declsMap.set(tag,[]);
+            }
             for (let i = 0; i < maxLines; i++) {
                 const lineText = doc.lineAt(i);
                 const line = lineText.text;
@@ -116,8 +118,26 @@ export class VSmargindecorations extends ColourTagHandler {
                     if (line.length >= 6) {
                         const startPos = new Position(i, 0);
                         const endPos = new Position(i, 6);
-                        const decoration = { range: new Range(startPos, endPos) };
-                        decorationOptions.push(decoration);
+                        const rangePos = new Range(startPos, endPos);
+                        const decoration = { range: rangePos};
+
+                        const text = doc.getText(rangePos).trim();
+                        if (text.length !== 0) {
+                            let useDefault = true;
+                            
+                            for(const [tag,] of this.tags) {
+                                if (text.indexOf(tag) !== -1) {
+                                    const items = declsMap.get(tag);
+                                    if (items !== undefined) {
+                                        items.push(decoration);
+                                        useDefault = false;
+                                    }
+                                }
+                            }
+                            if (useDefault) {
+                                defaultDecorationOptions.push(decoration);
+                            }
+                        }
                     }
                 }
 
@@ -127,7 +147,7 @@ export class VSmargindecorations extends ColourTagHandler {
                         // only colour 72-80
                         const endPos = new Position(i, (line.length < 80 ? line.length : 80));
                         const decoration = { range: new Range(startPos, endPos) };
-                        decorationOptions.push(decoration);
+                        defaultDecorationOptions.push(decoration);
                     }
                 }
             }
@@ -142,10 +162,20 @@ export class VSmargindecorations extends ColourTagHandler {
                     const startPos = new Position(i, 72);
                     const endPos = new Position(i, line.length);
                     const decoration = { range: new Range(startPos, endPos) };
-                    decorationOptions.push(decoration);
+                    defaultDecorationOptions.push(decoration);
                 }
             }
         }
-        activeTextEditor.setDecorations(trailingSpacesDecoration, decorationOptions);
+        
+        for(const [tag, decls] of declsMap) {
+            const typeDecl = this.tags.get(tag);
+            if (typeDecl !== undefined) {
+                activeTextEditor.setDecorations(typeDecl, decls);
+            }
+
+        }
+        activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
     }
 }
+
+export const vsMarginHandler = new VSmargindecorations();

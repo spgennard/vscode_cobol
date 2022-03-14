@@ -42,7 +42,7 @@ import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
 import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
-import { VSmargindecorations } from "./margindecorations";
+import { vsMarginHandler } from "./margindecorations";
 import { commentUtils } from "./commenter";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
@@ -941,7 +941,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
     const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
-        await VSmargindecorations.updateDecorations(editor);
+        await vsMarginHandler.updateDecorations(editor);
         await linter.updateLinter(editor.document);
         await colourCommentHandler.updateDecorations(editor);
     };

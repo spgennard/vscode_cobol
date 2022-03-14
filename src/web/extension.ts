@@ -9,7 +9,7 @@ import { VSExternalFeatures } from "../vsexternalfeatures";
 import { COBOLProgramCommands } from "../cobolprogram";
 import { TabUtils } from "../tabstopper";
 import { VSCOBOLSourceScanner } from "../vscobolscanner";
-import { VSmargindecorations } from "../margindecorations";
+import { vsMarginHandler } from "../margindecorations";
 import { commentUtils } from "../commenter";
 import { COBOLOutputChannel, VSLogger } from "../vslogger";
 import { COBOLSourceDefinition } from "../sourcedefinitionprovider";
@@ -367,7 +367,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (!editor) {
             return;
         }
-        VSmargindecorations.updateDecorations(editor);
+        vsMarginHandler.updateDecorations(editor);
         // linter.updateLinter(editor.document);
 
     }, null, context.subscriptions);
@@ -376,7 +376,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (!event.textEditor) {
             return;
         }
-        VSmargindecorations.updateDecorations(event.textEditor);
+        vsMarginHandler.updateDecorations(event.textEditor);
         //cobolusage.updateDiagnostics(event.textEditor.document);
     }, null, context.subscriptions);
 
@@ -385,12 +385,12 @@ export function activate(context: vscode.ExtensionContext) {
         if (!vscode.window.activeTextEditor) {
             return;
         }
-        VSmargindecorations.updateDecorations(vscode.window.activeTextEditor);
+        vsMarginHandler.updateDecorations(vscode.window.activeTextEditor);
         // linter.updateLinter(window.activeTextEditor.document);
     }, null, context.subscriptions);
 
     if (vscode.window.activeTextEditor !== undefined) {
-        VSmargindecorations.updateDecorations(vscode.window.activeTextEditor);
+        vsMarginHandler.updateDecorations(vscode.window.activeTextEditor);
         // linter.updateLinter(window.activeTextEditor.document);
     }
     // const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
