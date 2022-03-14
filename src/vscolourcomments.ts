@@ -9,7 +9,11 @@ import { VSLogger } from "./vslogger";
 
 export class ColourTagHandler {
 
-    public setupTags(configElement: string,tags: Map<string, TextEditorDecorationType>): void {
+    public setupTags(configElement: string,tags: Map<string, TextEditorDecorationType>,
+        foregroundColour:ThemeColor| undefined,
+        backgroundColor:ThemeColor| undefined,
+        textDecoration: string|undefined
+        ): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const items = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get(configElement) as any;
         if (items === undefined) {
@@ -20,11 +24,27 @@ export class ColourTagHandler {
 
         for (const item of items) {
             try {
-                const options: DecorationRenderOptions = {
-                    color: item.color,
-                    backgroundColor: item.backgroundColor,
-                    textDecoration: ""
-                };
+                const options: DecorationRenderOptions = {};
+
+                if (foregroundColour !== undefined) {
+                    options.color = foregroundColour;
+                }
+
+                if (backgroundColor !== undefined) {
+                    options.backgroundColor = backgroundColor;
+                }
+
+                if (textDecoration !== undefined) {
+                    options.textDecoration = textDecoration;
+                }
+
+                if (item.color) {
+                    options.color = item.color;
+                }
+
+                if (item.backgroundColor) {
+                    options.backgroundColor = item.backgroundColor;
+                }
 
                 if (item.strikethrough) {
                     options.textDecoration = "line-through solid";
@@ -74,7 +94,7 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
     }
 
     public setupTags() {
-        super.setupTags("comments_tags",this.tags);
+        super.setupTags("comments_tags",this.tags, undefined, undefined, undefined);
     }
  
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

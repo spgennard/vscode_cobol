@@ -38,7 +38,11 @@ export class VSmargindecorations extends ColourTagHandler {
     }
 
     public setupTags() {
-        super.setupTags("columns_tags",this.tags);
+        super.setupTags("columns_tags", this.tags,
+            new ThemeColor("editorLineNumber.foreground"),
+            new ThemeColor("editor.background"),
+            "solid"
+        );
     }
 
     private isEnabledViaWorkspace4jcl(): boolean {
@@ -101,8 +105,8 @@ export class VSmargindecorations extends ColourTagHandler {
 
             const maxLineLength = configHandler.editor_maxTokenizationLineLength;
             const maxLines = doc.lineCount;
-            for(const [tag,] of this.tags) {
-                declsMap.set(tag,[]);
+            for (const [tag,] of this.tags) {
+                declsMap.set(tag, []);
             }
             for (let i = 0; i < maxLines; i++) {
                 const lineText = doc.lineAt(i);
@@ -114,23 +118,48 @@ export class VSmargindecorations extends ColourTagHandler {
                 // only do it, if we have no tabs on the line..
                 const containsTab = line.indexOf("\t");
 
-                if (containsTab === -1 || containsTab >= 6 ) {
+                if (containsTab === -1 || containsTab >= 6) {
                     if (line.length >= 6) {
                         const startPos = new Position(i, 0);
                         const endPos = new Position(i, 6);
                         const rangePos = new Range(startPos, endPos);
-                        const decoration = { range: rangePos};
+                        const decoration = { range: rangePos };
 
                         const text = doc.getText(rangePos).trim();
                         if (text.length !== 0) {
                             let useDefault = true;
-                            
-                            for(const [tag,] of this.tags) {
-                                if (text.indexOf(tag) !== -1) {
+
+                            for (const [tag,] of this.tags) {
+                                // ignore tags too large for the left margin
+                                if (tag.length > 6) {
+                                    continue;
+                                }
+
+                                const tagIndex = text.indexOf(tag);
+                                if (tagIndex !== -1) {
                                     const items = declsMap.get(tag);
                                     if (items !== undefined) {
-                                        items.push(decoration);
                                         useDefault = false;
+
+                                        if (tagIndex === 0 && tag.length === 6) {
+                                            items.push(decoration);
+                                        }
+                                        else {
+                                            const rangePosX = new Range(new Position(i, tagIndex), new Position(i, tagIndex+tag.length));
+                                            items.push({ range: rangePosX });
+
+                                            // add left colour
+                                            if (tagIndex !== 0) {
+                                                const rangePosL = new Range(new Position(i, 0), new Position(i, tagIndex));
+                                                defaultDecorationOptions.push({ range: rangePosL });
+                                            }
+
+                                            // add right color
+                                            if (tagIndex+tag.length !== 6) {
+                                                const rangePosR = new Range(new Position(i, tagIndex+tag.length), new Position(i, 6));
+                                                defaultDecorationOptions.push({ range: rangePosR });
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -166,8 +195,8 @@ export class VSmargindecorations extends ColourTagHandler {
                 }
             }
         }
-        
-        for(const [tag, decls] of declsMap) {
+
+        for (const [tag, decls] of declsMap) {
             const typeDecl = this.tags.get(tag);
             if (typeDecl !== undefined) {
                 activeTextEditor.setDecorations(typeDecl, decls);
