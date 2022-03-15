@@ -9,23 +9,10 @@ import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { ColourTagHandler } from "./vscolourcomments";
+import { ICOBOLSettings, IMarginColour } from "./iconfiguration";
 
-const defaultTrailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
-    light: {
-        // backgroundColor: "rgba(255,0,0,1)",
-        // color: "rgba(0,0,0,1)",
-        color: new ThemeColor("editorLineNumber.foreground"),
-        backgroundColor: new ThemeColor("editor.background"),
-        textDecoration: "solid"
-    },
-    dark: {
-        // backgroundColor: "rgba(255,0,0,1)",
-        // color: "rgba(0,0,0,1)"
-        color: new ThemeColor("editorLineNumber.foreground"),
-        backgroundColor: new ThemeColor("editor.background"),
-        textDecoration: "solid"
-    }
-});
+
+ 
 
 export class VSmargindecorations extends ColourTagHandler {
 
@@ -36,11 +23,13 @@ export class VSmargindecorations extends ColourTagHandler {
         this.setupTags();
     }
 
-    public setupTags() {
+    public setupTags():void {
+        const settings = VSCOBOLConfiguration.get();
+        const defColour: IMarginColour = settings.margin_colour
         super.setupTags("columns_tags", this.tags,
-            new ThemeColor("editorLineNumber.foreground"),
-            new ThemeColor("editor.background"),
-            "solid"
+            this.parseColor(defColour.color),
+            this.parseColor(defColour.backgroundColor),
+            defColour.textDecoration
         );
     }
 
@@ -57,7 +46,7 @@ export class VSmargindecorations extends ColourTagHandler {
         return true;
     }
 
-    private async updateJCLDecorations(doc: TextDocument, activeTextEditor: TextEditor) {
+    private async updateJCLDecorations(doc: TextDocument, activeTextEditor: TextEditor, defaultTrailingSpacesDecoration: TextEditorDecorationType) {
         const defaultDecorationOptions: DecorationOptions[] = [];
         for (let i = 0; i < doc.lineCount; i++) {
             const lineText = doc.lineAt(i);
@@ -73,6 +62,34 @@ export class VSmargindecorations extends ColourTagHandler {
         activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
     }
 
+    private parseColor(item: string) : ThemeColor| string {
+        if (item.startsWith("#")) {
+            return item;
+        }
+        if (item.startsWith("rgba(")) {
+            return item;
+        }
+
+        return new ThemeColor(item);
+    }
+
+    private getDdefaultTrailingSpacesDecoration(settings: ICOBOLSettings):TextEditorDecorationType {
+        const defColour: IMarginColour = settings.margin_colour;
+
+        return window.createTextEditorDecorationType({
+            light: {
+                color: this.parseColor(defColour.color),
+                backgroundColor: this.parseColor(defColour.backgroundColor),
+                textDecoration: defColour.textDecoration
+            },
+            dark: {
+                color: this.parseColor(defColour.color),
+                backgroundColor: this.parseColor(defColour.backgroundColor),
+                textDecoration: defColour.textDecoration
+            }
+        });
+    }
+    
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public async updateDecorations(activeTextEditor: TextEditor | undefined) {
         if (!activeTextEditor) {
@@ -81,7 +98,8 @@ export class VSmargindecorations extends ColourTagHandler {
 
         const doc: TextDocument = activeTextEditor.document;
         const defaultDecorationOptions: DecorationOptions[] = [];
-
+        const configHandler = VSCOBOLConfiguration.get();
+        const defaultTrailingSpacesDecoration = this.getDdefaultTrailingSpacesDecoration(configHandler)
         const textLanguage: TextLanguage = VSExtensionUtils.isSupportedLanguage(doc);
 
         if (textLanguage === TextLanguage.Unknown) {
@@ -94,14 +112,14 @@ export class VSmargindecorations extends ColourTagHandler {
             if (!this.isEnabledViaWorkspace4jcl()) {
                 activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
             } else {
-                await this.updateJCLDecorations(doc, activeTextEditor);
+                await this.updateJCLDecorations(doc, activeTextEditor, defaultTrailingSpacesDecoration);
             }
             return;
         }
 
         const declsMap = new Map<string, DecorationOptions[]>();
 
-        const configHandler = VSCOBOLConfiguration.get();
+
         if (configHandler.fileformat_strategy !== "always_fixed") {
             const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
             let sf: ESourceFormat = ESourceFormat.unknown;

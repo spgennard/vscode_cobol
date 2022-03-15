@@ -2,7 +2,7 @@
 "use strict";
 
 import { workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi, intellisenseStyle } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi, intellisenseStyle, IMarginColour } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 
@@ -103,6 +103,8 @@ export class VSCOBOLConfiguration {
 
         vsconfig.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", vsconfig.enable_columns_tags);
         
+        vsconfig.margin_colour = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<IMarginColour>("margin_colour", vsconfig.margin_colour);
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
         }

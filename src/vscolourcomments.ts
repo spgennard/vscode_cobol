@@ -10,8 +10,8 @@ import { VSLogger } from "./vslogger";
 export class ColourTagHandler {
 
     public setupTags(configElement: string,tags: Map<string, TextEditorDecorationType>,
-        foregroundColour:ThemeColor| undefined,
-        backgroundColor:ThemeColor| undefined,
+        color:ThemeColor| string | undefined,
+        backgroundColor:ThemeColor| string | undefined,
         textDecoration: string|undefined
         ): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,8 +26,8 @@ export class ColourTagHandler {
             try {
                 const options: DecorationRenderOptions = {};
 
-                if (foregroundColour !== undefined) {
-                    options.color = foregroundColour;
+                if (color !== undefined) {
+                    options.color = color;
                 }
 
                 if (backgroundColor !== undefined) {

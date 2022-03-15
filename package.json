@@ -826,6 +826,28 @@
           "description": "Enable coloured margin",
           "default": false
         },
+        "coboleditor.margin_colour": {
+          "description": "Margin colour",
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "format": "color"
+            },
+            "backgroundColor": {
+              "type": "string",
+              "format": "color"
+            },
+            "textDecoration": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "color": "editorLineNumber.foreground",
+            "backgroundColor": "editor.background",
+            "textDecoration": "solid"
+          }
+        },
         "coboleditor.columns_tags": {
           "type": "array",
           "description": "Tags which are used to color the margins.",
