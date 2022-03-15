@@ -567,8 +567,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_metadata_knowncopybooks = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_knowncopybooks`);
         const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
         const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
+        const md_enable_comments_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_comments_tags`);
         const md_comments_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.comments_tags`);
         const md_intellisense_style = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_style`);
+        const md_enable_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_columns_tags`);
+        const md_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
@@ -610,8 +613,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session`);
             }
 
-            if (md_comments_tags) {
+            if (md_enable_comments_tags || md_comments_tags) {
                 colourCommentHandler.setupTags();
+            }
+
+            if (md_enable_columns_tags || md_columns_tags) {
+                vsMarginHandler.setupTags();
             }
 
             // ensure we update the map
