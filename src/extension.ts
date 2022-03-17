@@ -102,7 +102,8 @@ const blessed_extensions: string[] = [
 ];
 
 const known_problem_extensions: string[][] = [
-    ["control flow extension", "BroadcomMFD.ccf"]              // control flow extension
+    ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf"],             // control flow extension
+    ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb"]
 ];
 
 let conflictsFound = false;
@@ -178,8 +179,11 @@ function checkForExtensionConflicts(): string {
 
                 if (!ignore_blessed) {
                     for (const [type_of_extension, known_problem_extension] of known_problem_extensions) {
-                        if (known_problem_extension === ext.packageJSON.id) {
-                            reason.push(`contributes ${type_of_extension} that does not match syntax provided`);
+                        if (known_problem_extension.toLowerCase() === ext.packageJSON.id.toLowerCase()) {
+                            reason.push(`contributes '${type_of_extension}'`);
+                            if (type_of_extension.includes("debugger")) {
+                                conflictingDebuggerFound = true;
+                            }
                         }
                     }
                 }
@@ -1361,7 +1365,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     // });
 
     for (const vte of vscode.window.visibleTextEditors) {
-       await updateDecorationsOnTextEditor(vte);
+        await updateDecorationsOnTextEditor(vte);
     }
 
     if (settings.process_metadata_cache_on_start) {
