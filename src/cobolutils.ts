@@ -848,6 +848,25 @@ export class COBOLUtils {
         }
     }
 
+    public static padTo72() {
+        if (vscode.window.activeTextEditor) {
+            const editor = vscode.window.activeTextEditor;
+            const sel = editor.selection;
+            const line = editor.document.lineAt(sel.start.line).text;
+
+            editor.edit(edit => {
+                const posStartOfLine = new vscode.Position(sel.start.line, 0);
+                const endOfLine = new vscode.Position(sel.start.line, line.length);
+                const ran = new vscode.Range(posStartOfLine, endOfLine);
+                edit.delete(ran);
+
+                const extraSpaces = line.length < 72 ? 72 - line.length : 0;
+                const replaceLine = line+" ".repeat(extraSpaces);
+                edit.insert(posStartOfLine, replaceLine);
+            });
+        }
+
+    }
     // public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
     //     const settings = VSCOBOLConfiguration.get();
 

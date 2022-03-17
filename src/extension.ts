@@ -1308,6 +1308,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(alignStorageRight);
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
 
+    const padTo72 = vscode.commands.registerCommand("cobolplugin.padTo72", () => {
+        COBOLUtils.padTo72();
+    });
+    context.subscriptions.push(padTo72);
+
     window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;

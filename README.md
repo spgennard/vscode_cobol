@@ -82,6 +82,7 @@ While also being able to use it with the official `Micro Focus COBOL extension` 
 | right mouse/peek  |             Peek copybook without opening the file)             |
 | ctrl+alt+a        |                 Adjust line to cursor position                  |
 | ctrl+alt+l        |                 Left adjust line to left margin                 |
+| alt+right         |                  Insert spaces to column 72                     |
 
 ## Keybindings - xedit'ish
 

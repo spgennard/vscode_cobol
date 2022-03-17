@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.3.13",
+  "version": "8.3.16",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1559,6 +1559,11 @@
         "title": "Align to right"
       },
       {
+        "command": "cobolplugin.padTo72",
+        "category": "COBOL",
+        "title": "Pad line to column 72"
+      },
+      {
         "command": "cobolplugin.enforceFileExtensions",
         "category": "COBOL",
         "title": "Enforce extension via file.assocations"
@@ -1727,6 +1732,11 @@
         "key": "alt+shift+a",
         "command": "cobolplugin.change_lang_to_acu",
         "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "alt+right",
+        "command": "cobolplugin.padTo72",
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+a",
