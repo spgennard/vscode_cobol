@@ -1,6 +1,15 @@
 # CHANGELOG
 
-* b68f317 (HEAD -> main, tag: 8.3.13, origin/main) tweak
+* 8d4f103 (HEAD -> main, tag: 8.3.16, origin/main) add padto72
+* ba3825f add extra ext exclude
+* 5241b2b add support for making the margin colour configurable
+* f83bcf9 break the margin support into easier methods
+* e50c68d add config to enable column tags
+* 152d79b add right margin tag support
+* 9aec9e9 add initial support for left margin tags
+* 7a0d91b add v0 of margin colouriser
+* 934e6f4 (tag: 8.3.13) Update
+* b68f317 tweak
 * 95ca364 empty package area out
 * 6cff80f refactor part of comment support, so tags can be comsumed in the margin part
 * 2626cb2 wire in more events
