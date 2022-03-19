@@ -14,7 +14,7 @@ import { COBOLFileUtils } from "./fileutils";
 
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
-import { CobolReferenceProvider } from "./cobolreferenceprovider";
+import { CobolReferenceProvider } from "./vsreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./sourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./cobolprovider";
@@ -48,6 +48,7 @@ import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./snippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
+import { VSCobolRenameProvider } from "./vsrenameprovider";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -950,6 +951,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
     });
 
+    const renameProvider = new VSCobolRenameProvider();
+    const renameProviderDisposable =languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
+    context.subscriptions.push(renameProviderDisposable);
 
     const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
         await vsMarginHandler.updateDecorations(editor);
