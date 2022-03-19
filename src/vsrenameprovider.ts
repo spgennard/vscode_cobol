@@ -13,7 +13,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
     private sourceRefs?: SharedSourceReferences;
 
     provideRenameEdits(document: TextDocument, position: vscode.Position, newName: string, token: vscode.CancellationToken): vscode.ProviderResult<vscode.WorkspaceEdit> {
-        const wordRange = document.getWordRangeAtPosition(position,wordRegEx);
+        const wordRange = document.getWordRangeAtPosition(position, wordRegEx);
         const word = wordRange ? document.getText(wordRange) : "";
         if (word === "") {
             return Promise.resolve(null);
@@ -38,7 +38,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
         // const sourceRefs: SharedSourceReferences = this.sourceRefs;
         const edits = new vscode.WorkspaceEdit()
         const sourceRefs: SharedSourceReferences = this.sourceRefs;
-        
+
         if (qp.constantsOrVariables.has(workLower)) {
             const paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
             if (paraTokens !== undefined) {
@@ -52,7 +52,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                     edits.delete(uri, range);
                     edits.insert(uri, startPos, newName);
                 }
-                
+
                 if (sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
                     const targetRefs: SourceReference[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
                     if (targetRefs !== undefined) {
@@ -60,16 +60,36 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                             const tref = targetRefs[trpos];
                             const uri = vscode.Uri.file(sourceRefs.filenames[tref.fileIdentifer]);
                             const startPos = new vscode.Position(tref.line, tref.column);
-                            const endPos = new vscode.Position(tref.line, tref.column+tref.length);
+                            const endPos = new vscode.Position(tref.line, tref.column + tref.length);
                             const range = new vscode.Range(startPos, endPos);
                             edits.delete(uri, range);
                             edits.insert(uri, startPos, newName);
                         }
                     }
-                }                
+                }
             }
         }
+
+        if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
+            if (sourceRefs.targetReferences.has(workLower) === true) {
+                const targetRefs: SourceReference[] | undefined = sourceRefs.targetReferences.get(workLower);
+                if (targetRefs !== undefined) {
+                    for (let trpos = 0; trpos < targetRefs.length; trpos++) {
+                        const tref = targetRefs[trpos];
+                        const uri = vscode.Uri.file(sourceRefs.filenames[tref.fileIdentifer]);
+                        const startPos = new vscode.Position(tref.line, tref.column);
+                        const endPos = new vscode.Position(tref.line, tref.column + tref.length);
+                        const range = new vscode.Range(startPos, endPos);
+                        edits.delete(uri, range);
+                        edits.insert(uri, startPos, newName);
+                    }
+                }
+            }
+
+        }
+
+
         return edits;
     }
-    
+
 }
