@@ -17,7 +17,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { CobolReferenceProvider } from "./vsreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./sourceviewtree";
-import { CobolSourceCompletionItemProvider } from "./vscobolprovider";1
+import { CobolSourceCompletionItemProvider } from "./vscobolprovider";
 import { COBOLUtils, FoldStyle, FoldAction, AlignStyle } from "./cobolutils";
 import { hoverApi, ICOBOLSettings } from "./iconfiguration";
 
