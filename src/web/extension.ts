@@ -18,6 +18,7 @@ import { CobolSourceCompletionItemProvider } from "../vscobolprovider";
 import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
+import { extensions, languages, workspace } from "vscode";
 
 function showExtensionInformation():void {
     const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -41,8 +42,10 @@ const blessed_extensions: string[] = [
 ];
 
 const known_problem_extensions: string[][] = [
-    ["control flow extension", "BroadcomMFD.ccf"]              // control flow extension
+    ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf"],             // control flow extension
+    ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb"]
 ];
+
 let conflictsFound = false;
 let conflictingDebuggerFound = false;
 
@@ -99,7 +102,7 @@ function checkForExtensionConflicts(): string {
     let dupExtensionMessage = "";
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const ext of vscode.extensions.all) {
+    for (const ext of extensions.all) {
         const reason = [];
         let ignore_blessed = false;
         if (ext !== undefined && ext.packageJSON !== undefined) {
@@ -116,8 +119,11 @@ function checkForExtensionConflicts(): string {
 
                 if (!ignore_blessed) {
                     for (const [type_of_extension, known_problem_extension] of known_problem_extensions) {
-                        if (known_problem_extension === ext.packageJSON.id) {
-                            reason.push(`contributes ${type_of_extension} that does not match syntax provided`);
+                        if (known_problem_extension.toLowerCase() === ext.packageJSON.id.toLowerCase()) {
+                            reason.push(`contributes '${type_of_extension}'`);
+                            if (type_of_extension.includes("debugger")) {
+                                conflictingDebuggerFound = true;
+                            }
                         }
                     }
                 }
@@ -273,14 +279,14 @@ export function activate(context: vscode.ExtensionContext) {
                 const doc = veditor.document;
                 if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
                     VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                    vscode.languages.setTextDocumentLanguage(doc, "plaintext");
+                    languages.setTextDocumentLanguage(doc, "plaintext");
                 }
             }
 
-            const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+            const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
                 if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
                     VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                    vscode.languages.setTextDocumentLanguage(doc, "plaintext");
+                    languages.setTextDocumentLanguage(doc, "plaintext");
                 }
             });
             context.subscriptions.push(onDidOpenTextDocumentHandler);
@@ -292,12 +298,12 @@ export function activate(context: vscode.ExtensionContext) {
             const msg = "This Extension is now inactive until conflict is resolved";
             VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
 
-            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
             if (mfExt !== undefined) {
                 VSLogger.logMessage("\nYou already have a 'Micro Focus COBOL' compatible debugger installed, so may not need the above extension(s)");
             } else {
                 VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.microFocusCOBOLExtension}`);
-            } 
+            }
             throw new Error(msg);
         }
     }
@@ -613,18 +619,25 @@ export function activate(context: vscode.ExtensionContext) {
         COBOLUtils.alignStorage(AlignStyle.Left);
     });
     context.subscriptions.push(alignStorageLeft);
-    
-    const alignStorageRight= vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
-        COBOLUtils.alignStorage(AlignStyle.Right);
-    });
-    context.subscriptions.push(alignStorageRight);
 
-    const alignStorageCenters= vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
+    const alignStorageCenters = vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
         COBOLUtils.alignStorage(AlignStyle.Center);
     });
     context.subscriptions.push(alignStorageCenters);
-    
+
+    const alignStorageRight = vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
+        COBOLUtils.alignStorage(AlignStyle.Right);
+    });
+    context.subscriptions.push(alignStorageRight);
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+
+    const padTo72 = vscode.commands.registerCommand("cobolplugin.padTo72", () => {
+        COBOLUtils.padTo72();
+    });
+    context.subscriptions.push(padTo72);
+
+    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
+
     vscode.window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;
