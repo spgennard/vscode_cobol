@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* c5c9355 (HEAD -> main, tag: 8.3.19, origin/main) fix typo
+* bb84c9b Update
 * c1d138d start to make the prefix'es more consistent
 * 8ee2a35 add section/paragraph rename
 * 4760969 add support for renaming a symbol  - still more todo
