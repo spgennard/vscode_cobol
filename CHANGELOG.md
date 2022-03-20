@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* c5c9355 (HEAD -> main, tag: 8.3.19, origin/main) fix typo
+* e14edcb fix typo
+* a2a06f6 partial sync
+* 3137296 (tag: 8.3.19) Update
+* c5c9355 fix typo
 * bb84c9b Update
 * c1d138d start to make the prefix'es more consistent
 * 8ee2a35 add section/paragraph rename
