@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as vscode from "vscode";
-import { TextDocument } from "vscode";
+import { CancellationToken, Position, TextDocument } from "vscode";
 import { COBOLSourceScanner, COBOLToken, SharedSourceReferences, SourceReference } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
@@ -12,7 +12,17 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
-    provideRenameEdits(document: TextDocument, position: vscode.Position, newName: string, token: vscode.CancellationToken): vscode.ProviderResult<vscode.WorkspaceEdit> {
+    // public prepareRename?(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range | { range: Range, placeholder: string }> {
+    //     const wordRange = document.getWordRangeAtPosition(position, wordRegEx);
+    //     const word = wordRange ? document.getText(wordRange) : "";
+    //     if (word === "") {
+    //         return null;
+    //     }
+
+    //     return null;
+    // }
+
+    provideRenameEdits(document: TextDocument, position: Position, newName: string, token: CancellationToken): vscode.ProviderResult<vscode.WorkspaceEdit> {
         const wordRange = document.getWordRangeAtPosition(position, wordRegEx);
         const word = wordRange ? document.getText(wordRange) : "";
         if (word === "") {
@@ -87,7 +97,6 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
             }
 
         }
-
 
         return edits;
     }

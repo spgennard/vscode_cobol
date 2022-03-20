@@ -29,6 +29,7 @@ Some of the features this extension provides are:
   - Remove column numbers
   - Remove program identification area
   - Remove all comments
+  - Rename paragraphs/sections and variables
   - Make all keywords/fields/sections uppercased, lowercased or camelcased
   - Re-sequence column numbers
   - Optional xedit'ish key bindings
