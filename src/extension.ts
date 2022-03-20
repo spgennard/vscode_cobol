@@ -7,7 +7,7 @@ import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContex
 import * as opencopybook from "./opencopybook";
 
 import { COBOLDocumentationCommentHandler } from "./doccomment";
-import { KeywordAutocompleteCompletionItemProvider } from "./keywordprovider";
+import { KeywordAutocompleteCompletionItemProvider } from "./vskeywordprovider";
 import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./vssymbolprovider";
 
 import { COBOLFileUtils } from "./fileutils";
@@ -25,12 +25,12 @@ import { hoverApi, ICOBOLSettings } from "./iconfiguration";
 const propertiesReader = require("properties-reader");
 
 import { VSWorkspaceFolders } from "./cobolfolders";
-import { COBOLSourceDefinition } from "./sourcedefinitionprovider";
+import { COBOLSourceDefinition } from "./vssourcedefinitionprovider";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCobScanner } from "./vscobscanner";
 import { BldScriptTaskProvider } from "./bldTaskProvider";
 import { COBOLCaseFormatter } from "./caseformatter";
-import { COBOLCallTargetProvider } from "./cobolcalltargetprovider";
+import { COBOLCallTargetProvider } from "./vscobolcalltargetprovider";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { SourceItem } from "./sourceItem";
 import { VSSemanticProvider } from "./vssemanticprovider";
@@ -46,7 +46,7 @@ import { vsMarginHandler } from "./margindecorations";
 import { commentUtils } from "./commenter";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
-import { SnippetCompletionItemProvider } from "./snippetprovider";
+import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
 

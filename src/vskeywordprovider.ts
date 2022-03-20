@@ -4,7 +4,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
-import {  KeywordSnippetProvider, SnippetCompletionItemProvider } from "./snippetprovider";
+import {  KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnippetprovider";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
