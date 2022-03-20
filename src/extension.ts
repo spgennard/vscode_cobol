@@ -8,7 +8,7 @@ import * as opencopybook from "./opencopybook";
 
 import { COBOLDocumentationCommentHandler } from "./doccomment";
 import { KeywordAutocompleteCompletionItemProvider } from "./keywordprovider";
-import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./symbolprovider";
+import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./vssymbolprovider";
 
 import { COBOLFileUtils } from "./fileutils";
 
@@ -17,7 +17,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { CobolReferenceProvider } from "./vsreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./sourceviewtree";
-import { CobolSourceCompletionItemProvider } from "./cobolprovider";
+import { CobolSourceCompletionItemProvider } from "./vscobolprovider";1
 import { COBOLUtils, FoldStyle, FoldAction, AlignStyle } from "./cobolutils";
 import { hoverApi, ICOBOLSettings } from "./iconfiguration";
 
