@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* 8d4f103 (HEAD -> main, tag: 8.3.16, origin/main) add padto72
+* c1d138d start to make the prefix'es more consistent
+* 8ee2a35 add section/paragraph rename
+* 4760969 add support for renaming a symbol  - still more todo
+* 8f49eb0 update versions
+* 387bd9f (tag: 8.3.16) Update
+* 8d4f103 add padto72
 * ba3825f add extra ext exclude
 * 5241b2b add support for making the margin colour configurable
 * f83bcf9 break the margin support into easier methods
