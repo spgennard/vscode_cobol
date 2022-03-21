@@ -1353,12 +1353,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         /* remove ( */
         if (literalTrimmed[0] === "(") {
-            literalTrimmed = literalTrimmed.substr(1, literalTrimmed.length - 1);
+            literalTrimmed = literalTrimmed.substring(1, literalTrimmed.length);
         }
 
         /* remove  */
         if (literalTrimmed.endsWith(")")) {
-            literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
+            literalTrimmed = literalTrimmed.substring(0, literalTrimmed.length - 1);
         }
 
         literalTrimmed = literalTrimmed.trim();
@@ -1368,16 +1368,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         /* remove end . */
         if (literalTrimmed.endsWith(".")) {
-            literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
+            literalTrimmed = literalTrimmed.substring(0, literalTrimmed.length - 1);
         }
 
         /* remove quotes */
         if (literalTrimmed[0] === "\"" && literalTrimmed.endsWith("\"")) {
-            return literalTrimmed.substr(1, literalTrimmed.length - 2);
+            return literalTrimmed.substring(1, literalTrimmed.length - 1);
         }
         /* remove quotes */
         if (literalTrimmed[0] === "'" && literalTrimmed.endsWith("'")) {
-            return literalTrimmed.substr(1, literalTrimmed.length - 2);
+            return literalTrimmed.substring(1, literalTrimmed.length - 1);
         }
 
 
@@ -1395,7 +1395,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         /* remove end . */
         let lastChar = literalTrimmed[literalTrimmed.length - 1];
         if (lastChar === ".") {
-            literalTrimmed = literalTrimmed.substr(0, literalTrimmed.length - 1);
+            literalTrimmed = literalTrimmed.substring(0, literalTrimmed.length - 1);
         }
 
         // too small
@@ -1427,8 +1427,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 tokenCountPerLine++;
 
                 if (endsWithDot) {
-                    tcurrent = tcurrent.substr(0, tcurrent.length - 1);
-                    tcurrentLower = tcurrentLower.substr(0, tcurrentLower.length - 1);
+                    tcurrent = tcurrent.substring(0, tcurrent.length - 1);
+                    tcurrentLower = tcurrentLower.substring(0, tcurrentLower.length - 1);
                 }
 
                 if (tokenCountPerLine === 1) {
@@ -1531,7 +1531,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private cleanupReplaceToken(token: string, rstate: IReplaceState): string {
         if (token.endsWith(",")) {
-            token = token.substr(0, token.length - 1);
+            token = token.substring(0, token.length - 1);
         }
 
         if (token.startsWith("==") && token.endsWith("==")) {
@@ -1562,15 +1562,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // fakeup a replace algorithmf
                 if (replaceOn) {
-                    let rightLine = line.substr(token.currentCol);
-                    const rightLineOrg = line.substr(token.currentCol);
+                    let rightLine = line.substring(token.currentCol);
+                    const rightLineOrg = line.substring(token.currentCol);
                     for (const [k, r] of state.replaceMap) {
                         rightLine = rightLine.replace(r.rex4wordreplace, k);
                     }
 
                     if (rightLine !== rightLineOrg) {
                         try {
-                            const leftLine = line.substr(0, token.currentCol);
+                            const leftLine = line.substring(0, token.currentCol);
 
                             this.sourceHandler.setUpdatedLine(lineNumber, leftLine + rightLine);
                             const lastTokenId = this.tokensInOrder.length;
@@ -1601,12 +1601,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
 
                 if (tcurrent.endsWith(",")) {
-                    tcurrent = tcurrent.substr(0, tcurrent.length - 1);
+                    tcurrent = tcurrent.substring(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = false;
                 } else if (token.endsWithDot) {
-                    tcurrent = tcurrent.substr(0, tcurrent.length - 1);
+                    tcurrent = tcurrent.substring(0, tcurrent.length - 1);
                     tcurrentLower = tcurrent.toLowerCase();
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = true;
