@@ -258,7 +258,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             const lastSpace = wordBefore.lastIndexOf(" ");
             if (lastSpace !== -1) {
                 const lineOrg = wordBefore;
-                wordBefore = wordBefore.substr(1 + lastSpace);
+                wordBefore = wordBefore.substring(1 + lastSpace);
                 wordBeforeLower = wordBefore.toLowerCase();
                 if (wordBeforeLower === "to") {
                     if (lineOrg.toLowerCase().indexOf("go") !== -1) {
@@ -277,10 +277,10 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     if (lastSpace === -1) {
                         wordBefore = currentLine;
                     } else {
-                        wordBefore = currentLine.substr(1 + lastSpace);
+                        wordBefore = currentLine.substring(1 + lastSpace);
                     }
                 } else {
-                    const lastSpaceLine = currentLine.substr(0, lastSpace);
+                    const lastSpaceLine = currentLine.substring(0, lastSpace);
                     let prevLastSpace = lastSpaceLine.lastIndexOf(" ");
                     if (prevLastSpace === -1) {
                         prevLastSpace = 0;

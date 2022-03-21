@@ -1380,8 +1380,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return literalTrimmed.substring(1, literalTrimmed.length - 1);
         }
 
-
-
         return literalTrimmed;
     }
 

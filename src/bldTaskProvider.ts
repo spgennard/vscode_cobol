@@ -87,7 +87,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			const she = new vscode.ShellExecution(`${BldScriptTaskProvider.scriptPrefix}${scriptName} ${definition.arguments}`, BldScriptTaskProvider.getSHEOptions(scriptName));
 			const rtask = new vscode.Task(definition.task, vscode.TaskScope.Workspace, BldScriptTaskProvider.BldSource, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
 			const dname = path.dirname(scriptName);
-			const fname = `${scriptName.substr(1 + dname.length)} (in ${dname})`;
+			const fname = `${scriptName.substring(1 + dname.length)} (in ${dname})`;
 			task.detail = `Execute ${fname}`;
 
 			return rtask;
@@ -132,7 +132,7 @@ async function getBldScriptTasks(scriptName: string): Promise<vscode.Task[]> {
 
 	const task = new vscode.Task(taskDef, vscode.TaskScope.Workspace,  BldScriptTaskProvider.BldSource, BldScriptTaskProvider.BldScriptType, she, BldScriptTaskProvider.getProblemMatchers());
 	const dname = path.dirname(scriptName);
-	const fname = scriptName.substr(1 + dname.length);
+	const fname = scriptName.substring(1 + dname.length);
 	task.detail = `Execute ${fname}`;
 	task.group = vscode.TaskGroup.Build;
 	result.push(task);

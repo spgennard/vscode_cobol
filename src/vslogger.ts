@@ -36,7 +36,7 @@ export class VSLogger {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static logWarningMessage(message: string, ...parameters: any[]): void {
-        const trimmedLeftCount = message.length - message.trimLeft().length;
+        const trimmedLeftCount = message.length - message.trimStart().length;
         const spacesToLeft = " ".repeat(trimmedLeftCount);
 
         // TODO: Could this be colorized?

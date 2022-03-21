@@ -31,7 +31,7 @@ export class COBOLFileUtils {
         const lastDot = filename.lastIndexOf(".");
         let extension = filename;
         if (lastDot !== -1) {
-            extension = filename.substr(1 + lastDot);
+            extension = filename.substring(1 + lastDot);
         }
 
         const exts = settings.copybookexts;
@@ -47,7 +47,7 @@ export class COBOLFileUtils {
         const lastDot = filename.lastIndexOf(".");
         let extension = "";
         if (lastDot !== -1) {
-            extension = filename.substr(1 + lastDot);
+            extension = filename.substring(1 + lastDot);
         }
 
         const exts = settings.program_extensions;

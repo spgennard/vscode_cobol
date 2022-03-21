@@ -143,7 +143,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     private extractCopyBoolFilename(str: string): string | undefined {
         const copyPos = str.toLowerCase().indexOf("copy");
         if (copyPos !== -1) {
-            const noCopyStr = str.substr(4 + copyPos).trimLeft();
+            const noCopyStr = str.substr(4 + copyPos).trimStart();
             const spacePos = noCopyStr.indexOf(" ");
             let justCopyArg = noCopyStr;
             if (spacePos !== -1) {
@@ -178,7 +178,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                 let includePos = strLower.indexOf("include");
                 if (includePos !== -1) {
                     includePos += 7;
-                    const strRight = str.substr(includePos).trimLeft();
+                    const strRight = str.substr(includePos).trimStart();
                     const strRightLower = strRight.toLowerCase();
                     const endExecPos = strRightLower.indexOf("end-exec");
                     if (endExecPos !== -1) {

@@ -117,7 +117,6 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
                 this.commentCount++;
                 this.sendCommentCallback(line, lineNumber,6, ESourceFormat.fixed);
-
                 return "";
             }
 
@@ -237,7 +236,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         let bestShortName = "";
         for (const folderPath of ws) {
             if (fullPath.startsWith(folderPath)) {
-                const possibleShortPath = fullPath.substr(1 + folderPath.length);
+                const possibleShortPath = fullPath.substring(1 + folderPath.length);
                 if (bestShortName.length === 0) {
                     bestShortName = possibleShortPath;
                 } else {

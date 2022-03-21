@@ -292,7 +292,7 @@ for (const arg of args) {
                             worker.on("message", result => {
                                 const resStr = result as string;
                                 if (resStr.startsWith("++")) {
-                                    const s = JSON.parse(resStr.substr(2)) as ScanStats;
+                                    const s = JSON.parse(resStr.substring(2)) as ScanStats;
                                     threadStats.push(s);
                                 } else {
                                     features.logMessage(resStr);
