@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 42a14b2 (HEAD -> main, tag: 8.3.21, origin/main) move external configs inline and protect against too early use of external when isDirectory is used via a config (to review)
+* 36088cc (tag: 8.3.20) Update
 * e14edcb fix typo
 * a2a06f6 partial sync
 * 3137296 (tag: 8.3.19) Update
