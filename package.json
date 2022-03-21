@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.3.20",
+  "version": "8.3.21",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -916,7 +916,6 @@
       ]
     },
     "configurationDefaults": {
-      "microFocusCOBOL.suppressFileAssociationsPrompt": true,
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,

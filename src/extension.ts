@@ -62,9 +62,6 @@ let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
 
-// setup
-VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
-VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
 
 function openChangeLog(): void {
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -499,6 +496,10 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
+    // setup
+    VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
+    VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
+
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
 
     activateLogChannelAndPaths(true, settings, false);

@@ -16,7 +16,7 @@ export class VSCOBOLConfiguration {
         vsconfig.enable_tabstop = getBoolean("enable_tabstop", false);
         vsconfig.copybooks_nested = getBoolean("copybooks_nested", false);
         vsconfig.outline = isOutlineEnabled();
-        vsconfig.copybookdirs = getCopybookdirs_defaults(vsconfig.invalid_copybookdirs);
+        vsconfig.copybookdirs = getCopybookdirs_defaults(VSCOBOLConfiguration.externalFeatures, vsconfig.invalid_copybookdirs);
         vsconfig.pre_scan_line_limit = getPreScanLineLimit();
         vsconfig.copybookexts = getCopybookExts();
         vsconfig.program_extensions = getProgram_extensions();
@@ -70,10 +70,10 @@ export class VSCOBOLConfiguration {
 
         const user_cobol_language_ids = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
         let valid = true;
-        
-        for(const languageId of user_cobol_language_ids) {
+
+        for (const languageId of user_cobol_language_ids) {
             // same regex as package.json
-            const validReg = new RegExp("(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^BITLANG-COBOL$|^COBOL_MF_LISTFILE$)","gm");
+            const validReg = new RegExp("(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^BITLANG-COBOL$|^COBOL_MF_LISTFILE$)", "gm");
             if (!validReg.test(languageId)) {
                 valid = false;
             }
@@ -85,24 +85,24 @@ export class VSCOBOLConfiguration {
 
         vsconfig.files_exclude = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("files_exclude", vsconfig.files_exclude);
 
-        vsconfig.scan_line_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_line_limit", vsconfig.scan_line_limit);  
+        vsconfig.scan_line_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_line_limit", vsconfig.scan_line_limit);
 
         vsconfig.scan_time_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_time_limit", vsconfig.scan_time_limit);
-        
+
         vsconfig.in_memory_cache_size = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("in_memory_cache_size", vsconfig.in_memory_cache_size);
-        
+
         vsconfig.suggest_variables_when_context_is_unknown = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("suggest_variables_when_context_is_unknown", vsconfig.suggest_variables_when_context_is_unknown);
 
-        vsconfig.hover_show_known_api =workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<hoverApi>("hover_show_known_api", vsconfig.hover_show_known_api);
+        vsconfig.hover_show_known_api = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<hoverApi>("hover_show_known_api", vsconfig.hover_show_known_api);
 
         vsconfig.enable_comment_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_comment_tags", vsconfig.enable_comment_tags);
-        
+
         vsconfig.comment_tag_word = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("comment_tag_word", vsconfig.comment_tag_word);
 
         vsconfig.snippets = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("snippets", vsconfig.snippets);
 
         vsconfig.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", vsconfig.enable_columns_tags);
-        
+
         vsconfig.margin_colour = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<IMarginColour>("margin_colour", vsconfig.margin_colour);
 
         if (!workspace.isTrusted) {
@@ -144,7 +144,7 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration.config;
     }
 
-    public static reinit() : ICOBOLSettings {
+    public static reinit(): ICOBOLSettings {
         VSCOBOLConfiguration.config.init_required = true;
         return VSCOBOLConfiguration.get();
     }
@@ -260,7 +260,7 @@ function getPathDelimiter(): string {
     return process.platform === "win32" ? ";" : ":";
 }
 
-function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
+function getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSearchDirectory: string[]): string[] {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
     let dirs = editorConfig.get<string[]>("copybookdirs");
     if (!dirs || (dirs !== null && dirs.length === 0)) {
@@ -289,14 +289,19 @@ function getCopybookdirs_defaults(invalidSearchDirectory: string[]): string[] {
         // ignore empty elements
         if (dir.length !== 0) {
             if (dir.startsWith("$")) {
-                const e = process.env[dir.substr(1)];
+                const e = process.env[dir.substring(1)];
                 if (e !== undefined && e !== null) {
                     e.split(getPathDelimiter()).forEach(function (item) {
                         if (item !== undefined && item !== null && item.length > 0) {
-                            if (VSCOBOLConfiguration.externalFeatures.isDirectory(item)) {
-                                extraDirs.push(item);
+                            if (externalFeatures !== undefined) {
+                                if (externalFeatures.isDirectory(item)) {
+                                    extraDirs.push(item);
+                                } else {
+                                    invalidSearchDirectory.push(item);
+                                }
                             } else {
-                                invalidSearchDirectory.push(item);
+                                // just assume it is okay
+                                extraDirs.push(item);
                             }
                         }
                     });
