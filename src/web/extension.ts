@@ -19,6 +19,7 @@ import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
 import { extensions, languages, workspace } from "vscode";
+import { VSCobolRenameProvider } from "../vsrenameprovider";
 
 function showExtensionInformation():void {
     const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -654,7 +655,19 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
-    })
+    });
+
+    const enforceFileExtensions = vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
+        if (vscode.window.activeTextEditor) {
+            COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true);
+        }
+    });
+    context.subscriptions.push(enforceFileExtensions);
+
+    const renameProvider = new VSCobolRenameProvider();
+    const renameProviderDisposable =languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
+    context.subscriptions.push(renameProviderDisposable);
+
 }
 
 // this method is called when your extension is deactivated
