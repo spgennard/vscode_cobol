@@ -7,68 +7,69 @@ import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 
 export class VSCOBOLConfiguration {
-    private static config: ICOBOLSettings = new COBOLSettings();
+    private static settings: ICOBOLSettings = new COBOLSettings();
 
-    public static externalFeatures: IExternalFeatures;
+    public constructor(externalFeatures: IExternalFeatures) {
+        VSCOBOLConfiguration.initSettings(VSCOBOLConfiguration.settings, externalFeatures);
+    }
 
-    private static init(): ICOBOLSettings {
-        const vsconfig = VSCOBOLConfiguration.config;
-        vsconfig.enable_tabstop = getBoolean("enable_tabstop", false);
-        vsconfig.copybooks_nested = getBoolean("copybooks_nested", false);
-        vsconfig.outline = isOutlineEnabled();
-        vsconfig.copybookdirs = getCopybookdirs_defaults(VSCOBOLConfiguration.externalFeatures, vsconfig.invalid_copybookdirs);
-        vsconfig.pre_scan_line_limit = getPreScanLineLimit();
-        vsconfig.copybookexts = getCopybookExts();
-        vsconfig.program_extensions = getProgram_extensions();
-        vsconfig.tabstops = getTabStops();
-        vsconfig.linter = getBoolean("linter", false);
-        vsconfig.line_comment = getBoolean("line_comment", false);
-        vsconfig.fileformat_strategy = getFileformatStrategy();
-        vsconfig.enable_data_provider = getBoolean("enable_data_provider", true);
-        vsconfig.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
-        vsconfig.intellisense_item_limit = getIntellisense_item_limit();
-        vsconfig.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
+    private static initSettings(settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
+        settings.enable_tabstop = getBoolean("enable_tabstop", false);
+        settings.copybooks_nested = getBoolean("copybooks_nested", false);
+        settings.outline = isOutlineEnabled();
+        settings.copybookdirs = getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs);
+        settings.pre_scan_line_limit = getPreScanLineLimit();
+        settings.copybookexts = getCopybookExts();
+        settings.program_extensions = getProgram_extensions();
+        settings.tabstops = getTabStops();
+        settings.linter = getBoolean("linter", false);
+        settings.line_comment = getBoolean("line_comment", false);
+        settings.fileformat_strategy = getFileformatStrategy();
+        settings.enable_data_provider = getBoolean("enable_data_provider", true);
+        settings.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
+        settings.intellisense_item_limit = getIntellisense_item_limit();
+        settings.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
         // vsconfig.cache_metadata = getcache_metadata();
-        vsconfig.cache_metadata_inactivity_timeout = getNumber("cache_metadata_inactivity_timeout", 5000);
-        vsconfig.cache_metadata_verbose_messages = getBoolean("cache_metadata_verbose_messages", false);
-        vsconfig.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
-        vsconfig.workspacefolders_order = getWorkspacefolders_order();
-        vsconfig.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
-        vsconfig.linter_house_standards = getBoolean("linter_house_standards", true);
-        vsconfig.linter_house_standards_rules = getlinter_house_standards_rules();
-        vsconfig.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
-        vsconfig.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
-        vsconfig.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
+        settings.cache_metadata_inactivity_timeout = getNumber("cache_metadata_inactivity_timeout", 5000);
+        settings.cache_metadata_verbose_messages = getBoolean("cache_metadata_verbose_messages", false);
+        settings.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
+        settings.workspacefolders_order = getWorkspacefolders_order();
+        settings.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
+        settings.linter_house_standards = getBoolean("linter_house_standards", true);
+        settings.linter_house_standards_rules = getlinter_house_standards_rules();
+        settings.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
+        settings.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
+        settings.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
 
         // scan for comments can cause a file access.. so it cannot be trusted
-        vsconfig.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
+        settings.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
 
-        vsconfig.scan_comment_copybook_token = getscan_comment_copybook_token();
-        vsconfig.editor_maxTokenizationLineLength = workspace.getConfiguration("editor").get<number>("maxTokenizationLineLength", 20000);
+        settings.scan_comment_copybook_token = getscan_comment_copybook_token();
+        settings.editor_maxTokenizationLineLength = workspace.getConfiguration("editor").get<number>("maxTokenizationLineLength", 20000);
 
-        vsconfig.sourceview = getBoolean("sourceview", false);
-        vsconfig.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
-        vsconfig.sourceview_include_hlasm_files = getBoolean("sourceview_include_hlasm_files", true);
-        vsconfig.sourceview_include_pli_files = getBoolean("sourceview_include_pli_files", true);
-        vsconfig.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
-        vsconfig.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
-        vsconfig.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
-        vsconfig.format_on_return = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<formatOnReturn>("format_on_return", formatOnReturn.Off);
-        vsconfig.intellisense_style = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
-        vsconfig.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
-        vsconfig.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
-        vsconfig.metadata_symbols = getmetadata_symbols(vsconfig);
-        vsconfig.metadata_entrypoints = getmetadata_entrypoints(vsconfig);
-        vsconfig.metadata_types = getmetadata_types(vsconfig);
-        vsconfig.metadata_files = getmetadata_files(vsconfig);
-        vsconfig.metadata_knowncopybooks = getmetadata_knowncopybooks(vsconfig);
-        vsconfig.enable_semantic_token_provider = getBoolean("enable_semantic_token_provider", false);
-        vsconfig.enable_text_replacement = getBoolean("enable_text_replacement", false);
-        vsconfig.editor_margin_files = getFixedFilenameConfiguration();
+        settings.sourceview = getBoolean("sourceview", false);
+        settings.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
+        settings.sourceview_include_hlasm_files = getBoolean("sourceview_include_hlasm_files", true);
+        settings.sourceview_include_pli_files = getBoolean("sourceview_include_pli_files", true);
+        settings.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
+        settings.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
+        settings.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
+        settings.format_on_return = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<formatOnReturn>("format_on_return", formatOnReturn.Off);
+        settings.intellisense_style = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
+        settings.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
+        settings.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
+        settings.metadata_symbols = getmetadata_symbols(settings);
+        settings.metadata_entrypoints = getmetadata_entrypoints(settings);
+        settings.metadata_types = getmetadata_types(settings);
+        settings.metadata_files = getmetadata_files(settings);
+        settings.metadata_knowncopybooks = getmetadata_knowncopybooks(settings);
+        settings.enable_semantic_token_provider = getBoolean("enable_semantic_token_provider", false);
+        settings.enable_text_replacement = getBoolean("enable_text_replacement", false);
+        settings.editor_margin_files = getFixedFilenameConfiguration();
 
-        vsconfig.enable_source_scanner = getBoolean("enable_source_scanner", true);
+        settings.enable_source_scanner = getBoolean("enable_source_scanner", true);
 
-        const user_cobol_language_ids = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("valid_cobol_language_ids", vsconfig.valid_cobol_language_ids);
+        const user_cobol_language_ids = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("valid_cobol_language_ids", settings.valid_cobol_language_ids);
         let valid = true;
 
         for (const languageId of user_cobol_language_ids) {
@@ -80,72 +81,68 @@ export class VSCOBOLConfiguration {
         }
 
         if (valid) {
-            vsconfig.valid_cobol_language_ids = user_cobol_language_ids;
+            settings.valid_cobol_language_ids = user_cobol_language_ids;
         }
 
-        vsconfig.files_exclude = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("files_exclude", vsconfig.files_exclude);
+        settings.files_exclude = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("files_exclude", settings.files_exclude);
 
-        vsconfig.scan_line_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_line_limit", vsconfig.scan_line_limit);
+        settings.scan_line_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_line_limit", settings.scan_line_limit);
 
-        vsconfig.scan_time_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_time_limit", vsconfig.scan_time_limit);
+        settings.scan_time_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_time_limit", settings.scan_time_limit);
 
-        vsconfig.in_memory_cache_size = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("in_memory_cache_size", vsconfig.in_memory_cache_size);
+        settings.in_memory_cache_size = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("in_memory_cache_size", settings.in_memory_cache_size);
 
-        vsconfig.suggest_variables_when_context_is_unknown = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("suggest_variables_when_context_is_unknown", vsconfig.suggest_variables_when_context_is_unknown);
+        settings.suggest_variables_when_context_is_unknown = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("suggest_variables_when_context_is_unknown", settings.suggest_variables_when_context_is_unknown);
 
-        vsconfig.hover_show_known_api = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<hoverApi>("hover_show_known_api", vsconfig.hover_show_known_api);
+        settings.hover_show_known_api = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<hoverApi>("hover_show_known_api", settings.hover_show_known_api);
 
-        vsconfig.enable_comment_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_comment_tags", vsconfig.enable_comment_tags);
+        settings.enable_comment_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_comment_tags", settings.enable_comment_tags);
 
-        vsconfig.comment_tag_word = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("comment_tag_word", vsconfig.comment_tag_word);
+        settings.comment_tag_word = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("comment_tag_word", settings.comment_tag_word);
 
-        vsconfig.snippets = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("snippets", vsconfig.snippets);
+        settings.snippets = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("snippets", settings.snippets);
 
-        vsconfig.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", vsconfig.enable_columns_tags);
+        settings.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", settings.enable_columns_tags);
 
-        vsconfig.margin_colour = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<IMarginColour>("margin_colour", vsconfig.margin_colour);
+        settings.margin_colour = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<IMarginColour>("margin_colour", settings.margin_colour);
 
         if (!workspace.isTrusted) {
-            VSCOBOLConfiguration.adjustForUntructedEnv(vsconfig);
+            VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }
 
-        return vsconfig;
+        return settings;
     }
 
     static logCacheMetadataDone = false;
     static logMarginDone = false;
 
-    static adjustForUntructedEnv(vsconfig: ICOBOLSettings): void {
-        vsconfig.enable_source_scanner = false;
-        vsconfig.disable_unc_copybooks_directories = true;
-        vsconfig.process_metadata_cache_on_start = false;
-        vsconfig.parse_copybooks_for_references = false;
+    static adjustForUntructedEnv(settings: ICOBOLSettings): void {
+        settings.enable_source_scanner = false;
+        settings.disable_unc_copybooks_directories = true;
+        settings.process_metadata_cache_on_start = false;
+        settings.parse_copybooks_for_references = false;
         // vsconfig.cache_metadata = CacheDirectoryStrategy.Off;
-        vsconfig.cache_metadata_verbose_messages = false;
-        vsconfig.editor_maxTokenizationLineLength = 0;
-        vsconfig.sourceview = false;
-        vsconfig.format_on_return = formatOnReturn.Off;
+        settings.cache_metadata_verbose_messages = false;
+        settings.editor_maxTokenizationLineLength = 0;
+        settings.sourceview = false;
+        settings.format_on_return = formatOnReturn.Off;
 
-        vsconfig.maintain_metadata_cache = false;
-        vsconfig.maintain_metadata_recursive_search = false;
-        vsconfig.metadata_symbols = [];
-        vsconfig.metadata_entrypoints = [];
-        vsconfig.metadata_types = [];
-        vsconfig.metadata_files = [];
-        vsconfig.enable_semantic_token_provider = false;
-        vsconfig.enable_text_replacement = false;
+        settings.maintain_metadata_cache = false;
+        settings.maintain_metadata_recursive_search = false;
+        settings.metadata_symbols = [];
+        settings.metadata_entrypoints = [];
+        settings.metadata_types = [];
+        settings.metadata_files = [];
+        settings.enable_semantic_token_provider = false;
+        settings.enable_text_replacement = false;
     }
 
     public static get(): ICOBOLSettings {
-        if (VSCOBOLConfiguration.config.init_required) {
-            VSCOBOLConfiguration.init();
-            VSCOBOLConfiguration.config.init_required = false;
-        }
-        return VSCOBOLConfiguration.config;
+        return VSCOBOLConfiguration.settings;
     }
 
-    public static reinit(): ICOBOLSettings {
-        VSCOBOLConfiguration.config.init_required = true;
+    public static reinit(externalFeatures: IExternalFeatures): ICOBOLSettings {
+        VSCOBOLConfiguration.initSettings(VSCOBOLConfiguration.settings, externalFeatures);
         return VSCOBOLConfiguration.get();
     }
 }

@@ -81,7 +81,6 @@ export interface ICOBOLSettings {
     format_on_return: formatOnReturn;
     intellisense_style: intellisenseStyle;
     editor_maxTokenizationLineLength: number;
-    init_required: boolean;
 
     metadata_symbols: string[];
     metadata_entrypoints: string[];
@@ -169,8 +168,6 @@ export class COBOLSettings implements ICOBOLSettings {
     intellisense_style: intellisenseStyle;
 
     editor_maxTokenizationLineLength: number;
-    init_required: boolean;
-
     metadata_symbols: string[];
     metadata_entrypoints: string[];
     metadata_types: string[];
@@ -213,7 +210,6 @@ export class COBOLSettings implements ICOBOLSettings {
     margin_colour: IMarginColour;
 
     constructor() {
-        this.init_required = true;
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;

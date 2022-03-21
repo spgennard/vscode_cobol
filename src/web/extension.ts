@@ -259,10 +259,8 @@ function checkForExtensionConflicts(): string {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
-
     const commands = vscode.commands;
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
     
     showExtensionInformation();
 
@@ -316,7 +314,7 @@ export function activate(context: vscode.ExtensionContext) {
         const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig);
 
         if (updated) {
-            VSCOBOLConfiguration.reinit();
+            VSCOBOLConfiguration.reinit(VSExternalFeatures);
         }
     }));
 

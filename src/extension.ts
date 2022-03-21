@@ -497,10 +497,8 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
     // setup
-    VSCOBOLConfiguration.externalFeatures = VSExternalFeatures;
-    VSCOBOLConfiguration.externalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
-
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
+    VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
 
     activateLogChannelAndPaths(true, settings, false);
 
@@ -580,7 +578,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
 
         if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 VSCOBOLSourceScanner.clearCOBOLCache();
                 activateLogChannelAndPaths(true, settings, true);
@@ -790,7 +788,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(clearGlobalCache);
 
     const onDidChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(async () => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit();
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
 
         activateLogChannelAndPaths(false, settings, true);
     });
