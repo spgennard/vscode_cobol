@@ -6,7 +6,6 @@ import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLFileUtils } from "./fileutils";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
@@ -82,8 +81,7 @@ export class COBOLUtils {
 
         // stash away current ws
         COBOLUtils.prevWorkSpaceUri = wsf;
-        const config = VSCOBOLConfiguration.get();
-        const globPattern = COBOLUtils.getProgramGlobPattern(config);
+        const globPattern = COBOLUtils.getProgramGlobPattern(settings);
 
         await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
             uris.forEach((uri: vscode.Uri) => {
@@ -231,9 +229,8 @@ export class COBOLUtils {
         return false;
     }
 
-    public static migrateCopybooksToWorkspace(): void {
+    public static migrateCopybooksToWorkspace(settings: ICOBOLSettings): void {
         const fileSearchDirectory = [];
-        const settings = VSCOBOLConfiguration.get();
         const extsdir = settings.copybookdirs;
 
         let updateCopybookdirs = false;
@@ -641,12 +638,12 @@ export class COBOLUtils {
 
     public static foldToken(
         externalFeatures: IExternalFeatures,
+        settings: ICOBOLSettings,
         activeEditor: vscode.TextEditor,
         action: FoldAction,
         foldstyle: FoldStyle,
         languageid: string): void {
         const uri = activeEditor.document.uri;
-        const settings = VSCOBOLConfiguration.get();
 
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {

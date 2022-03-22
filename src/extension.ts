@@ -1087,7 +1087,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings,vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
             }
         }
     });
@@ -1098,7 +1098,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.UpperCase, langid);
             }
         }
     });
@@ -1109,7 +1109,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase, langid);
             }
         }
     });
@@ -1120,7 +1120,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
             }
         }
     });
@@ -1131,7 +1131,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
             }
         }
     });
@@ -1142,7 +1142,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.CamelCase, langid);
             }
         }
     });
@@ -1153,7 +1153,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.LowerCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.LowerCase, langid);
             }
         }
     });
@@ -1164,7 +1164,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.UpperCase, langid);
             }
         }
     });
@@ -1175,7 +1175,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.CamelCase, langid);
             }
         }
     });
@@ -1215,7 +1215,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(extractSelectionToCopybookCommand);
 
     const migrateCopybooksToWorkspaceCommand = vscode.commands.registerCommand("cobolplugin.migrateCopybooksToWorkspace", () => {
-        COBOLUtils.migrateCopybooksToWorkspace();
+        COBOLUtils.migrateCopybooksToWorkspace(settings);
     });
     context.subscriptions.push(migrateCopybooksToWorkspaceCommand);
 
