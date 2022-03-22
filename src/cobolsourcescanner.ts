@@ -1761,7 +1761,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 break;
                             case "by":
                                 cbState.isReplacingBy = true;
-                                cbState.isReplacing = false;
                                 break;
                             default: {
                                 if (cbState.isIn && cbState.literal2.length === 0) {
@@ -1789,7 +1788,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     cbState.replaceLeft = "";
                                     break;
                                 }
-                                if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn) {
+                                if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn && !cbState.isReplacing) {
                                     cbState.copyBook = tcurrent;
                                     cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrentLower);
                                     cbState.startLineNumber = lineNumber;
