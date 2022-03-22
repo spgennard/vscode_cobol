@@ -18,7 +18,7 @@ import { CobolSourceCompletionItemProvider } from "../vscobolprovider";
 import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
-import { extensions, languages, workspace } from "vscode";
+import { commands, extensions, languages, workspace } from "vscode";
 import { VSCobolRenameProvider } from "../vsrenameprovider";
 import { VSPPCodeLens } from "../vsppcodelens";
 
@@ -261,7 +261,6 @@ function checkForExtensionConflicts(): string {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    const commands = vscode.commands;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
 
     showExtensionInformation();
