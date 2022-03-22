@@ -496,7 +496,6 @@ function activateLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, qui
 
 export async function activate(context: ExtensionContext): Promise<void> {
     currentContext = context;
-    // setup
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
 
@@ -647,38 +646,38 @@ export async function activate(context: ExtensionContext): Promise<void> {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     });
 
-    const move2pdCommand = commands.registerCommand("cobolplugin.move2pd", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
         COBOLProgramCommands.move2pd();
-    });
+    }));
 
-    const move2ddCommand = commands.registerCommand("cobolplugin.move2dd", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.move2dd", function () {
         COBOLProgramCommands.move2dd();
-    });
+    }));
 
-    const move2wsCommand = commands.registerCommand("cobolplugin.move2ws", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.move2ws", function () {
         COBOLProgramCommands.move2ws();
-    });
+    }));
 
-    const move2anyforwardCommand = commands.registerCommand("cobolplugin.move2anyforward", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.move2anyforward", function () {
         COBOLProgramCommands.move2anyforward();
-    });
+    }));
 
-    const move2anybackwardsCommand = commands.registerCommand("cobolplugin.move2anybackwards", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.move2anybackwards", function () {
         COBOLProgramCommands.move2anybackwards();
-    });
+    }));
 
-    const tabCommand = commands.registerCommand("cobolplugin.tab", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.tab", function () {
         TabUtils.processTabKey(true);
         // might be required for "copilot"
         // also might need to look @ editor.suggest.snippetsPreventQuickSuggestions
         //vscode.commands.executeCommand("acceptSelectedSuggestion");
-    });
+    }));
 
-    const unTabCommand = commands.registerCommand("cobolplugin.revtab", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.revtab", function () {
         TabUtils.processTabKey(false);
-    });
+    }));
 
-    const commentLine = commands.registerCommand("cobolplugin.commentline", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.commentline", function () {
         if (window.activeTextEditor !== undefined) {
             const langid = window.activeTextEditor.document.languageId;
 
@@ -693,7 +692,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         }
 
         commands.executeCommand("editor.action.commentLine");
-    });
+    }));
 
     const changeSourceFormat = commands.registerCommand("cobolplugin.change_source_format", function () {
         // margindecorations.changeSourceFormat();
@@ -845,15 +844,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
 
-    context.subscriptions.push(move2pdCommand);
-    context.subscriptions.push(move2ddCommand);
-    context.subscriptions.push(move2wsCommand);
-    context.subscriptions.push(move2anyforwardCommand);
-    context.subscriptions.push(move2anybackwardsCommand);
-    context.subscriptions.push(tabCommand);
-    context.subscriptions.push(unTabCommand);
-    context.subscriptions.push(commentLine);
-
     context.subscriptions.push(changeSourceFormat);
 
     context.subscriptions.push(changeLanguageToAcu);
@@ -909,7 +899,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const snippetProvider = SnippetCompletionItemProvider.Default.reInitCallMap(settings);
     const snippetProviderDisposible = languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), snippetProvider);
     context.subscriptions.push(snippetProviderDisposible);
-
 
     if (settings.outline) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
@@ -1087,7 +1076,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings,vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
             }
         }
     });
@@ -1283,7 +1272,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         COBOLUtils.leftAdjustLine();
     });
     context.subscriptions.push(leftAdjustLineCommand);
-
 
     const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
         COBOLUtils.transposeSelection(textEditor, edit);

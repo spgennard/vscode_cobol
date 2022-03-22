@@ -20,8 +20,9 @@ import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
 import { extensions, languages, workspace } from "vscode";
 import { VSCobolRenameProvider } from "../vsrenameprovider";
+import { VSPPCodeLens } from "../vsppcodelens";
 
-function showExtensionInformation():void {
+function showExtensionInformation(): void {
     const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
 
     if (thisExtension !== undefined) {
@@ -262,7 +263,7 @@ function checkForExtensionConflicts(): string {
 export function activate(context: vscode.ExtensionContext) {
     const commands = vscode.commands;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
-    
+
     showExtensionInformation();
 
     const checkForExtensionConflictsMessage = checkForExtensionConflicts();
@@ -311,6 +312,13 @@ export function activate(context: vscode.ExtensionContext) {
         throw new Error("Unable to activate extension due to conflicts");
     }
 
+    // re-init if something gets installed or removed
+    const onExtChange = vscode.extensions.onDidChange(() => {
+        // activateLogChannelAndPaths(true, settings, false);
+        VSLogger.logMessage("extensions changed");
+    });
+    context.subscriptions.push(onExtChange);
+
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
         const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig);
 
@@ -356,9 +364,11 @@ export function activate(context: vscode.ExtensionContext) {
     const cobolSelectors = VSExtensionUtils.getAllCobolSelectors(settings);
 
     try {
-        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(cobolSelectors, new CobolSymbolInformationProvider()));
-    } catch(e) {
-        VSExternalFeatures.logException("during registerDocumentSymbolProvider",e as Error);
+        if (settings.outline) {
+            context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(cobolSelectors, new CobolSymbolInformationProvider()));
+        }
+    } catch (e) {
+        VSExternalFeatures.logException("during registerDocumentSymbolProvider", e as Error);
     }
 
     const onDidCloseTextDocumentHandler = vscode.workspace.onDidCloseTextDocument(async (doc: vscode.TextDocument) => {
@@ -410,7 +420,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
     context.subscriptions.push(sourcedefProvider);
-    
+
     const keywordProvider = new KeywordAutocompleteCompletionItemProvider(true);
     const keywordProviderDisposible = vscode.languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
@@ -418,7 +428,6 @@ export function activate(context: vscode.ExtensionContext) {
     const cobolProvider = new CobolSourceCompletionItemProvider(settings, VSExternalFeatures);
     const cobolProviderDisposible = vscode.languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
-
 
     const removeAllCommentsCommand = vscode.commands.registerCommand("cobolplugin.removeAllComments", () => {
         if (vscode.window.activeTextEditor) {
@@ -452,13 +461,13 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
     context.subscriptions.push(removeColumnNumbersCommand);
-    
+
     const makeKeywordsLowercaseCommands = vscode.commands.registerCommand("cobolplugin.makeKeywordsLowercase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures,settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
             }
         }
     });
@@ -480,7 +489,7 @@ export function activate(context: vscode.ExtensionContext) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings,vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase, langid);
             }
         }
     });
@@ -594,6 +603,14 @@ export function activate(context: vscode.ExtensionContext) {
     const provider = VSSemanticProvider.provider();
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings), provider, VSSemanticProvider.getLegend());
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const actionCodelens = commands.registerCommand("cobolplugin.ppcodelenaction", (args: string) => {
+        VSPPCodeLens.actionCodeLens(args);
+    });
+    context.subscriptions.push(actionCodelens);
+    const codelensProvider = new VSPPCodeLens();
+    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings), codelensProvider);
+
     const indentToCursorCommand = commands.registerCommand("cobolplugin.indentToCursor", () => {
         COBOLUtils.indentToCursor();
     });
@@ -603,7 +620,7 @@ export function activate(context: vscode.ExtensionContext) {
         COBOLUtils.leftAdjustLine();
     });
     context.subscriptions.push(leftAdjustLineCommand);
-  
+
     const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
         COBOLUtils.transposeSelection(textEditor, edit);
     });
@@ -665,7 +682,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(enforceFileExtensions);
 
     const renameProvider = new VSCobolRenameProvider();
-    const renameProviderDisposable =languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
+    const renameProviderDisposable = languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
     context.subscriptions.push(renameProviderDisposable);
 
 }
