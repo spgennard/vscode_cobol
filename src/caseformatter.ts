@@ -4,12 +4,17 @@ import * as vscode from "vscode";
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult, OnTypeFormattingEditProvider } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { formatOnReturn, ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSExtensionUtils } from "./vsextutis";
 
 export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
+
+    private settings: ICOBOLSettings;
+
+    public constructor(settings: ICOBOLSettings) {
+        this.settings = settings;
+    }
 
     private convertLine(line: string, foldStyle: FoldStyle, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
         const oldText = line;
@@ -26,14 +31,13 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
             return;
         }
 
-        const settings = VSCOBOLConfiguration.get();
-        if (settings.format_on_return === formatOnReturn.Off) {
+        if (this.settings.format_on_return === formatOnReturn.Off) {
             return;
         }
 
         const langid = document.languageId;
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.settings);
         if (current === undefined) {
             return;
         }
@@ -42,15 +46,15 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
         if (line) {
             const oldText = line.text;
             let newText = "";
-            switch (settings.format_on_return) {
+            switch (this.settings.format_on_return) {
                 case formatOnReturn.CamelCase:
-                    newText = this.convertLine(oldText, FoldStyle.CamelCase, current, settings.format_constants_to_uppercase, langid);
+                    newText = this.convertLine(oldText, FoldStyle.CamelCase, current, this.settings.format_constants_to_uppercase, langid);
                     break;
                 case formatOnReturn.UpperCase:
-                    newText = this.convertLine(oldText, FoldStyle.UpperCase, current, settings.format_constants_to_uppercase, langid);
+                    newText = this.convertLine(oldText, FoldStyle.UpperCase, current, this.settings.format_constants_to_uppercase, langid);
                     break;
                 case formatOnReturn.LowerCase:
-                    newText = this.convertLine(oldText, FoldStyle.LowerCase, current, settings.format_constants_to_uppercase, langid);
+                    newText = this.convertLine(oldText, FoldStyle.LowerCase, current, this.settings.format_constants_to_uppercase, langid);
                     break;
             }
 
@@ -69,7 +73,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
     static register(settings: ICOBOLSettings): any {
         const langPlusSchemas = VSExtensionUtils.getAllCobolSelectors(settings);
 
-        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLCaseFormatter(), "\n");
+        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLCaseFormatter(settings), "\n");
 
     }
 }
