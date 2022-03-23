@@ -61,8 +61,6 @@
     "onCommand:cobolplugin.revtab",
     "onCommand:cobolplugin.change_lang_to_acu",
     "onCommand:cobolplugin.change_lang_to_cobol",
-    "onCommand:cobolplugin.change_source_format",
-    "onCommand:cobolplugin.checkWorkspaceForMissingCopybookDirs",
     "onCommand:cobolplugin.mfurunMenu",
     "onCommand:cobolplugin.removeAllComments",
     "onCommand:cobolplugin.removeIdentificationArea",
@@ -1385,8 +1383,12 @@
       {
         "command": "cobolplugin.change_lang_to_acu",
         "category": "COBOL",
-        "title": "Select ACUCOBOL-GT language",
-        "enablement": "!isWeb"
+        "title": "Select ACUCOBOL-GT language"
+      },
+      {
+        "command": "cobolplugin.change_lang_to_cobol",
+        "category": "COBOL",
+        "title": "Select COBOL language"
       },
       {
         "command": "cobolplugin.clearGlobalCache",
@@ -1511,12 +1513,6 @@
         "command": "cobolplugin.showCOBOLChannel",
         "category": "COBOL",
         "title": "Show COBOL Channel"
-      },
-      {
-        "command": "cobolplugin.migrateProblemMatchers",
-        "category": "COBOL",
-        "enablement": "!isWeb && isWorkspaceTrusted && editorTextFocus",
-        "title": "Migrate task to Micro Focus"
       },
       {
         "command": "cobolplugin.indentToCursor",
@@ -1730,7 +1726,13 @@
       {
         "key": "alt+shift+a",
         "command": "cobolplugin.change_lang_to_acu",
-        "when": "!isWeb && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
+      },
+
+      {
+        "key": "alt+shift+c",
+        "command": "cobolplugin.change_lang_to_cobol",
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+right",

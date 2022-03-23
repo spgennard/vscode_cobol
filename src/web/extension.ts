@@ -6,8 +6,6 @@ import { ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../vssymbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
-import { COBOLProgramCommands } from "../cobolprogram";
-import { TabUtils } from "../tabstopper";
 import { VSCOBOLSourceScanner } from "../vscobolscanner";
 import { vsMarginHandler } from "../margindecorations";
 import { commentUtils } from "../commenter";
@@ -15,12 +13,13 @@ import { COBOLOutputChannel, VSLogger } from "../vslogger";
 import { COBOLSourceDefinition } from "../vssourcedefinitionprovider";
 import { KeywordAutocompleteCompletionItemProvider } from "../vskeywordprovider";
 import { CobolSourceCompletionItemProvider } from "../vscobolprovider";
-import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "../cobolutils";
+import { COBOLUtils } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
 import { commands, extensions, languages, workspace } from "vscode";
 import { VSCobolRenameProvider } from "../vsrenameprovider";
 import { VSPPCodeLens } from "../vsppcodelens";
+import { activateCommonCommands } from "../vscommon_commands";
 
 function showExtensionInformation(): void {
     const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -311,6 +310,8 @@ export function activate(context: vscode.ExtensionContext) {
         throw new Error("Unable to activate extension due to conflicts");
     }
 
+    activateCommonCommands(context, settings);
+
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
         // activateLogChannelAndPaths(true, settings, false);
@@ -324,34 +325,6 @@ export function activate(context: vscode.ExtensionContext) {
         if (updated) {
             VSCOBOLConfiguration.reinit(VSExternalFeatures);
         }
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
-        COBOLProgramCommands.move2pd();
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.move2dd", function () {
-        COBOLProgramCommands.move2dd();
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.move2ws", function () {
-        COBOLProgramCommands.move2ws();
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.move2anyforward", function () {
-        COBOLProgramCommands.move2anyforward();
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.move2anybackwards", function () {
-        COBOLProgramCommands.move2anybackwards();
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.tab", function () {
-        TabUtils.processTabKey(true);
-    }));
-
-    context.subscriptions.push(commands.registerCommand("cobolplugin.revtab", function () {
-        TabUtils.processTabKey(false);
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.commentline", function () {
@@ -428,231 +401,12 @@ export function activate(context: vscode.ExtensionContext) {
     const cobolProviderDisposible = vscode.languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolProvider);
     context.subscriptions.push(cobolProviderDisposible);
 
-    const removeAllCommentsCommand = vscode.commands.registerCommand("cobolplugin.removeAllComments", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.RemoveComments(vscode.window.activeTextEditor);
-            }
-        }
-    });
-    context.subscriptions.push(removeAllCommentsCommand);
-
-    const removeIdentificationAreaCommand = vscode.commands.registerCommand("cobolplugin.removeIdentificationArea", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.RemoveIdentificationArea(vscode.window.activeTextEditor);
-            }
-        }
-    });
-    context.subscriptions.push(removeIdentificationAreaCommand);
-
-    const removeColumnNumbersCommand = vscode.commands.registerCommand("cobolplugin.removeColumnNumbers", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.removeColumnNumbers(vscode.window.activeTextEditor);
-            }
-        }
-    });
-    context.subscriptions.push(removeColumnNumbersCommand);
-
-    const makeKeywordsLowercaseCommands = vscode.commands.registerCommand("cobolplugin.makeKeywordsLowercase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makeKeywordsLowercaseCommands);
-
-    const makeKeywordsUppercaseCommands = vscode.commands.registerCommand("cobolplugin.makeKeywordsUppercase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.UpperCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makeKeywordsUppercaseCommands);
-
-    const makeKeywordsCamelCaseCommands = vscode.commands.registerCommand("cobolplugin.makeKeywordsCamelCase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makeKeywordsCamelCaseCommands);
-
-    const makeFieldsLowercaseCommand = vscode.commands.registerCommand("cobolplugin.makeFieldsLowercase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makeFieldsLowercaseCommand);
-
-    const makeFieldsUppercaseCommand = vscode.commands.registerCommand("cobolplugin.makeFieldsUppercase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makeFieldsUppercaseCommand);
-
-    const makeFieldsCamelCaseCommand = vscode.commands.registerCommand("cobolplugin.makeFieldsCamelCase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.CamelCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makeFieldsCamelCaseCommand);
-
-    const makePerformTargetsLowerCaseCommand = vscode.commands.registerCommand("cobolplugin.makePerformTargetsLowerCase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.LowerCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makePerformTargetsLowerCaseCommand);
-
-    const makePerformTargetsUpperCaseCommand = vscode.commands.registerCommand("cobolplugin.makePerformTargetsUpperCase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.UpperCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makePerformTargetsUpperCaseCommand);
-
-    const makePerformTargetsCamelCaseCommand = vscode.commands.registerCommand("cobolplugin.makePerformTargetsCamelCase", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.CamelCase, langid);
-            }
-        }
-    });
-    context.subscriptions.push(makePerformTargetsCamelCaseCommand);
-
-    const showCOBOLChannel = vscode.commands.registerCommand("cobolplugin.showCOBOLChannel", () => {
-        VSLogger.logChannelSetPreserveFocus(true);
-    });
-    context.subscriptions.push(showCOBOLChannel);
-
-    const resequenceColumnNumbersCommands = vscode.commands.registerCommand("cobolplugin.resequenceColumnNumbers", () => {
-        if (vscode.window.activeTextEditor) {
-            const langid = vscode.window.activeTextEditor.document.languageId;
-
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-
-                vscode.window.showInputBox({
-                    prompt: "Enter start line number and increment",
-                    validateInput: (text: string): string | undefined => {
-                        if (!text || text.indexOf(" ") === -1) {
-                            return "You must enter two spaced delimited numbers (start increment)";
-                        } else {
-                            return undefined;
-                        }
-                    }
-                }).then(value => {
-                    // leave early
-                    if (value === undefined) {
-                        return;
-                    }
-                    const values: string[] = value.split(" ");
-                    const startValue: number = Number.parseInt(values[0], 10);
-                    const incrementValue: number = Number.parseInt(values[1], 10);
-                    if (startValue >= 0 && incrementValue >= 1) {
-                        COBOLUtils.resequenceColumnNumbers(vscode.window.activeTextEditor, startValue, incrementValue);
-                    } else {
-                        vscode.window.showErrorMessage("Sorry invalid re-sequence given");
-                    }
-                });
-            }
-        }
-    });
-    context.subscriptions.push(resequenceColumnNumbersCommands);
-
     const provider = VSSemanticProvider.provider();
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings), provider, VSSemanticProvider.getLegend());
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const actionCodelens = commands.registerCommand("cobolplugin.ppcodelenaction", (args: string) => {
-        VSPPCodeLens.actionCodeLens(args);
-    });
-    context.subscriptions.push(actionCodelens);
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings), codelensProvider);
-
-    const indentToCursorCommand = commands.registerCommand("cobolplugin.indentToCursor", () => {
-        COBOLUtils.indentToCursor();
-    });
-    context.subscriptions.push(indentToCursorCommand);
-
-    const leftAdjustLineCommand = commands.registerCommand("cobolplugin.leftAdjustLine", () => {
-        COBOLUtils.leftAdjustLine();
-    });
-    context.subscriptions.push(leftAdjustLineCommand);
-
-    const transposeCommand = vscode.commands.registerTextEditorCommand("cobolplugin.transposeSelection", (textEditor, edit) => {
-        COBOLUtils.transposeSelection(textEditor, edit);
-    });
-    context.subscriptions.push(transposeCommand);
-
-    const alignStorageFirst = vscode.commands.registerCommand("cobolplugin.alignStorageFirst", () => {
-        COBOLUtils.alignStorage(AlignStyle.First);
-    });
-    context.subscriptions.push(alignStorageFirst);
-
-    const alignStorageLeft = vscode.commands.registerCommand("cobolplugin.alignStorageLeft", () => {
-        COBOLUtils.alignStorage(AlignStyle.Left);
-    });
-    context.subscriptions.push(alignStorageLeft);
-
-    const alignStorageCenters = vscode.commands.registerCommand("cobolplugin.alignStorageCenter", () => {
-        COBOLUtils.alignStorage(AlignStyle.Center);
-    });
-    context.subscriptions.push(alignStorageCenters);
-
-    const alignStorageRight = vscode.commands.registerCommand("cobolplugin.alignStorageRight", () => {
-        COBOLUtils.alignStorage(AlignStyle.Right);
-    });
-    context.subscriptions.push(alignStorageRight);
-    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
-
-    const padTo72 = vscode.commands.registerCommand("cobolplugin.padTo72", () => {
-        COBOLUtils.padTo72();
-    });
-    context.subscriptions.push(padTo72);
-
-    vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
-
+    
     vscode.window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;
@@ -673,17 +427,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     });
 
-    const enforceFileExtensions = vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
-        if (vscode.window.activeTextEditor) {
-            COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true);
-        }
-    });
-    context.subscriptions.push(enforceFileExtensions);
-
     const renameProvider = new VSCobolRenameProvider();
     const renameProviderDisposable = languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
     context.subscriptions.push(renameProviderDisposable);
-
 }
 
 // this method is called when your extension is deactivated
