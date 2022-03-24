@@ -9,11 +9,7 @@ import { VSLogger } from "./vslogger";
 
 export class ColourTagHandler {
 
-    public setupTags(configElement: string,tags: Map<string, TextEditorDecorationType>,
-        color:ThemeColor| string | undefined,
-        backgroundColor:ThemeColor| string | undefined,
-        textDecoration: string|undefined
-        ): void {
+    public setupTags(configElement: string,tags: Map<string, TextEditorDecorationType>): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const items = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get(configElement) as any;
         if (items === undefined) {
@@ -25,18 +21,6 @@ export class ColourTagHandler {
         for (const item of items) {
             try {
                 const options: DecorationRenderOptions = {};
-
-                if (color !== undefined) {
-                    options.color = color;
-                }
-
-                if (backgroundColor !== undefined) {
-                    options.backgroundColor = backgroundColor;
-                }
-
-                if (textDecoration !== undefined) {
-                    options.textDecoration = textDecoration;
-                }
 
                 if (item.color) {
                     options.color = item.color;
@@ -94,7 +78,7 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
     }
 
     public setupTags() {
-        super.setupTags("comments_tags",this.tags, undefined, undefined, undefined);
+        super.setupTags("comments_tags",this.tags);
     }
  
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

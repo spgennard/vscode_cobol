@@ -32,12 +32,6 @@ export interface IEditorMarginFiles {
     sourceformat: ESourceFormat;
 }
 
-export interface IMarginColour {
-    color: string;
-    backgroundColor: string;
-    textDecoration: string;
-}
-
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_scan_line_limit: number;
@@ -120,8 +114,6 @@ export interface ICOBOLSettings {
     snippets: boolean;
 
     enable_columns_tags: boolean;
-
-    margin_colour: IMarginColour;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -207,8 +199,6 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_columns_tags: boolean;
 
-    margin_colour: IMarginColour;
-
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -278,10 +268,5 @@ export class COBOLSettings implements ICOBOLSettings {
         this.snippets = false;
         this.intellisense_style = intellisenseStyle.Unchanged;
         this.enable_columns_tags = false;
-        this.margin_colour = {
-            "color": "editorLineNumber.foreground",
-            "backgroundColor": "editor.background",
-            "textDecoration": "solid"
-        };
     }
 }

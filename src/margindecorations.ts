@@ -9,10 +9,23 @@ import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { ColourTagHandler } from "./vscolourcomments";
-import { ICOBOLSettings, IMarginColour } from "./iconfiguration";
 
-
- 
+const defaultTrailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
+    light: {
+        // backgroundColor: "rgba(255,0,0,1)",
+        // color: "rgba(0,0,0,1)",
+        color: new ThemeColor("editorLineNumber.foreground"),
+        backgroundColor: new ThemeColor("editor.background"),
+        textDecoration: "solid"
+    },
+    dark: {
+        // backgroundColor: "rgba(255,0,0,1)",
+        // color: "rgba(0,0,0,1)"
+        color: new ThemeColor("editorLineNumber.foreground"),
+        backgroundColor: new ThemeColor("editor.background"),
+        textDecoration: "solid"
+    }
+});
 
 export class VSmargindecorations extends ColourTagHandler {
 
@@ -24,13 +37,7 @@ export class VSmargindecorations extends ColourTagHandler {
     }
 
     public setupTags():void {
-        const settings = VSCOBOLConfiguration.get();
-        const defColour: IMarginColour = settings.margin_colour
-        super.setupTags("columns_tags", this.tags,
-            this.parseColor(defColour.color),
-            this.parseColor(defColour.backgroundColor),
-            defColour.textDecoration
-        );
+        super.setupTags("columns_tags", this.tags);
     }
 
     private isEnabledViaWorkspace4jcl(): boolean {
@@ -62,34 +69,6 @@ export class VSmargindecorations extends ColourTagHandler {
         activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
     }
 
-    private parseColor(item: string) : ThemeColor| string {
-        if (item.startsWith("#")) {
-            return item;
-        }
-        if (item.startsWith("rgba(")) {
-            return item;
-        }
-
-        return new ThemeColor(item);
-    }
-
-    private getDdefaultTrailingSpacesDecoration(settings: ICOBOLSettings):TextEditorDecorationType {
-        const defColour: IMarginColour = settings.margin_colour;
-
-        return window.createTextEditorDecorationType({
-            light: {
-                color: this.parseColor(defColour.color),
-                backgroundColor: this.parseColor(defColour.backgroundColor),
-                textDecoration: defColour.textDecoration
-            },
-            dark: {
-                color: this.parseColor(defColour.color),
-                backgroundColor: this.parseColor(defColour.backgroundColor),
-                textDecoration: defColour.textDecoration
-            }
-        });
-    }
-    
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public async updateDecorations(activeTextEditor: TextEditor | undefined) {
         if (!activeTextEditor) {
@@ -99,7 +78,6 @@ export class VSmargindecorations extends ColourTagHandler {
         const doc: TextDocument = activeTextEditor.document;
         const defaultDecorationOptions: DecorationOptions[] = [];
         const configHandler = VSCOBOLConfiguration.get();
-        const defaultTrailingSpacesDecoration = this.getDdefaultTrailingSpacesDecoration(configHandler)
         const textLanguage: TextLanguage = VSExtensionUtils.isSupportedLanguage(doc);
 
         if (textLanguage === TextLanguage.Unknown) {
