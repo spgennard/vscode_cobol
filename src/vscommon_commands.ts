@@ -263,4 +263,16 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true);
         }
     }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionToCOBOLHEX", () => {
+        COBOLUtils.selectionToHEX(true);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionToHEX", () => {
+        COBOLUtils.selectionToHEX(false);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionHEXToASCII", () => {
+        COBOLUtils.selectionHEXToASCII();
+    }));
 }

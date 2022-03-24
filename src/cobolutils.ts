@@ -800,7 +800,7 @@ export class COBOLUtils {
     public static enforceFileExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean) {
         // const fileConfig = vscode.workspace
         const filesConfig = vscode.workspace.getConfiguration("files");
-        
+
         const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("associations") ?? {} as { [key: string]: string }
 
         const fileAssocMap = new Map<string, string>();
@@ -838,9 +838,9 @@ export class COBOLUtils {
 
         if (updateRequired) {
             if (VSWorkspaceFolders.get() === undefined) {
-                filesConfig.update("associations", filesAssociationsConfig,vscode.ConfigurationTarget.Global);
+                filesConfig.update("associations", filesAssociationsConfig, vscode.ConfigurationTarget.Global);
             } else {
-                filesConfig.update("associations", filesAssociationsConfig,vscode.ConfigurationTarget.Workspace);
+                filesConfig.update("associations", filesAssociationsConfig, vscode.ConfigurationTarget.Workspace);
             }
         }
     }
@@ -858,12 +858,76 @@ export class COBOLUtils {
                 edit.delete(ran);
 
                 const extraSpaces = line.length < 72 ? 72 - line.length : 0;
-                const replaceLine = line+" ".repeat(extraSpaces);
+                const replaceLine = line + " ".repeat(extraSpaces);
                 edit.insert(posStartOfLine, replaceLine);
             });
         }
 
     }
+
+    public static selectionToHEX(cobolify: boolean) {
+        if (vscode.window.activeTextEditor) {
+            const editor = vscode.window.activeTextEditor;
+
+            const document = editor.document;
+            const selection = editor.selection;
+
+            const ascii = document.getText(selection);
+            const hex = COBOLUtils.a2hex(ascii, cobolify);
+            editor.edit(editBuilder => {
+                editBuilder.replace(selection, hex);
+            });
+        }
+    }
+
+    public static selectionHEXToASCII() {
+        if (vscode.window.activeTextEditor) {
+            const editor = vscode.window.activeTextEditor;
+
+            const document = editor.document;
+            const selection = editor.selection;
+
+            const hex = document.getText(selection);
+            const ascii = COBOLUtils.hex2a(hex);
+            editor.edit(editBuilder => {
+                editBuilder.replace(selection, ascii);
+            });
+        }
+    }
+
+    private static a2hex(str: string, cobolify: boolean): string {
+        const arr = [];
+        for (let i = 0, l = str.length; i < l; i++) {
+            const hex = Number(str.charCodeAt(i)).toString(16).toUpperCase();
+            arr.push(hex);
+        }
+        const hexString = arr.join("");
+
+        return cobolify ? `X"${hexString}"` : hexString;
+    }
+
+    private static hex2a(hex: string): string {
+        if (hex.length >= 3) {
+            if (hex.charAt(0) === "X" || hex.charAt(0) === "x") {
+                if (hex.charAt(1) === "\"" || hex.charAt(1) === "'") {
+                    if (hex.endsWith("\"") || hex.endsWith("'")) {
+                        const hexlen = hex.length;
+                        hex = hex.substring(2, hexlen-1);
+                    }
+                }
+            }
+        }
+
+        if (!(hex.length % 2 === 0)) {
+            return hex;
+        }
+        let str = "";
+
+        for (let i = 0; i < hex.length; i += 2)
+            str += String.fromCharCode(parseInt(hex.substring(i, i + 2), 16));
+        return str;
+    }
+
     // public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
     //     const settings = VSCOBOLConfiguration.get();
 

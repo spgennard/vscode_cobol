@@ -1540,6 +1540,21 @@
         "command": "cobolplugin.enforceFileExtensions",
         "category": "COBOL",
         "title": "Enforce extension via file.assocations"
+      },
+      {
+        "command": "cobolplugin.selectionToCOBOLHEX",
+        "category": "COBOL",
+        "title": "Convert to HEX (X\"..\")"
+      },
+      {
+        "command": "cobolplugin.selectionToHEX",
+        "category": "COBOL",
+        "title": "Convert to HEX"
+      },
+      {
+        "command": "cobolplugin.selectionHEXToASCII",
+        "category": "COBOL",
+        "title": "Convert HEX to ASCII"
       }
     ],
     "menus": {
