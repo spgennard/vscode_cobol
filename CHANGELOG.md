@@ -1,6 +1,20 @@
 # CHANGELOG
 
-* 42a14b2 (HEAD -> main, tag: 8.3.21, origin/main) move external configs inline and protect against too early use of external when isDirectory is used via a config (to review)
+* 31abde2 (origin/main) Remove margin.color support, as it not working as expected #315
+* 40172a1 move "common" command to seperate file
+* ec7b8af start to simplify it
+* 10a0c70 refactor
+* d72b6c4 add missed param
+* 9bee4f0 drop another .get()
+* eba9a5d remove a VSConfig.get()
+* 394d6ec fix inclusion of bad copybook in the outline view when replacing is used
+* 326dcee replace dep methods
+* 45ec309 add two more command to web variant
+* d45115d replace .substr with .substring
+* 0e56f49 refactor
+* 8a83a63 update keywords
+* f8fb559 (tag: 8.3.21) Update
+* 42a14b2 move external configs inline and protect against too early use of external when isDirectory is used via a config (to review)
 * 36088cc (tag: 8.3.20) Update
 * e14edcb fix typo
 * a2a06f6 partial sync
