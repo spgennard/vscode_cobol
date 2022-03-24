@@ -121,15 +121,15 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
             return;
         }
 
+        const configHandler = VSCOBOLConfiguration.get();
+        if (!configHandler.enable_comment_tags) {
+            return;
+        }
+
         // get rid of all decorations
         const decorationOptions: DecorationOptions[] = [];
         for (const [, dec] of this.tags) {
             activeTextEditor.setDecorations(dec, decorationOptions);
-        }
-
-        const configHandler = VSCOBOLConfiguration.get();
-        if (!configHandler.enable_comment_tags) {
-            return;
         }
 
         const doc: TextDocument = activeTextEditor.document;
