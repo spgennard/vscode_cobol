@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 31abde2 (origin/main) Remove margin.color support, as it not working as expected #315
+* f1d5e9b only reset decls if enabled
+* 27d491c (tag: 8.3.24) Update
+* 31abde2 Remove margin.color support, as it not working as expected #315
 * 40172a1 move "common" command to seperate file
 * ec7b8af start to simplify it
 * 10a0c70 refactor
