@@ -1790,7 +1790,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 }
                                 if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn && !cbState.isReplacing) {
                                     cbState.copyBook = tcurrent;
-                                    cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrentLower);
+                                    cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrent);
                                     cbState.startLineNumber = lineNumber;
                                     cbState.startCol = state.inCopyStartColumn; // stored when 'copy' is seen
                                     cbState.line = line;
@@ -1827,7 +1827,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const prevPlusCurrent = token.prevToken + " " + current;
 
                 if (currentLower === "exec") {
-                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, prevToken, "", state.currentDivision);
+                    const nextSTokenOrBlank = token.nextSTokenOrBlank().currentToken;
+                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, nextSTokenOrBlank, `EXEC ${nextSTokenOrBlank}`, state.currentDivision);
                     continue;
                 }
 
