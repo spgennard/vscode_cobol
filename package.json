@@ -1694,22 +1694,27 @@
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "tab",
         "command": "selectNextSuggestion",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetVisible && suggestWidgetMultipleSuggestions"
+        "when": "suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
+      },
+      {
+        "key": "tab",
+        "command": "editor.action.inlineSuggest.commit",
+        "when": "inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorTabMovesFocus && !inlineSuggestionHasIndentation"
       },
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "shift+tab",
         "command": "selectPrevSuggestion",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetVisible && suggestWidgetMultipleSuggestions"
+        "when": "suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "ctrl+/",
@@ -1721,7 +1726,6 @@
         "command": "cobolplugin.change_lang_to_acu",
         "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
-
       {
         "key": "alt+shift+c",
         "command": "cobolplugin.change_lang_to_cobol",
