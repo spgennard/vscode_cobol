@@ -895,7 +895,7 @@ export class COBOLUtils {
         }
     }
 
-    private static a2hex(str: string, cobolify: boolean): string {
+    public static a2hex(str: string, cobolify: boolean): string {
         const arr = [];
         for (let i = 0, l = str.length; i < l; i++) {
             const hex = Number(str.charCodeAt(i)).toString(16).toUpperCase();
@@ -906,7 +906,7 @@ export class COBOLUtils {
         return cobolify ? `X"${hexString}"` : hexString;
     }
 
-    private static hex2a(hex: string): string {
+    public static hex2a(hex: string): string {
         if (hex.length >= 3) {
             if (hex.charAt(0) === "X" || hex.charAt(0) === "x") {
                 if (hex.charAt(1) === "\"" || hex.charAt(1) === "'") {

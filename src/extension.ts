@@ -58,6 +58,8 @@ const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
+const hexRegEx = new RegExp("[xX][\"'][0-9A-F]*[\"']");
+const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
 function openChangeLog(currentContext: ExtensionContext): void {
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -489,7 +491,7 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
     }
 }
 
-function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): void{
+function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): void {
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.clearGlobalCache", function () {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
@@ -546,7 +548,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             (enableAnsiColor ? " -dc:ansi " : " ") +
             fileUri.fsPath);
     }));
-        
+
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.migrateCopybooksToWorkspace", () => {
         COBOLUtils.migrateCopybooksToWorkspace(settings);
     }));
@@ -630,7 +632,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     activateDesktop(context, settings);
     activateCommonCommands(context, settings);
-    
+
     // re-init if something gets installed or removed
     context.subscriptions.push(vscode.extensions.onDidChange(() => {
         setupLogChannelAndPaths(true, settings, false);
@@ -889,19 +891,29 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
-            if (settings.hover_show_known_api === hoverApi.Off) {
-                return undefined;
-            }
-            const txt = document.getText(document.getWordRangeAtPosition(position));
-            const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
-            if (txtTarget !== undefined) {
-                let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
-                if (settings.hover_show_known_api === hoverApi.Short) {
-                    example = "";
+
+
+            if (settings.hover_show_known_api !== hoverApi.Off) {
+                const txt = document.getText(document.getWordRangeAtPosition(position,wordRegEx));
+                const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
+                if (txtTarget !== undefined) {
+                    let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
+                    if (settings.hover_show_known_api === hoverApi.Short) {
+                        example = "";
+                    }
+                    return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
                 }
-                return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
             }
 
+            const txt = document.getText(document.getWordRangeAtPosition(position,hexRegEx));
+            if (txt.toLowerCase().startsWith("x\"")) {
+                const ascii=COBOLUtils.hex2a(txt);
+                if (ascii.length !== 0) {
+                    return new vscode.Hover(`ASCII=${ascii}`);
+                }
+            }
+
+            VSLogger.logMessage(`Hover : [${txt}]`);
             return undefined;
         }
     }));

@@ -1017,7 +1017,6 @@ class SnippetHelper {
 }
 
 export class KeywordSnippetProvider extends SnippetHelper {
-
     public static Default: KeywordSnippetProvider = new KeywordSnippetProvider()
 
     private keywordTargets = new Map<string, CompletionItem[]>();
@@ -1052,6 +1051,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     private allCallTargets = new Map<string, CompletionItem[]>();
     private functionTargets = new Map<string, CompletionItem[]>();
+    private wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
     public reInitCallMap(settings: ICOBOLSettings): SnippetCompletionItemProvider {
         this.allCallTargets.clear();
@@ -1186,7 +1186,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         if (qcp === undefined) {
             return [];
         }
-        const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2)); // 1 space -1
+        const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2),this.wordRegEx); // 1 space -1
         if (!wordRange) return [];
 
         const previousCharacterPosition = new Position(position.line, position.character - 1);
@@ -1216,7 +1216,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
                 const pre2Word = document.getText(wordRangeForCall);
 
                 if (pre2Word !== undefined) {
-                    switch (pre2Word) {
+                    switch (pre2Word.toLowerCase()) {
                         case "call":
                             this.getExactCallSnipetOrPartialSnippet(position, position_plus1, previousWord, currentlineText, position_plus1_char, snippets);
                             break;
