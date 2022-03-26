@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* d0ad3aa add a simple hex to ascii hover and fix a case search for a api snippet
+* 0099705 add config to allow 'tab' behavour to turn off (if required)
+* 3cd7efc add support for using tab with inline snippets (github copilot)
+* e09658d preserve case on copybook stash away type "exec", maybe useful later
+* 7359095 add utils for selection to hex & back to ascii
+* 705386a (tag: 8.3.25) Update
 * f1d5e9b only reset decls if enabled
 * 27d491c (tag: 8.3.24) Update
 * 31abde2 Remove margin.color support, as it not working as expected #315
