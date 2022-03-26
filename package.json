@@ -868,6 +868,16 @@
               "italic": false
             }
           ]
+        },
+        "coboleditor.enable_tab_next_or_previous": {
+          "type": "boolean",
+          "description": "When enabled, allow tab to be used for 'next'/'previous' suggestions",
+          "default": true
+        },
+        "coboleditor.enable_tab_inline": {
+          "type": "boolean",
+          "description": "When enabled, allow tab to be used for inline suggestions",
+          "default": true
         }
       }
     },
@@ -1699,12 +1709,12 @@
       {
         "key": "tab",
         "command": "selectNextSuggestion",
-        "when": "suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
+        "when": "config.coboleditor.enable_tab_next_or_previous && suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "tab",
         "command": "editor.action.inlineSuggest.commit",
-        "when": "inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorTabMovesFocus && !inlineSuggestionHasIndentation"
+        "when": "config.coboleditor.enable_tab_inline && inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !editorTabMovesFocus && !inlineSuggestionHasIndentation"
       },
       {
         "key": "shift+tab",
@@ -1714,7 +1724,7 @@
       {
         "key": "shift+tab",
         "command": "selectPrevSuggestion",
-        "when": "suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
+        "when": "config.coboleditor.enable_tab_next_or_previous && suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "ctrl+/",
