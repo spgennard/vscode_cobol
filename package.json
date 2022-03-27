@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.3.26",
+  "version": "8.3.27",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -877,6 +877,11 @@
         "coboleditor.enable_tab_inline": {
           "type": "boolean",
           "description": "When enabled, allow tab to be used for inline suggestions",
+          "default": true
+        },
+        "coboleditor.hover_show_encoded_literals" : {
+          "type": "boolean",
+          "description": "When enabled, decode hex literals when hover over them",
           "default": true
         }
       }
