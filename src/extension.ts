@@ -894,7 +894,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
             if (settings.hover_show_known_api !== hoverApi.Off) {
-                const txt = document.getText(document.getWordRangeAtPosition(position,wordRegEx));
+                const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
                 const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
                 if (txtTarget !== undefined) {
                     let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
@@ -905,19 +905,18 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 }
             }
 
-            const txt = document.getText(document.getWordRangeAtPosition(position,hexRegEx));
-            if (txt.toLowerCase().startsWith("x\"")) {
-                const ascii=COBOLUtils.hex2a(txt);
-                if (ascii.length !== 0) {
-                    return new vscode.Hover(`ASCII=${ascii}`);
+            if (settings.hover_show_encoded_literals) {
+                const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
+                if (txt.toLowerCase().startsWith("x\"")) {
+                    const ascii = COBOLUtils.hex2a(txt);
+                    if (ascii.length !== 0) {
+                        return new vscode.Hover(`ASCII=${ascii}`);
+                    }
                 }
             }
-
-            VSLogger.logMessage(`Hover : [${txt}]`);
             return undefined;
         }
     }));
-
     context.subscriptions.push(languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), new VSCobolRenameProvider()));
 
     const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {

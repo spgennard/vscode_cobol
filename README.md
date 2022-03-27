@@ -34,6 +34,7 @@ Some of the features this extension provides are:
   - Re-sequence column numbers
   - Optional xedit'ish key bindings
   - Align storage items
+  - Text to hex literals & reverse
 - Documentation for using development containers with Visual COBOL
 - and more..
 

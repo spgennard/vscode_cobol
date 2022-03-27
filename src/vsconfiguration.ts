@@ -104,6 +104,8 @@ export class VSCOBOLConfiguration {
 
         settings.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", settings.enable_columns_tags);
         
+        settings.hover_show_encoded_literals = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("hover_show_encoded_literals", settings.hover_show_encoded_literals);
+        
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }

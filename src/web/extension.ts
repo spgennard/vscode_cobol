@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { VSCOBOLConfiguration } from "../vsconfiguration";
-import { ICOBOLSettings } from "../iconfiguration";
+import { hoverApi, ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../vssymbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
@@ -16,10 +16,14 @@ import { CobolSourceCompletionItemProvider } from "../vscobolprovider";
 import { COBOLUtils } from "../cobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
-import { commands, extensions, languages, workspace } from "vscode";
+import { commands, extensions, languages, ProviderResult, workspace } from "vscode";
 import { VSCobolRenameProvider } from "../vsrenameprovider";
 import { VSPPCodeLens } from "../vsppcodelens";
 import { activateCommonCommands } from "../vscommon_commands";
+import { CallTarget, KnownAPIs } from "../keywords/cobolCallTargets";
+
+const hexRegEx = new RegExp("[xX][\"'][0-9A-F]*[\"']");
+const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
 function showExtensionInformation(): void {
     const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -426,6 +430,38 @@ export function activate(context: vscode.ExtensionContext) {
 
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     });
+
+        /* hover provider */
+        context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
+    
+    
+                if (settings.hover_show_known_api !== hoverApi.Off) {
+                    const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
+                    const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
+                    if (txtTarget !== undefined) {
+                        let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
+                        if (settings.hover_show_known_api === hoverApi.Short) {
+                            example = "";
+                        }
+                        return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
+                    }
+                }
+    
+                if (settings.hover_show_encoded_literals) {
+                    const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
+                    if (txt.toLowerCase().startsWith("x\"")) {
+                        const ascii = COBOLUtils.hex2a(txt);
+                        if (ascii.length !== 0) {
+                            return new vscode.Hover(`ASCII=${ascii}`);
+                        }
+                    }
+                }
+                return undefined;
+            }
+        }));
 
     const renameProvider = new VSCobolRenameProvider();
     const renameProviderDisposable = languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
