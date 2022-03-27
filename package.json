@@ -1601,6 +1601,10 @@
         {
           "submenu": "cobolplugin.selectionmenu",
           "group": "navigation_cobol"
+        },
+        {
+          "submenu": "cobolplugin.convertmenu",
+          "group": "navigation_cobol"
         }
       ],
       "cobolplugin.selectionmenu": [
@@ -1642,6 +1646,23 @@
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],
+        "cobolplugin.convertmenu": [
+          {
+            "command": "cobolplugin.selectionToCOBOLHEX",
+            "group": "convertcobol@1",
+            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+          },
+          {
+            "command": "cobolplugin.selectionToHEX",
+            "group": "convertcobol@1",
+            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+          },
+          {
+            "command": "cobolplugin.selectionHEXToASCII",
+            "group": "convertcobol@2",
+            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+          }
+      ],
       "view/item/context": [
         {
           "command": "cobolplugin.runCommand",
@@ -1668,6 +1689,10 @@
       {
         "id": "cobolplugin.selectionmenu",
         "label": "Extract Selection"
+      },
+      {
+        "id" : "cobolplugin.convertmenu",
+        "label": "Convert Selection"
       }
     ],
     "keybindings": [
