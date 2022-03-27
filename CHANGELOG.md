@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 1260dfb add config for hover support (hex)
+* 6b4b312 add menu for text conversion tools
+* c8ca459 (tag: 8.3.26) Update
 * d0ad3aa add a simple hex to ascii hover and fix a case search for a api snippet
 * 0099705 add config to allow 'tab' behavour to turn off (if required)
 * 3cd7efc add support for using tab with inline snippets (github copilot)
