@@ -204,7 +204,9 @@
             "ccp",
             "dds",
             "ss",
-            "wks"
+            "wks",
+            "inc",
+            "INC"
           ],
           "markdownDescription": "COBOL CopyBook file name extensions",
           "description": "COBOL CopyBook Extensions",

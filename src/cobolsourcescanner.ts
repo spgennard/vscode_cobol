@@ -1843,6 +1843,29 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 /* skip everything in between exec .. end-exec */
                 if (state.currentToken.tokenType === COBOLTokenStyle.Exec) {
+                    if (currentLower === 'include') {
+                        const sqlCopyBook = token.nextSTokenOrBlank().currentToken;
+                        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook);
+                        let insertInSection = this.copybookNestedInSection ? state.currentSection : state.currentDivision;
+                        if (insertInSection === COBOLToken.Null) {
+                            insertInSection = state.currentDivision;
+                        }
+                        const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, "EXEC SQL INCLUDE "+sqlCopyBook, insertInSection);
+                        if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
+                            const cbInfo = new copybookState();
+                            cbInfo.trimmedCopyBook = trimmedCopyBook;
+                            cbInfo.copyBook = sqlCopyBook;
+                            cbInfo.line = line;
+                            cbInfo.startLineNumber = lineNumber;
+                            cbInfo.endLineNumber = lineNumber;
+                            cbInfo.startCol = tcurrentCurrentCol;
+                            cbInfo.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
+                            cbInfo.fileName = fileName;
+                            const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
+                            this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
+                        }
+                    }
                     continue;
                 }
 
