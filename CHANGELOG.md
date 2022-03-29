@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* bb9a4a4 (HEAD -> main, tag: 8.3.29, origin/main) add some basic scanning for "exec sql include"
+* b38313c (tag: 8.3.27) Update
 * 1260dfb add config for hover support (hex)
 * 6b4b312 add menu for text conversion tools
 * c8ca459 (tag: 8.3.26) Update
