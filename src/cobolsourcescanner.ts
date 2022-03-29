@@ -1853,7 +1853,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (insertInSection === COBOLToken.Null) {
                             insertInSection = state.currentDivision;
                         }
-                        const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, "EXEC SQL INCLUDE "+sqlCopyBook, insertInSection);
+                        const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, "SQL INCLUDE "+sqlCopyBook, insertInSection);
                         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                             const cbInfo = new copybookState();
                             cbInfo.trimmedCopyBook = trimmedCopyBook;
