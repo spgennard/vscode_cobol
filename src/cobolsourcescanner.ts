@@ -702,6 +702,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     public scanAborted: boolean;
 
+    private currentExec = "";
     readonly COBOLKeywordDictionary: Map<string, string>;
 
 
@@ -1828,12 +1829,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 if (currentLower === "exec") {
                     const nextSTokenOrBlank = token.nextSTokenOrBlank().currentToken;
+                    this.currentExec = nextSTokenOrBlank;
                     state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, nextSTokenOrBlank, `EXEC ${nextSTokenOrBlank}`, state.currentDivision);
                     continue;
                 }
 
                 /* finish processing end-exec */
                 if (currentLower === "end-exec") {
+                    this.currentExec = "";
                     state.currentToken = COBOLToken.Null;
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = true;
@@ -1843,7 +1846,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 /* skip everything in between exec .. end-exec */
                 if (state.currentToken.tokenType === COBOLTokenStyle.Exec) {
-                    if (currentLower === 'include') {
+                    if (currentLower === 'include' && this.currentExec.toLowerCase() === "sql") {
                         const sqlCopyBook = token.nextSTokenOrBlank().currentToken;
                         const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook);
                         let insertInSection = this.copybookNestedInSection ? state.currentSection : state.currentDivision;
