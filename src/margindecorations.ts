@@ -96,27 +96,24 @@ export class VSmargindecorations extends ColourTagHandler {
         }
 
         const declsMap = new Map<string, DecorationOptions[]>();
-
-
-        if (configHandler.fileformat_strategy !== "always_fixed") {
-            const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
-            let sf: ESourceFormat = ESourceFormat.unknown;
-            if (gcp === undefined) {
-                const vsfile = new VSCodeSourceHandlerLite(doc);
-                sf = SourceFormat.get(vsfile, configHandler);
-            } else {
-                sf = gcp.sourceFormat;
-            }
-            // use the known file format from the scan itself
-            switch (sf) {
-                case ESourceFormat.free:
-                case ESourceFormat.variable:
-                case ESourceFormat.unknown:
-                case ESourceFormat.terminal:
-                    activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
-                    return;
-            }
+        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
+        let sf: ESourceFormat = ESourceFormat.unknown;
+        if (gcp === undefined) {
+            const vsfile = new VSCodeSourceHandlerLite(doc);
+            sf = SourceFormat.get(vsfile, configHandler);
+        } else {
+            sf = gcp.sourceFormat;
         }
+        // use the known file format from the scan itself
+        switch (sf) {
+            case ESourceFormat.free:
+            case ESourceFormat.variable:
+            case ESourceFormat.unknown:
+            case ESourceFormat.terminal:
+                activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
+                return;
+        }
+        
 
         const maxLineLength = configHandler.editor_maxTokenizationLineLength;
         const maxLines = doc.lineCount;

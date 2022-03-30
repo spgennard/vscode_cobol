@@ -2,7 +2,7 @@
 "use strict";
 
 import { workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi, intellisenseStyle } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 
@@ -24,7 +24,7 @@ export class VSCOBOLConfiguration {
         settings.tabstops = getTabStops();
         settings.linter = getBoolean("linter", false);
         settings.line_comment = getBoolean("line_comment", false);
-        settings.fileformat_strategy = getFileformatStrategy();
+        settings.fileformat_strategy = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<fileformatStrategy>("fileformat_strategy",fileformatStrategy.Normal);
         settings.enable_data_provider = getBoolean("enable_data_provider", true);
         settings.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
         settings.intellisense_item_limit = getIntellisense_item_limit();
@@ -202,18 +202,6 @@ function getIntellisense_item_limit(): number {
     }
     return itemLimit;
 }
-
-function getFileformatStrategy(): string {
-    const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
-    const fileStrat = editorConfig.get<string>("fileformat_strategy");
-
-    if (fileStrat === undefined || fileStrat === null) {
-        return "normal";
-    }
-
-    return fileStrat;
-}
-
 
 function isOutlineEnabled(): outlineFlag {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);

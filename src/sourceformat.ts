@@ -1,5 +1,5 @@
 import { ESourceFormat } from "./externalfeatures";
-import { ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
+import { fileformatStrategy, ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
 import { ISourceHandlerLite } from "./isourcehandler";
 import minimatch from "minimatch";
 
@@ -31,8 +31,9 @@ export class SourceFormat {
     public static get(doc: ISourceHandlerLite, config: ICOBOLSettings): ESourceFormat {
         const langid = doc.getLanguageId();
 
-        if (config.fileformat_strategy === "always_fixed") {
-            return ESourceFormat.fixed;
+        switch(config.fileformat_strategy) {
+            case fileformatStrategy.AlwaysFixed:  return ESourceFormat.fixed;
+            case fileformatStrategy.AlwaysVariable: return ESourceFormat.variable;
         }
 
         const filesFilter = config.editor_margin_files;

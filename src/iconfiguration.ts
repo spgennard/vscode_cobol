@@ -32,6 +32,12 @@ export interface IEditorMarginFiles {
     sourceformat: ESourceFormat;
 }
 
+export enum fileformatStrategy {
+    AlwaysFixed = "always_fixed",
+    AlwaysVariable = "always_variable",
+    Normal = "normal"
+}
+
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_scan_line_limit: number;
@@ -44,7 +50,7 @@ export interface ICOBOLSettings {
     tabstops: number[];
     linter: boolean;
     line_comment: boolean;
-    fileformat_strategy: string;
+    fileformat_strategy: fileformatStrategy;
     enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
     intellisense_item_limit: number;
@@ -130,7 +136,7 @@ export class COBOLSettings implements ICOBOLSettings {
     tabstops: number[];
     linter: boolean;
     line_comment: boolean;
-    fileformat_strategy: string;
+    fileformat_strategy: fileformatStrategy;
     enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
     intellisense_item_limit: number;
@@ -207,7 +213,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;
-        this.fileformat_strategy = "normal";
+        this.fileformat_strategy = fileformatStrategy.Normal;
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];
         this.copybookexts = [];

@@ -1846,7 +1846,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 /* skip everything in between exec .. end-exec */
                 if (state.currentToken.tokenType === COBOLTokenStyle.Exec) {
-                    if (currentLower === 'include' && this.currentExec.toLowerCase() === "sql") {
+                    if (currentLower === "include" && this.currentExec.toLowerCase() === "sql") {
                         const sqlCopyBook = token.nextSTokenOrBlank().currentToken;
                         const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook);
                         let insertInSection = this.copybookNestedInSection ? state.currentSection : state.currentDivision;

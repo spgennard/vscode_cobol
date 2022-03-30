@@ -286,14 +286,16 @@
         "coboleditor.fileformat_strategy": {
           "enum": [
             "always_fixed",
+            "always_variable",
             "normal"
           ],
           "default": "normal",
           "markdownDescription": "File format strategy",
-          "title": "always_fixed or normal",
+          "title": "always_fixed, always_variable or normal",
           "enumDescriptions": [
-            "Assume source code if fixed format",
-            "Determine source code format or configure it"
+            "Assume source code is fixed source format",
+            "Assume source code is variable source format",
+            "Determine source code format or configure it with fileformat"
           ]
         },
         "coboleditor.fileformat": {
