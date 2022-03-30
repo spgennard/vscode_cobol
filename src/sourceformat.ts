@@ -35,6 +35,18 @@ export class SourceFormat {
             return ESourceFormat.fixed;
         }
 
+        const filesFilter = config.editor_margin_files;
+        if (filesFilter.length >= 1) {
+            const docFilename: string = doc.getFilename();
+            for (let i = 0; i < filesFilter.length; i++) {
+                const filter: IEditorMarginFiles = filesFilter[i];
+
+                if (minimatch(docFilename, filter.pattern, { nocase: true })) {
+                    return ESourceFormat[filter.sourceformat];
+                }
+            }
+        }
+        
         let linesWithJustNumbers = 0;
         let linesWithIdenticalAreaB = 0;
         const maxLines = doc.getLineCount() > config.pre_scan_line_limit ? config.pre_scan_line_limit : doc.getLineCount();
@@ -147,17 +159,6 @@ export class SourceFormat {
             }
         }
 
-        const filesFilter = config.editor_margin_files;
-        if (filesFilter.length >= 1) {
-            const docFilename: string = doc.getFilename();
-            for (let i = 0; i < filesFilter.length; i++) {
-                const filter: IEditorMarginFiles = filesFilter[i];
-
-                if (minimatch(docFilename, filter.pattern, { nocase: true })) {
-                    return ESourceFormat[filter.sourceformat];
-                }
-            }
-        }
 
         return defFormat;
     }
