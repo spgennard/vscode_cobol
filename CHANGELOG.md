@@ -1,6 +1,12 @@
 # CHANGELOG
 
-* bb9a4a4 (HEAD -> main, tag: 8.3.29, origin/main) add some basic scanning for "exec sql include"
+* 7da1ca0 include prop to allow file format setting check to be done early or late
+* 1779b9c tweak fileformatStrategy and make it an enum
+* 46985ab allow file format settings to override sourceformat
+* ebf88dd remove "exec" on label
+* 3e45ee7 add check for "sql" exec for sql include
+* e66a600 (tag: 8.3.29) Update
+* bb9a4a4 add some basic scanning for "exec sql include"
 * b38313c (tag: 8.3.27) Update
 * 1260dfb add config for hover support (hex)
 * 6b4b312 add menu for text conversion tools
