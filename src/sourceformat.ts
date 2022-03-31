@@ -28,14 +28,7 @@ export class SourceFormat {
         return !isNaN(Number(value.toString()));
     }
 
-    public static get(doc: ISourceHandlerLite, config: ICOBOLSettings): ESourceFormat {
-        const langid = doc.getLanguageId();
-
-        switch(config.fileformat_strategy) {
-            case fileformatStrategy.AlwaysFixed:  return ESourceFormat.fixed;
-            case fileformatStrategy.AlwaysVariable: return ESourceFormat.variable;
-        }
-
+    private static getFileFormat(doc: ISourceHandlerLite, config: ICOBOLSettings): ESourceFormat | undefined {
         const filesFilter = config.editor_margin_files;
         if (filesFilter.length >= 1) {
             const docFilename: string = doc.getFilename();
@@ -47,7 +40,28 @@ export class SourceFormat {
                 }
             }
         }
-        
+
+        return undefined;
+    }
+
+    public static get(doc: ISourceHandlerLite, config: ICOBOLSettings): ESourceFormat {
+        const langid = doc.getLanguageId();
+
+        // check overrides..
+        switch (config.fileformat_strategy) {
+            case fileformatStrategy.AlwaysFixed: return ESourceFormat.fixed;
+            case fileformatStrategy.AlwaysVariable: return ESourceFormat.variable;
+        }
+
+        // check file based overrides..
+        if (config.check_file_format_before_file_scan) {
+            const fileFormat: ESourceFormat | undefined = SourceFormat.getFileFormat(doc, config);
+            if (fileFormat !== undefined) {
+                return fileFormat;
+            }
+        }
+
+        // check source for source format
         let linesWithJustNumbers = 0;
         let linesWithIdenticalAreaB = 0;
         const maxLines = doc.getLineCount() > config.pre_scan_line_limit ? config.pre_scan_line_limit : doc.getLineCount();
@@ -157,6 +171,14 @@ export class SourceFormat {
             //it might well be...
             if (linesWithJustNumbers > 7 || linesWithIdenticalAreaB > 7) {
                 return ESourceFormat.fixed;
+            }
+        }
+
+        // original code.. aka a late check
+        if (!config.check_file_format_before_file_scan) {
+            const fileFormat: ESourceFormat | undefined = SourceFormat.getFileFormat(doc, config);
+            if (fileFormat !== undefined) {
+                return fileFormat;
             }
         }
 

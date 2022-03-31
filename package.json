@@ -887,6 +887,11 @@
           "type": "boolean",
           "description": "When enabled, decode hex literals when hover over them",
           "default": true
+        },
+        "coboleditor.check_file_format_before_file_scan": {
+          "type": "boolean",
+          "description": "When enabled, process coboleditor.fileformat before scanning the file",
+          "default": true
         }
       }
     },

@@ -65,7 +65,7 @@ export class VSCOBOLConfiguration {
         settings.metadata_knowncopybooks = getmetadata_knowncopybooks(settings);
         settings.enable_semantic_token_provider = getBoolean("enable_semantic_token_provider", false);
         settings.enable_text_replacement = getBoolean("enable_text_replacement", false);
-        settings.editor_margin_files = getFixedFilenameConfiguration();
+        settings.editor_margin_files = getFileFormatConfiguration();
 
         settings.enable_source_scanner = getBoolean("enable_source_scanner", true);
 
@@ -106,6 +106,8 @@ export class VSCOBOLConfiguration {
         
         settings.hover_show_encoded_literals = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("hover_show_encoded_literals", settings.hover_show_encoded_literals);
         
+        settings.check_file_format_before_file_scan = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("check_file_format_before_file_scan", settings.check_file_format_before_file_scan);
+
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }
@@ -148,7 +150,7 @@ export class VSCOBOLConfiguration {
 }
 
 
-function getFixedFilenameConfiguration(): IEditorMarginFiles[] {
+function getFileFormatConfiguration(): IEditorMarginFiles[] {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
     const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
     if (files === undefined || files === null) {
