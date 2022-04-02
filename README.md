@@ -15,7 +15,7 @@ Some of the features this extension provides are:
   - Shortcuts/Commands for navigation to divisions
   - Fixed format margin support
   - Outline view/breadcrumb support
-  - Find all references
+  - Text based find all references
   - Peek definition
   - Copybook navigation
 - Intellisense support for keywords in lowercase, uppercase and camelcase
@@ -29,7 +29,7 @@ Some of the features this extension provides are:
   - Remove column numbers
   - Remove program identification area
   - Remove all comments
-  - Rename paragraphs/sections and variables
+  - Text based rename paragraphs/sections and variables
   - Make all keywords/fields/sections uppercased, lowercased or camelcased
   - Re-sequence column numbers
   - Optional xedit'ish key bindings

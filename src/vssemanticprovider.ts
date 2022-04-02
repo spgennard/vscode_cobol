@@ -52,7 +52,7 @@ export class VSSemanticProvider {
                 VSLogger.logException("SemanticProvider: sections", e as Error);
             }
         }
-        for (const [,token] of qcp.paragraphs) {
+        for (const [, token] of qcp.paragraphs) {
             try {
                 if (token.ignoreInOutlineView === false && token.inProcedureDivision) {
                     tokensBuilder.push(
@@ -66,7 +66,7 @@ export class VSSemanticProvider {
             }
         }
 
-        for (const [,sourceRefs] of qcp.sourceReferences.targetReferences) {
+        for (const [, sourceRefs] of qcp.sourceReferences.targetReferences) {
             try {
                 for (const sourceRef of sourceRefs) {
                     tokensBuilder.push(
@@ -80,7 +80,7 @@ export class VSSemanticProvider {
 
         }
 
-        for (const [,tokens] of qcp.constantsOrVariables) {
+        for (const [, tokens] of qcp.constantsOrVariables) {
 
             for (const token of tokens) {
                 if (token.ignoreInOutlineView === false) {
@@ -105,7 +105,7 @@ export class VSSemanticProvider {
             }
         }
 
-        for (const [,sourceRefs] of qcp.sourceReferences.constantsOrVariablesReferences) {
+        for (const [, sourceRefs] of qcp.sourceReferences.constantsOrVariablesReferences) {
             //
             for (const sourceRef of sourceRefs) {
                 try {
