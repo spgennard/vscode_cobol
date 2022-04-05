@@ -266,12 +266,13 @@ class Token {
         return this.stokens[1 + this.tokenIndex];
     }
 
-    public nextSTokenPlusOneOrBlank(): StreamToken {
-        if (2 + this.tokenIndex >= this.stokens.length) {
+    public nextSTokenIndex(index: number): StreamToken {
+        const nextIndex = this.tokenIndex + index;
+        if (nextIndex >= this.stokens.length) {
             return StreamToken.Blank;
         }
 
-        return this.stokens[2 + this.tokenIndex];
+        return this.stokens[nextIndex];
     }
 
     public compoundItems(startCompound: string, scanner: COBOLSourceScanner) {
@@ -1041,7 +1042,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             const unknown = [];
             // console.log(`DEBUG: unknownReferences : ${this.sourceReferences.unknownReferences.size}`);
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
-
                 const possibleTokens = this.constantsOrVariables.get(strRef);
                 if (possibleTokens !== undefined) {
                     let ttype: COBOLTokenStyle = COBOLTokenStyle.Variable;
@@ -2062,7 +2062,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     const nextToken = token.nextSTokenOrBlank().currentToken;
 
                     if (nextTokenLower === "property") {
-                        const nextPlusOneToken = token.nextSTokenPlusOneOrBlank().currentToken;
+                        const nextPlusOneToken = token.nextSTokenIndex(2).currentToken;
                         const trimmedProperty = COBOLSourceScanner.trimLiteral(nextPlusOneToken);
                         state.currentMethod = this.newCOBOLToken(COBOLTokenStyle.Property, lineNumber, line, tcurrentCurrentCol, trimmedProperty, nextToken + " " + nextPlusOneToken, state.currentDivision);
                         this.methods.set(trimmedProperty, state.currentMethod);
