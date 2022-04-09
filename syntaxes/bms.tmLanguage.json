@@ -255,6 +255,18 @@
 			}
 		},
 		{
+			"match": "(?i:(base)(\\=)(maparea))",
+			"name": "entity.name.function.bms",
+			"captures": {
+				"1": {
+					"name": "keyword.verb.a.bms"
+				},
+				"2": {
+					"name": "keyword.operator.b.bms"
+				}
+			}
+		},
+		{
 			"match": "(?i:(lang)(\\=)(COBOL|ASM|PLI|RPG))",
 			"name": "entity.name.function.bms",
 			"captures": {
