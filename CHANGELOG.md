@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* cc17327 (HEAD -> main, tag: 8.4.2, origin/main) second april release
+* c435a07 apply tweaks
+* 1a6a5bd rename token.nextSTokenPlusOneOrBlank and param index
+* ccc623f refine README
+* 3a06c65 (tag: 8.3.30) Update
 * 7da1ca0 include prop to allow file format setting check to be done early or late
 * 1779b9c tweak fileformatStrategy and make it an enum
 * 46985ab allow file format settings to override sourceformat
