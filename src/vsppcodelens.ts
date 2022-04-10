@@ -31,7 +31,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
         for (const [, cbInfo] of current.copyBooksUsed) {
             if (cbInfo.scanComplete) {
-                if (cbInfo.statementInformation.copyReplaceMap.size !== 0) {
+                if (cbInfo.statementInformation !== undefined && cbInfo.statementInformation.copyReplaceMap.size !== 0) {
                     const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
                     const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
                         new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));

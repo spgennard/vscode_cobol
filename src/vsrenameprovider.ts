@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as vscode from "vscode";
 import { CancellationToken, Position, TextDocument } from "vscode";
-import { COBOLSourceScanner, COBOLToken, SharedSourceReferences, SourceReference } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLVariable, SharedSourceReferences, SourceReference } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 
@@ -50,10 +50,10 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
         const sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         if (qp.constantsOrVariables.has(workLower)) {
-            const paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
-            if (paraTokens !== undefined) {
-                for (let ptref = 0; ptref < paraTokens.length; ptref++) {
-                    const paraToken = paraTokens[ptref];
+            const paraVariables: COBOLVariable[] | undefined = qp.constantsOrVariables.get(workLower);
+            if (paraVariables !== undefined) {
+                for (let ptref = 0; ptref < paraVariables.length; ptref++) {
+                    const paraToken = paraVariables[ptref].token;
                     const uri: vscode.Uri = vscode.Uri.file(paraToken.filename);
 
                     const startPos = new vscode.Position(paraToken.startLine, paraToken.startColumn);

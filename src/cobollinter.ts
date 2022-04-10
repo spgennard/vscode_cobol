@@ -147,7 +147,12 @@ export class CobolLinterProvider {
         }
 
         for (const [key, tokens] of qp.constantsOrVariables) {
-            for (const token of tokens) {
+            for (const variable of tokens) {
+                const token = variable.token;
+                if (token === undefined || token.inSection === undefined) {
+                    continue;
+                }
+                
                 if (token.tokenNameLower === "filler") {
                     continue;
                 }

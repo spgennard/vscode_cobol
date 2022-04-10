@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { COBOLSourceScanner, COBOLTokenStyle, COBOLToken } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLTokenStyle, COBOLToken, COBOLVariable } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -130,13 +130,13 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             return false;
         }
 
-        const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(tokenLower);
-        if (tokens === undefined || tokens.length === 0) {
+        const variables: COBOLVariable[] | undefined = sf.constantsOrVariables.get(tokenLower);
+        if (variables === undefined || variables.length === 0) {
             return false;
         }
 
-        for (let i = 0; i < tokens.length; i++) {
-            const token: COBOLToken = tokens[i];
+        for (let i = 0; i < variables.length; i++) {
+            const token: COBOLToken = variables[i].token;
             if (token.tokenNameLower === "filler") {
                 continue;
             }

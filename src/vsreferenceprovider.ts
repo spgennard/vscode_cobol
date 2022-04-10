@@ -1,6 +1,6 @@
 
 import * as vscode from "vscode";
-import { COBOLSourceScanner, SourceReference, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceReference, COBOLToken, SharedSourceReferences, COBOLVariable } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
@@ -64,10 +64,11 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         }
 
         if (qp.constantsOrVariables.has(workLower)) {
-            const paraTokens: COBOLToken[] | undefined = qp.constantsOrVariables.get(workLower);
-            if (paraTokens !== undefined) {
-                for (let ptref = 0; ptref < paraTokens.length; ptref++) {
-                    const paraToken = paraTokens[ptref];
+            const paraVariables: COBOLVariable[] | undefined = qp.constantsOrVariables.get(workLower);
+            if (paraVariables !== undefined) {
+                for (let ptref = 0; ptref < paraVariables.length; ptref++) {
+                    const paraVariable = paraVariables[ptref];
+                    const paraToken = paraVariable.token;
                     const qpsUrl: vscode.Uri = vscode.Uri.file(paraToken.filename);
                     list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
                 }

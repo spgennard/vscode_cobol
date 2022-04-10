@@ -1,7 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
-import { COBOLSourceScanner, COBOLToken, SourceScannerUtils } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken, COBOLVariable, SourceScannerUtils } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import TrieSearch from "trie-search";
 import { VSLogger } from "./vslogger";
@@ -80,9 +80,10 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                 const words: TrieSearch = sf.cache4PerformTargets;
 
                 for (const key of sf.constantsOrVariables.keys()) {
-                    const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
-                    if (tokens !== undefined) {
-                        for (const token of tokens) {
+                    const variables: COBOLVariable[] | undefined = sf.constantsOrVariables.get(key);
+                    if (variables !== undefined) {
+                        for (const variable of variables) {
+                            const token = variable.token;
                             if (token.tokenNameLower === "filler") {
                                 continue;
                             }
@@ -445,9 +446,10 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         if (sf !== undefined) {
 
             for (const key of sf.constantsOrVariables.keys()) {
-                const tokens: COBOLToken[] | undefined = sf.constantsOrVariables.get(key);
-                if (tokens !== undefined) {
-                    for (const token of tokens) {
+                const variables: COBOLVariable[] | undefined = sf.constantsOrVariables.get(key);
+                if (variables !== undefined) {
+                    for (const variable of variables) {
+                        const token = variable.token;
                         if (token.tokenNameLower === "filler") {
                             continue;
                         }

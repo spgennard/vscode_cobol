@@ -80,9 +80,10 @@ export class VSSemanticProvider {
 
         }
 
-        for (const [, tokens] of qcp.constantsOrVariables) {
+        for (const [, variables] of qcp.constantsOrVariables) {
 
-            for (const token of tokens) {
+            for (const variable of variables) {
+                const token = variable.token;
                 if (token.ignoreInOutlineView === false) {
                     try {
                         if (token.tokenType === COBOLTokenStyle.Constant) {
