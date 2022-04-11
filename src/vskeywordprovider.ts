@@ -4,7 +4,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
-import {  KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnippetprovider";
+import { KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnippetprovider";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -24,9 +24,9 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		const wordToCompleteLower = wordToComplete.toLowerCase();
 		const words: string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
 
-		switch(wordToCompleteLower) {
-			case "function": 
-				for(const snip of SnippetCompletionItemProvider.Default.getAllFunctions()) {
+		switch (wordToCompleteLower) {
+			case "function":
+				for (const snip of SnippetCompletionItemProvider.Default.getAllFunctions()) {
 					items.push(snip);
 				}
 				break;
@@ -38,35 +38,45 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				continue;
 			}
 			const retKeys = new Map<string, string>();
-
-			switch (iconfig.intellisense_style) {
-				case intellisenseStyle.CamelCase:
-					{
-						const camelKey = SourceScannerUtils.camelize(key);
-						if (!retKeys.has(camelKey)) {
-							retKeys.set(camelKey, camelKey + " ");
-						}
-					}
-					break;
-				case intellisenseStyle.UpperCase:
-					{
-						const upperKey = key.toUpperCase();
-						if (!retKeys.has(upperKey)) {
-							retKeys.set(upperKey, upperKey + " ");
-						}
-					}
-					break;
-				case intellisenseStyle.LowerCase:
-					if (!retKeys.has(keyLower)) {
-						retKeys.set(keyLower, keyLower + " ");
-					}
-					break;
-				case intellisenseStyle.Unchanged:
-					retKeys.set(key, key + " ");
-					break;
-			}
-
 			const keywordSnippets = KeywordSnippetProvider.Default.getKeywordSnippet(key);
+			let invokeNext = false;
+			if (keyLower === "dfhresp") {
+				// if (wordToCompleteLower !== "dfhresp") {
+				// 	// this is the only special case uppercase keyword
+				// 	const upperKey = key.toUpperCase();
+				// 	if (!retKeys.has(upperKey)) {
+				// 		retKeys.set(upperKey, upperKey);
+				// 	}
+				// }
+				invokeNext = true;
+			} else {
+				switch (iconfig.intellisense_style) {
+					case intellisenseStyle.CamelCase:
+						{
+							const camelKey = SourceScannerUtils.camelize(key);
+							if (!retKeys.has(camelKey)) {
+								retKeys.set(camelKey, camelKey + " ");
+							}
+						}
+						break;
+					case intellisenseStyle.UpperCase:
+						{
+							const upperKey = key.toUpperCase();
+							if (!retKeys.has(upperKey)) {
+								retKeys.set(upperKey, upperKey + " ");
+							}
+						}
+						break;
+					case intellisenseStyle.LowerCase:
+						if (!retKeys.has(keyLower)) {
+							retKeys.set(keyLower, keyLower + " ");
+						}
+						break;
+					case intellisenseStyle.Unchanged:
+						retKeys.set(key, key + " ");
+						break;
+				}
+			}
 			for (const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
 				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
 				ci.detail = `COBOL keyword ${uniqueRetKey}`;
@@ -77,8 +87,11 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			}
 
 			// do we have any specific keyword snippets?
-			for(const snip of keywordSnippets) {
+			for (const snip of keywordSnippets) {
 				snip.preselect = false;
+				if (invokeNext) {
+					snip.command = { command: "editor.action.triggerSuggest", title: "Re-trigger completions..." };
+				}
 				items.push(snip);
 			}
 

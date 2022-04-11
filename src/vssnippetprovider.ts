@@ -17,6 +17,7 @@ interface ISimpleSnippet {
     detail?: string;
     scope: string;
     triggerIntellisense?: boolean;
+    alwaysUpperCase?: boolean;
 }
 
 const simpleSnippets: ISimpleSnippet[] = [
@@ -358,6 +359,16 @@ const simpleSnippets: ISimpleSnippet[] = [
             "display \"$0\""
         ],
         "description": "display literal",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "dfhresp",
+        "label": "DFHRESP(responseCode)",
+        "body": [
+            "DFHRESP(${1|NORMAL,ACTIVITYBUSY,ACTIVITYERR,ALLOCERR,CBIDERR,CHANGED,CONTAINERERR,DISABLED,DSNNOTFOUND,DSSTAT,DUPKEY,DUPREC,END,ENDDATA,ENDFILE,ENDINPT,ENQBUSY,ENVDEFERR,EOC,EODS,EOF,ERROR,EVENTERR,EXPIRED,FILENOTFOUND,FUNCERR,IGREQCD,IGREQID,ILLOGIC,INBFMH,INVERRTERM,INVEXITREQ,INVLDC,INVMPSZ,INVPARTN,INVPARTNSET,INVREQ,IOERR,ISCINVREQ,ITEMERR,JIDERR,LENGERR,LINKABEND,LOADING,LOCKED,MAPFAIL,MODELIDERR,NETNAMERR,NODEIDERR,NOJBUFSP,NONVAL,NOPASSBKRD,NOPASSBKWR,NOSPACE,NOSPOOL,NOSTART,NOSTG,NOTALLOC,NOTAUTH,NOTFINISHED,NOTFND,NOTOPEN,OPENERR,OUTDESCRERR,OVERFLOW,PARTNERIDERR,PARTNFAIL,PGMIDERR,POOLERR,PROCESSBUSY,PROCESSERR,PROFILEIDERR,QBUSY,QIDERR,QZERO,RDATT,RECORDBUSY,RETPAGE,ROLLEDBACK,RTEFAIL,RTESOME,SELNERR,SESSBUSY,SESSIONERR,SIGNAL,SPOLBUSY,SPOLERR,STRELERR,SUPPRESSED,SYMBOLERR,SYSBUSY,SYSIDERR,TASKIDERR,TCIDERR,TEMPLATERR,TERMERR,TERMIDERR,TIMERERR,TOKENERR,TRANSIDERR,TSIOERR,UNEXPIN,UOWLNOTFOUND,UOWNOTFOUND,USERIDERR,WRBRK|})$0"
+        ],
+        "alwaysUpperCase": true,
+        "description": "CICS DFHRESP Reponse code",
         "scope": "cobol"
     }
 ];
@@ -956,7 +967,7 @@ const functionSnippets: ISimpleSnippet[] = [
         ],
         "description": "convert yy to yyyy with optional yy-cutoff to delineate centuries",
         "scope": "cobol"
-    },
+    }
 ];
 
 class SnippetHelper {
@@ -982,7 +993,12 @@ class SnippetHelper {
 
         let preselect = snippet.label;
         let kiSnippet = "";
-        switch (settings.intellisense_style) {
+        let istyle = settings.intellisense_style;
+        if (snippet.alwaysUpperCase) {
+            istyle = intellisenseStyle.UpperCase;
+        }
+
+        switch (istyle) {
             case intellisenseStyle.CamelCase:
                 preselect = SourceScannerUtils.camelize(snippet.label);
                 kiSnippet = this.foldKeywordLine(snippet.body, FoldStyle.CamelCase, langId);

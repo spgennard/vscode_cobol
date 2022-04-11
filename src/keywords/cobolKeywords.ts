@@ -703,6 +703,7 @@ const cobolProcedureKeywords: string[] = [
 	"detail",
 	"display",
 	"divide",
+	"dfhresp",
 	"eject",
 	"else",
 	"end-add",
