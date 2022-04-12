@@ -50,12 +50,13 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				// }
 				invokeNext = true;
 			} else {
+				let extraKey = keyLower === "section" ? "" : " ";
 				switch (iconfig.intellisense_style) {
 					case intellisenseStyle.CamelCase:
 						{
 							const camelKey = SourceScannerUtils.camelize(key);
 							if (!retKeys.has(camelKey)) {
-								retKeys.set(camelKey, camelKey + " ");
+								retKeys.set(camelKey, camelKey + extraKey);
 							}
 						}
 						break;
@@ -63,17 +64,17 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 						{
 							const upperKey = key.toUpperCase();
 							if (!retKeys.has(upperKey)) {
-								retKeys.set(upperKey, upperKey + " ");
+								retKeys.set(upperKey, upperKey + extraKey);
 							}
 						}
 						break;
 					case intellisenseStyle.LowerCase:
 						if (!retKeys.has(keyLower)) {
-							retKeys.set(keyLower, keyLower + " ");
+							retKeys.set(keyLower, keyLower + extraKey);
 						}
 						break;
 					case intellisenseStyle.Unchanged:
-						retKeys.set(key, key + " ");
+						retKeys.set(key, key + extraKey);
 						break;
 				}
 			}
