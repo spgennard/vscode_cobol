@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* cc17327 (HEAD -> main, tag: 8.4.2, origin/main) second april release
+* 08c6920 (HEAD -> main, tag: 8.4.11, origin/main) refactor previous change to make is more generic
+* 82fb632 don't include a space with the keyword "section"
+* 7b55c1b tweak for DFHRESP
+* c61085e start to remove Null object in preference to using undefined
+* 6bccd36 (tag: 8.4.2) Update
+* cc17327 second april release
 * c435a07 apply tweaks
 * 1a6a5bd rename token.nextSTokenPlusOneOrBlank and param index
 * ccc623f refine README
