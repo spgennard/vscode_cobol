@@ -9,6 +9,10 @@ import { KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnipp
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
 
+	private onlyShowSnippetKeywords = new Map<string,string>([ ["dfhresp", "dfhresp"] ]);
+
+	private nextKeyKeywords = new Map<string,string>([ ["section", ""] ]);
+
 	public constructor(forCOBOL: boolean) {
 		this.isCOBOL = forCOBOL;
 	}
@@ -40,17 +44,11 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			const retKeys = new Map<string, string>();
 			const keywordSnippets = KeywordSnippetProvider.Default.getKeywordSnippet(key);
 			let invokeNext = false;
-			if (keyLower === "dfhresp") {
-				// if (wordToCompleteLower !== "dfhresp") {
-				// 	// this is the only special case uppercase keyword
-				// 	const upperKey = key.toUpperCase();
-				// 	if (!retKeys.has(upperKey)) {
-				// 		retKeys.set(upperKey, upperKey);
-				// 	}
-				// }
+			if (this.onlyShowSnippetKeywords.has(keyLower)) {
 				invokeNext = true;
 			} else {
-				let extraKey = keyLower === "section" ? "" : " ";
+
+				let extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
 				switch (iconfig.intellisense_style) {
 					case intellisenseStyle.CamelCase:
 						{

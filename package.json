@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.4.2",
+  "version": "8.4.11",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -389,7 +389,7 @@
         "coboleditor.sourceview": {
           "type": "boolean",
           "description": "Enable experimental explorer source view",
-          "default": false
+          "default": true
         },
         "coboleditor.sourceview_include_jcl_files": {
           "type": "boolean",
@@ -630,7 +630,7 @@
         },
         "coboleditor.enable_semantic_token_provider": {
           "type": "boolean",
-          "description": "When enabled, turn on the experimental semantic token provider",
+          "description": "When enabled, turn on the semantic token provider",
           "default": false
         },
         "coboleditor.enable_text_replacement": {
@@ -821,7 +821,7 @@
         "coboleditor.snippets": {
           "type": "boolean",
           "description": "Dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
-          "default": false
+          "default": true
         },
         "coboleditor.enable_columns_tags": {
           "type": "boolean",
