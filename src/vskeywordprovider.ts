@@ -9,9 +9,9 @@ import { KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnipp
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
 
-	private onlyShowSnippetKeywords = new Map<string,string>([ ["dfhresp", "dfhresp"] ]);
+	private onlyShowSnippetKeywords = new Map<string, string>([["dfhresp", "dfhresp"]]);
 
-	private nextKeyKeywords = new Map<string,string>([ ["section", ""] ]);
+	private nextKeyKeywords = new Map<string, string>([["section", ""]]);
 
 	public constructor(forCOBOL: boolean) {
 		this.isCOBOL = forCOBOL;
@@ -27,6 +27,20 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		const items: CompletionItem[] = [];
 		const wordToCompleteLower = wordToComplete.toLowerCase();
 		const words: string[] = this.isCOBOL === false ? jclStatements : getCOBOLKeywordList(langid);
+
+		if (!this.isCOBOL) {
+			for (const key of words) {
+				const keyLower = key.toLowerCase();
+				if (keyLower.startsWith(wordToCompleteLower) === false) {
+					continue;
+				}
+				const ci = new CompletionItem(key, CompletionItemKind.Keyword);
+				ci.detail = `Keyword ${key}`;
+				items.push(ci);
+			}
+
+			return items;
+		}
 
 		switch (wordToCompleteLower) {
 			case "function":
@@ -47,7 +61,6 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			if (this.onlyShowSnippetKeywords.has(keyLower)) {
 				invokeNext = true;
 			} else {
-
 				let extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
 				switch (iconfig.intellisense_style) {
 					case intellisenseStyle.CamelCase:
