@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 08c6920 (HEAD -> main, tag: 8.4.11, origin/main) refactor previous change to make is more generic
+* 73781cd simplify jcl keywords
+* bfc6f22 (tag: 8.4.11) Update
+* 08c6920 refactor previous change to make is more generic
 * 82fb632 don't include a space with the keyword "section"
 * 7b55c1b tweak for DFHRESP
 * c61085e start to remove Null object in preference to using undefined
