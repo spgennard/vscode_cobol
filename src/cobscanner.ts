@@ -262,7 +262,7 @@ for (const arg of args) {
                         let _numCpus = os.cpus().length *0.75;    // only use 75% of CPUs
                         const _numCpuEnv = process.env.SCANDATA_TCOUNT;
                         if (_numCpuEnv !== undefined) {
-                            _numCpus = Number.parseInt(_numCpuEnv);
+                            _numCpus = Number.parseInt(_numCpuEnv,10);
                         }
                         let i, j;
                         const files = baseScanData.Files;

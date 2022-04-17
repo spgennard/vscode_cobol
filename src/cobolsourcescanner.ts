@@ -498,13 +498,13 @@ class ParseState {
     currentToken: COBOLToken|undefined;
     currentRegion: COBOLToken|undefined;
     currentDivision: COBOLToken|undefined;
-    currentSection: COBOLToken|undefined;;
-    currentParagraph: COBOLToken|undefined;;
-    currentClass: COBOLToken|undefined;;
-    currentMethod: COBOLToken|undefined;;
-    currentFunctionId: COBOLToken|undefined;;
-    current01Group: COBOLToken|undefined;;
-    currentLevel: COBOLToken|undefined;;
+    currentSection: COBOLToken|undefined;
+    currentParagraph: COBOLToken|undefined;
+    currentClass: COBOLToken|undefined;
+    currentMethod: COBOLToken|undefined;
+    currentFunctionId: COBOLToken|undefined;
+    current01Group: COBOLToken|undefined;
+    currentLevel: COBOLToken|undefined;
     currentProgramTarget: CallTargetInformation;
 
     copyBooksUsed: Map<string, COBOLToken|undefined>;

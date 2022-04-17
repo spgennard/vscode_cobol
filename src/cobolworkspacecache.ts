@@ -212,7 +212,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
             }
             
             if (symbolValues.length === 3) {
-                COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2]));
+                COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(symbolValues[1], symbolValues[0], Number.parseInt(symbolValues[2],10));
             }
         }
         

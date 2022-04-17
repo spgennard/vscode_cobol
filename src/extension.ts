@@ -58,6 +58,7 @@ const fileSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
+const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-F]*[\"']");
 const hexRegEx = new RegExp("[xX][\"'][0-9A-F]*[\"']");
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
@@ -906,6 +907,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
             }
 
             if (settings.hover_show_encoded_literals) {
+                const nxtxt = document.getText(document.getWordRangeAtPosition(position, nhexRegEx));
+                if (nxtxt.toLowerCase().startsWith("nx\"")) {
+                    const ascii = COBOLUtils.nxhex2a(nxtxt);
+                    if (ascii.length !== 0) {
+                        return new vscode.Hover(`UTF16=${ascii}`);
+                    }
+                    return undefined;
+                }
                 const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
                 if (txt.toLowerCase().startsWith("x\"")) {
                     const ascii = COBOLUtils.hex2a(txt);

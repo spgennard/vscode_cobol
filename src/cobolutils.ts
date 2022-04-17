@@ -895,6 +895,57 @@ export class COBOLUtils {
         }
     }
 
+    // let buffer = Buffer.from(string, 'utf16le')
+    // private static isControl(ch: string, index=0) {
+    //     var code = ch.charCodeAt(index);
+    //     return ((code >= 0x0000 && code <= 0x001f) || (code >= 0x007f && code <= 0x009f));
+    // }
+
+    private static isControlCode(code: number) {
+        return ((code >= 0x0000 && code <= 0x001f) || (code >= 0x007f && code <= 0x009f));
+    }
+
+    public static a2nx(str: string, cobolify: boolean): string {
+        const arr = [];
+        for (let i = 0, l = str.length; i < l; i++) {
+
+            const chr = str.charCodeAt(i);
+            const chrBuffer = Buffer.from(chr.toString(), "utf16le");
+
+            for (let j = 0; j < chrBuffer.length; j++) {
+                const hex = Number(chrBuffer[j]).toString(16).toUpperCase();
+                arr.push(hex);
+            }
+
+        }
+        const hexString = arr.join("");
+
+        return cobolify ? `NX"${hexString}"` : hexString;
+    }
+
+    public static nxhex2a(hexx4: string,): string {
+        if (hexx4.length >= 4) {
+            if ((hexx4.charAt(0) === "N" || hexx4.charAt(0) === "n") &&
+                (hexx4.charAt(1) === "X" || hexx4.charAt(0) === "x")) {
+                if (hexx4.charAt(2) === "\"" || hexx4.charAt(2) === "'") {
+                    if (hexx4.endsWith("\"") || hexx4.endsWith("'")) {
+                        const hexx4len = hexx4.length;
+                        hexx4 = hexx4.substring(3, hexx4len - 1);
+                    }
+                }
+            }
+        }
+
+        const buf = Buffer.from(hexx4, "hex");
+        const len = buf.length / 2;
+        const arr = new Array(len);
+
+        for (let i = 0; i < len; i++) {
+            arr[i] = buf.readUInt16BE(i * 2);
+        }
+        return String.fromCharCode(...arr);
+    }
+
     public static a2hex(str: string, cobolify: boolean): string {
         const arr = [];
         for (let i = 0, l = str.length; i < l; i++) {
@@ -912,7 +963,7 @@ export class COBOLUtils {
                 if (hex.charAt(1) === "\"" || hex.charAt(1) === "'") {
                     if (hex.endsWith("\"") || hex.endsWith("'")) {
                         const hexlen = hex.length;
-                        hex = hex.substring(2, hexlen-1);
+                        hex = hex.substring(2, hexlen - 1);
                     }
                 }
             }
@@ -923,8 +974,15 @@ export class COBOLUtils {
         }
         let str = "";
 
-        for (let i = 0; i < hex.length; i += 2)
-            str += String.fromCharCode(parseInt(hex.substring(i, i + 2), 16));
+        for (let i = 0; i < hex.length; i += 2) {
+            const hexChars = hex.substring(i, i + 2);
+            const charCode = parseInt(hexChars, 16);
+            if (this.isControlCode(charCode)) {
+                str += `[${hexChars}]`
+            } else {
+                str += String.fromCharCode(charCode);
+            }
+        }
         return str;
     }
 

@@ -61,7 +61,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			if (this.onlyShowSnippetKeywords.has(keyLower)) {
 				invokeNext = true;
 			} else {
-				let extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
+				const extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
 				switch (iconfig.intellisense_style) {
 					case intellisenseStyle.CamelCase:
 						{
