@@ -895,6 +895,21 @@ export class COBOLUtils {
         }
     }
 
+    public static selectionToNXHEX(cobolify: boolean) {
+        if (vscode.window.activeTextEditor) {
+            const editor = vscode.window.activeTextEditor;
+
+            const document = editor.document;
+            const selection = editor.selection;
+
+            const ascii = document.getText(selection);
+            const hex = COBOLUtils.a2nx(ascii, cobolify);
+            editor.edit(editBuilder => {
+                editBuilder.replace(selection, hex);
+            });
+        }
+    }
+
     // let buffer = Buffer.from(string, 'utf16le')
     // private static isControl(ch: string, index=0) {
     //     var code = ch.charCodeAt(index);
@@ -909,11 +924,14 @@ export class COBOLUtils {
         const arr = [];
         for (let i = 0, l = str.length; i < l; i++) {
 
-            const chr = str.charCodeAt(i);
-            const chrBuffer = Buffer.from(chr.toString(), "utf16le");
+            const chr = str.charAt(i);
+            const chrBuffer = Buffer.from(chr, "utf16le").reverse(); // make big endian
 
-            for (let j = 0; j < chrBuffer.length; j++) {
-                const hex = Number(chrBuffer[j]).toString(16).toUpperCase();
+            for(let j = 0; j < chrBuffer.length; j++) {
+                let hex = Number(chrBuffer[j]).toString(16).toUpperCase();
+                if (hex.length === 1) {
+                    hex = "0" + hex;
+                }
                 arr.push(hex);
             }
 
@@ -949,7 +967,10 @@ export class COBOLUtils {
     public static a2hex(str: string, cobolify: boolean): string {
         const arr = [];
         for (let i = 0, l = str.length; i < l; i++) {
-            const hex = Number(str.charCodeAt(i)).toString(16).toUpperCase();
+            let hex = Number(str.charCodeAt(i)).toString(16).toUpperCase();
+            if (hex.length === 1) {
+                hex = "0" + hex;
+            }
             arr.push(hex);
         }
         const hexString = arr.join("");

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.4.13",
+  "version": "8.4.17",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1579,6 +1579,16 @@
         "command": "cobolplugin.selectionHEXToASCII",
         "category": "COBOL",
         "title": "Convert HEX to ASCII"
+      },
+      {
+        "command": "cobolplugin.selectionToCOBOLNXHEX",
+        "category": "COBOL",
+        "title": "Convert to HEX (NX\"..\") (UTF16)"
+      },
+      {
+        "command": "cobolplugin.selectionToNXHEX",
+        "category": "COBOL",
+        "title": "Convert to HEX (UTF16)"
       }
     ],
     "menus": {
@@ -1674,6 +1684,16 @@
           {
             "command": "cobolplugin.selectionHEXToASCII",
             "group": "convertcobol@2",
+            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+          },
+          {
+            "command": "cobolplugin.selectionToCOBOLNXHEX",
+            "group": "convertcobol@3",
+            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+          },
+          {
+            "command": "cobolplugin.selectionToNXHEX",
+            "group": "convertcobol@3",
             "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
           }
       ],

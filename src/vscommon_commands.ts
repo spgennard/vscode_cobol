@@ -275,4 +275,13 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionHEXToASCII", () => {
         COBOLUtils.selectionHEXToASCII();
     }));
+
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionToCOBOLNXHEX", () => {
+        COBOLUtils.selectionToNXHEX(true);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionToNXHEX", () => {
+        COBOLUtils.selectionToNXHEX(false);
+    }));
 }
