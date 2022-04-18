@@ -234,8 +234,8 @@ function expandEnvVars(startEnv: string): string {
         } else {
             const lenOfValue = env.indexOf("}") - (indexOfEnv + 6);
             const envValue = env.substr(6 + indexOfEnv, lenOfValue);
-            const left = env.substr(0, indexOfEnv);
-            const right = env.substr(1 + env.indexOf("}"));
+            const left = env.substring(0, indexOfEnv);
+            const right = env.substring(1 + env.indexOf("}"));
             env = left + process.env[envValue] + right;
         }
     }
@@ -269,7 +269,7 @@ function getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSe
 
             // remove / or \ forward
             if (dir.startsWith("/") || dir.startsWith("\\")) {
-                dir = dir.substr(1).trim();
+                dir = dir.substring(1).trim();
             }
         }
 

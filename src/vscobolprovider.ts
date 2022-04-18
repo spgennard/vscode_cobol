@@ -288,7 +288,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     }
                     const l = lastSpace - prevLastSpace;
                     wordBefore = currentLine.substr(prevLastSpace, l).trim();
-                    wordToComplete = currentLine.substr(1 + lastSpace).trim();
+                    wordToComplete = currentLine.substring(1 + lastSpace).trim();
                 }
             }
             wordBeforeLower = wordBefore.toLowerCase();
