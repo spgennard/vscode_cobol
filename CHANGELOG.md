@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* d3395ce (HEAD -> main, tag: 8.4.17, origin/main) continue support for nx utils
+* 644c3cd (HEAD -> main, tag: 8.4.20, origin/main) add some conditional compilation snippets
+* 9a259d7 (tag: 8.4.17) Update
+* d3395ce continue support for nx utils
 * 70dc0de change substr to substring
 * 2ed8785 start to add nx support add some extra lint's
 * b34bcc9 (tag: 8.4.13) Update
