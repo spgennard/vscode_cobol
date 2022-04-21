@@ -12,6 +12,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 	private onlyShowSnippetKeywords = new Map<string, string>([["dfhresp", "dfhresp"]]);
 
 	private nextKeyKeywords = new Map<string, string>([["section", ""]]);
+	private dollarWordRegEx = new RegExp("[#$0-9a-zA-Z][a-zA-Z0-9-_]*");
 
 	public constructor(forCOBOL: boolean) {
 		this.isCOBOL = forCOBOL;
@@ -125,7 +126,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			return [];
 		}
 
-		const range = document.getWordRangeAtPosition(position);
+		const range = document.getWordRangeAtPosition(position,this.dollarWordRegEx);
 		if (range) {
 			wordToComplete = document.getText(new Range(range.start, position));
 			lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();
