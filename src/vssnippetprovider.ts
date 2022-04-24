@@ -1026,7 +1026,7 @@ class SnippetHelper {
         if (snippet.triggerIntellisense) {
             ci.command = { command: "editor.action.triggerSuggest", title: "Re-trigger completions..." };
         }
-        ci.detail = snippet.detail;
+        ci.detail = snippet.detail !== undefined ? snippet.detail: "";
 
         items.push(ci);
     }

@@ -201,7 +201,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
     private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number, ext:string): SourceItem {
         const item = new SourceItem(label, file, lnum);
-        item.command = this.getCommand(file,ext);
+        const newCommand = this.getCommand(file,ext);
+        if (newCommand !== undefined) {
+            item.command = newCommand;
+        }
         item.contextValue = contextValue;
         item.tooltip = file.fsPath;
         return item;

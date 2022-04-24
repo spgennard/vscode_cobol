@@ -55,7 +55,7 @@ export class CobolLinterProvider {
     private collection: vscode.DiagnosticCollection;
     private linterSev: vscode.DiagnosticSeverity;
 
-    private current?: COBOLSourceScanner;
+    private current: COBOLSourceScanner | undefined;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -152,7 +152,7 @@ export class CobolLinterProvider {
                 if (token === undefined || token.inSection === undefined) {
                     continue;
                 }
-                
+
                 if (token.tokenNameLower === "filler") {
                     continue;
                 }
@@ -273,7 +273,9 @@ export class CobolLinterProvider {
         // cache current document, interactive search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
             this.current = VSCOBOLSourceScanner.getCachedObject(document, this.settings);
-            this.sourceRefs = this.current?.sourceReferences;
+            if (this.current !== undefined) {
+                this.sourceRefs = this.current.sourceReferences;
+            }
             this.currentVersion = document.version;
             return true;
         }

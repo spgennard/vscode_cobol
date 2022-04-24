@@ -17,7 +17,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         return this.processSearch(document, position);
     }
 
-    private current?: COBOLSourceScanner;
+    private current: COBOLSourceScanner|undefined;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -35,8 +35,9 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         const settings = VSCOBOLConfiguration.get();
         // cache current document, so interactive searches can be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSCOBOLSourceScanner.getCachedObject(document, settings);
-            if (this.current !== undefined) {
+            const newCurrent = VSCOBOLSourceScanner.getCachedObject(document, settings);
+            if (newCurrent !== undefined) {
+                this.current = newCurrent;
                 this.sourceRefs = this.current.sourceReferences;
                 this.currentVersion = document.version;
             }
