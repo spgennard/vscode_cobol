@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 644c3cd (HEAD -> main, tag: 8.4.20, origin/main) add some conditional compilation snippets
+* 2e383f4 (origin/main) add >>evaluate
+* 19dfb76 start to add some iso2002 conditional expression snippets
+* 0f7f0bf (tag: 8.4.20) Update
+* 644c3cd add some conditional compilation snippets
 * 9a259d7 (tag: 8.4.17) Update
 * d3395ce continue support for nx utils
 * 70dc0de change substr to substring
