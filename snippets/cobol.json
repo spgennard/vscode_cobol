@@ -452,5 +452,16 @@
 		],
 		"description": ">>if constant [condition]",
 		"scope": "cobol"
+	},
+	">>evaluate directive + override": {
+		"prefix": ">>evaluate",
+		"body": [
+			">>evaluate ${1|true,false,10,41 + 1,literal|}",
+			">>when ${2:expression}",
+			"$0${TM_SELECTED_TEXT}",
+			">>end-evaluate"
+		],
+		"description": ">>evaluate.. >>when... >>end-evaluate",
+		"scope": "cobol"
 	}
 }
