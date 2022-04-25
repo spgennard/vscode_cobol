@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 2e383f4 (origin/main) add >>evaluate
+* 88cf031 allow lowercase hex in hover's
+* d5ab1fb experiment with generating .ts.d files
+* 771309e increase strict'ness
+* 4d78c21 (tag: 8.4.23) Update
+* 2e383f4 add >>evaluate
 * 19dfb76 start to add some iso2002 conditional expression snippets
 * 0f7f0bf (tag: 8.4.20) Update
 * 644c3cd add some conditional compilation snippets
