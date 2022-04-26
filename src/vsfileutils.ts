@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 
 import { VSWorkspaceFolders } from "./cobolfolders";
-import { Range, TextEditor, Uri, window, workspace } from "vscode";
+import { Range, TextEditor, Uri, window, workspace, WorkspaceFolder } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
@@ -33,7 +33,7 @@ export class VSCOBOLFileUtils {
         for (const folder of ws) {
             if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;
-                
+
                 const possibleFile = path.join(folderPath, sdir);
                 if (features.isFile(possibleFile)) {
                     const stat4srcMs = features.getFileModTimeStamp(possibleFile);
@@ -47,7 +47,7 @@ export class VSCOBOLFileUtils {
         return undefined;
     }
 
-    public static getShortWorkspaceFilename(schema:string, ddir: string): string | undefined {
+    public static getShortWorkspaceFilename(schema: string, ddir: string): string | undefined {
         // if schema is untitle, we treat it as a non-workspace file, so it is never cached
         if (schema === "untitled") {
             return undefined;
@@ -60,7 +60,7 @@ export class VSCOBOLFileUtils {
         const fullPath = Uri.file(ddir).fsPath;
         let bestShortName = "";
         for (const folder of ws) {
-            if (folder.uri.scheme === schema ) {
+            if (folder.uri.scheme === schema) {
                 const folderPath = folder.uri.path;
                 if (fullPath.startsWith(folderPath)) {
                     const possibleShortPath = fullPath.substring(1 + folderPath.length);
@@ -175,5 +175,19 @@ export class VSCOBOLFileUtils {
         });
     }
 
+    public static getBestWorkspaceFolder(workspaceDirectory: string): WorkspaceFolder | undefined {
+        const workspaces = workspace.workspaceFolders;
+        if (!workspaces) {
+            return undefined;
+        }
+
+        let bestWorkspace: WorkspaceFolder|undefined = undefined;
+        for (let workspace of workspaces) {
+            if (workspace.uri.fsPath.startsWith(workspaceDirectory)) {
+                bestWorkspace = workspace;
+            }
+        }
+        return bestWorkspace;
+    }
 }
 

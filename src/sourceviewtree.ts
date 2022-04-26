@@ -8,6 +8,7 @@ import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSLogger } from "./vslogger";
 import { COBOLFileUtils } from "./fileutils";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
+import { VSCOBOLFileUtils } from "./vsfileutils";
 
 let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
@@ -15,7 +16,9 @@ let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
 
 export class VSSourceTreeViewHandler {
-    static setupSourceViewTree(config: ICOBOLSettings, reinit: boolean):void{
+    static mfExtension = vscode.extensions.getExtension("micro-focus-amc.mfcobol");
+
+    static setupSourceViewTree(config: ICOBOLSettings, reinit: boolean): void {
 
         if ((config.sourceview === false || reinit) && sourceTreeView !== undefined) {
             sourceTreeWatcher?.dispose();
@@ -44,7 +47,7 @@ export class VSSourceTreeViewHandler {
 
     }
 
-    static actionSourceViewItemFunction(si: SourceItem, debug: boolean):void {
+    static actionSourceViewItemFunction(si: SourceItem, debug: boolean): void {
         if (commandTerminal === undefined) {
             commandTerminal = vscode.window.createTerminal(commandTerminalName);
         }
@@ -52,30 +55,64 @@ export class VSSourceTreeViewHandler {
         let prefRunner = "";
         let prefRunnerDebug = "";
         let fsPath = "";
+        let fsDir = "";
         if (si !== undefined && si.uri !== undefined) {
             fsPath = si.uri.path as string;
+            fsDir = path.dirname(fsPath);
         }
 
-        if (COBOLFileUtils.isWin32) {
-            if (fsPath.endsWith("acu")) {
+        if (fsPath.endsWith("acu")) {
+            if (COBOLFileUtils.isWin32) {
                 prefRunner = "wrun32";
                 prefRunnerDebug = debug ? "-d " : "";
-            } else if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
-                prefRunner = "cobrun";
-                prefRunnerDebug = debug ? "(+A) " : "";
-            }
-        } else {
-            // todo consider adding threaded version, cobmode
-            if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
-                prefRunner = debug ? "anim" : "cobrun";
-            } else if (fsPath.endsWith("acu")) {
+            } else {
                 prefRunner = "runcbl";
                 prefRunnerDebug = debug ? "-d " : "";
             }
+
+            commandTerminal.show(true);
+            commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+            return;
         }
 
-        commandTerminal.show(true);
-        commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+        if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+            if (VSSourceTreeViewHandler.mfExtension === undefined) {
+                if (COBOLFileUtils.isWin32) {
+                    prefRunner = "run";
+                    prefRunnerDebug = debug ? "(+A) " : "";
+                } else {
+                    prefRunner = debug ? "anim" : "cobrun";
+                }
+
+                commandTerminal.show(true);
+                commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+                return;
+            } else {
+                const workspacePath = VSCOBOLFileUtils.getBestWorkspaceFolder(fsDir);
+                if (workspacePath !== undefined) {
+                    vscode.debug.startDebugging(workspacePath, VSSourceTreeViewHandler.getDebugConfig(workspacePath, fsPath));
+                }
+            }
+        }
+    }
+
+    static getDebugConfig(workspaceFolder: vscode.WorkspaceFolder, debugFile: string): vscode.DebugConfiguration {
+
+        // "type": "cobol",
+        // "request": "launch",
+        // "name": "COBOL: Launch",
+        // "program": "${workspaceFolder}/HelloWorld",
+        // "cwd": "${workspaceFolder}",
+        // "stopOnEntry": true
+
+        return {
+            name: 'Debug COBOL',
+            type: 'cobol',
+            request: 'launch',
+            cwd: `${workspaceFolder.uri.fsPath}`,
+            program: `${debugFile}`,
+            stopOnEntry: true
+        };
     }
 }
 
@@ -199,9 +236,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         };
     }
 
-    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number, ext:string): SourceItem {
+    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number, ext: string): SourceItem {
         const item = new SourceItem(label, file, lnum);
-        const newCommand = this.getCommand(file,ext);
+        const newCommand = this.getCommand(file, ext);
         if (newCommand !== undefined) {
             item.command = newCommand;
         }
@@ -256,7 +293,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "prc":
                 case "proc":
                     if (this.jclItems.has(fsp) === false) {
-                        this.jclItems.set(fsp, this.newSourceItem("jcl", base, file, 0,extLower));
+                        this.jclItems.set(fsp, this.newSourceItem("jcl", base, file, 0, extLower));
                     }
                     break;
                 case "hlasm":
@@ -267,7 +304,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "mlc":
                 case "asmmac":
                     if (this.hlasmItems.has(fsp) === false) {
-                        this.hlasmItems.set(fsp, this.newSourceItem("hlasm", base, file, 0,extLower));
+                        this.hlasmItems.set(fsp, this.newSourceItem("hlasm", base, file, 0, extLower));
                     }
                     break;
 
@@ -279,7 +316,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "pcx":
                 case "inc":
                     if (this.pliItems.has(fsp) === false) {
-                        this.pliItems.set(fsp, this.newSourceItem("pli", base, file, 0,extLower));
+                        this.pliItems.set(fsp, this.newSourceItem("pli", base, file, 0, extLower));
                     }
                     break;
 
@@ -287,22 +324,22 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "txt":
                 case "html":
                     if (this.documentItems.has(fsp) === false) {
-                        this.documentItems.set(fsp, this.newSourceItem("document", base, file, 0,extLower));
+                        this.documentItems.set(fsp, this.newSourceItem("document", base, file, 0, extLower));
                     }
                     break;
                 case "sh":
                 case "bat":
                     if (this.scriptItems.has(fsp) === false) {
-                        this.scriptItems.set(fsp, this.newSourceItem("scripts", base, file, 0,extLower));
+                        this.scriptItems.set(fsp, this.newSourceItem("scripts", base, file, 0, extLower));
                     }
                     break;
                 case "int":
                 case "gnt":
                 case "acu":
                     if (this.objectItems.has(fsp) === false) {
-                        this.objectItems.set(fsp, this.newSourceItem("objects", base, file, 0,extLower));
+                        this.objectItems.set(fsp, this.newSourceItem("objects", base, file, 0, extLower));
                     }
-                break;
+                    break;
             }
         }
     }
