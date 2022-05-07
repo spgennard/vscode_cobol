@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* dfb2ee9 (HEAD -> main, tag: 8.4.25, origin/main) add some basic debugger integration (for .int/.gnt) into the source tree
+* c61f475 if source scanner is disable, turn off other features as well
+* 97343a7 (tag: 8.4.25) Update
+* dfb2ee9 add some basic debugger integration (for .int/.gnt) into the source tree
 * a50c165 (tag: 8.4.24) Update
 * 88cf031 allow lowercase hex in hover's
 * d5ab1fb experiment with generating .ts.d files
