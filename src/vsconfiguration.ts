@@ -112,6 +112,11 @@ export class VSCOBOLConfiguration {
             VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }
 
+        if (settings.enable_source_scanner === false) {
+            settings.parse_copybooks_for_references = false;
+            settings.process_metadata_cache_on_start = false;
+            settings.enable_text_replacement = false;
+        }
         return settings;
     }
 
