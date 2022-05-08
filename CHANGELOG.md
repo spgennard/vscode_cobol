@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 039f0c7 add support for file nesting
+* de8a299 (tag: 8.4.26) Update
 * c61f475 if source scanner is disable, turn off other features as well
 * 97343a7 (tag: 8.4.25) Update
 * dfb2ee9 add some basic debugger integration (for .int/.gnt) into the source tree
