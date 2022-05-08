@@ -13,6 +13,9 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 
+let commandTerminal: vscode.Terminal | undefined = undefined;
+const commandTerminalName = "COBOL Application";
+
 export enum FoldStyle {
     LowerCase = 1,
     UpperCase = 2,
@@ -33,6 +36,8 @@ export enum AlignStyle {
 }
 
 export class COBOLUtils {
+    static mfExtension = vscode.extensions.getExtension("micro-focus-amc.mfcobol");
+
     private static getProgramGlobPattern(config: ICOBOLSettings): string {
         let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
 
@@ -1112,5 +1117,69 @@ export class COBOLUtils {
     //         }
     //     }
     // }
+
+
+    public static getDebugConfig(workspaceFolder: vscode.WorkspaceFolder, debugFile: string): vscode.DebugConfiguration {
+
+        // "type": "cobol",
+        // "request": "launch",
+        // "name": "COBOL: Launch",
+        // "program": "${workspaceFolder}/HelloWorld",
+        // "cwd": "${workspaceFolder}",
+        // "stopOnEntry": true
+
+        return {
+            name: 'Debug COBOL',
+            type: 'cobol',
+            request: 'launch',
+            cwd: `${workspaceFolder.uri.fsPath}`,
+            program: `${debugFile}`,
+            stopOnEntry: true
+        };
+    }
+
+    public static runOrDebug(fsPath: string, debug: boolean): void {
+        if (commandTerminal === undefined) {
+            commandTerminal = vscode.window.createTerminal(commandTerminalName);
+        }
+
+        let prefRunner = "";
+        let prefRunnerDebug = "";
+        let fsDir = path.dirname(fsPath);
+
+        if (fsPath.endsWith("acu")) {
+            if (COBOLFileUtils.isWin32) {
+                prefRunner = "wrun32";
+                prefRunnerDebug = debug ? "-d " : "";
+            } else {
+                prefRunner = "runcbl";
+                prefRunnerDebug = debug ? "-d " : "";
+            }
+
+            commandTerminal.show(true);
+            commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+            return;
+        }
+
+        if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+            if (COBOLUtils.mfExtension === undefined) {
+                if (COBOLFileUtils.isWin32) {
+                    prefRunner = "run";
+                    prefRunnerDebug = debug ? "(+A) " : "";
+                } else {
+                    prefRunner = debug ? "anim" : "cobrun";
+                }
+
+                commandTerminal.show(true);
+                commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
+                return;
+            } else {
+                const workspacePath = VSCOBOLFileUtils.getBestWorkspaceFolder(fsDir);
+                if (workspacePath !== undefined) {
+                    vscode.debug.startDebugging(workspacePath, COBOLUtils.getDebugConfig(workspacePath, fsPath));
+                }
+            }
+        }
+    }
 }
 

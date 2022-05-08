@@ -6,18 +6,13 @@ import { workspace } from "vscode";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSLogger } from "./vslogger";
-import { COBOLFileUtils } from "./fileutils";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
-import { VSCOBOLFileUtils } from "./vsfileutils";
+import { COBOLUtils } from "./cobolutils";
 
 let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
-let commandTerminal: vscode.Terminal | undefined = undefined;
-const commandTerminalName = "COBOL Application";
 
 export class VSSourceTreeViewHandler {
-    static mfExtension = vscode.extensions.getExtension("micro-focus-amc.mfcobol");
-
     static setupSourceViewTree(config: ICOBOLSettings, reinit: boolean): void {
 
         if ((config.sourceview === false || reinit) && sourceTreeView !== undefined) {
@@ -48,72 +43,15 @@ export class VSSourceTreeViewHandler {
     }
 
     static actionSourceViewItemFunction(si: SourceItem, debug: boolean): void {
-        if (commandTerminal === undefined) {
-            commandTerminal = vscode.window.createTerminal(commandTerminalName);
-        }
-
-        let prefRunner = "";
-        let prefRunnerDebug = "";
         let fsPath = "";
-        let fsDir = "";
         if (si !== undefined && si.uri !== undefined) {
             fsPath = si.uri.path as string;
-            fsDir = path.dirname(fsPath);
         }
 
-        if (fsPath.endsWith("acu")) {
-            if (COBOLFileUtils.isWin32) {
-                prefRunner = "wrun32";
-                prefRunnerDebug = debug ? "-d " : "";
-            } else {
-                prefRunner = "runcbl";
-                prefRunnerDebug = debug ? "-d " : "";
-            }
-
-            commandTerminal.show(true);
-            commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
-            return;
-        }
-
-        if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
-            if (VSSourceTreeViewHandler.mfExtension === undefined) {
-                if (COBOLFileUtils.isWin32) {
-                    prefRunner = "run";
-                    prefRunnerDebug = debug ? "(+A) " : "";
-                } else {
-                    prefRunner = debug ? "anim" : "cobrun";
-                }
-
-                commandTerminal.show(true);
-                commandTerminal.sendText(`${prefRunner} ${prefRunnerDebug}${fsPath}`);
-                return;
-            } else {
-                const workspacePath = VSCOBOLFileUtils.getBestWorkspaceFolder(fsDir);
-                if (workspacePath !== undefined) {
-                    vscode.debug.startDebugging(workspacePath, VSSourceTreeViewHandler.getDebugConfig(workspacePath, fsPath));
-                }
-            }
-        }
+        COBOLUtils.runOrDebug(fsPath,debug);
     }
 
-    static getDebugConfig(workspaceFolder: vscode.WorkspaceFolder, debugFile: string): vscode.DebugConfiguration {
-
-        // "type": "cobol",
-        // "request": "launch",
-        // "name": "COBOL: Launch",
-        // "program": "${workspaceFolder}/HelloWorld",
-        // "cwd": "${workspaceFolder}",
-        // "stopOnEntry": true
-
-        return {
-            name: 'Debug COBOL',
-            type: 'cobol',
-            request: 'launch',
-            cwd: `${workspaceFolder.uri.fsPath}`,
-            program: `${debugFile}`,
-            stopOnEntry: true
-        };
-    }
+    
 }
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
