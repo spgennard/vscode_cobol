@@ -61,7 +61,8 @@
     "onCommand:cobolplugin.revtab",
     "onCommand:cobolplugin.change_lang_to_acu",
     "onCommand:cobolplugin.change_lang_to_cobol",
-    "onCommand:cobolplugin.mfurunMenu",
+    "onCommand:cobolplugin.explorerRun",
+    "onCommand:cobolplugin.explorerDebug",
     "onCommand:cobolplugin.removeAllComments",
     "onCommand:cobolplugin.removeIdentificationArea",
     "onCommand:cobolplugin.makeKeywordsLowercase",
@@ -1420,9 +1421,15 @@
         "enablement": "!isWeb && config.coboleditor.maintain_metadata_cache && isWorkspaceTrusted"
       },
       {
-        "command": "cobolplugin.mfurunMenu",
+        "command": "cobolplugin.explorerRun",
         "category": "COBOL",
         "title": "Run UnitTest",
+        "enablement": "!isWeb && filesExplorerFocus && isWorkspaceTrusted"
+      },
+      {
+        "command": "cobolplugin.explorerDebug",
+        "category": "COBOL",
+        "title": "Debug",
         "enablement": "!isWeb && filesExplorerFocus && isWorkspaceTrusted"
       },
       {
@@ -1724,9 +1731,14 @@
       ],
       "explorer/context": [
         {
-          "command": "cobolplugin.mfurunMenu",
+          "command": "cobolplugin.explorerRun",
           "group": "navigation",
           "when": "filesExplorerFocus && resourceExtname == .mfu"
+        },
+        {
+          "command": "cobolplugin.explorerDebug",
+          "group": "navigation",
+          "when": "filesExplorerFocus && resourceExtname == .int"
         }
       ]
     },

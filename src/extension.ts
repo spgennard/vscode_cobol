@@ -534,21 +534,52 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
     }));
 
     // Open context menu on current file
-    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.mfurunMenu", function (fileUri) {
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.explorerRun", function (fileUri) {
 
-        if (unitTestTerminal === undefined) {
-            unitTestTerminal = vscode.window.createTerminal(terminalName);
+        const fsPath = fileUri.fsPath
+        if (fsPath.endsWith(".mfu")) {
+            if (unitTestTerminal === undefined) {
+                unitTestTerminal = vscode.window.createTerminal(terminalName);
+            }
+
+            unitTestTerminal.show(true);
+            const enableAnsiColor = COBOLUtils.getMFUnitAnsiColorConfig();
+
+            const properties = propertiesReader(fileUri.fsPath);
+            const prefRunner = properties.get("global.preferred-runner");
+            unitTestTerminal.sendText(prefRunner + " -show-progress " +
+                (enableAnsiColor ? " -dc:ansi " : " ") +
+                fileUri.fsPath);
+
+            return;
         }
 
-        unitTestTerminal.show(true);
-        const enableAnsiColor = COBOLUtils.getMFUnitAnsiColorConfig();
-
-        const properties = propertiesReader(fileUri.fsPath);
-        const prefRunner = properties.get("global.preferred-runner");
-        unitTestTerminal.sendText(prefRunner + " -show-progress " +
-            (enableAnsiColor ? " -dc:ansi " : " ") +
-            fileUri.fsPath);
+        COBOLUtils.runOrDebug(fsPath, false);
     }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.explorerDebug", function (fileUri) {
+
+        const fsPath = fileUri.fsPath
+        if (fsPath.endsWith(".mfu")) {
+            if (unitTestTerminal === undefined) {
+                unitTestTerminal = vscode.window.createTerminal(terminalName);
+            }
+
+            unitTestTerminal.show(true);
+            const enableAnsiColor = COBOLUtils.getMFUnitAnsiColorConfig();
+
+            const properties = propertiesReader(fileUri.fsPath);
+            const prefRunner = properties.get("global.preferred-runner");
+            unitTestTerminal.sendText(prefRunner + " -show-progress " +
+                (enableAnsiColor ? " -dc:ansi " : " ") +
+                fileUri.fsPath);
+
+            return;
+        }
+
+        COBOLUtils.runOrDebug(fsPath, true);
+    }));
+
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.migrateCopybooksToWorkspace", () => {
         COBOLUtils.migrateCopybooksToWorkspace(settings);
@@ -563,7 +594,6 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             VSSourceTreeViewHandler.actionSourceViewItemFunction(si, false);
         }
     }));
-
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runDebugCommand", function (si: SourceItem) {
         if (si !== undefined) {
