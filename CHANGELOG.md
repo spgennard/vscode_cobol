@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 2243d9b start to add file explorer context items for .int
+* 09c69bd refactor debug commands to utils
+* dfd8509 (tag: 8.5.2) Update
 * 039f0c7 add support for file nesting
 * de8a299 (tag: 8.4.26) Update
 * c61f475 if source scanner is disable, turn off other features as well
