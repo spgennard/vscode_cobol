@@ -916,6 +916,21 @@
       ]
     },
     "configurationDefaults": {
+      "explorer.fileNesting.patterns" :{
+        "*.ts": "${capture}.js",
+        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        "*.jsx": "${capture}.js",
+        "*.tsx": "${capture}.ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, yarn.lock",
+        "*.cbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.CBL": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.cob": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.COB": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.cobol": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.scbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.pco": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu"
+      },
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,

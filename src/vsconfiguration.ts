@@ -112,6 +112,7 @@ export class VSCOBOLConfiguration {
             VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }
 
+        // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {
             settings.parse_copybooks_for_references = false;
             settings.process_metadata_cache_on_start = false;
