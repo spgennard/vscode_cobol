@@ -48,10 +48,10 @@ export class VSSourceTreeViewHandler {
             fsPath = si.uri.path as string;
         }
 
-        COBOLUtils.runOrDebug(fsPath,debug);
+        COBOLUtils.runOrDebug(fsPath, debug);
     }
 
-    
+
 }
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
@@ -161,7 +161,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         const location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
         let actionCommand = "vscode.open";
-        if (ext === "acu" || ext === "int" || ext === "gnt") {
+        if (ext === "acu" || ext === "int" || ext === "gnt" || ext === "so" || ext === "dll") {
             actionCommand = "";
         }
         return {
@@ -273,6 +273,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                     break;
                 case "int":
                 case "gnt":
+                case "so":
+                case "dll":
                 case "acu":
                     if (this.objectItems.has(fsp) === false) {
                         this.objectItems.set(fsp, this.newSourceItem("objects", base, file, 0, extLower));

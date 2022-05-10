@@ -1129,9 +1129,9 @@ export class COBOLUtils {
         // "stopOnEntry": true
 
         return {
-            name: 'Debug COBOL',
-            type: 'cobol',
-            request: 'launch',
+            name: "Debug COBOL",
+            type: "cobol",
+            request: "launch",
             cwd: `${workspaceFolder.uri.fsPath}`,
             program: `${debugFile}`,
             stopOnEntry: true
@@ -1145,7 +1145,7 @@ export class COBOLUtils {
 
         let prefRunner = "";
         let prefRunnerDebug = "";
-        let fsDir = path.dirname(fsPath);
+        const fsDir = path.dirname(fsPath);
 
         if (fsPath.endsWith("acu")) {
             if (COBOLFileUtils.isWin32) {
@@ -1161,7 +1161,8 @@ export class COBOLUtils {
             return;
         }
 
-        if (fsPath.endsWith("int") || fsPath.endsWith("gnt")) {
+        // TODO: need to add .NET dll support!
+        if (fsPath.endsWith("int") || fsPath.endsWith("gnt") || fsPath.endsWith("so") || fsPath.endsWith("dll")) {
             if (COBOLUtils.mfExtension === undefined) {
                 if (COBOLFileUtils.isWin32) {
                     prefRunner = "run";
