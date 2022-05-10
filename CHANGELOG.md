@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 13f41da (HEAD -> main, tag: 8.5.9, origin/main) add .so/.dll support to the sourceview
+* 26c6d70 (tag: 8.5.8) Update
 * 2243d9b start to add file explorer context items for .int
 * 09c69bd refactor debug commands to utils
 * dfd8509 (tag: 8.5.2) Update
