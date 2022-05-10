@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* cbe2ffa (HEAD -> main, tag: 8.5.10, origin/main) add some pic u support
+* 2a03e34 (tag: 8.5.9) Update
 * addd5cb Update
 * 13f41da add .so/.dll support to the sourceview
 * 26c6d70 (tag: 8.5.8) Update
