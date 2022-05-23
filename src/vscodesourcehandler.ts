@@ -1,4 +1,4 @@
-import { StringBuilder } from "typescript-string-operations";
+
 import * as vscode from "vscode";
 import { workspace } from "vscode";
 // import { colourCommentHandler } from "./extension";
@@ -88,6 +88,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     dumpAreaBOnwards: boolean;
     commentCallbacks: ICommentCallback[] = [];
     lineCount: number;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     documentVersionId: BigInt;
     isSourceInWorkSpace: boolean;
     shortWorkspaceFilename: string;
@@ -157,6 +158,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     getDocumentVersionId(): BigInt {
         return this.documentVersionId;
     }

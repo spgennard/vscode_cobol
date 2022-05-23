@@ -3,18 +3,18 @@
 {
     "version": "2.0.0",
     "tasks": [
-		{
-			"type": "npm",
-			"script": "compile-web",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"problemMatcher": [
-				"$ts-webpack",
-				"$tslint-webpack"
-			]
-		},
+        {
+            "type": "npm",
+            "script": "compile-web",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$ts-webpack",
+                "$tslint-webpack"
+            ]
+        },
         {
             "type": "npm",
             "script": "watch-web",
@@ -32,6 +32,17 @@
             "problemMatcher": [],
             "label": "npm: compile-web",
             "detail": "webpack"
+        },
+        {
+            "type": "npm",
+            "script": "compile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "label": "npm: compile",
+            "detail": "tsc -b"
         }
     ]
 }

@@ -21,7 +21,8 @@
 			],
 			"editor.detectIndentation": false,
 			"editor.useTabStops": false,
-			"editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
+			"editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?",
+			"editor.guides.indentation": false
 		},
 		"coboleditor.preprocessor_extensions": [
 		],

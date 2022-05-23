@@ -8,9 +8,9 @@ const lineByLine = require("n-readlines");
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { pathToFileURL } from "url";
 import path from "path";
-import { StringBuilder } from "typescript-string-operations";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { ExtensionDefaults } from "./extensionDefaults";
+import { SimpleStringBuilder } from "./stringutils";
 
 
 export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
@@ -20,6 +20,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     lines: string[];
     commentCount: number;
     commentCallbacks?: ICommentCallback[];
+    // eslint-disable-next-line @typescript-eslint/ban-types
     documentVersionId: BigInt;
     isSourceInWorkspace: boolean;
     updatedSource: Map<number, string>;
@@ -59,6 +60,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     getDocumentVersionId(): BigInt {
         return this.documentVersionId;
     }
@@ -168,7 +170,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         const tabSize = 4;
 
         let col = 0;
-        const buf = new StringBuilder();
+        const buf = new SimpleStringBuilder();
         for (const c of unexpandedLine) {
             if (c === "\t") {
                 do {
