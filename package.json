@@ -207,7 +207,8 @@
             "ss",
             "wks",
             "inc",
-            "INC"
+            "INC",
+            "cblcpy"
           ],
           "markdownDescription": "COBOL CopyBook file name extensions",
           "description": "COBOL CopyBook Extensions",
@@ -230,6 +231,8 @@
             "COB",
             "cbl",
             "CBL",
+            "cblle",
+            "sqlcblle",
             "cobol",
             "scbl",
             "pco"
@@ -1053,7 +1056,9 @@
         "extensions": [
           ".cobol",
           ".cbl",
+          ".cblle",
           ".cblsrce",
+          ".cblcpy",
           ".lks",
           ".pdv",
           ".cpy",
@@ -1064,6 +1069,7 @@
           ".scb",
           ".spb",
           ".scbl",
+          ".sqlcblle",
           ".cob",
           ".dds",
           ".def",
