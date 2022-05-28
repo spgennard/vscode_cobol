@@ -5,6 +5,7 @@ import { workspace } from "vscode";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { ISourceHandler, ICommentCallback, ISourceHandlerLite, commentRange } from "./isourcehandler";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { SimpleStringBuilder } from "./stringutils";
 import { colourCommentHandler } from "./vscolourcomments";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
@@ -61,7 +62,7 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
         const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
 
         let col = 0;
-        const buf = new StringBuilder();
+        const buf = new SimpleStringBuilder();
         for (const c of unexpandedLine) {
             if (c === "\t") {
                 do {
@@ -264,7 +265,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
 
         let col = 0;
-        const buf = new StringBuilder();
+        const buf = new SimpleStringBuilder();
         for (const c of unexpandedLine) {
             if (c === "\t") {
                 do {
