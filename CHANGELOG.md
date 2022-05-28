@@ -1,6 +1,14 @@
 # CHANGELOG
 
-* cbe2ffa (HEAD -> main, tag: 8.5.10, origin/main) add some pic u support
+* 66c84b0 (HEAD -> main, tag: 8.5.26, origin/main) add uppercase ones
+* 9aa6559 Merge branch 'main' of github.com:spgennard/vscode_cobol
+* 9756ec3 add uppercase variant for internal cpybook extensions
+* 4e093bc fix typo
+* b8b9dc6 Add extensions: cblle, sqlcblle and cblcpy #316  nb: .cbl is already present
+* 79e9655 drop module
+* 028298a more tweaks for utf8
+* 3c78e65 (tag: 8.5.10) Update
+* cbe2ffa add some pic u support
 * 2a03e34 (tag: 8.5.9) Update
 * addd5cb Update
 * 13f41da add .so/.dll support to the sourceview
