@@ -258,6 +258,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                     }
                     break;
 
+                case "lst":
                 case "md":
                 case "txt":
                 case "html":
