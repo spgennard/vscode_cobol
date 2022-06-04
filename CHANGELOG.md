@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 66c84b0 (HEAD -> main, tag: 8.5.26, origin/main) add uppercase ones
+* d2fa046 (HEAD -> main, tag: 8.6.1, origin/main) add "lst" file to documents on sourceview
+* 84a1e7a drop sdk ignore
+* 73167aa minor package updates
+* ca8abde (tag: 8.5.26) Update
+* 66c84b0 add uppercase ones
 * 9aa6559 Merge branch 'main' of github.com:spgennard/vscode_cobol
 * 9756ec3 add uppercase variant for internal cpybook extensions
 * 4e093bc fix typo
