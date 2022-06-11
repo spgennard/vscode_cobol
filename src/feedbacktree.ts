@@ -41,6 +41,10 @@ export class VSHelpAndFeedViewHandler {
                 case FeedBackItem.followUs:
                     VSHelpAndFeedViewHandler.openUrl("https://twitter.com/spgennard");
                     break;
+
+                case FeedBackItem.review:
+                    VSHelpAndFeedViewHandler.openUrl("https://marketplace.visualstudio.com/items?itemName=bitlang.cobol&ssr=false#review-details");
+                    break;
             }
         });
         return;
@@ -51,6 +55,7 @@ export class VSHelpAndFeedViewHandler {
 enum FeedBackItem {
     getStarted = "Get Started",
     readDocs = "Read Documentation",
+    review = "Review extension",
     reviewIssues = "Review Issues",
     reportIssue = "Report Issue",
     joinCommunity = "Join the 'Micro Focus' Community!",
@@ -58,7 +63,11 @@ enum FeedBackItem {
 }
 
 export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem> {
-    ALL_FEEDBACK_ITEMS = Object.values(FeedBackItem) as FeedBackItem[];
+    ALL_FEEDBACK_ITEMS = [
+        FeedBackItem.getStarted,
+        FeedBackItem.review,
+        FeedBackItem.reportIssue
+    ];
 
     constructor() {
         return;
@@ -94,6 +103,10 @@ export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem
             case FeedBackItem.followUs:
                 iconPath = new vscode.ThemeIcon("twitter");
                 break;
+
+            case FeedBackItem.review:
+                iconPath = new vscode.ThemeIcon("book");
+                break;                
         }
 
         return {

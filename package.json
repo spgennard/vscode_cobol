@@ -402,12 +402,12 @@
         },
         "coboleditor.sourceview": {
           "type": "boolean",
-          "description": "Enable explorer source view",
+          "description": "Enable explorer source panel view",
           "default": true
         },
         "coboleditor.feedbackview": {
           "type": "boolean",
-          "description": "Enable experimental explorer source view",
+          "description": "Enable experimental feedback panel view",
           "default": true
         },
         "coboleditor.sourceview_include_jcl_files": {
