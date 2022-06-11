@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* a754108 (HEAD -> main, tag: 8.6.1, origin/main) tweak feedbacktree
+* 3afa3e8 (tag: 8.6.1) Update
+* a754108 tweak feedbacktree
 * cb58f86 add feedback tree and tweak config
 * 4df6a4d Update
 * d2fa046 add "lst" file to documents on sourceview
