@@ -402,6 +402,11 @@
         },
         "coboleditor.sourceview": {
           "type": "boolean",
+          "description": "Enable explorer source view",
+          "default": true
+        },
+        "coboleditor.feedbackview": {
+          "type": "boolean",
           "description": "Enable experimental explorer source view",
           "default": true
         },
@@ -926,6 +931,11 @@
           "id": "flat-source-view",
           "name": "Source View",
           "when": "config.coboleditor.sourceview"
+        },
+        {
+          "id": "help-and-feedback-view",
+          "name": "Help on COBOL and Feeback",
+          "when": "config.coboleditor.feedbackview"
         }
       ]
     },

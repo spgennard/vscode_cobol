@@ -47,6 +47,7 @@ import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
 import { activateCommonCommands } from "./vscommon_commands";
+import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -867,7 +868,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
-
+    VSHelpAndFeedViewHandler.setupSourceViewTree(settings,false);
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
     context.subscriptions.push(COBOLCaseFormatter.register(settings));
 
