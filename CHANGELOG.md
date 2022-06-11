@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* d2fa046 (HEAD -> main, tag: 8.6.1, origin/main) add "lst" file to documents on sourceview
+* a754108 (HEAD -> main, tag: 8.6.1, origin/main) tweak feedbacktree
+* cb58f86 add feedback tree and tweak config
+* 4df6a4d Update
+* d2fa046 add "lst" file to documents on sourceview
 * 84a1e7a drop sdk ignore
 * 73167aa minor package updates
 * ca8abde (tag: 8.5.26) Update
