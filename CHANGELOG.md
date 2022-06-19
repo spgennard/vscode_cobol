@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 85c2ce1 (HEAD -> main, tag: 8.6.13, origin/main) Update
+* 0d55a90 (HEAD -> main, tag: 8.6.18, origin/main) fill in copybook name if recursive metadata is set
+* 87ba0a6 (tag: 8.6.13) Update
+* 85c2ce1 Update
 * 92330a2 Update
 * 4b2bf61 Update
 * cf6682e tweak
