@@ -56,6 +56,23 @@ export class COBOLUtils {
         return globString;
     }
 
+    private static getCopyBookGlobPattern(config: ICOBOLSettings): string {
+        let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
+
+        for (const ext of config.copybookexts) {
+            if (ext.length !== 0) {
+                if (globString.endsWith("{")) {
+                    globString += ext;
+                } else {
+                    globString += "," + ext;
+                }
+            }
+        }
+
+        globString += "}";
+
+        return globString;
+    }
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
     static populateDefaultCallableSymbolsSync(settings: ICOBOLSettings, reset: boolean): void {
@@ -97,6 +114,49 @@ export class COBOLUtils {
                 const c = InMemoryGlobalSymbolCache.defaultCallableSymbols.get(callableSymbolFromFilenameLower);
                 if (c === undefined) {
                     InMemoryGlobalSymbolCache.defaultCallableSymbols.set(callableSymbolFromFilenameLower, fullPath);
+                }
+            });
+        });
+    }
+
+    static populateDefaultCopyBooksSync(settings: ICOBOLSettings, reset: boolean): void {
+        (async () => COBOLUtils.populateDefaultCopyBooks(settings, reset))();
+    }
+
+    static async populateDefaultCopyBooks(settings: ICOBOLSettings, reset: boolean): Promise<void> {
+        const ws = VSWorkspaceFolders.get();
+        if (ws === undefined) {
+            return;
+        }
+
+        const wsf = vscode.workspace.workspaceFile;
+        if (wsf === undefined) {
+            InMemoryGlobalSymbolCache.defaultCopybooks.clear();
+            return;
+        }
+
+        // reset 
+        if (reset) {
+            COBOLUtils.prevWorkSpaceUri = undefined;
+        } else {
+            // already cached?
+            if (wsf.fsPath === COBOLUtils.prevWorkSpaceUri?.fsPath) {
+                return;
+            }
+        }
+
+        // stash away current ws
+        COBOLUtils.prevWorkSpaceUri = wsf;
+        const globPattern = COBOLUtils.getCopyBookGlobPattern(settings);
+
+        await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
+            uris.forEach((uri: vscode.Uri) => {
+                const fullPath = uri.fsPath;
+                const fileName = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullPath);
+                const fileNameNoExt = path.basename(fileName, path.extname(fileName));
+                const c = InMemoryGlobalSymbolCache.defaultCopybooks.get(fileNameNoExt);
+                if (c === undefined) {
+                    InMemoryGlobalSymbolCache.defaultCopybooks.set(fileNameNoExt, fullPath);
                 }
             });
         });

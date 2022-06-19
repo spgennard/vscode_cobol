@@ -13,6 +13,8 @@ export class COBOLWorkspaceFile {
 
 export class COBOLGlobalSymbolTable {
     public defaultCallableSymbols = new Map<string,string>();
+    public defaultCopybooks = new Map<string,string>();
+
     public callableSymbols = new Map<string, COBOLFileSymbol[]>();
     public entryPoints = new Map<string, COBOLFileSymbol[]>();
 

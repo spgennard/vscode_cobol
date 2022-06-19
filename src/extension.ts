@@ -491,6 +491,11 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
 
         VSLogger.logMessage("");
     }
+
+    if (settings.maintain_metadata_recursive_search) {
+        COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+        COBOLUtils.populateDefaultCopyBooksSync(settings, true);
+    }
 }
 
 function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): void {
@@ -721,6 +726,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (maintain_metadata_recursive_search) {
                 COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+                COBOLUtils.populateDefaultCopyBooksSync(settings, true);
             }
 
             if (outline_changed) {
@@ -923,7 +929,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
-
 
             if (settings.hover_show_known_api !== hoverApi.Off) {
                 const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));

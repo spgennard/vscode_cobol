@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.6.13",
+  "version": "8.6.18",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -645,7 +645,7 @@
         },
         "coboleditor.maintain_metadata_recursive_search": {
           "type": "boolean",
-          "description": "When 'Maintain Metadata Cache' is enabled, recursive search for source code",
+          "description": "When 'Maintain Metadata Cache' is enabled, recursive search for source code filenames/copybooks",
           "default": false
         },
         "coboleditor.enable_semantic_token_provider": {

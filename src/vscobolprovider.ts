@@ -178,6 +178,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             }
         }
 
+        // include default copybooks
+        for (const [copybook,] of InMemoryGlobalSymbolCache.defaultCopybooks) {
+            if (mapOfCopybooks.has(copybook) === false) {
+                mapOfCopybooks.set(copybook, copybook);
+            }
+        }
+        
         for (const [copybook] of mapOfCopybooks) {
             items.push(new CompletionItem(copybook, CompletionItemKind.File));
             if (includeQuoted) {
