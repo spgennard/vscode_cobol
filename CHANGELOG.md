@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 0d55a90 (HEAD -> main, tag: 8.6.18, origin/main) fill in copybook name if recursive metadata is set
+* 0553a48 (HEAD -> main, tag: 8.6.21, origin/main) add more feedback items
+* 63b419a (tag: 8.6.18) Update
+* 0d55a90 fill in copybook name if recursive metadata is set
 * 87ba0a6 (tag: 8.6.13) Update
 * 85c2ce1 Update
 * 92330a2 Update
