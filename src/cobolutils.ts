@@ -119,7 +119,7 @@ export class COBOLUtils {
         });
     }
 
-    static populateDefaultCopyBooksSync(settings: ICOBOLSettings, reset: boolean): void {
+    static populateDefaultCopyBooksSync (settings: ICOBOLSettings, reset: boolean): void {
         (async () => COBOLUtils.populateDefaultCopyBooks(settings, reset))();
     }
 

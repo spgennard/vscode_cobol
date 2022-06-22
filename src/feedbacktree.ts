@@ -35,7 +35,7 @@ export class VSHelpAndFeedViewHandler {
                     break;
 
                 case FeedBackItem.joinCommunity:
-                    VSHelpAndFeedViewHandler.openUrl("https://community.microfocus.com/cobol/visualcobol/");
+                    VSHelpAndFeedViewHandler.openUrl("https://community.microfocus.com/cobol/");
                     break;
 
                 case FeedBackItem.followUs:
@@ -45,11 +45,19 @@ export class VSHelpAndFeedViewHandler {
                 case FeedBackItem.review:
                     VSHelpAndFeedViewHandler.openUrl("https://marketplace.visualstudio.com/items?itemName=bitlang.cobol&ssr=false#review-details");
                     break;
+
+                case FeedBackItem.courses:
+                    VSHelpAndFeedViewHandler.openUrl("https://ondemand.microfocus.com/course_category/cobol-and-mainframe-solutions/");
+                    break;
+
+                case FeedBackItem.introToOO:
+                    VSHelpAndFeedViewHandler.openUrl("https://supportline.microfocus.com/Documentation/books/VisualCOBOL/Intro_to_OO_Programming_for_COBOL_Developers.pdf");
+                    break;
             }
+            
         });
         return;
     }
-
 }
 
 enum FeedBackItem {
@@ -58,13 +66,18 @@ enum FeedBackItem {
     review = "Review extension",
     reviewIssues = "Review Issues",
     reportIssue = "Report Issue",
-    joinCommunity = "Join the 'Micro Focus' Community!",
+    joinCommunity = "Join the 'Micro Focus' Community",
     followUs = "Follow our Progress",
+    courses = "'Micro Focus' On-Demand Courses",
+    introToOO = "Introduction to OO Programming"
 }
 
 export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem> {
     ALL_FEEDBACK_ITEMS = [
         FeedBackItem.getStarted,
+        FeedBackItem.courses,
+        FeedBackItem.introToOO,
+        FeedBackItem.joinCommunity,
         FeedBackItem.review,
         FeedBackItem.reportIssue
     ];
@@ -106,7 +119,15 @@ export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem
 
             case FeedBackItem.review:
                 iconPath = new vscode.ThemeIcon("book");
-                break;                
+                break;
+
+            case FeedBackItem.courses:
+                iconPath = new vscode.ThemeIcon("play-circle");
+                break;
+
+            case FeedBackItem.introToOO:
+                iconPath = new vscode.ThemeIcon("file-pdf");
+                break;
         }
 
         return {
