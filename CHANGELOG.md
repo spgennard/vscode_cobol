@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 0553a48 (HEAD -> main, tag: 8.6.21, origin/main) add more feedback items
+* 3422214 (HEAD -> main, tag: 8.7.12, origin/main) add new file
+* ab37907 add b"0" & b"1" support
+* 46785a4 (tag: 8.6.21) Update
+* 0553a48 add more feedback items
 * 63b419a (tag: 8.6.18) Update
 * 0d55a90 fill in copybook name if recursive metadata is set
 * 87ba0a6 (tag: 8.6.13) Update
