@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.7.5",
+  "version": "8.7.12",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -903,7 +903,7 @@
           "description": "When enabled, allow tab to be used for inline suggestions",
           "default": true
         },
-        "coboleditor.hover_show_encoded_literals" : {
+        "coboleditor.hover_show_encoded_literals": {
           "type": "boolean",
           "description": "When enabled, decode hex literals when hover over them",
           "default": true
@@ -912,6 +912,30 @@
           "type": "boolean",
           "description": "When enabled, process coboleditor.fileformat before scanning the file",
           "default": true
+        },
+        "coboleditor.template_microfocus": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
+            "",
+            "       environment division.",
+            "       configuration section.",
+            "",
+            "       data division.",
+            "       working-storage section.",
+            "       linkage section.",
+            "",
+            "       procedure division.",
+            "           $0",
+            "           goback.",
+            "",
+            "       end program $1.",
+            ""
+          ],
+          "description": "Template for a minimum 'Micro Focus' COBOL program"
         }
       }
     },
@@ -941,7 +965,7 @@
       ]
     },
     "configurationDefaults": {
-      "explorer.fileNesting.patterns" :{
+      "explorer.fileNesting.patterns": {
         "*.ts": "${capture}.js",
         "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
         "*.jsx": "${capture}.js",
@@ -1662,9 +1686,19 @@
         "command": "cobolplugin.selectionToNXHEX",
         "category": "COBOL",
         "title": "Convert to HEX (UTF16)"
+      },
+      {
+        "command": "cobolplugin.newFile",
+        "category": "COBOL",
+        "title": "New COBOL Source File (Micro Focus)"
       }
     ],
     "menus": {
+      "file/newFile": [
+        {
+          "command": "cobolplugin.newFile"
+        }
+      ],
       "editor/context": [
         {
           "command": "cobolplugin.move2dd",
@@ -1743,32 +1777,32 @@
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],
-        "cobolplugin.convertmenu": [
-          {
-            "command": "cobolplugin.selectionToCOBOLHEX",
-            "group": "convertcobol@1",
-            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-          },
-          {
-            "command": "cobolplugin.selectionToHEX",
-            "group": "convertcobol@1",
-            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-          },
-          {
-            "command": "cobolplugin.selectionHEXToASCII",
-            "group": "convertcobol@2",
-            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-          },
-          {
-            "command": "cobolplugin.selectionToCOBOLNXHEX",
-            "group": "convertcobol@3",
-            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-          },
-          {
-            "command": "cobolplugin.selectionToNXHEX",
-            "group": "convertcobol@3",
-            "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
-          }
+      "cobolplugin.convertmenu": [
+        {
+          "command": "cobolplugin.selectionToCOBOLHEX",
+          "group": "convertcobol@1",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.selectionToHEX",
+          "group": "convertcobol@1",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.selectionHEXToASCII",
+          "group": "convertcobol@2",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.selectionToCOBOLNXHEX",
+          "group": "convertcobol@3",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        },
+        {
+          "command": "cobolplugin.selectionToNXHEX",
+          "group": "convertcobol@3",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && editorHasSelection"
+        }
       ],
       "view/item/context": [
         {
@@ -1803,7 +1837,7 @@
         "label": "Extract Selection"
       },
       {
-        "id" : "cobolplugin.convertmenu",
+        "id": "cobolplugin.convertmenu",
         "label": "Convert Selection"
       }
     ],

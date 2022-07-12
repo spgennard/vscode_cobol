@@ -10,7 +10,7 @@ import { commands } from "vscode";
 import { VSPPCodeLens } from "./vsppcodelens";
 import { ExtensionDefaults } from "./extensionDefaults";
 
-export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings ) {
+export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_acu", function () {
         const act = vscode.window.activeTextEditor;
         if (act === null || act === undefined) {
@@ -283,5 +283,19 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.selectionToNXHEX", () => {
         COBOLUtils.selectionToNXHEX(false);
+    }));
+
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile", async function () {
+        await vscode.workspace.openTextDocument({ language: "cobol" }).then(async document => {
+            const el = "coboleditor.template_microfocus";
+            const lines = vscode.workspace.getConfiguration().get<string[]>(el, []);
+            const linesArray = [...lines];
+            const editor = await vscode.window.showTextDocument(document);
+            if (editor !== undefined) {
+                const linesAsOne = linesArray.join("\n");
+                await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
+            }
+        });
     }));
 }
