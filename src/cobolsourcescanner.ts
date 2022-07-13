@@ -637,6 +637,7 @@ export interface ICOBOLSourceScannerEvents {
 
 export interface ICOBOLSourceScanner {
     filename: string;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     lastModifiedTime: BigInt;
     copyBooksUsed: Map<string, COBOLCopybookToken>;
     workspaceFile: COBOLWorkspaceFile;
@@ -664,6 +665,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public id: string;
     public sourceHandler: ISourceHandler;
     public filename: string;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     public lastModifiedTime: BigInt = BigInt(0);
 
     public tokensInOrder: COBOLToken[] = [];
@@ -1246,7 +1248,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     // private static readonly literalRegexOld = /^[#a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
     private static readonly literalRegex = /^([a-zA-Z-0-9_]*[a-zA-Z0-9]|([#]?[0-9a-zA-Z]+[a-zA-Z-0-9_]*[a-zA-Z0-9]))$/g;
 
-    private isValidLiteral(id: string): boolean {
+    public static isValidLiteral(id: string): boolean {
 
         if (id === null || id.length === 0) {
             return false;
@@ -1679,7 +1681,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         const isValidKeyword = this.isValidKeyword(trimTokenLower);
 
                         if (this.sourceReferences !== undefined) {
-                            if (this.isValidLiteral(trimTokenLower) && !this.isNumber(trimTokenLower) && isValidKeyword === false) {
+                            if (COBOLSourceScanner.isValidLiteral(trimTokenLower) && !this.isNumber(trimTokenLower) && isValidKeyword === false) {
                                 // no forward validation can be done, as this is a one pass scanner
                                 this.addReference(this.sourceReferences.unknownReferences, trimTokenLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
                             }
@@ -1704,7 +1706,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
 
                         if (state.addVariableDuringStipToTag && isValidKeyword === false) {
-                            if (this.isValidLiteral(trimTokenLower) && !this.isNumber(trimTokenLower)) {
+                            if (COBOLSourceScanner.isValidLiteral(trimTokenLower) && !this.isNumber(trimTokenLower)) {
                                 const trimToken = COBOLSourceScanner.trimLiteral(tcurrent);
                                 const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, tcurrentCurrentCol, trimToken, trimToken, state.currentDivision, token.prevToken);
                                 this.addVariableOrConstant(trimTokenLower, variableToken);
@@ -2223,7 +2225,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
 
                         if (pickUpThisField) {
-                            if (this.isValidLiteral(currentLower)) {
+                            if (COBOLSourceScanner.isValidLiteral(currentLower)) {
                                 let style = COBOLTokenStyle.Variable;
                                 const nextTokenLower = token.nextSTokenOrBlank().currentTokenLower;
 
@@ -2318,7 +2320,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         && !this.isValidKeyword(currentLower)) {
                         const trimToken = COBOLSourceScanner.trimLiteral(current);
 
-                        if (this.isValidLiteral(currentLower)) {
+                        if (COBOLSourceScanner.isValidLiteral(currentLower)) {
                             const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, tcurrentCurrentCol, trimToken, trimToken, state.currentDivision, prevTokenLower);
                             this.addVariableOrConstant(currentLower, variableToken);
                         }
@@ -2400,7 +2402,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         // traverse map of possible variables that could be indexes etc.. a bit messy but works
                         for (const [pos, trimmedCurrentLower] of this.trimVariableToMap(currentLower)) {
 
-                            if (this.isNumber(trimmedCurrentLower) === true || this.isValidKeyword(trimmedCurrentLower) === true || this.isValidLiteral(trimmedCurrentLower) === false) {
+                            if (this.isNumber(trimmedCurrentLower) === true || this.isValidKeyword(trimmedCurrentLower) === true || COBOLSourceScanner.isValidLiteral(trimmedCurrentLower) === false) {
                                 continue;
                             }
 

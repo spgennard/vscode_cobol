@@ -9,6 +9,9 @@ import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
 import { commands } from "vscode";
 import { VSPPCodeLens } from "./vsppcodelens";
 import { ExtensionDefaults } from "./extensionDefaults";
+import { COBOLSourceScanner } from "./cobolsourcescanner";
+import path from "path";
+import { VSWorkspaceFolders } from "./cobolfolders";
 
 export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_acu", function () {
@@ -287,16 +290,37 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile", async function () {
-        await vscode.workspace.openTextDocument({content: ""}).then(async document => {
-            const el = "coboleditor.template_microfocus";
-            const lines = vscode.workspace.getConfiguration().get<string[]>(el, []);
-            const linesArray = [...lines];
-            const editor = await vscode.window.showTextDocument(document);
-            if (editor !== undefined) {
-                await vscode.languages.setTextDocumentLanguage(document,"COBOL");
-                const linesAsOne = linesArray.join("\n");
-                await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
+        vscode.window.showInputBox({
+             title: "COBOL program name?", 
+             value: "untitled" ,
+             validateInput: (text: string): string | undefined => {
+                if (!text || !COBOLSourceScanner.isValidLiteral(text)) {
+                    return "Invalid program name";
+                } else {
+                    return undefined;
+                }
             }
+        }
+        ).then(async function (data) {
+            const ws = VSWorkspaceFolders.get();
+            let fpath = "";
+            if (ws) {
+                fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
+            } else {
+                fpath = path.join(process.cwd(), data + ".cbl");
+            }
+            const furl = vscode.Uri.file(fpath).with({ scheme: "untitled" });
+            await vscode.workspace.openTextDocument(furl).then(async document => {
+                const el = "coboleditor.template_microfocus";
+                const lines = vscode.workspace.getConfiguration().get<string[]>(el, []);
+                const linesArray = [...lines];
+                const editor = await vscode.window.showTextDocument(document);
+                if (editor !== undefined) {
+                    await vscode.languages.setTextDocumentLanguage(document, "COBOL");
+                    const linesAsOne = linesArray.join("\n");
+                    await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
+                }
+            });
         });
     }));
 }
