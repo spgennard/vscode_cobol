@@ -965,6 +965,7 @@
       ]
     },
     "configurationDefaults": {
+      "workbench.editor.untitled.labelFormat" :"name",
       "explorer.fileNesting.patterns": {
         "*.ts": "${capture}.js",
         "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
@@ -1099,8 +1100,8 @@
         ],
         "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
         "extensions": [
-          ".cobol",
           ".cbl",
+          ".cobol",
           ".cblle",
           ".cblsrce",
           ".cblcpy",
@@ -1690,7 +1691,7 @@
       {
         "command": "cobolplugin.newFile",
         "category": "COBOL",
-        "title": "New COBOL Source File (Micro Focus)"
+        "title": "New COBOL Program (Micro Focus)"
       }
     ],
     "menus": {

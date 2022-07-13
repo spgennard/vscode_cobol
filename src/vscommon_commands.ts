@@ -287,12 +287,13 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile", async function () {
-        await vscode.workspace.openTextDocument({ language: "cobol" }).then(async document => {
+        await vscode.workspace.openTextDocument({content: ""}).then(async document => {
             const el = "coboleditor.template_microfocus";
             const lines = vscode.workspace.getConfiguration().get<string[]>(el, []);
             const linesArray = [...lines];
             const editor = await vscode.window.showTextDocument(document);
             if (editor !== undefined) {
+                await vscode.languages.setTextDocumentLanguage(document,"COBOL");
                 const linesAsOne = linesArray.join("\n");
                 await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
             }
