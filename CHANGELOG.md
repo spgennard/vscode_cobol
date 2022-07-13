@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 3422214 (HEAD -> main, tag: 8.7.12, origin/main) add new file
+* dfce032 (HEAD -> main, tag: 8.7.13, origin/main) prompt for filename
+* ddd1a02 tweak newfile
+* a6ea155 (tag: 8.7.12) Update
+* 3422214 add new file
 * ab37907 add b"0" & b"1" support
 * 46785a4 (tag: 8.6.21) Update
 * 0553a48 add more feedback items
