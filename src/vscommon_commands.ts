@@ -11,6 +11,7 @@ import { VSPPCodeLens } from "./vsppcodelens";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import path from "path";
+import fs from "fs";
 import { VSWorkspaceFolders } from "./cobolfolders";
 
 export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
@@ -290,20 +291,35 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile", async function () {
+        let fpath = "";
+        let fdir = "";
+        const ws = VSWorkspaceFolders.get();
+        if (ws) {
+            fdir = ws[0].uri.fsPath;
+        } else {
+            fdir = process.cwd();
+        }
+
         vscode.window.showInputBox({
-             title: "COBOL program name?", 
-             value: "untitled" ,
-             validateInput: (text: string): string | undefined => {
+            title: "COBOL program name?",
+            prompt: `In directory : ${fdir}`,
+            value: "untitled",
+            validateInput: (text: string): string | undefined => {
                 if (!text || !COBOLSourceScanner.isValidLiteral(text)) {
                     return "Invalid program name";
-                } else {
-                    return undefined;
                 }
+
+                fpath = path.join(fdir, text + ".cbl");
+
+                if (fs.existsSync(fpath)) {
+                    return `File already exists (${fpath})`;
+                }
+
+                return undefined;
             }
         }
         ).then(async function (data) {
             const ws = VSWorkspaceFolders.get();
-            let fpath = "";
             if (ws) {
                 fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
             } else {
