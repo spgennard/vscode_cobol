@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* dfce032 (HEAD -> main, tag: 8.7.13, origin/main) prompt for filename
+* 720958f validate filename
+* c2be494 (tag: 8.7.13) Update
+* dfce032 prompt for filename
 * ddd1a02 tweak newfile
 * a6ea155 (tag: 8.7.12) Update
 * 3422214 add new file
