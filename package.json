@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.7.14",
+  "version": "8.7.15",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1689,7 +1689,7 @@
         "title": "Convert to HEX (UTF16)"
       },
       {
-        "command": "cobolplugin.newFile",
+        "command": "cobolplugin.newFile_MicroFocus",
         "category": "COBOL",
         "title": "New COBOL Program (Micro Focus)"
       }
@@ -1697,7 +1697,7 @@
     "menus": {
       "file/newFile": [
         {
-          "command": "cobolplugin.newFile"
+          "command": "cobolplugin.newFile_MicroFocus"
         }
       ],
       "editor/context": [

@@ -290,7 +290,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     }));
 
 
-    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile", async function () {
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
         let fpath = "";
         let fdir = "";
         const ws = VSWorkspaceFolders.get();
