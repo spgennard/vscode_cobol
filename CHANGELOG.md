@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 1140239 (HEAD -> main, tag: 8.7.15, origin/main) tweak
+* 1e97718 (HEAD -> main, tag: 8.7.25, origin/main, origin/HEAD) minor updat
+* bd82ee5 add missing exhibit from keyword list
+* 8c6be27 (tag: 8.7.15) Update
+* 1140239 tweak
 * 1023a4a make cics macros look better
 * 00e5b1d (tag: 8.7.14) Update
 * db4a0e8 Update
