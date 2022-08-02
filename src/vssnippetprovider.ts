@@ -554,6 +554,15 @@ const functionSnippets: ISimpleSnippet[] = [
         "description": "returns an alphanumeric character string consisting of a hexadecimal representation of the argument used on input",
         "scope": "cobol"
     },
+     {
+        "prefix": "hex-to-char",
+        "label": "function hex-to-char",
+        "body": [
+            "function hex-to-char(${1:alphanumeric})$0"
+        ],
+        "description": "returns a character string that represents the hexadecimal digit characters supplied on input",
+        "scope": "cobol"
+    },
     {
         "prefix": "integer",
         "label": "function integer",
