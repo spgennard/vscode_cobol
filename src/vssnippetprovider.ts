@@ -554,7 +554,7 @@ const functionSnippets: ISimpleSnippet[] = [
         "description": "returns an alphanumeric character string consisting of a hexadecimal representation of the argument used on input",
         "scope": "cobol"
     },
-     {
+    {
         "prefix": "hex-to-char",
         "label": "function hex-to-char",
         "body": [
@@ -960,6 +960,15 @@ const functionSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "trim",
+        "label": "function trim",
+        "body": [
+            "function trim(${1:argument})$0"
+        ],
+        "description": "returns a character string that trims the leading and/or trailing spaces from the argument supplied on input (opt leading/trailing)",
+        "scope": "cobol"
+    },
+    {
         "prefix": "upper-case",
         "label": "function upper-case",
         "body": [
@@ -1044,7 +1053,7 @@ class SnippetHelper {
         if (snippet.triggerIntellisense) {
             ci.command = { command: "editor.action.triggerSuggest", title: "Re-trigger completions..." };
         }
-        ci.detail = snippet.detail !== undefined ? snippet.detail: "";
+        ci.detail = snippet.detail !== undefined ? snippet.detail : "";
 
         items.push(ci);
     }
@@ -1057,7 +1066,7 @@ export class KeywordSnippetProvider extends SnippetHelper {
 
     public reInitKeyMap(settings: ICOBOLSettings): KeywordSnippetProvider {
         this.keywordTargets.clear();
-        
+
         for (const simpleSnippet of simpleSnippets) {
             this.addSnippet(settings, CompletionItemKind.Keyword, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.keywordTargets);
         }
@@ -1220,7 +1229,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         if (qcp === undefined) {
             return [];
         }
-        const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2),this.wordRegEx); // 1 space -1
+        const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2), this.wordRegEx); // 1 space -1
         if (!wordRange) return [];
 
         const previousCharacterPosition = new Position(position.line, position.character - 1);
