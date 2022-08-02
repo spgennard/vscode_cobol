@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 1e97718 (HEAD -> main, tag: 8.7.25, origin/main, origin/HEAD) minor updat
+* a9a43e5 (HEAD -> main, tag: 8.8.2, origin/main, origin/HEAD) add trim
+* a0b122c add hex-to-char
+* 4add7ae add function hex-of:
+* 854083d (tag: 8.7.25) Update
+* 1e97718 minor updat
 * bd82ee5 add missing exhibit from keyword list
 * 8c6be27 (tag: 8.7.15) Update
 * 1140239 tweak
