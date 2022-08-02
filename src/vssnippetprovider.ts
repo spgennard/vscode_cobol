@@ -546,6 +546,15 @@ const functionSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "hex-of",
+        "label": "function hex-of",
+        "body": [
+            "function hex-of(${1:alphanumeric})$0"
+        ],
+        "description": "returns an alphanumeric character string consisting of a hexadecimal representation of the argument used on input",
+        "scope": "cobol"
+    },
+    {
         "prefix": "integer",
         "label": "function integer",
         "body": [
