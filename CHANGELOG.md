@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* a9a43e5 (HEAD -> main, tag: 8.8.2, origin/main, origin/HEAD) add trim
+* 8e66ba4 (HEAD -> main, tag: 8.8.8, origin/main, origin/HEAD) refactor newFile to make it easier to introduce extra ones..
+* 917cab1 Add mfunit ep snippet
+* b97d31e (tag: 8.8.2) Update
+* a9a43e5 add trim
 * a0b122c add hex-to-char
 * 4add7ae add function hex-of:
 * 854083d (tag: 8.7.25) Update
