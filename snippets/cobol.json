@@ -78,8 +78,11 @@
 		"description": "method-id",
 		"scope": "cobol"
 	},
-	"MFUnit Test": {
-		"prefix": "mfu",
+	"MFUnit Test (Program)": {
+		"prefix": [
+			"mfu",
+			"mfup"
+		],
 		"body": [
 			"       copy \"mfunit_prototypes.cpy\".",
 			"",
@@ -140,6 +143,42 @@
 			"       end program Test${1}."
 		],
 		"description": "MFUNIT skeleton program",
+		"scope": "cobol"
+	},
+	"MFUnit Test (Entry Point)": {
+		"prefix": [
+			"mfu",
+			"mfuep"
+		],
+		"body": [
+			"       Test-${1} Section.",
+			"       entry MFU-TC-PREFIX & \"${1}\".",
+			"      *> Test code goes here.",
+			"           $0",
+			"           goback returning MFU-PASS-RETURN-CODE",
+			"       .",
+			"",
+			"      \\$region Test Configuration for ${1}",
+			"      *> Setup Code:",
+			"       entry MFU-TC-SETUP-PREFIX & \"${1}\".",
+			"           goback returning 0.",
+			"",
+			"      *> Teardown Code:",
+			"       entry MFU-TC-TEARDOWN-PREFIX & \"${1}\".",
+			"           goback returning 0.",
+			"",
+			"      *> Metadata:",
+			"       entry MFU-TC-METADATA-SETUP-PREFIX & \"${1}\".",
+			"           move \"${2}\" to MFU-MD-TESTCASE-DESCRIPTION",
+			"           move ${4:100000} to MFU-MD-TIMEOUT-IN-MS",
+			"           move \"${5:smoke,regression,sanity,interface,other}\"",
+			"                to MFU-MD-TRAITS",
+			"           set MFU-MD-SKIP-TESTCASE to False",
+			"           goback returning 0.",
+			"",
+			"      \\$end-region"
+		],
+		"description": "MFUNIT Test Case as a Entry Point",
 		"scope": "cobol"
 	},
 	"IDENTIFICATION (CICS)": {
