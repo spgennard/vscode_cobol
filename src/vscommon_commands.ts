@@ -14,6 +14,57 @@ import path from "path";
 import fs from "fs";
 import { VSWorkspaceFolders } from "./cobolfolders";
 
+
+function newFile(title:string, template: string) {
+    let fpath = "";
+    let fdir = "";
+    const ws = VSWorkspaceFolders.get();
+    if (ws) {
+        fdir = ws[0].uri.fsPath;
+    } else {
+        fdir = process.cwd();
+    }
+
+    vscode.window.showInputBox({
+        title: title,
+        prompt: `In directory : ${fdir}`,
+        value: "untitled",
+        validateInput: (text: string): string | undefined => {
+            if (!text || !COBOLSourceScanner.isValidLiteral(text)) {
+                return "Invalid program name";
+            }
+
+            fpath = path.join(fdir, text + ".cbl");
+
+            if (fs.existsSync(fpath)) {
+                return `File already exists (${fpath})`;
+            }
+
+            return undefined;
+        }
+    }
+    ).then(async function (data) {
+        const ws = VSWorkspaceFolders.get();
+        if (ws) {
+            fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
+        } else {
+            fpath = path.join(process.cwd(), data + ".cbl");
+        }
+        const furl = vscode.Uri.file(fpath).with({ scheme: "untitled" });
+        await vscode.workspace.openTextDocument(furl).then(async document => {
+            const el = template;
+            const lines = vscode.workspace.getConfiguration().get<string[]>(el, []);
+            const linesArray = [...lines];
+            const editor = await vscode.window.showTextDocument(document);
+            if (editor !== undefined) {
+                await vscode.languages.setTextDocumentLanguage(document, "COBOL");
+                const linesAsOne = linesArray.join("\n");
+                await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
+            }
+        });
+    });
+}
+
 export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_acu", function () {
         const act = vscode.window.activeTextEditor;
@@ -291,52 +342,6 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
-        let fpath = "";
-        let fdir = "";
-        const ws = VSWorkspaceFolders.get();
-        if (ws) {
-            fdir = ws[0].uri.fsPath;
-        } else {
-            fdir = process.cwd();
-        }
-
-        vscode.window.showInputBox({
-            title: "COBOL program name?",
-            prompt: `In directory : ${fdir}`,
-            value: "untitled",
-            validateInput: (text: string): string | undefined => {
-                if (!text || !COBOLSourceScanner.isValidLiteral(text)) {
-                    return "Invalid program name";
-                }
-
-                fpath = path.join(fdir, text + ".cbl");
-
-                if (fs.existsSync(fpath)) {
-                    return `File already exists (${fpath})`;
-                }
-
-                return undefined;
-            }
-        }
-        ).then(async function (data) {
-            const ws = VSWorkspaceFolders.get();
-            if (ws) {
-                fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
-            } else {
-                fpath = path.join(process.cwd(), data + ".cbl");
-            }
-            const furl = vscode.Uri.file(fpath).with({ scheme: "untitled" });
-            await vscode.workspace.openTextDocument(furl).then(async document => {
-                const el = "coboleditor.template_microfocus";
-                const lines = vscode.workspace.getConfiguration().get<string[]>(el, []);
-                const linesArray = [...lines];
-                const editor = await vscode.window.showTextDocument(document);
-                if (editor !== undefined) {
-                    await vscode.languages.setTextDocumentLanguage(document, "COBOL");
-                    const linesAsOne = linesArray.join("\n");
-                    await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
-                }
-            });
-        });
+         newFile("COBOL program name?","coboleditor.template_microfocus");
     }));
 }
