@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* 8e66ba4 (HEAD -> main, tag: 8.8.8, origin/main, origin/HEAD) refactor newFile to make it easier to introduce extra ones..
+* ed6965a Update
+* 8e66ba4 refactor newFile to make it easier to introduce extra ones..
 * 917cab1 Add mfunit ep snippet
 * b97d31e (tag: 8.8.2) Update
 * a9a43e5 add trim
