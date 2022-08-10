@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.8.8",
+  "version": "8.8.10",
   "publisher": "bitlang",
   "keywords": [
     "cobol",
@@ -1082,14 +1082,22 @@
           "ACUCOBOL",
           "acucobol"
         ],
-        "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.bench.).*$",
+        "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.[Bb]ench.).*$",
         "extensions": [
           ".evt",
+          ".lks",
           ".prd",
           ".wrk",
           ".mnu",
           ".def",
-          ".sl"
+          ".sl",
+          ".EVT",
+          ".LKS",
+          ".PRD",
+          ".WRK",
+          ".MNU",
+          ".DEF",
+          ".SL"
         ],
         "configuration": "./acucobol.configuration.json"
       },
@@ -1105,7 +1113,6 @@
           ".cblle",
           ".cblsrce",
           ".cblcpy",
-          ".lks",
           ".pdv",
           ".cpy",
           ".copybook",
@@ -1129,7 +1136,6 @@
           ".CBLLE",
           ".CBLSRCE",
           ".CBLCPY",
-          ".LKS",
           ".PDV",
           ".CPY",
           ".COPYBOOK",
