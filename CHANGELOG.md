@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* a052a98 (HEAD -> main, tag: 8.8.10, origin/main, origin/HEAD) move lks to ACUCOBOL
+* db3d593 add extra keywords
+* b737268 add support for change from COBOL to ACUCOBOL if AcuBench messages found in first two lines of the code
+* cb1f96e (tag: 8.8.10) Update
+* a052a98 move lks to ACUCOBOL
 * 4c95a86 Update
 * 693fe9c Update
 * ed6965a (tag: 8.8.8) Update
