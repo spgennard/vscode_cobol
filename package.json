@@ -938,6 +938,71 @@
             ""
           ],
           "description": "Template for a minimum 'Micro Focus' COBOL program"
+        },
+        "coboleditor.template_microfocus_mfunit": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "       copy \"mfunit_prototypes.cpy\".",
+            "",
+            "       identification division.",
+            "       program-id. Test${1:${TM_FILENAME_BASE/Test(.*)/$1/}}.",
+            "",
+            "       data division.",
+            "       working-storage section.",
+            "       78 TEST-Program value \"${1}\".",
+            "       copy \"mfunit.cpy\".",
+            "       78 TEST-PRELOAD-LIBRARY value \"${3}\".",
+            "       01 TEST-PP              procedure-pointer.",
+            "",
+            "       *> Testcase     : $1",
+            "       *>  Description : ${2:The description of the test case}",
+            "       procedure division.",
+            "           goback returning 0",
+            "       .",
+            "",
+            "       entry MFU-TC-PREFIX & TEST-${1}.",
+            "      *> Test code goes here.",
+            "           $0",
+            "           goback returning MFU-PASS-RETURN-CODE",
+            "       .",
+            "",
+            "      \\$region Test Configuration",
+            "      *> Setup Code:",
+            "       entry MFU-TC-SETUP-PREFIX & TEST-${1}.",
+            "           perform InitializeLinkageData",
+            "",
+            "           *> Add any other test setup code here",
+            "           goback returning 0",
+            "       .",
+            "",
+            "      *> Teardown Code:",
+            "       entry MFU-TC-TEARDOWN-PREFIX & TEST-${1}.",
+            "           goback returning 0",
+            "       .",
+            "",
+            "      *> Metadata:",
+            "       entry MFU-TC-METADATA-SETUP-PREFIX & TEST-${1}.",
+            "           move \"${2}\" to MFU-MD-TESTCASE-DESCRIPTION",
+            "           move ${4:100000} to MFU-MD-TIMEOUT-IN-MS",
+            "           move \"${5:smoke,regression,sanity,interface,other}\" to MFU-MD-TRAITS",
+            "           set MFU-MD-SKIP-TESTCASE to False",
+            "           goback returning 0",
+            "       .",
+            "",
+            "       InitializeLinkageData section.",
+            "           if TEST-PRELOAD-LIBRARY not equal spaces",
+            "      *> Load the library that is being tested",
+            "               set TEST-PP to entry TEST-PRELOAD-LIBRARY",
+            "           end-if",
+            "           exit section",
+            "       .",
+            "      \\$end-region",
+            "",
+            "       end program Test${1}."
+          ]
         }
       }
     },
@@ -967,7 +1032,7 @@
       ]
     },
     "configurationDefaults": {
-      "workbench.editor.untitled.labelFormat" :"name",
+      "workbench.editor.untitled.labelFormat": "name",
       "explorer.fileNesting.patterns": {
         "*.ts": "${capture}.js",
         "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
@@ -1700,12 +1765,20 @@
         "command": "cobolplugin.newFile_MicroFocus",
         "category": "COBOL",
         "title": "New COBOL Program (Micro Focus)"
+      },
+      {
+        "command": "cobolplugin.newFile_MicroFocus_mfunit",
+        "category": "COBOL",
+        "title": "New COBOL Unit Test Program (Micro Focus)"
       }
     ],
     "menus": {
       "file/newFile": [
         {
           "command": "cobolplugin.newFile_MicroFocus"
+        },
+        {
+          "command": "cobolplugin.newFile_MicroFocus_mfunit"
         }
       ],
       "editor/context": [
