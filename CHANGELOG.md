@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* d21bb4b (HEAD -> main, tag: 8.8.14, origin/main, origin/HEAD) allow enforce file associations to be used with ACUCOBOL & COBOL
+* 146cb77 (tag: 8.8.13) Update
 * 0deb921 add newFile for ACUCOBOL
 * c6d89f0 add new unit test
 * af1c32c (tag: 8.8.11) Update
