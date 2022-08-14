@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 0deb921 add newFile for ACUCOBOL
+* c6d89f0 add new unit test
+* af1c32c (tag: 8.8.11) Update
 * db3d593 add extra keywords
 * b737268 add support for change from COBOL to ACUCOBOL if AcuBench messages found in first two lines of the code
 * cb1f96e (tag: 8.8.10) Update
