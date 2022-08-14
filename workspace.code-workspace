@@ -9,7 +9,7 @@
 			"editor.semanticHighlighting.enabled": true,
 			"files.autoGuessEncoding": false,
 			"editor.snippetSuggestions": "bottom",
-			"editor.renderIndentGuides": false,
+			"editor.guides.bracketPairs": "active",
 			"editor.autoIndent": "advanced",
 			"editor.insertSpaces": true,
 			"editor.formatOnType": true,

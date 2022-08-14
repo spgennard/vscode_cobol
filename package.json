@@ -1003,6 +1003,22 @@
             "",
             "       end program Test${1}."
           ]
+        },
+        "coboleditor.template_acucobol": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "       Identification Division.",
+            "       Program-Id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
+            "       Data Division.",
+            "       Working-Storage Section.",
+            "       Procedure Division.",
+            "           $0",
+            "           GoBack.",
+            "       End Program $1."
+          ]
         }
       }
     },
@@ -1770,6 +1786,11 @@
         "command": "cobolplugin.newFile_MicroFocus_mfunit",
         "category": "COBOL",
         "title": "New COBOL Unit Test Program (Micro Focus)"
+      },
+      {
+        "command": "cobolplugin.newFile_ACUCOBOL",
+        "category": "ACUCOBOL",
+        "title": "New ACUCOBOL Program (Micro Focus)"
       }
     ],
     "menus": {
@@ -1779,6 +1800,9 @@
         },
         {
           "command": "cobolplugin.newFile_MicroFocus_mfunit"
+        },
+        {
+          "command": "cobolplugin.newFile_ACUCOBOL"
         }
       ],
       "editor/context": [

@@ -348,4 +348,8 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus_mfunit", async function () {
          newFile("COBOL Unit Test program name?","coboleditor.template_microfocus_mfunit", "COBOL");
     }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_ACUCOBOL", async function () {
+         newFile("ACUCOBOL program name?","coboleditor.template_acucobol", "ACUCOBOL");
+    }));
 }
