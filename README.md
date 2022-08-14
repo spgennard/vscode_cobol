@@ -112,6 +112,14 @@ Only active when `coboleditor.xedit_keymap` is set to true.
 - Extensions used for *Go to copybook*, can be changed by editing the ```coboleditor.copybookexts``` settings.
 - Directories used for *Go to copybook*, can be changed by editing the ```coboleditor.copybookdirs``` settings.
 
+## New File
+
+New file creation support is provided for COBOL and ACUCOBOL programs with addditional support for Micro Focus Unit Test programs.
+
+## Changing the default file associations
+
+The command "Enforce extension via file.assocations" allows the default to be change from the "COBOL" language to "ACUCOBOL" or "COBOLIT".
+
 ## Tasks
 
 Visual Studio code can be setup to build your COBOL source code.
@@ -148,6 +156,7 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 ```
 
 ### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(3)
+
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
