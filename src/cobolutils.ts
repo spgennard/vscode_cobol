@@ -862,7 +862,7 @@ export class COBOLUtils {
         }
     }
 
-    public static enforceFileExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean) {
+    public static enforceFileExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean, requiredLanguage: string) {
         // const fileConfig = vscode.workspace
         const filesConfig = vscode.workspace.getConfiguration("files");
 
@@ -887,16 +887,16 @@ export class COBOLUtils {
             const key = `*.${ext}`;
             const assocTo = fileAssocMap.get(key);
             if (assocTo !== undefined) {
-                if (assocTo !== ExtensionDefaults.defaultCOBOLLanguage) {
+                if (assocTo !== requiredLanguage) {
                     // steal back
                     if (verbose) {
                         externalFeatures.logMessage(` WARNING: ${ext} is associated with ${assocTo}`);
                     }
-                    filesAssociationsConfig[key] = ExtensionDefaults.defaultCOBOLLanguage;
+                    filesAssociationsConfig[key] = requiredLanguage;
                     updateRequired = true;
                 }
             } else {
-                filesAssociationsConfig[key] = ExtensionDefaults.defaultCOBOLLanguage
+                filesAssociationsConfig[key] = requiredLanguage
                 updateRequired = true;
             }
         }

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.8.13",
+  "version": "8.8.14",
   "publisher": "bitlang",
   "keywords": [
     "acucobol",
@@ -1779,17 +1779,17 @@
       },
       {
         "command": "cobolplugin.newFile_MicroFocus",
-        "category": "COBOL",
+        "category": "COBOL@1",
         "title": "New COBOL Program (Micro Focus)"
       },
       {
         "command": "cobolplugin.newFile_MicroFocus_mfunit",
-        "category": "COBOL",
+        "category": "COBOL@1",
         "title": "New COBOL Unit Test Program (Micro Focus)"
       },
       {
         "command": "cobolplugin.newFile_ACUCOBOL",
-        "category": "ACUCOBOL",
+        "category": "COBOL@2",
         "title": "New ACUCOBOL Program (Micro Focus)"
       }
     ],

@@ -15,7 +15,7 @@ import fs from "fs";
 import { VSWorkspaceFolders } from "./cobolfolders";
 
 
-function newFile(title:string, template: string, doclang: string) {
+function newFile(title: string, template: string, doclang: string) {
     let fpath = "";
     let fdir = "";
     const ws = VSWorkspaceFolders.get();
@@ -57,9 +57,9 @@ function newFile(title:string, template: string, doclang: string) {
             const linesArray = [...lines];
             const editor = await vscode.window.showTextDocument(document);
             if (editor !== undefined) {
-                await vscode.languages.setTextDocumentLanguage(document, doclang);
                 const linesAsOne = linesArray.join("\n");
                 await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
+                await vscode.languages.setTextDocumentLanguage(document, doclang);
             }
         });
     });
@@ -315,7 +315,12 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true);
+            vscode.window.showQuickPick(["COBOL", "ACUCOBOL", "COBOLIT"], { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
+                if (vscode.window.activeTextEditor && dialect) {
+                    COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true, dialect);
+                }
+            });
+
         }
     }));
 
@@ -342,14 +347,14 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
-         newFile("COBOL program name?","coboleditor.template_microfocus", "COBOL");
+        newFile("COBOL program name?", "coboleditor.template_microfocus", "COBOL");
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus_mfunit", async function () {
-         newFile("COBOL Unit Test program name?","coboleditor.template_microfocus_mfunit", "COBOL");
+        newFile("COBOL Unit Test program name?", "coboleditor.template_microfocus_mfunit", "COBOL");
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_ACUCOBOL", async function () {
-         newFile("ACUCOBOL program name?","coboleditor.template_acucobol", "ACUCOBOL");
+        newFile("ACUCOBOL program name?", "coboleditor.template_acucobol", "ACUCOBOL");
     }));
 }
