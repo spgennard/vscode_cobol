@@ -48,6 +48,7 @@ import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
 import { activateCommonCommands } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
+import { VSCustomIntelliseRules } from "./vscustomrules";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -692,7 +693,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_enable_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_columns_tags`);
         const md_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
         const intellisense_no_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_no_space_keywords`);
-        
+        const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules_changed`);
+
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
@@ -749,6 +751,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (intellisense_no_space_keywords_changed) {
                 KeywordAutocompleteCompletionItemProvider.Default4COBOL.reFreshConfiguration(settings);
+            }
+
+            if (custom_intellisense_rules_changed) {
+                VSCustomIntelliseRules.Default.reFreshConfiguration(settings);
             }
         }
     });

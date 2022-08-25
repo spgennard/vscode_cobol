@@ -113,7 +113,10 @@ export class VSCOBOLConfiguration {
         }
 
         settings.intellisense_no_space_keywords = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("intellisense_no_space_keywords", settings.intellisense_no_space_keywords);
-        
+
+        settings.custom_intellisense_rules = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
+
+
         // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {
             settings.parse_copybooks_for_references = false;

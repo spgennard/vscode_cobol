@@ -512,6 +512,18 @@
           "default": 120,
           "minItems": 30
         },
+        "coboleditor.custom_intellisense_rules": {
+          "type": "array",
+          "description": "Custom intellisense rules",
+          "items": {
+            "type": "string",
+            "title": "Custom intellisense rule (item:[clu])",
+            "pattern": "(^.*:[clu]$)",
+            "patternErrorMessage": "Invalid custom intellisense rule (item:[clu]) where c=camelcase, u=uppercase and l=lowercase"
+          },
+          "default": [],
+          "uniqueItems": true
+        },
         "coboleditor.process_metadata_cache_on_start": {
           "type": "boolean",
           "description": "Process metadata cache on extension load (default false)",

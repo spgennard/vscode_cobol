@@ -5,7 +5,7 @@ import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
 import { KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnippetprovider";
-import { VSLogger } from "./vslogger";
+import { VSCustomIntelliseRules } from "./vscustomrules";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -78,7 +78,8 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				invokeNext = true;
 			} else {
 				const extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
-				switch (iconfig.intellisense_style) {
+				const istyle =  VSCustomIntelliseRules.Default.getCustomIStyle(iconfig,key); 
+				switch (istyle) {
 					case intellisenseStyle.CamelCase:
 						{
 							const camelKey = SourceScannerUtils.camelize(key);
@@ -105,6 +106,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 						break;
 				}
 			}
+
 			for (const [uniqueRetKey, uniqueRetKeySpace] of retKeys) {
 				const ci = new CompletionItem(uniqueRetKeySpace, CompletionItemKind.Keyword);
 				ci.detail = `COBOL keyword ${uniqueRetKey}`;

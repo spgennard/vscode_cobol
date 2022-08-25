@@ -7,6 +7,7 @@ import TrieSearch from "trie-search";
 import { VSLogger } from "./vslogger";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { IExternalFeatures } from "./externalfeatures";
+import { VSCustomIntelliseRules } from "./vscustomrules";
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
 
@@ -127,8 +128,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             workMap.set(key.tokenNameLower, key.tokenNameLower);
 
             const orgKey = key.tokenName;
-
-            switch (iconfig.intellisense_style) {
+            const iStyle = VSCustomIntelliseRules.Default.getCustomIStyle(iconfig,key.tokenNameLower);
+            switch (iStyle) {
                 case intellisenseStyle.Unchanged:
                     retKeys.push((key.tokenName));
                     break;

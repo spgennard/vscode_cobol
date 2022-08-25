@@ -6,6 +6,7 @@ import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSCustomIntelliseRules } from "./vscustomrules";
 
 const jsonCRLF = "\r\n";
 
@@ -1020,9 +1021,11 @@ class SnippetHelper {
 
         let preselect = snippet.label;
         let kiSnippet = "";
-        let istyle = settings.intellisense_style;
+        let istyle:intellisenseStyle;
         if (snippet.alwaysUpperCase) {
             istyle = intellisenseStyle.UpperCase;
+        } else {
+            istyle = VSCustomIntelliseRules.Default.getCustomIStyle(settings,snippet.prefix);
         }
 
         switch (istyle) {
@@ -1151,7 +1154,8 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         let kiSnippet = "";
         let callStatement = keyword;
 
-        switch (settings.intellisense_style) {
+        const iStyle = VSCustomIntelliseRules.Default.getCustomIStyle(settings,ki.api);
+        switch (iStyle) {
             case intellisenseStyle.CamelCase:
                 kiSnippet = this.foldKeywordLine(ki.snippet, FoldStyle.CamelCase, langId);
                 kiExample = this.foldKeywordLine(ki.example, FoldStyle.CamelCase, langId);
