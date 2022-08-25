@@ -5,17 +5,32 @@ import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
 import { KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnippetprovider";
+import { VSLogger } from "./vslogger";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
 
 	private onlyShowSnippetKeywords = new Map<string, string>([["dfhresp", "dfhresp"]]);
 
-	private nextKeyKeywords = new Map<string, string>([["section", ""]]);
+	private nextKeyKeywords = new Map<string, string>();
 	private dollarGTWordRegEx = new RegExp("[#>$0-9a-zA-Z][>a-zA-Z0-9-_]*");
 
-	public constructor(forCOBOL: boolean) {
+	public static Default4COBOL: KeywordAutocompleteCompletionItemProvider;
+
+	public constructor(forCOBOL: boolean, settings: ICOBOLSettings) {
 		this.isCOBOL = forCOBOL;
+
+		if (this.isCOBOL) {
+			KeywordAutocompleteCompletionItemProvider.Default4COBOL = this;
+			this.reFreshConfiguration(settings);
+		}
+	}
+
+	public reFreshConfiguration(settings: ICOBOLSettings) {
+		this.nextKeyKeywords.clear();
+		for (const kwNoSpace of settings.intellisense_no_space_keywords) {
+			this.nextKeyKeywords.set(kwNoSpace.toLowerCase(), "");
+		}
 	}
 
 	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number, langid: string): CompletionItem[] {
@@ -126,7 +141,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			return [];
 		}
 
-		const range = document.getWordRangeAtPosition(position,this.dollarGTWordRegEx);		// include prefix words such as $if.. >>if, just so we dont act on simular keywords
+		const range = document.getWordRangeAtPosition(position, this.dollarGTWordRegEx);		// include prefix words such as $if.. >>if, just so we dont act on simular keywords
 		if (range) {
 			wordToComplete = document.getText(new Range(range.start, position));
 			lineBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trim();

@@ -691,7 +691,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_intellisense_style = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_style`);
         const md_enable_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_columns_tags`);
         const md_columns_tags = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
-
+        const intellisense_no_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_no_space_keywords`);
+        
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
@@ -744,6 +745,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
             // ensure we update the map
             if (md_intellisense_style) {
                 SnippetCompletionItemProvider.Default.reInitCallMap(settings);
+            }
+
+            if (intellisense_no_space_keywords_changed) {
+                KeywordAutocompleteCompletionItemProvider.Default4COBOL.reFreshConfiguration(settings);
             }
         }
     });
@@ -905,8 +910,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const jclSelectors = [
         { scheme: "file", language: "JCL" }
     ];
-    context.subscriptions.push(languages.registerCompletionItemProvider(jclSelectors, new KeywordAutocompleteCompletionItemProvider(false)));
-    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), new KeywordAutocompleteCompletionItemProvider(true)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(jclSelectors, new KeywordAutocompleteCompletionItemProvider(false,settings)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), new KeywordAutocompleteCompletionItemProvider(true, settings)));
+    
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), SnippetCompletionItemProvider.Default.reInitCallMap(settings)));
 
     if (settings.outline) {

@@ -124,6 +124,8 @@ export interface ICOBOLSettings {
     hover_show_encoded_literals: boolean;
 
     check_file_format_before_file_scan: boolean;
+
+    intellisense_no_space_keywords:string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -213,6 +215,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     check_file_format_before_file_scan: boolean;
 
+    intellisense_no_space_keywords: string[];
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -284,5 +288,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_columns_tags = false;
         this.hover_show_encoded_literals = true;
         this.check_file_format_before_file_scan = true;
+        this.intellisense_no_space_keywords = [];
     }
 }

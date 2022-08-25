@@ -397,7 +397,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(sourcedefProvider);
 
-    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(true);
+    const keywordProvider = new KeywordAutocompleteCompletionItemProvider(true, settings);
     const keywordProviderDisposible = vscode.languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), keywordProvider);
     context.subscriptions.push(keywordProviderDisposible);
 
