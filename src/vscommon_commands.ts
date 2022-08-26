@@ -5,7 +5,7 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSLogger } from "./vslogger";
-import { AlignStyle, COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
+import { AlignStyle, COBOLUtils, FoldAction } from "./cobolutils";
 import { commands } from "vscode";
 import { VSPPCodeLens } from "./vsppcodelens";
 import { ExtensionDefaults } from "./extensionDefaults";
@@ -153,7 +153,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.LowerCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, langid);
             }
         }
     }));
@@ -163,7 +163,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, langid);
             }
         }
     }));
@@ -173,7 +173,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, langid);
             }
         }
     }));
@@ -183,7 +183,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid);
             }
         }
     }));
@@ -193,7 +193,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid);
             }
         }
     }));
@@ -203,7 +203,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid);
             }
         }
     }));
@@ -213,7 +213,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.LowerCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid);
             }
         }
     }));
@@ -223,7 +223,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.UpperCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid);
             }
         }
     }));
@@ -233,7 +233,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, FoldStyle.CamelCase, langid);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid);
             }
         }
     }));

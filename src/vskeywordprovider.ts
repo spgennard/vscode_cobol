@@ -78,7 +78,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 				invokeNext = true;
 			} else {
 				const extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
-				const istyle =  VSCustomIntelliseRules.Default.getCustomIStyle(iconfig,key); 
+				const istyle =  VSCustomIntelliseRules.Default.findCustomIStyle(iconfig,key); 
 				switch (istyle) {
 					case intellisenseStyle.CamelCase:
 						{

@@ -7,20 +7,15 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./cobolfolders";
-import { ICOBOLSettings } from "./iconfiguration";
+import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { COBOLFileSymbol } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
+import { VSCustomIntelliseRules } from "./vscustomrules";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
-
-export enum FoldStyle {
-    LowerCase = 1,
-    UpperCase = 2,
-    CamelCase = 3
-}
 
 export enum FoldAction {
     PerformTargets = 1,
@@ -119,7 +114,7 @@ export class COBOLUtils {
         });
     }
 
-    static populateDefaultCopyBooksSync (settings: ICOBOLSettings, reset: boolean): void {
+    static populateDefaultCopyBooksSync(settings: ICOBOLSettings, reset: boolean): void {
         (async () => COBOLUtils.populateDefaultCopyBooks(settings, reset))();
     }
 
@@ -611,13 +606,14 @@ export class COBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner | undefined, action: FoldAction, foldstyle: FoldStyle, foldConstantsToUpper: boolean, languageid: string): string {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner | undefined, action: FoldAction, foldConstantsToUpper: boolean, languageid: string, settings: ICOBOLSettings): string {
         let newtext = text;
         const args: string[] = [];
 
         SourceScannerUtils.splitArgument(text, true, args);
         const textLower = text.toLowerCase();
         let lastPos = 0;
+        let foldstyle: intellisenseStyle = settings.intellisense_style;
         for (let ic = 0; ic < args.length; ic++) {
             let arg = args[ic];
             if (arg.endsWith(".")) {
@@ -634,6 +630,7 @@ export class COBOLUtils {
                         actionIt = current.sections.has(argLower);
                         if (actionIt === false) {
                             actionIt = current.paragraphs.has(argLower);
+                            foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower);
                         }
                     }
                     break;
@@ -641,12 +638,15 @@ export class COBOLUtils {
                 case FoldAction.ConstantsOrVariables:
                     if (current !== undefined) {
                         actionIt = current.constantsOrVariables.has(argLower);
-                        if (actionIt && foldConstantsToUpper) {
-                            const cvars = current.constantsOrVariables.get(argLower);
-                            if (cvars !== undefined) {
-                                for (const cvar of cvars) {
-                                    if (cvar.tokenType === COBOLTokenStyle.Constant) {
-                                        foldstyle = FoldStyle.UpperCase;
+                        if (actionIt) {
+                            foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, arg);
+                            if (foldConstantsToUpper) {
+                                const cvars = current.constantsOrVariables.get(argLower);
+                                if (cvars !== undefined) {
+                                    for (const cvar of cvars) {
+                                        if (cvar.tokenType === COBOLTokenStyle.Constant) {
+                                            foldstyle = intellisenseStyle.UpperCase;
+                                        }
                                     }
                                 }
                             }
@@ -656,12 +656,15 @@ export class COBOLUtils {
 
                 case FoldAction.Keywords:
                     actionIt = COBOLUtils.isValidKeywordOrStorageKeyword(languageid, argLower);
+                    if (actionIt) {
+                        foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower);
+                    }
                     break;
             }
 
-            if (actionIt) {
+            if (actionIt && foldstyle !== undefined) {
                 switch (foldstyle) {
-                    case FoldStyle.LowerCase:
+                    case intellisenseStyle.LowerCase:
                         {
                             if (argLower !== arg) {
                                 const tmpline = newtext.substr(0, ipos) + argLower + newtext.substr(ipos + arg.length);
@@ -670,7 +673,7 @@ export class COBOLUtils {
                             }
                         }
                         break;
-                    case FoldStyle.UpperCase:
+                    case intellisenseStyle.UpperCase:
                         {
                             const argUpper = arg.toUpperCase();
                             if (argUpper !== arg) {
@@ -680,7 +683,7 @@ export class COBOLUtils {
                             }
                         }
                         break;
-                    case FoldStyle.CamelCase:
+                    case intellisenseStyle.CamelCase:
                         {
                             const camelArg = SourceScannerUtils.camelize(arg);
                             if (camelArg !== arg) {
@@ -706,7 +709,6 @@ export class COBOLUtils {
         settings: ICOBOLSettings,
         activeEditor: vscode.TextEditor,
         action: FoldAction,
-        foldstyle: FoldStyle,
         languageid: string): void {
         const uri = activeEditor.document.uri;
 
@@ -725,7 +727,7 @@ export class COBOLUtils {
                 break;      // eof
             }
 
-            const newtext = COBOLUtils.foldTokenLine(text, current, action, foldstyle, settings.format_constants_to_uppercase, languageid);
+            const newtext = COBOLUtils.foldTokenLine(text, current, action, settings.format_constants_to_uppercase, languageid, settings);
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {
@@ -992,7 +994,7 @@ export class COBOLUtils {
             const chr = str.charAt(i);
             const chrBuffer = Buffer.from(chr, "utf16le").reverse(); // make big endian
 
-            for(let j = 0; j < chrBuffer.length; j++) {
+            for (let j = 0; j < chrBuffer.length; j++) {
                 let hex = Number(chrBuffer[j]).toString(16).toUpperCase();
                 if (hex.length === 1) {
                     hex = "0" + hex;

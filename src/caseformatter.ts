@@ -3,8 +3,8 @@
 import * as vscode from "vscode";
 import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult, OnTypeFormattingEditProvider } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
-import { COBOLUtils, FoldAction, FoldStyle } from "./cobolutils";
-import { formatOnReturn, ICOBOLSettings } from "./iconfiguration";
+import { COBOLUtils, FoldAction } from "./cobolutils";
+import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSExtensionUtils } from "./vsextutis";
 
@@ -16,11 +16,11 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
         this.settings = settings;
     }
 
-    private convertLine(line: string, foldStyle: FoldStyle, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
+    private convertLine(line: string, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
         const oldText = line;
-        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldStyle, foldConstantToUpper, langid);
-        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldStyle, foldConstantToUpper, langid);
-        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldStyle, foldConstantToUpper, langid);
+        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, this.settings);
+        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, this.settings);
+        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, this.settings);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,7 +31,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
             return;
         }
 
-        if (this.settings.format_on_return === formatOnReturn.Off) {
+        if (this.settings.format_on_return === false) {
             return;
         }
 
@@ -45,18 +45,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
         const line = document.lineAt(l);
         if (line) {
             const oldText = line.text;
-            let newText = "";
-            switch (this.settings.format_on_return) {
-                case formatOnReturn.CamelCase:
-                    newText = this.convertLine(oldText, FoldStyle.CamelCase, current, this.settings.format_constants_to_uppercase, langid);
-                    break;
-                case formatOnReturn.UpperCase:
-                    newText = this.convertLine(oldText, FoldStyle.UpperCase, current, this.settings.format_constants_to_uppercase, langid);
-                    break;
-                case formatOnReturn.LowerCase:
-                    newText = this.convertLine(oldText, FoldStyle.LowerCase, current, this.settings.format_constants_to_uppercase, langid);
-                    break;
-            }
+            const newText = this.convertLine(oldText, current, this.settings.format_constants_to_uppercase, langid);
 
             if (newText !== oldText) {
                 const startPos = new vscode.Position(l, 0);

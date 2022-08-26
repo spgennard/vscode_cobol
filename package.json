@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.8.24",
+  "version": "8.8.25",
   "publisher": "bitlang",
   "keywords": [
     "acucobol",
@@ -130,6 +130,7 @@
         "coboleditor.fileformat_strategy",
         "coboleditor.fileformat",
         "coboleditor.format_on_return",
+        "coboleditor.format_constants_to_uppercase",
         "coboleditor.metadata_symbols",
         "coboleditor.metadata_entrypoints",
         "coboleditor.metadata_types",
@@ -517,9 +518,9 @@
           "description": "Custom intellisense rules",
           "items": {
             "type": "string",
-            "title": "Custom intellisense rule (item:[clu])",
-            "pattern": "(^.*:[clu]$)",
-            "patternErrorMessage": "Invalid custom intellisense rule (item:[clu]) where c=camelcase, u=uppercase and l=lowercase"
+            "title": "Custom intellisense rule (item:[clu=])",
+            "pattern": "(^.*:[clu=]$)",
+            "patternErrorMessage": "Invalid custom intellisense rule (item:[clu]) where c=camelcase, u=uppercase, l=lowercase or = unchanged"
           },
           "default": [],
           "uniqueItems": true
@@ -601,15 +602,15 @@
           "default": "source-dependency"
         },
         "coboleditor.format_on_return": {
-          "enum": [
-            "camelcase",
-            "uppercase",
-            "lowercase",
-            "off"
-          ],
-          "default": "off",
-          "markdownDescription": "Format line on return key (camelcase,uppercase or lowercase)",
-          "title": "Format line on return key (camelcase,uppercase or lowercase)"
+          "type": "boolean",
+          "default": "false",
+          "markdownDescription": "Format line on return key",
+          "title": "Format line on return key"
+        },
+        "coboleditor.format_constants_to_uppercase" : {
+          "type": "boolean",
+          "description": "When enabled, ensures all constants are folded to uppercase (when field formatting is actioned)",
+          "default": true
         },
         "coboleditor.metadata_symbols": {
           "type": "array",
@@ -2535,6 +2536,7 @@
     "@types/webpack-env": "^1.17.0",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
+    "@vscode/test-electron": "^2.1.5",
     "@vscode/test-web": "^0.0.29",
     "ansi-regex": ">=6.0.1",
     "assert": "^2.0.0",
@@ -2548,7 +2550,6 @@
     "ts-loader": "^9.3.1",
     "typescript": "^4.7.4",
     "vsce": "^2.10.0",
-    "@vscode/test-electron": "^2.1.5",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },

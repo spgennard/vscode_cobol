@@ -613,8 +613,7 @@ const cobolStorageKeywords: string[] = [
 	"when",
 	"zero",
 	"zeroes",
-	"zeros",
-	
+	"zeros"
 ];
 
 const cobolRegisters: string[] = [

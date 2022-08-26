@@ -2,7 +2,7 @@
 "use strict";
 
 import { workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, formatOnReturn, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 
@@ -54,7 +54,7 @@ export class VSCOBOLConfiguration {
         settings.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
         settings.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         settings.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
-        settings.format_on_return = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<formatOnReturn>("format_on_return", formatOnReturn.Off);
+        settings.format_on_return = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("format_on_return", false);
         settings.intellisense_style = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
         settings.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
         settings.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
@@ -116,7 +116,8 @@ export class VSCOBOLConfiguration {
 
         settings.custom_intellisense_rules = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
 
-
+        settings.format_constants_to_uppercase = getBoolean("format_constants_to_uppercase", settings.format_constants_to_uppercase);
+        
         // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {
             settings.parse_copybooks_for_references = false;
@@ -138,7 +139,7 @@ export class VSCOBOLConfiguration {
         settings.cache_metadata_verbose_messages = false;
         settings.editor_maxTokenizationLineLength = 0;
         settings.sourceview = false;
-        settings.format_on_return = formatOnReturn.Off;
+        settings.format_on_return = false;
 
         settings.maintain_metadata_cache = false;
         settings.maintain_metadata_recursive_search = false;

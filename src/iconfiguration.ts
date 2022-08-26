@@ -7,13 +7,6 @@ export enum outlineFlag {
     Skeleton = "skeleton"
 }
 
-export enum formatOnReturn {
-    Off = "off",
-    CamelCase = "camelcase",
-    UpperCase = "uppercase",
-    LowerCase = "lowercase"
-}
-
 export enum intellisenseStyle {
     Unchanged = "unchanged",
     CamelCase = "camelcase",
@@ -78,7 +71,7 @@ export interface ICOBOLSettings {
     sourceview_include_object_files: boolean;
 
     format_constants_to_uppercase: boolean;
-    format_on_return: formatOnReturn;
+    format_on_return: boolean;
     intellisense_style: intellisenseStyle;
     editor_maxTokenizationLineLength: number;
 
@@ -170,7 +163,7 @@ export class COBOLSettings implements ICOBOLSettings {
     sourceview_include_object_files: boolean;
 
     format_constants_to_uppercase: boolean;
-    format_on_return: formatOnReturn;
+    format_on_return: boolean;
     intellisense_style: intellisenseStyle;
 
     editor_maxTokenizationLineLength: number;
@@ -258,7 +251,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.sourceview_include_script_files = true;
         this.sourceview_include_object_files = true;
         this.linter_ignore_section_before_entry = true;
-        this.format_on_return = formatOnReturn.Off;
+        this.format_on_return = false;
         this.format_constants_to_uppercase = true;
         this.metadata_symbols = [];
         this.metadata_entrypoints = [];
