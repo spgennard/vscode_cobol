@@ -478,7 +478,34 @@ For example, to ensure you use utf8 for all you files use:
 }
 ```
 
-## Tips
+## Intellisense and case formatting
+
+A overall intellisense style can be selected via the ```coboleditor.intellisense_style``` property.
+
+If you find a keyword or snippet includes a extra space that is not required, you can amend the ```coboleditor.intellisense_no_space_keywords``` property to exclude it.
+
+Custom formatting rules can be enabled for a specific item or prefixed item via the ```coboleditor.custom_intellisense_rules``` setting.
+
+The format is an array of strings, that are in two parts, seperated by a ```:```.   The first part of item and the second is one of four characters, that denote the case style.  
+
+    u = Uppercase
+    l = Lowercase
+    c = camelcase
+    = = unchanged
+
+If the end items a ```*```, a partial search is done:
+
+For example, to ensure all items that start ```WS-``` should be uppercased.
+
+```WS-*:u```
+
+or a more specific item:
+
+```WS-COUNTER:u```
+
+The property ```coboleditor.format_on_return``` allows the intellisense rules to be applied to the previous line when the return key has been pressed.
+
+## Tips for use
 
 - If you find you are not getting any symbols in the outline view or the peek/goto definition functionality does not work, please check the ``Output->COBOL`` panel as it may give you a reason for this.
 
