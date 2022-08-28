@@ -1,6 +1,14 @@
 # CHANGELOG
 
-* d21bb4b (HEAD -> main, tag: 8.8.14, origin/main, origin/HEAD) allow enforce file associations to be used with ACUCOBOL & COBOL
+* cd08622 (HEAD -> main, tag: 8.8.25, origin/main, origin/HEAD) remove @'s as it did not work
+* ff2fb62 tweak to allow search to copybook to work without parsing its content
+* ded58aa prepare for next release
+* 6ce2e1b merge format on return with intellisense code  - breaking property change, format_on_return is now a boolean
+* daef7ca start to add support for custom intellisense rules
+* 2f380e5 start to add support for configurable keywords snippets
+* a133b4a tweak docs
+* d913d45 (tag: 8.8.14) Update
+* d21bb4b allow enforce file associations to be used with ACUCOBOL & COBOL
 * 146cb77 (tag: 8.8.13) Update
 * 0deb921 add newFile for ACUCOBOL
 * c6d89f0 add new unit test
