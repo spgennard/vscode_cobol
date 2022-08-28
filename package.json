@@ -1827,17 +1827,17 @@
       },
       {
         "command": "cobolplugin.newFile_MicroFocus",
-        "category": "COBOL@1",
+        "category": "COBOL",
         "title": "New COBOL Program (Micro Focus)"
       },
       {
         "command": "cobolplugin.newFile_MicroFocus_mfunit",
-        "category": "COBOL@1",
+        "category": "COBOL",
         "title": "New COBOL Unit Test Program (Micro Focus)"
       },
       {
         "command": "cobolplugin.newFile_ACUCOBOL",
-        "category": "COBOL@2",
+        "category": "COBOL",
         "title": "New ACUCOBOL Program (Micro Focus)"
       }
     ],
