@@ -61,6 +61,7 @@ function reviver(key: any, value: any): any {
     
     return value;
 }
+
 export class ScanDataHelper {
 
     public static load(fn: string) : ScanData {

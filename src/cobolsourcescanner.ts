@@ -2476,9 +2476,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
+            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
+            if (fileName.length > 0) {
+                cbInfo.fileName = fileName;
+            }
 
             if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
-                const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
                 if (fileName.length > 0) {
                     cbInfo.fileName = fileName;
                     if (this.copyBooksUsed.has(fileName) === false) {
