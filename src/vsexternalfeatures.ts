@@ -11,6 +11,7 @@ import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./cobolfolders";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
+
     public logMessage(message: string): void {
         VSLogger.logMessage(message);
     }
@@ -105,6 +106,16 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
 
     public getSourceTimeout(config: ICOBOLSettings): number {
         return config.scan_time_limit;
+    }
+
+    private URLSearchDirectory: string[] = [];
+
+    public getURLCopyBookSearchPath(): string[] {
+        return this.URLSearchDirectory;
+    }
+
+    public setURLCopyBookSearchPath(fileSearchDirectory: string[]): void {
+        this.URLSearchDirectory = fileSearchDirectory;
     }
 }
 

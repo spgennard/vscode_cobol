@@ -20,6 +20,8 @@ export interface IExternalFeatures {
     getCombinedCopyBookSearchPath(): string[];
     setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void;
     getSourceTimeout(config: ICOBOLSettings): number;
+    getURLCopyBookSearchPath(): string[];
+    setURLCopyBookSearchPath(fileSearchDirectory: string[]):void;
 }
 
 export enum ESourceFormat {

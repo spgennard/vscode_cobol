@@ -136,4 +136,14 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public getSourceTimeout(config: ICOBOLSettings): number {
         return Number.MAX_VALUE;
     }
+
+    private URLSearchDirectory: string[] = [];
+
+    public getURLCopyBookSearchPath(): string[] {
+        return this.URLSearchDirectory;
+    }
+
+    public setURLCopyBookSearchPath(fileSearchDirectory: string[]): void {
+        this.URLSearchDirectory = fileSearchDirectory;
+    }
 }

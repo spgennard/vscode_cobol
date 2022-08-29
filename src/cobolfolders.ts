@@ -13,7 +13,7 @@ export class VSWorkspaceFolders {
         // make a map of the folders
         const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();
         for (const folder of ws) {
-            if (folder.uri.scheme === requiredSchema) {             // filter out another other than file related
+            if (requiredSchema === undefined || folder.uri.scheme === requiredSchema) {             // filter out another other than file related
                 folderMap.set(folder.name, folder);
             }
         }
