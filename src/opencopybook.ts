@@ -39,10 +39,9 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         for (const [, b] of qcp.copyBooksUsed) {
             const st = b.statementInformation;
             if (st !== undefined) {
-                if (st.fileName.length !== 0) {
-                    const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
-
-                    if (stPos.contains(pos)) {
+                const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
+                if (stPos.contains(pos)) {
+                    if (st.fileName.length !== 0) {
                         return new vscode.Location(
                             Uri.file(st.fileName),
                             new Range(new Position(0, 0), new Position(0, 0))

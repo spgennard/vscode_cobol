@@ -30,7 +30,8 @@ export class VSExtensionUtils {
         "vscode-vfs",
         "ssh",
         "member", 
-        "streamfile"
+        "streamfile",
+        "zip"
     ];
 
     public static isKnownScheme(scheme: string): boolean {
