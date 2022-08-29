@@ -10,6 +10,8 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
+import { VSLogger } from "./vslogger";
+import { VSWorkspaceFolders } from "./cobolfolders";
 
 
 
@@ -41,11 +43,24 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             if (st !== undefined) {
                 const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
                 if (stPos.contains(pos)) {
-                    if (st.fileName.length !== 0) {
-                        return new vscode.Location(
-                            Uri.file(st.fileName),
-                            new Range(new Position(0, 0), new Position(0, 0))
-                        );
+                    if (document.uri.scheme === 'file') {
+                        if (st.fileName.length !== 0) {
+                            return new vscode.Location(
+                                Uri.file(st.fileName),
+                                new Range(new Position(0, 0), new Position(0, 0))
+                            );
+                        }
+                    } else {
+                        VSLogger.logMessage(`opencopybook for schema ${document.uri.scheme} requires for ${document.uri.toString()}`);
+                        if (document !== undefined && document.uri !== undefined) {
+                            const s = document.uri.scheme;
+                            const folders = VSWorkspaceFolders.get(s);
+                            if (folders !== undefined) {
+                                for (const folder of folders) {
+                                    VSLogger.logMessage(` Folder : ${folder.name} ==> ${folder.uri.toString()}`);
+                                }
+                            }
+                        }
                     }
                 }
             }

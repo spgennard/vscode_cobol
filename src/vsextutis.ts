@@ -29,7 +29,7 @@ export class VSExtensionUtils {
         "untitled",
         "vscode-vfs",
         "ssh",
-        "member", 
+        "member",
         "streamfile",
         "zip"
     ];
@@ -57,6 +57,18 @@ export class VSExtensionUtils {
         return ret;
     }
 
+    public static getAllJCLSelectors(config: ICOBOLSettings): vscode.DocumentSelector {
+        const ret = [];
+
+        for (const kscheme of VSExtensionUtils.knownSchemes) {
+            ret.push(
+                { scheme: kscheme, language: "JCL" },
+            )
+        }
+
+        return ret;
+    }
+    
     public static isKnownCOBOLLanguageId(config: ICOBOLSettings, possibleLangid: string): boolean {
         for (const langid of config.valid_cobol_language_ids) {
             if (possibleLangid === langid) {
@@ -76,17 +88,17 @@ export class VSExtensionUtils {
 
         // flip to ACUCOBOL if the source file looks like it a Acubench generated file
         if (doc.languageId === "COBOL") {
-          const lineCount = doc.lineCount;
+            const lineCount = doc.lineCount;
             if (lineCount >= 3) {
                 const firstLine = doc.lineAt((0)).text;
                 const secondLine = doc.lineAt(1).text;
 
-                 if ((firstLine.indexOf("*{Bench}") !== -1) || ((secondLine.indexOf("*{Bench}") !== -1))) {
+                if ((firstLine.indexOf("*{Bench}") !== -1) || ((secondLine.indexOf("*{Bench}") !== -1))) {
                     vscode.languages.setTextDocumentLanguage(doc, "ACUCOBOL");
                     return;
                 }
             }
-        } 
+        }
 
         if (doc.languageId === "plaintext" || doc.languageId === "tsql") {  // one tsql ext grabs .lst!
             const lineCount = doc.lineCount;

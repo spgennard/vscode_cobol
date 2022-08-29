@@ -914,17 +914,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings), new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolfixer));
 
-    const jclSelectors = [
-        { scheme: "file", language: "JCL" }
-    ];
-    context.subscriptions.push(languages.registerCompletionItemProvider(jclSelectors, new KeywordAutocompleteCompletionItemProvider(false,settings)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllJCLSelectors(settings), new KeywordAutocompleteCompletionItemProvider(false,settings)));
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), new KeywordAutocompleteCompletionItemProvider(true, settings)));
     
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), SnippetCompletionItemProvider.Default.reInitCallMap(settings)));
 
     if (settings.outline) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
-        context.subscriptions.push(languages.registerDocumentSymbolProvider(jclSelectors, jclDocumentSymbolProvider));
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllJCLSelectors(settings), jclDocumentSymbolProvider));
 
         /* TODO: add .DIR keywords too */
         const symbolInformationProvider = new CobolSymbolInformationProvider();

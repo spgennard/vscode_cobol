@@ -2,7 +2,7 @@ import { workspace, WorkspaceFolder } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 export class VSWorkspaceFolders {
-    public static get(): ReadonlyArray<WorkspaceFolder> | undefined {
+    public static get(requiredSchema: string = "file"): ReadonlyArray<WorkspaceFolder> | undefined {
         const ws = workspace.workspaceFolders;
         if (ws === undefined) {
             return ws;
@@ -13,7 +13,7 @@ export class VSWorkspaceFolders {
         // make a map of the folders
         const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();
         for (const folder of ws) {
-            if (folder.uri.scheme === "file") {             // filter out another other than file related
+            if (folder.uri.scheme === requiredSchema) {             // filter out another other than file related
                 folderMap.set(folder.name, folder);
             }
         }
