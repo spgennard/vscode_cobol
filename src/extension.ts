@@ -318,7 +318,7 @@ function checkForExtensionConflicts(): string {
     return dupExtensionMessage;
 }
 
-function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
+async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
     if (!quiet) {
         if (hide) {
             COBOLOutputChannel.hide();
@@ -461,6 +461,34 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
         }
     }
 
+    // step 3
+    if (wsURLs !== undefined) {
+        for (const folder of wsURLs) {
+            // place the workspace folder in the copybook path
+            URLSearchDirectory.push(folder.uri.toString());
+
+            /* now add any extra directories that are below this workspace folder */
+            for (const extdir of extsdir) {
+                try {
+                    if (COBOLFileUtils.isDirectPath(extdir) === false) {
+                        const sdir = `${folder.uri.toString()}/${extdir}`;
+
+                        const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
+                        if (sdirStat.type & vscode.FileType.Directory) {
+                            URLSearchDirectory.push(sdir);
+                        } else {
+                            invalidSearchDirectory.push("URL as "+sdir);
+                        }
+                    }
+                }
+                catch (e) {
+                    VSLogger.logException("dir", e as Error);
+                }
+            }
+        }
+    }
+
+
     const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
     fileSearchDirectory.length = 0;
     for (const fsd of filterfileSearchDirectory) {
@@ -499,7 +527,7 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
                 VSLogger.logMessage("   => " + sdir);
             }
         }
-        
+
         extsdir = invalidSearchDirectory;
         if (extsdir.length !== 0) {
             VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
@@ -633,7 +661,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
-    setupLogChannelAndPaths(true, settings, false);
+    await setupLogChannelAndPaths(true, settings, false);
 
     const checkForExtensionConflictsMessage = checkForExtensionConflicts();
 
