@@ -11,9 +11,7 @@ import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { VSLogger } from "./vslogger";
-import { VSWorkspaceFolders } from "./cobolfolders";
-
-
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
@@ -27,6 +25,11 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         position: vscode.Position,
         token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
         return this.resolveDefinitions(document, position, token);
+    }
+
+    private async getURIForCopybook(copybook:string, externalfeatures: IExternalFeatures, settings: ICOBOLSettings): Promise<vscode.Uri|undefined> {
+        VSLogger.logMessage(`TODO: need to find ${copybook}`);
+        return undefined;
     }
 
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
@@ -51,15 +54,12 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                             );
                         }
                     } else {
-                        VSLogger.logMessage(`opencopybook for schema ${document.uri.scheme} requires for ${document.uri.toString()}`);
-                        if (document !== undefined && document.uri !== undefined) {
-                            const s = document.uri.scheme;
-                            const folders = VSWorkspaceFolders.get(s);
-                            if (folders !== undefined) {
-                                for (const folder of folders) {
-                                    VSLogger.logMessage(` Folder : ${folder.name} ==> ${folder.uri.toString()}`);
-                                }
-                            }
+                        const uri4copybook = await this.getURIForCopybook(st.copyBook,VSExternalFeatures, config);
+                        if (uri4copybook !== undefined) {
+                              return new vscode.Location(
+                                uri4copybook,
+                                new Range(new Position(0, 0), new Position(0, 0))
+                            );
                         }
                     }
                 }
