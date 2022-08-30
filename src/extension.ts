@@ -57,6 +57,7 @@ let shown_enable_semantic_token_provider = false;
 let activeEditor: vscode.TextEditor;
 
 const fileSearchDirectory: string[] = [];
+const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
@@ -381,10 +382,14 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
     }
 
     fileSearchDirectory.length = 0;
+    URLSearchDirectory.length = 0;
 
     const extsdir = settings.copybookdirs;
     invalidSearchDirectory = settings.invalid_copybookdirs;
     invalidSearchDirectory.length = 0;
+
+    const ws = VSWorkspaceFolders.get();
+    const wsURLs = VSWorkspaceFolders.get("");
 
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
     for (const ddir of extsdir) {
@@ -401,7 +406,7 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
             }
             else if (COBOLFileUtils.isDirectPath(ddir)) {
                 VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
-                if (workspace !== undefined && VSWorkspaceFolders.get() !== undefined) {
+                if (workspace !== undefined && ws !== undefined) {
                     if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
                         if (COBOLFileUtils.isNetworkPath(ddir)) {
                             VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
@@ -427,7 +432,6 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
     }
 
     // step 2
-    const ws = VSWorkspaceFolders.get();
     if (ws !== undefined) {
         for (const folder of ws) {
             // place the workspace folder in the copybook path
@@ -466,11 +470,17 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
     if (thisExtension !== undefined) {
-        const ws = VSWorkspaceFolders.get();
-        if (ws !== undefined) {
+        if (ws !== undefined && ws.length !== 0) {
             VSLogger.logMessage("  Workspace Folders:");
             for (const folder of ws) {
                 VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+            }
+        } else {
+            if (wsURLs !== undefined && wsURLs.length !== 0) {
+                VSLogger.logMessage("  Workspace Folders (URLs):");
+                for (const folder of wsURLs) {
+                    VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+                }
             }
         }
 
@@ -482,6 +492,14 @@ function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet:
             }
         }
 
+        let extdirURL = URLSearchDirectory;
+        if (extdirURL.length !== 0) {
+            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
+            for (const sdir of extdirURL) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+        
         extsdir = invalidSearchDirectory;
         if (extsdir.length !== 0) {
             VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
@@ -613,6 +631,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 export async function activate(context: ExtensionContext): Promise<void> {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
+    VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
     setupLogChannelAndPaths(true, settings, false);
 
@@ -886,7 +905,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
-    VSHelpAndFeedViewHandler.setupSourceViewTree(settings,false);
+    VSHelpAndFeedViewHandler.setupSourceViewTree(settings, false);
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
     context.subscriptions.push(COBOLCaseFormatter.register(settings));
 
@@ -914,9 +933,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings), new CobolReferenceProvider()));
     context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolfixer));
 
-    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllJCLSelectors(settings), new KeywordAutocompleteCompletionItemProvider(false,settings)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllJCLSelectors(settings), new KeywordAutocompleteCompletionItemProvider(false, settings)));
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), new KeywordAutocompleteCompletionItemProvider(true, settings)));
-    
+
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), SnippetCompletionItemProvider.Default.reInitCallMap(settings)));
 
     if (settings.outline) {
