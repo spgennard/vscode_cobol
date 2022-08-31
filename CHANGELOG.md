@@ -1,6 +1,14 @@
 # CHANGELOG
 
-* cd08622 (HEAD -> main, tag: 8.8.25, origin/main, origin/HEAD) remove @'s as it did not work
+* 953ec28 (HEAD -> main, tag: 8.8.31, origin/main, origin/HEAD) add first part of open copybook via a non-file based URI
+* c0d6178 continue the work on URL based copybook finder
+* c51e777 add simple search for base copybook url directories  (not used)
+* e300ccd add some more verbose messages
+* 94fc49b start to prepare a place to put the non-file urls for the copybook search path
+* 5e4f65b ensure JCL is registered to all the known schemas
+* e807f50 add 'ftp' schema
+* 6d31be4 (tag: 8.8.25) Update
+* cd08622 remove @'s as it did not work
 * ff2fb62 tweak to allow search to copybook to work without parsing its content
 * ded58aa prepare for next release
 * 6ce2e1b merge format on return with intellisense code  - breaking property change, format_on_return is now a boolean
