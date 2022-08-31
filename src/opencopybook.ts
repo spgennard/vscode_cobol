@@ -27,8 +27,14 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         return this.resolveDefinitions(document, position, token);
     }
 
-    private async getURIForCopybook(copybook:string, externalfeatures: IExternalFeatures, settings: ICOBOLSettings): Promise<vscode.Uri|undefined> {
-        VSLogger.logMessage(`TODO: need to find ${copybook}`);
+    private async getURIForCopybook(copybook: string, externalfeatures: IExternalFeatures, settings: ICOBOLSettings): Promise<vscode.Uri | undefined> {
+        try {
+            const uriString = await VSCOBOLFileUtils.findCopyBookViaURL(copybook, settings, this.features)
+            return uriString.length === 0 ? undefined : Uri.parse(uriString);
+        } catch (e) {
+            VSLogger.logException("getURIForCopybook", e as Error);
+        }
+
         return undefined;
     }
 
@@ -54,9 +60,9 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                             );
                         }
                     } else {
-                        const uri4copybook = await this.getURIForCopybook(st.copyBook,VSExternalFeatures, config);
+                        const uri4copybook = await this.getURIForCopybook(st.copyBook, VSExternalFeatures, config);
                         if (uri4copybook !== undefined) {
-                              return new vscode.Location(
+                            return new vscode.Location(
                                 uri4copybook,
                                 new Range(new Position(0, 0), new Position(0, 0))
                             );

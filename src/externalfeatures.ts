@@ -22,6 +22,7 @@ export interface IExternalFeatures {
     getSourceTimeout(config: ICOBOLSettings): number;
     getURLCopyBookSearchPath(): string[];
     setURLCopyBookSearchPath(fileSearchDirectory: string[]):void;
+    isFileASync(possibleFilename:string): Promise<boolean>;
 }
 
 export enum ESourceFormat {

@@ -9,6 +9,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./cobolfolders";
+import { FileType, Uri, workspace } from "vscode";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
 
@@ -117,6 +118,22 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     public setURLCopyBookSearchPath(fileSearchDirectory: string[]): void {
         this.URLSearchDirectory = fileSearchDirectory;
     }
+
+    public async isFileASync(possibleFilename: string): Promise<boolean> {
+        try {
+            const u = Uri.parse(possibleFilename);
+            const sf = await workspace.fs.stat(u);
+            switch (sf.type) {
+                case FileType.File: return true;
+                case FileType.File | FileType.SymbolicLink: return true;
+            }
+
+            return false;
+        } catch (e) {
+            return false;
+        }
+    }
+
 }
 
 export const VSExternalFeatures = new VSExternalFeaturesImpl();

@@ -146,4 +146,8 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public setURLCopyBookSearchPath(fileSearchDirectory: string[]): void {
         this.URLSearchDirectory = fileSearchDirectory;
     }
+
+    public async isFileASync(possibleFilename: string): Promise<boolean> {
+        return false;
+    }
 }
