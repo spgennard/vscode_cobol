@@ -173,6 +173,39 @@ export class VSCOBOLFileUtils {
         return "";
     }
 
+    public static async findCopyBookInDirectoryViaURL(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): Promise<string> {
+        if (!filename) {
+            return "";
+        }
+
+        const hasDot = filename.indexOf(".");
+
+        for (const baseCopybookdir of features.getURLCopyBookSearchPath()) {
+            const copybookdir = baseCopybookdir+"/"+inDirectory;
+
+            /* check for the file as is.. */
+            const firstPossibleFile =  Uri.parse(copybookdir+"/"+filename);
+            if (await features.isFileASync(firstPossibleFile.toString())) {
+                return firstPossibleFile.toString();
+            }
+
+            /* no extension? */
+            if (hasDot === -1) {
+                // search through the possible extensions
+                for (const ext of config.copybookexts) {
+                    const possibleFile =  Uri.parse(copybookdir+"."+filename + "." + ext);
+
+                    if (await features.isFileASync(possibleFile.toString())) {
+                        return possibleFile.toString();
+                    }
+                }
+            }
+
+        }
+
+        return "";
+    }
+
     public static extractSelectionToCopybook(activeTextEditor: TextEditor, features: IExternalFeatures): void {
         const sel = activeTextEditor.selection;
 

@@ -38,6 +38,16 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         return undefined;
     }
 
+    private async getURIForCopybookInDirectory(copybook: string, inDirectory: string, externalfeatures: IExternalFeatures, settings: ICOBOLSettings): Promise<vscode.Uri | undefined> {
+        try {
+            const uriString = await VSCOBOLFileUtils.findCopyBookInDirectoryViaURL(copybook, inDirectory, settings, this.features)
+            return uriString.length === 0 ? undefined : Uri.parse(uriString);
+        } catch (e) {
+            VSLogger.logException("getURIForCopybook", e as Error);
+        }
+
+        return undefined;
+    }
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const locations: vscode.Location[] = [];
 
@@ -60,12 +70,22 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                             );
                         }
                     } else {
-                        const uri4copybook = await this.getURIForCopybook(st.copyBook, VSExternalFeatures, config);
-                        if (uri4copybook !== undefined) {
-                            return new vscode.Location(
-                                uri4copybook,
-                                new Range(new Position(0, 0), new Position(0, 0))
-                            );
+                        if (st.isIn) {
+                            const uri4copybook = await this.getURIForCopybookInDirectory(st.copyBook, st.literal2,VSExternalFeatures, config);
+                            if (uri4copybook !== undefined) {
+                                return new vscode.Location(
+                                    uri4copybook,
+                                    new Range(new Position(0, 0), new Position(0, 0))
+                                );
+                            }
+                        } else {
+                            const uri4copybook = await this.getURIForCopybook(st.copyBook, VSExternalFeatures, config);
+                            if (uri4copybook !== undefined) {
+                                return new vscode.Location(
+                                    uri4copybook,
+                                    new Range(new Position(0, 0), new Position(0, 0))
+                                );
+                            }
                         }
                     }
                 }
