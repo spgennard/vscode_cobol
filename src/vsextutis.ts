@@ -26,11 +26,14 @@ export class VSExtensionUtils {
 
     private static readonly knownSchemes: string[] = [
         "file",
+        "ftp",
+        "git",
+        "member",
+        "sftp",
+        "ssh",
+        "streamfile",
         "untitled",
         "vscode-vfs",
-        "ssh",
-        "member",
-        "streamfile",
         "zip"
     ];
 

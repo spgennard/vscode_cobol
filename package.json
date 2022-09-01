@@ -45,6 +45,14 @@
   "activationEvents": [
     "onStartupFinished",
     "onFileSystem:file",
+    "onFileSystem:vscode-vfs",
+    "onFileSystem:ssh",
+    "onFileSystem:ftp",
+    "onFileSystem:sftp",
+    "onFileSystem:git",
+    "onFileSystem:member",
+    "onFileSystem:streamfile",
+    "onFileSystem:zip",
     "onLanguage:plaintext",
     "onLanguage:cobol",
     "onLanguage:BITLANG-COBOL",
@@ -607,7 +615,7 @@
           "markdownDescription": "Format line on return key",
           "title": "Format line on return key"
         },
-        "coboleditor.format_constants_to_uppercase" : {
+        "coboleditor.format_constants_to_uppercase": {
           "type": "boolean",
           "description": "When enabled, ensures all constants are folded to uppercase (when field formatting is actioned)",
           "default": true
