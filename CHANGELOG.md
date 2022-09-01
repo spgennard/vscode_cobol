@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 953ec28 (HEAD -> main, tag: 8.8.31, origin/main, origin/HEAD) add first part of open copybook via a non-file based URI
+* fc11814 (HEAD -> main, tag: 8.9.1, origin/main, origin/HEAD) add some extra schemas/fs's
+* f33bde6 add support for "copy in" with urls
+* 811d6b5 (tag: 8.8.31) Update
+* 953ec28 add first part of open copybook via a non-file based URI
 * c0d6178 continue the work on URL based copybook finder
 * c51e777 add simple search for base copybook url directories  (not used)
 * e300ccd add some more verbose messages
