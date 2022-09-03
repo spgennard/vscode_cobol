@@ -87,7 +87,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 const token = sf.sections.get(wordLower);
                 if (token !== undefined) {
                     const srange = new vscode.Position(token.startLine, token.startColumn);
-                    const uri = vscode.Uri.file(token.filename);
+                    const uri = vscode.Uri.parse(token.filenameAsURI);
                     return new vscode.Location(uri, new vscode.Range(srange, srange));
                 }
             }
@@ -102,7 +102,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 const token = sf.paragraphs.get(wordLower);
                 if (token !== undefined) {
                     const srange = new vscode.Position(token.startLine, token.startColumn);
-                    const uri = vscode.Uri.file(token.filename);
+                    const uri = vscode.Uri.parse(token.filenameAsURI);
                     return new vscode.Location(uri, new vscode.Range(srange, srange));
                 }
             }
@@ -145,28 +145,28 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 case COBOLTokenStyle.Union:
                     {
                         const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.file(token.filename);
+                        const uri = vscode.Uri.parse(token.filenameAsURI);
                         locations.push(new vscode.Location(uri, srange));
                         break;
                     }
                 case COBOLTokenStyle.Constant:
                     {
                         const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.file(token.filename);
+                        const uri = vscode.Uri.parse(token.filenameAsURI);
                         locations.push(new vscode.Location(uri, srange));
                         break;
                     }
                 case COBOLTokenStyle.ConditionName:
                     {
                         const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.file(token.filename);
+                        const uri = vscode.Uri.parse(token.filenameAsURI);
                         locations.push(new vscode.Location(uri, srange));
                         break;
                     }
                 case COBOLTokenStyle.Variable:
                     {
                         const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.file(token.filename);
+                        const uri = vscode.Uri.parse(token.filenameAsURI);
                         locations.push(new vscode.Location(uri, srange));
                         break;
                     }
@@ -191,7 +191,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             const token: COBOLToken | undefined = tokenMap.get(workLower);
             if (token !== undefined) {
                 const srange = new vscode.Position(token.startLine, token.startColumn);
-                const uri = vscode.Uri.file(token.filename);
+                const uri = vscode.Uri.parse(token.filenameAsURI);
                 return new vscode.Location(uri, srange);
             }
         }

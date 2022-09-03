@@ -137,6 +137,7 @@ export class SourceScannerUtils {
 
 export class COBOLToken {
     public ignoreInOutlineView: boolean;
+    public filenameAsURI: string;
     public filename: string;
     public tokenType: COBOLTokenStyle;
     public startLine: number;
@@ -151,10 +152,12 @@ export class COBOLToken {
     public extraInformation1: string;
     public inSection: COBOLToken|undefined;
 
-    public constructor(filename: string, tokenType: COBOLTokenStyle, startLine: number,
+    public constructor(
+        filenameAsURI: string, filename: string, tokenType: COBOLTokenStyle, startLine: number,
         startColumn: number, token: string, description: string,
         parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
         this.ignoreInOutlineView = false;
+        this.filenameAsURI = filenameAsURI;
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
@@ -426,6 +429,7 @@ export class COBOLCopybookToken {
 
 export class SharedSourceReferences {
     public filenames: string[];
+    public filenameURIs: string[];
 
     public targetReferences: Map<string, SourceReference[]>;
     public constantsOrVariablesReferences: Map<string, SourceReference[]>;
@@ -446,6 +450,7 @@ export class SharedSourceReferences {
 
     constructor(configHandler: ICOBOLSettings, topLevel: boolean, startTime: number) {
         this.filenames = [];
+        this.filenameURIs = [];
         this.targetReferences = new Map<string, SourceReference[]>();
         this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
         this.unknownReferences = new Map<string, SourceReference[]>();
@@ -804,6 +809,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.sourceFileId = 0;
         this.sourceFileId = sourceReferences.filenames.length;
         sourceReferences.filenames.push(sourceHandler.getFilename());
+        sourceReferences.filenameURIs.push(sourceHandler.getUriAsString());
 
         this.constantsOrVariables = sourceReferences.sharedConstantsOrVariables;
         this.paragraphs = sourceReferences.sharedParagraphs;
@@ -1157,7 +1163,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 startColumn = 0;
             }
         }
-        const ctoken = new COBOLToken(this.filename, tokenType, startLine, startColumn, token, description, parentToken, state.inProcedureDivision, extraInformation1);
+        const ctoken = new COBOLToken(
+            this.sourceHandler.getUriAsString(), this.filename, tokenType, startLine, startColumn, token, description, parentToken, state.inProcedureDivision, extraInformation1);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
