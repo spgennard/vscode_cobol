@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* fc11814 (HEAD -> main, tag: 8.9.1, origin/main, origin/HEAD) add some extra schemas/fs's
+* 923587d (HEAD -> main, tag: 8.9.2, origin/main, origin/HEAD) use known uri and avoid hardcode uri.file, should make find all references work better with non 'file' based schemas
+* 3ab73af (tag: 8.9.1) Update
+* fc11814 add some extra schemas/fs's
 * f33bde6 add support for "copy in" with urls
 * 811d6b5 (tag: 8.8.31) Update
 * 953ec28 add first part of open copybook via a non-file based URI
