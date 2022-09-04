@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* 73decba (HEAD -> main, tag: 8.9.3, origin/main, origin/HEAD) use uri and avoid Uri.file
+* eab2d9a Update
+* 73decba use uri and avoid Uri.file
 * f2021a1 tweak rename to use embedded urls
 * 43b235c (tag: 8.9.2) Update
 * 923587d use known uri and avoid hardcode uri.file, should make find all references work better with non 'file' based schemas
