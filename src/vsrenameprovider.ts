@@ -55,7 +55,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
             if (paraVariables !== undefined) {
                 for (let ptref = 0; ptref < paraVariables.length; ptref++) {
                     const paraToken = paraVariables[ptref].token;
-                    const uri: vscode.Uri = vscode.Uri.file(paraToken.filename);
+                    const uri: vscode.Uri = vscode.Uri.parse(paraToken.filenameAsURI);
 
                     const startPos = new vscode.Position(paraToken.startLine, paraToken.startColumn);
                     const endPos = new vscode.Position(paraToken.startLine, paraToken.endColumn);
@@ -69,7 +69,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                     if (targetRefs !== undefined) {
                         for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                             const tref = targetRefs[trpos];
-                            const uri = vscode.Uri.file(sourceRefs.filenames[tref.fileIdentifer]);
+                            const uri = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
                             const startPos = new vscode.Position(tref.line, tref.column);
                             const endPos = new vscode.Position(tref.line, tref.column + tref.length);
                             const range = new vscode.Range(startPos, endPos);
@@ -87,7 +87,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                 if (targetRefs !== undefined) {
                     for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                         const tref = targetRefs[trpos];
-                        const uri = vscode.Uri.file(sourceRefs.filenames[tref.fileIdentifer]);
+                        const uri = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
                         const startPos = new vscode.Position(tref.line, tref.column);
                         const endPos = new vscode.Position(tref.line, tref.column + tref.length);
                         const range = new vscode.Range(startPos, endPos);
