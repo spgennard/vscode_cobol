@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 923587d (HEAD -> main, tag: 8.9.2, origin/main, origin/HEAD) use known uri and avoid hardcode uri.file, should make find all references work better with non 'file' based schemas
+* 73decba (HEAD -> main, tag: 8.9.3, origin/main, origin/HEAD) use uri and avoid Uri.file
+* f2021a1 tweak rename to use embedded urls
+* 43b235c (tag: 8.9.2) Update
+* 923587d use known uri and avoid hardcode uri.file, should make find all references work better with non 'file' based schemas
 * 3ab73af (tag: 8.9.1) Update
 * fc11814 add some extra schemas/fs's
 * f33bde6 add support for "copy in" with urls
