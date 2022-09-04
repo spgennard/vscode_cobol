@@ -30,7 +30,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.71.0"
   },
   "extensionKind": [
     "workspace"
@@ -2540,7 +2540,7 @@
     "@types/minimatch": "^5.1.2",
     "@types/mocha": "^9.1.1",
     "@types/node": "^18.7.14",
-    "@types/vscode": "^1.70.0",
+    "@types/vscode": "^1.71.0",
     "@types/webpack-env": "^1.18.0",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
