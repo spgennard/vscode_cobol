@@ -116,7 +116,14 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             this.topLevelItems.push(this.objectItem);
         }
 
-        const folders = VSWorkspaceFolders.get();
+        let folders = VSWorkspaceFolders.get();
+        if (folders) {
+            for (const folder of folders) {
+                this.addWorkspace(folder);
+            }
+        }
+
+        folders = VSWorkspaceFolders.get("");
         if (folders) {
             for (const folder of folders) {
                 this.addWorkspace(folder);
@@ -125,11 +132,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
     private async addWorkspace(standardFolder: vscode.WorkspaceFolder) {
-        this.addFolder(standardFolder.uri.fsPath);
+        this.addFolder(standardFolder.uri);
     }
 
-    private async addFolder(topLevel: string) {
-        const topLevelUri = vscode.Uri.file(topLevel);
+    private async addFolder(topLevelUri: vscode.Uri) {
         const entries = await workspace.fs.readDirectory(topLevelUri);
 
         for (const entry of entries) {
@@ -139,15 +145,15 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                     const lastDot = filename.lastIndexOf(".");
                     if (lastDot !== -1) {
                         const ext = filename.substring(1 + lastDot);
-                        const subDir = path.join(topLevel, entry[0]);
-                        this.addExtension(ext, vscode.Uri.file(subDir));
+                        const subDir = topLevelUri.toString() + "/" + entry[0];
+                        this.addExtension(ext, vscode.Uri.parse(subDir));
                     }
                 }
                     break;
 
                 case vscode.FileType.Directory: {
                     if (!VSCOBOLSourceScannerTools.ignoreDirectory(entry[0])) {
-                        const subDir = path.join(topLevel, entry[0]);
+                        const subDir = vscode.Uri.parse(topLevelUri.toString() + "/" + entry[0]);
                         this.addFolder(subDir);
                     }
                 }
