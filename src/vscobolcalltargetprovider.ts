@@ -87,7 +87,6 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
             new vscode.Position(linnumber, 0)
         );
         locations.push(loc);
-
     }
 
 }

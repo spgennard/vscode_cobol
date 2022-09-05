@@ -21,9 +21,14 @@ import { VSCobolRenameProvider } from "../vsrenameprovider";
 import { VSPPCodeLens } from "../vsppcodelens";
 import { activateCommonCommands } from "../vscommon_commands";
 import { CallTarget, KnownAPIs } from "../keywords/cobolCallTargets";
+import { VSWorkspaceFolders } from "../cobolfolders";
 
 const hexRegEx = new RegExp("[xX][\"'][0-9A-F]*[\"']");
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+
+const fileSearchDirectory: string[] = [];
+const URLSearchDirectory: string[] = [];
+let invalidSearchDirectory: string[] = [];
 
 function showExtensionInformation(): void {
     const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -263,8 +268,104 @@ function checkForExtensionConflicts(): string {
     return dupExtensionMessage;
 }
 
-export function activate(context: vscode.ExtensionContext) {
+async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
+
+    fileSearchDirectory.length = 0;
+    URLSearchDirectory.length = 0;
+
+    const extsdir = settings.copybookdirs;
+    invalidSearchDirectory = settings.invalid_copybookdirs;
+    invalidSearchDirectory.length = 0;
+
+    const ws = VSWorkspaceFolders.get();
+    const wsURLs = VSWorkspaceFolders.get("");
+
+    if (wsURLs !== undefined) {
+        for (const folder of wsURLs) {
+            // place the workspace folder in the copybook path
+            URLSearchDirectory.push(folder.uri.toString());
+
+            /* now add any extra directories that are below this workspace folder */
+            for (const extdir of extsdir) {
+                try {
+                    const sdir = `${folder.uri.toString()}/${extdir}`;
+
+                    const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
+                    if (sdirStat.type & vscode.FileType.Directory) {
+                        URLSearchDirectory.push(sdir);
+                    } else {
+                        invalidSearchDirectory.push("URL as " + sdir);
+                    }
+                }
+                catch (e) {
+                    VSLogger.logException("dir", e as Error);
+                }
+            }
+        }
+    }
+
+
+    const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
+    fileSearchDirectory.length = 0;
+    for (const fsd of filterfileSearchDirectory) {
+        fileSearchDirectory.push(fsd);
+    }
+
+    invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
+
+    if (ws !== undefined && ws.length !== 0) {
+        VSLogger.logMessage("  Workspace Folders:");
+        for (const folder of ws) {
+            VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+        }
+    } else {
+        if (wsURLs !== undefined && wsURLs.length !== 0) {
+            VSLogger.logMessage("  Workspace Folders (URLs):");
+            for (const folder of wsURLs) {
+                VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+            }
+        }
+
+
+        let extsdir = fileSearchDirectory;
+        if (extsdir.length !== 0) {
+            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
+            for (const sdir of extsdir) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        let extdirURL = URLSearchDirectory;
+        if (extdirURL.length !== 0) {
+            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
+            for (const sdir of extdirURL) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        extsdir = invalidSearchDirectory;
+        if (extsdir.length !== 0) {
+            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
+            for (const sdir of extsdir) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        VSLogger.logMessage("");
+    }
+
+    if (settings.maintain_metadata_recursive_search) {
+        COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+        COBOLUtils.populateDefaultCopyBooksSync(settings, true);
+    }
+}
+
+export async function activate(context: vscode.ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
+    VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
+    VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
+
+    await setupLogChannelAndPaths(true, settings, false);
 
     showExtensionInformation();
 
@@ -410,7 +511,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings), codelensProvider);
-    
+
     vscode.window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {
             return;
@@ -431,37 +532,37 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     });
 
-        /* hover provider */
-        context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+    /* hover provider */
+    context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
-    
-    
-                if (settings.hover_show_known_api !== hoverApi.Off) {
-                    const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
-                    const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
-                    if (txtTarget !== undefined) {
-                        let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
-                        if (settings.hover_show_known_api === hoverApi.Short) {
-                            example = "";
-                        }
-                        return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
+
+
+            if (settings.hover_show_known_api !== hoverApi.Off) {
+                const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
+                const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
+                if (txtTarget !== undefined) {
+                    let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
+                    if (settings.hover_show_known_api === hoverApi.Short) {
+                        example = "";
                     }
+                    return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
                 }
-    
-                if (settings.hover_show_encoded_literals) {
-                    const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
-                    if (txt.toLowerCase().startsWith("x\"")) {
-                        const ascii = COBOLUtils.hex2a(txt);
-                        if (ascii.length !== 0) {
-                            return new vscode.Hover(`ASCII=${ascii}`);
-                        }
-                    }
-                }
-                return undefined;
             }
-        }));
+
+            if (settings.hover_show_encoded_literals) {
+                const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
+                if (txt.toLowerCase().startsWith("x\"")) {
+                    const ascii = COBOLUtils.hex2a(txt);
+                    if (ascii.length !== 0) {
+                        return new vscode.Hover(`ASCII=${ascii}`);
+                    }
+                }
+            }
+            return undefined;
+        }
+    }));
 
     const renameProvider = new VSCobolRenameProvider();
     const renameProviderDisposable = languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), renameProvider);
