@@ -606,14 +606,14 @@ export class COBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner | undefined, action: FoldAction, foldConstantsToUpper: boolean, languageid: string, settings: ICOBOLSettings): string {
+    public static foldTokenLine(text: string, current: COBOLSourceScanner | undefined, action: FoldAction, foldConstantsToUpper: boolean, languageid: string, settings: ICOBOLSettings, defaultFoldStyle: intellisenseStyle): string {
         let newtext = text;
         const args: string[] = [];
 
         SourceScannerUtils.splitArgument(text, true, args);
         const textLower = text.toLowerCase();
         let lastPos = 0;
-        let foldstyle: intellisenseStyle = settings.intellisense_style;
+        let foldstyle: intellisenseStyle = defaultFoldStyle; //settings.intellisense_style;
         for (let ic = 0; ic < args.length; ic++) {
             let arg = args[ic];
             if (arg.endsWith(".")) {
@@ -630,7 +630,7 @@ export class COBOLUtils {
                         actionIt = current.sections.has(argLower);
                         if (actionIt === false) {
                             actionIt = current.paragraphs.has(argLower);
-                            foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower);
+                            foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower, foldstyle);
                         }
                     }
                     break;
@@ -639,7 +639,7 @@ export class COBOLUtils {
                     if (current !== undefined) {
                         actionIt = current.constantsOrVariables.has(argLower);
                         if (actionIt) {
-                            foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, arg);
+                            foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, arg, foldstyle);
                             if (foldConstantsToUpper) {
                                 const cvars = current.constantsOrVariables.get(argLower);
                                 if (cvars !== undefined) {
@@ -657,7 +657,7 @@ export class COBOLUtils {
                 case FoldAction.Keywords:
                     actionIt = COBOLUtils.isValidKeywordOrStorageKeyword(languageid, argLower);
                     if (actionIt) {
-                        foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower);
+                        foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower, foldstyle);
                     }
                     break;
             }
@@ -709,7 +709,8 @@ export class COBOLUtils {
         settings: ICOBOLSettings,
         activeEditor: vscode.TextEditor,
         action: FoldAction,
-        languageid: string): void {
+        languageid: string,
+        defaultFoldStyle: intellisenseStyle): void {
         const uri = activeEditor.document.uri;
 
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
@@ -727,7 +728,7 @@ export class COBOLUtils {
                 break;      // eof
             }
 
-            const newtext = COBOLUtils.foldTokenLine(text, current, action, settings.format_constants_to_uppercase, languageid, settings);
+            const newtext = COBOLUtils.foldTokenLine(text, current, action, settings.format_constants_to_uppercase, languageid, settings, defaultFoldStyle);
 
             // one edit per line to avoid the odd overlapping error
             if (newtext !== text) {

@@ -1002,7 +1002,7 @@ class SnippetHelper {
     protected foldKeywordLine(texts: string[], languageid: string, settings: ICOBOLSettings): string {
         const sb = [];
         for (const text of texts) {
-            sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords, false, languageid,settings));
+            sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords, false, languageid,settings, settings.intellisense_style));
         }
 
         return sb.join(jsonCRLF);
@@ -1021,7 +1021,7 @@ class SnippetHelper {
 
         let preselect = snippet.label;
         let kiSnippet = "";
-        const istyle = snippet.alwaysUpperCase ? intellisenseStyle.UpperCase : VSCustomIntelliseRules.Default.findCustomIStyle(settings,snippet.prefix);
+        const istyle = snippet.alwaysUpperCase ? intellisenseStyle.UpperCase : VSCustomIntelliseRules.Default.findCustomIStyle(settings,snippet.prefix, settings.intellisense_style);
 
         switch (istyle) {
             case intellisenseStyle.CamelCase:
@@ -1149,7 +1149,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         let kiSnippet = "";
         let callStatement = keyword;
 
-        const iStyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings,ki.api);
+        const iStyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings,ki.api, settings.intellisense_style);
         switch (iStyle) {
             case intellisenseStyle.CamelCase:
                 kiSnippet = this.foldKeywordLine(ki.snippet, langId,settings);

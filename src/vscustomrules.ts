@@ -37,7 +37,7 @@ export class VSCustomIntelliseRules {
         }
     }
 
-    public findCustomIStyle(settings: ICOBOLSettings, key: string): intellisenseStyle {
+    public findCustomIStyle(settings: ICOBOLSettings, key: string, defaultStyle: intellisenseStyle): intellisenseStyle {
         this.reFreshConfiguration(settings);
         const keyLower = key.toLowerCase();
         if (this.customRule.has(keyLower)) {
@@ -52,7 +52,7 @@ export class VSCustomIntelliseRules {
                 }
             }
         }
-        return settings.intellisense_style;
+        return defaultStyle;
     }
 
 } 

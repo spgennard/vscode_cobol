@@ -128,7 +128,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             workMap.set(key.tokenNameLower, key.tokenNameLower);
 
             const orgKey = key.tokenName;
-            const iStyle = VSCustomIntelliseRules.Default.findCustomIStyle(iconfig,key.tokenNameLower);
+            const iStyle = VSCustomIntelliseRules.Default.findCustomIStyle(iconfig,key.tokenNameLower, iconfig.intellisense_style);
             switch (iStyle) {
                 case intellisenseStyle.Unchanged:
                     retKeys.push((key.tokenName));

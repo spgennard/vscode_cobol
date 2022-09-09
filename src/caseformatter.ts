@@ -18,9 +18,10 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
 
     private convertLine(line: string, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
         const oldText = line;
-        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, this.settings);
-        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, this.settings);
-        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, this.settings);
+        const defaultStyle = this.settings.intellisense_style;
+        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, this.settings,defaultStyle);
+        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, this.settings, defaultStyle);
+        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, this.settings, defaultStyle);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

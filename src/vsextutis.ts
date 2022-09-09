@@ -60,6 +60,7 @@ export class VSExtensionUtils {
         return ret;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static getAllJCLSelectors(config: ICOBOLSettings): vscode.DocumentSelector {
         const ret = [];
 
