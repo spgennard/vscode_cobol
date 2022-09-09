@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* e48d428 allow intellisense style to be specific for user commands
+* 8e7d015 start to add support for copybook open
+* e8bb79c (tag: 8.9.3) Update
 * eab2d9a Update
 * 73decba use uri and avoid Uri.file
 * f2021a1 tweak rename to use embedded urls
