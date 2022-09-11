@@ -54,6 +54,7 @@ export class VSCOBOLConfiguration {
         settings.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
         settings.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         settings.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
+        settings.sourceview_include_test_files = getBoolean("sourceview_include_test_files", true);
         settings.format_on_return = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("format_on_return", false);
         settings.intellisense_style = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
         settings.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);

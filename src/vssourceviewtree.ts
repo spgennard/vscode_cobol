@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 
 import { SourceItem, SourceFolderItem } from "./sourceItem";
 import { workspace } from "vscode";
@@ -50,8 +49,6 @@ export class VSSourceTreeViewHandler {
 
         COBOLUtils.runOrDebug(fsPath, debug);
     }
-
-
 }
 
 export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
@@ -63,6 +60,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private documentItem: SourceItem;
     private scriptItem: SourceItem;
     private objectItem: SourceItem;
+    private testCaseItem: SourceItem;
 
     private topLevelItems: SourceItem[] = [];
 
@@ -74,6 +72,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     private documentItems = new Map<string, SourceFolderItem>();
     private scriptItems = new Map<string, SourceFolderItem>();
     private objectItems = new Map<string, SourceFolderItem>();
+    private testCaseItems = new Map<string, SourceFolderItem>();
 
     private settings: ICOBOLSettings;
 
@@ -88,6 +87,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.documentItem = new SourceFolderItem("Documents");
         this.scriptItem = new SourceFolderItem("Scripts");
         this.objectItem = new SourceFolderItem("Objects");
+        this.testCaseItem = new SourceFolderItem("Tests");
 
         this.topLevelItems.push(this.cobolItem);
         this.topLevelItems.push(this.copyBookItem);
@@ -114,6 +114,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
         if (config.sourceview_include_object_files) {
             this.topLevelItems.push(this.objectItem);
+        }
+
+        if (config.sourceview_include_test_files) {
+            this.topLevelItems.push(this.testCaseItem);
         }
 
         let folders = VSWorkspaceFolders.get();
@@ -203,6 +207,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this._onDidChangeTreeData.fire(this.documentItem);
         this._onDidChangeTreeData.fire(this.scriptItem);
         this._onDidChangeTreeData.fire(this.objectItem);
+        this._onDidChangeTreeData.fire(this.testCaseItem);
     }
 
 
@@ -220,9 +225,23 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         return false;
     }
 
+    private getBaseName(u: vscode.Uri) {
+        let lastSlash = u.fsPath.lastIndexOf("/");
+        if (lastSlash !== -1) {
+            const after = u.fsPath.substring(1 + lastSlash);
+            return after;
+        }
+
+        lastSlash = u.fsPath.lastIndexOf("\\");
+        if (lastSlash !== -1) {
+            const after = u.fsPath.substring(1 + lastSlash);
+            return after;
+        }
+        return "";
+    }
 
     private addExtension(ext: string, file: vscode.Uri) {
-        const base = path.basename(file.fsPath);
+        const base = this.getBaseName(file);
 
         if (ext !== undefined) {
             this.addExtensionIfInList(ext.toLowerCase(), file, this.settings.program_extensions, this.cobolItem.contextValue, base, this.cobolItems);
@@ -230,6 +249,13 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
 
             const fsp = file.fsPath;
             const extLower = ext.toLowerCase();
+
+            if (base.startsWith("Test") || base.startsWith("MFUT")) {
+                if (this.testCaseItems.has(fsp) === false) {
+                    this.testCaseItems.set(fsp, this.newSourceItem("test", base, file, 0, extLower));
+                }
+            }
+
             switch (extLower) {
                 case "jcl":
                 case "job":

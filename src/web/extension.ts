@@ -22,6 +22,8 @@ import { VSPPCodeLens } from "../vsppcodelens";
 import { activateCommonCommands } from "../vscommon_commands";
 import { CallTarget, KnownAPIs } from "../keywords/cobolCallTargets";
 import { VSWorkspaceFolders } from "../cobolfolders";
+import { VSSourceTreeViewHandler } from "../vssourceviewtree";
+import { VSHelpAndFeedViewHandler } from "../feedbacktree";
 
 const hexRegEx = new RegExp("[xX][\"'][0-9A-F]*[\"']");
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
@@ -335,7 +337,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
             }
         }
 
-        let extdirURL = URLSearchDirectory;
+        const extdirURL = URLSearchDirectory;
         if (extdirURL.length !== 0) {
             VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
             for (const sdir of extdirURL) {
@@ -532,6 +534,9 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     });
 
+    VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
+    VSHelpAndFeedViewHandler.setupSourceViewTree(settings, false);
+    
     /* hover provider */
     context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
 

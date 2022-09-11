@@ -16,7 +16,7 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { CobolReferenceProvider } from "./vsreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
-import { VSSourceTreeViewHandler } from "./sourceviewtree";
+import { VSSourceTreeViewHandler } from "./vssourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./vscobolprovider";
 import { COBOLUtils } from "./cobolutils";
 import { hoverApi, ICOBOLSettings } from "./iconfiguration";
@@ -520,7 +520,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
             }
         }
 
-        let extdirURL = URLSearchDirectory;
+        const extdirURL = URLSearchDirectory;
         if (extdirURL.length !== 0) {
             VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
             for (const sdir of extdirURL) {

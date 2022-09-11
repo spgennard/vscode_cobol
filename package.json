@@ -123,6 +123,7 @@
         "coboleditor.sourceview_include_doc_files",
         "coboleditor.sourceview_include_script_files",
         "coboleditor.sourceview_include_object_files",
+        "coboleditor.sourceview_include_test_files",
         "coboleditor.mfunit.diagnostic.color",
         "coboleditor.disable_unc_copybooks_directories",
         "coboleditor.intellisense_item_limit",
@@ -450,6 +451,11 @@
         "coboleditor.sourceview_include_object_files": {
           "type": "boolean",
           "description": "Include Object Files in source view",
+          "default": true
+        },
+        "coboleditor.sourceview_include_test_files": {
+          "type": "boolean",
+          "description": "Include Test Files in source view",
           "default": true
         },
         "coboleditor.line_comment": {
