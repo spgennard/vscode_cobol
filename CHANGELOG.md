@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 2ae1e1b tweak sourceview
+* 3571eb1 rename
+* 96a16f5 add rec for linter
+* f0ebeb6 (tag: 8.9.9) Update
 * e48d428 allow intellisense style to be specific for user commands
 * 8e7d015 start to add support for copybook open
 * e8bb79c (tag: 8.9.3) Update
