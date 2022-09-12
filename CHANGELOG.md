@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 286ed0a (HEAD -> main, tag: 8.9.12, origin/main, origin/HEAD) fixes for sourcetreeview
+* 2e0d1d1 (tag: 8.9.11) Update
 * 2ae1e1b tweak sourceview
 * 3571eb1 rename
 * 96a16f5 add rec for linter
