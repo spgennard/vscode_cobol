@@ -251,9 +251,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             const extLower = ext.toLowerCase();
 
             if (base.startsWith("Test") || base.startsWith("MFUT")) {
-                if (this.testCaseItems.has(fsp) === false) {
-                    this.testCaseItems.set(fsp, this.newSourceItem("test", base, file, 0, extLower));
-                }
+                this.addExtensionIfInList(ext.toLowerCase(), file, this.settings.program_extensions, this.testCaseItem.contextValue, base, this.testCaseItems);
+                this.addExtensionIfInList(ext.toLowerCase(), file, this.settings.copybookexts, this.testCaseItem.contextValue, base, this.testCaseItems);
             }
 
             switch (extLower) {
@@ -334,7 +333,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.setTreeState(this.documentItems, this.documentItem);
         this.setTreeState(this.scriptItems, this.scriptItem);
         this.setTreeState(this.objectItems, this.objectItem);
-
+        this.setTreeState(this.testCaseItems, this.testCaseItem);
         this.refreshAll();
     }
 
@@ -361,6 +360,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.documentItems.delete(f);
         this.scriptItems.delete(f);
         this.objectItems.delete(f);
+        this.testCaseItems.delete(f);
         this.refreshItems();
     }
 
@@ -387,6 +387,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
                 case "Documents": rtn = this.getItemsFromMap(this.documentItems); break;
                 case "Scripts": rtn = this.getItemsFromMap(this.scriptItems); break;
                 case "Objects": rtn = this.getItemsFromMap(this.objectItems); break;
+                case "Tests": rtn = this.getItemsFromMap(this.testCaseItems); break;
             }
 
 
