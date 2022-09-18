@@ -113,7 +113,7 @@ export class VSmargindecorations extends ColourTagHandler {
                 activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
                 return;
         }
-        
+
 
         const maxLineLength = configHandler.editor_maxTokenizationLineLength;
         const maxLines = doc.lineCount;
@@ -177,10 +177,10 @@ export class VSmargindecorations extends ColourTagHandler {
                             }
                         }
                     }
-                }
 
-                if (useDefault) {
-                    defaultDecorationOptions.push(decoration);
+                    if (useDefault) {
+                        defaultDecorationOptions.push(decoration);
+                    }
                 }
             }
 
@@ -228,10 +228,10 @@ export class VSmargindecorations extends ColourTagHandler {
                             }
                         }
                     }
-                }
 
-                if (useDefault) {
-                    defaultDecorationOptions.push(decoration);
+                    if (useDefault) {
+                        defaultDecorationOptions.push(decoration);
+                    }
                 }
             }
         }
