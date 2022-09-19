@@ -85,13 +85,19 @@ export class VSmargindecorations extends ColourTagHandler {
             return;
         }
 
-        /* is it enabled? (COBOL) */
+        /* is it enabled? */
         if (textLanguage === TextLanguage.JCL) {
             if (!this.isEnabledViaWorkspace4jcl()) {
                 activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
             } else {
                 await this.updateJCLDecorations(doc, activeTextEditor, defaultTrailingSpacesDecoration);
             }
+            return;
+        }
+
+        /* is it enabled? */
+        if (configHandler.margin === false) {
+            activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
             return;
         }
 
@@ -104,7 +110,7 @@ export class VSmargindecorations extends ColourTagHandler {
         } else {
             sf = gcp.sourceFormat;
         }
-        
+
         // use the known file format from the scan itself
         switch (sf) {
             case ESourceFormat.free:

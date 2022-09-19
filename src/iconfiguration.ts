@@ -122,6 +122,8 @@ export interface ICOBOLSettings {
     intellisense_no_space_keywords:string[];
 
     custom_intellisense_rules: string[];
+
+    margin: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -216,6 +218,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     custom_intellisense_rules: string[];
 
+    margin: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -290,5 +294,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.check_file_format_before_file_scan = true;
         this.intellisense_no_space_keywords = [];
         this.custom_intellisense_rules = [];
+        this.margin = true;
     }
 }

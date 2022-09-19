@@ -119,6 +119,8 @@ export class VSCOBOLConfiguration {
 
         settings.format_constants_to_uppercase = getBoolean("format_constants_to_uppercase", settings.format_constants_to_uppercase);
         
+        settings.margin = getBoolean("margin", settings.margin);
+        
         // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {
             settings.parse_copybooks_for_references = false;

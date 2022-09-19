@@ -311,6 +311,12 @@
           "markdownDescription": "When enabled, *always* apply margin shading for JCL source code",
           "default": true
         },
+        "coboleditor.margin": {
+          "type": "boolean",
+          "description": "When enabled, always apply margin shading for COBOL source code",
+          "markdownDescription": "When enabled, *always* apply margin shading for COBOL source code",
+          "default": true
+        },
         "coboleditor.fileformat_strategy": {
           "enum": [
             "always_fixed",
