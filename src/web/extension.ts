@@ -7,7 +7,7 @@ import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../vssymbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
 import { VSCOBOLSourceScanner } from "../vscobolscanner";
-import { vsMarginHandler } from "../margindecorations";
+import { vsMarginHandler } from "../vsmargindecorations";
 import { commentUtils } from "../commenter";
 import { COBOLOutputChannel, VSLogger } from "../vslogger";
 import { COBOLSourceDefinition } from "../vssourcedefinitionprovider";
@@ -270,7 +270,7 @@ function checkForExtensionConflicts(): string {
     return dupExtensionMessage;
 }
 
-async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
+async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
 
     fileSearchDirectory.length = 0;
     URLSearchDirectory.length = 0;
@@ -367,7 +367,7 @@ export async function activate(context: vscode.ExtensionContext) {
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
-    await setupLogChannelAndPaths(true, settings, false);
+    await setupLogChannelAndPaths(true, settings);
 
     showExtensionInformation();
 

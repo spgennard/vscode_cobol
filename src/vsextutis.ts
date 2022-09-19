@@ -13,6 +13,7 @@ export class VSExtensionUtils {
 
         switch (document.languageId.toLowerCase()) {
             case "cobolit":
+            case "bitlang-cobol":
             case "cobol":
             case "acucobol":
                 return TextLanguage.COBOL;

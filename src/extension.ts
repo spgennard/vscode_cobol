@@ -39,7 +39,7 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
-import { vsMarginHandler } from "./margindecorations";
+import { vsMarginHandler } from "./vsmargindecorations";
 import { commentUtils } from "./commenter";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";

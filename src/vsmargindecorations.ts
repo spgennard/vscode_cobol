@@ -104,6 +104,7 @@ export class VSmargindecorations extends ColourTagHandler {
         } else {
             sf = gcp.sourceFormat;
         }
+        
         // use the known file format from the scan itself
         switch (sf) {
             case ESourceFormat.free:
