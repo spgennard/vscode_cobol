@@ -25,6 +25,7 @@ export class VSCOBOLFileUtils {
         return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     public static getFullWorkspaceFilename(features: IExternalFeatures, sdir: string, sdirMs: BigInt): string | undefined {
         const ws = VSWorkspaceFolders.get();
         if (workspace === undefined || ws === undefined) {
@@ -200,7 +201,6 @@ export class VSCOBOLFileUtils {
                     }
                 }
             }
-
         }
 
         return "";
@@ -246,7 +246,7 @@ export class VSCOBOLFileUtils {
         }
 
         let bestWorkspace: WorkspaceFolder | undefined = undefined;
-        for (let workspace of workspaces) {
+        for (const workspace of workspaces) {
             if (workspace.uri.fsPath.startsWith(workspaceDirectory)) {
                 bestWorkspace = workspace;
             }

@@ -488,7 +488,6 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
         }
     }
 
-
     const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
     fileSearchDirectory.length = 0;
     for (const fsd of filterfileSearchDirectory) {
