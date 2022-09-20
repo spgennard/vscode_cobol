@@ -870,6 +870,7 @@ export class COBOLUtils {
         const filesConfig = vscode.workspace.getConfiguration("files");
 
         const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("associations") ?? {} as { [key: string]: string }
+        let updateRequired = false;
 
         const fileAssocMap = new Map<string, string>();
         let fileAssocCount = 0;
@@ -881,11 +882,17 @@ export class COBOLUtils {
             if (verbose) {
                 externalFeatures.logMessage(` ${assoc} = ${assocTo}`)
             }
+
+            // grab back
+            if (assocTo === "cobol") {
+                filesAssociationsConfig[assoc] = requiredLanguage;
+                updateRequired = true;
+            }
             fileAssocMap.set(assoc, assocTo);
             fileAssocCount++;
         }
 
-        let updateRequired = false;
+
         for (const ext of settings.program_extensions) {
             const key = `*.${ext}`;
             const assocTo = fileAssocMap.get(key);
