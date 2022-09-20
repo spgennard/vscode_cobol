@@ -1,6 +1,12 @@
 # CHANGELOG
 
-* 286ed0a (HEAD -> main, tag: 8.9.12, origin/main, origin/HEAD) fixes for sourcetreeview
+* faf70ea (HEAD -> main, tag: 8.9.19, origin/main, origin/HEAD) ensure we pickup all file.assoc
+* 4b6d408 tweak
+* 12c9361 bring back the old margin config option (like the jcl one)
+* 3bb8d60 handle rename and drop field not used
+* 0a440b3 remove unsed param rename file to be inline with others (gradual removal of this debt)
+* 53cad4a (tag: 8.9.12) Update
+* 286ed0a fixes for sourcetreeview
 * 2e0d1d1 (tag: 8.9.11) Update
 * 2ae1e1b tweak sourceview
 * 3571eb1 rename
