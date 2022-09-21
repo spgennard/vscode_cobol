@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* faf70ea (HEAD -> main, tag: 8.9.19, origin/main, origin/HEAD) ensure we pickup all file.assoc
+* c8c2f58 (HEAD -> main, tag: 8.9.20, origin/main, origin/HEAD) dev: fix bad url
+* e08c209 (tag: 8.9.19) Update
+* faf70ea ensure we pickup all file.assoc
 * 4b6d408 tweak
 * 12c9361 bring back the old margin config option (like the jcl one)
 * 3bb8d60 handle rename and drop field not used
