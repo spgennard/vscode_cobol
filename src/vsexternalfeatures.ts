@@ -34,6 +34,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, this);
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
         return VSCOBOLFileUtils.getFullWorkspaceFilename(this, sdir, sdirMs);
     }
@@ -86,6 +87,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
 
     private fileSearchDirectory: string[] = [];
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     public getFileModTimeStamp(filename: string): BigInt {
         try {
             const f = fs.statSync(filename, { bigint: true });

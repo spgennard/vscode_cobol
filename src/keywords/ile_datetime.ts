@@ -2,7 +2,7 @@
 import { IKnownApis } from "./cobolCallTargets";
 
 export class ILE_APIs implements IKnownApis {
-    public url = "https,//www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_73/apis/ile4a1TOC.htm";
+    public url = "https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_73/apis/ile4a1TOC.htm";
     public name = "ILE CEE Date and Time APIs";
     public apis = new Map<string, string[]>([
         ["CEEDYWK", ["Calculate Day of Week from Lilian Date"]],
