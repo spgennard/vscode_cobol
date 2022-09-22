@@ -448,9 +448,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getAllConstantsOrVariables(document: TextDocument, iconfig: ICOBOLSettings, filterOnGroups: boolean): CompletionItem[] {
-        const words: CompletionItem[] = [];
         const sf = VSCOBOLSourceScanner.getCachedObject(document, iconfig);
-
+        const wordMap = new Map<string, CompletionItem>();
         if (sf !== undefined) {
 
             for (const key of sf.constantsOrVariables.keys()) {
@@ -464,12 +463,20 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         if (filterOnGroups && token.extraInformation1.indexOf("GROUP") === -1) {
                             continue
                         }
-                        words.push(new CompletionItem(token.tokenName, CompletionItemKind.Variable));
+                        
+                        if (wordMap.has(token.tokenName) === false) {
+                            wordMap.set(token.tokenName,new CompletionItem(token.tokenName, CompletionItemKind.Variable));
+                        }
                     }
                 }
             }
         }
 
+        // convert to []
+        const words: CompletionItem[] = [];
+        for(const [,b] of wordMap) {
+            words.push(b);
+        }
         return words;
     }
 
