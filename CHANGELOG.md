@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* c8c2f58 (HEAD -> main, tag: 8.9.20, origin/main, origin/HEAD) dev: fix bad url
+* 0a99031 remove duplicates
+* 2210cb2 (tag: 8.9.20) Update
+* c8c2f58 dev: fix bad url
 * e08c209 (tag: 8.9.19) Update
 * faf70ea ensure we pickup all file.assoc
 * 4b6d408 tweak
