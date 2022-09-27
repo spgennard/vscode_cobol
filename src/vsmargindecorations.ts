@@ -9,6 +9,7 @@ import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { ColourTagHandler } from "./vscolourcomments";
+import { fileformatStrategy } from "./iconfiguration";
 
 const defaultTrailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -36,7 +37,7 @@ export class VSmargindecorations extends ColourTagHandler {
         this.setupTags();
     }
 
-    public setupTags():void {
+    public setupTags(): void {
         super.setupTags("columns_tags", this.tags);
     }
 
@@ -102,13 +103,27 @@ export class VSmargindecorations extends ColourTagHandler {
         }
 
         const declsMap = new Map<string, DecorationOptions[]>();
-        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         let sf: ESourceFormat = ESourceFormat.unknown;
-        if (gcp === undefined) {
-            const vsfile = new VSCodeSourceHandlerLite(doc);
-            sf = SourceFormat.get(vsfile, configHandler);
-        } else {
-            sf = gcp.sourceFormat;
+
+        // check overrides..
+        switch (configHandler.fileformat_strategy) {
+            case fileformatStrategy.AlwaysFixed:
+                sf = ESourceFormat.fixed;
+                break;
+            case fileformatStrategy.AlwaysVariable:
+                sf = ESourceFormat.variable;
+                break;
+            default:
+                {
+                    const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
+                    if (gcp === undefined) {
+                        const vsfile = new VSCodeSourceHandlerLite(doc);
+                        sf = SourceFormat.get(vsfile, configHandler);
+                    } else {
+                        sf = gcp.sourceFormat;
+                    }
+                    break;
+                }
         }
 
         // use the known file format from the scan itself
@@ -120,7 +135,7 @@ export class VSmargindecorations extends ColourTagHandler {
                 activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
                 return;
         }
-        
+
 
         const maxLineLength = configHandler.editor_maxTokenizationLineLength;
         const maxLines = doc.lineCount;
