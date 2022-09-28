@@ -1258,6 +1258,9 @@
         "configuration": "./acucobol.configuration.json"
       },
       {
+        "id": "markdown-acucobol-injection"
+      },
+      {
         "id": "COBOL",
         "filenames": [
           "SQLCA"
@@ -1314,6 +1317,9 @@
         "configuration": "./cobol.configuration.json"
       },
       {
+        "id": "markdown-cobol-injection"
+      },
+      {
         "id": "BITLANG-COBOL",
         "filenames": [
           "SQLCA"
@@ -1348,6 +1354,9 @@
         "id": "COBOLIT",
         "extensions": [],
         "configuration": "./cobolit.configuration.json"
+      },
+      {
+        "id": "markdown-cobolit-injection"
       },
       {
         "id": "JCL",
@@ -1472,6 +1481,17 @@
         }
       },
       {
+        "language": "markdown-cobol-injection",
+        "scopeName": "markdown.cobol.codeblock",
+        "path": "./syntaxes/cobol-markdown.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.cobol": "COBOL"
+        }
+      },
+      {
         "language": "BITLANG-COBOL",
         "scopeName": "source.cobol",
         "path": "./syntaxes/COBOL.tmLanguage.json",
@@ -1527,6 +1547,17 @@
         }
       },
       {
+        "language": "markdown-acucobol-injection",
+        "scopeName": "markdown.acucobol.codeblock",
+        "path": "./syntaxes/acucobol-markdown.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.acucobol": "acucobol"
+        }
+      },
+      {
         "language": "COBOLIT",
         "scopeName": "source.cobolit",
         "path": "./syntaxes/COBOLIT.tmLanguage.json",
@@ -1534,6 +1565,17 @@
           "meta.embedded.block.sql": "text",
           "meta.embedded.block.html": "text",
           "meta.embedded.block.java": "text"
+        }
+      },
+      {
+        "language": "markdown-cobolit-injection",
+        "scopeName": "markdown.cobolit.codeblock",
+        "path": "./syntaxes/cobolit-markdown.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.cobolit": "cobolit"
         }
       },
       {
@@ -2186,6 +2228,10 @@
       {
         "language": "COBOL",
         "path": "./snippets/cobol.json"
+      },
+      {
+        "language": "markdown",
+        "path" : "./snippets/markdown.json"
       },
       {
         "language": "COBOL",

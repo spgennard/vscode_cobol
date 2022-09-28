@@ -1,0 +1,7 @@
+{
+	"Fenced Source Code": {
+		"prefix": "```",
+		"body": "```${1|actionscript3,ACUCOBOL,apache,applescript,asp,brainfuck,c,COBOL,COBOLIT,cfm,clojure,cmake,coffee-script,coffeescript,coffee,cpp,cs,csharp,css,csv,bash,diff,elixir,erb,go,haml,http,java,javascript,json,jsx,less,lolcode,make,–,Makefile,markdown,matlab,nginx,objectivec,pascal,PHP,Perl,python,profile,rust,salt,saltstate,shell,sh,zsh,bash,scss,sql,svg,swift,rb,jruby,ruby,smalltalk,vim,viml,volt,vhdl,vue,xml,yaml|}\n$0\n```",
+		"scope": "markdown"
+	}
+}
