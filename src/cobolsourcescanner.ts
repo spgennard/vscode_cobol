@@ -245,7 +245,7 @@ class Token {
         if (previousToken !== undefined) {
             this.prevToken = previousToken.currentToken;
         }
-        SourceScannerUtils.splitArgument(line, false, lineTokens);
+        SourceScannerUtils.splitArgument(line, true, lineTokens);
         let rollingColumn = 0;
         for (let c = 0; c < lineTokens.length; c++) {
             const currentToken = lineTokens[c];
@@ -1710,6 +1710,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                         if (token.prevTokenLower === "depending" && token.currentTokenLower === "on") {
                             state.addVariableDuringStipToTag = false;
+                        }
+
+                        if (state.addVariableDuringStipToTag === false && this.sourceReferences.constantsOrVariablesReferences.has(trimTokenLower)) {
+                            state.addVariableDuringStipToTag = true;
                         }
 
                         if (state.addVariableDuringStipToTag && isValidKeyword === false) {
