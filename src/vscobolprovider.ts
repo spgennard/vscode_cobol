@@ -19,6 +19,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         this.features = features;
     }
 
+    private newCompletionItem(token:COBOLToken, kind:CompletionItemKind):CompletionItem {
+        const ci = new CompletionItem(token.tokenName, kind);
+        ci.detail = token.description;
+        return ci;
+    }
 
     private getPerformTargets(document: TextDocument): TrieSearch {
         const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.iconfig);
@@ -58,13 +63,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [, token] of sf.sections) {
                 if (token.inProcedureDivision) {
-                    items.push(new CompletionItem(token.tokenName, CompletionItemKind.Method));
+                    items.push(this.newCompletionItem(token, CompletionItemKind.Method));
                 }
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [, token] of sf.paragraphs) {
                 if (token.inProcedureDivision) {
-                    items.push(new CompletionItem(token.tokenName, CompletionItemKind.Method));
+                    items.push(this.newCompletionItem(token, CompletionItemKind.Method));
                 }
             }
         }
@@ -465,7 +470,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         }
                         
                         if (wordMap.has(token.tokenName) === false) {
-                            wordMap.set(token.tokenName,new CompletionItem(token.tokenName, CompletionItemKind.Variable));
+                            wordMap.set(token.tokenName,this.newCompletionItem(token, CompletionItemKind.Variable));
                         }
                     }
                 }

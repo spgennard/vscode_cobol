@@ -13,15 +13,12 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
     readonly classRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
     readonly methodRegEx = new RegExp("[0-9a-zA-Z][a-zA-Z0-9-_]*");
 
-    public provideDefinition( document: vscode.TextDocument,
+    public provideDefinition(document: vscode.TextDocument,
         position: vscode.Position,
-        token: vscode.CancellationToken ): vscode.ProviderResult<vscode.Definition> {
-        return this.resolveDefinitions(document, position, token);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private async resolveDefinitions(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Definition> {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
         const locations: vscode.Location[] = [];
+
         let loc;
         const settings: ICOBOLSettings = VSCOBOLConfiguration.get();
 
@@ -65,7 +62,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         /* is it a known variable? */
-        if (this.getVariableInCurrentDocument(locations, document, position,settings)) {
+        if (this.getVariableInCurrentDocument(locations, document, position, settings)) {
             return locations;
         }
 
@@ -86,9 +83,11 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             if (sf.sections.has(wordLower)) {
                 const token = sf.sections.get(wordLower);
                 if (token !== undefined) {
-                    const srange = new vscode.Position(token.startLine, token.startColumn);
+                    const spos = new vscode.Position(token.startLine, token.startColumn);
+                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const trange = new vscode.Range(spos, rpos);
                     const uri = vscode.Uri.parse(token.filenameAsURI);
-                    return new vscode.Location(uri, new vscode.Range(srange, srange));
+                    return new vscode.Location(uri, trange);
                 }
             }
 
@@ -101,9 +100,11 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             if (sf.paragraphs.has(wordLower)) {
                 const token = sf.paragraphs.get(wordLower);
                 if (token !== undefined) {
-                    const srange = new vscode.Position(token.startLine, token.startColumn);
+                    const spos = new vscode.Position(token.startLine, token.startColumn);
+                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const trange = new vscode.Range(spos, rpos);
                     const uri = vscode.Uri.parse(token.filenameAsURI);
-                    return new vscode.Location(uri, new vscode.Range(srange, srange));
+                    return new vscode.Location(uri, trange);
                 }
             }
         }
@@ -112,7 +113,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
         return undefined;
     }
-    
+
     private getVariableInCurrentDocument(locations: vscode.Location[], document: vscode.TextDocument, position: vscode.Position, settings: ICOBOLSettings): boolean {
         const wordRange = document.getWordRangeAtPosition(position, this.variableRegEx);
         const word = wordRange ? document.getText(wordRange) : "";
@@ -141,33 +142,29 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 continue;
             }
 
+            const spos = new vscode.Position(token.startLine, token.startColumn);
+            const rpos = new vscode.Position(token.endLine, token.endColumn);
+            const trange = new vscode.Range(spos, rpos);
+            const uri = vscode.Uri.parse(token.filenameAsURI);
             switch (token.tokenType) {
                 case COBOLTokenStyle.Union:
                     {
-                        const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.parse(token.filenameAsURI);
-                        locations.push(new vscode.Location(uri, srange));
+                        locations.push(new vscode.Location(uri, trange));
                         break;
                     }
                 case COBOLTokenStyle.Constant:
                     {
-                        const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.parse(token.filenameAsURI);
-                        locations.push(new vscode.Location(uri, srange));
+                        locations.push(new vscode.Location(uri, trange));
                         break;
                     }
                 case COBOLTokenStyle.ConditionName:
                     {
-                        const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.parse(token.filenameAsURI);
-                        locations.push(new vscode.Location(uri, srange));
+                        locations.push(new vscode.Location(uri, trange));
                         break;
                     }
                 case COBOLTokenStyle.Variable:
                     {
-                        const srange = new vscode.Position(token.startLine, token.startColumn);
-                        const uri = vscode.Uri.parse(token.filenameAsURI);
-                        locations.push(new vscode.Location(uri, srange));
+                        locations.push(new vscode.Location(uri, trange));
                         break;
                     }
             }
@@ -190,9 +187,11 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         if (tokenMap.has(workLower)) {
             const token: COBOLToken | undefined = tokenMap.get(workLower);
             if (token !== undefined) {
-                const srange = new vscode.Position(token.startLine, token.startColumn);
+                const spos = new vscode.Position(token.startLine, token.startColumn);
+                const rpos = new vscode.Position(token.endLine, token.endColumn);
+                const trange = new vscode.Range(spos, rpos);
                 const uri = vscode.Uri.parse(token.filenameAsURI);
-                return new vscode.Location(uri, srange);
+                return new vscode.Location(uri, trange);
             }
         }
         return undefined;

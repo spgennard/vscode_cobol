@@ -90,7 +90,7 @@ export class VSCOBOLConfiguration {
         settings.scan_line_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_line_limit", settings.scan_line_limit);
 
         settings.scan_time_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_time_limit", settings.scan_time_limit);
-
+        
         settings.in_memory_cache_size = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("in_memory_cache_size", settings.in_memory_cache_size);
 
         settings.suggest_variables_when_context_is_unknown = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("suggest_variables_when_context_is_unknown", settings.suggest_variables_when_context_is_unknown);
