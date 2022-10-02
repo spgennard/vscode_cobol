@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* b14241a (HEAD -> main, tag: 8.9.26, origin/main, origin/HEAD) allow filestrategy to overide margin
+* f347915 move to a full range rather than a location (fixes odd empty hover)
+* e417be4 scan inside brackets and pickup 78 items eg: pic x(MY-78-ITEM)
+* c14ce69 add embedded markdown
+* 905292f (tag: 8.9.26) Update
+* b14241a allow filestrategy to overide margin
 * 5512eeb (tag: 8.9.21) Update
 * 0a99031 remove duplicates
 * 2210cb2 (tag: 8.9.20) Update
