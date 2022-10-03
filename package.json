@@ -1423,6 +1423,9 @@
         ],
         "configuration": "./pli.configuration.json"
       },
+       {
+        "id": "markdown-pli-injection"
+      },
       {
         "id": "bms",
         "extensions": [
@@ -1619,6 +1622,17 @@
         "language": "pli",
         "scopeName": "source.pli",
         "path": "./syntaxes/PLI.tmLanguage.json"
+      },
+      {
+        "language": "markdown-pli-injection",
+        "scopeName": "markdown.pli.codeblock",
+        "path": "./syntaxes/markdown/pli.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.pli": "pli"
+        }
       },
       {
         "language": "bms",
