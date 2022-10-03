@@ -1380,7 +1380,7 @@
         ],
         "configuration": "./jcl.configuration.json"
       },
-       {
+      {
         "id": "markdown-jcl-injection"
       },
       {
@@ -1444,6 +1444,9 @@
           ".mlc"
         ],
         "aliases": []
+      },
+      {
+        "id": "markdown-hlasm-injection"
       },
       {
         "id": "mfu",
@@ -1631,6 +1634,17 @@
         "language": "hlasm",
         "scopeName": "source.hlasm",
         "path": "./syntaxes/hlasm.tmLanguage.json"
+      },
+      {
+        "language": "markdown-hlasm-injection",
+        "scopeName": "markdown.hlasm.codeblock",
+        "path": "./syntaxes/markdown/hlasm.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.hlasm": "hlasm"
+        }
       },
       {
         "language": "mfu",
@@ -2245,7 +2259,7 @@
       },
       {
         "language": "markdown",
-        "path" : "./snippets/markdown.json"
+        "path": "./snippets/markdown.json"
       },
       {
         "language": "COBOL",
