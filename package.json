@@ -1483,7 +1483,7 @@
       {
         "language": "markdown-cobol-injection",
         "scopeName": "markdown.cobol.codeblock",
-        "path": "./syntaxes/cobol-markdown.json",
+        "path": "./syntaxes/markdown/cobol.json",
         "injectTo": [
           "text.html.markdown"
         ],
@@ -1549,7 +1549,7 @@
       {
         "language": "markdown-acucobol-injection",
         "scopeName": "markdown.acucobol.codeblock",
-        "path": "./syntaxes/acucobol-markdown.json",
+        "path": "./syntaxes/markdown/acucobol.json",
         "injectTo": [
           "text.html.markdown"
         ],
@@ -1570,7 +1570,7 @@
       {
         "language": "markdown-cobolit-injection",
         "scopeName": "markdown.cobolit.codeblock",
-        "path": "./syntaxes/cobolit-markdown.json",
+        "path": "./syntaxes/markdown/cobolit.json",
         "injectTo": [
           "text.html.markdown"
         ],
