@@ -1380,6 +1380,9 @@
         ],
         "configuration": "./jcl.configuration.json"
       },
+       {
+        "id": "markdown-jcl-injection"
+      },
       {
         "id": "mfupp_dir",
         "aliases": [
@@ -1587,6 +1590,17 @@
         "language": "jcl",
         "scopeName": "source.jcl",
         "path": "./syntaxes/jcl.tmLanguage.json"
+      },
+      {
+        "language": "markdown-jcl-injection",
+        "scopeName": "markdown.jcl.codeblock",
+        "path": "./syntaxes/markdown/jcl.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.jcl": "jcl"
+        }
       },
       {
         "language": "mfupp_dir",
