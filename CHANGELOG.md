@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* 9e32dbb add markdown/pli injection
+* e8716e3 add markdown/hlasm
+* 1527321 add markdown/jcl injection
+* 46498d0 move json files to a markdown subdir
+* 357ca99 (tag: 8.10.2) Update
 * f347915 move to a full range rather than a location (fixes odd empty hover)
 * e417be4 scan inside brackets and pickup 78 items eg: pic x(MY-78-ITEM)
 * c14ce69 add embedded markdown
