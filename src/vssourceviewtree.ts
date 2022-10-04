@@ -364,8 +364,66 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         this.refreshItems();
     }
 
+    private sharedSubstring(string1: string, string2: string): string {
+        let ret = "";
+        let index = 1;
+        while (string1.substring(0, index) == string2.substring(0, index)) {
+            ret = string1.substring(0, index);
+            index++;
+        }
+
+        return ret;
+    }
+
     private getItemsFromMap(itemMap: Map<string, SourceItem>): SourceItem[] {
-        return [...itemMap.values()];
+        if (itemMap.size <= 1) {
+            return [...itemMap.values()];
+        }
+        const sortedKeys: string[] = [...itemMap.keys()].sort();
+        const sharedPrefix = this.sharedSubstring(sortedKeys[0], sortedKeys[sortedKeys.length - 1]);
+
+        const keyedMap = new Map<string, number>();
+        for (const [, sitem] of itemMap) {
+            if (sitem.label !== undefined) {
+                if (keyedMap.has(sitem.label)) {
+                    let labelCounter = keyedMap.get(sitem.label);
+                    if (labelCounter !== undefined) {
+                        labelCounter++;
+                        keyedMap.delete(sitem.label);
+                        keyedMap.set(sitem.label, labelCounter);
+                    }
+                } else {
+                    keyedMap.set(sitem.label, 1);
+                }
+            }
+        }
+
+        const values: SourceItem[] = [];
+        for (const [sfilename, sitem] of itemMap) {
+            const labelCounter = keyedMap.get(sitem.label);
+            if (labelCounter !== undefined && labelCounter >= 2) {
+                const c = new SourceItem(sfilename.substring(sharedPrefix.length, sfilename.length), sitem.uri, sitem.line);
+                c.tooltip = sitem.tooltip;
+                if (sitem.command) {
+                    c.command = sitem.command;
+                }
+                c.iconPath = sitem.iconPath;
+                if (sitem.collapsibleState !== undefined) {
+                    c.collapsibleState = sitem.collapsibleState;
+                }
+
+                if (sitem.description !== undefined) {
+                    c.description = sitem.description;
+                }
+                if (sitem.accessibilityInformation !== undefined) {
+                    c.accessibilityInformation = sitem.accessibilityInformation;
+                }
+                values.push(c);
+            } else {
+                values.push(sitem);
+            }
+        }
+        return values;
     }
 
     public getChildren(element?: SourceItem): Thenable<SourceItem[]> {
