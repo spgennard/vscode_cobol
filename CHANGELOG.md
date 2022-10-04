@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* e1a03d1 (HEAD -> main, tag: 8.10.4, origin/main, origin/HEAD) handle duplicates better in flattened source view
+* e00c960 (tag: 8.10.3) Update
 * 9e32dbb add markdown/pli injection
 * e8716e3 add markdown/hlasm
 * 1527321 add markdown/jcl injection
