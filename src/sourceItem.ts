@@ -9,32 +9,19 @@ const themedIconPath = (name: string): any => {
 	};
 };
 
-export class SourceFolderItem extends vscode.TreeItem {
-
+export class SourceOrFolderTreeItem extends vscode.TreeItem {
     constructor(
-        public readonly label: string,
-        public readonly uri?: vscode.Uri,
-        public readonly line?: number,
-    ) {
-        super(label, vscode.TreeItemCollapsibleState.None);
-    }
-
-    public iconPath = themedIconPath("folder.svg");
-
-    contextValue = "Source Folder";
-}
-
-export class SourceItem extends vscode.TreeItem {
-
-    constructor(
+        isFile: boolean,
         public readonly label: string,
         public readonly uri?: vscode.Uri,
         public readonly line?: number
     ) {
         super(label, vscode.TreeItemCollapsibleState.None);
+        this.line = line;
+        this.iconPath = isFile ? themedIconPath("sourceitem.svg") : themedIconPath("folder.svg");
+        this.contextValue = isFile ? "Source" : "Source Folder";
     }
 
-    public iconPath = themedIconPath("sourceitem.svg");
-
-    contextValue = "Source";
+    public iconPath; 
+    contextValue:string;
 }

@@ -32,7 +32,7 @@ import { BldScriptTaskProvider } from "./bldTaskProvider";
 import { COBOLCaseFormatter } from "./caseformatter";
 import { COBOLCallTargetProvider } from "./vscobolcalltargetprovider";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
-import { SourceItem } from "./sourceItem";
+import { SourceOrFolderTreeItem } from "./sourceItem";
 import { VSSemanticProvider } from "./vssemanticprovider";
 import { VSPPCodeLens } from "./vsppcodelens";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
@@ -641,13 +641,13 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
         await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1);
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runCommand", function (si: SourceItem) {
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runCommand", function (si: SourceOrFolderTreeItem) {
         if (si !== undefined) {
             VSSourceTreeViewHandler.actionSourceViewItemFunction(si, false);
         }
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runDebugCommand", function (si: SourceItem) {
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runDebugCommand", function (si: SourceOrFolderTreeItem) {
         if (si !== undefined) {
             VSSourceTreeViewHandler.actionSourceViewItemFunction(si, true);
         }

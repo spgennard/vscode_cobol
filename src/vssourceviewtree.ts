@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { SourceItem, SourceFolderItem } from "./sourceItem";
+import { SourceOrFolderTreeItem } from "./sourceItem";
 import { workspace } from "vscode";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSWorkspaceFolders } from "./cobolfolders";
@@ -41,7 +41,7 @@ export class VSSourceTreeViewHandler {
 
     }
 
-    static actionSourceViewItemFunction(si: SourceItem, debug: boolean): void {
+    static actionSourceViewItemFunction(si: SourceOrFolderTreeItem, debug: boolean): void {
         let fsPath = "";
         if (si !== undefined && si.uri !== undefined) {
             fsPath = si.uri.path as string;
@@ -51,43 +51,43 @@ export class VSSourceTreeViewHandler {
     }
 }
 
-export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
-    private cobolItem: SourceItem;
-    private copyBookItem: SourceItem;
-    private jclItem: SourceItem;
-    private pliItem: SourceItem;
-    private hlasmItem: SourceItem;
-    private documentItem: SourceItem;
-    private scriptItem: SourceItem;
-    private objectItem: SourceItem;
-    private testCaseItem: SourceItem;
+export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTreeItem> {
+    private cobolItem: SourceOrFolderTreeItem;
+    private copyBookItem: SourceOrFolderTreeItem;
+    private jclItem: SourceOrFolderTreeItem;
+    private pliItem: SourceOrFolderTreeItem;
+    private hlasmItem: SourceOrFolderTreeItem;
+    private documentItem: SourceOrFolderTreeItem;
+    private scriptItem: SourceOrFolderTreeItem;
+    private objectItem: SourceOrFolderTreeItem;
+    private testCaseItem: SourceOrFolderTreeItem;
 
-    private topLevelItems: SourceItem[] = [];
+    private topLevelItems: SourceOrFolderTreeItem[] = [];
 
-    private cobolItems = new Map<string, SourceFolderItem>();
-    private copyBookItems = new Map<string, SourceFolderItem>();
-    private jclItems = new Map<string, SourceFolderItem>();
-    private pliItems = new Map<string, SourceFolderItem>();
-    private hlasmItems = new Map<string, SourceFolderItem>();
-    private documentItems = new Map<string, SourceFolderItem>();
-    private scriptItems = new Map<string, SourceFolderItem>();
-    private objectItems = new Map<string, SourceFolderItem>();
-    private testCaseItems = new Map<string, SourceFolderItem>();
+    private cobolItems = new Map<string, SourceOrFolderTreeItem>();
+    private copyBookItems = new Map<string, SourceOrFolderTreeItem>();
+    private jclItems = new Map<string, SourceOrFolderTreeItem>();
+    private pliItems = new Map<string, SourceOrFolderTreeItem>();
+    private hlasmItems = new Map<string, SourceOrFolderTreeItem>();
+    private documentItems = new Map<string, SourceOrFolderTreeItem>();
+    private scriptItems = new Map<string, SourceOrFolderTreeItem>();
+    private objectItems = new Map<string, SourceOrFolderTreeItem>();
+    private testCaseItems = new Map<string, SourceOrFolderTreeItem>();
 
     private settings: ICOBOLSettings;
 
     constructor(config: ICOBOLSettings) {
         this.settings = config;
 
-        this.cobolItem = new SourceFolderItem("COBOL");
-        this.copyBookItem = new SourceFolderItem("Copybooks");
-        this.jclItem = new SourceFolderItem("JCL");
-        this.hlasmItem = new SourceFolderItem("HLASM");
-        this.pliItem = new SourceFolderItem("PL/I");
-        this.documentItem = new SourceFolderItem("Documents");
-        this.scriptItem = new SourceFolderItem("Scripts");
-        this.objectItem = new SourceFolderItem("Objects");
-        this.testCaseItem = new SourceFolderItem("Tests");
+        this.cobolItem = new SourceOrFolderTreeItem(false,"COBOL");
+        this.copyBookItem = new SourceOrFolderTreeItem(false,"Copybooks");
+        this.jclItem = new SourceOrFolderTreeItem(false,"JCL");
+        this.hlasmItem = new SourceOrFolderTreeItem(false,"HLASM");
+        this.pliItem = new SourceOrFolderTreeItem(false,"PL/I");
+        this.documentItem = new SourceOrFolderTreeItem(false,"Documents");
+        this.scriptItem = new SourceOrFolderTreeItem(false,"Scripts");
+        this.objectItem = new SourceOrFolderTreeItem(false,"Objects");
+        this.testCaseItem = new SourceOrFolderTreeItem(false,"Tests");
 
         this.topLevelItems.push(this.cobolItem);
         this.topLevelItems.push(this.copyBookItem);
@@ -184,8 +184,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         };
     }
 
-    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number, ext: string): SourceItem {
-        const item = new SourceItem(label, file, lnum);
+    private newSourceItem(contextValue: string, label: string, file: vscode.Uri, lnum: number, ext: string): SourceOrFolderTreeItem {
+        const item = new SourceOrFolderTreeItem(true,label, file, lnum);
         const newCommand = this.getCommand(file, ext);
         if (newCommand !== undefined) {
             item.command = newCommand;
@@ -195,8 +195,8 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         return item;
     }
 
-    private _onDidChangeTreeData: vscode.EventEmitter<SourceItem | undefined> = new vscode.EventEmitter<SourceItem | undefined>();
-    readonly onDidChangeTreeData: vscode.Event<SourceItem | undefined> = this._onDidChangeTreeData.event;
+    private _onDidChangeTreeData: vscode.EventEmitter<SourceOrFolderTreeItem | undefined> = new vscode.EventEmitter<SourceOrFolderTreeItem | undefined>();
+    readonly onDidChangeTreeData: vscode.Event<SourceOrFolderTreeItem | undefined> = this._onDidChangeTreeData.event;
 
     private refreshAll(): void {
         this._onDidChangeTreeData.fire(this.cobolItem);
@@ -211,7 +211,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
     }
 
 
-    private addExtensionIfInList(ext: string, file: vscode.Uri, validExtensions: string[], sourceItem: string, base: string, items: Map<string, SourceFolderItem>): boolean {
+    private addExtensionIfInList(ext: string, file: vscode.Uri, validExtensions: string[], sourceItem: string, base: string, items: Map<string, SourceOrFolderTreeItem>): boolean {
         for (const validExtension of validExtensions) {
             if (validExtension.length > 0 && ext === validExtension) {
                 const f = file.fsPath;
@@ -316,7 +316,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         }
     }
 
-    private setTreeState(items: Map<string, SourceFolderItem>, item: SourceItem) {
+    private setTreeState(items: Map<string, SourceOrFolderTreeItem>, item: SourceOrFolderTreeItem) {
         if (items.size !== 0) {
             item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
         } else {
@@ -375,7 +375,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         return ret;
     }
 
-    private getItemsFromMap(itemMap: Map<string, SourceItem>): SourceItem[] {
+    private getItemsFromMap(itemMap: Map<string, SourceOrFolderTreeItem>): SourceOrFolderTreeItem[] {
         if (itemMap.size <= 1) {
             return [...itemMap.values()];
         }
@@ -398,27 +398,27 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
             }
         }
 
-        const values: SourceItem[] = [];
+        const values: SourceOrFolderTreeItem[] = [];
         for (const [sfilename, sitem] of itemMap) {
             const labelCounter = keyedMap.get(sitem.label);
             if (labelCounter !== undefined && labelCounter >= 2) {
-                const c = new SourceItem(sfilename.substring(sharedPrefix.length, sfilename.length), sitem.uri, sitem.line);
-                c.tooltip = sitem.tooltip;
+                const dupItem = new SourceOrFolderTreeItem(true,sfilename.substring(sharedPrefix.length, sfilename.length), sitem.uri, sitem.line);
+                dupItem.tooltip = sitem.tooltip;
                 if (sitem.command) {
-                    c.command = sitem.command;
+                    dupItem.command = sitem.command;
                 }
-                c.iconPath = sitem.iconPath;
+                dupItem.iconPath = sitem.iconPath;
                 if (sitem.collapsibleState !== undefined) {
-                    c.collapsibleState = sitem.collapsibleState;
+                    dupItem.collapsibleState = sitem.collapsibleState;
                 }
 
                 if (sitem.description !== undefined) {
-                    c.description = sitem.description;
+                    dupItem.description = sitem.description;
                 }
                 if (sitem.accessibilityInformation !== undefined) {
-                    c.accessibilityInformation = sitem.accessibilityInformation;
+                    dupItem.accessibilityInformation = sitem.accessibilityInformation;
                 }
-                values.push(c);
+                values.push(dupItem);
             } else {
                 values.push(sitem);
             }
@@ -426,7 +426,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         return values;
     }
 
-    public getChildren(element?: SourceItem): Thenable<SourceItem[]> {
+    public getChildren(element?: SourceOrFolderTreeItem): Thenable<SourceOrFolderTreeItem[]> {
         if (element === undefined) {
             return new Promise(resolve => {
                 resolve(this.topLevelItems);
@@ -434,7 +434,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         }
 
         return new Promise(resolve => {
-            let rtn: SourceItem[] = [];
+            let rtn: SourceOrFolderTreeItem[] = [];
 
             switch (element.label) {
                 case "COBOL": rtn = this.getItemsFromMap(this.cobolItems); break;
@@ -453,7 +453,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceItem> {
         });
     }
 
-    getTreeItem(element: SourceItem): vscode.TreeItem {
+    getTreeItem(element: SourceOrFolderTreeItem): vscode.TreeItem {
         return element;
     }
 }
