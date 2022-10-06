@@ -124,7 +124,14 @@ export class SourceScannerUtils {
                     cArg = "";
                     continue;
                 }
+            }
 
+            if (c === ":") {
+                ret.push(cArg);
+                cArg = "" + c;
+                ret.push(cArg);
+                cArg = "";
+                continue;                
             }
             cArg += c;
         }
@@ -2362,7 +2369,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.containsIndex(currentLower) === false) {
 
                             if (prevTokenLower === "perform" || prevTokenLower === "to" || prevTokenLower === "goto" ||
-                                prevTokenLower === "thru" || prevTokenLower === "through") {
+                                prevTokenLower === "thru" || prevTokenLower === "through" ) {
 
                                 /* go nn, could be "move xx to nn" or "go to nn" */
                                 let sourceStyle = COBOLTokenStyle.Unknown;
