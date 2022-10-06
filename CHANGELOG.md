@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* e1a03d1 (HEAD -> main, tag: 8.10.4, origin/main, origin/HEAD) handle duplicates better in flattened source view
+* f3de30c (origin/main, origin/HEAD) tweak to pickup missed ref-mod items note to self - time to look at this closer
+* 4c430c9 merge two classes and simplify
+* 8ee807a (tag: 8.10.4) Update
+* e1a03d1 handle duplicates better in flattened source view
 * e00c960 (tag: 8.10.3) Update
 * 9e32dbb add markdown/pli injection
 * e8716e3 add markdown/hlasm
