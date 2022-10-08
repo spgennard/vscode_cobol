@@ -18,10 +18,15 @@ export class SourceOrFolderTreeItem extends vscode.TreeItem {
     ) {
         super(label, vscode.TreeItemCollapsibleState.None);
         this.line = line;
+        this.isFile = isFile;
         this.iconPath = isFile ? themedIconPath("sourceitem.svg") : themedIconPath("folder.svg");
         this.contextValue = isFile ? "Source" : "Source Folder";
+        this.children = new Map<string, SourceOrFolderTreeItem>();
     }
 
+    public isFile:boolean;
     public iconPath; 
     contextValue:string;
+
+    public children:Map<string, SourceOrFolderTreeItem>;
 }
