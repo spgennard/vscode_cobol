@@ -190,7 +190,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
         return {
             arguments: [
                 fileUri,
-                { selection: location },
+                { selection: location }
             ],
             command: actionCommand,
             title: "Open",
@@ -257,7 +257,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
             const fsp = file.fsPath;
             const extLower = ext.toLowerCase();
 
-            if (base.startsWith("Test") || base.startsWith("MFUT")) {
+            if (base.startsWith("Test") || base.startsWith("MFU")) {
                 this.addExtensionIfInList(ext.toLowerCase(), file, this.settings.program_extensions, this.testCaseItem.contextValue, base, this.testCaseItems);
                 this.addExtensionIfInList(ext.toLowerCase(), file, this.settings.copybookexts, this.testCaseItem.contextValue, base, this.testCaseItems);
             }
