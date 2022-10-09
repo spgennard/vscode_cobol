@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* f3de30c (origin/main, origin/HEAD) tweak to pickup missed ref-mod items note to self - time to look at this closer
+* 5ba7481 minor tweak to include MFUPD files
+* 1d065e0 simplify source view
+* aea959e (tag: 8.10.6) Update
+* f3de30c tweak to pickup missed ref-mod items note to self - time to look at this closer
 * 4c430c9 merge two classes and simplify
 * 8ee807a (tag: 8.10.4) Update
 * e1a03d1 handle duplicates better in flattened source view
