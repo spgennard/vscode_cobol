@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* 1a43f71 Update
 * 5ba7481 minor tweak to include MFUPD files
 * 1d065e0 simplify source view
 * aea959e (tag: 8.10.6) Update
