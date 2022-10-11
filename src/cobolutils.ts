@@ -13,6 +13,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCustomIntelliseRules } from "./vscustomrules";
+import { SplitTokenizer } from "./splittoken";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
@@ -610,7 +611,7 @@ export class COBOLUtils {
         let newtext = text;
         const args: string[] = [];
 
-        SourceScannerUtils.splitArgument(text, true, args);
+        SplitTokenizer.splitArgument(text, args);
         const textLower = text.toLowerCase();
         let lastPos = 0;
         let foldstyle: intellisenseStyle = defaultFoldStyle; //settings.intellisense_style;

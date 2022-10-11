@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
-import { COBOLTokenStyle, SourceScannerUtils } from "./cobolsourcescanner";
+import { COBOLTokenStyle } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { outlineFlag } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { SplitTokenizer } from "./splittoken";
 
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
@@ -34,7 +35,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
                 const textLineClean = textText.substring(2);
                 const lineTokens = [];
                 const possibleTokens:string[] = [];
-                SourceScannerUtils.splitArgument(textLineClean, false, possibleTokens);
+                SplitTokenizer.splitArgument(textLineClean, possibleTokens);
                 for (let l = 0; l < possibleTokens.length; l++) {
                     if (possibleTokens[l] !== undefined) {
                         const possibleToken = possibleTokens[l].trim();
