@@ -11,6 +11,7 @@ const tokenModifiers = ["declaration", "readonly"];
 const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
 
 export class VSSemanticProvider {
+    static x = 2;
     public static getLegend(): vscode.SemanticTokensLegend {
         return legend;
     }

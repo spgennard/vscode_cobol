@@ -29,45 +29,67 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             return lens;
         }
 
+        // if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
+        //     for(const [a,b] of current.constantsOrVariables) {
+        //         const refs = current.sourceReferences.constantsOrVariablesReferences.get(a);
+        //         if (refs !== undefined && b.length >= 1) {
+        //             const firstReference = b[0].token;
+        //             const r = new vscode.Range(new vscode.Position(firstReference.startLine, firstReference.startColumn),
+        //                 new vscode.Position(firstReference.endLine,firstReference.endColumn));
+
+        //             const cl = new vscode.CodeLens(r);
+        //                 cl.command = {
+        //                 title: `Reference Count: ${refs.length}`,
+        //                 tooltip: `Reference Count: ${refs.length} `,
+        //                 command: ""
+        //             };
+
+        //             lens.push(cl);
+        //         }
+        //     }
+        // }
+
         for (const [, cbInfo] of current.copyBooksUsed) {
-            if (cbInfo.scanComplete) {
-                if (cbInfo.statementInformation !== undefined && cbInfo.statementInformation.copyReplaceMap.size !== 0) {
-                    const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
-                    const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
-                        new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));
-                    const cl = new vscode.CodeLens(r);
-                    let src = "";
-                    let prevSrc = "";
-                    let prevMaxLines = 10;
-                    if (cbInfo.statementInformation.sourceHandler !== undefined) {
-                        for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
-                            src += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                            src += "\n";
-                            if (prevMaxLines > 0) {
-                                prevSrc += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                                prevSrc += "\n";
-                                --prevMaxLines;
-                            }
+            if (!cbInfo.scanComplete) {
+
+                continue;
+            }
+            if (cbInfo.statementInformation !== undefined && cbInfo.statementInformation.copyReplaceMap.size !== 0) {
+                const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
+                const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
+                    new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));
+                const cl = new vscode.CodeLens(r);
+                let src = "";
+                let prevSrc = "";
+                let prevMaxLines = 10;
+                if (cbInfo.statementInformation.sourceHandler !== undefined) {
+                    for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
+                        src += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                        src += "\n";
+                        if (prevMaxLines > 0) {
+                            prevSrc += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                            prevSrc += "\n";
+                            --prevMaxLines;
                         }
                     }
+                }
 
-                    if (prevMaxLines <= 0) {
-                        prevSrc += "\n......";
-                    }
+                if (prevMaxLines <= 0) {
+                    prevSrc += "\n......";
+                }
 
-                    if (src.length !== 0) {
-                        const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
+                if (src.length !== 0) {
+                    const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
 
-                        cl.command = {
-                            title: "View copybook repacement",
-                            tooltip: prevSrc,
-                            command: "cobolplugin.ppcodelenaction",
-                            arguments: [arg]
-                        };
-                        this.resolveCodeLens(cl, token);
+                    cl.command = {
+                        title: "View copybook repacement",
+                        tooltip: prevSrc,
+                        command: "cobolplugin.ppcodelenaction",
+                        arguments: [arg]
+                    };
+                    this.resolveCodeLens(cl, token);
 
-                        lens.push(cl);
-                    }
+                    lens.push(cl);
                 }
             }
         }

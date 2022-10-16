@@ -158,7 +158,7 @@ export class COBOLToken {
     public endColumn: number;
     public inProcedureDivision: boolean;
     public extraInformation1: string;
-    public inSection: COBOLToken|undefined;
+    public inSection: COBOLToken | undefined;
 
     public constructor(
         filenameAsURI: string, filename: string, tokenType: COBOLTokenStyle, startLine: number,
@@ -422,13 +422,13 @@ export class copybookState implements IReplaceState {
 }
 
 export class COBOLCopybookToken {
-    public readonly token: COBOLToken|undefined;
+    public readonly token: COBOLToken | undefined;
     public scanComplete: boolean;
-    public statementInformation: copybookState|undefined;
+    public statementInformation: copybookState | undefined;
 
     public static Null = new COBOLCopybookToken(undefined, false, undefined);
 
-    constructor(token: COBOLToken|undefined, parsed: boolean, statementInformation: copybookState|undefined) {
+    constructor(token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
         this.token = token;
         this.scanComplete = parsed;
         this.statementInformation = statementInformation;
@@ -508,22 +508,22 @@ export class COBOLParameter {
 }
 
 class ParseState {
-    currentToken: COBOLToken|undefined;
-    currentRegion: COBOLToken|undefined;
-    currentDivision: COBOLToken|undefined;
-    currentSection: COBOLToken|undefined;
-    currentParagraph: COBOLToken|undefined;
-    currentClass: COBOLToken|undefined;
-    currentMethod: COBOLToken|undefined;
-    currentFunctionId: COBOLToken|undefined;
-    current01Group: COBOLToken|undefined;
-    currentLevel: COBOLToken|undefined;
+    currentToken: COBOLToken | undefined;
+    currentRegion: COBOLToken | undefined;
+    currentDivision: COBOLToken | undefined;
+    currentSection: COBOLToken | undefined;
+    currentParagraph: COBOLToken | undefined;
+    currentClass: COBOLToken | undefined;
+    currentMethod: COBOLToken | undefined;
+    currentFunctionId: COBOLToken | undefined;
+    current01Group: COBOLToken | undefined;
+    currentLevel: COBOLToken | undefined;
     currentProgramTarget: CallTargetInformation;
 
-    copyBooksUsed: Map<string, COBOLToken|undefined>;
+    copyBooksUsed: Map<string, COBOLToken | undefined>;
 
-    procedureDivision: COBOLToken|undefined;
-    declaratives: COBOLToken|undefined;
+    procedureDivision: COBOLToken | undefined;
+    declaratives: COBOLToken | undefined;
     captureDivisions: boolean;
     programs: COBOLToken[];
     pickFields: boolean;
@@ -562,7 +562,7 @@ class ParseState {
     inCopyStartColumn: number;
 
     constructor(configHandler: ICOBOLSettings) {
-        this.currentDivision =  undefined;
+        this.currentDivision = undefined;
         this.procedureDivision = undefined;
         this.currentSection = undefined;
         this.currentParagraph = undefined;
@@ -625,12 +625,12 @@ class PreParseState {
 
 export class CallTargetInformation {
 
-    public Token: COBOLToken|undefined;
+    public Token: COBOLToken | undefined;
     public OriginalToken: string;
     public IsEntryPoint: boolean;
     public CallParameters: COBOLParameter[];
 
-    constructor(originalToken: string, token: COBOLToken|undefined, isEntryPoint: boolean, params: COBOLParameter[]) {
+    constructor(originalToken: string, token: COBOLToken | undefined, isEntryPoint: boolean, params: COBOLParameter[]) {
         this.OriginalToken = originalToken;
         this.Token = token;
         this.IsEntryPoint = isEntryPoint;
@@ -1146,7 +1146,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     public getCurrentDivision(): string {
-        return this.sourceReferences.state.currentDivision === undefined ? "" :this.sourceReferences.state.currentDivision.tokenName;
+        return this.sourceReferences.state.currentDivision === undefined ? "" : this.sourceReferences.state.currentDivision.tokenName;
     }
 
     public getCurrentSection(): string {
@@ -1160,7 +1160,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, _line: string, currentCol: number, token: string,
-        description: string, parentToken: COBOLToken|undefined,
+        description: string, parentToken: COBOLToken | undefined,
         extraInformation1 = ""): COBOLToken {
 
         const state: ParseState = this.sourceReferences.state;
@@ -2210,11 +2210,20 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
                 }
 
-                if (state.currentSection !== undefined && state.currentSection.tokenNameLower === "input-output") {
-                    if (prevTokenLower === "fd" || prevTokenLower === "select") {
-                        state.pickFields = true;
+                if (state.currentSection !== undefined) {
+                    if (state.currentSection.tokenNameLower === "input-output") {
+                        if (prevTokenLower === "fd" || prevTokenLower === "select") {
+                            state.pickFields = true;
+                        }
+                    }
+
+                    if (state.currentSection.tokenNameLower === "communication") {
+                        if (prevTokenLower == "cd") {
+                            state.pickFields = true;
+                        }
                     }
                 }
+
 
                 // are we in the working-storage section?
                 if (state.pickFields && prevToken.length > 0) {
@@ -2334,6 +2343,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                     if ((prevTokenLower === "fd"
                         || prevTokenLower === "sd"
+                        || prevTokenLower === "cd"
                         || prevTokenLower === "rd"
                         || prevTokenLower === "select")
                         && !this.isValidKeyword(currentLower)) {
@@ -2351,6 +2361,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.skipToDot = true;
                         }
                         continue;
+                    }
+
+                    // add tokens from comms section
+                    if (state !== undefined && state.currentSection !== undefined && state.currentSection.tokenNameLower === "communication" && !this.isValidKeyword(currentLower)) {
+                        if (prevTokenLower === "is") {
+                            const trimToken = COBOLSourceScanner.trimLiteral(current);
+                            const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, tcurrentCurrentCol, trimToken, trimToken, state.currentDivision, prevTokenLower);
+                            this.addVariableOrConstant(currentLower, variableToken);
+                        }
                     }
                 }
 
@@ -2370,7 +2389,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.containsIndex(currentLower) === false) {
 
                             if (prevTokenLower === "perform" || prevTokenLower === "to" || prevTokenLower === "goto" ||
-                                prevTokenLower === "thru" || prevTokenLower === "through" ) {
+                                prevTokenLower === "thru" || prevTokenLower === "through") {
 
                                 /* go nn, could be "move xx to nn" or "go to nn" */
                                 let sourceStyle = COBOLTokenStyle.Unknown;
@@ -2461,7 +2480,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private processCopyBook(cbInfo: copybookState) {
         const state: ParseState = this.sourceReferences.state;
 
-        let copyToken: COBOLToken|undefined = undefined;
+        let copyToken: COBOLToken | undefined = undefined;
         const isIn = cbInfo.isIn;
         const isOf = cbInfo.isOf;
         const lineNumber = cbInfo.startLineNumber;
