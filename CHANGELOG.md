@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* ef129b6 add simple support for picking fields from the comms section
+* 7db7976 move splittoken into sep file and tweak it
+* 289d50c update versions
+* 9517758 (tag: 8.10.8) Update
 * 1a43f71 Update
 * 5ba7481 minor tweak to include MFUPD files
 * 1d065e0 simplify source view
