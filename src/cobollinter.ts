@@ -205,6 +205,7 @@ export class CobolLinterProvider {
             if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
                 continue;
             }
+
             if (sourceRefs.targetReferences.has(workLower) === false) {
                 const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
@@ -233,7 +234,8 @@ export class CobolLinterProvider {
             }
 
             if (token.inProcedureDivision) {
-                if (sourceRefs.targetReferences.has(workLower) === false) {
+                const refs = sourceRefs.targetReferences.get(workLower);
+                if (refs !== undefined && refs.length === 1) {
                     let ignore = false;
                     if (this.settings.linter_ignore_section_before_entry) {
                         const nextLine = qp.sourceHandler.getLine(1 + token.startLine, false);

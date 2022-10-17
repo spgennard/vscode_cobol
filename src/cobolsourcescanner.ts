@@ -67,80 +67,6 @@ export class SourceScannerUtils {
 
         return ret;
     }
-
-    // public static splitArgument(input: string, splitBrackets: boolean, ret: string[]): void {
-    //     let inQuote = false;
-    //     let inQuoteSingle = false;
-    //     const lineLength = input.length;
-    //     let cArg = "";
-
-    //     for (let i = 0; i < lineLength; i++) {
-    //         let c = input.charAt(i);
-
-    //         /* handle quotes */
-    //         if (c === "'" && !inQuote) {
-    //             inQuoteSingle = !inQuoteSingle;
-    //             cArg += c;
-    //             if (inQuoteSingle === false) {
-    //                 ret.push(cArg);
-    //                 cArg = "";
-    //             }
-    //             continue;
-    //         }
-
-    //         if (c === "\"" && !inQuoteSingle) {
-    //             inQuote = !inQuote;
-    //             cArg += c;
-    //             if (inQuote === false) {
-    //                 ret.push(cArg);
-    //                 cArg = "";
-    //             }
-    //             continue;
-    //         }
-
-    //         if (inQuote || inQuoteSingle) {
-    //             cArg += c;
-    //             continue;
-    //         }
-
-    //         /* skip white space */
-    //         if ((c === " ") || (c === "\t")) {
-    //             if (cArg.length !== 0) {
-    //                 ret.push(cArg);
-    //                 cArg = "";
-    //             }
-    //             while ((c === " ") || (c === "\t")) {
-    //                 i++;
-    //                 c = cArg.charAt(i);
-    //             }
-    //             i--;
-    //             continue;
-    //         }
-
-    //         if (splitBrackets) {
-    //             if (c === "(" || c === ")") {
-    //                 ret.push(cArg);
-    //                 cArg = "" + c;
-    //                 ret.push(cArg);
-    //                 cArg = "";
-    //                 continue;
-    //             }
-    //         }
-
-    //         if (c === ":") {
-    //             ret.push(cArg);
-    //             cArg = "" + c;
-    //             ret.push(cArg);
-    //             cArg = "";
-    //             continue;                
-    //         }
-    //         cArg += c;
-    //     }
-
-    //     if (cArg.length !== 0) {
-    //         ret.push(cArg);
-    //     }
-    // }
 }
 
 export class COBOLToken {
@@ -159,6 +85,7 @@ export class COBOLToken {
     public inProcedureDivision: boolean;
     public extraInformation1: string;
     public inSection: COBOLToken | undefined;
+    public tokenOffset: number;
 
     public constructor(
         filenameAsURI: string, filename: string, tokenType: COBOLTokenStyle, startLine: number,
@@ -179,6 +106,7 @@ export class COBOLToken {
         this.inProcedureDivision = inProcedureDivision;
         this.extraInformation1 = extraInformation1;
         this.inSection = undefined;
+        this.tokenOffset = 0;
 
         if (this.tokenName.length !== 0) {
             /* ensure we don't have any odd start columns */
@@ -1159,6 +1087,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
     }
 
+    private tokensInOrderPush(token: COBOLToken, sendEvent: boolean):void {
+        token.tokenOffset = this.tokensInOrder.length;
+        this.tokensInOrder.push(token);
+        if (sendEvent) {
+            this.eventHandler.processToken(token);
+        }
+    }
+
     private newCOBOLToken(tokenType: COBOLTokenStyle, startLine: number, _line: string, currentCol: number, token: string,
         description: string, parentToken: COBOLToken | undefined,
         extraInformation1 = ""): COBOLToken {
@@ -1177,8 +1113,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
         if (ctoken.ignoreInOutlineView || tokenType === COBOLTokenStyle.ImplicitProgramId) {
-            this.tokensInOrder.push(ctoken);
-            this.eventHandler.processToken(ctoken);
+            this.tokensInOrderPush(ctoken,true);
             return ctoken;
         }
 
@@ -1222,10 +1157,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     state.currentSection.endColumn = ctoken.startColumn - 1;
                 }
             }
-            if (state.inProcedureDivision) {
-                this.eventHandler.processToken(ctoken);
-            }
-            this.tokensInOrder.push(ctoken);
+            this.tokensInOrderPush(ctoken, state.inProcedureDivision);
 
             return ctoken;
         }
@@ -1247,14 +1179,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     state.currentDivision.endColumn = ctoken.startColumn - 1;
                 }
             }
-            this.tokensInOrder.push(ctoken);
-            this.eventHandler.processToken(ctoken);
-
+            this.tokensInOrderPush(ctoken,true);
             return ctoken;
         }
 
-        this.tokensInOrder.push(ctoken);
-        this.eventHandler.processToken(ctoken);
+        this.tokensInOrderPush(ctoken,true);
 
         return ctoken;
     }
