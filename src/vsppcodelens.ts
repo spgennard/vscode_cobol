@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as vscode from "vscode";
-import { COBOLSourceScanner } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -21,6 +21,26 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         });
     }
 
+    private scanTargetUse(document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
+        const refs = current.sourceReferences.targetReferences.get(target);
+        if (refs !== undefined && refs.length >= 1) {
+            const r = new vscode.Range(new vscode.Position(targetToken.startLine, targetToken.startColumn),
+                new vscode.Position(targetToken.endLine, targetToken.endColumn));
+
+            const cl = new vscode.CodeLens(r);
+            cl.command = {
+                title: `${target} referenced : ${refs.length}`,
+                tooltip: `${target} referenced ${refs.length} `,
+                command: "editor.action.findReferences",
+                arguments: [
+                    document.uri, new vscode.Position(targetToken.startLine, targetToken.startColumn)
+                ]
+            };
+
+            lens.push(cl);
+        }
+    }
+
     public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
         const lens: vscode.CodeLens[] = [];
 
@@ -29,25 +49,41 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             return lens;
         }
 
-        // if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
-        //     for(const [a,b] of current.constantsOrVariables) {
-        //         const refs = current.sourceReferences.constantsOrVariablesReferences.get(a);
-        //         if (refs !== undefined && b.length >= 1) {
-        //             const firstReference = b[0].token;
-        //             const r = new vscode.Range(new vscode.Position(firstReference.startLine, firstReference.startColumn),
-        //                 new vscode.Position(firstReference.endLine,firstReference.endColumn));
+        if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
+            for (const [a, b] of current.constantsOrVariables) {
+                const refs = current.sourceReferences.constantsOrVariablesReferences.get(a);
+                if (refs !== undefined && b.length >= 1) {
+                    for (const currentRef of b) {
+                        const firstReference = currentRef.token;
+                        const r = new vscode.Range(new vscode.Position(firstReference.startLine, firstReference.startColumn),
+                            new vscode.Position(firstReference.endLine, firstReference.endColumn));
 
-        //             const cl = new vscode.CodeLens(r);
-        //                 cl.command = {
-        //                 title: `Reference Count: ${refs.length}`,
-        //                 tooltip: `Reference Count: ${refs.length} `,
-        //                 command: ""
-        //             };
+                        const cl = new vscode.CodeLens(r);
+                        cl.command = {
+                            title: `${a} referenced : ${b.length+refs.length}`,
+                            tooltip: `${a} referenced ${b.length+refs.length} `,
+                            command: "editor.action.findReferences",
+                            arguments: [
+                                document.uri, new vscode.Position(firstReference.startLine, firstReference.startColumn)
+                            ]
+                        };
 
-        //             lens.push(cl);
-        //         }
-        //     }
-        // }
+                        lens.push(cl);
+                    }
+                }
+            }
+        }
+
+        if (current.sourceReferences !== undefined && current.sourceReferences.sharedParagraphs !== undefined) {
+            for (const [a, b] of current.sections) {
+                this.scanTargetUse(document, lens, current, a, b);
+            }
+
+            for (const [a, b] of current.paragraphs) {
+                this.scanTargetUse(document, lens, current, a, b);
+            }
+        }
+
 
         for (const [, cbInfo] of current.copyBooksUsed) {
             if (!cbInfo.scanComplete) {
