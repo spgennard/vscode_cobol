@@ -135,7 +135,7 @@ export class SourceReference {
     public column: number;
     public length: number;
     public tokenStyle: COBOLTokenStyle;
-
+    
     public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
@@ -2359,7 +2359,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 } else if (this.isVisibleParagraph(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Paragraph;
                                     sharedReferences = this.sourceReferences.targetReferences;
-                                }
+                                } 
                                 this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
                             }
 

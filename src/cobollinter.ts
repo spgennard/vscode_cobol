@@ -206,7 +206,8 @@ export class CobolLinterProvider {
                 continue;
             }
 
-            if (sourceRefs.targetReferences.has(workLower) === false) {
+            const refs = sourceRefs.targetReferences.get(workLower);
+            if (refs !== undefined && refs.length === 1) {
                 const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                     new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
                 const d = new vscode.Diagnostic(r, key + " paragraph is not referenced", this.linterSev);
@@ -237,6 +238,7 @@ export class CobolLinterProvider {
                 const refs = sourceRefs.targetReferences.get(workLower);
                 if (refs !== undefined && refs.length === 1) {
                     let ignore = false;
+
                     if (this.settings.linter_ignore_section_before_entry) {
                         const nextLine = qp.sourceHandler.getLine(1 + token.startLine, false);
                         if (nextLine?.toLowerCase().indexOf("entry") !== -1) {
