@@ -121,6 +121,12 @@ export class VSCOBOLConfiguration {
         
         settings.margin = getBoolean("margin", settings.margin);
         
+        settings.enable_codelens_variable_references = getBoolean("enable_codelens_variable_references", settings.enable_codelens_variable_references);
+
+        settings.enable_codelens_section_paragraph_references = getBoolean("enable_codelens_section_paragraph_references", settings.enable_codelens_section_paragraph_references);
+
+        settings.enable_codelens_copy_replacing = getBoolean("enable_codelens_copy_replacing",settings.enable_codelens_copy_replacing);
+
         // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {
             settings.parse_copybooks_for_references = false;

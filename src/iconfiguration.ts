@@ -124,6 +124,12 @@ export interface ICOBOLSettings {
     custom_intellisense_rules: string[];
 
     margin: boolean;
+
+    enable_codelens_variable_references:boolean;
+
+    enable_codelens_section_paragraph_references: boolean;
+
+    enable_codelens_copy_replacing: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -220,6 +226,12 @@ export class COBOLSettings implements ICOBOLSettings {
 
     margin: boolean;
 
+    enable_codelens_variable_references: boolean;
+
+    enable_codelens_section_paragraph_references: boolean;
+
+    enable_codelens_copy_replacing: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -295,5 +307,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_no_space_keywords = [];
         this.custom_intellisense_rules = [];
         this.margin = true;
+        this.enable_codelens_variable_references = false;
+        this.enable_codelens_section_paragraph_references = false;
+        this.enable_codelens_copy_replacing = true;
     }
 }

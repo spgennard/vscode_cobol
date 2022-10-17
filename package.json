@@ -1092,6 +1092,21 @@
             "           GoBack.",
             "       End Program $1."
           ]
+        },
+        "coboleditor.enable_codelens_variable_references": {
+          "type": "boolean",
+          "description": "When enabled, turn on codelens for variable references",
+          "default": false
+        },
+        "coboleditor.enable_codelens_section_paragraph_references": {
+          "type": "boolean",
+          "description": "When enabled, turn on codelens for sections/paragraphs references",
+          "default": false
+        },
+         "coboleditor.enable_codelens_copy_replacing": {
+          "type": "boolean",
+          "description": "When enabled, turn on codelens for simple copy replacing",
+          "default": false
         }
       }
     },
@@ -1423,7 +1438,7 @@
         ],
         "configuration": "./pli.configuration.json"
       },
-       {
+      {
         "id": "markdown-pli-injection"
       },
       {
