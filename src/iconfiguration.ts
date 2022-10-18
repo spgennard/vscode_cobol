@@ -53,7 +53,8 @@ export interface ICOBOLSettings {
     parse_copybooks_for_references: boolean;
     workspacefolders_order: string[];
     linter_mark_as_information: boolean;
-    linter_unused_paragraphs_or_sections: boolean;
+    linter_unused_sections: boolean;
+    linter_unused_paragraphs: boolean;
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
     linter_ignore_section_before_entry: boolean;
@@ -154,7 +155,8 @@ export class COBOLSettings implements ICOBOLSettings {
     parse_copybooks_for_references: boolean;
     workspacefolders_order: string[];
     linter_mark_as_information: boolean;
-    linter_unused_paragraphs_or_sections: boolean;
+    linter_unused_paragraphs: boolean;
+    linter_unused_sections: boolean;
     linter_house_standards: boolean;
     linter_house_standards_rules: string[];
     linter_ignore_section_before_entry: boolean;
@@ -254,7 +256,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.parse_copybooks_for_references = false;
         this.workspacefolders_order = [];
         this.linter_mark_as_information = false;
-        this.linter_unused_paragraphs_or_sections = true;
+        this.linter_unused_sections = true;
+        this.linter_unused_paragraphs = true;
         this.linter_house_standards = true;
         this.linter_house_standards_rules = [];
         this.linter_ignore_missing_copybook = false;

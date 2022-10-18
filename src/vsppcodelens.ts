@@ -52,27 +52,39 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         // if codelens for variables enabled?
         if (this.settings.enable_codelens_variable_references) {
             if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
-                for (const [a, b] of current.constantsOrVariables) {
-                    const refs = current.sourceReferences.constantsOrVariablesReferences.get(a);
-                    if (refs !== undefined && b.length >= 1) {
-                        for (const currentRef of b) {
-                            const firstReference = currentRef.token;
-                            const r = new vscode.Range(new vscode.Position(firstReference.startLine, firstReference.startColumn),
-                                new vscode.Position(firstReference.endLine, firstReference.endColumn));
+                for (const [avar, vars] of current.constantsOrVariables) {
+                    for (const currentVar of vars) {
+                        const currentToken = currentVar.token;
+                        const tupRefs = current.sourceReferences.getReferenceInformation(avar,currentToken.startLine, currentToken.startColumn);
 
-                            const cl = new vscode.CodeLens(r);
-                            cl.command = {
-                                title: `${a} referenced : ${b.length + refs.length}`,
-                                tooltip: `${a} referenced ${b.length + refs.length} `,
-                                command: "editor.action.findReferences",
-                                arguments: [
-                                    document.uri, new vscode.Position(firstReference.startLine, firstReference.startColumn)
-                                ]
-                            };
-
-                            lens.push(cl);
+                        // no references found
+                        if (tupRefs[1] === 0) {
+                            continue;
                         }
+
+                        let defCount = tupRefs[0];
+                        if (defCount === 0) {
+                            defCount = 0;
+                        }
+                        const refCount = tupRefs[1];
+                        const refCounts = defCount+refCount;
+                        const refCountMsg = refCounts === 1 ? `${refCounts} reference` : `${refCounts} references`;
+                        const r = new vscode.Range(new vscode.Position(currentToken.startLine, currentToken.startColumn),
+                            new vscode.Position(currentToken.endLine, currentToken.endColumn));
+
+                        const cl = new vscode.CodeLens(r);
+                        cl.command = {
+                            title: `${refCountMsg}`,
+                            tooltip: `${refCountMsg}`,
+                            command: "editor.action.findReferences",
+                            arguments: [
+                                document.uri, new vscode.Position(currentToken.startLine, currentToken.startColumn)
+                            ]
+                        };
+
+                        lens.push(cl);
                     }
+
                 }
             }
         }

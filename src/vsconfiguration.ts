@@ -24,7 +24,7 @@ export class VSCOBOLConfiguration {
         settings.tabstops = getTabStops();
         settings.linter = getBoolean("linter", false);
         settings.line_comment = getBoolean("line_comment", false);
-        settings.fileformat_strategy = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<fileformatStrategy>("fileformat_strategy",fileformatStrategy.Normal);
+        settings.fileformat_strategy = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<fileformatStrategy>("fileformat_strategy", fileformatStrategy.Normal);
         settings.enable_data_provider = getBoolean("enable_data_provider", true);
         settings.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
         settings.intellisense_item_limit = getIntellisense_item_limit();
@@ -34,7 +34,8 @@ export class VSCOBOLConfiguration {
         settings.cache_metadata_verbose_messages = getBoolean("cache_metadata_verbose_messages", false);
         settings.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
         settings.workspacefolders_order = getWorkspacefolders_order();
-        settings.linter_unused_paragraphs_or_sections = getBoolean("linter_unused_paragraphs_or_sections", true);
+        settings.linter_unused_sections = getBoolean("linter_unused_sections", true);
+        settings.linter_unused_paragraphs = getBoolean("linter_unused_paragraphs", true);
         settings.linter_house_standards = getBoolean("linter_house_standards", true);
         settings.linter_house_standards_rules = getlinter_house_standards_rules();
         settings.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
@@ -90,7 +91,7 @@ export class VSCOBOLConfiguration {
         settings.scan_line_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_line_limit", settings.scan_line_limit);
 
         settings.scan_time_limit = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("scan_time_limit", settings.scan_time_limit);
-        
+
         settings.in_memory_cache_size = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<number>("in_memory_cache_size", settings.in_memory_cache_size);
 
         settings.suggest_variables_when_context_is_unknown = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("suggest_variables_when_context_is_unknown", settings.suggest_variables_when_context_is_unknown);
@@ -104,9 +105,9 @@ export class VSCOBOLConfiguration {
         settings.snippets = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("snippets", settings.snippets);
 
         settings.enable_columns_tags = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("enable_columns_tags", settings.enable_columns_tags);
-        
+
         settings.hover_show_encoded_literals = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("hover_show_encoded_literals", settings.hover_show_encoded_literals);
-        
+
         settings.check_file_format_before_file_scan = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<boolean>("check_file_format_before_file_scan", settings.check_file_format_before_file_scan);
 
         if (!workspace.isTrusted) {
@@ -118,14 +119,14 @@ export class VSCOBOLConfiguration {
         settings.custom_intellisense_rules = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
 
         settings.format_constants_to_uppercase = getBoolean("format_constants_to_uppercase", settings.format_constants_to_uppercase);
-        
+
         settings.margin = getBoolean("margin", settings.margin);
-        
+
         settings.enable_codelens_variable_references = getBoolean("enable_codelens_variable_references", settings.enable_codelens_variable_references);
 
         settings.enable_codelens_section_paragraph_references = getBoolean("enable_codelens_section_paragraph_references", settings.enable_codelens_section_paragraph_references);
 
-        settings.enable_codelens_copy_replacing = getBoolean("enable_codelens_copy_replacing",settings.enable_codelens_copy_replacing);
+        settings.enable_codelens_copy_replacing = getBoolean("enable_codelens_copy_replacing", settings.enable_codelens_copy_replacing);
 
         // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {

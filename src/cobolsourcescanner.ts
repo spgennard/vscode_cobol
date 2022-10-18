@@ -135,7 +135,7 @@ export class SourceReference {
     public column: number;
     public length: number;
     public tokenStyle: COBOLTokenStyle;
-    
+
     public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
@@ -415,6 +415,31 @@ export class SharedSourceReferences {
         this.tokensInOrder = [];
         this.ignoreUnusedSymbol.clear();
     }
+
+    public getReferenceInformation(variable:string, startLine:number, startColumn:number): [number, number] {
+        let defvars = this.constantsOrVariablesReferences.get(variable);
+        if (defvars === undefined) {
+            defvars = this.constantsOrVariablesReferences.get(variable.toLowerCase());
+        }
+
+        if (defvars === undefined) {
+            return [0,0];
+        }
+
+        let definedCount = 0;
+        let referencedCount = 0;
+
+        for (const defvar of defvars) {
+            if (defvar.line === startLine && defvar.column === startColumn) {
+                definedCount++;
+            } else {
+                referencedCount++;
+            }
+        }
+
+        return [definedCount, referencedCount];
+    }
+    
 }
 
 export enum UsingState {
@@ -1087,7 +1112,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
     }
 
-    private tokensInOrderPush(token: COBOLToken, sendEvent: boolean):void {
+    private tokensInOrderPush(token: COBOLToken, sendEvent: boolean): void {
         token.tokenOffset = this.tokensInOrder.length;
         this.tokensInOrder.push(token);
         if (sendEvent) {
@@ -1113,7 +1138,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
         if (ctoken.ignoreInOutlineView || tokenType === COBOLTokenStyle.ImplicitProgramId) {
-            this.tokensInOrderPush(ctoken,true);
+            this.tokensInOrderPush(ctoken, true);
             return ctoken;
         }
 
@@ -1179,11 +1204,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     state.currentDivision.endColumn = ctoken.startColumn - 1;
                 }
             }
-            this.tokensInOrderPush(ctoken,true);
+            this.tokensInOrderPush(ctoken, true);
             return ctoken;
         }
 
-        this.tokensInOrderPush(ctoken,true);
+        this.tokensInOrderPush(ctoken, true);
 
         return ctoken;
     }
@@ -2359,7 +2384,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 } else if (this.isVisibleParagraph(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Paragraph;
                                     sharedReferences = this.sourceReferences.targetReferences;
-                                } 
+                                }
                                 this.addReference(sharedReferences, currentLower, lineNumber, token.currentCol, sourceStyle);
                             }
 

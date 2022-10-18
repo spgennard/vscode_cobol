@@ -96,9 +96,9 @@ export class CobolLinterProvider {
 
             this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
 
-            if (qp.configHandler.linter_unused_paragraphs_or_sections) {
-                this.processScannedDocumentForUnusedSymbols(qp, diagRefs);
-            }
+            // handle sections & paragraphs
+            this.processScannedDocumentForUnusedSymbols(qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections);
+
 
             if (qp.configHandler.linter_house_standards_rules) {
                 this.processParsedDocumentForStandards(qp, diagRefs);
@@ -192,76 +192,80 @@ export class CobolLinterProvider {
         }
     }
 
-    private processScannedDocumentForUnusedSymbols(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>) {
+    private processScannedDocumentForUnusedSymbols(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, processParas: boolean, processSections: boolean) {
 
         if (this.sourceRefs === undefined) {
             return;
         }
 
-        const sourceRefs: SharedSourceReferences = this.sourceRefs;
+        const sharedSourceReferences: SharedSourceReferences = this.sourceRefs;
 
-        for (const [key, token] of qp.paragraphs) {
-            const workLower = key.toLowerCase();
-            if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
-                continue;
-            }
+        if (processParas) {
+            for (const [key, token] of qp.paragraphs) {
+                const workLower = key.toLowerCase();
+                if (sharedSourceReferences.ignoreUnusedSymbol.has(workLower)) {
+                    continue;
+                }
 
-            const refs = sourceRefs.targetReferences.get(workLower);
-            if (refs !== undefined && refs.length === 1) {
-                const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                    new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                const d = new vscode.Diagnostic(r, key + " paragraph is not referenced", this.linterSev);
-                d.tags = [vscode.DiagnosticTag.Unnecessary];
-                d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
+                const refs = sharedSourceReferences.targetReferences.get(workLower);
+                if (refs !== undefined && refs.length === 1) {
+                    const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                        new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
+                    const d = new vscode.Diagnostic(r, key + " paragraph is not referenced", this.linterSev);
+                    d.tags = [vscode.DiagnosticTag.Unnecessary];
+                    d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
 
-                if (diagRefs.has(token.filename)) {
-                    const arr = diagRefs.get(token.filename);
-                    if (arr !== undefined) {
+                    if (diagRefs.has(token.filename)) {
+                        const arr = diagRefs.get(token.filename);
+                        if (arr !== undefined) {
+                            arr.push(d);
+                        }
+                    } else {
+                        const arr: vscode.Diagnostic[] = [];
                         arr.push(d);
+                        diagRefs.set(token.filename, arr);
                     }
-                } else {
-                    const arr: vscode.Diagnostic[] = [];
-                    arr.push(d);
-                    diagRefs.set(token.filename, arr);
                 }
             }
         }
 
-        for (const [key, token] of qp.sections) {
-            const workLower = key.toLowerCase();
+        if (processSections) {
+            for (const [key, token] of qp.sections) {
+                const workLower = key.toLowerCase();
 
-            if (sourceRefs.ignoreUnusedSymbol.has(workLower)) {
-                continue;
-            }
+                if (sharedSourceReferences.ignoreUnusedSymbol.has(workLower)) {
+                    continue;
+                }
 
-            if (token.inProcedureDivision) {
-                const refs = sourceRefs.targetReferences.get(workLower);
-                if (refs !== undefined && refs.length === 1) {
-                    let ignore = false;
+                if (token.inProcedureDivision) {
+                    const refs = sharedSourceReferences.targetReferences.get(workLower);
+                    if (refs !== undefined && refs.length === 1) {
+                        let ignore = false;
 
-                    if (this.settings.linter_ignore_section_before_entry) {
-                        const nextLine = qp.sourceHandler.getLine(1 + token.startLine, false);
-                        if (nextLine?.toLowerCase().indexOf("entry") !== -1) {
-                            ignore = true;
-                        }
-                    }
-
-                    if (!ignore) {
-                        const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                            new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                        const d = new vscode.Diagnostic(r, key + " section is not referenced", this.linterSev);
-                        d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
-                        d.tags = [vscode.DiagnosticTag.Unnecessary];
-
-                        if (diagRefs.has(token.filename)) {
-                            const arr = diagRefs.get(token.filename);
-                            if (arr !== undefined) {
-                                arr.push(d);
+                        if (this.settings.linter_ignore_section_before_entry) {
+                            const nextLine = qp.sourceHandler.getLine(1 + token.startLine, false);
+                            if (nextLine?.toLowerCase().indexOf("entry") !== -1) {
+                                ignore = true;
                             }
-                        } else {
-                            const arr: vscode.Diagnostic[] = [];
-                            arr.push(d);
-                            diagRefs.set(token.filename, arr);
+                        }
+
+                        if (!ignore) {
+                            const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
+                                new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
+                            const d = new vscode.Diagnostic(r, key + " section is not referenced", this.linterSev);
+                            d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
+                            d.tags = [vscode.DiagnosticTag.Unnecessary];
+
+                            if (diagRefs.has(token.filename)) {
+                                const arr = diagRefs.get(token.filename);
+                                if (arr !== undefined) {
+                                    arr.push(d);
+                                }
+                            } else {
+                                const arr: vscode.Diagnostic[] = [];
+                                arr.push(d);
+                                diagRefs.set(token.filename, arr);
+                            }
                         }
                     }
                 }

@@ -116,7 +116,8 @@
         "coboleditor.pre_scan_line_limit",
         "coboleditor.linter",
         "coboleditor.linter_mark_as_information",
-        "coboleditor.linter_unused_paragraphs_or_sections",
+        "coboleditor.linter_unused_sections",
+        "coboleditor.linter_unused_paragraphs",
         "coboleditor.sourceview",
         "coboleditor.sourceview_include_jcl_files",
         "coboleditor.sourceview_include_hlasm_files",
@@ -419,9 +420,14 @@
           "description": "When enabled, mark all linter problems as information (false is hint)",
           "default": true
         },
-        "coboleditor.linter_unused_paragraphs_or_sections": {
+        "coboleditor.linter_unused_sections": {
           "type": "boolean",
-          "description": "When enabled, activate basic linting (limited to sections/paragraph use)",
+          "description": "When enabled, activate basic linting (limited to sections use)",
+          "default": true
+        },
+        "coboleditor.linter_unused_paragraphs": {
+          "type": "boolean",
+          "description": "When enabled, activate basic linting (limited to paragraph use)",
           "default": true
         },
         "coboleditor.sourceview": {
@@ -1103,7 +1109,7 @@
           "description": "When enabled, turn on codelens for sections/paragraphs references",
           "default": false
         },
-         "coboleditor.enable_codelens_copy_replacing": {
+        "coboleditor.enable_codelens_copy_replacing": {
           "type": "boolean",
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
