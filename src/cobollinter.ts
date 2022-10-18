@@ -184,9 +184,7 @@ export class CobolLinterProvider {
                             arr.push(d);
                             diagRefs.set(token.filename, arr);
                         }
-
                     }
-
                 }
             }
         }
