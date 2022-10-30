@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.10.15",
+  "version": "8.10.28",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -261,6 +261,8 @@
             "SCBL",
             "pco",
             "PCO",
+            "eco",
+            "ECO",
             "copy",
             "COPY",
             "cobcopy",
@@ -1150,10 +1152,10 @@
         "*.tsx": "${capture}.ts",
         "tsconfig.json": "tsconfig.*.json",
         "package.json": "package-lock.json, yarn.lock",
-        "*.cbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
-        "*.CBL": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
-        "*.cob": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
-        "*.COB": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
+        "*.cbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
+        "*.CBL": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
+        "*.cob": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
+        "*.COB": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
         "*.cobol": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
         "*.scbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
         "*.pco": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu"
@@ -1311,6 +1313,7 @@
           ".wks",
           ".bib",
           ".pco",
+          ".eco",
           ".COBOL",
           ".CBL",
           ".CBLLE",
@@ -1333,7 +1336,8 @@
           ".SS",
           ".WKS",
           ".BIB",
-          ".PCO"
+          ".PCO",
+          ".ECO"
         ],
         "configuration": "./cobol.configuration.json"
       },
