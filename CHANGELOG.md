@@ -1,5 +1,12 @@
 # CHANGELOG
 
+* 301547d cleanup
+* 53c49c9 remove definitions from references provider
+* 723be08 tweak for linting
+* 6cd4d50 tidy up and ensure we pickup unused refs
+* 872b201 add a couple of config flags for the experimential codelens
+* 752337e explore use of codelens
+* 3347a52 (tag: 8.10.15) Update
 * ef129b6 add simple support for picking fields from the comms section
 * 7db7976 move splittoken into sep file and tweak it
 * 289d50c update versions
