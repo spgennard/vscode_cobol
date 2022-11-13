@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* ea4d0f6 (HEAD -> main, tag: 8.11.10, origin/main, origin/HEAD) simplify the editor file nesting
+* a2dda4a (tag: 8.10.28) Update
 * 301547d cleanup
 * 53c49c9 remove definitions from references provider
 * 723be08 tweak for linting
