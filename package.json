@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "8.10.28",
+  "version": "8.11.10",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1152,13 +1152,10 @@
         "*.tsx": "${capture}.ts",
         "tsconfig.json": "tsconfig.*.json",
         "package.json": "package-lock.json, yarn.lock",
-        "*.cbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
-        "*.CBL": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
-        "*.cob": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
-        "*.COB": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu,MFU*$(basename).cpy",
-        "*.cobol": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
-        "*.scbl": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu",
-        "*.pco": "$(basename).idy,$(basename).int,$(basename).so,$(basename).dll,$(basename).gnt.$(basename)*.class,$(basename)*.cbldat,$(basename).acu"
+        "*.cbl": "MFU*$(basename).cpy,Test$(basename).cpy",
+        "*.CBL": "MFU*$(basename).cpy,Test$(basename).cpy",
+        "*.cob": "MFU*$(basename).cpy,Test$(basename).cpy",
+        "*.COB": "MFU*$(basename).cpy,Test$(basename).cpy"
       },
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
