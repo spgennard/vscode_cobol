@@ -416,14 +416,14 @@ export class SharedSourceReferences {
         this.ignoreUnusedSymbol.clear();
     }
 
-    public getReferenceInformation(variable:string, startLine:number, startColumn:number): [number, number] {
+    public getReferenceInformation(variable: string, startLine: number, startColumn: number): [number, number] {
         let defvars = this.constantsOrVariablesReferences.get(variable);
         if (defvars === undefined) {
             defvars = this.constantsOrVariablesReferences.get(variable.toLowerCase());
         }
 
         if (defvars === undefined) {
-            return [0,0];
+            return [0, 0];
         }
 
         let definedCount = 0;
@@ -439,7 +439,7 @@ export class SharedSourceReferences {
 
         return [definedCount, referencedCount];
     }
-    
+
 }
 
 export enum UsingState {
@@ -1326,7 +1326,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return varMap;
     }
 
-    public static trimLiteral(literal: string): string {
+    public static trimLiteral(literal: string, trimQuotes = false): string {
         let literalTrimmed = literal.trim();
 
         if (literalTrimmed.length === 0) {
@@ -1353,13 +1353,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             literalTrimmed = literalTrimmed.substring(0, literalTrimmed.length - 1);
         }
 
-        /* remove quotes */
-        if (literalTrimmed[0] === "\"" && literalTrimmed.endsWith("\"")) {
-            return literalTrimmed.substring(1, literalTrimmed.length - 1);
-        }
-        /* remove quotes */
-        if (literalTrimmed[0] === "'" && literalTrimmed.endsWith("'")) {
-            return literalTrimmed.substring(1, literalTrimmed.length - 1);
+        if (trimQuotes) {
+            /* remove quotes */
+            if (literalTrimmed[0] === "\"" && literalTrimmed.endsWith("\"")) {
+                return literalTrimmed.substring(1, literalTrimmed.length - 1);
+            }
+            /* remove quotes */
+            if (literalTrimmed[0] === "'" && literalTrimmed.endsWith("'")) {
+                return literalTrimmed.substring(1, literalTrimmed.length - 1);
+            }
         }
 
         return literalTrimmed;
