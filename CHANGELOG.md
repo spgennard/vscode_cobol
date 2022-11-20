@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* ea4d0f6 (HEAD -> main, tag: 8.11.10, origin/main, origin/HEAD) simplify the editor file nesting
+* ac7bb3b add 'exec's to the symbol providers
+* cfc717a don't trim literal unless we need to
+* 4d237db (tag: 8.11.10) Update
+* ea4d0f6 simplify the editor file nesting
 * a2dda4a (tag: 8.10.28) Update
 * 301547d cleanup
 * 53c49c9 remove definitions from references provider
