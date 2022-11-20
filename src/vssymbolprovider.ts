@@ -150,6 +150,7 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
                             }
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Method, container, lrange));
                             break;
+                        case COBOLTokenStyle.Exec:
                         case COBOLTokenStyle.EntryPoint:
                         case COBOLTokenStyle.FunctionId:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Function, container, lrange));
