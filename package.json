@@ -1138,7 +1138,7 @@
         },
         {
           "id": "help-and-feedback-view",
-          "name": "Help on COBOL and Feeback",
+          "name": "Help on COBOL and Feedback",
           "when": "config.coboleditor.feedbackview"
         }
       ]
