@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 34986a4 Fix typo #323
+* c49d929 (tag: 8.11.20) Update
 * ac7bb3b add 'exec's to the symbol providers
 * cfc717a don't trim literal unless we need to
 * 4d237db (tag: 8.11.10) Update
