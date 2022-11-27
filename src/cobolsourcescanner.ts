@@ -1868,7 +1868,25 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     // tweak exec to include verb
                     if (this.currentExecVerb.length == 0) {
                         this.currentExecVerb = token.currentToken;
-                        state.currentToken.description += " "+this.currentExecVerb;
+                        state.currentToken.description += " " + this.currentExecVerb;
+                        continue;
+                    }
+
+                    /* is this a reference to a variable? */
+                    const varTokens = this.constantsOrVariables.get(currentLower);
+                    if (varTokens !== undefined) {
+                        let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
+                        let addReference = true;
+                        for (const varToken of varTokens) {
+                            if (varToken.ignoreInOutlineView === false) {
+                                ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
+                            } else {
+                                addReference = false;
+                            }
+                        }
+                        if (addReference) {
+                            this.addReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, ctype);
+                        }
                     }
                     continue;
                 }
