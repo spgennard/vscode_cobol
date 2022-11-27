@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 3b7302a add known variables as references when in a "exec" block
+* f1ca4c3 identify each "exec xx yy" in the outline view
+* 4566309 (tag: 8.11.25) Update
 * 34986a4 Fix typo #323
 * c49d929 (tag: 8.11.20) Update
 * ac7bb3b add 'exec's to the symbol providers
