@@ -682,6 +682,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public scanAborted: boolean;
 
     private currentExec = "";
+    private currentExecVerb = "";
+
     readonly COBOLKeywordDictionary: Map<string, string>;
 
 
@@ -1817,13 +1819,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (currentLower === "exec") {
                     const nextSTokenOrBlank = token.nextSTokenOrBlank().currentToken;
                     this.currentExec = nextSTokenOrBlank;
+                    this.currentExecVerb = "";
                     state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, nextSTokenOrBlank, `EXEC ${nextSTokenOrBlank}`, state.currentDivision);
+                    token.moveToNextToken();
                     continue;
                 }
 
                 /* finish processing end-exec */
                 if (currentLower === "end-exec") {
                     this.currentExec = "";
+                    this.currentExecVerb = "";
                     state.currentToken = undefined;
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = true;
@@ -1832,7 +1837,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
 
                 /* skip everything in between exec .. end-exec */
-                if (state.currentToken !== undefined && state.currentToken.tokenType === COBOLTokenStyle.Exec) {
+                if (state.currentToken !== undefined && this.currentExec.length !== 0) {
                     if (currentLower === "include" && this.currentExec.toLowerCase() === "sql") {
                         const sqlCopyBook = token.nextSTokenOrBlank().currentToken;
                         const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook);
@@ -1840,6 +1845,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (insertInSection === undefined) {
                             insertInSection = state.currentDivision;
                         }
+                        this.tokensInOrder.pop();
                         const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, "SQL INCLUDE " + sqlCopyBook, insertInSection);
                         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                             const cbInfo = new copybookState();
@@ -1855,6 +1861,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
                             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
                         }
+                        state.currentToken = copyToken;
+                        continue;
+                    }
+
+                    // tweak exec to include verb
+                    if (this.currentExecVerb.length == 0) {
+                        this.currentExecVerb = token.currentToken;
+                        state.currentToken.description += " "+this.currentExecVerb;
                     }
                     continue;
                 }
