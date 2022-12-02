@@ -393,41 +393,45 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
 
     // step 1 look through the copybook default dirs for "direct" paths and include them in search path
     for (const ddir of extsdir) {
-        if (workspace.isTrusted === false) {
-            // copybooks that have a direct path or a network are only available in full trust
-            if (COBOLFileUtils.isDirectPath(ddir) || COBOLFileUtils.isNetworkPath(ddir)) {
-                invalidSearchDirectory.push(ddir);
-                continue;
-            }
-        } else {
-            if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
-                VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
-                invalidSearchDirectory.push(ddir);
-            }
-            else if (COBOLFileUtils.isDirectPath(ddir)) {
-                VSLogger.logWarningMessage(` non portable copybook directory ${ddir} defined`);
-                if (workspace !== undefined && ws !== undefined) {
-                    if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
-                        if (COBOLFileUtils.isNetworkPath(ddir)) {
-                            VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
-                        }
-                    }
+        try {
+            if (workspace.isTrusted === false) {
+                // copybooks that have a direct path or a network are only available in full trust
+                if (COBOLFileUtils.isDirectPath(ddir) || COBOLFileUtils.isNetworkPath(ddir)) {
+                    invalidSearchDirectory.push(ddir);
+                    continue;
                 }
-
-                const startTime = VSExternalFeatures.performance_now();
-                if (COBOLFileUtils.isDirectory(ddir)) {
-                    const totalTimeInMS = VSExternalFeatures.performance_now() - startTime;
-                    const timeTaken = totalTimeInMS.toFixed(2);
-                    if (totalTimeInMS <= 2000) {
-                        fileSearchDirectory.push(ddir);
-                    } else {
-                        VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
-                        invalidSearchDirectory.push(ddir);
-                    }
-                } else {
+            } else {
+                if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
+                    VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
                     invalidSearchDirectory.push(ddir);
                 }
+                else if (COBOLFileUtils.isDirectPath(ddir)) {
+                    if (workspace !== undefined && ws !== undefined) {
+                        if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
+                            if (COBOLFileUtils.isNetworkPath(ddir)) {
+                                VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                            }
+                        }
+                    }
+
+                    const startTime = VSExternalFeatures.performance_now();
+                    if (COBOLFileUtils.isDirectory(ddir)) {
+                        const totalTimeInMS = VSExternalFeatures.performance_now() - startTime;
+                        const timeTaken = totalTimeInMS.toFixed(2);
+                        if (totalTimeInMS <= 2000) {
+                            fileSearchDirectory.push(ddir);
+                        } else {
+                            VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
+                            invalidSearchDirectory.push(ddir);
+                        }
+                    } else {
+                        invalidSearchDirectory.push(ddir);
+                    }
+                }
             }
+        }
+        catch (e) {
+            // continue
         }
     }
 
@@ -455,7 +459,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
                     }
                 }
                 catch (e) {
-                    VSLogger.logException("dir", e as Error);
+                    // VSLogger.logException("dir", e as Error);
                 }
             }
         }
@@ -477,12 +481,12 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
                         if (sdirStat.type & vscode.FileType.Directory) {
                             URLSearchDirectory.push(sdir);
                         } else {
-                            invalidSearchDirectory.push("URL as "+sdir);
+                            invalidSearchDirectory.push("URL as " + sdir);
                         }
                     }
                 }
                 catch (e) {
-                    VSLogger.logException("dir", e as Error);
+                    // VSLogger.logException("dir", e as Error);
                 }
             }
         }

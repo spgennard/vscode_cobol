@@ -5,6 +5,7 @@ import { workspace } from "vscode";
 import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
+import { COBOLFileUtils } from "./fileutils";
 
 export class VSCOBOLConfiguration {
     private static settings: ICOBOLSettings = new COBOLSettings();
@@ -280,6 +281,9 @@ function getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSe
 
     for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
         let dir = dirs[dirpos];
+        if (COBOLFileUtils.isDirectPath(dir)) {
+            externalFeatures.logMessage(` non portable copybook directory ${dir} defined`);
+        }
 
         /* remove ${workspaceFolder} */
         dir = expandEnvVars(dir);

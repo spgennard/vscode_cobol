@@ -1109,7 +1109,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     public getCopyFilename(copybook: string, inInfo: string): string {
-        const trimmedCopyBook = copybook.trim();
+        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(copybook.trim(),true);
 
         return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
     }
@@ -1780,7 +1780,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 }
                                 if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn && !cbState.isReplacing) {
                                     cbState.copyBook = tcurrent;
-                                    cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrent);
+                                    cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrent,true);
                                     cbState.startLineNumber = lineNumber;
                                     cbState.startCol = state.inCopyStartColumn; // stored when 'copy' is seen
                                     cbState.line = line;
@@ -1840,7 +1840,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (state.currentToken !== undefined && this.currentExec.length !== 0) {
                     if (currentLower === "include" && this.currentExec.toLowerCase() === "sql") {
                         const sqlCopyBook = token.nextSTokenOrBlank().currentToken;
-                        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook);
+                        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook, true);
                         let insertInSection = this.copybookNestedInSection ? state.currentSection : state.currentDivision;
                         if (insertInSection === undefined) {
                             insertInSection = state.currentDivision;
