@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* d23458f remove quotes when searching for copybooks
+* a39b1d5 (tag: 8.11.26) Update
 * 3b7302a add known variables as references when in a "exec" block
 * f1ca4c3 identify each "exec xx yy" in the outline view
 * 4566309 (tag: 8.11.25) Update
