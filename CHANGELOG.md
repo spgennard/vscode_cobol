@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* 3455fe7 (tag: 8.12.2) Update
 * 1aaf09b (tag: 8.12.02) Update
 * d23458f remove quotes when searching for copybooks
 * a39b1d5 (tag: 8.11.26) Update
