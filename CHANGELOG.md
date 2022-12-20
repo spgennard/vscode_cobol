@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 6ee99f6 add some really simple "exec dli" support
+* 4e57868 (tag: 8.12.11) Update
 * 3455fe7 (tag: 8.12.2) Update
 * 1aaf09b (tag: 8.12.02) Update
 * d23458f remove quotes when searching for copybooks
