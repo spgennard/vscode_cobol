@@ -266,7 +266,7 @@
 		"prefix": "IDENTIFICATION",
 		"body": [
 			"       IDENTIFICATION DIVISION.",
-			"       PROGRAM-ID. ${1:${1:${TM_FILENAME/(.*)\\..+$/$1/}}}.",
+			"       PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"       AUTHOR. $2.",
 			"       INSTALLATION.  ${3:where}.",
 			"       DATE-WRITTEN.  ${4:$CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR}.",
