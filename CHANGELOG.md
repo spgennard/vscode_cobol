@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 98d9c5c (HEAD -> main, tag: 9.1.11, origin/main, origin/HEAD) Update
+* b7aba96 add "exit paragraph"
+* 9c7b26d (tag: 9.1.11) Update
+* 98d9c5c Update
 * babb2dc new year... new major v
 * b222f1a update cics json and remove extra double redirection of $1 (which does not make any difference)
 * 059782f (tag: 8.12.20) Update
