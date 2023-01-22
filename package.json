@@ -1970,6 +1970,11 @@
         "command": "cobolplugin.newFile_ACUCOBOL",
         "category": "COBOL",
         "title": "New ACUCOBOL Program (Micro Focus)"
+      },
+      {
+        "command": "cobolplugin.dumpAllSymbols",
+        "category": "COBOL",
+        "title": "Diagnostic: Dump All Symbol"
       }
     ],
     "menus": {
