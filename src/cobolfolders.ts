@@ -2,7 +2,7 @@ import { workspace, WorkspaceFolder } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 export class VSWorkspaceFolders {
-    public static get(requiredSchema: string = "file"): ReadonlyArray<WorkspaceFolder> | undefined {
+    public static get(requiredSchema="file"): ReadonlyArray<WorkspaceFolder> | undefined {
         const ws = workspace.workspaceFolders;
         if (ws === undefined) {
             return ws;

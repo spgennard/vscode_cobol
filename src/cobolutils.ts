@@ -413,7 +413,7 @@ export class COBOLUtils {
             if (selection.anchor.isEqual(selection.active)) {
                 const position = new vscode.Position(selection.active.line, selection.active.character);
                 const lastPositionInLine = editor.document.lineAt(position.line).range.end;
-                if (!(position.isEqual(lastPositionInLine) || position.character == 0)) {
+                if (!(position.isEqual(lastPositionInLine) || position.character === 0)) {
                     const nextSelection = new vscode.Selection(position, new vscode.Position(position.line, position.character + 1));
                     const nextChar = editor.document.getText(nextSelection);
                     textEditor.delete(nextSelection);

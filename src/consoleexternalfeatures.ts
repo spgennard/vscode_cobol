@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import util from "util";
 import path from "path";
 import fs from "fs";
@@ -147,6 +148,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         this.URLSearchDirectory = fileSearchDirectory;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async isFileASync(possibleFilename: string): Promise<boolean> {
         return false;
     }

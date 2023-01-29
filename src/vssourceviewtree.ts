@@ -362,7 +362,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
     private sharedSubstring(string1: string, string2: string): string {
         let ret = "";
         let index = 1;
-        while (string1.substring(0, index) == string2.substring(0, index)) {
+        while (string1.substring(0, index) === string2.substring(0, index)) {
             ret = string1.substring(0, index);
             index++;
         }

@@ -43,6 +43,15 @@
             "problemMatcher": [],
             "label": "npm: compile",
             "detail": "tsc -b"
+        },
+        {
+            "type": "npm",
+            "script": "lint",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ],
+            "label": "npm: lint",
+            "detail": "eslint src --ext ts"
         }
     ]
 }

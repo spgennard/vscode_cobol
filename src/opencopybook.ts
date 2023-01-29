@@ -62,7 +62,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             if (st !== undefined) {
                 const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
                 if (stPos.contains(pos)) {
-                    if (document.uri.scheme === 'file') {
+                    if (document.uri.scheme === "file") {
                         if (st.fileName.length !== 0) {
                             return new vscode.Location(
                                 Uri.file(st.fileName),

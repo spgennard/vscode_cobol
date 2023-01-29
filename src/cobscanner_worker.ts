@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { parentPort, workerData } from "worker_threads";
 import { Scanner, workerThreadData } from "./cobscanner";
 import { ScanStats } from "./cobscannerdata";
@@ -146,6 +147,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         this.URLSearchDirectory = fileSearchDirectory;
     }
 
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
      public async isFileASync(possibleFilename: string): Promise<boolean> {
         return false;
      }

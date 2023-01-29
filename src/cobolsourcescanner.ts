@@ -1866,7 +1866,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
 
                     // tweak exec to include verb
-                    if (this.currentExecVerb.length == 0) {
+                    if (this.currentExecVerb.length === 0) {
                         this.currentExecVerb = token.currentToken;
                         state.currentToken.description += " " + this.currentExecVerb;
                         continue;
@@ -2206,7 +2206,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
 
                     if (state.currentSection.tokenNameLower === "communication") {
-                        if (prevTokenLower == "cd") {
+                        if (prevTokenLower === "cd") {
                             state.pickFields = true;
                         }
                     }

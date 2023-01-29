@@ -20,6 +20,7 @@
         "no-duplicate-case": "error",
         "quotes":"error",
         "no-invalid-regexp": "warn",
-        "radix": "warn"
+        "radix": "warn",
+        "eqeqeq": "warn"
     }
 }
