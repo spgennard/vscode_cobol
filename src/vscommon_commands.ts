@@ -13,6 +13,7 @@ import { COBOLSourceScanner } from "./cobolsourcescanner";
 import path from "path";
 import fs from "fs";
 import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSDiagCommands } from "./vsdiagcommands";
 
 
 function newFile(title: string, template: string, doclang: string) {
@@ -356,5 +357,10 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_ACUCOBOL", async function () {
         newFile("ACUCOBOL program name?", "coboleditor.template_acucobol", "ACUCOBOL");
+    }));
+
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.dumpAllSymbols", async function () {
+       await VSDiagCommands.DumpAllSymbols();
     }));
 }
