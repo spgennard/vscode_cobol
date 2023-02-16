@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 5231735 (HEAD -> main, tag: 9.1.28, origin/main, origin/HEAD) Merge branch 'main' of github.com:spgennard/vscode_cobol into main
+* b2d2912 (HEAD -> main, tag: 9.2.15, origin/main, origin/HEAD) Merge branch 'main' of github.com:spgennard/vscode_cobol
+* c33bbac move away from minimatch
+* c0d61fe tweak matchers
+* 643839a (tag: 9.1.28) Update
+* 5231735 Merge branch 'main' of github.com:spgennard/vscode_cobol into main
 * 4a37f85 tidy
 * 95c9152 add some diag routines (temp)
 * f61ef5f (tag: 9.1.15) Update
