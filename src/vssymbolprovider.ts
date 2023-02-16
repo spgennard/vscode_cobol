@@ -79,7 +79,7 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
-        const symbols: vscode.SymbolInformation[] =     [];
+        const symbols: vscode.SymbolInformation[] = [];
         const settings = VSCOBOLConfiguration.get();
         const outlineLevel = settings.outline;
 

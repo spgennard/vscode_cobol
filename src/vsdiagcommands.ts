@@ -11,6 +11,7 @@ export class VSDiagCommands {
             VSDiagCommands.dumpSymbol(depth + " ", childSymbol);
         }
     }
+    
     public static async DumpAllSymbols() {
         if (vscode.window.activeTextEditor) {
             const activeUrl = vscode.window.activeTextEditor.document.uri;

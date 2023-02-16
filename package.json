@@ -2515,9 +2515,7 @@
       {
         "name": "mfcobol-errformat3-absolute",
         "owner": "cobol",
-        "fileLocation": [
-          "absolute"
-        ],
+        "fileLocation": "absolute",
         "pattern": "$mfcobol-errformat3-absolute",
         "source": "VC"
       },
@@ -2540,6 +2538,7 @@
         "name": "mfcobol-errformat3-basefn",
         "owner": "cobol",
         "fileLocation": [
+          "autoDetect",
           "relative",
           "${workspaceFolder}"
         ],
@@ -2550,6 +2549,7 @@
         "name": "mfcobol-errformat3-info-basefn",
         "owner": "cobol",
         "fileLocation": [
+          "autoDetect",
           "relative",
           "${workspaceFolder}"
         ],
@@ -2596,6 +2596,7 @@
         "name": "mfcobol-errformat2-basefn",
         "owner": "cobol",
         "fileLocation": [
+          "autoDetect",
           "relative",
           "${workspaceFolder}"
         ],
