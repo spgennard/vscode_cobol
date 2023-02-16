@@ -1,7 +1,8 @@
 import { ESourceFormat } from "./externalfeatures";
 import { fileformatStrategy, ICOBOLSettings, IEditorMarginFiles } from "./iconfiguration";
 import { ISourceHandlerLite } from "./isourcehandler";
-import minimatch from "minimatch";
+
+import globToRegExp = require("glob-to-regexp");
 
 const inline_sourceformat: string[] = ["sourceformat", ">>source format"];
 
@@ -33,10 +34,17 @@ export class SourceFormat {
         if (filesFilter.length >= 1) {
             const docFilename: string = doc.getFilename();
             for (let i = 0; i < filesFilter.length; i++) {
-                const filter: IEditorMarginFiles = filesFilter[i];
+                try {
+                    const filter: IEditorMarginFiles = filesFilter[i];
 
-                if (minimatch(docFilename, filter.pattern, { nocase: true })) {
-                    return ESourceFormat[filter.sourceformat];
+                    const re = globToRegExp(filter.pattern, { flags: "i" });
+                    if (re.test(docFilename)) {
+                        return ESourceFormat[filter.sourceformat];
+                    }
+                }
+                catch
+                {
+                    //
                 }
             }
         }
