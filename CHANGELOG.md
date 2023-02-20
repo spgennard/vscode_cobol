@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* b2d2912 (HEAD -> main, tag: 9.2.15, origin/main, origin/HEAD) Merge branch 'main' of github.com:spgennard/vscode_cobol
+* 01cd990 (HEAD -> main, tag: 9.2.20, origin/main, origin/HEAD) add lang status bar
+* dc7b46a (tag: 9.2.15) Update
+* b2d2912 Merge branch 'main' of github.com:spgennard/vscode_cobol
 * c33bbac move away from minimatch
 * c0d61fe tweak matchers
 * 643839a (tag: 9.1.28) Update
