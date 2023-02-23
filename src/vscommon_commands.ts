@@ -203,7 +203,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid,intellisenseStyle.CamelCase);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid, intellisenseStyle.CamelCase);
             }
         }
     }));
@@ -223,7 +223,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid,intellisenseStyle.UpperCase);
+                COBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid, intellisenseStyle.UpperCase);
             }
         }
     }));
@@ -360,19 +360,29 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.dumpAllSymbols", async function () {
-       await VSDiagCommands.DumpAllSymbols();
+        await VSDiagCommands.DumpAllSymbols();
     }));
 
-    context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", settings));
+    for (const langid of settings.valid_cobol_language_ids) {
+        context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", settings, langid+"_1", langid));
+
+        switch(langid) {
+            case "ACUCOBOL" :
+                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", settings, langid+"_2", langid));
+                break;
+            case "COBOL" :
+                context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid+"_2", langid));
+                break;
+        }
+    }
 }
 
-function getLangStatusItem(text: string, command: string, title: string, settings: ICOBOLSettings):vscode.LanguageStatusItem {
-    const langStatusItem = vscode.languages.createLanguageStatusItem(ExtensionDefaults.defaultCOBOLLanguage, VSExtensionUtils.getAllCobolSelectors(settings));
+function getLangStatusItem(text: string, command: string, title: string, settings: ICOBOLSettings, id: string, langid: string): vscode.LanguageStatusItem {
+    const langStatusItem = vscode.languages.createLanguageStatusItem(id, VSExtensionUtils.getAllCobolSelector(langid));
     langStatusItem.text = text;
     langStatusItem.command = {
         command: command,
         title: title
-    };    
-
+    };
     return langStatusItem;
 }
