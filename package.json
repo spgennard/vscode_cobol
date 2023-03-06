@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.2.23",
+  "version": "9.3.2",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -56,38 +56,6 @@
     "onFileSystem:zip",
     "onLanguage:plaintext",
     "onLanguage:cobol",
-    "onLanguage:BITLANG-COBOL",
-    "onLanguage:COBOL",
-    "onLanguage:COBOLIT",
-    "onLanguage:ACUCOBOL",
-    "onLanguage:JCL",
-    "onLanguage:bms",
-    "onLanguage:hlasm",
-    "onLanguage:mfu",
-    "onCommand:cobolplugin.move2pd",
-    "onCommand:cobolplugin.move2ws",
-    "onCommand:cobolplugin.move2dd",
-    "onCommand:cobolplugin.move2anyforward",
-    "onCommand:cobolplugin.move2anybackwards",
-    "onCommand:cobolplugin.tab",
-    "onCommand:cobolplugin.revtab",
-    "onCommand:cobolplugin.change_lang_to_acu",
-    "onCommand:cobolplugin.change_lang_to_cobol",
-    "onCommand:cobolplugin.explorerRun",
-    "onCommand:cobolplugin.explorerDebug",
-    "onCommand:cobolplugin.removeAllComments",
-    "onCommand:cobolplugin.removeIdentificationArea",
-    "onCommand:cobolplugin.makeKeywordsLowercase",
-    "onCommand:cobolplugin.makeKeywordsUppercase",
-    "onCommand:cobolplugin.makeKeywordsCamelCase",
-    "onCommand:cobolplugin.makeFieldsLowercase",
-    "onCommand:cobolplugin.makeFieldsUppercase",
-    "onCommand:cobolplugin.makeFieldsCamelCase",
-    "onCommand:cobolplugin.removeColumnNumbers",
-    "onCommand:cobolplugin.makePerformTargetsLowerCase",
-    "onCommand:cobolplugin.makePerformTargetsUpperCase",
-    "onCommand:cobolplugin.makePerformTargetsCamelCase",
-    "onCommand:cobolplugin.resequenceColumnNumbers",
     "view:flat-source-view",
     "workspaceContains:bld.bat",
     "workspaceContains:bld.sh",
@@ -2215,7 +2183,7 @@
       {
         "key": "ctrl+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "config.coboleditor.xedit_keymap &&  &&editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+l",
@@ -2539,7 +2507,6 @@
         "owner": "cobol",
         "fileLocation": [
           "autoDetect",
-          "relative",
           "${workspaceFolder}"
         ],
         "pattern": "$mfcobol-errformat3-basefn",
@@ -2550,7 +2517,6 @@
         "owner": "cobol",
         "fileLocation": [
           "autoDetect",
-          "relative",
           "${workspaceFolder}"
         ],
         "severity": "info",
@@ -2597,7 +2563,6 @@
         "owner": "cobol",
         "fileLocation": [
           "autoDetect",
-          "relative",
           "${workspaceFolder}"
         ],
         "pattern": "$mfcobol-errformat2-basefn",
