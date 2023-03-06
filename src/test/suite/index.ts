@@ -13,9 +13,7 @@ export function run(): Promise<void> {
 	const testsRoot = path.resolve(__dirname, "..");
 
 	return new Promise((c, e) => {
-		const opt: glob.IOptions = { cwd: testsRoot};
-
-		glob("**/**.test.js", opt, (err:Error|null, files:string[]) => {
+		glob("**/**.test.js", { cwd: testsRoot }, (err, files) => {
 			if (err) {
 				return e(err);
 			}
