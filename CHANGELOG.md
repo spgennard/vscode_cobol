@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 293be78 (HEAD -> main, tag: 9.3.2, origin/main, origin/HEAD) tidy up package.json in prep for new release
+* ac6ea1c (tag: 9.2.23) Update
 * 9de6b95 expand to all COBOL dialects
 * 6dfe271 (tag: 9.2.20) Update
 * 01cd990 add lang status bar
