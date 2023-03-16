@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 293be78 (HEAD -> main, tag: 9.3.2, origin/main, origin/HEAD) tidy up package.json in prep for new release
+* 7900c38 (HEAD -> main, tag: 9.3.2, origin/main) update (keep glob with a lower v num)
+* a67d774 tweak
+* ba08678 Update
+* 293be78 tidy up package.json in prep for new release
 * ac6ea1c (tag: 9.2.23) Update
 * 9de6b95 expand to all COBOL dialects
 * 6dfe271 (tag: 9.2.20) Update
