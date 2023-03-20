@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 7900c38 (HEAD -> main, tag: 9.3.2, origin/main) update (keep glob with a lower v num)
+* f2ea18b add simple support for "Close left tab" context menu
+* 77c2dd0 (tag: 9.3.2) Update
+* 7900c38 update (keep glob with a lower v num)
 * a67d774 tweak
 * ba08678 Update
 * 293be78 tidy up package.json in prep for new release
