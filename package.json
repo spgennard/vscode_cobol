@@ -1083,7 +1083,12 @@
           "type": "boolean",
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
-        }
+        },
+        "coboleditor.enable_closeEditorsToTheLeft": {
+          "type": "boolean",
+          "description": "When enabled, close editor close tabs to left context menu",
+          "default": true
+        } 
       }
     },
     "breakpoints": [
@@ -1943,7 +1948,12 @@
         "command": "cobolplugin.dumpAllSymbols",
         "category": "COBOL",
         "title": "Diagnostic: Dump All Symbol"
-      }
+      },
+      {
+				"command": "workbench.action.closeEditorsToTheLeft",
+				"title": "Close to the Left",
+				"enablement": "config.coboleditor.enable_closeEditorsToTheLeft && !activeEditorIsFirstInGroup"
+			}
     ],
     "menus": {
       "file/newFile": [
@@ -1995,6 +2005,12 @@
           "submenu": "cobolplugin.convertmenu",
           "group": "navigation_cobol"
         }
+      ],
+      "editor/title/context": [
+				{
+					"command": "workbench.action.closeEditorsToTheLeft",
+					"group": "1_close@29"
+				}
       ],
       "cobolplugin.selectionmenu": [
         {
