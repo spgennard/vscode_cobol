@@ -11,3 +11,5 @@ cobscanner/keywords/*
 src/extension.ts.bak
 src/textprovider.ts.bak
 *nls.*.json
+package-lock.json
+*.d.ts
