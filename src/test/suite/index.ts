@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import * as path from "path";
 import Mocha from "mocha";
-import glob from "glob";
+import { glob } from "glob";
+import {  Path } from "path-scurry";
 
-export function run(): Promise<void> {
+export async function run(): Promise<void> {
 	// Create the mocha test
 	const mocha = new Mocha({
 		ui: "tdd",
@@ -12,14 +13,12 @@ export function run(): Promise<void> {
 
 	const testsRoot = path.resolve(__dirname, "..");
 
+	const files = await glob("**/**.test.js", { withFileTypes:true, cwd:testsRoot});
+
 	return new Promise((c, e) => {
-		glob("**/**.test.js", { cwd: testsRoot }, (err, files) => {
-			if (err) {
-				return e(err);
-			}
 
 			// Add files to the test suite
-			files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
+			files.forEach((f:Path) => mocha.addFile(path.resolve(testsRoot, f.fullpath())));
 
 			try {
 				// Run the mocha test
@@ -35,5 +34,5 @@ export function run(): Promise<void> {
 				e(err);
 			}
 		});
-	});
+	
 }

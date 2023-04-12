@@ -24,7 +24,8 @@
         "alwaysStrict": true,
         "noImplicitReturns": true,
         "exactOptionalPropertyTypes": true,
-        "noImplicitThis": true
+        "noImplicitThis": true,
+        "skipLibCheck":true
     },
     "exclude": [
         "out",
