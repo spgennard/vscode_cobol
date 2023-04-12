@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* dae60f4 (origin/main) update to use later glob package
+* 4a79947 tidy up
+* cbcfcac update (without glob
+* 8964df1 (tag: 9.3.19) Update
 * f2ea18b add simple support for "Close left tab" context menu
 * 77c2dd0 (tag: 9.3.2) Update
 * 7900c38 update (keep glob with a lower v num)
