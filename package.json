@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.4.12",
+  "version": "9.4.19",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -55,7 +55,6 @@
     "onFileSystem:streamfile",
     "onFileSystem:zip",
     "onLanguage:plaintext",
-    "onLanguage:cobol",
     "view:flat-source-view",
     "workspaceContains:bld.bat",
     "workspaceContains:bld.sh",
@@ -64,7 +63,9 @@
     "workspaceContains:**/*.cbl",
     "workspaceContains:**/*.cpy",
     "workspaceContains:**/*.md",
-    "workspaceContains:**/*.jcl"
+    "workspaceContains:**/*.jcl",
+    "onEditSession:file",
+    "onEditSession:untitled"
   ],
   "main": "./dist/extension",
   "browser": "./dist/web/extension-web.js",
@@ -1083,11 +1084,6 @@
           "type": "boolean",
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
-        },
-        "coboleditor.enable_closeEditorsToTheLeft": {
-          "type": "boolean",
-          "description": "When enabled, close editor close tabs to left context menu",
-          "default": true
         }
       }
     },
@@ -1948,11 +1944,6 @@
         "command": "cobolplugin.dumpAllSymbols",
         "category": "COBOL",
         "title": "Diagnostic: Dump All Symbol"
-      },
-      {
-        "command": "workbench.action.closeEditorsToTheLeft",
-        "title": "Close to the Left",
-        "enablement": "config.coboleditor.enable_closeEditorsToTheLeft && !activeEditorIsFirstInGroup"
       }
     ],
     "menus": {
