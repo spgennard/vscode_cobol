@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* dae60f4 (origin/main) update to use later glob package
+* 7ee0fd5 (HEAD -> main, tag: 9.4.19, origin/main) remove close left menu
+* c9933ab (tag: 9.4.12) Update
+* dae60f4 update to use later glob package
 * 4a79947 tidy up
 * cbcfcac update (without glob
 * 8964df1 (tag: 9.3.19) Update
