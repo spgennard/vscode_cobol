@@ -1997,12 +1997,6 @@
           "group": "navigation_cobol"
         }
       ],
-      "editor/title/context": [
-        {
-          "command": "workbench.action.closeEditorsToTheLeft",
-          "group": "1_close@29"
-        }
-      ],
       "cobolplugin.selectionmenu": [
         {
           "command": "cobolplugin.extractSelectionToParagraph",
