@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 7ee0fd5 (HEAD -> main, tag: 9.4.19, origin/main) remove close left menu
+* 8e33137 Update package.json
+* 810ae3b (tag: 9.4.19) Update
+* 7ee0fd5 remove close left menu
 * c9933ab (tag: 9.4.12) Update
 * dae60f4 update to use later glob package
 * 4a79947 tidy up
