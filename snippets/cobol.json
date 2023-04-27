@@ -83,6 +83,7 @@
 			"mfu",
 			"mfup"
 		],
+		"isFileTemplate":true,
 		"body": [
 			"       copy \"mfunit_prototypes.cpy\".",
 			"",
@@ -183,6 +184,7 @@
 	},
 	"IDENTIFICATION (CICS)": {
 		"prefix": "IDENTIFICATION",
+		"isFileTemplate":true,
 		"body": [
 			"        IDENTIFICATION DIVISION. ",
 			"        PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
@@ -222,6 +224,7 @@
 	},
 	"Minimum Line Sequential": {
 		"prefix": "identification",
+		"isFileTemplate":true,
 		"body": [
 			"       identification division.",
 			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
@@ -264,6 +267,7 @@
 	},
 	"Minimum mainframe program [uppercase]": {
 		"prefix": "IDENTIFICATION",
+		"isFileTemplate":true,
 		"body": [
 			"       IDENTIFICATION DIVISION.",
 			"       PROGRAM-ID. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
@@ -296,6 +300,7 @@
 	},
 	"Skelton program": {
 		"prefix": "program-id",
+		"isFileTemplate":true,
 		"body": [
 			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"",
@@ -317,6 +322,7 @@
 	},
 	"Minimum program": {
 		"prefix": "program-id",
+		"isFileTemplate":true,
 		"body": [
 			"       program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
 			"       procedure division.",
@@ -390,7 +396,7 @@
 		"scope": "cobol"
 	},
 	"$set dialect": {
-		"prefix": "$set",
+		"prefix": ["$set", "$set dialect"],
 		"body": [
 			"\\$set dialect\"${2|ans85,bs2000,bs2000-offload,cob370,cob371,cob372,mf,mvs,os390,osvs,vsc21,vsc22,vsc23,vsc24|}\"",
 			"$0"
@@ -399,7 +405,7 @@
 		"scope": "cobol"
 	},
 	"$set sourceformat": {
-		"prefix": "$set",
+		"prefix": ["$set", "$set sourceformat" ],
 		"body": [
 			"\\$set sourceformat\"${2|free,variable,fixed|}\"",
 			"$0"

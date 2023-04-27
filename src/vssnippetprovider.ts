@@ -280,6 +280,15 @@ const simpleSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "exit",
+        "label": "exit section",
+        "body": [
+            "exit section"
+        ],
+        "description": "exit section",
+        "scope": "cobol"
+    },    
+    {
         "prefix": "string",
         "label": "string",
         "body": [
