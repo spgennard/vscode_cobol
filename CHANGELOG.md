@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 380edf8 (HEAD -> main, tag: 9.4.25, origin/main) Update
+* 50996b3 (HEAD -> main, tag: 9.4.29, origin/main) tweak intellisense space handling add limit to overlay view
+* 976afdc (tag: 9.4.25) Update
+* 380edf8 Update
 * e4135ef add snippet
 * 18711bf updaste
 * a66f667 (tag: 9.4.20) Update
