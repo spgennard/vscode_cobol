@@ -760,6 +760,7 @@ const cobolProcedureKeywords: string[] = [
 	"move",
 	"multiple",
 	"multiply",
+	"named",
 	"object-computer",
 	"object",
 	"perform",

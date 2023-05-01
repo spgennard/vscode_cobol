@@ -12,7 +12,7 @@ let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
 
 export class VSSourceTreeViewHandler {
-    static setupSourceViewTree(config: ICOBOLSettings, reinit: boolean): void {
+    static async setupSourceViewTree(config: ICOBOLSettings, reinit: boolean): Promise<void> {
 
         if ((config.sourceview === false || reinit) && sourceTreeView !== undefined) {
             sourceTreeWatcher?.dispose();
@@ -21,6 +21,7 @@ export class VSSourceTreeViewHandler {
 
         if (config.sourceview && sourceTreeView === undefined) {
             sourceTreeView = new SourceViewTree(config);
+            await sourceTreeView.init();
             sourceTreeWatcher = workspace.createFileSystemWatcher("**/*");
 
             sourceTreeWatcher.onDidCreate((uri) => {
@@ -76,9 +77,11 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
 
     private settings: ICOBOLSettings;
 
+    private depth = 0;
+    private maxDepth = 5;
+
     constructor(config: ICOBOLSettings) {
         this.settings = config;
-
         this.cobolItem = new SourceOrFolderTreeItem(false, "COBOL");
         this.copyBookItem = new SourceOrFolderTreeItem(false, "Copybooks");
         this.jclItem = new SourceOrFolderTreeItem(false, "JCL");
@@ -130,12 +133,41 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
             this.topLevelItems.set(this.testCaseItem.label, this.testCaseItem);
         }
 
+        if (config.sourceview_include_jcl_files) {
+            this.topLevelItems.set(this.jclItem.label, this.jclItem);
+        }
 
+        if (config.sourceview_include_hlasm_files) {
+            this.topLevelItems.set(this.hlasmItem.label, this.hlasmItem);
+        }
+
+        if (config.sourceview_include_pli_files) {
+            this.topLevelItems.set(this.pliItem.label, this.pliItem);
+        }
+
+        if (config.sourceview_include_doc_files) {
+            this.topLevelItems.set(this.documentItem.label, this.documentItem);
+        }
+
+        if (config.sourceview_include_script_files) {
+            this.topLevelItems.set(this.scriptItem.label, this.scriptItem);
+        }
+
+        if (config.sourceview_include_object_files) {
+            this.topLevelItems.set(this.objectItem.label, this.objectItem);
+        }
+
+        if (config.sourceview_include_test_files) {
+            this.topLevelItems.set(this.testCaseItem.label, this.testCaseItem);
+        }
+    }
+
+    public async init() {
         // file items
         let folders = VSWorkspaceFolders.get();
         if (folders) {
             for (const folder of folders) {
-                this.addWorkspace(folder);
+                await this.addWorkspace(folder);
             }
         }
 
@@ -143,16 +175,21 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
         folders = VSWorkspaceFolders.get("");
         if (folders) {
             for (const folder of folders) {
-                this.addWorkspace(folder);
+                await this.addWorkspace(folder);
             }
         }
     }
 
     private async addWorkspace(standardFolder: vscode.WorkspaceFolder) {
-        this.addFolder(standardFolder.uri);
+        await this.addFolder(standardFolder.uri);
     }
 
     private async addFolder(topLevelUri: vscode.Uri) {
+        if (this.depth >= this.maxDepth) {
+            return;
+        }
+
+        this.depth++;
         const entries = await workspace.fs.readDirectory(topLevelUri);
 
         for (const entry of entries) {
@@ -177,6 +214,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
                 }
             }
         }
+        this.depth--;
         this.refreshItems();
     }
 

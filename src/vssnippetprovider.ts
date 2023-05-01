@@ -287,7 +287,7 @@ const simpleSnippets: ISimpleSnippet[] = [
         ],
         "description": "exit section",
         "scope": "cobol"
-    },    
+    },
     {
         "prefix": "string",
         "label": "string",
@@ -369,6 +369,15 @@ const simpleSnippets: ISimpleSnippet[] = [
             "display \"$0\""
         ],
         "description": "display literal",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "exhibit",
+        "label": "exhibit named",
+        "body": [
+            "exhibit named \"$0\""
+        ],
+        "description": "exhibit named literal",
         "scope": "cobol"
     },
     {
@@ -1011,7 +1020,7 @@ class SnippetHelper {
     protected foldKeywordLine(texts: string[], languageid: string, settings: ICOBOLSettings): string {
         const sb = [];
         for (const text of texts) {
-            sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords, false, languageid,settings, settings.intellisense_style));
+            sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords, false, languageid, settings, settings.intellisense_style));
         }
 
         return sb.join(jsonCRLF);
@@ -1030,20 +1039,20 @@ class SnippetHelper {
 
         let preselect = snippet.label;
         let kiSnippet = "";
-        const istyle = snippet.alwaysUpperCase ? intellisenseStyle.UpperCase : VSCustomIntelliseRules.Default.findCustomIStyle(settings,snippet.prefix, settings.intellisense_style);
+        const istyle = snippet.alwaysUpperCase ? intellisenseStyle.UpperCase : VSCustomIntelliseRules.Default.findCustomIStyle(settings, snippet.prefix, settings.intellisense_style);
 
         switch (istyle) {
             case intellisenseStyle.CamelCase:
                 preselect = SourceScannerUtils.camelize(snippet.label);
-                kiSnippet = this.foldKeywordLine(snippet.body, langId,settings);
+                kiSnippet = this.foldKeywordLine(snippet.body, langId, settings);
                 break;
             case intellisenseStyle.UpperCase:
                 preselect = preselect.toUpperCase();
-                kiSnippet = this.foldKeywordLine(snippet.body, langId,settings);
+                kiSnippet = this.foldKeywordLine(snippet.body, langId, settings);
                 break;
             case intellisenseStyle.LowerCase:
                 preselect = preselect.toLowerCase();
-                kiSnippet = this.foldKeywordLine(snippet.body, langId,settings);
+                kiSnippet = this.foldKeywordLine(snippet.body, langId, settings);
                 break;
             case intellisenseStyle.Unchanged:
                 kiSnippet = snippet.body.join(jsonCRLF);
@@ -1158,21 +1167,21 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         let kiSnippet = "";
         let callStatement = keyword;
 
-        const iStyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings,ki.api, settings.intellisense_style);
+        const iStyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, ki.api, settings.intellisense_style);
         switch (iStyle) {
             case intellisenseStyle.CamelCase:
-                kiSnippet = this.foldKeywordLine(ki.snippet, langId,settings);
-                kiExample = this.foldKeywordLine(ki.example, langId,settings);
+                kiSnippet = this.foldKeywordLine(ki.snippet, langId, settings);
+                kiExample = this.foldKeywordLine(ki.example, langId, settings);
                 callStatement = SourceScannerUtils.camelize(callStatement);
                 break;
             case intellisenseStyle.UpperCase:
-                kiSnippet = this.foldKeywordLine(ki.snippet, langId,settings);
-                kiExample = this.foldKeywordLine(ki.example, langId,settings);
+                kiSnippet = this.foldKeywordLine(ki.snippet, langId, settings);
+                kiExample = this.foldKeywordLine(ki.example, langId, settings);
                 callStatement = callStatement.toUpperCase();
                 break;
             case intellisenseStyle.LowerCase:
-                kiSnippet = this.foldKeywordLine(ki.snippet, langId,settings);
-                kiExample = this.foldKeywordLine(ki.example, langId,settings);
+                kiSnippet = this.foldKeywordLine(ki.snippet, langId, settings);
+                kiExample = this.foldKeywordLine(ki.example, langId, settings);
                 callStatement = callStatement.toLowerCase();
                 break;
             case intellisenseStyle.Unchanged:

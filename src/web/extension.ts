@@ -534,7 +534,7 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
     });
 
-    VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
+    await VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
     VSHelpAndFeedViewHandler.setupSourceViewTree(settings, false);
     
     /* hover provider */

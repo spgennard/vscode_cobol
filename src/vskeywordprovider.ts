@@ -12,7 +12,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 
 	private onlyShowSnippetKeywords = new Map<string, string>([["dfhresp", "dfhresp"]]);
 
-	private nextKeyKeywords = new Map<string, string>();
+	private includeExtraSpaceKeywords = new Map<string, string>();
 	private dollarGTWordRegEx = new RegExp("[#>$0-9a-zA-Z][>a-zA-Z0-9-_]*");
 
 	public static Default4COBOL: KeywordAutocompleteCompletionItemProvider;
@@ -27,9 +27,9 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 	}
 
 	public reFreshConfiguration(settings: ICOBOLSettings) {
-		this.nextKeyKeywords.clear();
-		for (const kwNoSpace of settings.intellisense_no_space_keywords) {
-			this.nextKeyKeywords.set(kwNoSpace.toLowerCase(), "");
+		this.includeExtraSpaceKeywords.clear();
+		for (const kwNoSpace of settings.intellisense_add_space_keywords) {
+			this.includeExtraSpaceKeywords.set(kwNoSpace.toLowerCase(), "");
 		}
 	}
 
@@ -77,7 +77,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			if (this.onlyShowSnippetKeywords.has(keyLower)) {
 				invokeNext = true;
 			} else {
-				const extraKey = this.nextKeyKeywords.has(keyLower) ? this.nextKeyKeywords.get(keyLower) : " ";
+				const extraKey = this.includeExtraSpaceKeywords.has(keyLower) ? " " : "";
 				const istyle =  VSCustomIntelliseRules.Default.findCustomIStyle(iconfig,key, iconfig.intellisense_style); 
 				switch (istyle) {
 					case intellisenseStyle.CamelCase:

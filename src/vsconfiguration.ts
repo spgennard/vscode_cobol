@@ -115,7 +115,7 @@ export class VSCOBOLConfiguration {
             VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }
 
-        settings.intellisense_no_space_keywords = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("intellisense_no_space_keywords", settings.intellisense_no_space_keywords);
+        settings.intellisense_add_space_keywords = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("intellisense_add_space_keywords", settings.intellisense_add_space_keywords);
 
         settings.custom_intellisense_rules = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
 
@@ -135,6 +135,9 @@ export class VSCOBOLConfiguration {
             settings.process_metadata_cache_on_start = false;
             settings.enable_text_replacement = false;
         }
+
+        settings.outline_max_depth = getNumber("outline_max_depth", settings.outline_max_depth);
+        
         return settings;
     }
 

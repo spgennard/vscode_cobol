@@ -120,7 +120,7 @@ export interface ICOBOLSettings {
 
     check_file_format_before_file_scan: boolean;
 
-    intellisense_no_space_keywords:string[];
+    intellisense_add_space_keywords:string[];
 
     custom_intellisense_rules: string[];
 
@@ -131,6 +131,8 @@ export interface ICOBOLSettings {
     enable_codelens_section_paragraph_references: boolean;
 
     enable_codelens_copy_replacing: boolean;
+
+    outline_max_depth: number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -222,7 +224,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     check_file_format_before_file_scan: boolean;
 
-    intellisense_no_space_keywords: string[];
+    intellisense_add_space_keywords: string[];
 
     custom_intellisense_rules: string[];
 
@@ -233,6 +235,8 @@ export class COBOLSettings implements ICOBOLSettings {
     enable_codelens_section_paragraph_references: boolean;
 
     enable_codelens_copy_replacing: boolean;
+
+    outline_max_depth:number;
 
     constructor() {
         this.enable_tabstop = true;
@@ -307,11 +311,12 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_columns_tags = false;
         this.hover_show_encoded_literals = true;
         this.check_file_format_before_file_scan = true;
-        this.intellisense_no_space_keywords = [];
+        this.intellisense_add_space_keywords = [];
         this.custom_intellisense_rules = [];
         this.margin = true;
         this.enable_codelens_variable_references = false;
         this.enable_codelens_section_paragraph_references = false;
         this.enable_codelens_copy_replacing = true;
+        this.outline_max_depth = 5;
     }
 }

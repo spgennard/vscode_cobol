@@ -742,7 +742,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const intellisense_style_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_style`);
         const enable_columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_columns_tags`);
         const columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
-        const intellisense_no_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_no_space_keywords`);
+        const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`);
         const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`);
 
         if (updated) {
@@ -750,8 +750,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 VSCOBOLSourceScanner.clearCOBOLCache();
                 setupLogChannelAndPaths(true, settings, true);
-                VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
+                async () => {
+                    await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
+                }
             }
+            
             if (md_syms) {
                 COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, true);
             }
@@ -803,7 +806,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 SnippetCompletionItemProvider.Default.reInitCallMap(settings);
             }
 
-            if (intellisense_no_space_keywords_changed) {
+            if (intellisense_add_space_keywords_changed) {
                 KeywordAutocompleteCompletionItemProvider.Default4COBOL.reFreshConfiguration(settings);
             }
 
@@ -935,7 +938,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         VSExtensionUtils.flip_plaintext(workspace.textDocuments[docid]);
     }
 
-    VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
+    await VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
     VSHelpAndFeedViewHandler.setupSourceViewTree(settings, false);
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
     context.subscriptions.push(COBOLCaseFormatter.register(settings));

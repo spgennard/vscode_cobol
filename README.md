@@ -482,7 +482,7 @@ For example, to ensure you use utf8 for all you files use:
 
 A overall intellisense style can be selected via the ```coboleditor.intellisense_style``` property.
 
-If you find a keyword or snippet includes a extra space that is not required, you can amend the ```coboleditor.intellisense_no_space_keywords``` property to exclude it.
+If you find a keyword or snippet includes a extra space, you can amend the ```coboleditor.intellisense_add_space_keywords``` property to include it.
 
 Custom formatting rules can be enabled for a specific item or prefixed item via the ```coboleditor.custom_intellisense_rules``` setting.
 
