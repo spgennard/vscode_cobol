@@ -712,14 +712,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         parse_copybooks_for_references: boolean,
         eventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures
-
     ): COBOLSourceScanner {
 
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
 
         return new COBOLSourceScanner(
-            externalFeatures.performance_now(),
+            sharedSource.startTime,
             sourceHandler,
             configHandler,
             sharedSource,

@@ -118,6 +118,7 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     if (grab_info_for_ext.packageJSON.id !== undefined) {
         dupExtensionMessage += `                 code --uninstall-extension ${grab_info_for_ext.packageJSON.id}\n`;
     }
+    
     if (reasons.length !== 0) {
         let rcount = 1;
         const reasonMessage = reasons.length === 1 ? "Reason " : "Reasons";
@@ -374,6 +375,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
             {
                 //
             }
+
             if (vscode.workspace.workspaceFile !== undefined) {
                 VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
             }
