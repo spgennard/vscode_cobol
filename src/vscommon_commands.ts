@@ -14,6 +14,7 @@ import path from "path";
 import fs from "fs";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSDiagCommands } from "./vsdiagcommands";
+import { CopyBookDragDropProvider } from "./CopyBookDragDropProvider";
 
 function newFile(title: string, template: string, doclang: string) {
     let fpath = "";
@@ -374,7 +375,11 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
                 context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid+"_2", langid));
                 break;
         }
+
+        context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider()));
     }
+
+    context.subscriptions.push
 }
 
 function getLangStatusItem(text: string, command: string, title: string, settings: ICOBOLSettings, id: string, langid: string): vscode.LanguageStatusItem {
