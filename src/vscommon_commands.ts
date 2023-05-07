@@ -14,7 +14,7 @@ import path from "path";
 import fs from "fs";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSDiagCommands } from "./vsdiagcommands";
-import { CopyBookDragDropProvider } from "./CopyBookDragDropProvider";
+import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
 
 function newFile(title: string, template: string, doclang: string) {
     let fpath = "";
@@ -376,7 +376,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
                 break;
         }
 
-        context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider()));
+        context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider(settings)));
     }
 
     context.subscriptions.push
