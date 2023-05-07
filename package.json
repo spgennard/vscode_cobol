@@ -31,7 +31,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.77.0"
+    "vscode": "^1.78.0"
   },
   "extensionKind": [
     "workspace"
@@ -2676,8 +2676,8 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.16.3",
-    "@types/vscode": "^1.77.0",
+    "@types/node": "^20.1.0",
+    "@types/vscode": "^1.78.0",
     "@types/webpack-env": "^1.18.0",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
@@ -2686,7 +2686,7 @@
     "ansi-regex": ">=6.0.1",
     "assert": "^2.0.0",
     "depcheck": "^1.4.3",
-    "eslint": "^8.39.0",
+    "eslint": "^8.40.0",
     "glob": "^10.2.2",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
@@ -2696,8 +2696,8 @@
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
     "vsce": "^1.97.0",
-    "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2"
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.1.0"
   },
   "dependencies": {
     "ansi-regex": ">=6.0.1",
