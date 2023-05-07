@@ -1,6 +1,11 @@
 # CHANGELOG
 
-* 50996b3 (HEAD -> main, tag: 9.4.29, origin/main) tweak intellisense space handling add limit to overlay view
+* 78ecdfb refactor simple copybook drag/drop provider
+* a96c24d add a simple copybook provider
+* 3613a08 add ideas file
+* f57326e tweak use time from file
+* d066bd9 (tag: 9.4.29) Update
+* 50996b3 tweak intellisense space handling add limit to overlay view
 * 976afdc (tag: 9.4.25) Update
 * 380edf8 Update
 * e4135ef add snippet
