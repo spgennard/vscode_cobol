@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 54cb477 (HEAD -> main, tag: 9.6.6, origin/main) dev: avoid "" command message error when double clicking in int's etc in source view
+* cbca9b7 update version
+* c249efa (tag: 9.5.6) Update
 * 78ecdfb refactor simple copybook drag/drop provider
 * a96c24d add a simple copybook provider
 * 3613a08 add ideas file
