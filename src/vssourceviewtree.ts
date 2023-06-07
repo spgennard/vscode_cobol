@@ -221,10 +221,10 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
     private getCommand(fileUri: vscode.Uri, ext: string): vscode.Command | undefined {
         const location = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
-        let actionCommand = "vscode.open";
         if (ext === "acu" || ext === "int" || ext === "gnt" || ext === "so" || ext === "dll") {
-            actionCommand = "";
+            return undefined;
         }
+        const actionCommand = "vscode.open";
         return {
             arguments: [
                 fileUri,
