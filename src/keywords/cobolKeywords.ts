@@ -327,7 +327,6 @@ const cobolKeywords: string[] = [
 	"release",
 	"reload",
 	"remainder",
-	"remarks",
 	"removal",
 	"renames",
 	"replace",
@@ -541,6 +540,7 @@ const acuKeywords: string[] = [
 	"record-data",
 	"record-position",
 	"report-composer",
+	"remarks",
 	"resizeable",
 	"resource",
 	"scroll",
@@ -565,6 +565,10 @@ const acuKeywords: string[] = [
 	"width",
 	"wrap"
 ];
+
+const rmKeywords: string[] = [
+	"REMARKS"
+]
 
 const cobolStorageKeywords: string[] = [
 	"binary-char",
@@ -1277,6 +1281,7 @@ const cobolCOBOLITKeywords: string[] = [
 const cobolKeywordDictionaryMap = new Map<string, string>();
 const acucobolKeywordDictionaryMap = new Map<string, string>();
 const cobolitKeywordDictionaryMap = new Map<string, string>();
+const rmcobolKeywordDictionaryMap = new Map<string, string>();
 
 export const cobolProcedureKeywordDictionary = new Map<string, string>();
 export const cobolStorageKeywordDictionary = new Map<string, string>();
@@ -1284,6 +1289,7 @@ export const cobolRegistersDictionary = new Map<string, string>();
 
 const cobolList: string[] = [];
 const acucobolList: string[] = [];
+const rmcobolList: string[] = [];
 
 /* inline decl */
 for (const key of cobolKeywords) {
@@ -1291,12 +1297,20 @@ for (const key of cobolKeywords) {
 	acucobolKeywordDictionaryMap.set(key, key);
 	cobolList.push(key);
 	acucobolList.push(key);
+	rmcobolList.push(key);
 }
 
 for (const key of acuKeywords) {
 	if (!acucobolKeywordDictionaryMap.has(key)) {
 		acucobolKeywordDictionaryMap.set(key, key);
 		acucobolList.push(key);
+	}
+}
+
+for (const key of rmKeywords) {
+	if (!rmcobolKeywordDictionaryMap.has(key)) {
+		rmcobolKeywordDictionaryMap.set(key, key);
+		rmcobolList.push(key);
 	}
 }
 
@@ -1346,6 +1360,7 @@ export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> 
 	switch(dialect) {
 		case "ACUCOBOL" : return acucobolKeywordDictionaryMap;
 		case "COBOLIT"  : return cobolitKeywordDictionaryMap;
+		case "RMCOBOL" : return rmcobolKeywordDictionaryMap;
 		default : return cobolKeywordDictionaryMap;
 	}
 }
@@ -1353,6 +1368,7 @@ export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> 
 export function getCOBOLKeywordList(dialect: string): string[] {
 	switch(dialect) {
 		case "ACUCOBOL" : return acucobolList;
+		case "RMCOBOL" : return rmcobolList;
 		case "COBOLIT" : return cobolCOBOLITKeywords;
 		default : return cobolList;
 	}

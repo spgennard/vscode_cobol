@@ -4,6 +4,21 @@
   "fileTypes": [],
   "name": "ACUCOBOL",
   "patterns": [
+        {
+      "begin": "(?<![-_a-zA-Z0-9()-])(?i:remarks\\.)",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.acucobol"
+        }
+      },
+      "name": "comment.1.block.acucobol.remark",
+      "end": "(?i:end\\-remark|\\*{Bench}end|environment\\s+division|data\\s+division|working-storage\\s+section|file-control)",
+      "endCaptures": {
+        "0": {
+          "name": "keyword.acucobol"
+        }
+      }
+    },
     {
       "match": "((?<![-_])(?i:binary|computational-4|comp-4|computational-5|comp-5))\\(([0-9]*)\\)",
       "captures": {

@@ -1,0 +1,31 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2022 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/rmcobol.tmLanguage.json",
+  "$schema": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
+  "fileTypes": [],
+  "name": "RMCOBOL",
+  "patterns": [
+    {
+      "begin": "(?<![-_a-zA-Z0-9()-])(?i:remarks\\.)",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.rmcobol"
+        }
+      },
+      "name": "comment.1.block.rmcobol.remark",
+      "end": "(?i:end\\-remark|\\*{Bench}end|environment\\s+division|data\\s+division|working-storage\\s+section|file-control)",
+      "endCaptures": {
+        "0": {
+          "name": "keyword.rmcobol"
+        }
+      }
+    },
+    {
+      "include": "source.cobol"
+    },
+    {
+      "match": "(^\\\\D.*)$",
+      "name": "token.debug-token"
+    }
+  ],
+  "scopeName": "source.rmcobol"
+}
