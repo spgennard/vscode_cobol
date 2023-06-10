@@ -16,6 +16,7 @@ export class VSExtensionUtils {
             case "bitlang-cobol":
             case "cobol":
             case "acucobol":
+            case "rmcobol":
                 return TextLanguage.COBOL;
             case "jcl":
                 return TextLanguage.JCL;

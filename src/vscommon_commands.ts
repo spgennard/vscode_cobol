@@ -316,7 +316,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            vscode.window.showQuickPick(["COBOL", "ACUCOBOL", "COBOLIT"], { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
+            vscode.window.showQuickPick(["COBOL", "ACUCOBOL", "RMCOBOL","COBOLIT"], { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
                 if (vscode.window.activeTextEditor && dialect) {
                     COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true, dialect);
                 }
@@ -372,7 +372,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
                 context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", settings, langid+"_2", langid));
                 break;
             case "COBOL" :
-                context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid+"_2", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid+"_3", langid));
                 break;
         }
 

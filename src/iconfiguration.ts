@@ -295,6 +295,7 @@ export class COBOLSettings implements ICOBOLSettings {
             "COBOL",
             "COBOLIT",
             "ACUCOBOL",
+            "RMCOBOL",
             "COBOL_MF_LISTFILE"
         ];
 
