@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 54cb477 (HEAD -> main, tag: 9.6.6, origin/main) dev: avoid "" command message error when double clicking in int's etc in source view
+* 5b21835  Code coloring issue with REMARKS keyword in variable Fix #327
+* a0049f9 (tag: 9.6.6) Update
+* 54cb477 dev: avoid "" command message error when double clicking in int's etc in source view
 * cbca9b7 update version
 * c249efa (tag: 9.5.6) Update
 * 78ecdfb refactor simple copybook drag/drop provider
