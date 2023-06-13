@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 6ef85ba (HEAD -> main, tag: 9.6.13, origin/main) move $ snippets into snippet provider to try avoid some odd behavour
+* 88380f4 tweaks for extra dialect (for remarks)
+* 9f3fee1 remove duplicate which crept in with a regex/swap
+* f7888c7 (tag: 9.6.10) Update
 * 5b21835  Code coloring issue with REMARKS keyword in variable Fix #327
 * a0049f9 (tag: 9.6.6) Update
 * 54cb477 dev: avoid "" command message error when double clicking in int's etc in source view
