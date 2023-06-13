@@ -1016,6 +1016,135 @@ const functionSnippets: ISimpleSnippet[] = [
     }
 ];
 
+const dollarSnippets: ISimpleSnippet[] = [
+    {
+        "prefix": "$set",
+        "label": "$set dialect",
+        "body": [
+            "\\$set dialect\"${2|ans85,bs2000,bs2000-offload,cob370,cob371,cob372,mf,mvs,os390,osvs,vsc21,vsc22,vsc23,vsc24|}\"",
+            "$0"
+        ],
+        "description": "Set source dialect",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$set",
+        "label": "$set sourceformat",
+        "body": [
+            "\\$set sourceformat\"${2|free,variable,fixed|}\"",
+            "$0"
+        ],
+        "description": "Set source format",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$if",
+        "label": "$if constant [expr] literal",
+        "body": [
+            "\\$if ${1:constant-name} ${2|=,<,>,not =,not <,not >|} ${3:literal}",
+            "$0",
+            "\\$end"
+        ],
+        "description": "$if constant-name |expr| literal",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$if",
+        "label": "$if constant-name [not] defined",
+        "body": [
+            "\\$if ${1:constant-name} ${2|defined,not defined|}",
+            "$0",
+            "\\$end"
+        ],
+        "description": "$if constant-name [not] defined",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$if",
+        "label": "$if directive set",
+        "body": [
+            "\\$if ${1|ACCEPTREFRESH,ACTUALPARAMS,ACUOPT,ACU-COMMENT,ACUSYNC,ACU-UNDERSCORE,ACU,ADDRSV,ADDSYN,ADV,ALIGN,ALPHASTART,ALTER,AMODE,ANIM,ANS85,APOST,AREACHECK,ARITH,ARITHMETIC,ASSIGN,ASSIGN-PRINTER,AUTOLOCK,BELL,BINLIT,BOUNDOPT,BOUND,BRIEF,BS2000,BWZSTAR,BYTE-MODE-MOVE,CALL-RECOVERY,CALLFH,CALLMCS,CALLSORT,CANCEL,CANCELLBR,CASE,CHANGE-MESSAGE,CHARSET,CHECK,CHECKDIV,CHECKNUM,CHECKREFMOD,CICSECM,CMPR2,COBFSTATCONV,COBIDY,COBOL370,COBOLDIR,COLLECTION,COMMAND-LINE-LINKAGE,COMP1,COMP2,COMP-5,COMP-6,COMP,COMS85,CONFIRM,CONSTANT,CONVSPACE,COPYEXT,COPYLBR,COPYLIST,COPYLISTCOMMENT,COPYPATH,COPYSEARCH,CSI,CURRENCY-SIGN,CURRENT-DATE,DATA,DATACOMPRESS,DATA-CONTEXT,DATAMAP,DATE,DB2,DBCHECK,DBCS,DBCSSOSI,DBSPACE,DE-EDIT,DEFAULTBYTE,DEFAULTCALLS,DETECT-LOCK,DG,DIALECT,DIRECTIVES,DIRECTIVES-IN-COMMENTS,DIR,DISPLAY,DISPSIGN,DOSVS,DOTNET,DPC-IN-SUBSCRIPT,DYNAM,EBC-COL-SEQ,ECHO,ECHOALL,ENTCOBOL,EOF-1A,ERRFORMAT,ERRLIST,ERRQ,EXITPROGRAM,FASTCALL,FASTINIT,FASTLINK,FASTSORT,FCD3,FCDALIGN,FCDCAT,FDCLEAR,FCDREG,FILESHARE,FILETYPE,FIXOPT,FLAG,FLAGAS,FLAGEUC,FLAGMIG,FLAGQ,FLAGSINEDIT,FLAGSTD,FOLD-CALL-NAME,FOLD-COPY-NAME,FORM,FP-ROUNDING,GNT,GNTLITLINKSTD,HIDE-MESSAGE,HOSTARITHMETIC,HOSTCONTZERO,HOSTFD,HOST-NUMCOMPARE,HOST-NUMMOVE,HOSTRW,IBM-MS,IBMCOMP,IDENTIFIERLEN,IDXFORMAT,IGNOREEXEC,ILARRAYPROPERTY,ILASSEMBLY,ILCLR,ILCOMPANY,ILCOPYRIGHT,ILCULTURE,ILCUTPREFIX,ILDELAYSIGN,ILDESCRIPTION,ILDOC,ILDYNCALL,ILEXPONENTIATION,ILFILEVERSION,JVMGEN,ILGEN,ILICON,ILKEYFILE,ILKEYNAME,ILMAIN,ILMANIFEST,ILNAMESPACE,ILNATIVE,ILNATIVERESOURCE,ILOPTIMIZEDATA,ILOUTPUT,ILPARAMS,ILPINVOKE,ILPRODUCT,ILPRODUCTVERSION,ILREF,ILRESOURCE,ILSHOWPERFORMOVERLAP,ILSMARTANNOTATE,ILSMARTLINKAGE,ILSMARTNEST,ILSMARTRESTRICT,ILSMARTSERIAL,ILSMARTTRIM,ILSOURCE,ILSTACKSIZE,ILSTATIC,ILSTDLIB,ILSUBSYSTEM,ILTARGET,ILTITLE,ILTRADEMARK,ILUSING,ILVERIFY,ILVERSION,IMPLICITSCOPE,INDD,INFORETURN,INIT-BY-TYPE,INITCALL,INITPTR,INT,INTDATE,INTLEVEL,IOCONV,ISO2002,IXNLSKEY,IXNUMKEY,JAPANESE,KEYCHECK,KEYCOMPRESS,LIBRARIAN,LINE-COUNT,LINKALIAS,LINKCHECK,LIST,LISTPATH,LISTWIDTH,LW,LITLINK,LITVAL-SIZE,LNKALIGN,LOCALCOUNT,LOCALSOURCEFORMAT,LOCKTYPE,MAINFRAME-FLOATING-POINT,MAKESYN,MAPNAME,MAX-ERROR,METHODDEFAULT,MF,MFLEVEL,MFCOMMENT,MFSYNC,MOVE-LEN-CHECK,MS,MVS,NATIONAL,NATIVE,NATIVE-FLOATING-POINT,NCHAR,NLS,NLSCURRENCYLENGTH,NSYMBOL,NULL-ESCAPE,NUMPROC,OBJ,ODOOSVS,ODOSLIDE,OLDBLANKLINE,OLDCOPY,OLDINDEX,OLDNEXTSENTENCE,OLDREADINTO,OLDSTRMIX,OOCTRL,OPT(Intelx86platforms),OPT(Non-Intelx86platforms),OPTIONAL-FILE,OS390,OSEXT,OSVS,OUTDD,OVERRIDE,P64,PANVALET,PARAMCOUNTCHECK,PC1,PCOMP,PERFORM-TYPE,PERFORMOPT,PPLITLINK,PREPLIST,PREPROCESS,PRESERVECASE,PRINT,PRINT-EXT,PROFILE,PROGID-COMMENT,PROGID-INT-NAME,PROTECT-LINKAGE,PROTOTYPE,P,QUAL,QUALPROC,QUERY,QUOTE,RAWLIST,RDFPATH,RDW,RECMODE,RECURSECHECK,REENTRANT,REF,REFNO,REMAINDER,REMOVE,REPORT-LINE,REPOSITORY,RESEQ,RESTRICT-GOTO,RETRYLOCK,REWRITE-LS,RM,RTNCODE-TYPE,RTNCODE-SIZE,RUNTIME-ENCODING,RWHARDPAGE,SAA,SCHEDULER,SEG,SEQCHK,SEQUENTIAL,SERIAL,SETTING,SETTINGS,SHARE-OUTDD,SHOW-DIR,SIGN,SIGNDISCARD,SIGN-FIXUP,SORTTYPE,SOURCEASM,SOURCE-ENCODING,SOURCEFORMAT,SOURCETABSTOP,SQL,SSRANGE,STDERR,STICKY-LINKAGE,STICKY-PERFORM,SUPFF,SWITCH-TYPE,SYMBSTART,SYSPUNCH,TERMPAGE,TESTCOVER,TIME,TRACE,TRUNC,TRUNCCALLNAME,TRUNCCOPY,TRUNCINC,UNICODE,USE,VERBOSE,VSC2,WARNINGS,WARNING,WB2,WB3,WB,WRITELOCK,WRITE-LOCK,WRITETHROUGHWRITETHRU,XDB,XMLGEN,XMLPARSE,XOPEN,XREF,ZEROLENGTHFALSE,ZEROSEQ,ZWB|} set",
+            "$0${TM_SELECTED_TEXT}",
+            "\\$end"
+        ],
+        "description": "$if directive set",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$else",
+        "label": "$else",
+        "body": [
+            "\\$else",
+            "$0"
+        ],
+        "description": "$else",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$display",
+        "label": "$display message",
+        "body": [
+            "\\$display ${1:message}",
+            "$0"
+        ],
+        "description": "$display message",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$display",
+        "label": "$display VCS = version-number",
+        "body": [
+            "\\$display VCS = ${1:version-number}",
+            "$0"
+        ],
+        "description": "$display VCS = version-number",
+        "scope": "cobol"
+    },
+    {
+        "prefix": ">>define",
+        "label": ">>define directive",
+        "body": [
+            ">>define ${1:variable-name} as ${2|10,41 + 1,parameter|}",
+            "$0"
+        ],
+        "description": ">>define directive",
+        "scope": "cobol"
+    },
+    {
+        "prefix": ">>define",
+        "label": ">>define directive + override",
+        "body": [
+            ">>define ${1:variable-name} as ${2|10,41 + 1,parameter|} ${3:override}",
+            "$0"
+        ],
+        "description": ">>define directive + override",
+        "scope": "cobol"
+    },
+    {
+        "prefix": ">>if ",
+        "label": ">>if constant [condition]",
+        "body": [
+            ">>if ${1:variable-name} ${2|is defined,= 10|} ",
+            "$0${TM_SELECTED_TEXT}",
+            ">>end-if"
+        ],
+        "description": ">>if constant [condition]",
+        "scope": "cobol"
+    },
+    {
+        "prefix": ">>evaluate",
+        "label": ">>evaluate directive + override",
+        "body": [
+            ">>evaluate ${1|true,false,10,41 + 1,literal|}",
+            ">>when ${2:expression}",
+            "$0${TM_SELECTED_TEXT}",
+            ">>end-evaluate"
+        ],
+        "description": ">>evaluate.. >>when... >>end-evaluate",
+        "scope": "cobol"
+    }
+];
+
 class SnippetHelper {
     protected foldKeywordLine(texts: string[], languageid: string, settings: ICOBOLSettings): string {
         const sb = [];
@@ -1110,11 +1239,13 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     private allCallTargets = new Map<string, CompletionItem[]>();
     private functionTargets = new Map<string, CompletionItem[]>();
-    private wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+    private dollarTargets = new Map<string, CompletionItem[]>();
+    private wordRegEx = new RegExp("[$#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
     public reInitCallMap(settings: ICOBOLSettings): SnippetCompletionItemProvider {
         this.allCallTargets.clear();
         this.functionTargets.clear();
+        this.dollarTargets.clear();
 
         const callMap = KnownAPIs.getCallTargetMap();
         for (const [api,] of callMap) {
@@ -1137,6 +1268,9 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
             this.addSnippet(settings, CompletionItemKind.Snippet, simpleSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.functionTargets);
         }
 
+        for (const dollarSnippet of dollarSnippets) {
+            this.addSnippet(settings, CompletionItemKind.Snippet, dollarSnippet, ExtensionDefaults.defaultCOBOLLanguage, this.dollarTargets);
+        }
         return this;
     }
 
@@ -1246,14 +1380,16 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         if (qcp === undefined) {
             return [];
         }
+        const currentlineText = document.lineAt(position.line);
+        const previousCharacter = currentlineText.text.substring(position.character - 1);
+        // const currentLine = currentlineText.text;
+
+        if (previousCharacter === "$") {
+            return this.getAllSnippets(document, position, "$", this.dollarTargets);
+        }
+
         const wordRange = document.getWordRangeAtPosition(new Position(position.line, position.character - 2), this.wordRegEx); // 1 space -1
         if (!wordRange) return [];
-
-        const previousCharacterPosition = new Position(position.line, position.character - 1);
-        const previousCharacterRange = document.getWordRangeAtPosition(previousCharacterPosition);
-        const previousCharacter = previousCharacterRange === undefined ? " " : document.getText(new Range(previousCharacterPosition, position));
-        const currentlineText = document.lineAt(position.line);
-        // const currentLine = currentlineText.text;
         const previousWord = document.getText(wordRange);
 
         if (previousWord.length >= 4 && previousCharacter === " ") {
@@ -1270,13 +1406,18 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         const position_plus1_char = document.getText(new Range(position, position_plus1));
         const snippets: CompletionItem[] = [];
         if (previousWord !== undefined) {
+            if (previousWord.startsWith("$")) {
+                this.getExactDollorOrPartial(position, position_plus1, previousWord, currentlineText, position_plus1_char, snippets);
+            }
+
             const prevWordChar = position.character - previousWord.length - 3; // 2 spaces -1
             if (prevWordChar >= 0) {
                 const wordRangeForCall = document.getWordRangeAtPosition(new Position(position.line, prevWordChar));
                 const pre2Word = document.getText(wordRangeForCall);
 
                 if (pre2Word !== undefined) {
-                    switch (pre2Word.toLowerCase()) {
+                    const pre2wordLower = pre2Word.toLowerCase();
+                    switch (pre2wordLower) {
                         case "call":
                             this.getExactCallSnipetOrPartialSnippet(position, position_plus1, previousWord, currentlineText, position_plus1_char, snippets);
                             break;
@@ -1352,4 +1493,33 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
             }
         }
     }
+
+
+    private getExactDollorOrPartial(position: Position, position_plus1: Position, preWord: string, line: TextLine, position_plus1_char: string, snippets: CompletionItem[]) {
+        const charPosForDollar = line.text.toLocaleLowerCase().lastIndexOf("$");
+        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
+        const preTrimmedWorkLower = preTrimmedWork.toLowerCase();
+        const dis = this.dollarTargets.get(preTrimmedWorkLower);
+        if (dis !== undefined && dis.length > 0) {
+            for (const ci of dis) {
+                if (ci.insertText !== undefined) {
+                    ci.range = new Range(new Position(position.line, charPosForDollar), position);
+                }
+                snippets.push(ci);
+            }
+        } else {
+            // get partial snippets
+            for (const [dollarSnippet, dis] of this.dollarTargets) {
+                for (const ci of dis) {
+                    if (ci.insertText !== undefined) {
+                        if (dollarSnippet.startsWith(preTrimmedWorkLower)) {
+                            ci.range = new Range(new Position(position.line, charPosForDollar), position);
+                            snippets.push(ci);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
