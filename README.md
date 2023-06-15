@@ -1,6 +1,6 @@
 # COBOL Source editing for Visual Studio Code
 
-[![Version](https://vsmarketplacebadges.dev/version/bitlang.cobol.png)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Installs](https://vsmarketplacebadges.dev/installs-short/bitlang.cobol.png)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Downloads](https://vsmarketplacebadges.dev/downloads-short/bitlang.cobol.png)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadges.dev/rating-star/bitlang.cobol.png)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
 This unofficial extension provides syntax highlighting for `Micro Focus` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
