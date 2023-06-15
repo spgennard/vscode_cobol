@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 6ef85ba (HEAD -> main, tag: 9.6.13, origin/main) move $ snippets into snippet provider to try avoid some odd behavour
+* ad8aedb (HEAD -> main, tag: 9.6.15, origin/main) don't activate default variable provider if $ is in use tweak snippets
+* 2be095e Merge pull request #328 from spgennard/spgennard-patch-1
+* fee21a8 (origin/spgennard-patch-1) Update README.md
+* 0e6e464 (tag: 9.6.13) Update
+* 6ef85ba move $ snippets into snippet provider to try avoid some odd behavour
 * 88380f4 tweaks for extra dialect (for remarks)
 * 9f3fee1 remove duplicate which crept in with a regex/swap
 * f7888c7 (tag: 9.6.10) Update
