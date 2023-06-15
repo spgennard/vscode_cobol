@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* ad8aedb (HEAD -> main, tag: 9.6.15, origin/main) don't activate default variable provider if $ is in use tweak snippets
+* dd776f0 (HEAD -> main, tag: 9.6.15, origin/main) Update
+* ad8aedb don't activate default variable provider if $ is in use tweak snippets
 * 2be095e Merge pull request #328 from spgennard/spgennard-patch-1
 * fee21a8 (origin/spgennard-patch-1) Update README.md
 * 0e6e464 (tag: 9.6.13) Update
