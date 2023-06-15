@@ -352,13 +352,25 @@
 		"description": "set/get property",
 		"scope": "cobol"
 	},
-	"try": {
+	"try catch end-try": {
 		"prefix": "try",
 		"body": [
 			"try",
-			"$2",
-			"catch ${1:Exception}",
 			"   $0",
+			"catch ${1:Exception}",
+			"   $2",
+			"end-try"
+		],
+		"description": "try catch",
+		"scope": "cobol"
+	},
+	"try catch end-try (wrap)": {
+		"prefix": "try",
+		"body": [
+			"try",
+			"  ${TM_SELECTED_TEXT}",
+			"catch ${1:Exception}",
+			"  ${0}",
 			"end-try"
 		],
 		"description": "try catch",
@@ -389,7 +401,7 @@
 			"           perform ${1:new-section}.",
 			"",
 			"       ${1} section.",
-			"$TM_SELECTED_TEXT",
+			"${TM_SELECTED_TEXT}",
 			"           exit section."
 		],
 		"description": "Create 'perform section' from selection",
@@ -417,7 +429,7 @@
 		"prefix": ">>if ",
 		"body": [
 			">>if ${1:variable-name} ${2|is defined,= 10|} ",
-			"$0${TM_SELECTED_TEXT}",
+			"$0",
 			">>end-if"
 		],
 		"description": ">>if constant [condition]",
@@ -428,7 +440,7 @@
 		"body": [
 			">>evaluate ${1|true,false,10,41 + 1,literal|}",
 			">>when ${2:expression}",
-			"$0${TM_SELECTED_TEXT}",
+			"$0",
 			">>end-evaluate"
 		],
 		"description": ">>evaluate.. >>when... >>end-evaluate",

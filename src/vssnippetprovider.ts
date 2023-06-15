@@ -1071,6 +1071,24 @@ const dollarSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "$if",
+        "label": "$if",
+        "body": [
+            "$if"
+        ],
+        "description": "$if",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$end",
+        "label": "$end",
+        "body": [
+            "$end"
+        ],
+        "description": "$end",
+        "scope": "cobol"
+    },
+    {
         "prefix": "$else",
         "label": "$else",
         "body": [
@@ -1098,49 +1116,6 @@ const dollarSnippets: ISimpleSnippet[] = [
             "$0"
         ],
         "description": "$display VCS = version-number",
-        "scope": "cobol"
-    },
-    {
-        "prefix": ">>define",
-        "label": ">>define directive",
-        "body": [
-            ">>define ${1:variable-name} as ${2|10,41 + 1,parameter|}",
-            "$0"
-        ],
-        "description": ">>define directive",
-        "scope": "cobol"
-    },
-    {
-        "prefix": ">>define",
-        "label": ">>define directive + override",
-        "body": [
-            ">>define ${1:variable-name} as ${2|10,41 + 1,parameter|} ${3:override}",
-            "$0"
-        ],
-        "description": ">>define directive + override",
-        "scope": "cobol"
-    },
-    {
-        "prefix": ">>if ",
-        "label": ">>if constant [condition]",
-        "body": [
-            ">>if ${1:variable-name} ${2|is defined,= 10|} ",
-            "$0${TM_SELECTED_TEXT}",
-            ">>end-if"
-        ],
-        "description": ">>if constant [condition]",
-        "scope": "cobol"
-    },
-    {
-        "prefix": ">>evaluate",
-        "label": ">>evaluate directive + override",
-        "body": [
-            ">>evaluate ${1|true,false,10,41 + 1,literal|}",
-            ">>when ${2:expression}",
-            "$0${TM_SELECTED_TEXT}",
-            ">>end-evaluate"
-        ],
-        "description": ">>evaluate.. >>when... >>end-evaluate",
         "scope": "cobol"
     }
 ];

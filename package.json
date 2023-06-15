@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.6.13",
+  "version": "9.6.15",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -2320,13 +2320,13 @@
         "language": "COBOL",
         "path": "./snippets/cobol.json"
       },
+        {
+        "language": "COBOL",
+        "path": "./snippets/cobol-compound.json"
+      },
       {
         "language": "markdown",
         "path": "./snippets/markdown.json"
-      },
-      {
-        "language": "COBOL",
-        "path": "./snippets/cobol-compound.json"
       },
       {
         "language": "ACUCOBOL",

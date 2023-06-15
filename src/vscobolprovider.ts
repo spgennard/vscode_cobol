@@ -268,7 +268,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
         const range = document.getWordRangeAtPosition(position);
         if (range) {
-            wordToComplete = document.getText(new Range(range.start, position)); wordBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trimEnd();
+            wordToComplete = document.getText(new Range(range.start, position)); 
+            wordBefore = document.getText(new Range(new Position(range.start.line, 0), new Position(position.line, position.character - wordToComplete.length))).trimEnd();
             const lastSpace = wordBefore.lastIndexOf(" ");
             if (lastSpace !== -1) {
                 const lineOrg = wordBefore;
@@ -442,7 +443,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             VSLogger.logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }
 
-        if (items.length === 0) {
+        if (items.length === 0 && wordBefore !== "$") {
             const settings = VSCOBOLConfiguration.get();
             if (settings.suggest_variables_when_context_is_unknown) {
                 items = this.getAllConstantsOrVariables(document, this.iconfig, false);
