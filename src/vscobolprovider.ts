@@ -443,7 +443,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             VSLogger.logMessage(" - CobolSourceCompletionItemProvider took " + timeTaken + " ms");
         }
 
-        if (items.length === 0 && wordBefore !== "$") {
+        if (items.length === 0 && wordBefore !== "$" && wordBefore !== ">>") {
             const settings = VSCOBOLConfiguration.get();
             if (settings.suggest_variables_when_context_is_unknown) {
                 items = this.getAllConstantsOrVariables(document, this.iconfig, false);
