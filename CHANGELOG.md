@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* dd776f0 (HEAD -> main, tag: 9.6.15, origin/main) Update
+* a4f8511 move iso snippets to programable snippets
+* 454f879 (tag: 9.6.15) Update
+* dd776f0 Update
 * ad8aedb don't activate default variable provider if $ is in use tweak snippets
 * 2be095e Merge pull request #328 from spgennard/spgennard-patch-1
 * fee21a8 (origin/spgennard-patch-1) Update README.md
