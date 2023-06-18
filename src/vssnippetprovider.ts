@@ -389,6 +389,33 @@ const simpleSnippets: ISimpleSnippet[] = [
         "alwaysUpperCase": true,
         "description": "CICS DFHRESP Reponse code",
         "scope": "cobol"
+    },
+    {
+        "prefix" : "by",
+        "label" : "by reference",
+        "body" : [
+         "by reference $0"
+        ],
+        "description" : "by reference",
+        "scope" : "cobol"
+    },
+    {
+        "prefix" : "by",
+        "label" : "by value",
+        "body" : [
+         "by value $0"
+        ],
+        "description" : "by value",
+        "scope" : "cobol"
+    },
+    {
+        "prefix" : "by",
+        "label" : "by content",
+        "body" : [
+         "by content $0"
+        ],
+        "description" : "by content",
+        "scope" : "cobol"
     }
 ];
 
