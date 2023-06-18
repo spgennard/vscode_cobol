@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* 5d1113d (HEAD -> main, tag: 9.6.18, origin/main) add snippets
+* 5380187 (tag: 9.6.16) Update
 * a4f8511 move iso snippets to programable snippets
 * 454f879 (tag: 9.6.15) Update
 * dd776f0 Update
