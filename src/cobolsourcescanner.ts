@@ -1655,7 +1655,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.sourceReferences !== undefined) {
                             if (COBOLSourceScanner.isValidLiteral(trimTokenLower) && !this.isNumber(trimTokenLower) && isValidKeyword === false) {
                                 // no forward validation can be done, as this is a one pass scanner
-                                this.addReference(this.sourceReferences.unknownReferences, trimTokenLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                                if (token.prevTokenLower !== "pic" && token.prevTokenLower !== "picture") {
+                                    this.addReference(this.sourceReferences.unknownReferences, trimTokenLower, lineNumber, token.currentCol, COBOLTokenStyle.Unknown);
+                                }
                             }
                         }
 

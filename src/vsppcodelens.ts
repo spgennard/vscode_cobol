@@ -23,13 +23,13 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
     private scanTargetUse(document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
         const refs = current.sourceReferences.targetReferences.get(target);
-        if (refs !== undefined && refs.length >= 1) {
+        if (refs !== undefined && refs.length >= this.settings.enable_codelens_section_paragraph_references_threshold) {
             const r = new vscode.Range(new vscode.Position(targetToken.startLine, targetToken.startColumn),
                 new vscode.Position(targetToken.endLine, targetToken.endColumn));
 
             const cl = new vscode.CodeLens(r);
             cl.command = {
-                title: `${target} referenced : ${refs.length}`,
+                title: `${refs.length} references`,
                 tooltip: `${target} referenced ${refs.length} `,
                 command: "editor.action.findReferences",
                 arguments: [

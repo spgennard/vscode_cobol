@@ -138,6 +138,8 @@ export class VSCOBOLConfiguration {
 
         settings.outline_max_depth = getNumber("outline_max_depth", settings.outline_max_depth);
         
+        settings.enable_codelens_section_paragraph_references_threshold = getNumber("enable_codelens_section_paragraph_references_threshold",settings.enable_codelens_section_paragraph_references_threshold);
+
         return settings;
     }
 

@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.6.18",
+  "version": "9.6.19",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1107,12 +1107,17 @@
         "coboleditor.enable_codelens_variable_references": {
           "type": "boolean",
           "description": "When enabled, turn on codelens for variable references",
-          "default": false
+          "default": true
+        },
+        "coboleditor.enable_codelens_section_paragraph_references_threshold":{
+          "type": "number",
+          "description": "When enable_codelens_variable_references is enabled provides minimum threshold",
+          "default": 2
         },
         "coboleditor.enable_codelens_section_paragraph_references": {
           "type": "boolean",
           "description": "When enabled, turn on codelens for sections/paragraphs references",
-          "default": false
+          "default": true
         },
         "coboleditor.enable_codelens_copy_replacing": {
           "type": "boolean",
