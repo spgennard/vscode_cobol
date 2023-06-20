@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* 3077211 (HEAD -> main, tag: 9.6.19, origin/main) add threshold for display'ing references and enable
+* 91f68c5 (tag: 9.6.19) Update
+* 3077211 add threshold for display'ing references and enable
 * e722634 (tag: 9.6.18) Update
 * 5d1113d add snippets
 * 5380187 (tag: 9.6.16) Update
