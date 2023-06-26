@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 454ab27 (HEAD -> main, tag: 9.6.25, origin/main, origin/HEAD) make switcher configurable and off, until completed
+* 936c3f2 add switcher support
+* 1ab1ec3 (tag: 9.6.20) Update
 * 91f68c5 (tag: 9.6.19) Update
 * 3077211 add threshold for display'ing references and enable
 * e722634 (tag: 9.6.18) Update
