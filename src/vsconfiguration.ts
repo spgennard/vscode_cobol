@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
 
-import { workspace } from "vscode";
+import { extensions, workspace } from "vscode";
 import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
@@ -77,7 +77,7 @@ export class VSCOBOLConfiguration {
 
         for (const languageId of user_cobol_language_ids) {
             // same regex as package.json
-            const validReg = new RegExp("(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^BITLANG-COBOL$|^COBOL_MF_LISTFILE$)", "gm");
+            const validReg = new RegExp("(^^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL|^BITLANG-COBOL$|^COBOL_MF_LISTFILE$)", "gm");
             if (!validReg.test(languageId)) {
                 valid = false;
             }
@@ -85,6 +85,12 @@ export class VSCOBOLConfiguration {
 
         if (valid) {
             settings.valid_cobol_language_ids = user_cobol_language_ids;
+            settings.valid_cobol_language_ids_for_intellisense = [...user_cobol_language_ids];
+
+            const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            if (mfExt !== undefined) {
+                settings.valid_cobol_language_ids.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+            }
         }
 
         settings.files_exclude = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("files_exclude", settings.files_exclude);

@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This unofficial extension provides syntax highlighting for `Micro Focus` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
+This unofficial extension provides syntax highlighting for `Micro Focus` (OpenText) based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
 Some of the features this extension provides are:
 
@@ -25,6 +25,7 @@ Some of the features this extension provides are:
 - Source code linter for in house/internal COBOL standards
 - Compiler directive file colourisation
 - Unit test report colourisation
+- Drag & Drop filename into source code inserts copybook verb
 - COBOL Source Utilities  
   - Remove column numbers
   - Remove program identification area
@@ -38,7 +39,7 @@ Some of the features this extension provides are:
 - Documentation for using development containers with Visual COBOL
 - and more..
 
-While also being able to use it with the official `Micro Focus COBOL extension` (for debugging for example).
+While also being able to use it with the official `Micro Focus COBOL extension` (OpenText) (for debugging for example).
 
 ## Examples of features provided
 

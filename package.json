@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.6.20",
+  "version": "9.6.25",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -21,7 +21,8 @@
     "pl/i",
     "pli",
     "server express",
-    "visual cobol"
+    "visual cobol",
+    "opentext"
   ],
   "repository": {
     "type": "git",
@@ -754,8 +755,8 @@
           "items": {
             "type": "string",
             "title": "Valid Visual Studio COBOL Language Id",
-            "pattern": "(^cobol$|^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL|^COBOL_MF_LISTFILE|^BITLANG-COBOL$)",
-            "patternErrorMessage": "Invalid language id, can be cobol, COBOL, COBOLIT, ACUCOBOL, RMCOBOL or COBOL_MF_LISTFILE"
+            "pattern": "(^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL|^COBOL_MF_LISTFILE|^BITLANG-COBOL$)",
+            "patternErrorMessage": "Invalid language id, can be COBOL, COBOLIT, ACUCOBOL, RMCOBOL or COBOL_MF_LISTFILE"
           },
           "default": [
             "COBOL",
@@ -1780,6 +1781,11 @@
         "title": "Select COBOL language"
       },
       {
+        "command": "cobolplugin.change_lang_to_mfcobol",
+        "category": "COBOL",
+        "title": "Select 'Micro Focus COBOL' language"
+      },
+      {
         "command": "cobolplugin.clearGlobalCache",
         "category": "COBOL",
         "title": "Clear metadata",
@@ -2222,11 +2228,16 @@
       {
         "key": "alt+shift+a",
         "command": "cobolplugin.change_lang_to_acu",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^cobol$|^COBOL$|^BITLANG-COBOL$|^RMCOBOL|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+shift+c",
         "command": "cobolplugin.change_lang_to_cobol",
+        "when": "editorLangId =~ /^cobol$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !inSnippetMode"
+      },
+      {
+        "key": "alt+shift+c",
+        "command": "cobolplugin.change_lang_to_mfcobol",
         "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !inSnippetMode"
       },
       {

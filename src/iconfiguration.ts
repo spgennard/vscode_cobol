@@ -96,6 +96,8 @@ export interface ICOBOLSettings {
 
     valid_cobol_language_ids: string[];
 
+    valid_cobol_language_ids_for_intellisense: string[];
+
     files_exclude: string[];
 
     scan_line_limit: number;
@@ -202,6 +204,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     valid_cobol_language_ids: string[];
 
+    valid_cobol_language_ids_for_intellisense: string[];
+
     files_exclude: string[];
 
     scan_line_limit: number;
@@ -295,6 +299,15 @@ export class COBOLSettings implements ICOBOLSettings {
         this.editor_margin_files = [];
         this.enable_source_scanner = true;
         this.valid_cobol_language_ids = [
+            "BITLANG-COBOL",
+            "COBOL",
+            "COBOLIT",
+            "ACUCOBOL",
+            "RMCOBOL",
+            "COBOL_MF_LISTFILE"
+        ];
+
+        this.valid_cobol_language_ids_for_intellisense = [
             "BITLANG-COBOL",
             "COBOL",
             "COBOLIT",

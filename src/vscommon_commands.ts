@@ -74,6 +74,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         }
 
         vscode.languages.setTextDocumentLanguage(act.document, "ACUCOBOL");
+        COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "ACUCOBOL");
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_cobol", function () {
@@ -83,6 +84,17 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         }
 
         vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.defaultCOBOLLanguage);
+        COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.defaultCOBOLLanguage);
+    }));
+
+    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_mfcobol", function () {
+        const act = vscode.window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.microFocusCOBOLLanguageId);
+        COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.microFocusCOBOLLanguageId);
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
@@ -316,7 +328,14 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            vscode.window.showQuickPick(["COBOL", "ACUCOBOL", "RMCOBOL","COBOLIT"], { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
+            let dialects=[ "COBOL", "ACUCOBOL", "RMCOBOL","COBOLIT" ];
+
+            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            if (mfExt !== undefined) {
+                dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+            }
+            
+            vscode.window.showQuickPick(dialects, { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
                 if (vscode.window.activeTextEditor && dialect) {
                     COBOLUtils.enforceFileExtensions(settings, vscode.window.activeTextEditor, VSExternalFeatures, true, dialect);
                 }
@@ -365,7 +384,9 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     }));
 
     for (const langid of settings.valid_cobol_language_ids) {
-        context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", settings, langid+"_1", langid));
+        if (langid !== ExtensionDefaults.microFocusCOBOLLanguageId) {
+            context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", settings, langid+"_1", langid));
+        }
 
         switch(langid) {
             case "ACUCOBOL" :
@@ -373,7 +394,15 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
                 break;
             case "COBOL" :
                 context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid+"_3", langid));
+
+                const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+                if (mfExt !== undefined) {
+                    context.subscriptions.push(getLangStatusItem("Switch to 'Micro Focus COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", settings, langid+"_5", langid));
+                }
                 break;
+            case ExtensionDefaults.microFocusCOBOLLanguageId :
+                context.subscriptions.push(getLangStatusItem("Switch to 'BitLang COBOL'", "cobolplugin.change_lang_to_cobol", "Change", settings, langid+"_4", langid));
+                break;                
         }
 
         context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider(settings)));

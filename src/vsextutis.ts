@@ -48,10 +48,10 @@ export class VSExtensionUtils {
         return false;
     }
 
-    public static getAllCobolSelectors(config: ICOBOLSettings): vscode.DocumentSelector {
+    public static getAllCobolSelectors(config: ICOBOLSettings, for_intellisense: boolean): vscode.DocumentSelector {
         const ret = [];
 
-        for (const langid of config.valid_cobol_language_ids) {
+        for (const langid of for_intellisense ? config.valid_cobol_language_ids_for_intellisense : config.valid_cobol_language_ids) {
             for (const kscheme of VSExtensionUtils.knownSchemes) {
                 ret.push(
                     { scheme: kscheme, language: langid },
@@ -105,7 +105,7 @@ export class VSExtensionUtils {
         }
 
         // flip to ACUCOBOL if the source file looks like it a Acubench generated file
-        if (doc.languageId === "COBOL") {
+        if (doc.languageId === "COBOL" || doc.languageId === "cobol") {
             const lineCount = doc.lineCount;
             if (lineCount >= 3) {
                 const firstLine = doc.lineAt((0)).text;

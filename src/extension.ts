@@ -97,8 +97,8 @@ function openChangeLog(currentContext: ExtensionContext): void {
 }
 
 const blessed_extensions: string[] = [
-    "HCLTechnologies.hclappscancodesweep",    // code scanner
-    "Micro-Focus-AMC.mfcobol"                 // Micro Focus COBOL Extension
+    "HCLTechnologies.hclappscancodesweep",      // code scanner
+    ExtensionDefaults.microFocusCOBOLExtension  // Micro Focus COBOL Extension
 ];
 
 const known_problem_extensions: string[][] = [
@@ -945,34 +945,34 @@ export async function activate(context: ExtensionContext): Promise<void> {
     context.subscriptions.push(COBOLDocumentationCommentHandler.register());
     context.subscriptions.push(COBOLCaseFormatter.register(settings));
 
-    context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+    context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const ccbp = new opencopybook.COBOLCopyBookProvider(VSExternalFeatures);
             return ccbp.provideDefinition(doc, pos, ct);
         }
     }));
 
-    context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+    context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const csd = new COBOLSourceDefinition();
             return csd.provideDefinition(doc, pos, ct);
         }
     }));
 
-    context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+    context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
             const csdp = new COBOLCallTargetProvider(VSExternalFeatures);
             return csdp.provideDefinition(doc, pos, ct);
         }
     }));
 
-    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings), new CobolReferenceProvider()));
-    context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(settings), cobolfixer));
+    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolReferenceProvider()));
+    context.subscriptions.push(languages.registerCodeActionsProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), cobolfixer));
 
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllJCLSelectors(settings), new KeywordAutocompleteCompletionItemProvider(false, settings)));
-    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), new KeywordAutocompleteCompletionItemProvider(true, settings)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new KeywordAutocompleteCompletionItemProvider(true, settings)));
 
-    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), SnippetCompletionItemProvider.Default.reInitCallMap(settings)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), SnippetCompletionItemProvider.Default.reInitCallMap(settings)));
 
     if (settings.outline) {
         const jclDocumentSymbolProvider = new JCLDocumentSymbolProvider();
@@ -980,17 +980,17 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
         /* TODO: add .DIR keywords too */
         const symbolInformationProvider = new CobolSymbolInformationProvider();
-        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings), symbolInformationProvider));
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), symbolInformationProvider));
     }
 
-    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings), new CobolSourceCompletionItemProvider(settings, VSExternalFeatures)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolSourceCompletionItemProvider(settings, VSExternalFeatures)));
 
     // const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
     // const cobolCommentProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolCommentProvider);
     // context.subscriptions.push(cobolCommentProviderDisposible);
 
     /* hover provider */
-    context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings), {
+    context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings, false), {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
@@ -1027,7 +1027,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
             return undefined;
         }
     }));
-    context.subscriptions.push(languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings), new VSCobolRenameProvider()));
+    context.subscriptions.push(languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new VSCobolRenameProvider()));
 
     const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
         await vsMarginHandler.updateDecorations(editor);
@@ -1093,10 +1093,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     const provider = VSSemanticProvider.provider();
-    vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings), provider, VSSemanticProvider.getLegend());
+    vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), provider, VSSemanticProvider.getLegend());
 
     const codelensProvider = new VSPPCodeLens();
-    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings), codelensProvider);
+    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), codelensProvider);
 
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
 

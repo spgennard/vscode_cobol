@@ -32,8 +32,6 @@ export enum AlignStyle {
 }
 
 export class COBOLUtils {
-    static mfExtension = vscode.extensions.getExtension("micro-focus-amc.mfcobol");
-
     private static getProgramGlobPattern(config: ICOBOLSettings): string {
         let globString = config.maintain_metadata_recursive_search ? "**/*.{" : "*.{";
 
@@ -884,11 +882,15 @@ export class COBOLUtils {
                 externalFeatures.logMessage(` ${assoc} = ${assocTo}`)
             }
 
-            // grab back
-            if (assocTo === "cobol") {
-                filesAssociationsConfig[assoc] = requiredLanguage;
-                updateRequired = true;
+            if (requiredLanguage !== ExtensionDefaults.microFocusCOBOLLanguageId) 
+            {
+                // grab back 
+                if (assocTo === ExtensionDefaults.microFocusCOBOLLanguageId) {
+                    filesAssociationsConfig[assoc] = requiredLanguage;
+                    updateRequired = true;
+                }
             }
+
             fileAssocMap.set(assoc, assocTo);
             fileAssocCount++;
         }
@@ -1234,7 +1236,9 @@ export class COBOLUtils {
 
         // TODO: need to add .NET dll support!
         if (fsPath.endsWith("int") || fsPath.endsWith("gnt") || fsPath.endsWith("so") || fsPath.endsWith("dll")) {
-            if (COBOLUtils.mfExtension === undefined) {
+            const mfExtension = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+
+            if (mfExtension === undefined) {
                 if (COBOLFileUtils.isWin32) {
                     prefRunner = "run";
                     prefRunnerDebug = debug ? "(+A) " : "";

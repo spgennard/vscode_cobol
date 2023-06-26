@@ -61,7 +61,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static register(settings: ICOBOLSettings): any {
-        const langPlusSchemas = VSExtensionUtils.getAllCobolSelectors(settings);
+        const langPlusSchemas = VSExtensionUtils.getAllCobolSelectors(settings, false);
 
         return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLCaseFormatter(settings), "\n");
 
