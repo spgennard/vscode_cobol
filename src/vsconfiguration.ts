@@ -83,13 +83,17 @@ export class VSCOBOLConfiguration {
             }
         }
 
+        settings.enable_language_switcher = getBoolean("enable_language_switcher", settings.enable_language_switcher);
+
         if (valid) {
             settings.valid_cobol_language_ids = user_cobol_language_ids;
             settings.valid_cobol_language_ids_for_intellisense = [...user_cobol_language_ids];
 
-            const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
-            if (mfExt !== undefined) {
-                settings.valid_cobol_language_ids.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+            if (settings.enable_language_switcher) {
+                const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+                if (mfExt !== undefined) {
+                    settings.valid_cobol_language_ids.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+                }
             }
         }
 
@@ -143,8 +147,8 @@ export class VSCOBOLConfiguration {
         }
 
         settings.outline_max_depth = getNumber("outline_max_depth", settings.outline_max_depth);
-        
-        settings.enable_codelens_section_paragraph_references_threshold = getNumber("enable_codelens_section_paragraph_references_threshold",settings.enable_codelens_section_paragraph_references_threshold);
+
+        settings.enable_codelens_section_paragraph_references_threshold = getNumber("enable_codelens_section_paragraph_references_threshold", settings.enable_codelens_section_paragraph_references_threshold);
 
         return settings;
     }

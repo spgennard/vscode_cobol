@@ -137,6 +137,8 @@ export interface ICOBOLSettings {
     outline_max_depth: number;
 
     enable_codelens_section_paragraph_references_threshold: number;
+
+    enable_language_switcher:boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -246,6 +248,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_codelens_section_paragraph_references_threshold:number;
 
+    enable_language_switcher:boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -337,5 +341,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_codelens_copy_replacing = true;
         this.outline_max_depth = 5;
         this.enable_codelens_section_paragraph_references_threshold = 2;
+        this.enable_language_switcher = false;
     }
 }

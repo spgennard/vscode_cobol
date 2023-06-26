@@ -330,9 +330,11 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         if (vscode.window.activeTextEditor) {
             let dialects=[ "COBOL", "ACUCOBOL", "RMCOBOL","COBOLIT" ];
 
-            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
-            if (mfExt !== undefined) {
-                dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+            if (settings.enable_language_switcher) {
+                const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+                if (mfExt !== undefined) {
+                    dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+                }
             }
             
             vscode.window.showQuickPick(dialects, { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
