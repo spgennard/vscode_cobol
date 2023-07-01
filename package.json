@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.6.25",
+  "version": "9.7.1",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -466,7 +466,7 @@
         },
         "coboleditor.mfunit.diagnostic.color": {
           "type": "boolean",
-          "description": "Enable ANSI color when using the Micro Focus Unit Testing Framework (mfunit) in terminal",
+          "description": "Enable ANSI color when using the Micro Focus™Unit Testing Framework (mfunit) in terminal",
           "default": true
         },
         "coboleditor.disable_unc_copybooks_directories": {
@@ -812,7 +812,7 @@
         },
         "coboleditor.hover_show_known_api": {
           "title": "Show description of known api during 'hover'",
-          "markdownDescription": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus Library apis' and some ILE apis.",
+          "markdownDescription": "Show a short description of known apis when hovered on.  Known apis include 'Micro Focus™Library apis' and some ILE apis.",
           "enum": [
             "off",
             "short",
@@ -1788,7 +1788,7 @@
       {
         "command": "cobolplugin.change_lang_to_mfcobol",
         "category": "COBOL",
-        "title": "Select 'Micro Focus COBOL' language"
+        "title": "Select 'Micro Focus™ COBOL' language"
       },
       {
         "command": "cobolplugin.clearGlobalCache",

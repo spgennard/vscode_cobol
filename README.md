@@ -2,11 +2,11 @@
 
 [![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This unofficial extension provides syntax highlighting for `Micro Focus` (OpenText) based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
+This unofficial extension provides syntax highlighting for `Micro Focus™` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus™directive files and [Micro Focus™Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
 Some of the features this extension provides are:
 
-- Colourisation and problem matchers for the following Micro Focus COBOL dialects:
+- Colourisation and problem matchers for the following Micro Focus™ COBOL dialects:
   - [Net Express](https://www.microfocus.com/en-us/products/net-express-server-express/overview) to the latest [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
@@ -39,7 +39,7 @@ Some of the features this extension provides are:
 - Documentation for using development containers with Visual COBOL
 - and more..
 
-While also being able to use it with the official `Micro Focus COBOL extension` (OpenText) (for debugging for example).
+While also being able to use it with the official `Micro Focus™ COBOL extension` (for debugging for example).
 
 ## Examples of features provided
 
@@ -115,7 +115,7 @@ Only active when `coboleditor.xedit_keymap` is set to true.
 
 ## New File
 
-New file creation support is provided for COBOL and ACUCOBOL programs with addditional support for Micro Focus Unit Test programs.
+New file creation support is provided for COBOL and ACUCOBOL programs with addditional support for Micro Focus™Unit Test programs.
 
 ## Changing the default file associations
 
@@ -156,7 +156,7 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 }
 ```
 
-### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(3)
+### Task: Single file compile using Micro Focus™ COBOL - ERRFORMAT(3)
 
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
@@ -194,7 +194,7 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat3-netx-sx" p
 }
 ```
 
-### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(2)
+### Task: Single file compile using Micro Focus™ COBOL - ERRFORMAT(2)
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
@@ -292,11 +292,11 @@ The example below shows you how you can create a single task to compile one prog
 | COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                            |
 | COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc |
 | ACUCOBOL-GT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl  |
-| Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx              |
+| Micro Focus™ COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx              |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx     |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx              |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" for information              | +mfcobol-errformat3-info                 |
-| Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                         |
+| Micro Focus™Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                         |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                      |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn               |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                      |
@@ -306,7 +306,7 @@ NOTE: Problem matchers can be stacked in your task definition.   It is recommend
 
 ## Remote development using containers
 
-If your main development is Micro Focus Visual COBOL/Enterprise Developer you may have access to base images that provide the compiler and its tools.
+If your main development is Micro Focus™Visual COBOL/Enterprise Developer you may have access to base images that provide the compiler and its tools.
 
 If you do, all that is required is another image that contains extra tools and a devcontainer.json to configure its use.
 
@@ -530,7 +530,7 @@ Useful tokens that are often changed are: comment.line.cobol.newpage, keyword.op
 
 ### [COBOL Language Dictionary - Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=bitlang.code-spell-checker-cobol)
 
-Spell checking code is helpful but without specific support for the COBOL language it can be a painful experience, so in order to make it easier. I have produced a spell checker extension that has a the standard COBOL reserved words and keywords from various dialects such a Micro Focus COBOL and IBM Enterprise COBOL.
+Spell checking code is helpful but without specific support for the COBOL language it can be a painful experience, so in order to make it easier. I have produced a spell checker extension that has a the standard COBOL reserved words and keywords from various dialects such a Micro Focus™ COBOL and IBM Enterprise COBOL.
 
 Spell checking can be enabled/disabled in your source code by using:
 
@@ -600,11 +600,11 @@ The extension only enables features that allow basic editing, making it ideal fo
 
 - Online communities
   - [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
-  - [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
+  - [Micro Focus™ COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
   - [Open Mainframe Project - COBOL Forum](https://community.openmainframeproject.org/c/cobol-technical-questions)
   - [Tek-Tips - COBOL General discussion](https://www.tek-tips.com/threadminder.cfm?pid=209)
 - Stack Overflow topics/tags:
-  - [Micro Focus COBOL, PL/I, REXX, JCL and CICS](https://stackoverflow.com/questions/tagged/microfocus)
+  - [Micro Focus™ COBOL, PL/I, REXX, JCL and CICS](https://stackoverflow.com/questions/tagged/microfocus)
   - [ACUCOBOL-GT](https://stackoverflow.com/questions/tagged/acucobol-gt)
   - [COBOL](https://stackoverflow.com/questions/tagged/cobol)
   - [COBOL.NET](https://stackoverflow.com/questions/tagged/cobol.net)
