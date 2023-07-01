@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This unofficial extension provides syntax highlighting for `Micro Focus™` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus™directive files and [Micro Focus™Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
+This unofficial extension provides syntax highlighting for `Micro Focus™` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus™directive files and [Micro Focus™ Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
 Some of the features this extension provides are:
 
@@ -115,7 +115,7 @@ Only active when `coboleditor.xedit_keymap` is set to true.
 
 ## New File
 
-New file creation support is provided for COBOL and ACUCOBOL programs with addditional support for Micro Focus™Unit Test programs.
+New file creation support is provided for COBOL and ACUCOBOL programs with addditional support for Micro Focus™ Unit Test programs.
 
 ## Changing the default file associations
 
@@ -296,7 +296,7 @@ The example below shows you how you can create a single task to compile one prog
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx     |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx              |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" for information              | +mfcobol-errformat3-info                 |
-| Micro Focus™Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                         |
+| Micro Focus™ Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                         |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                      |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" / filename extract with PATH | $mfcobol-errformat3-basefn               |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2                      |
@@ -306,7 +306,7 @@ NOTE: Problem matchers can be stacked in your task definition.   It is recommend
 
 ## Remote development using containers
 
-If your main development is Micro Focus™Visual COBOL/Enterprise Developer you may have access to base images that provide the compiler and its tools.
+If your main development is Micro Focus™ Visual COBOL/Enterprise Developer you may have access to base images that provide the compiler and its tools.
 
 If you do, all that is required is another image that contains extra tools and a devcontainer.json to configure its use.
 
