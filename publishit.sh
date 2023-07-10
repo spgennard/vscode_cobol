@@ -1,11 +1,12 @@
 # exit on error
-set -e
 
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 git tag -f $PACKAGE_VERSION
 git push --tags --force
 
 ./gen_changelog.sh
+
+echo Updating
 
 [ -d ".vscode_test" ] && cp -r .vscode-test ..
 git clean -fdx

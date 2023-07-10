@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* d99fcad
+* 5d16e5e
 * (HEAD
 * ->
 * main,
@@ -8,6 +8,15 @@
 * 9.7.10,
 * origin/main,
 * origin/HEAD)
+* re-work
+* for
+* mac
+* (lack
+* of
+* -d
+* on
+* xargs)
+* d99fcad
 * add
 * header
 * 0624a4e
