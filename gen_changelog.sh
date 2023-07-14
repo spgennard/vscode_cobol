@@ -9,10 +9,10 @@ git push --tags --force
 
 echo "# CHANGELOG" >CHANGELOG.md
 echo >>CHANGELOG.md
-for i in $(git log --oneline --decorate $PACKAGE_VERSION) 
+git log --oneline --decorate $PACKAGE_VERSION | while read i 
 do
-	echo "* $i" | grep -v "$MSG" | grep -v "bump" | grep -v -E "update$" >>CHANGELOG.md
-done
+	echo "* $i"
+done | grep -v "$MSG" | grep -v "bump" | grep -v "update$" >>CHANGELOG.md
 
 
 git commit -m $MSG CHANGELOG.md && true
