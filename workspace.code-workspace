@@ -28,18 +28,15 @@
 		],
 		"coboleditor.metadata_symbols": [
 			"sample,issue189_coboldoc.cbl,5",
-			"fred,rainbow_code.cbl,1"
+			"fred,rainbow_code.cbl,1",
+			"untitled-1,fred.cbl"
 		],
 		"coboleditor.metadata_entrypoints": [],
-		"coboleditor.metadata_types": [
-			"T,issue189,issue189_msdn.cbl,4"
-		],
+		"coboleditor.metadata_types": [],
 		"coboleditor.metadata_files": [
-			"1598470462548,src/test/suite/issue189_coboldoc.cbl",
-			"1598469615592,src/test/suite/issue189_msdn.cbl",
-			"1599686519024,src/test/suite/string.cbl",
-			"1597963271928,src/test/suite/test.cbl"
+			"1689364040678,src/fred.cbl"
 		],
-		"coboleditor.metadata_knowncopybooks": []
+		"coboleditor.metadata_knowncopybooks": [],
+		"coboleditor.enable_tab_inline": true
 	}
 }

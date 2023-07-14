@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.7.10",
+  "version": "9.7.14",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -2213,7 +2213,7 @@
       {
         "key": "tab",
         "command": "editor.action.inlineSuggest.commit",
-        "when": "config.coboleditor.enable_tab_inline && inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !editorTabMovesFocus && !inlineSuggestionHasIndentation"
+        "when": "config.coboleditor.enable_tab_inline && inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !editorTabMovesFocus"
       },
       {
         "key": "shift+tab",
