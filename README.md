@@ -41,6 +41,7 @@ Some of the features this extension provides are:
 
 While also being able to use it with the official `Micro Focus™ COBOL extension` (for debugging for example).
 
+
 ## Examples of features provided
 
 ### Code colorization for COBOL, PL/I and JCL
@@ -596,6 +597,36 @@ When in limited functionality mode the extension disables all functionality that
 
 The extension only enables features that allow basic editing, making it ideal for browsing untrusted source.
 
+
+### Setting defaults for Micro Focus™ COBOL extension
+
+```jsonc
+"microFocusCOBOL.suppressFileAssociationsPrompt": true,
+"microFocusCOBOL.languageServerAutostart": false,
+"microFocusPLI.languageServer.autostart": false
+```
+
+This can be changed by amending your user/workspace settings.
+
+### Settings defaults for GitHub Copilot
+
+```jsonc
+      "github.copilot.inlineSuggest.enable": true,
+      "github.copilot.editor.enableAutoCompletions": true,
+      "github.copilot.enable": {
+        "COBOL": true,
+        "COBOLIT": true,
+        "ACUCOBOL": true,
+        "COBOL_MF_LISTFILE": false,
+        "COBOL_PCOB_LISTFILE": false,
+        "COBOL_ACU_LISTFILE": false,
+        "COBOL_MF_PREP": false,
+        "mfu": false,
+        "utreport": false
+      }
+```
+
+This can be changed by amending your user/workspace settings.
 ## Online resources
 
 - Online communities
@@ -628,7 +659,9 @@ The extension only enables features that allow basic editing, making it ideal fo
 I would like to thank the follow contributors for providing patches, fixes, kind words of wisdom and enhancements.
 
 - Ted John of Berkshire, UK
+
+ Contributions originally provided for this that have now been moved into the GnuCOBOL extension where provided by:
+
 - Kevin Abel of Lincoln, NE, USA
 - Simon Sobisch of Germany
 
- NOTE: Some of the above contributions have now been moved into the GnuCOBOL extension.

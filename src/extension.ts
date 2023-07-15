@@ -118,7 +118,7 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     if (grab_info_for_ext.packageJSON.id !== undefined) {
         dupExtensionMessage += `                 code --uninstall-extension ${grab_info_for_ext.packageJSON.id}\n`;
     }
-    
+
     if (reasons.length !== 0) {
         let rcount = 1;
         const reasonMessage = reasons.length === 1 ? "Reason " : "Reasons";
@@ -332,6 +332,9 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
 
     if (thisExtension !== undefined) {
+        const githubCopilotExtension = extensions.getExtension("GitHub.copilot");
+        const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+
         if (vscode.env.uriScheme !== "vscode") {
             VSLogger.logMessage("----------------------------------------------------------------------");
             VSLogger.logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
@@ -345,6 +348,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
         VSLogger.logMessage("Extension Information:");
         VSLogger.logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
         VSLogger.logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);
+
 
         if (workspace.isTrusted) {
             VSLogger.logMessage(` UNC paths disabled                         : ${settings.disable_unc_copybooks_directories}`);
@@ -380,7 +384,18 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
                 VSLogger.logMessage(` Active workspacefile                       : ${vscode.workspace.workspaceFile}`);
             }
         }
+
         VSLogger.logMessage(` Is Workspace Trusted                       : ${workspace.isTrusted}`);
+
+        if (mfExt !== undefined || githubCopilotExtension !== undefined) {
+            VSLogger.logMessage("Other Extension Information:");
+            if (githubCopilotExtension !== undefined) {
+                VSLogger.logMessage(` GitHub Copilot                             : ${githubCopilotExtension.packageJSON.version}`);
+            }
+            if (mfExt !== undefined) {
+                VSLogger.logMessage(` Micro Focus COBOL                          : ${mfExt.packageJSON.version}`);
+            }
+        }
     }
 
     fileSearchDirectory.length = 0;
@@ -756,7 +771,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
                     await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
                 }
             }
-            
+
             if (md_syms) {
                 COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, true);
             }

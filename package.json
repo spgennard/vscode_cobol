@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.7.14",
+  "version": "9.7.15",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -22,7 +22,8 @@
     "pli",
     "server express",
     "visual cobol",
-    "opentext"
+    "opentext",
+    "copilot"
   ],
   "repository": {
     "type": "git",
@@ -1110,7 +1111,7 @@
           "description": "When enabled, turn on codelens for variable references",
           "default": true
         },
-        "coboleditor.enable_codelens_section_paragraph_references_threshold":{
+        "coboleditor.enable_codelens_section_paragraph_references_threshold": {
           "type": "number",
           "description": "When enable_codelens_variable_references is enabled provides minimum threshold",
           "default": 2
@@ -1175,6 +1176,22 @@
         "*.CBL": "MFU*$(basename).cpy,Test$(basename).cpy",
         "*.cob": "MFU*$(basename).cpy,Test$(basename).cpy",
         "*.COB": "MFU*$(basename).cpy,Test$(basename).cpy"
+      },
+      "microFocusCOBOL.suppressFileAssociationsPrompt": true,
+      "microFocusCOBOL.languageServerAutostart": false,
+      "microFocusPLI.languageServer.autostart": false,
+      "github.copilot.inlineSuggest.enable": true,
+      "github.copilot.editor.enableAutoCompletions": true,
+      "github.copilot.enable": {
+        "COBOL": true,
+        "COBOLIT": true,
+        "ACUCOBOL": true,
+        "COBOL_MF_LISTFILE": false,
+        "COBOL_PCOB_LISTFILE": false,
+        "COBOL_ACU_LISTFILE": false,
+        "COBOL_MF_PREP": false,
+        "mfu": false,
+        "utreport": false
       },
       "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
@@ -1296,14 +1313,13 @@
         ],
         "configuration": "./acucobol.configuration.json"
       },
-            {
+      {
         "id": "RMCOBOL",
         "aliases": [
           "RMCOBOL",
           "rmcobol"
         ],
-        "extensions": [
-        ],
+        "extensions": [],
         "configuration": "./rmcobol.configuration.json"
       },
       {
@@ -2341,7 +2357,7 @@
         "language": "COBOL",
         "path": "./snippets/cobol.json"
       },
-        {
+      {
         "language": "COBOL",
         "path": "./snippets/cobol-compound.json"
       },
