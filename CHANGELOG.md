@@ -1,6 +1,9 @@
 # CHANGELOG
 
-* 1194f0c (HEAD -> main, tag: 9.7.14, origin/main, origin/HEAD) mac osx/broke the changelog creation
+* 5d318d7 (HEAD -> main, tag: 9.7.15, origin/main, origin/HEAD) add some diag information and add default for anyone using this extension with the Micro Focus TM COBOL extension
+* 33ead97 tweak
+
+## 1194f0c (tag: 9.7.14) mac osx/broke the changelog creation
 * fa2a001 tweak for co-pilot
 
 ## 5d16e5e (tag: 9.7.10) re-work for mac (lack of -d on xargs)
