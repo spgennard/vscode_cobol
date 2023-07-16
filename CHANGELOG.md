@@ -1,12 +1,14 @@
 # CHANGELOG
 
-* 5d318d7 (HEAD -> main, tag: 9.7.15, origin/main, origin/HEAD) add some diag information and add default for anyone using this extension with the Micro Focus TM COBOL extension
+* ca88fe9 (HEAD -> main, tag: 9.7.15, origin/main, origin/HEAD) only apply margin if enabled
+* e476e8d Update
+* 5d318d7 add some diag information and add default for anyone using this extension with the Micro Focus TM COBOL extension
 * 33ead97 tweak
 
 ## 1194f0c (tag: 9.7.14) mac osx/broke the changelog creation
 * fa2a001 tweak for co-pilot
 
-## 5d16e5e (tag: 9.7.10) re-work for mac (lack of -d on xargs)
+## 5d16e5e (tag: 9.7.10) re-work for mac (lack of -d on xargs
 * d99fcad add header
 * 0624a4e tweak $if
 
@@ -1163,11 +1165,11 @@
 ## 4a4399a (tag: 6.11.6) add problem matchers to the default config
 * c51fe39 fix outstanding overlooked bug with the keyword provider
 
-## 5d2db1e (tag: 6.11.5) continue minor tweaks to task provider.. more work to do here... comment out subjective code in keyword provider, as I have send times it causes more harm than good (aka it prevents keywords from being returned)
+## 5d2db1e (tag: 6.11.5) continue minor tweaks to task provider.. more work to do here... comment out subjective code in keyword provider, as I have send times it causes more harm than good (aka it prevents keywords from being returned
 * 5f4072b start to wire up some options for the script provider
 * 50337da bring back the bld script task
 
-## 111ff4c (tag: 6.11.4) second fix to problem matcher (out of sync message)
+## 111ff4c (tag: 6.11.4) second fix to problem matcher (out of sync message
 
 ## d567c13 (tag: 6.11.3) fix problem matcher
 
@@ -1181,7 +1183,7 @@
 
 ## 88a2368 (tag: 6.10.24) add extra brackets & if,unstring,string into completion list
 
-## 0e2b616 (tag: 6.10.23) tweak the brackets support to handle if/end-if and a few more  (more may come, I just want to see who this pans out)
+## 0e2b616 (tag: 6.10.23) tweak the brackets support to handle if/end-if and a few more  (more may come, I just want to see who this pans out
 * fd2f760 tweak $schema location
 * f6eff34 not required
 * 51e21bc add schema, as the original one has gone.. so include so I can reference it
