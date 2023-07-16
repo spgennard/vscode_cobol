@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 9.7.15
+## 9.7.15, origin/main, origin/HEAD 
+* c593bf1 more tweaks to gen changelog script
 * c9b654e Update
 * ca88fe9 only apply margin if enabled
 * e476e8d Update
@@ -15,126 +16,126 @@
 * d99fcad add header
 * 0624a4e tweak $if
 
-## 9.7.1 Update
+## 9.7.1 
 * 8e59b79 add space
 * d76817e Add "TM"
 
-## 9.6.25 Update
+## 9.6.25 
 * 454ab27 make switcher configurable and off, until completed
 * 936c3f2 add switcher support
 
-## 9.6.20 Update
+## 9.6.20 
 
-## 9.6.19 Update
+## 9.6.19 
 * 3077211 add threshold for display'ing references and enable
 
-## 9.6.18 Update
+## 9.6.18 
 * 5d1113d add snippets
 
-## 9.6.16 Update
+## 9.6.16 
 * a4f8511 move iso snippets to programable snippets
 
-## 9.6.15 Update
+## 9.6.15 
 * dd776f0 Update
 * ad8aedb don't activate default variable provider if $ is in use tweak snippets
 * 2be095e Merge pull request #328 from spgennard/spgennard-patch-1
 * fee21a8 (origin/spgennard-patch-1) Update README.md
 
-## 9.6.13 Update
+## 9.6.13 
 * 6ef85ba move $ snippets into snippet provider to try avoid some odd behavour
 * 88380f4 tweaks for extra dialect (for remarks)
 * 9f3fee1 remove duplicate which crept in with a regex/swap
 
-## 9.6.10 Update
+## 9.6.10 
 * 5b21835  Code coloring issue with REMARKS keyword in variable Fix #327
 
-## 9.6.6 Update
+## 9.6.6 
 * 54cb477 dev: avoid "" command message error when double clicking in int's etc in source view
 * cbca9b7 update version
 
-## 9.5.6 Update
+## 9.5.6 
 * 78ecdfb refactor simple copybook drag/drop provider
 * a96c24d add a simple copybook provider
 * 3613a08 add ideas file
 * f57326e tweak use time from file
 
-## 9.4.29 Update
+## 9.4.29 
 * 50996b3 tweak intellisense space handling add limit to overlay view
 
-## 9.4.25 Update
+## 9.4.25 
 * 380edf8 Update
 * e4135ef add snippet
 * 18711bf updaste
 
-## 9.4.20 Update
+## 9.4.20 
 * 8e33137 Update package.json
 
-## 9.4.19 Update
+## 9.4.19 
 * 7ee0fd5 remove close left menu
 
-## 9.4.12 Update
+## 9.4.12 
 * dae60f4 update to use later glob package
 * 4a79947 tidy up
 * cbcfcac update (without glob
 
-## 9.3.19 Update
+## 9.3.19 
 * f2ea18b add simple support for "Close left tab" context menu
 
-## 9.3.2 Update
+## 9.3.2 
 * 7900c38 update (keep glob with a lower v num)
 * a67d774 tweak
 * ba08678 Update
 * 293be78 tidy up package.json in prep for new release
 
-## 9.2.23 Update
+## 9.2.23 
 * 9de6b95 expand to all COBOL dialects
 
-## 9.2.20 Update
+## 9.2.20 
 * 01cd990 add lang status bar
 
-## 9.2.15 Update
+## 9.2.15 
 * b2d2912 Merge branch 'main' of github.com:spgennard/vscode_cobol
 * c33bbac move away from minimatch
 * c0d61fe tweak matchers
 
-## 9.1.28 Update
+## 9.1.28 
 * 5231735 Merge branch 'main' of github.com:spgennard/vscode_cobol into main
 * 4a37f85 tidy
 * 95c9152 add some diag routines (temp)
 
-## 9.1.15 Update
+## 9.1.15 
 * b7aba96 add "exit paragraph"
 
-## 9.1.11 Update
+## 9.1.11 
 * 98d9c5c Update
 * babb2dc new year... new major v
 * b222f1a update cics json and remove extra double redirection of $1 (which does not make any difference)
 
-## 8.12.20 Update
+## 8.12.20 
 * 6ee99f6 add some really simple "exec dli" support
 
-## 8.12.11 Update
+## 8.12.11 
 
-## 8.12.2 Update
+## 8.12.2 
 
-## 8.12.02 Update
+## 8.12.02 
 * d23458f remove quotes when searching for copybooks
 
-## 8.11.26 Update
+## 8.11.26 
 * 3b7302a add known variables as references when in a "exec" block
 * f1ca4c3 identify each "exec xx yy" in the outline view
 
-## 8.11.25 Update
+## 8.11.25 
 * 34986a4 Fix typo #323
 
-## 8.11.20 Update
+## 8.11.20 
 * ac7bb3b add 'exec's to the symbol providers
 * cfc717a don't trim literal unless we need to
 
-## 8.11.10 Update
+## 8.11.10 
 * ea4d0f6 simplify the editor file nesting
 
-## 8.10.28 Update
+## 8.10.28 
 * 301547d cleanup
 * 53c49c9 remove definitions from references provider
 * 723be08 tweak for linting
@@ -142,75 +143,75 @@
 * 872b201 add a couple of config flags for the experimential codelens
 * 752337e explore use of codelens
 
-## 8.10.15 Update
+## 8.10.15 
 * ef129b6 add simple support for picking fields from the comms section
 * 7db7976 move splittoken into sep file and tweak it
 * 289d50c update versions
 
-## 8.10.8 Update
+## 8.10.8 
 * 1a43f71 Update
 * 5ba7481 minor tweak to include MFUPD files
 * 1d065e0 simplify source view
 
-## 8.10.6 Update
+## 8.10.6 
 * f3de30c tweak to pickup missed ref-mod items note to self - time to look at this closer
 * 4c430c9 merge two classes and simplify
 
-## 8.10.4 Update
+## 8.10.4 
 * e1a03d1 handle duplicates better in flattened source view
 
-## 8.10.3 Update
+## 8.10.3 
 * 9e32dbb add markdown/pli injection
 * e8716e3 add markdown/hlasm
 * 1527321 add markdown/jcl injection
 * 46498d0 move json files to a markdown subdir
 
-## 8.10.2 Update
+## 8.10.2 
 * f347915 move to a full range rather than a location (fixes odd empty hover)
 * e417be4 scan inside brackets and pickup 78 items eg: pic x(MY-78-ITEM)
 * c14ce69 add embedded markdown
 
-## 8.9.26 Update
+## 8.9.26 
 * b14241a allow filestrategy to overide margin
 
-## 8.9.21 Update
+## 8.9.21 
 * 0a99031 remove duplicates
 
-## 8.9.20 Update
+## 8.9.20 
 * c8c2f58 dev: fix bad url
 
-## 8.9.19 Update
+## 8.9.19 
 * faf70ea ensure we pickup all file.assoc
 * 4b6d408 tweak
 * 12c9361 bring back the old margin config option (like the jcl one)
 * 3bb8d60 handle rename and drop field not used
 * 0a440b3 remove unsed param rename file to be inline with others (gradual removal of this debt)
 
-## 8.9.12 Update
+## 8.9.12 
 * 286ed0a fixes for sourcetreeview
 
-## 8.9.11 Update
+## 8.9.11 
 * 2ae1e1b tweak sourceview
 * 3571eb1 rename
 * 96a16f5 add rec for linter
 
-## 8.9.9 Update
+## 8.9.9 
 * e48d428 allow intellisense style to be specific for user commands
 * 8e7d015 start to add support for copybook open
 
-## 8.9.3 Update
+## 8.9.3 
 * eab2d9a Update
 * 73decba use uri and avoid Uri.file
 * f2021a1 tweak rename to use embedded urls
 
-## 8.9.2 Update
+## 8.9.2 
 * 923587d use known uri and avoid hardcode uri.file, should make find all references work better with non 'file' based schemas
 
-## 8.9.1 Update
+## 8.9.1 
 * fc11814 add some extra schemas/fs's
 * f33bde6 add support for "copy in" with urls
 
-## 8.8.31 Update
+## 8.8.31 
 * 953ec28 add first part of open copybook via a non-file based URI
 * c0d6178 continue the work on URL based copybook finder
 * c51e777 add simple search for base copybook url directories  (not used)
@@ -219,7 +220,7 @@
 * 5e4f65b ensure JCL is registered to all the known schemas
 * e807f50 add 'ftp' schema
 
-## 8.8.25 Update
+## 8.8.25 
 * cd08622 remove @'s as it did not work
 * ff2fb62 tweak to allow search to copybook to work without parsing its content
 * ded58aa prepare for next release
@@ -228,66 +229,66 @@
 * 2f380e5 start to add support for configurable keywords snippets
 * a133b4a tweak docs
 
-## 8.8.14 Update
+## 8.8.14 
 * d21bb4b allow enforce file associations to be used with ACUCOBOL & COBOL
 
-## 8.8.13 Update
+## 8.8.13 
 * 0deb921 add newFile for ACUCOBOL
 * c6d89f0 add new unit test
 
-## 8.8.11 Update
+## 8.8.11 
 * db3d593 add extra keywords
 * b737268 add support for change from COBOL to ACUCOBOL if AcuBench messages found in first two lines of the code
 
-## 8.8.10 Update
+## 8.8.10 
 * a052a98 move lks to ACUCOBOL
 * 4c95a86 Update
 * 693fe9c Update
 
-## 8.8.8 Update
+## 8.8.8 
 * 8e66ba4 refactor newFile to make it easier to introduce extra ones..
 * 917cab1 Add mfunit ep snippet
 
-## 8.8.2 Update
+## 8.8.2 
 * a9a43e5 add trim
 * a0b122c add hex-to-char
 * 4add7ae add function hex-of:
 
-## 8.7.25 Update
+## 8.7.25 
 * 1e97718 minor updat
 * bd82ee5 add missing exhibit from keyword list
 
-## 8.7.15 Update
+## 8.7.15 
 * 1140239 tweak
 * 1023a4a make cics macros look better
 
-## 8.7.14 Update
+## 8.7.14 
 * db4a0e8 Update
 * 720958f validate filename
 
-## 8.7.13 Update
+## 8.7.13 
 * dfce032 prompt for filename
 * ddd1a02 tweak newfile
 
-## 8.7.12 Update
+## 8.7.12 
 * 3422214 add new file
 * ab37907 add b"0" & b"1" support
 
-## 8.6.21 Update
+## 8.6.21 
 * 0553a48 add more feedback items
 
-## 8.6.18 Update
+## 8.6.18 
 * 0d55a90 fill in copybook name if recursive metadata is set
 
-## 8.6.13 Update
+## 8.6.13 
 * 85c2ce1 Update
 * 92330a2 Update
 * 4b2bf61 Update
 * cf6682e tweak
 
-## 8.6.10 Update
+## 8.6.10 
 
-## 8.6.1 Update
+## 8.6.1 
 * a754108 tweak feedbacktree
 * cb58f86 add feedback tree and tweak config
 * 4df6a4d Update
@@ -295,7 +296,7 @@
 * 84a1e7a drop sdk ignore
 * 73167aa minor package updates
 
-## 8.5.26 Update
+## 8.5.26 
 * 66c84b0 add uppercase ones
 * 9aa6559 Merge branch 'main' of github.com:spgennard/vscode_cobol
 * 9756ec3 add uppercase variant for internal cpybook extensions
@@ -304,83 +305,83 @@
 * 79e9655 drop module
 * 028298a more tweaks for utf8
 
-## 8.5.10 Update
+## 8.5.10 
 * cbe2ffa add some pic u support
 
-## 8.5.9 Update
+## 8.5.9 
 * addd5cb Update
 * 13f41da add .so/.dll support to the sourceview
 
-## 8.5.8 Update
+## 8.5.8 
 * 2243d9b start to add file explorer context items for .int
 * 09c69bd refactor debug commands to utils
 
-## 8.5.2 Update
+## 8.5.2 
 * 039f0c7 add support for file nesting
 
-## 8.4.26 Update
+## 8.4.26 
 * c61f475 if source scanner is disable, turn off other features as well
 
-## 8.4.25 Update
+## 8.4.25 
 * dfb2ee9 add some basic debugger integration (for .int/.gnt) into the source tree
 
-## 8.4.24 Update
+## 8.4.24 
 * 88cf031 allow lowercase hex in hover's
 * d5ab1fb experiment with generating .ts.d files
 * 771309e increase strict'ness
 
-## 8.4.23 Update
+## 8.4.23 
 * 2e383f4 add >>evaluate
 * 19dfb76 start to add some iso2002 conditional expression snippets
 
-## 8.4.20 Update
+## 8.4.20 
 * 644c3cd add some conditional compilation snippets
 
-## 8.4.17 Update
+## 8.4.17 
 * d3395ce continue support for nx utils
 * 70dc0de change substr to substring
 * 2ed8785 start to add nx support add some extra lint's
 
-## 8.4.13 Update
+## 8.4.13 
 * 73781cd simplify jcl keywords
 
-## 8.4.11 Update
+## 8.4.11 
 * 08c6920 refactor previous change to make is more generic
 * 82fb632 don't include a space with the keyword "section"
 * 7b55c1b tweak for DFHRESP
 * c61085e start to remove Null object in preference to using undefined
 
-## 8.4.2 Update
+## 8.4.2 
 * cc17327 second april release
 * c435a07 apply tweaks
 * 1a6a5bd rename token.nextSTokenPlusOneOrBlank and param index
 * ccc623f refine README
 
-## 8.3.30 Update
+## 8.3.30 
 * 7da1ca0 include prop to allow file format setting check to be done early or late
 * 1779b9c tweak fileformatStrategy and make it an enum
 * 46985ab allow file format settings to override sourceformat
 * ebf88dd remove "exec" on label
 * 3e45ee7 add check for "sql" exec for sql include
 
-## 8.3.29 Update
+## 8.3.29 
 * bb9a4a4 add some basic scanning for "exec sql include"
 
-## 8.3.27 Update
+## 8.3.27 
 * 1260dfb add config for hover support (hex)
 * 6b4b312 add menu for text conversion tools
 
-## 8.3.26 Update
+## 8.3.26 
 * d0ad3aa add a simple hex to ascii hover and fix a case search for a api snippet
 * 0099705 add config to allow 'tab' behavour to turn off (if required)
 * 3cd7efc add support for using tab with inline snippets (github copilot)
 * e09658d preserve case on copybook stash away type "exec", maybe useful later
 * 7359095 add utils for selection to hex & back to ascii
 
-## 8.3.25 Update
+## 8.3.25 
 * f1d5e9b only reset decls if enabled
 
-## 8.3.24 Update
+## 8.3.24 
 * 31abde2 Remove margin.color support, as it not working as expected #315
 * 40172a1 move "common" command to seperate file
 * ec7b8af start to simplify it
@@ -395,14 +396,14 @@
 * 0e56f49 refactor
 * 8a83a63 update keywords
 
-## 8.3.21 Update
+## 8.3.21 
 * 42a14b2 move external configs inline and protect against too early use of external when isDirectory is used via a config (to review)
 
-## 8.3.20 Update
+## 8.3.20 
 * e14edcb fix typo
 * a2a06f6 partial sync
 
-## 8.3.19 Update
+## 8.3.19 
 * c5c9355 fix typo
 * bb84c9b Update
 * c1d138d start to make the prefix'es more consistent
@@ -410,7 +411,7 @@
 * 4760969 add support for renaming a symbol  - still more todo
 * 8f49eb0 update versions
 
-## 8.3.16 Update
+## 8.3.16 
 * 8d4f103 add padto72
 * ba3825f add extra ext exclude
 * 5241b2b add support for making the margin colour configurable
@@ -420,7 +421,7 @@
 * 9aec9e9 add initial support for left margin tags
 * 7a0d91b add v0 of margin colouriser
 
-## 8.3.13 Update
+## 8.3.13 
 * b68f317 tweak
 * 95ca364 empty package area out
 * 6cff80f refactor part of comment support, so tags can be comsumed in the margin part
@@ -429,16 +430,16 @@
 * 4a231cd make embedded tab inline & margin's more function on the first margin area
 * 66b17d1 update versions
 
-## 8.3.12 Update
+## 8.3.12 
 * ede4a06 tweak tab usage
 * 1068a2a remove warning
 * 0d832d2 be "more" specific
 
-## 8.3.11 Update
+## 8.3.11 
 * 075a3b2 Update
 * 5448f4b use different url for the information
 
-## 8.3.10 Update
+## 8.3.10 
 * 9bcdc37 tweak README.. more todo..
 * dbc9b13 add comment
 * b575183 remove odd looking matrix
@@ -446,23 +447,23 @@
 * 93defae x400
 * c4e6888 add 200x
 
-## 8.3.8 Update
+## 8.3.8 
 * 76bab7d tweak enforce extensions
 * 740f62d continue work on files.assocations
 * 7d9fd6d fix over active colourisation if "test case" is used
 
-## 8.3.7 Update
+## 8.3.7 
 * a839272 tweak keywords to include intellisense if snippets exists
 * 15d928b fix type and update skeleton
 * f49888d remove diag and start work on file.associations code
 * 467c23f add clear to ensure maps dont expand on re-init
 
-## 8.3.6 Update
+## 8.3.6 
 * 979ced6 continue with the function support
 * 94a2ec6 move function's to snippet provider
 * f82d3c6 start to refactor for "function" snippets
 
-## 8.3.5 Update
+## 8.3.5 
 * c6fe3b7 fix bug in hover
 * c9185fc continue to simplify
 * 2327887 move display to dynamic snippets
@@ -470,22 +471,22 @@
 * 41c59a3 convert more snippets
 * afe7f87 update versions
 
-## 8.3.3 Update
+## 8.3.3 
 * dbea506 continue to move more snippets to the snippet provider
 * b2148b6 dev: allow debuggers to get breakpoints
 
-## 8.3.2 Update
+## 8.3.2 
 * e62f47c move a couple more to the snippet provider
 * 2180e60 break snippet provider in two, allow for multiple of same keyword
 * 4c41c7a start to add support for extended keyword snippets
 
-## 8.2.27 Update
+## 8.2.27 
 * 7f018fb add untested cobsql_dir (for future consideration)
 * 7a1f103 add initial version of lang file for mfupp preprocessor mfupp.dir file
 * 0cc295e add lowercase support for format on return.
 * 17a4063 centralise intellisense style into one enum
 
-## 8.2.21 Update
+## 8.2.21 
 * a27e378 Update
 * 3af6e2f fix
 * 524556c Update
@@ -631,7 +632,7 @@
 * c31222e tweak for cobol-it
 * 3fb6cbe add COBOL-IT keywords list
 
-## 7.12.16 Update COBOL-IT functions
+## 7.12.16  COBOL-IT functions
 
 ## 7.12.14 update engine
 * 1bbb045 keep cobol-it keywords insync fix changes found by later typescript compiler
@@ -707,7 +708,7 @@
 * 51259f2 tidy up import/drop "export defaults"
 * f1b4e19 tidy up
 
-## 7.10.30 remove empty impl
+## 7.10.30 remove empty impl, tidy up fs usage again
 * eea72b4 tweak $set for ilusing
 * c1bc020 flip quotes
 * 263f940 move vsextutils into sep file
@@ -776,6 +777,8 @@
 * 7b56b7d tweak
 * 6c89eba remove warning messages
 * 63dd216 upfsyr
+
+## 7.8.8  CHANGELOG.md
 * b98e0a5 tidy
 * 1c5441d remove markdown warnings
 
@@ -787,6 +790,8 @@
 
 ## 7.7.22 update ver
 * 72b9b13 upd deps
+
+## 7.7.21  CHANGELOG.md
 * 220f3b2 add config for debugger ext
 
 ## 7.7.19 prep
@@ -800,6 +805,8 @@
 * 53b12ca upd
 * 87186f8 Go To Definition with MF Cobol Extension Fix #290
 * a535ae4 remove ";1", that did not affect compilation
+
+## 7.7.3  CHANGELOG.md
 * a4370f5 prep for delivery
 * 9f8e1ea update version
 
@@ -884,8 +891,10 @@
 * c114271 Update publishit.sh
 * 7c21aa6 use a inactivity based timer rather than a length of time timer  - inactivity is a lack of any message from the scanner
 
-## 7.5.19 VSCode become unresponsible after run processAllFilesInWorkspace command in a huge worskspace Fix #282  - Wire up cache_metadata_time_limit
+## 7.5.19 VSCode become unresponsible after run processAllFilesInWorkspace command in a huge worskspace Fix #282  - Wire up cache_metadata_time_limit, so processAllFilesInWorkspace can be cancelled early  - Change the process indicator to be finer
 * 042414b remove npe
+
+## 7.5.17  CHANGELOG.md
 * bd39204 don't change unless it a COBOL doc (ie: pp output)
 * ad90ab7 flip to COBOL for temp doc
 * bc016e2 tidy up
@@ -928,7 +937,7 @@
 * 6e58a11 add linter_ignore_missing_copybook
 * ee0adca add linter_ignore_missing_copybooks config
 
-## 7.4.14 use a good default
+## 7.4.14 use a good default, for ref type, ignore unknown style
 * 973c3e4 remove unused code
 * 28d41ac continue work on references change $end-region to match $region
 
@@ -1001,6 +1010,8 @@
 * cfaac98 prep
 * bd5c88b Tweak update() to happen on a workspace and if enabled Fix #270
 * 3d00b2a enusre alias "cobol" works as well as "COBOL"
+
+## 7.3.23  CHANGELOG.md
 * 927df70 prep for delivery
 * c749147 avoid using meta.symbol.cobol, as it is not friendly to some themes add config for alias, simplify lang use
 * ef3a407 add lowercase cobol, so "alias" is configure the same way as the uppercase one
@@ -1099,17 +1110,25 @@
 ## 7.1.1 paragraphs missing in outline Fix #266   - parsing of comment lines via the scanner internals was changing     the behavour on multi-line scanning
 
 ## 7.1.0 introduce cobolit as a seperate language
+
+## 7.0.13  CHANGELOG.md
 * ee4154f fix script
 * d0c9742 update vscode engine
 * 5bd399a update packages, remove html parser as it is not used (was for the failed coboldoc support)
 * d36d037 add gen_third_party.sh to the ignore file
 * d8e03d1 add third party notices
 * e5c4d93 Move away from using uuid, as it seems to cause a clash on Windows, other platforms are okay.
+
+## 7.0.12  CHANGELOG.md
 * 0989dd4 add in missing acucobol
+
+## 7.0.11  CHANGELOG.md
 * 6eaef5c tidy ignore extra .md
 * 138ff44 tidy up build
 * f4a73c1 tweak the format
 * 14bce46 tweak
+
+## 7.0.10  CHANGELOG.md
 * 875bf52 tweak gen-changelog
 * 2281745 change log is broken, so remove until I can resolve the issue
 * e076f85 continue adding dep marker
@@ -1161,14 +1180,14 @@
 
 ## 6.11.8 remove warning matcher is task provider for acu
 
-## 6.11.7 remove the last the non-module gnucobol bits
+## 6.11.7 remove the last the non-module gnucobol bits, the extension is now split into two.
 * 5c1e095 continue the removal of anything GnuCOBOL related, so it can be pushed into its own extension.
 * 53fe7d2 packages update & vscode
 
 ## 6.11.6 add problem matchers to the default config
 * c51fe39 fix outstanding overlooked bug with the keyword provider
 
-## 6.11.5 continue minor tweaks to task provider.. more work to do here... comment out subjective code in keyword provider
+## 6.11.5 continue minor tweaks to task provider.. more work to do here... comment out subjective code in keyword provider, as I have send times it causes more harm than good (aka it prevents keywords from being returned
 * 5f4072b start to wire up some options for the script provider
 * 50337da bring back the bld script task
 
@@ -1178,15 +1197,15 @@
 
 ## 6.11.2 simplify previous change for catching different category of messages
 
-## 6.11.1 add support Micro Focus ECM error categories: CICS
+## 6.11.1 add support Micro Focus ECM error categories: CICS, SQL, XDB, IMS and DB2
 * ce067b3 let vscode decide where the problem matcher find files (when we can)
 * e78175b use autoDetect on some of the problem matchers
 * d628ffd further tweaks
 * 2cf01a6 File is too long? Fix #249
 
-## 6.10.24 add extra brackets & if
+## 6.10.24 add extra brackets & if,unstring,string into completion list
 
-## 6.10.23 tweak the brackets support to handle if/end-if and a few more  (more may come
+## 6.10.23 tweak the brackets support to handle if/end-if and a few more  (more may come, I just want to see who this pans out
 * fd2f760 tweak $schema location
 * f6eff34 not required
 * 51e21bc add schema, as the original one has gone.. so include so I can reference it

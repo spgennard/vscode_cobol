@@ -16,7 +16,7 @@ do
     case "$2" in
         "(tag:"*|"(HEAD"*) 
             echo
-		    X=$(echo "$i" | sed "s/.*tag: //g" | sed "s/)//g" | sed "s/,.*//" | sed 's/ .*//')
+		    X=$(echo "$i" | sed "s/.*tag: //g" | sed "s/)//g" | sed 's/Update//')
             echo "## $X"
 		    echo
         ;;
