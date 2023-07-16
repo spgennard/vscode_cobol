@@ -13,14 +13,15 @@ OLDIFS=$IFS
 git log --oneline --decorate $PACKAGE_VERSION | while read i 
 do
 	set -- $i
-	if [ "$2" == "(tag:" ]
-	then
-		echo
-		echo "## $i"
-		echo
-	else
-		echo "* $i"
-	fi
+    case "$2" in
+        "(tag:"*|"(HEAD"*) 
+            echo
+		    X=$(echo "$i" | sed "s/.*tag: //g" | sed "s/)//g" | sed "s/,.*//" | sed 's/ .*//')
+            echo "## $X"
+		    echo
+        ;;
+        *) echo "* $i" ;;
+    esac
 done | grep -v "$MSG" | 
 	grep -v "bump" | 
 	grep -v "update$" | 
