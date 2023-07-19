@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 9.7.15, origin/main, origin/HEAD last set of changes
+## 9.7.19, origin/main, origin/HEAD add a change log to inform users of the latest 9.0 release
+
+## 9.7.15 
+* 9e002f7 last set of changes
 * 453c000 Update
 * c593bf1 more tweaks to gen changelog script
 * c9b654e Update
