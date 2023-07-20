@@ -2732,8 +2732,8 @@
     "@types/node": "^20.4.2",
     "@types/vscode": "^1.80.0",
     "@types/webpack-env": "^1.18.1",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
     "@vscode/test-electron": "^2.3.3",
     "@vscode/test-web": "^0.0.44",
     "ansi-regex": ">=6.0.1",
@@ -2749,7 +2749,7 @@
     "ts-loader": "^9.4.4",
     "typescript": "^5.1.6",
     "vsce": "^1.97.0",
-    "webpack": "^5.88.1",
+    "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
