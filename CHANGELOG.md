@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 9.7.19, origin/main, origin/HEAD add a change log to inform users of the latest 9.0 release
+## 9.7.20, origin/main, origin/HEAD add MF 9.0 platform constants and extra directives
+
+## 9.7.19 
+* af4eff8 add a change log to inform users of the latest 9.0 release
 
 ## 9.7.15 
 * 9e002f7 last set of changes
