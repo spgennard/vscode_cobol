@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { VSCOBOLConfiguration } from "../vsconfiguration";
-import { hoverApi, ICOBOLSettings } from "../iconfiguration";
+import { ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../vssymbolprovider";
 import { VSExternalFeatures } from "../vsexternalfeatures";
@@ -20,13 +20,10 @@ import { commands, extensions, languages, ProviderResult, workspace } from "vsco
 import { VSCobolRenameProvider } from "../vsrenameprovider";
 import { VSPPCodeLens } from "../vsppcodelens";
 import { activateCommonCommands } from "../vscommon_commands";
-import { CallTarget, KnownAPIs } from "../keywords/cobolCallTargets";
 import { VSWorkspaceFolders } from "../cobolfolders";
 import { VSSourceTreeViewHandler } from "../vssourceviewtree";
 import { VSHelpAndFeedViewHandler } from "../feedbacktree";
-
-const hexRegEx = new RegExp("[xX][\"'][0-9A-F]*[\"']");
-const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+import { VSHoverProvider } from "../vshoverprovider";
 
 const fileSearchDirectory: string[] = [];
 const URLSearchDirectory: string[] = [];
@@ -539,33 +536,9 @@ export async function activate(context: vscode.ExtensionContext) {
     
     /* hover provider */
     context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings, false), {
-
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
-
-
-            if (settings.hover_show_known_api !== hoverApi.Off) {
-                const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
-                const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
-                if (txtTarget !== undefined) {
-                    let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
-                    if (settings.hover_show_known_api === hoverApi.Short) {
-                        example = "";
-                    }
-                    return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
-                }
-            }
-
-            if (settings.hover_show_encoded_literals) {
-                const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
-                if (txt.toLowerCase().startsWith("x\"")) {
-                    const ascii = COBOLUtils.hex2a(txt);
-                    if (ascii.length !== 0) {
-                        return new vscode.Hover(`ASCII=${ascii}`);
-                    }
-                }
-            }
-            return undefined;
+            return VSHoverProvider.provideHover(settings, document, position);
         }
     }));
 

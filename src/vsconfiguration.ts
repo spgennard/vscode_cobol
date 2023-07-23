@@ -150,6 +150,8 @@ export class VSCOBOLConfiguration {
 
         settings.enable_codelens_section_paragraph_references_threshold = getNumber("enable_codelens_section_paragraph_references_threshold", settings.enable_codelens_section_paragraph_references_threshold);
 
+        settings.hover_show_variable_definition = getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
+
         return settings;
     }
 

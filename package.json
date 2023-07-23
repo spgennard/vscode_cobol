@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.7.20",
+  "version": "9.7.23",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -995,6 +995,11 @@
         "coboleditor.hover_show_encoded_literals": {
           "type": "boolean",
           "description": "When enabled, decode hex literals when hover over them",
+          "default": true
+        },
+        "coboleditor.hover_show_variable_definition": {
+          "type": "boolean",
+          "description": "When enabled, show variable definition when hover over them",
           "default": true
         },
         "coboleditor.check_file_format_before_file_scan": {

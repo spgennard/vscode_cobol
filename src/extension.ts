@@ -19,7 +19,7 @@ import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./vssourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./vscobolprovider";
 import { COBOLUtils } from "./cobolutils";
-import { hoverApi, ICOBOLSettings } from "./iconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require("properties-reader");
@@ -41,7 +41,6 @@ import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
 import { vsMarginHandler } from "./vsmargindecorations";
 import { commentUtils } from "./commenter";
-import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
@@ -49,6 +48,7 @@ import { VSCobolRenameProvider } from "./vsrenameprovider";
 import { activateCommonCommands } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
+import { VSHoverProvider } from "./vshoverprovider";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -61,9 +61,6 @@ const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
-const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-Fa-f]*[\"']");
-const hexRegEx = new RegExp("[xX][\"'][0-9A-Fa-f]*[\"']");
-const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
 function openChangeLog(currentContext: ExtensionContext): void {
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -98,7 +95,7 @@ function openChangeLog(currentContext: ExtensionContext): void {
 
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",      // code scanner
-    ExtensionDefaults.microFocusCOBOLExtension  // Micro Focus COBOL Extension
+    ExtensionDefaults.microFocusCOBOLExtension  // Micro Focus COBOL Extension,
 ];
 
 const known_problem_extensions: string[][] = [
@@ -1006,40 +1003,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     /* hover provider */
     context.subscriptions.push(languages.registerHoverProvider(VSExtensionUtils.getAllCobolSelectors(settings, false), {
-
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover> {
-
-            if (settings.hover_show_known_api !== hoverApi.Off) {
-                const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
-                const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
-                if (txtTarget !== undefined) {
-                    let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
-                    if (settings.hover_show_known_api === hoverApi.Short) {
-                        example = "";
-                    }
-                    return new vscode.Hover(`**${txtTarget.api}** - ${txtTarget.description}\n\n[\u2192 ${txtTarget.apiGroup}](${txtTarget.url})${example}`);
-                }
-            }
-
-            if (settings.hover_show_encoded_literals) {
-                const nxtxt = document.getText(document.getWordRangeAtPosition(position, nhexRegEx));
-                if (nxtxt.toLowerCase().startsWith("nx\"") || nxtxt.toLowerCase().startsWith("nx'")) {
-                    const ascii = COBOLUtils.nxhex2a(nxtxt);
-                    if (ascii.length !== 0) {
-                        return new vscode.Hover(`UTF16=${ascii}`);
-                    }
-                    return undefined;
-                }
-                const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
-                if (txt.toLowerCase().startsWith("x\"") || txt.toLowerCase().startsWith("x'")) {
-                    const ascii = COBOLUtils.hex2a(txt);
-                    if (ascii.length !== 0) {
-                        return new vscode.Hover(`ASCII=${ascii}`);
-                    }
-                }
-            }
-            return undefined;
+            return VSHoverProvider.provideHover(settings, document, position);
         }
     }));
     context.subscriptions.push(languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new VSCobolRenameProvider()));
