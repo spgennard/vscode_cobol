@@ -10,11 +10,11 @@ import { ESourceFormat } from "./externalfeatures";
 const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-Fa-f]*[\"']");
 const hexRegEx = new RegExp("[xX][\"'][0-9A-Fa-f]*[\"']");
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+const variableRegEx = new RegExp("[$#0-9a-zA-Z_][a-zA-Z0-9-_]*");
 
 export class VSHoverProvider {
 
     public static provideHover(settings: ICOBOLSettings, document: vscode.TextDocument, position: vscode.Position): ProviderResult<vscode.Hover> {
-
         if (settings.hover_show_known_api !== hoverApi.Off) {
             const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
             const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
@@ -46,7 +46,6 @@ export class VSHoverProvider {
         }
 
         if (settings.hover_show_variable_definition) {
-            const variableRegEx = new RegExp("[$#0-9a-zA-Z_][a-zA-Z0-9-_]*");
             const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
             const word = wordRange ? document.getText(wordRange) : "";
             if (word === "") {
@@ -85,7 +84,7 @@ export class VSHoverProvider {
                 }
             }
 
-            return new vscode.Hover(hoverMessage);
+            return hoverMessage.length === 0 ? undefined : new vscode.Hover(hoverMessage);
         }
 
         return undefined;
