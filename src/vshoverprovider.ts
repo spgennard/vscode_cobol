@@ -47,8 +47,8 @@ export class VSHoverProvider {
 
         if (settings.hover_show_variable_definition) {
             const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
-            const word = wordRange ? document.getText(wordRange) : "";
-            if (word === "") {
+            const word = document.getText(wordRange);
+            if (word === undefined || word.length === 0) {
                 return undefined;
             }
             const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
