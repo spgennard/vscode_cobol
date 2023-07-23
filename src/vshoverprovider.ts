@@ -5,6 +5,7 @@ import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { COBOLUtils } from "./cobolutils";
 import { COBOLSourceScanner, COBOLVariable } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { ESourceFormat } from "./externalfeatures";
 
 const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-Fa-f]*[\"']");
 const hexRegEx = new RegExp("[xX][\"'][0-9A-Fa-f]*[\"']");
@@ -55,7 +56,7 @@ export class VSHoverProvider {
             if (sf === undefined) {
                 return undefined;
             }
-            
+
             // only show when in the procedure division
             if (sf.sourceReferences.state.procedureDivision?.startLine !== undefined && position.line < sf.sourceReferences.state.procedureDivision?.startLine) {
                 return undefined;
@@ -71,7 +72,16 @@ export class VSHoverProvider {
             for (const variable of variables) {
                 if (variable.token !== undefined) {
                     const token = variable.token;
-                    hoverMessage += document.lineAt(token.startLine).text.trim() + "\n\n";
+                    var line = document.lineAt(token.startLine).text;
+                    // not interested in margins
+                    if (sf.sourceFormat === ESourceFormat.fixed) {
+                        if (line.length > 72) {
+                            line = line.substring(7, 72);
+                        } else if (line.length > 7) {
+                            line = line.substring(7,line.length);
+                        }
+                    }
+                    hoverMessage += line.replace(/\s+/g, ' ').trim() + "\n\n";
                 }
             }
 
