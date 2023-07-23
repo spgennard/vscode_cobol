@@ -1,7 +1,11 @@
 # CHANGELOG
 
 
-## 9.7.20, origin/main, origin/HEAD add MF 9.0 platform constants and extra directives
+## 9.7.23, origin/main, origin/HEAD remove length of hover line for fixed format programs and remove excess spaces
+* 354799f move hover provider into a seperate file
+
+## 9.7.20 
+* 88ef43e add MF 9.0 platform constants and extra directives
 
 ## 9.7.19 
 * af4eff8 add a change log to inform users of the latest 9.0 release
