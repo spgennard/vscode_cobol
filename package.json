@@ -1549,6 +1549,13 @@
         "extensions": [
           ".cblproj"
         ]
+      },
+      {
+        "id" : "directivesmf",
+        "filenames": [
+          "directives.mf"
+        ],
+        "configuration": "./directivesmf.configuration.json"
       }
     ],
     "grammars": [
@@ -1746,6 +1753,11 @@
         "language": "utreport",
         "scopeName": "source.utreport",
         "path": "./syntaxes/utreport.tmLanguage.json"
+      },
+      {
+        "language": "directivesmf",
+        "scopeName": "source.directivesmf",
+        "path": "./syntaxes/directives.mf.json"
       }
     ],
     "commands": [
