@@ -1020,7 +1020,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await updateDecorationsOnTextEditor(activeEditor);
     };
 
-    let timeout: NodeJS.Timer | undefined = undefined;
+    let timeout: NodeJS.Timeout | undefined = undefined;
 
     const triggerUpdateDecorations = async () => {
         if (timeout) {
