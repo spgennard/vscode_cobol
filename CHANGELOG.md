@@ -1,7 +1,11 @@
 # CHANGELOG
 
 
-## 9.7.23, origin/main, origin/HEAD remove length of hover line for fixed format programs and remove excess spaces
+## 9.7.23, origin/main, origin/HEAD Simplify the README
+* 34e02e3 tweak
+* 14fdd58 tweak
+* e666ba7 Update
+* 5a9f67d remove length of hover line for fixed format programs and remove excess spaces
 * 354799f move hover provider into a seperate file
 
 ## 9.7.20 
