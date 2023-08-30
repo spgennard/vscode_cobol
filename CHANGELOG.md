@@ -1,10 +1,13 @@
 # CHANGELOG
 
-
-## 9.7.23, origin/main, origin/HEAD Simplify the README
+* 38c4a43 add barebones directivesmf support
+* 0391a93 update packages change timer to timeout
+* 416b105 Update
+* c8775da Simplify the README
 * 34e02e3 tweak
 * 14fdd58 tweak
-* e666ba7 Update
+
+## 9.7.23 
 * 5a9f67d remove length of hover line for fixed format programs and remove excess spaces
 * 354799f move hover provider into a seperate file
 
