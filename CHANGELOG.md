@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* e730484 add symbol provider for directives.mf files
+
+## 9.8.30 
 * 38c4a43 add barebones directivesmf support
 * 0391a93 update packages change timer to timeout
 * 416b105 Update
