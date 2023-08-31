@@ -8,7 +8,7 @@ import * as opencopybook from "./opencopybook";
 
 import { COBOLDocumentationCommentHandler } from "./doccomment";
 import { KeywordAutocompleteCompletionItemProvider } from "./vskeywordprovider";
-import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider } from "./vssymbolprovider";
+import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider, MFDirectivesSymbolProvider } from "./vssymbolprovider";
 
 import { COBOLFileUtils } from "./fileutils";
 
@@ -993,6 +993,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
         /* TODO: add .DIR keywords too */
         const symbolInformationProvider = new CobolSymbolInformationProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), symbolInformationProvider));
+    
+        const mfDirectivesProvider = new MFDirectivesSymbolProvider();
+        context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllMFProvidersSelectors(settings), mfDirectivesProvider));
+        
     }
 
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolSourceCompletionItemProvider(settings, VSExternalFeatures)));

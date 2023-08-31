@@ -6,6 +6,67 @@ import { outlineFlag } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { SplitTokenizer } from "./splittoken";
 
+
+export class MFDirectivesSymbolProvider implements vscode.DocumentSymbolProvider {
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
+        const symbols: vscode.SymbolInformation[] = [];
+        const settings = VSCOBOLConfiguration.get();
+
+        if (settings.outline === outlineFlag.Off) {
+            return symbols;
+        }
+
+
+        const ownerUri = document.uri;
+
+        const container = "";
+
+        for (let i = 0; i < document.lineCount; i++) {
+            const line = document.lineAt(i);
+            const textText = line.text.trimEnd();
+
+            if (textText.startsWith("#")) {
+                continue;
+            }
+
+            if (textText.length > 2 && textText.startsWith("[") && textText.endsWith("]")) {
+                const item = textText.substring(1, textText.length - 1);
+                let lastLine = i;
+                let lastLineLength = textText.length;
+                const startLine = i;
+                let prevLineLength = lastLineLength;
+
+                for (i = 1 + i; i < document.lineCount; i++) {
+                    const line2 = document.lineAt(i);
+                    const textText2 = line2.text.trimEnd();
+                    if (textText2.trimStart().length === 0) {
+                        lastLine = i;
+                        lastLineLength = textText2.length;
+                        break;
+                    }
+                    if (textText2.length > 2 && textText2.startsWith("[") && textText2.endsWith("]")) {
+                        lastLine = i - 1;
+                        lastLineLength = prevLineLength;
+                        break;
+                    }
+
+                    prevLineLength = textText2.length;
+                }
+
+                const srange = new vscode.Range(new vscode.Position(startLine, 1),
+                    new vscode.Position(lastLine, lastLineLength));
+                const lrange = new vscode.Location(ownerUri, srange);
+
+                symbols.push(new vscode.SymbolInformation(item, vscode.SymbolKind.Array, container, lrange));
+            }
+        }
+
+        return symbols;
+    }
+}
+
 export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,7 +95,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
             if (textText.startsWith("//")) {
                 const textLineClean = textText.substring(2);
                 const lineTokens = [];
-                const possibleTokens:string[] = [];
+                const possibleTokens: string[] = [];
                 SplitTokenizer.splitArgument(textLineClean, possibleTokens);
                 for (let l = 0; l < possibleTokens.length; l++) {
                     if (possibleTokens[l] !== undefined) {
@@ -96,7 +157,7 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
         const ownerUri = document.uri;
 
         let includePara = true;
-        let includeVars = true;         
+        let includeVars = true;
         let includeSections = true;
 
         if (outlineLevel === outlineFlag.Partial) {
@@ -222,7 +283,7 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
                 }
             }
             catch (e) {
-                VSLogger.logException("Failed " + e + " on " + JSON.stringify(token),e as Error);
+                VSLogger.logException("Failed " + e + " on " + JSON.stringify(token), e as Error);
             }
         }
         return symbols;

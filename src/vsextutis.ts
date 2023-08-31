@@ -62,6 +62,18 @@ export class VSExtensionUtils {
         return ret;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public static getAllMFProvidersSelectors(config: ICOBOLSettings): vscode.DocumentSelector {
+        const ret = [];
+
+        for (const kscheme of VSExtensionUtils.knownSchemes) {
+            ret.push(
+                { scheme: kscheme, language: "directivesmf" },
+            )
+        }
+
+        return ret;
+    }
 
     public static getAllCobolSelector(langid: string): vscode.DocumentSelector {
         const ret = [];
