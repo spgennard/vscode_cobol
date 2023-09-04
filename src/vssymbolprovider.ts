@@ -31,6 +31,29 @@ export class MFDirectivesSymbolProvider implements vscode.DocumentSymbolProvider
                 continue;
             }
 
+            if (textText.length > 1 && textText.trim() === "@root") {
+                // 
+                const srange = new vscode.Range(new vscode.Position(i, 1), new vscode.Position(i, textText.length));
+                const lrange = new vscode.Location(ownerUri, srange);
+
+                symbols.push(new vscode.SymbolInformation("@root", vscode.SymbolKind.Constant, container, lrange));
+
+                await vscode.workspace.findFiles("**/*/directives.mf").then((uris: vscode.Uri[]) => {
+                    uris.forEach((uri: vscode.Uri) => {
+
+                        const item = uri.toString().substring(ownerUri.toString().length-"directives.mf".length);
+                        const srange = new vscode.Range(new vscode.Position(1, 1), new vscode.Position(1, 1));
+                        const lrange = new vscode.Location(vscode.Uri.parse(uri.toString()), srange);
+
+                        const si = new vscode.SymbolInformation(item, vscode.SymbolKind.File, item, lrange);
+                        symbols.push(si);
+
+                    });
+                });
+
+                continue;
+            }
+
             if (textText.length > 2 && textText.startsWith("[") && textText.endsWith("]")) {
                 const item = textText.substring(1, textText.length - 1);
                 let lastLine = i;
