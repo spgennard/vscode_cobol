@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.8.31",
+  "version": "9.9.16",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -33,7 +33,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.81.0"
+    "vscode": "^1.82.0"
   },
   "extensionKind": [
     "workspace"
@@ -2746,17 +2746,17 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.5.7",
-    "@types/vscode": "^1.81.0",
+    "@types/node": "^20.6.2",
+    "@types/vscode": "^1.82.0",
     "@types/webpack-env": "^1.18.1",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^6.5.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
     "@vscode/test-electron": "^2.3.4",
     "@vscode/test-web": "^0.0.45",
     "ansi-regex": ">=6.0.1",
-    "assert": "^2.0.0",
-    "depcheck": "^1.4.5",
-    "eslint": "^8.48.0",
+    "assert": "^2.1.0",
+    "depcheck": "^1.4.6",
+    "eslint": "^8.49.0",
     "glob": "^10.3.4",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
@@ -2774,7 +2774,7 @@
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "glob-to-regexp": "^0.4.1",
-    "memfs": "^4.2.1",
+    "memfs": "^4.3.0",
     "n-readlines": "^1.0.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
@@ -2784,7 +2784,7 @@
     "stream-browserify": "^3.0.0",
     "trie-search": "^1.4.2",
     "ts-prune": "^0.10.3",
-    "url": "^0.11.1"
+    "url": "^0.11.3"
   },
   "extensionDependencies": []
 }
