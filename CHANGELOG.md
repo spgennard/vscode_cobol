@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 8bded74 add simple search for subdir's directives.mf files  (might remove, as I can't get navigation to the file to work)
+
+## 9.8.31 
 * e730484 add symbol provider for directives.mf files
 
 ## 9.8.30 
