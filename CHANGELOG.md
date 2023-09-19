@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 9.9.19, origin/main, origin/HEAD add support for "with debugging"
+
+## 9.9.16 
 * 8bded74 add simple search for subdir's directives.mf files  (might remove, as I can't get navigation to the file to work)
 
 ## 9.8.31 
