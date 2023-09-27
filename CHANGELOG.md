@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 9.9.26, origin/main, origin/HEAD github.dev returns this extension... so need to add it to he blessed list
+
+## 9.9.21 
+
 ## 9.9.19 
 * 4e9dc1d add support for "with debugging"
 
