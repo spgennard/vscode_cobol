@@ -47,7 +47,8 @@ function showExtensionInformation(): void {
 
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",      // code scanner
-    ExtensionDefaults.microFocusCOBOLExtension  // Micro Focus COBOL Extension
+    ExtensionDefaults.microFocusCOBOLExtension,  // Micro Focus COBOL Extension
+    "bitlang.cobol"
 ];
 
 const known_problem_extensions: string[][] = [
