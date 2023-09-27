@@ -24,6 +24,7 @@ import { VSWorkspaceFolders } from "../cobolfolders";
 import { VSSourceTreeViewHandler } from "../vssourceviewtree";
 import { VSHelpAndFeedViewHandler } from "../feedbacktree";
 import { VSHoverProvider } from "../vshoverprovider";
+import { CobolReferenceProvider } from "../vsreferenceprovider";
 
 const fileSearchDirectory: string[] = [];
 const URLSearchDirectory: string[] = [];
@@ -506,6 +507,8 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     });
     context.subscriptions.push(sourcedefProvider);
+
+    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolReferenceProvider()));
 
     const keywordProvider = new KeywordAutocompleteCompletionItemProvider(true, settings);
     const keywordProviderDisposible = vscode.languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), keywordProvider);
