@@ -111,9 +111,17 @@ let conflictingDebuggerFound = false;
 function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reasons: string[]): string {
     let dupExtensionMessage = "";
 
-    dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
-    dupExtensionMessage += " Solution      : Disable or uninstall this extension, eg: use command:\n";
+    if (grab_info_for_ext.packageJSON === undefined) {
+        return dupExtensionMessage
+    }
+    
+    if (grab_info_for_ext.packageJSON !== undefined && grab_info_for_ext.packageJSON.publisher === "bitlang") {
+        return dupExtensionMessage;
+    }
+
     if (grab_info_for_ext.packageJSON.id !== undefined) {
+        dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
+        dupExtensionMessage += " Solution      : Disable or uninstall this extension, eg: use command:\n";
         dupExtensionMessage += `                 code --uninstall-extension ${grab_info_for_ext.packageJSON.id}\n`;
     }
 
