@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 9.9.26, origin/main, origin/HEAD github.dev returns this extension... so need to add it to he blessed list
+## 9.9.27, origin/main, origin/HEAD tidy up the extension info api
+
+## 9.9.26 
+* 0cf45c2 github.dev returns this extension... so need to add it to he blessed list
 
 ## 9.9.21 
 
