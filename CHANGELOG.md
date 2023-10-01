@@ -1,7 +1,10 @@
 # CHANGELOG
 
+* cd64c5c simplify
+* fac52d1 add ref provider
 
-## 9.9.27, origin/main, origin/HEAD tidy up the extension info api
+## 9.9.27 
+* 2b9b144 tidy up the extension info api
 
 ## 9.9.26 
 * 0cf45c2 github.dev returns this extension... so need to add it to he blessed list
