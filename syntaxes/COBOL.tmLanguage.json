@@ -337,22 +337,6 @@
       "name": "meta.symbol.cobol.forced"
     },
     {
-      "begin": "((?<![-_a-zA-Z0-9()-])(?i:source-computer)(\\.|$))",
-      "beginCaptures": {
-        "0": {
-          "name": "keyword.identifiers.cobol"
-        }
-      },
-      "patterns": [
-        {
-          "match": "(^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ])",
-          "name": "constant.numeric.cobol"
-        }
-      ],
-      "name": "comment.block.cobol.remark",
-      "end": "(?=((?<![-_])(?i:remarks|author|date-written|with|debugging\\s+mode|object-computer|installation|date-compiled|special-names|security|environment\\s+division|data\\s+division|working-storage\\s+section|input-output\\s+section|linkage\\s+section|procedure\\s+division|local-storage\\s+section)|^[ \\*][ \\*][ \\*][ \\*][ \\*][ \\*]\\*.*$|^\\+$))"
-    },
-    {
       "begin": "((?<![-_a-zA-Z0-9()-])(?i:installation|author|source-computer|object-computer|date-written|security|date-compiled)(\\.|$))",
       "beginCaptures": {
         "0": {
@@ -363,6 +347,10 @@
         {
           "match": "(^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ])",
           "name": "constant.numeric.cobol"
+        },
+        {
+          "match": "(?i:with|debugging|mode)",
+          "name": "keyword.Identifiers.gnucobol"
         }
       ],
       "name": "comment.block.cobol.remark",
@@ -1025,7 +1013,7 @@
       "match": "(?<![-_])(?i:System-Info|Terminal-Info)(?![0-9A-Za-z_-])",
       "name": "support.type.cobol.acu strong"
     },
-       {
+    {
       "match": "(?<![-_])(?i:alter)(?=\\s|\\.)",
       "name": "invalid.illegal.cobol"
     },
