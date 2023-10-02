@@ -14,6 +14,7 @@ import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { SplitTokenizer } from "./splittoken";
+import { VSExtensionUtils } from "./vsextutis";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
@@ -903,7 +904,9 @@ export class COBOLUtils {
                 if (assocTo !== requiredLanguage) {
                     // steal back
                     if (verbose) {
-                        externalFeatures.logMessage(` WARNING: ${ext} is associated with ${assocTo}`);
+                        if (!VSExtensionUtils.isKnownCOBOLLanguageId(settings, assocTo)) {
+                            externalFeatures.logMessage(` WARNING: ${ext} is associated with ${assocTo}`);
+                        }
                     }
                     filesAssociationsConfig[key] = requiredLanguage;
                     updateRequired = true;
