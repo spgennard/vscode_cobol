@@ -305,7 +305,7 @@ The example below shows you how you can create a single task to compile one prog
 
 NOTE: Problem matchers can be stacked in your task definition.   It is recommended that any "-copybook", "-info", "-note" and similar problem matcher are included before problem matchers without this suffix.
 
-## Remote development using containers
+## Remote development using dev containers
 
 If your main development is Micro Focus Visual COBOL/Enterprise Developer you may have access to base images that provide the compiler and its tools.
 
@@ -313,14 +313,14 @@ If you do, all that is required is another image that contains extra tools and a
 
 The following ```Dockerfile``` is an example on how you can extend your existing base image with java configured, ant, git and lsb tools.
 
-This example uses the SLES 15.1 base images using Visual COBOL 6.0.
+This example uses the SLES 15.1 base images using Visual COBOL 9.0.
 
 You may need to tweak the ```FROM``` clause in the Dockerfile and if you use a different platform or product version, the ```zypper``` will also require a change too if a different platform is used (different commands eg: yum, microdnf etc..).
 
 Dockerfile:
 
 ```dockerfile
-FROM microfocus/vcdevhub:sles15.1_6.0_x64_login
+FROM microfocus/vcdevhub:sles15.1_9.0_x64_login
 
 USER root
 
@@ -350,27 +350,18 @@ devcontainer.json:
 
  // The optional 'runArgs' property can be used to specify additional runtime arguments.
  "runArgs": [
-  //  Uncomment the next line if you want to use Docker from the container. See the docker-in-docker definition for details.
-  // "-v","/var/run/docker.sock:/var/run/docker.sock",
-
-  // Uncomment the next two lines if you will use a ptrace-based debugger like C++, Go, and Rust
-  "--cap-add=SYS_PTRACE",
-  "--security-opt", "seccomp=unconfined"
+    "--cap-add=SYS_PTRACE",
+    "--security-opt", "seccomp=unconfined"
  ],
 
- // Uncomment the next line if you want to publish any ports.
- // "appPort": [],
-
- // Uncomment the next line if you want to add in default container specific settings.json values
- // "settings":  { "workbench.colorTheme": "Quiet Light" },
-
- // Uncomment the next line to run commands after the container is created.
- // "postCreateCommand": "uname -a",
-
  // Add the IDs of any extensions you want installed in the array below.
- "extensions": [
-  "bitlang.cobol"
- ]
+ "customizations": {
+    "vscode": {
+        "extensions": [
+            "bitlang.cobol"
+        ]
+    }
+ }
 }
 ```
 
