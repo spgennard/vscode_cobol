@@ -991,12 +991,6 @@ export class COBOLUtils {
         }
     }
 
-    // let buffer = Buffer.from(string, 'utf16le')
-    // private static isControl(ch: string, index=0) {
-    //     var code = ch.charCodeAt(index);
-    //     return ((code >= 0x0000 && code <= 0x001f) || (code >= 0x007f && code <= 0x009f));
-    // }
-
     private static isControlCode(code: number) {
         return ((code >= 0x0000 && code <= 0x001f) || (code >= 0x007f && code <= 0x009f));
     }
