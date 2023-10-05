@@ -1,7 +1,11 @@
 # CHANGELOG
 
+* 929e455 update docs given devcontainer.json spec has changed
+* 3496e63 cleanup
+* a710d6d update versions
 
-## 9.10.1, origin/main, origin/HEAD cutdown on the verbose messages
+## 9.10.1 
+* 04db34b cutdown on the verbose messages
 
 ## 9.9.28 
 * cd64c5c simplify
