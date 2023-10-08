@@ -65,7 +65,6 @@ export class CobolLinterProvider {
         this.linterSev = settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
     }
 
-
     public async updateLinter(document: vscode.TextDocument): Promise<void> {
 
         if (this.settings.linter === false && this.settings.scan_comments_for_hints === false) {
