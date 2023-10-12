@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 9.10.12, origin/main, origin/HEAD now we have more tokens, only include readonly ones
+## 9.10.12, origin/main, origin/HEAD 
+* 1f08be2 now we have more tokens, only include readonly ones
 * 30375d4 move
 * c772007 add
 * ea20a4b start to add conv
