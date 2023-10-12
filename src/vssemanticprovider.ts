@@ -92,12 +92,6 @@ export class VSSemanticProvider {
                                 "variable",
                                 ["declaration", "readonly"]
                             );
-                        } else {
-                            tokensBuilder.push(
-                                new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                                "variable",
-                                ["declaration"]
-                            );
                         }
                     } catch (e) {
                         VSLogger.logException("SemanticProvider: constantsOrVariables", e as Error);
@@ -115,12 +109,6 @@ export class VSSemanticProvider {
                             new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
                             "variable",
                             ["readonly"]
-                        );
-
-                    } else {
-                        tokensBuilder.push(
-                            new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
-                            "variable"
                         );
                     }
                 } catch (e) {
