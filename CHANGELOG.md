@@ -1,5 +1,12 @@
 # CHANGELOG
 
+
+## 9.10.12, origin/main, origin/HEAD now we have more tokens, only include readonly ones
+* 30375d4 move
+* c772007 add
+* ea20a4b start to add conv
+
+## 9.10.4 
 * 929e455 update docs given devcontainer.json spec has changed
 * 3496e63 cleanup
 * a710d6d update versions
