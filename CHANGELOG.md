@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 1a8941a tidy
 
-## 9.10.12, origin/main, origin/HEAD 
+## 9.10.12 
+* 3beb7b0 Update
 * 1f08be2 now we have more tokens, only include readonly ones
 * 30375d4 move
 * c772007 add
