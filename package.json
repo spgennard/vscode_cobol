@@ -2746,7 +2746,7 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.2",
     "@types/mocha": "^10.0.2",
-    "@types/node": "^20.8.5",
+    "@types/node": "^20.8.6",
     "@types/vscode": "^1.83.0",
     "@types/webpack-env": "^1.18.2",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
@@ -2766,7 +2766,7 @@
     "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
     "vsce": "^1.97.0",
-    "webpack": "^5.88.2",
+    "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
