@@ -38,4 +38,5 @@ export enum ESourceFormat {
 export class CobolLinterProviderSymbols {
     public static NotReferencedMarker_internal = "COBOL_NOT_REF";
     public static NotReferencedMarker_external = "ignore";
+    
 }

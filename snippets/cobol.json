@@ -78,6 +78,86 @@
 		"description": "method-id",
 		"scope": "cobol"
 	},
+	"<summary>": {
+		"prefix": [
+			"<summary>"
+		],
+		"body": [
+			"<summary>$1</summary>$0"
+		],
+		"description": "doc-comment summary",
+		"scope": "cobol"
+	},
+
+	"<example>": {
+		"prefix": [
+			"<example>"
+		],
+		"body": [
+			"<example>$1",
+			"*>> <code>$2",
+			"*>> </code>",
+			"*>> </example>$0"
+		],
+		"description": "doc-comment example with code",
+		"scope": "cobol"
+	},
+	"<para>": {
+		"prefix": [
+			"<para>"
+		],
+		"body": [
+			"<para>",
+			"*>> $1",
+			"*>> </para>$0"
+		],
+		"description": "doc-comment paragraph",
+		"scope": "cobol"
+	},
+	"<remarks>": {
+		"prefix": [
+			"<remarks>"
+		],
+		"body": [
+			"<remarks>",
+			"*>> $1",
+			"*>> </remarks>$0"
+		],
+		"description": "doc-comment remarks",
+		"scope": "cobol"
+	},
+	"<returns>": {
+		"prefix": [
+			"<returns>"
+		],
+		"body": [
+			"<returns>",
+			"*>> $1",
+			"*>> </returns>$0"
+		],
+		"description": "doc-comment returns",
+		"scope": "cobol"
+	},
+	"<param>": {
+		"prefix": [
+			"<param>"
+		],
+		"body": [
+			"<param name=\"$1\"$2</param>$0"
+		],
+		"description": "doc-comment param",
+		"scope": "cobol"
+	},
+	"<exception>": {
+		"prefix": [
+			"<exception>"
+		],
+		"body": [
+			"<exception cref=\"$1\"$2</exception>$0"
+		],
+		"description": "doc-comment exception",
+		"scope": "cobol"
+	},
 	"MFUnit Test (Program)": {
 		"prefix": [
 			"mfu",
