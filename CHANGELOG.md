@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 9.10.16, origin/main, origin/HEAD allow both the formatters to work together
+
+## 9.10.15 
 * 1a8941a tidy
 
 ## 9.10.12 
