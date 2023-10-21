@@ -6,7 +6,6 @@ import os from "os";
 import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, extensions, ViewColumn, ConfigurationChangeEvent } from "vscode";
 import * as opencopybook from "./opencopybook";
 
-import { COBOLDocumentationCommentHandler } from "./doccomment";
 import { KeywordAutocompleteCompletionItemProvider } from "./vskeywordprovider";
 import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider, MFDirectivesSymbolProvider } from "./vssymbolprovider";
 
@@ -29,7 +28,7 @@ import { COBOLSourceDefinition } from "./vssourcedefinitionprovider";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCobScanner } from "./vscobscanner";
 import { BldScriptTaskProvider } from "./bldTaskProvider";
-import { COBOLCaseFormatter } from "./caseformatter";
+// import { COBOLCaseFormatter } from "./caseformatter";
 import { COBOLCallTargetProvider } from "./vscobolcalltargetprovider";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
 import { SourceOrFolderTreeItem } from "./sourceItem";
@@ -49,6 +48,7 @@ import { activateCommonCommands } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
+import { COBOLTypeFormatter } from "./vsformatter";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -963,8 +963,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     await VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
     VSHelpAndFeedViewHandler.setupSourceViewTree(settings, false);
-    context.subscriptions.push(COBOLDocumentationCommentHandler.register());
-    context.subscriptions.push(COBOLCaseFormatter.register(settings));
+    context.subscriptions.push(COBOLTypeFormatter.register(settings));
 
     context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {

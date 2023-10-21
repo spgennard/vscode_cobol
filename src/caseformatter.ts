@@ -1,14 +1,13 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { CancellationToken, FormattingOptions, languages, TextDocument, TextEdit, Position, ProviderResult, OnTypeFormattingEditProvider } from "vscode";
+import { CancellationToken, FormattingOptions, TextDocument, TextEdit, Position } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { COBOLUtils, FoldAction } from "./cobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { VSExtensionUtils } from "./vsextutis";
 
-export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
+export class COBOLCaseFormatter {
 
     private settings: ICOBOLSettings;
 
@@ -25,7 +24,7 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
+    public provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): TextEdit[]|undefined {
 
         // only do something if we are just pressed RETURN
         if (ch !== "\n") {
@@ -57,13 +56,5 @@ export class COBOLCaseFormatter implements OnTypeFormattingEditProvider {
             }
         }
         return [];
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static register(settings: ICOBOLSettings): any {
-        const langPlusSchemas = VSExtensionUtils.getAllCobolSelectors(settings, false);
-
-        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLCaseFormatter(settings), "\n");
-
     }
 }
