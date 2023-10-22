@@ -152,6 +152,8 @@ export class VSCOBOLConfiguration {
 
         settings.hover_show_variable_definition = getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
+        settings.out_of_range_tabstop_size = getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);
+        
         return settings;
     }
 

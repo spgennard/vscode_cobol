@@ -364,6 +364,11 @@
           "description": "When enabled, activate COBOL tab/detab key",
           "default": true
         },
+        "coboleditor.out_of_range_tabstop_size" : {
+          "type": "number",
+          "description": "Tabstop size when outside of defined tabstop range",
+          "default": 4
+        },
         "coboleditor.comment_line": {
           "type": "boolean",
           "description": "When enabled, activate COBOL comment key",

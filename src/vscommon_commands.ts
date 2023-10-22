@@ -117,12 +117,12 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         COBOLProgramCommands.move2anybackwards();
     }));
 
-    context.subscriptions.push(commands.registerCommand("cobolplugin.tab", function () {
-        TabUtils.processTabKey(true);
+    context.subscriptions.push(commands.registerCommand("cobolplugin.tab", async function () {
+        await TabUtils.processTabKey(true);
     }));
 
-    context.subscriptions.push(commands.registerCommand("cobolplugin.revtab", function () {
-        TabUtils.processTabKey(false);
+    context.subscriptions.push(commands.registerCommand("cobolplugin.revtab", async function () {
+        await TabUtils.processTabKey(false);
     }));
 
     // context.subscriptions.push(commands.registerCommand("web_cobolplugin.commentline", function () {

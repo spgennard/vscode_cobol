@@ -141,6 +141,8 @@ export interface ICOBOLSettings {
     enable_language_switcher:boolean;
 
     hover_show_variable_definition:boolean;
+
+    out_of_range_tabstop_size: number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -254,6 +256,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     hover_show_variable_definition:boolean;
 
+    out_of_range_tabstop_size: number;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -347,5 +351,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_codelens_section_paragraph_references_threshold = 2;
         this.enable_language_switcher = false;
         this.hover_show_variable_definition = true;
+        this.out_of_range_tabstop_size = 4;
     }
 }
