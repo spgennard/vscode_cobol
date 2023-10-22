@@ -2,14 +2,29 @@
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
+
 
 export class TabUtils {
+
+    // private static lineTabs = new Map<string, number[]>(
+    //     [
+    //         ["$SET", [7]]
+    //     ]
+    // );
+
+    private static getTabsForLine(line:string, settings: ICOBOLSettings) {
+        return settings.tabstops;    
+    }
+
     public static executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): void {
-        const tabs = VSCOBOLConfiguration.get().tabstops;
+        const settings = VSCOBOLConfiguration.get();
         editor.edit(edit => {
             for (let x = 0; x < sel.length; x++) {
                 if (sel[x].start.line === sel[x].end.line) {
                     const position = sel[x].start;
+                    const thisLine = editor.document.lineAt(position.line).text;
+                    const tabs = this.getTabsForLine(thisLine,settings);
                     if (inserting) {
                         TabUtils.singleSelectionTab(edit, doc, position, tabs);
                     } else {
@@ -17,9 +32,9 @@ export class TabUtils {
                     }
                 } else {
                     if (inserting) {
-                        TabUtils.multipleSelectionTab(edit, doc, sel[x], tabs);
+                        TabUtils.multipleSelectionTab(edit, doc, sel[x], settings);
                     } else {
-                        TabUtils.multipleSelectionUnTab(edit, doc, sel[x], tabs);
+                        TabUtils.multipleSelectionUnTab(edit, doc, sel[x], settings);
                     }
                 }
             }
@@ -46,16 +61,19 @@ export class TabUtils {
         }
     }
 
-    private static multipleSelectionTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, tabs: number[]): void {
+    private static multipleSelectionTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, settings: ICOBOLSettings): void {
+
         for (let line = sel.start.line; line <= sel.end.line; line++) {
             const pos = new Position(line, sel.start.character);
+            const thisLine = d.lineAt(line).text;
+            const tabs = this.getTabsForLine(thisLine,settings);
             TabUtils.singleSelectionTab(edit, d, pos, tabs);
         }
     }
 
     private static readonly multipleSelectionUnTabPttrn = /^\s*/;
 
-    private static multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, tabs: number[]): void {
+    private static multipleSelectionUnTab(edit: TextEditorEdit, d: TextDocument, sel: Selection, settings: ICOBOLSettings): void {
         for (let line = sel.start.line; line <= sel.end.line; line++) {
             let charpos = sel.start.character;
             if (charpos === 0) {
@@ -69,6 +87,8 @@ export class TabUtils {
             }
 
             const pos = new Position(line, charpos);
+            const lineText = d.lineAt(line).text;
+            const tabs = this.getTabsForLine(lineText,settings);
             TabUtils.singleSelectionUnTab(edit, d, pos, tabs);
         }
     }
