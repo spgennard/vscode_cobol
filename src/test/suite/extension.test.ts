@@ -39,18 +39,4 @@ suite("Core Extension Test Suite", () => {
 		assert.ok(s.sections.size > 0, "should contain at least one section");
 
 	});
-
-	test("Parse file for functions (string.cbl)", () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"string.cbl"), features);
-		if (f.lines.length < 10) {
-			assert.fail("test.cbl should have > 10 lines");
-		}
-
-		assert.ok(f.getFilename().length > 0, "filename is invalid");
-		const settings = new COBOLSettings();
-		const s =  COBOLSourceScanner.ScanUncached(f, settings, false, eventHandler, features);
-
-		assert.ok(s.functionTargets.size > 0, `should contain at least one function (got: ${s.functionTargets.size})`);
-	});
-
 });

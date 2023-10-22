@@ -11,9 +11,9 @@ export async function run(): Promise<void> {
 		color: true
 	});
 
-	const testsRoot = path.resolve(__dirname, "..");
-	
-    let files = glob.sync("**/**.test.js", { cwd:testsRoot});
+	const testsRoot = path.resolve(__dirname, ".");
+
+    const files = glob.sync("*.test.js", { cwd:testsRoot, absolute:true});
 
 	return new Promise((c, e) => {
 

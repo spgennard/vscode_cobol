@@ -1,6 +1,5 @@
  
-
-const _gridOptions:Map<string, string> = 
+ const _gridOptions:Map<string, string> = 
     new Map([
         [">>CALL-CONVENTION COBOL", ""],
         [">>CALL-CONVENTION EXTERN", ""],
@@ -8,3 +7,8 @@ const _gridOptions:Map<string, string> =
         [">>CALL-CONVENTION STATIC", ""],
         
     ]);
+
+export function getGrip()
+{
+    return _gridOptions;
+}

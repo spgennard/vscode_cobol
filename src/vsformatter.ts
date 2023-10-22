@@ -15,28 +15,28 @@ export class COBOLTypeFormatter implements OnTypeFormattingEditProvider {
 
     provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 
-        var ed: TextEdit[] = [];
+        const ed: TextEdit[] = [];
 
         try {
-            var tmp_ed = this.caseFormatter.provideOnTypeFormattingEdits(document, position, ch, options, token);
-            if (tmp_ed != undefined && tmp_ed.length > 0) {
+            const tmp_ed = this.caseFormatter.provideOnTypeFormattingEdits(document, position, ch, options, token);
+            if (tmp_ed !== undefined && tmp_ed.length > 0) {
                 ed.push(...tmp_ed);
             }
         }
         catch
         {
-
+            // ignored
         }
 
         try {
-            var tmp_ed = this.docFormatter.provideOnTypeFormattingEdits(document, position, ch, options, token);
-            if (tmp_ed != undefined && tmp_ed.length > 0) {
+            const tmp_ed = this.docFormatter.provideOnTypeFormattingEdits(document, position, ch, options, token);
+            if (tmp_ed !== undefined && tmp_ed.length > 0) {
                 ed.push(...tmp_ed);
             }
         }
         catch
         {
-
+            // ignored
         }
 
         return ed;

@@ -67,11 +67,11 @@ export class VSHoverProvider {
                 return undefined;
             }
 
-            var hoverMessage = "";
+            let hoverMessage = "";
             for (const variable of variables) {
                 if (variable.token !== undefined) {
                     const token = variable.token;
-                    var line = document.lineAt(token.startLine).text;
+                    let line = document.lineAt(token.startLine).text;
                     // not interested in margins
                     if (sf.sourceFormat === ESourceFormat.fixed) {
                         if (line.length > 72) {
@@ -80,7 +80,7 @@ export class VSHoverProvider {
                             line = line.substring(7,line.length);
                         }
                     }
-                    hoverMessage += line.replace(/\s+/g, ' ').trim() + "\n\n";
+                    hoverMessage += line.replace(/\s+/g, " ").trim() + "\n\n";
                 }
             }
 
