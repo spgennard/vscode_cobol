@@ -4,23 +4,27 @@ import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, w
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 
+export interface IAnchorTabInfo {
+    tabstops: number[];
+    out_of_range_tabstop_size: number;
+}
 
 export class TabUtils {
-
-    private static lineTabs = new Map<string, number[]>(
+    private static lineTabs = new Map<string, IAnchorTabInfo>(
         [
-            ["$set", [7]]
+            ["$set", { tabstops: [6], out_of_range_tabstop_size: 0 }]
         ]
     );
 
-    private static getTabsForLine(line: string, settings: ICOBOLSettings) {
+    private static getTabsForLine(line: string, settings: ICOBOLSettings): IAnchorTabInfo {
         const lineU = line.toLowerCase();
         for (const [key, tabs] of TabUtils.lineTabs) {
             if (lineU.indexOf(key) !== -1) {
                 return tabs;
             }
         }
-        return settings.tabstops;
+
+        return { tabstops: settings.tabstops, out_of_range_tabstop_size: settings.out_of_range_tabstop_size };
     }
 
     public static async executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): Promise<void> {
@@ -49,12 +53,12 @@ export class TabUtils {
     }
 
 
-    private static async singleSelectionTab(settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]): Promise<void> {
-        const size = TabUtils.cobolTabSize(settings, pos.character, tabs);
+    private static async singleSelectionTab(settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: IAnchorTabInfo): Promise<void> {
+        const size = TabUtils.cobolTabSize(pos.character, tabs);
         edit.insert(pos, " ".repeat(size));
     }
 
-    private static async singleSelectionUnTab(singleLine: boolean, settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]): Promise<void> {
+    private static async singleSelectionUnTab(singleLine: boolean, settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: IAnchorTabInfo): Promise<void> {
         let charpos = pos.character;
         if (charpos === 0) {
             const selline = d.lineAt(pos.line).text;
@@ -66,7 +70,7 @@ export class TabUtils {
             }
         }
 
-        const size = TabUtils.cobolUnTabSize(settings, pos.character, tabs);
+        const size = TabUtils.cobolUnTabSize(pos.character, tabs);
         const range = new Range(pos.line, pos.character - size, pos.line, pos.character);
         const txt = d.getText(range);
 
@@ -103,7 +107,8 @@ export class TabUtils {
         }
     }
 
-    private static cobolTabSize(settings: ICOBOLSettings, pos: number, tabs: number[]): number {
+    private static cobolTabSize(pos: number, tabinfo: IAnchorTabInfo): number {
+        const tabs = tabinfo.tabstops;
         let tab = 0;
         for (let index = 0; index < tabs.length; index++) {
             tab = tabs[index];
@@ -114,16 +119,17 @@ export class TabUtils {
         }
 
         // outside range?
-        const out_of_range_tabstop_size = settings.out_of_range_tabstop_size;
+        const out_of_range_tabstop_size = tabinfo.out_of_range_tabstop_size;
         return out_of_range_tabstop_size === 0 ? 0 : out_of_range_tabstop_size - ((pos - tabs[tabs.length - 1]) % out_of_range_tabstop_size);
     }
 
 
-    public static cobolUnTabSize(settings: ICOBOLSettings, pos: number, tabs: number[]): number {
+    public static cobolUnTabSize(pos: number, tabinfo: IAnchorTabInfo) {
+        const tabs = tabinfo.tabstops;
+        const out_of_range_tabstop_size = tabinfo.out_of_range_tabstop_size;
 
         // outside range?
         if (pos > tabs[tabs.length - 1]) {
-            const out_of_range_tabstop_size = settings.out_of_range_tabstop_size;
             if (out_of_range_tabstop_size === 0) {
                 return pos - tabs[tabs.length - 1];
             }
