@@ -61,6 +61,7 @@ const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
+let updateDecorationsOnTextEditorEnabled = false;
 
 function openChangeLog(currentContext: ExtensionContext): void {
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -114,7 +115,7 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     if (grab_info_for_ext.packageJSON === undefined) {
         return dupExtensionMessage
     }
-    
+
     if (grab_info_for_ext.packageJSON !== undefined && grab_info_for_ext.packageJSON.publisher === "bitlang") {
         return dupExtensionMessage;
     }
@@ -939,8 +940,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     //eslint-disable-next-line @typescript-eslint/no-unused-vars
     context.subscriptions.push(vscode.window.onDidChangeVisibleTextEditors(async (viewEditors) => {
-        for (const textEditor of viewEditors) {
-            await updateDecorationsOnTextEditor(textEditor);
+        if (updateDecorationsOnTextEditorEnabled) {
+            for (const textEditor of viewEditors) {
+                await updateDecorationsOnTextEditor(textEditor);
+            }
         }
     }));
 
@@ -1001,10 +1004,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
         /* TODO: add .DIR keywords too */
         const symbolInformationProvider = new CobolSymbolInformationProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), symbolInformationProvider));
-    
+
         const mfDirectivesProvider = new MFDirectivesSymbolProvider();
         context.subscriptions.push(languages.registerDocumentSymbolProvider(VSExtensionUtils.getAllMFProvidersSelectors(settings), mfDirectivesProvider));
-        
+
     }
 
     context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolSourceCompletionItemProvider(settings, VSExternalFeatures)));
@@ -1157,6 +1160,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
 
     openChangeLog(context);
+
+    updateDecorationsOnTextEditorEnabled = true;
 }
 
 export async function deactivateAsync(): Promise<void> {

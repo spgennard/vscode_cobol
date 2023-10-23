@@ -34,7 +34,7 @@ export class TabUtils {
                     if (inserting) {
                         TabUtils.singleSelectionTab(settings, edit, doc, position, tabs);
                     } else {
-                        TabUtils.singleSelectionUnTab(settings, edit, doc, position, tabs);
+                        TabUtils.singleSelectionUnTab(true, settings, edit, doc, position, tabs);
                     }
                 } else {
                     if (inserting) {
@@ -54,7 +54,18 @@ export class TabUtils {
         edit.insert(pos, " ".repeat(size));
     }
 
-    private static async singleSelectionUnTab(settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]): Promise<void> {
+    private static async singleSelectionUnTab(singleLine: boolean, settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, pos: Position, tabs: number[]): Promise<void> {
+        let charpos = pos.character;
+        if (charpos === 0) {
+            const selline = d.lineAt(pos.line).text;
+            if (selline !== null) {
+                const match = selline.match(TabUtils.multipleSelectionUnTabPttrn);
+                if (match !== null) {
+                    charpos = match[0].length;
+                }
+            }
+        }
+
         const size = TabUtils.cobolUnTabSize(settings, pos.character, tabs);
         const range = new Range(pos.line, pos.character - size, pos.line, pos.character);
         const txt = d.getText(range);
@@ -63,7 +74,7 @@ export class TabUtils {
             edit.delete(range);
         } else {
             // no text, so no movement required
-            if (txt.length > 0) {
+            if (singleLine && txt.length > 0) {
                 for (let x = 0; x < size; x++) {
                     await commands.executeCommand("cursorMove", { to: "left" });
                 }
@@ -84,21 +95,11 @@ export class TabUtils {
 
     private static multipleSelectionUnTab(settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, sel: Selection): void {
         for (let line = sel.start.line; line <= sel.end.line; line++) {
-            let charpos = sel.start.character;
-            if (charpos === 0) {
-                const selline = d.getText(sel);
-                if (selline !== null) {
-                    const match = selline.match(TabUtils.multipleSelectionUnTabPttrn);
-                    if (match !== null) {
-                        charpos = match[0].length;
-                    }
-                }
-            }
-
+            const charpos = sel.start.character;
             const pos = new Position(line, charpos);
             const lineText = d.lineAt(line).text;
             const tabs = this.getTabsForLine(lineText, settings);
-            TabUtils.singleSelectionUnTab(settings, edit, d, pos, tabs);
+            TabUtils.singleSelectionUnTab(false, settings, edit, d, pos, tabs);
         }
     }
 
