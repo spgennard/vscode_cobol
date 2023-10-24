@@ -181,6 +181,47 @@
           ],
           "description": "COBOL tabstops"
         },
+        "coboleditor.tabstops_anchor": {
+          "type": "array",
+          "markdownDescription": "",
+          "items": {
+            "type": "object",
+            "title": "List of anchors and tabstops",
+            "properties": {
+              "anchor": {
+                "type": "string",
+                "description": "tabstop anchor"
+              },
+              "tabstops": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "title": "array of tabstops",
+                  "properties": {
+                    "tabstop": {
+                      "type": "number",
+                      "description": "tabstop"
+                    }
+                  }
+                }
+              },
+              "out_of_range_tabstop_size" : {
+                "type":"number",
+                "description": "tabstop size for out of range tabs"
+              }
+            }
+          },
+          "default": [
+            {
+              "anchor": "$set",
+              "tabstops": [
+                6
+              ],
+              "out_of_range_tabstop_size":0
+            }
+          ],
+          "description": "An array of filenames/patterns and its associated source format"
+        },
         "coboleditor.copybookexts": {
           "type": "array",
           "items": {
@@ -364,7 +405,7 @@
           "description": "When enabled, activate COBOL tab/detab key",
           "default": true
         },
-        "coboleditor.out_of_range_tabstop_size" : {
+        "coboleditor.out_of_range_tabstop_size": {
           "type": "number",
           "description": "Tabstop size when outside of defined tabstop range",
           "default": 4
@@ -1556,7 +1597,7 @@
         ]
       },
       {
-        "id" : "directivesmf",
+        "id": "directivesmf",
         "filenames": [
           "directives.mf"
         ],

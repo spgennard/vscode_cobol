@@ -2,7 +2,7 @@
 "use strict";
 
 import { extensions, workspace } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
@@ -154,6 +154,8 @@ export class VSCOBOLConfiguration {
 
         settings.out_of_range_tabstop_size = getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);
         
+        settings.anchor_tabstops = getIAnchorTabInfo();
+        
         return settings;
     }
 
@@ -191,6 +193,17 @@ export class VSCOBOLConfiguration {
     }
 }
 
+
+
+function getIAnchorTabInfo(): IAnchorTabInfo[] {
+    const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
+    const files: IAnchorTabInfo[] | undefined = editorConfig.get<IAnchorTabInfo[]>("tabstops_anchor");
+    if (files === undefined || files === null) {
+        return [];
+    }
+
+    return files;
+}
 
 function getFileFormatConfiguration(): IEditorMarginFiles[] {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);

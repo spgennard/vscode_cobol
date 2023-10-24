@@ -2,29 +2,18 @@
 
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
-import { ICOBOLSettings } from "./iconfiguration";
-
-export interface IAnchorTabInfo {
-    tabstops: number[];
-    out_of_range_tabstop_size: number;
-}
+import { IAnchorTabInfo, ICOBOLSettings } from "./iconfiguration";
 
 export class TabUtils {
-    private static lineTabs = new Map<string, IAnchorTabInfo>(
-        [
-            ["$set", { tabstops: [6], out_of_range_tabstop_size: 0 }]
-        ]
-    );
-
     private static getTabsForLine(line: string, settings: ICOBOLSettings): IAnchorTabInfo {
         const lineU = line.toLowerCase();
-        for (const [key, tabs] of TabUtils.lineTabs) {
-            if (lineU.indexOf(key) !== -1) {
-                return tabs;
+        for (const lineTab of settings.anchor_tabstops) {
+            if (lineU.indexOf(lineTab.anchor) !== -1) {
+                return lineTab;
             }
         }
 
-        return { tabstops: settings.tabstops, out_of_range_tabstop_size: settings.out_of_range_tabstop_size };
+        return { anchor: "", tabstops: settings.tabstops, out_of_range_tabstop_size: settings.out_of_range_tabstop_size };
     }
 
     public static async executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): Promise<void> {

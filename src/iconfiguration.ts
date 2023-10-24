@@ -25,6 +25,13 @@ export interface IEditorMarginFiles {
     sourceformat: ESourceFormat;
 }
 
+
+export interface IAnchorTabInfo {
+    anchor: string;
+    tabstops: number[];
+    out_of_range_tabstop_size: number;
+}
+
 export enum fileformatStrategy {
     AlwaysFixed = "always_fixed",
     AlwaysVariable = "always_variable",
@@ -143,6 +150,8 @@ export interface ICOBOLSettings {
     hover_show_variable_definition:boolean;
 
     out_of_range_tabstop_size: number;
+
+    anchor_tabstops:IAnchorTabInfo[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -258,6 +267,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     out_of_range_tabstop_size: number;
 
+    anchor_tabstops:IAnchorTabInfo[];
+    
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -352,5 +363,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_language_switcher = false;
         this.hover_show_variable_definition = true;
         this.out_of_range_tabstop_size = 4;
+        this.anchor_tabstops = [];
     }
 }
