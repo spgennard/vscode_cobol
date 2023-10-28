@@ -49,6 +49,7 @@ import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
 import { COBOLTypeFormatter } from "./vsformatter";
+import { TabUtils } from "./tabstopper";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -768,6 +769,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
         const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`);
         const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`);
+        const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`);
 
         if (updated) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
@@ -834,6 +836,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
                 KeywordAutocompleteCompletionItemProvider.Default4COBOL.reFreshConfiguration(settings);
             }
 
+            if (tabstops_anchors_changed) {
+                TabUtils.clearTabstopCache();
+            }
         }
     });
     context.subscriptions.push(onDidChangeConfiguration);
