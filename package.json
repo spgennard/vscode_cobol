@@ -181,7 +181,12 @@
           ],
           "description": "COBOL tabstops"
         },
-        "coboleditor.tabstops_anchor": {
+        "coboleditor.enable_tabstops_anchors" : {
+          "type":"boolean",
+          "markdownDescription": "Enable tabstop anchors",
+          "default": true
+        },
+        "coboleditor.tabstops_anchors": {
           "type": "array",
           "markdownDescription": "",
           "items": {

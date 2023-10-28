@@ -6,13 +6,15 @@ import { IAnchorTabInfo, ICOBOLSettings } from "./iconfiguration";
 
 export class TabUtils {
     private static getTabsForLine(line: string, settings: ICOBOLSettings): IAnchorTabInfo {
-        const lineU = line.toLowerCase();
-        for (const lineTab of settings.anchor_tabstops) {
-            if (lineU.indexOf(lineTab.anchor) !== -1) {
-                return lineTab;
+
+        if (settings.enable_tabstops_anchors) {
+            const lineU = line.toLowerCase();
+            for (const lineTab of settings.anchor_tabstops) {
+                if (lineU.indexOf(lineTab.anchor) !== -1) {
+                    return lineTab;
+                }
             }
         }
-
         return { anchor: "", tabstops: settings.tabstops, out_of_range_tabstop_size: settings.out_of_range_tabstop_size };
     }
 

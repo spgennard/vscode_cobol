@@ -156,6 +156,8 @@ export class VSCOBOLConfiguration {
         
         settings.anchor_tabstops = getIAnchorTabInfo();
         
+        settings.enable_tabstops_anchors = getBoolean("enable_tabstops_anchors",settings.enable_tabstops_anchors);
+        
         return settings;
     }
 
@@ -197,7 +199,7 @@ export class VSCOBOLConfiguration {
 
 function getIAnchorTabInfo(): IAnchorTabInfo[] {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
-    const files: IAnchorTabInfo[] | undefined = editorConfig.get<IAnchorTabInfo[]>("tabstops_anchor");
+    const files: IAnchorTabInfo[] | undefined = editorConfig.get<IAnchorTabInfo[]>("tabstops_anchors");
     if (files === undefined || files === null) {
         return [];
     }

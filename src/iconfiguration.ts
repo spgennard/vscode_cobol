@@ -152,6 +152,8 @@ export interface ICOBOLSettings {
     out_of_range_tabstop_size: number;
 
     anchor_tabstops:IAnchorTabInfo[];
+
+    enable_tabstops_anchors:boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -268,6 +270,8 @@ export class COBOLSettings implements ICOBOLSettings {
     out_of_range_tabstop_size: number;
 
     anchor_tabstops:IAnchorTabInfo[];
+
+    enable_tabstops_anchors: boolean;
     
     constructor() {
         this.enable_tabstop = true;
@@ -364,5 +368,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.hover_show_variable_definition = true;
         this.out_of_range_tabstop_size = 4;
         this.anchor_tabstops = [];
+        this.enable_tabstops_anchors = true;
     }
 }
