@@ -7,7 +7,7 @@ This unofficial extension provides syntax highlighting for `Micro Focus™` base
 Some of the features this extension provides are:
 
 - Colourisation and problem matchers for the following Micro Focus COBOL dialects:
-  - [Net Express](https://www.microfocus.com/en-us/products/net-express-server-express/overview) to the latest [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
+  - [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
 - COBOL tab key support (configurable)
@@ -162,8 +162,6 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
-For Net Express/Server Express compilers use the "$mfcobol-errformat3-netx-sx" problem matcher as although the directive ERRFORMAT"3" is used, the compiler output error format is slightly different.
-
 ```json
 {
     "label": "Compile: using cobol (single file)",
@@ -198,8 +196,6 @@ For Net Express/Server Express compilers use the "$mfcobol-errformat3-netx-sx" p
 ### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(2)
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
-
-For Net Express/Server Express compilers use the "$mfcobol-errformat2-netx-sx" problem matcher as although the directive ERRFORMAT"2" is used, the compiler output error format is slightly different.
 
 ```json
 {
@@ -293,9 +289,6 @@ The example below shows you how you can create a single task to compile one prog
 | COBOL-IT                                      | *cobc*                                                           | $cobolit-cobc                            |
 | COBOL-IT                                      | *cobc* for errors/notes                                          | $cobolit-error-cobc + $cobolit-note-cobc |
 | ACUCOBOL-GT                                   | *ccbl* for errors/warnings                                       | $acucobol-ccbl + $acucobol-warning-ccbl  |
-| Micro Focus COBOL Net Express/Server Express  | *cob* or *cobol.exe* + ERRFORMAT"2"                              | $mfcobol-errformat2-netx-sx              |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"2" for errors in copybooks      | +mfcobol-errformat2-copybook-netx-sx     |
-|                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3-netx-sx              |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3" for information              | +mfcobol-errformat3-info                 |
 | Micro Focus Visual COBOL/Enterprise Developer | *msbuild*                                                        | $mfcobol-msbuild                         |
 |                                               | *cob* or *cobol.exe* + ERRFORMAT"3"                              | $mfcobol-errformat3                      |
