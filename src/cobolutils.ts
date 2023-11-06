@@ -68,6 +68,24 @@ export class COBOLUtils {
 
         return globString;
     }
+
+    public static getCopyBookGlobPatternForPartialName(config: ICOBOLSettings, partialFilename="*"): string {
+        let globString = "**/"+partialFilename+"{";
+
+        for (const ext of config.copybookexts) {
+            if (ext.length !== 0) {
+                if (globString.endsWith("{")) {
+                    globString += "."+ext;
+                } else {
+                    globString += ",." + ext;
+                }
+            }
+        }
+
+        globString += "}";
+
+        return globString;
+    }
     static prevWorkSpaceUri: vscode.Uri | undefined = undefined;
 
     static populateDefaultCallableSymbolsSync(settings: ICOBOLSettings, reset: boolean): void {

@@ -857,6 +857,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     }));
 
+    context.subscriptions.push(commands.registerCommand("cobolplugin.findCopyBookDirectory", function (docUri: vscode.Uri, linenum:number, code: string) {
+        cobolfixer.findCopyBookDirectory(settings, docUri, linenum, code);
+    }));
+
     context.subscriptions.push(commands.registerCommand("cobolplugin.commentline", function () {
         if (window.activeTextEditor !== undefined) {
             const langid = window.activeTextEditor.document.languageId;

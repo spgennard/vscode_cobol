@@ -2508,8 +2508,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 cbInfo.fileName = fileName;
             }
 
-            if (this.sourceReferences !== undefined && this.parse_copybooks_for_references) {
-                if (fileName.length > 0) {
+            if (this.sourceReferences !== undefined) {
+                if (this.parse_copybooks_for_references && fileName.length > 0) {
                     cbInfo.fileName = fileName;
                     if (this.copyBooksUsed.has(fileName) === false) {
 
@@ -2540,7 +2540,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 } else {
                     if (this.configHandler.linter_ignore_missing_copybook === false) {
                         const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
-                        this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
+                        this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine,trimmedCopyBook));
                     }
                 }
             }
@@ -2577,7 +2577,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     } else {
                         if (this.configHandler.linter_ignore_missing_copybook === false) {
                             const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
-                            this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
+                            this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber,filenameTrimmed));
                         }
                     }
                 }

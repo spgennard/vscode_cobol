@@ -6,6 +6,8 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { CobolLinterProviderSymbols } from "./externalfeatures";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
+import { COBOLUtils } from "./cobolutils";
+import { VSLogger } from "./vslogger";
 
 export class CobolLinterActionFixer implements CodeActionProvider {
 
@@ -17,8 +19,10 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                 continue;
             }
 
+            const codeMsg = diagnostic.code.toString();
+
             // is it ours?
-            if (diagnostic.code.toString().startsWith(CobolLinterProviderSymbols.NotReferencedMarker_internal) === true) {
+            if (codeMsg.startsWith(CobolLinterProviderSymbols.NotReferencedMarker_internal) === true) {
                 const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
                 const insertCode = diagnostic.code.toString().replace(CobolLinterProviderSymbols.NotReferencedMarker_internal, CobolLinterProviderSymbols.NotReferencedMarker_external);
                 codeActions.push({
@@ -29,7 +33,23 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                         command: "cobolplugin.insertIgnoreCommentLine",
                         arguments: [document.uri, startOfline, insertCode],
                     },
-                    kind: vscode.CodeActionKind.QuickFix,
+                    kind: vscode.CodeActionKind.QuickFix
+                });
+            }
+
+            // is it ours?
+            if (codeMsg.startsWith(CobolLinterProviderSymbols.CopyBookNotFound) === true) {
+                const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
+                const insertCode = diagnostic.code.toString().replace(CobolLinterProviderSymbols.CopyBookNotFound, "").trim();
+                codeActions.push({
+                    title: `Find copybook :${diagnostic.message}`,
+                    diagnostics: [diagnostic],
+                    command: {
+                        title: "Add COBOL lint comment to ignore the warning",
+                        command: "cobolplugin.findCopyBookDirectory",
+                        arguments: [document.uri, startOfline,insertCode],
+                    },
+                    kind: vscode.CodeActionKind.QuickFix
                 });
             }
         }
@@ -46,6 +66,19 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                 edit.insert(pos, "      *> cobol-lint " + code + "\n");
             });
         }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async findCopyBookDirectory(settings: ICOBOLSettings, docUri: vscode.Uri,  linenum: number, copybook: string) {
+        const globPattern = COBOLUtils.getCopyBookGlobPatternForPartialName(settings, copybook);
+
+        await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
+            uris.forEach((uri: vscode.Uri) => {
+                const fullPath = uri.fsPath;
+                VSLogger.logMessage(fullPath.toString());
+            });
+        });
+
     }
 }
 
@@ -66,12 +99,6 @@ export class CobolLinterProvider {
     }
 
     public async updateLinter(document: vscode.TextDocument): Promise<void> {
-
-        if (this.settings.linter === false && this.settings.scan_comments_for_hints === false) {
-            this.collection.clear();
-            return;
-        }
-
         /* drop out if not COBOL */
         if (VSExtensionUtils.isSupportedLanguage(document) !== TextLanguage.COBOL) {
             return;
@@ -82,44 +109,44 @@ export class CobolLinterProvider {
             return;
         }
 
-        if (this.sourceRefs === undefined || this.current === undefined) {
-            return;
-        }
-
-        const qp: COBOLSourceScanner = this.current;
-
         const diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
 
-        if (!qp.sourceIsCopybook) {
 
-            this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
+        if (this.current) {
+            if (this.sourceRefs !== undefined && this.settings.linter === false && !this.current.sourceIsCopybook) {
+                const qp: COBOLSourceScanner = this.current;
 
-            // handle sections & paragraphs
-            this.processScannedDocumentForUnusedSymbols(qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections);
+                this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
 
+                // handle sections & paragraphs
+                this.processScannedDocumentForUnusedSymbols(qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections);
 
-            if (qp.configHandler.linter_house_standards_rules) {
-                this.processParsedDocumentForStandards(qp, diagRefs);
+                if (qp.configHandler.linter_house_standards_rules) {
+                    this.processParsedDocumentForStandards(qp, diagRefs);
+                }
             }
-        }
 
-        if (qp.diagMissingFileWarnings.size !== 0) {
-            for (const [msg, fileSymbol] of qp.diagMissingFileWarnings) {
-                if (fileSymbol.filename !== undefined && fileSymbol.lnum !== undefined) {
-                    const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
-                    const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
-                    if (diagRefs.has(fileSymbol.filename)) {
-                        const diags = diagRefs.get(fileSymbol.filename);
-                        if (diags !== undefined) {
-                            diags.push(diagMessage);
+            if (this.settings.linter_ignore_missing_copybook === false && this.current.diagMissingFileWarnings.size !== 0) {
+                const qp: COBOLSourceScanner = this.current;
+                for (const [msg, fileSymbol] of qp.diagMissingFileWarnings) {
+                    if (fileSymbol.filename !== undefined && fileSymbol.lnum !== undefined) {
+                        const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
+                        const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
+                        diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
+                        diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound+" "+fileSymbol.missingFile;
+                        if (diagRefs.has(fileSymbol.filename)) {
+                            const diags = diagRefs.get(fileSymbol.filename);
+                            if (diags !== undefined) {
+                                diags.push(diagMessage);
+                            }
+                        } else {
+                            const arr: vscode.Diagnostic[] = [];
+                            arr.push(diagMessage);
+                            diagRefs.set(fileSymbol.filename, arr);
                         }
-                    } else {
-                        const arr: vscode.Diagnostic[] = [];
-                        arr.push(diagMessage);
-                        diagRefs.set(fileSymbol.filename, arr);
-                    }
 
+                    }
                 }
             }
         }
