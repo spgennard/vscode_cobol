@@ -644,7 +644,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public classes: Map<string, COBOLToken>;
     public methods: Map<string, COBOLToken>;
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
-    public diagWarnings: Map<string, COBOLFileSymbol>;
+    public diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
     public commentReferences: COBOLFileAndColumnSymbol[];
 
     public parse4References: boolean;
@@ -755,7 +755,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.functionTargets = new Map<string, CallTargetInformation>();
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
-        this.diagWarnings = new Map<string, COBOLFileSymbol>();
+        this.diagMissingFileWarnings = new Map<string, COBOLFileSymbol>();
         this.commentReferences = [];
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
@@ -1061,7 +1061,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.functionTargets.clear();
         this.classes.clear();
         this.methods.clear();
-        this.diagWarnings.clear();
+        this.diagMissingFileWarnings.clear();
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;
         this.scanAborted = true;
@@ -2540,7 +2540,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 } else {
                     if (this.configHandler.linter_ignore_missing_copybook === false) {
                         const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
-                        this.diagWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
+                        this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine));
                     }
                 }
             }
@@ -2577,7 +2577,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     } else {
                         if (this.configHandler.linter_ignore_missing_copybook === false) {
                             const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
-                            this.diagWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
+                            this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber));
                         }
                     }
                 }
