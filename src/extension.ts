@@ -760,6 +760,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_types = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_types`);
         const md_metadata_files = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_files`);
         const md_metadata_knowncopybooks = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_knowncopybooks`);
+        const md_copybookdirs = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.copybookdirs`);        
         const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
         const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
         const enable_comments_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_comments_tags`);
@@ -804,6 +805,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
             if (md_metadata_knowncopybooks) {
                 COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, true);
+            }
+
+            if (md_copybookdirs) {
+                VSCOBOLSourceScanner.clearCOBOLCache();
+                setupLogChannelAndPaths(true, settings, true);
+                COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+                COBOLUtils.populateDefaultCopyBooksSync(settings, true);
             }
 
             if (maintain_metadata_recursive_search) {

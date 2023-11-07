@@ -8,6 +8,9 @@ import { CobolLinterProviderSymbols } from "./externalfeatures";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { COBOLUtils } from "./cobolutils";
 import { VSLogger } from "./vslogger";
+import { VSCOBOLFileUtils } from "./vsfileutils";
+import path from "path";
+import { ExtensionDefaults } from "./extensionDefaults";
 
 export class CobolLinterActionFixer implements CodeActionProvider {
 
@@ -70,15 +73,41 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async findCopyBookDirectory(settings: ICOBOLSettings, docUri: vscode.Uri,  linenum: number, copybook: string) {
-        const globPattern = COBOLUtils.getCopyBookGlobPatternForPartialName(settings, copybook);
+        let files: vscode.Uri[] = [];
+        files = await vscode.workspace.findFiles(`**/${copybook}`);
+        if (files.length === 0) {
+            const globPattern = COBOLUtils.getCopyBookGlobPatternForPartialName(settings, copybook);
+            files = await vscode.workspace.findFiles(globPattern);
+        }
+        
+        if (files.length === 0) {
+            vscode.window.showInformationMessage(`Unable to locate ${copybook} in workspace`);
+            return;
+        }
 
-        await vscode.workspace.findFiles(globPattern).then((uris: vscode.Uri[]) => {
-            uris.forEach((uri: vscode.Uri) => {
-                const fullPath = uri.fsPath;
-                VSLogger.logMessage(fullPath.toString());
-            });
-        });
-
+        for (const uri of files) {
+            const fullPath = uri.fsPath;
+            const workspaceFile = VSCOBOLFileUtils.getShortWorkspaceFilename(uri.scheme, uri.fsPath);
+            if (workspaceFile) {
+                let newDirname = path.dirname(workspaceFile);
+                if (copybook.indexOf("/") !== -1) {
+                    const upPathFound = copybook.split("/").length-1;
+                    for (let c = 0; c < upPathFound; c++) {
+                        newDirname = path.dirname(newDirname);
+                    }
+                }
+                const fileSearchDirectory = settings.copybookdirs;
+                fileSearchDirectory.push(newDirname);
+                const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
+                editorConfig.update("copybookdirs", fileSearchDirectory);
+                await vscode.commands.executeCommand("workbench.action.reloadWindow")
+                VSLogger.logMessage("Copybook dir changes:");
+                VSLogger.logMessage(` Found file        : ${fullPath.toString()}`);
+                VSLogger.logMessage(` Found short file  : ${workspaceFile}`);
+                VSLogger.logMessage(` New copybook path : ${newDirname}`);
+                return
+            }
+        }
     }
 }
 

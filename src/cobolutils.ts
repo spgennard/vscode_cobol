@@ -70,7 +70,7 @@ export class COBOLUtils {
     }
 
     public static getCopyBookGlobPatternForPartialName(config: ICOBOLSettings, partialFilename="*"): string {
-        let globString = "**/"+partialFilename+"{";
+        let globString = "**/"+partialFilename+"{,";
 
         for (const ext of config.copybookexts) {
             if (ext.length !== 0) {
