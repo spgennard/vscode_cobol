@@ -45,10 +45,10 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                 const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
                 const insertCode = diagnostic.code.toString().replace(CobolLinterProviderSymbols.CopyBookNotFound, "").trim();
                 codeActions.push({
-                    title: `Find copybook :${diagnostic.message}`,
+                    title: `Find Copybook :${diagnostic.message}`,
                     diagnostics: [diagnostic],
                     command: {
-                        title: "Add COBOL lint comment to ignore the warning",
+                        title: "Find a copybook within a workspace",
                         command: "cobolplugin.findCopyBookDirectory",
                         arguments: [document.uri, startOfline,insertCode],
                     },
@@ -140,7 +140,6 @@ export class CobolLinterProvider {
 
         const diagRefs = new Map<string, vscode.Diagnostic[]>();
         this.collection.clear();
-
 
         if (this.current) {
             if (this.sourceRefs !== undefined && this.settings.linter === false && !this.current.sourceIsCopybook) {
