@@ -7,7 +7,6 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { CobolLinterProviderSymbols } from "./externalfeatures";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { COBOLUtils } from "./cobolutils";
-import { VSLogger } from "./vslogger";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import path from "path";
 import { ExtensionDefaults } from "./extensionDefaults";
@@ -50,7 +49,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                     command: {
                         title: "Find a copybook within a workspace",
                         command: "cobolplugin.findCopyBookDirectory",
-                        arguments: [document.uri, startOfline,insertCode],
+                        arguments: [document.uri, startOfline, insertCode],
                     },
                     kind: vscode.CodeActionKind.QuickFix
                 });
@@ -71,42 +70,69 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         }
     }
 
+    private knownExternalCopybooks = new Map<string, string>(
+        [
+            ["cblproto.cpy", "$COBCPY"],
+            ["cbltypes.cpy", "$COBCPY"],
+            ["windows.cpy", "$COBCPY"],
+            ["mfunit.cpy", "$COBCPY"],
+            ["mfunit_prototypes.cpy", "$COBCPY"]
+        ],
+    );
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async findCopyBookDirectory(settings: ICOBOLSettings, docUri: vscode.Uri,  linenum: number, copybook: string) {
+    public async findCopyBookDirectory(settings: ICOBOLSettings, docUri: vscode.Uri, linenum: number, copybook: string) {
         let files: vscode.Uri[] = [];
+        const fileSearchDirectory = settings.copybookdirs;
+        let update = false;
+        if (process && process.env) {
+            if (fileSearchDirectory.indexOf("$COBCPY") === -1) {
+                const COBCPYenv = process.env["COBCPY"]
+                if (COBCPYenv !== undefined && COBCPYenv.length > 0) {
+                    fileSearchDirectory.push("$COBCPY")
+                    update = true
+                } else {
+                    const knownDir = this.knownExternalCopybooks.get(copybook);
+                    if (knownDir !== undefined) {
+                        fileSearchDirectory.push(knownDir);
+                        update = true
+                    }
+                }
+            }
+        }
+
         files = await vscode.workspace.findFiles(`**/${copybook}`);
         if (files.length === 0) {
             const globPattern = COBOLUtils.getCopyBookGlobPatternForPartialName(settings, copybook);
             files = await vscode.workspace.findFiles(globPattern);
         }
-        
-        if (files.length === 0) {
+
+        if (files.length === 0 && update === false) {
             vscode.window.showInformationMessage(`Unable to locate ${copybook} in workspace`);
             return;
         }
 
         for (const uri of files) {
-            const fullPath = uri.fsPath;
             const workspaceFile = VSCOBOLFileUtils.getShortWorkspaceFilename(uri.scheme, uri.fsPath);
             if (workspaceFile) {
                 let newDirname = path.dirname(workspaceFile);
                 if (copybook.indexOf("/") !== -1) {
-                    const upPathFound = copybook.split("/").length-1;
+                    const upPathFound = copybook.split("/").length - 1;
                     for (let c = 0; c < upPathFound; c++) {
                         newDirname = path.dirname(newDirname);
                     }
                 }
-                const fileSearchDirectory = settings.copybookdirs;
-                fileSearchDirectory.push(newDirname);
-                const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
-                editorConfig.update("copybookdirs", fileSearchDirectory);
-                await vscode.commands.executeCommand("workbench.action.reloadWindow")
-                VSLogger.logMessage("Copybook dir changes:");
-                VSLogger.logMessage(` Found file        : ${fullPath.toString()}`);
-                VSLogger.logMessage(` Found short file  : ${workspaceFile}`);
-                VSLogger.logMessage(` New copybook path : ${newDirname}`);
-                return
+                if (fileSearchDirectory.indexOf(newDirname) === -1) {
+                    fileSearchDirectory.push(newDirname);
+                    update = true;
+                }
             }
+        }
+
+        if (update) {
+            const editorConfig = vscode.workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
+            await editorConfig.update("copybookdirs", fileSearchDirectory);
+            await vscode.commands.executeCommand("workbench.action.reloadWindow")
         }
     }
 }
@@ -162,7 +188,7 @@ export class CobolLinterProvider {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
                         const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
-                        diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound+" "+fileSymbol.missingFile;
+                        diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound + " " + fileSymbol.missingFile;
                         if (diagRefs.has(fileSymbol.filename)) {
                             const diags = diagRefs.get(fileSymbol.filename);
                             if (diags !== undefined) {
