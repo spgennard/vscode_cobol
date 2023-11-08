@@ -31,7 +31,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.83.0"
+    "vscode": "^1.84.0"
   },
   "extensionKind": [
     "workspace"
@@ -2793,19 +2793,19 @@
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
-    "@types/glob-to-regexp": "^0.4.3",
-    "@types/mocha": "^10.0.3",
-    "@types/node": "^20.8.7",
-    "@types/vscode": "^1.83.1",
-    "@types/webpack-env": "^1.18.3",
-    "@typescript-eslint/eslint-plugin": "^6.8.0",
-    "@typescript-eslint/parser": "^6.8.0",
-    "@vscode/test-electron": "^2.3.5",
-    "@vscode/test-web": "^0.0.47",
+    "@types/glob-to-regexp": "^0.4.4",
+    "@types/mocha": "^10.0.4",
+    "@types/node": "^20.9.0",
+    "@types/vscode": "^1.84.1",
+    "@types/webpack-env": "^1.18.4",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@vscode/test-electron": "^2.3.6",
+    "@vscode/test-web": "^0.0.48",
     "ansi-regex": ">=6.0.1",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
-    "eslint": "^8.52.0",
+    "eslint": "^8.53.0",
     "glob": "^10.3.10",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
