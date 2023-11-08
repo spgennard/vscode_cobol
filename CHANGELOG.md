@@ -1,7 +1,25 @@
 # CHANGELOG
 
 
-## 9.10.16, origin/main, origin/HEAD allow both the formatters to work together
+## 9.11.8, origin/main, origin/HEAD add $COBCPY if present and add some knowledge about known sys copybooks
+* 5487208 tweak text
+* 262c833 add the initial version of the copybook path fixer
+* c0ba860 continue work on copybook finder
+* f9662f2 tweak name
+* 68caf30 typo
+* bccc3d1 start the process of de-emphasising any related to net express/server express
+* 68c6f89 add config
+* 1c4ef74 add setting to enable tabstop anchors
+* 91f9ede introduce interface for the anchor tabstops
+* 3f5f5c2 expand anchor tab interface
+* 1332a2e tweak tab handling avoid a slow-async startup exception (can occur when debugging ext)
+* e50c0af add tabstop out of range configuration  - continue work on fixing odd edge-cases with tab/untab
+* 0dd77b0 start to refactor tab/untab
+* b0496ce update tests
+* 4044336 add extra docomment snippets
+
+## 9.10.16 
+* a446695 allow both the formatters to work together
 
 ## 9.10.15 
 * 1a8941a tidy
