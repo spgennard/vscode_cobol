@@ -44,6 +44,7 @@ export interface ICOBOLSettings {
     copybooks_nested: boolean;
     outline: outlineFlag;
     copybookdirs: string[];
+    config_copybookdirs: string[];
     invalid_copybookdirs: string[];
     copybookexts: string[];
     program_extensions: string[];
@@ -162,6 +163,7 @@ export class COBOLSettings implements ICOBOLSettings {
     copybooks_nested: boolean;
     outline: outlineFlag;
     copybookdirs: string[];
+    config_copybookdirs: string[];
     invalid_copybookdirs: string[];
     copybookexts: string[];
     program_extensions: string[];
@@ -280,6 +282,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.fileformat_strategy = fileformatStrategy.Normal;
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];
+        this.config_copybookdirs = [];
         this.copybookexts = [];
         this.program_extensions = [];
         this.invalid_copybookdirs = [];

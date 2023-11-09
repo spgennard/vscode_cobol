@@ -18,6 +18,7 @@ export class VSCOBOLConfiguration {
         settings.enable_tabstop = getBoolean("enable_tabstop", false);
         settings.copybooks_nested = getBoolean("copybooks_nested", false);
         settings.outline = isOutlineEnabled();
+        settings.config_copybookdirs = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("copybookdirs", []);
         settings.copybookdirs = getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs);
         settings.pre_scan_line_limit = getPreScanLineLimit();
         settings.copybookexts = getCopybookExts();

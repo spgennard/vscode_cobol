@@ -36,9 +36,9 @@ export enum ESourceFormat {
 }
 
 export class CobolLinterProviderSymbols {
-    public static NotReferencedMarker_internal = "COBOL_NOT_REF";
-    public static NotReferencedMarker_external = "ignore";
-    public static CopyBookNotFound = "CopyBook";
+    public static NotReferencedMarker_internal = "CL001";
+    public static NotReferencedMarker_external = "CL002";
+    public static CopyBookNotFound = "CL003:";
     
     
 }
