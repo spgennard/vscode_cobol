@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 9.11.8, origin/main, origin/HEAD add $COBCPY if present and add some knowledge about known sys copybooks
+## 9.11.9, origin/main, origin/HEAD tweak
+
+## 9.11.8 
+* 23bae96 add $COBCPY if present and add some knowledge about known sys copybooks
 * 5487208 tweak text
 * 262c833 add the initial version of the copybook path fixer
 * c0ba860 continue work on copybook finder
