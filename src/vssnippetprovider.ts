@@ -53,6 +53,34 @@ const simpleSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "compute equal",
+        "label": "compute ⦃⦄ = ⦃⦄..",
+        "body": ["compute ${1:id} equal ${2:expression}"],
+        "description": "compute id equal expression",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "converting",
+        "label": "converting ⦃⦄",
+        "body": ["converting ${1:item}"],
+        "description": "converting item",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "corr",
+        "label": "corr ⦃⦄",
+        "body": ["corr ${1:id}"],
+        "description": "corr id",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "count in",
+        "label": "count in ⦃⦄",
+        "body": ["count in ${1:id}"],
+        "description": "count in id",
+        "scope": "cobol"
+    },
+    {
         "prefix": "copy",
         "label": "copy ⦃⦄ replacing ==⦃⦄== by ==⦃⦄==",
         "body": [
@@ -63,6 +91,34 @@ const simpleSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "date",
+        "label": "date",
+        "body": ["date ${1:yyyymmdd}"],
+        "description": "date yyyymmdd",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "day",
+        "label": "day",
+        "body": ["day ${1:yyyyddd}"],
+        "description": "day yyyyddd",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "delimited by",
+        "label": "delimited by ⦃⦄",
+        "body": ["delimited by ${1:item}"],
+        "description": "delimited by item",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "delimiter",
+        "label": "delimited by ⦃⦄",
+        "body": ["delimiter ${1:item}"],
+        "description": "delimited by",
+        "scope": "cobol"
+    },
+    {
         "prefix": "divide",
         "label": "divide ⦃⦄ by ⦃⦄ giving ⦃⦄ [remainder ⦃⦄]",
         "body": [
@@ -70,7 +126,8 @@ const simpleSnippets: ISimpleSnippet[] = [
         ],
         "description": "divide a by b giving [remainder}",
         "scope": "cobol"
-    }, {
+    },
+    {
         "prefix": "entry",
         "label": "entry ⦃literlal-1⦄",
         "body": [
@@ -168,6 +225,20 @@ const simpleSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "json generate",
+        "label": "json generate from",
+        "body": ["Json generate ${1:id} from ${2:id}"],
+        "description": "json generate ⦃⦄ from ⦃⦄",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "json parse",
+        "label": "json parse into",
+        "body": ["json parse ${1:id} into ${2:id}"],
+        "description": "json parse ⦃⦄ into ⦃⦄",
+        "scope": "cobol"
+    },
+    {
         "prefix": "linkage",
         "label": "linkage section.",
         "body": [
@@ -175,6 +246,16 @@ const simpleSnippets: ISimpleSnippet[] = [
             "$0"
         ],
         "description": "linkage section.",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "local-storage",
+        "label": "local-storage section.",
+        "body": [
+            "local-storage section.",
+            "$0"
+        ],
+        "description": "local-storage section.",
         "scope": "cobol"
     },
     {
@@ -391,31 +472,31 @@ const simpleSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
-        "prefix" : "by",
-        "label" : "by reference",
-        "body" : [
-         "by reference $0"
+        "prefix": "by",
+        "label": "by reference",
+        "body": [
+            "by reference $0"
         ],
-        "description" : "by reference",
-        "scope" : "cobol"
+        "description": "by reference",
+        "scope": "cobol"
     },
     {
-        "prefix" : "by",
-        "label" : "by value",
-        "body" : [
-         "by value $0"
+        "prefix": "by",
+        "label": "by value",
+        "body": [
+            "by value $0"
         ],
-        "description" : "by value",
-        "scope" : "cobol"
+        "description": "by value",
+        "scope": "cobol"
     },
     {
-        "prefix" : "by",
-        "label" : "by content",
-        "body" : [
-         "by content $0"
+        "prefix": "by",
+        "label": "by content",
+        "body": [
+            "by content $0"
         ],
-        "description" : "by content",
-        "scope" : "cobol"
+        "description": "by content",
+        "scope": "cobol"
     }
 ];
 
@@ -463,6 +544,27 @@ const functionSnippets: ISimpleSnippet[] = [
             "function atan(${1:tangent})$0"
         ],
         "description": "function trigonometric arc-tangent, or inverse tangent, of tangent",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "function bit-of",
+        "label": "function bit-of",
+        "body": ["function bit-of(${1:integer})$0"],
+        "description": "function to convert the argument to bits",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "function bit-to-char",
+        "label": "function bit-to-char",
+        "body": ["function bit-to-char(${1:integer})$0"],
+        "description": "function to convert bits to character",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "function char",
+        "label": "function char",
+        "body": ["function char(${1:integer})$0"],
+        "description": "get char in current col sequence",
         "scope": "cobol"
     },
     {
@@ -1117,17 +1219,17 @@ const dollarSnippets: ISimpleSnippet[] = [
         "description": "$else",
         "scope": "cobol"
     },
-	{
-		"prefix": "$if",
-        "label" : "$if directive set",
-		"body": [
-			"\\$if ${1|ACCEPTREFRESH,ACTUALPARAMS,ACUOPT,ACU-COMMENT,ACUSYNC,ACU-UNDERSCORE,ACU,ADDRSV,ADDSYN,ADV,ALIGN,ALPHA-LIT-CONT,ALPHASTART,ALTER,AMODE,ANIM,ANS85,APOST,AREACHECK,ARITH,ARITHMETIC,ASSIGN,ASSIGN-PRINTER,AUTOLOCK,BELL,BINLIT,BOUNDOPT,BOUND,BRIEF,BS2000,BWZSTAR,BYTE-MODE-MOVE,CALL-RECOVERY,CALLFH,CALLMCS,CALLSORT,CANCEL,CANCELLBR,CASE,CHANGE-MESSAGE,CHARSET,CHECK,CHECKDIV,CHECKNUM,CHECKREFMOD,CICSECM,CMPR2,COBFSTATCONV,COBIDY,COBOL370,COBOLDIR,COLLECTION,COMMAND-LINE-LINKAGE,COMP1,COMP2,COMP-5,COMP-6,COMP,COMS85,CONFIRM,CONSTANT,CONVSPACE,COPYEXT,COPYLBR,COPYLIST,COPYLISTCOMMENT,COPYPATH,COPYSEARCH,CSI,CURRENCY-SIGN,CURRENT-DATE,DATA,DATACOMPRESS,DATA-CONTEXT,DATAMAP,DATE,DECLARE,DB2,DBCHECK,DBCS,DBCSSOSI,DBSPACE,DE-EDIT,DEFAULTBYTE,DEFAULTCALLS,DETECT-LOCK,DG,DIALECT,DIRECTIVES,DIRECTIVES-IN-COMMENTS,DIR,DISPLAY,DISPSIGN,DOSVS,DOTNET,DPC-IN-SUBSCRIPT,DYNAM,EBC-COL-SEQ,ECHO,ECHOALL,ENTCOBOL,EOF-1A,ERRFORMAT,ERRLIST,ERRQ,EXITPROGRAM,FASTCALL,FASTINIT,FASTLINK,FASTSORT,FCD3,FCDALIGN,FCDCAT,FDCLEAR,FCDREG,FILESHARE,FILETYPE,FIXOPT,FLAG,FLAGAS,FLAGEUC,FLAGMIG,FLAGQ,FLAGSINEDIT,FLAGSTD,FOLD-CALL-NAME,FOLD-COPY-NAME,FORM,FP-ROUNDING,GNT,GNTLITLINKSTD,HIDE-MESSAGE,HOSTARITHMETIC,HOSTCONTZERO,HOSTFD,HOST-NUMCOMPARE,HOST-NUMMOVE,HOSTRW,IBM-MS,IBMCOMP,IDENTIFIERLEN,IDXFORMAT,IGNOREEXEC,ILARRAYPROPERTY,ILASSEMBLY,ILCLR,ILCOMPANY,ILCOPYRIGHT,ILCULTURE,ILCUTPREFIX,ILDELAYSIGN,ILDESCRIPTION,ILDOC,ILDYNCALL,ILEXPOSEALPHA,ILEXPOSEGROUP,ILEXPONENTIATION,ILFILEVERSION,ILSTRINGLOAD,JVMGEN,ILGEN,ILICON,ILKEYFILE,ILKEYNAME,ILMAIN,ILMANIFEST,ILNAMESPACE,ILNATIVE,ILNATIVERESOURCE,ILOPTIMIZEDATA,ILOUTPUT,ILPARAMS,ILPINVOKE,ILPRODUCT,ILPRODUCTVERSION,ILREF,ILRESOURCE,ILSHOWPERFORMOVERLAP,ILSMARTANNOTATE,ILSMARTLINKAGE,ILSMARTNEST,ILSMARTRESTRICT,ILSMARTSERIAL,ILSMARTTRIM,ILSOURCE,ILSTACKSIZE,ILSTATIC,ILSTDLIB,ILSUBSYSTEM,ILTARGET,ILTITLE,ILTRADEMARK,ILUSING,ILVERIFY,ILVERSION,IMPLICITSCOPE,INITIAL,INDD,INFORETURN,INIT-BY-TYPE,INITCALL,INITPTR,INT,INTDATE,INTLEVEL,IOCONV,ISO2002,IXNLSKEY,IXNUMKEY,JAPANESE,JAVA-SHAREABLE,JAVA-CALLABLE,JAVA-GEN-PROGS,JAVA-GEN-STRG,JAVA-OUTPUT-PATH,JAVA-PACKAGE-NAMEKEYCHECK,KEYCOMPRESS,LIBRARIAN,LINE-COUNT,LINKALIAS,LINKCHECK,LIST,LISTPATH,LISTWIDTH,LW,LITLINK,LITVAL-SIZE,LNKALIGN,LOCALCOUNT,LOCALSOURCEFORMAT,LOCKTYPE,MAINFRAME-FLOATING-POINT,MAKESYN,MAPNAME,MAX-ERROR,METHODDEFAULT,MF,MFLEVEL,MFCOMMENT,MFSYNC,MOVE-LEN-CHECK,MS,MVS,NATIONAL,NATIVE,NATIVE-FLOATING-POINT,NCHAR,NLS,NLSCURRENCYLENGTH,NSYMBOL,NULL-ESCAPE,NUMPROC,OBJ,ODOOSVS,ODOSLIDE,OLDBLANKLINE,OLDCOPY,OLDINDEX,OLDNEXTSENTENCE,OLDREADINTO,OLDSTRMIX,OOCTRL,OPT(Intelx86platforms),OPT(Non-Intelx86platforms),OPTIONAL-FILE,OS390,OSEXT,OSVS,OUTDD,OVERRIDE,P64,PANVALET,PARAMCOUNTCHECK,PC1,PCOMP,PERFORM-TYPE,PERFORMOPT,PPLITLINK,PREPLIST,PREPROCESS,PRESERVECASE,PRINT,PRINT-EXT,PROFILE,PROGID-COMMENT,PROGID-INT-NAME,PROTECT-LINKAGE,PROTOTYPE,P,QUAL,QUALPROC,QUERY,QUOTE,RAWLIST,RDFPATH,RDW,RECMODE,RECURSECHECK,REENTRANT,REF,REFNO,REMAINDER,REMOVE,REPORT-LINE,REPOSITORY,RESEQ,RESTRICT-GOTO,RETRYLOCK,REWRITE-LS,RM,RTNCODE-TYPE,RTNCODE-SIZE,RUNTIME-ENCODING,RWHARDPAGE,SAA,SCHEDULER,SEG,SEQCHK,SEQUENTIAL,SERIAL,SETTING,SETTINGS,SHARE-OUTDD,SHOW-DIR,SIGN,SIGNDISCARD,SIGN-FIXUP,SORTTYPE,SOURCEASM,SOURCE-ENCODING,SOURCEFORMAT,SOURCETABSTOP,SQL,SSRANGE,STDERR,STICKY-LINKAGE,STICKY-PERFORM,SUPFF,SWITCH-TYPE,SYMBSTART,SYSPUNCH,TERMPAGE,TESTCOVER,TIME,TRACE,TRUNC,TRUNCCALLNAME,TRUNCCOPY,TRUNCINC,UNICODE,USE,VERBOSE,VSC2,WARNINGS,WARNING,WB2,WB3,WB,WRITELOCK,WRITE-LOCK,WRITETHROUGHWRITETHRU,XDB,XMLGEN,XMLPARSE,XOPEN,XREF,ZEROLENGTHFALSE,ZEROSEQ,ZWB|} set",
-			"${TM_SELECTED_TEXT}",
-			"\\$end"
-		],
-		"description": "$if directive set",
-		"scope": "cobol"
-	},
+    {
+        "prefix": "$if",
+        "label": "$if directive set",
+        "body": [
+            "\\$if ${1|ACCEPTREFRESH,ACTUALPARAMS,ACUOPT,ACU-COMMENT,ACUSYNC,ACU-UNDERSCORE,ACU,ADDRSV,ADDSYN,ADV,ALIGN,ALPHA-LIT-CONT,ALPHASTART,ALTER,AMODE,ANIM,ANS85,APOST,AREACHECK,ARITH,ARITHMETIC,ASSIGN,ASSIGN-PRINTER,AUTOLOCK,BELL,BINLIT,BOUNDOPT,BOUND,BRIEF,BS2000,BWZSTAR,BYTE-MODE-MOVE,CALL-RECOVERY,CALLFH,CALLMCS,CALLSORT,CANCEL,CANCELLBR,CASE,CHANGE-MESSAGE,CHARSET,CHECK,CHECKDIV,CHECKNUM,CHECKREFMOD,CICSECM,CMPR2,COBFSTATCONV,COBIDY,COBOL370,COBOLDIR,COLLECTION,COMMAND-LINE-LINKAGE,COMP1,COMP2,COMP-5,COMP-6,COMP,COMS85,CONFIRM,CONSTANT,CONVSPACE,COPYEXT,COPYLBR,COPYLIST,COPYLISTCOMMENT,COPYPATH,COPYSEARCH,CSI,CURRENCY-SIGN,CURRENT-DATE,DATA,DATACOMPRESS,DATA-CONTEXT,DATAMAP,DATE,DECLARE,DB2,DBCHECK,DBCS,DBCSSOSI,DBSPACE,DE-EDIT,DEFAULTBYTE,DEFAULTCALLS,DETECT-LOCK,DG,DIALECT,DIRECTIVES,DIRECTIVES-IN-COMMENTS,DIR,DISPLAY,DISPSIGN,DOSVS,DOTNET,DPC-IN-SUBSCRIPT,DYNAM,EBC-COL-SEQ,ECHO,ECHOALL,ENTCOBOL,EOF-1A,ERRFORMAT,ERRLIST,ERRQ,EXITPROGRAM,FASTCALL,FASTINIT,FASTLINK,FASTSORT,FCD3,FCDALIGN,FCDCAT,FDCLEAR,FCDREG,FILESHARE,FILETYPE,FIXOPT,FLAG,FLAGAS,FLAGEUC,FLAGMIG,FLAGQ,FLAGSINEDIT,FLAGSTD,FOLD-CALL-NAME,FOLD-COPY-NAME,FORM,FP-ROUNDING,GNT,GNTLITLINKSTD,HIDE-MESSAGE,HOSTARITHMETIC,HOSTCONTZERO,HOSTFD,HOST-NUMCOMPARE,HOST-NUMMOVE,HOSTRW,IBM-MS,IBMCOMP,IDENTIFIERLEN,IDXFORMAT,IGNOREEXEC,ILARRAYPROPERTY,ILASSEMBLY,ILCLR,ILCOMPANY,ILCOPYRIGHT,ILCULTURE,ILCUTPREFIX,ILDELAYSIGN,ILDESCRIPTION,ILDOC,ILDYNCALL,ILEXPOSEALPHA,ILEXPOSEGROUP,ILEXPONENTIATION,ILFILEVERSION,ILSTRINGLOAD,JVMGEN,ILGEN,ILICON,ILKEYFILE,ILKEYNAME,ILMAIN,ILMANIFEST,ILNAMESPACE,ILNATIVE,ILNATIVERESOURCE,ILOPTIMIZEDATA,ILOUTPUT,ILPARAMS,ILPINVOKE,ILPRODUCT,ILPRODUCTVERSION,ILREF,ILRESOURCE,ILSHOWPERFORMOVERLAP,ILSMARTANNOTATE,ILSMARTLINKAGE,ILSMARTNEST,ILSMARTRESTRICT,ILSMARTSERIAL,ILSMARTTRIM,ILSOURCE,ILSTACKSIZE,ILSTATIC,ILSTDLIB,ILSUBSYSTEM,ILTARGET,ILTITLE,ILTRADEMARK,ILUSING,ILVERIFY,ILVERSION,IMPLICITSCOPE,INITIAL,INDD,INFORETURN,INIT-BY-TYPE,INITCALL,INITPTR,INT,INTDATE,INTLEVEL,IOCONV,ISO2002,IXNLSKEY,IXNUMKEY,JAPANESE,JAVA-SHAREABLE,JAVA-CALLABLE,JAVA-GEN-PROGS,JAVA-GEN-STRG,JAVA-OUTPUT-PATH,JAVA-PACKAGE-NAMEKEYCHECK,KEYCOMPRESS,LIBRARIAN,LINE-COUNT,LINKALIAS,LINKCHECK,LIST,LISTPATH,LISTWIDTH,LW,LITLINK,LITVAL-SIZE,LNKALIGN,LOCALCOUNT,LOCALSOURCEFORMAT,LOCKTYPE,MAINFRAME-FLOATING-POINT,MAKESYN,MAPNAME,MAX-ERROR,METHODDEFAULT,MF,MFLEVEL,MFCOMMENT,MFSYNC,MOVE-LEN-CHECK,MS,MVS,NATIONAL,NATIVE,NATIVE-FLOATING-POINT,NCHAR,NLS,NLSCURRENCYLENGTH,NSYMBOL,NULL-ESCAPE,NUMPROC,OBJ,ODOOSVS,ODOSLIDE,OLDBLANKLINE,OLDCOPY,OLDINDEX,OLDNEXTSENTENCE,OLDREADINTO,OLDSTRMIX,OOCTRL,OPT(Intelx86platforms),OPT(Non-Intelx86platforms),OPTIONAL-FILE,OS390,OSEXT,OSVS,OUTDD,OVERRIDE,P64,PANVALET,PARAMCOUNTCHECK,PC1,PCOMP,PERFORM-TYPE,PERFORMOPT,PPLITLINK,PREPLIST,PREPROCESS,PRESERVECASE,PRINT,PRINT-EXT,PROFILE,PROGID-COMMENT,PROGID-INT-NAME,PROTECT-LINKAGE,PROTOTYPE,P,QUAL,QUALPROC,QUERY,QUOTE,RAWLIST,RDFPATH,RDW,RECMODE,RECURSECHECK,REENTRANT,REF,REFNO,REMAINDER,REMOVE,REPORT-LINE,REPOSITORY,RESEQ,RESTRICT-GOTO,RETRYLOCK,REWRITE-LS,RM,RTNCODE-TYPE,RTNCODE-SIZE,RUNTIME-ENCODING,RWHARDPAGE,SAA,SCHEDULER,SEG,SEQCHK,SEQUENTIAL,SERIAL,SETTING,SETTINGS,SHARE-OUTDD,SHOW-DIR,SIGN,SIGNDISCARD,SIGN-FIXUP,SORTTYPE,SOURCEASM,SOURCE-ENCODING,SOURCEFORMAT,SOURCETABSTOP,SQL,SSRANGE,STDERR,STICKY-LINKAGE,STICKY-PERFORM,SUPFF,SWITCH-TYPE,SYMBSTART,SYSPUNCH,TERMPAGE,TESTCOVER,TIME,TRACE,TRUNC,TRUNCCALLNAME,TRUNCCOPY,TRUNCINC,UNICODE,USE,VERBOSE,VSC2,WARNINGS,WARNING,WB2,WB3,WB,WRITELOCK,WRITE-LOCK,WRITETHROUGHWRITETHRU,XDB,XMLGEN,XMLPARSE,XOPEN,XREF,ZEROLENGTHFALSE,ZEROSEQ,ZWB|} set",
+            "${TM_SELECTED_TEXT}",
+            "\\$end"
+        ],
+        "description": "$if directive set",
+        "scope": "cobol"
+    },
     {
         "prefix": "$display",
         "label": "$display message",
