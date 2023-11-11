@@ -270,7 +270,7 @@ const simpleSnippets: ISimpleSnippet[] = [
     },
     {
         "prefix": "program-id",
-        "label": "program-id",
+        "label": "program-id ⦃⦄",
         "body": [
             "program-id. ${1:${TM_FILENAME/(.*)\\..+$/$1/}}.",
             "$0"
@@ -286,6 +286,20 @@ const simpleSnippets: ISimpleSnippet[] = [
             "local-storage section.",
             "$0"
         ],
+        "scope": "cobol"
+    },
+    {
+        "prefix": "xml generate",
+        "label": "xml generate",
+        "body": ["xml generate ${1:item}"],
+        "description": "xml generate ⦃⦄",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "xml parse",
+        "label": "xml parse",
+        "body": ["xml parse ${1:item}"],
+        "description": "xml parse ⦃⦄",
         "scope": "cobol"
     },
     {
