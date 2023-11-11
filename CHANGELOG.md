@@ -1,7 +1,12 @@
 # CHANGELOG
 
 
-## 9.11.9, origin/main, origin/HEAD tweak
+## 9.11.10, origin/main, origin/HEAD add support for old cobol-lint tags
+* 4cc7b85 add xml snippet
+* 89c94f5 add more snippets
+
+## 9.11.9 
+* 76d2aed tweak
 
 ## 9.11.8 
 * 23bae96 add $COBCPY if present and add some knowledge about known sys copybooks
