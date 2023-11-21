@@ -447,7 +447,7 @@
         "coboleditor.linter": {
           "type": "boolean",
           "description": "When enabled, activate basic linting (limited to sections/paragraph use)",
-          "default": false
+          "default": true
         },
         "coboleditor.linter_mark_as_information": {
           "type": "boolean",

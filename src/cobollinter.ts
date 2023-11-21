@@ -162,6 +162,12 @@ export class CobolLinterProvider {
     }
 
     public async updateLinter(document: vscode.TextDocument): Promise<void> {
+
+        /* drop out early */
+        if (this.settings.linter === false) {
+            return;
+        }
+
         /* drop out if not COBOL */
         if (VSExtensionUtils.isSupportedLanguage(document) !== TextLanguage.COBOL) {
             return;
@@ -176,7 +182,7 @@ export class CobolLinterProvider {
         this.collection.clear();
 
         if (this.current) {
-            if (this.sourceRefs !== undefined && this.settings.linter === false && !this.current.sourceIsCopybook) {
+            if (this.sourceRefs !== undefined && !this.current.sourceIsCopybook) {
                 const qp: COBOLSourceScanner = this.current;
 
                 this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
