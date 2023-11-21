@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.11.21",
+  "version": "9.11.22",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1287,6 +1287,7 @@
         "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[ACUCOBOL]": {
+        "coboleditor.linter":true,
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,
         "editor.insertSpaces": true,
@@ -1303,6 +1304,7 @@
         "editor.wordSeparators": "`~!#$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[dir]": {
+        "coboleditor.linter":true,
         "editor.semanticHighlighting.enabled": false,
         "editor.insertSpaces": true,
         "editor.guides.indentation": false,
