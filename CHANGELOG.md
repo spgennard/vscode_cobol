@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 9.11.22, origin/main, origin/HEAD change defaults for the linter for acucobol/dir
+
+## 9.11.21 
 * 0d3a19c Fix #331 - coboleditor.linter was not being honoured
 
 ## 9.11.10 
