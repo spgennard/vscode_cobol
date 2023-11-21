@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 0d3a19c Fix #331 - coboleditor.linter was not being honoured
 
-## 9.11.10, origin/main, origin/HEAD add support for old cobol-lint tags
+## 9.11.10 
+* 9e55388 add support for old cobol-lint tags
 * 4cc7b85 add xml snippet
 * 89c94f5 add more snippets
 
