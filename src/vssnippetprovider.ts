@@ -1309,6 +1309,16 @@ const isoSnippets: ISimpleSnippet[] = [
         ],
         "description": ">>evaluate.. >>when... >>end-evaluate",
         "scope": "cobol"
+    },
+    
+    {
+         "label": ">>java-shareable [on|off]",
+        "prefix": ">>java-shareable",
+        "body": [
+            ">>java-shareable ${1|on,off|}",
+        ],
+        "description": ">>java-shareable [on|off]",
+        "scope": "cobol"       
     }
 
 ];
