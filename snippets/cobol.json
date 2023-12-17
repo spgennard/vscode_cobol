@@ -486,5 +486,15 @@
 		],
 		"description": "Create 'perform section' from selection",
 		"scope": "cobol"
+	},
+	"java-sharable-section": {
+		"prefix": "java-sharable",
+		"body": [
+			"       >>JAVA-SHAREABLE ON",
+			"${TM_SELECTED_TEXT}",
+			"       >>JAVA-SHAREABLE OFF"
+		],
+		"description": "Wrapping working-storage items that are interoperable with Java",
+		"scope": "cobol"
 	}
 }
