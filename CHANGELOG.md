@@ -1,7 +1,12 @@
 # CHANGELOG
 
 
-## 9.12.14, origin/main, origin/HEAD add java-callable
+## 9.12.21, origin/main, origin/HEAD add better copybook defaults
+* 00f8e42 add java-sharable on/off
+* f06c6ef add java interop reserved exception register
+
+## 9.12.14 
+* 02d7923 add java-callable
 
 ## 9.11.22 
 * 10dd331 Update
