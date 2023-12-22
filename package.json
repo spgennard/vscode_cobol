@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "9.12.14",
+  "version": "9.12.21",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -311,7 +311,10 @@
               }
             }
           },
-          "default": [],
+          "default": [
+            "$COBCPY",
+            "$COPYPATH"
+          ],
           "description": "COBOL CopyBook directories to search into",
           "uniqueItems": true
         },
