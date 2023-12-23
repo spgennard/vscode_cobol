@@ -20,9 +20,9 @@ export class SourcePorter {
     private _gnuDirectives: portSwap[] =
         [
             [/>>CALL-CONVENTION COBOL/, "$set DEFAULTCALLS(0)", "Change to DEFAULTCALLS(0)"],
-            [/>>CALL-CONVENTION EXTERN/, "", "Remove"],
-            [/>>CALL-CONVENTION STDCALL/, "", "Remove"],
-            [/>>CALL-CONVENTION STATIC/, "", "Remove"]
+            [/(>>CALL-CONVENTION EXTERN)/, "*> $1", "Comment out"],
+            [/>>CALL-CONVENTION STDCALL/, "$set DEFAULTCALLS(74)", "Change to DEFAULTCALLS(74)"],
+            [/>>CALL-CONVENTION STATIC/, "$set litlink", "Change to $set litlink"]
         ];
 
     constructor() {
