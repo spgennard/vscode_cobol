@@ -13,6 +13,7 @@ import * as path from "path";
 import { SourceFormat } from "./sourceformat";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { SplitTokenizer } from "./splittoken";
+import { SourcePorter, portResult } from "./vsdirectivesconv";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -645,6 +646,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public methods: Map<string, COBOLToken>;
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
     public diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
+    public portWarnings: Map<string, portResult>;
+    
     public commentReferences: COBOLFileAndColumnSymbol[];
 
     public parse4References: boolean;
@@ -686,6 +689,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     readonly COBOLKeywordDictionary: Map<string, string>;
 
+    private sourcePorter: SourcePorter = new SourcePorter();
 
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
@@ -756,6 +760,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.diagMissingFileWarnings = new Map<string, COBOLFileSymbol>();
+        this.portWarnings = new Map<string, portResult>();
         this.commentReferences = [];
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
@@ -970,6 +975,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         this.clearScanData();
                         return;
                     }
+                }
+                const portResult = this.sourcePorter.gnuPortActionRequired(this.filename, l, line);
+                if (portResult !== undefined) {
+                    this.portWarnings.set(portResult.message, portResult);
                 }
             }
             catch (e) {

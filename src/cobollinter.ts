@@ -54,6 +54,28 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                     kind: vscode.CodeActionKind.QuickFix
                 });
             }
+
+                // is it ours?
+            if (codeMsg.startsWith(CobolLinterProviderSymbols.PortMessage) === true) {
+                const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
+                let portChangeLine = diagnostic.code.toString().replace(CobolLinterProviderSymbols.PortMessage, "").trim();
+                if (portChangeLine.startsWith("$")) {
+                    portChangeLine = "      "+portChangeLine;
+                } else {
+                    portChangeLine = "       "+portChangeLine;
+                }
+
+                codeActions.push({
+                    title: `Change line to ${portChangeLine.trim()}`,
+                    diagnostics: [diagnostic],
+                    command: {
+                        title: "Change line",
+                        command: "cobolplugin.portCodeCommandLine",
+                        arguments: [document.uri, startOfline, portChangeLine],
+                    },
+                    kind: vscode.CodeActionKind.QuickFix
+                });
+            }
         }
         return codeActions;
     }
@@ -66,6 +88,18 @@ export class CobolLinterActionFixer implements CodeActionProvider {
             const pos = w.document.positionAt(offset);
             await w.edit(edit => {
                 edit.insert(pos, "      *> cobol-lint " + code + "\n");
+            });
+        }
+    }
+
+    public async portCodeCommandLine(docUri: vscode.Uri, offset: number, code: string): Promise<void> {
+        await vscode.window.showTextDocument(docUri);
+        const w = vscode.window.activeTextEditor;
+
+        if (w !== undefined && code !== undefined) {
+            const l = w.document.lineAt(offset);
+            await w.edit(edit => {
+                edit.replace(l.range,code);
             });
         }
     }
@@ -217,6 +251,30 @@ export class CobolLinterProvider {
                     }
                 }
             }
+ 
+            if (this.current.portWarnings.size !== 0) {
+                const qp: COBOLSourceScanner = this.current;
+                for (const [msg, fileSymbol] of qp.portWarnings) {
+                    if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
+                        const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
+                        const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
+                        diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
+                        diagMessage.code = CobolLinterProviderSymbols.PortMessage + fileSymbol.replaceLine;
+                        if (diagRefs.has(fileSymbol.filename)) {
+                            const diags = diagRefs.get(fileSymbol.filename);
+                            if (diags !== undefined) {
+                                diags.push(diagMessage);
+                            }
+                        } else {
+                            const arr: vscode.Diagnostic[] = [];
+                            arr.push(diagMessage);
+                            diagRefs.set(fileSymbol.filename, arr);
+                        }
+                    }
+                }
+            }
+ 
+ 
         }
 
         for (const [f, value] of diagRefs) {
