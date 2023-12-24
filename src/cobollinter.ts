@@ -55,14 +55,13 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                 });
             }
 
-                // is it ours?
+            // is it ours?
             if (codeMsg.startsWith(CobolLinterProviderSymbols.PortMessage) === true) {
-                const startOfline = document.offsetAt(new vscode.Position(diagnostic.range.start.line, 0));
                 let portChangeLine = diagnostic.code.toString().replace(CobolLinterProviderSymbols.PortMessage, "").trim();
                 if (portChangeLine.startsWith("$")) {
-                    portChangeLine = "      "+portChangeLine;
+                    portChangeLine = "      " + portChangeLine;
                 } else {
-                    portChangeLine = "       "+portChangeLine;
+                    portChangeLine = "       " + portChangeLine;
                 }
 
                 codeActions.push({
@@ -71,7 +70,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                     command: {
                         title: "Change line",
                         command: "cobolplugin.portCodeCommandLine",
-                        arguments: [document.uri, startOfline, portChangeLine],
+                        arguments: [document.uri, diagnostic.range.start.line, portChangeLine],
                     },
                     kind: vscode.CodeActionKind.QuickFix
                 });
@@ -92,14 +91,15 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         }
     }
 
-    public async portCodeCommandLine(docUri: vscode.Uri, offset: number, code: string): Promise<void> {
+    public async portCodeCommandLine(docUri: vscode.Uri, lineNumber: number, code: string): Promise<void> {
         await vscode.window.showTextDocument(docUri);
         const w = vscode.window.activeTextEditor;
 
         if (w !== undefined && code !== undefined) {
-            const l = w.document.lineAt(offset);
+            
             await w.edit(edit => {
-                edit.replace(l.range,code);
+                const line = w.document.lineAt(lineNumber);
+                edit.replace(line.range,code);
             });
         }
     }
@@ -251,7 +251,7 @@ export class CobolLinterProvider {
                     }
                 }
             }
- 
+
             if (this.current.portWarnings.size !== 0) {
                 const qp: COBOLSourceScanner = this.current;
                 for (const [msg, fileSymbol] of qp.portWarnings) {
@@ -273,8 +273,8 @@ export class CobolLinterProvider {
                     }
                 }
             }
- 
- 
+
+
         }
 
         for (const [f, value] of diagRefs) {

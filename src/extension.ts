@@ -865,8 +865,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
         cobolfixer.insertIgnoreCommentLine(docUri, offset, code);
     }));
 
-    context.subscriptions.push(commands.registerCommand("cobolplugin.portCodeCommandLine", function (docUri: vscode.Uri, offset: number, code: string) {
-        cobolfixer.portCodeCommandLine(docUri, offset, code);
+    context.subscriptions.push(commands.registerCommand("cobolplugin.portCodeCommandLine", function (docUri: vscode.Uri, lineNumber: number, code: string) {
+        cobolfixer.portCodeCommandLine(docUri, lineNumber, code);
     }));
 
 

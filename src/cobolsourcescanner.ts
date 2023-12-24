@@ -976,7 +976,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         return;
                     }
                 }
-                const portResult = this.sourcePorter.gnuPortActionRequired(this.filename, l, line);
+                const portResult = this.sourcePorter.isDirectiveChangeRequired(this.filename, l, line);
                 if (portResult !== undefined) {
                     this.portWarnings.set(portResult.message, portResult);
                 }
