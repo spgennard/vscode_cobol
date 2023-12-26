@@ -1,7 +1,12 @@
 # CHANGELOG
 
+* b2fa865 change sub to warning
+* 41c740a add source format directives changer
+* 39afa8f fill into the other directives
+* 2595568 add initial directives changer
 
-## 9.12.21, origin/main, origin/HEAD add better copybook defaults
+## 9.12.21 
+* 52fe2b1 add better copybook defaults
 * 00f8e42 add java-sharable on/off
 * f06c6ef add java interop reserved exception register
 
