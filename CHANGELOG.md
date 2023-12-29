@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* dd7bf2b add >>elif to the non-portable bit
+* ad81afa only enable directives convertor for COBOL/BITLANG-COBOL
+
+## 9.12.25 
 * b2fa865 change sub to warning
 * 41c740a add source format directives changer
 * 39afa8f fill into the other directives
