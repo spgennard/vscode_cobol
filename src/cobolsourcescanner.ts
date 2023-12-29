@@ -647,7 +647,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
     public diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
     public portWarnings: Map<string, portResult>;
-    
+
     public commentReferences: COBOLFileAndColumnSymbol[];
 
     public parse4References: boolean;
@@ -684,6 +684,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     public scanAborted: boolean;
 
+    private languageId: string;
+    private isCOBOLLanguageId: boolean;
     private currentExec = "";
     private currentExecVerb = "";
 
@@ -766,7 +768,18 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.cache4PerformTargets = undefined;
         this.cache4ConstantsOrVars = undefined;
         this.scanAborted = false;
-        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(this.sourceHandler.getLanguageId());
+        this.languageId = this.sourceHandler.getLanguageId();
+        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(this.languageId);
+        switch(this.languageId.toLocaleLowerCase()) {
+            case "cobol":
+            case "bitlang-cobol":
+                    this.isCOBOLLanguageId = true;
+                    break;
+            default:
+                    this.isCOBOLLanguageId = false;
+                    break;
+        }
+
         let sourceLooksLikeCOBOL = false;
         let prevToken: Token = Token.Blank;
 
@@ -976,9 +989,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         return;
                     }
                 }
-                const portResult = this.sourcePorter.isDirectiveChangeRequired(this.filename, l, line);
-                if (portResult !== undefined) {
-                    this.portWarnings.set(portResult.message, portResult);
+
+                // only do this for "COBOL" language
+                if (this.isCOBOLLanguageId) {
+                    const portResult = this.sourcePorter.isDirectiveChangeRequired(this.filename, l, line);
+                    if (portResult !== undefined) {
+                        this.portWarnings.set(portResult.message, portResult);
+                    }
                 }
             }
             catch (e) {
@@ -1117,7 +1134,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     public getCopyFilename(copybook: string, inInfo: string): string {
-        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(copybook.trim(),true);
+        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(copybook.trim(), true);
 
         return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
     }
@@ -1790,7 +1807,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 }
                                 if (tcurrentLower.length > 0 && !cbState.isOf && !cbState.isIn && !cbState.isReplacing) {
                                     cbState.copyBook = tcurrent;
-                                    cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrent,true);
+                                    cbState.trimmedCopyBook = COBOLSourceScanner.trimLiteral(tcurrent, true);
                                     cbState.startLineNumber = lineNumber;
                                     cbState.startCol = state.inCopyStartColumn; // stored when 'copy' is seen
                                     cbState.line = line;
@@ -2549,7 +2566,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 } else {
                     if (this.configHandler.linter_ignore_missing_copybook === false) {
                         const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
-                        this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine,trimmedCopyBook));
+                        this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
                     }
                 }
             }
@@ -2586,7 +2603,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     } else {
                         if (this.configHandler.linter_ignore_missing_copybook === false) {
                             const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
-                            this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber,filenameTrimmed));
+                            this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber, filenameTrimmed));
                         }
                     }
                 }
