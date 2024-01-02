@@ -14,19 +14,31 @@ export class portResult {
     }
 }
 
-type portSwap = [number, RegExp, string, string];
+class portSwap {
+    lastNumber: number;
+    search: RegExp;
+    replaceLine: string;
+    message: string;
+
+    constructor(lastLine: number, search: RegExp, replaceLine: string, message: string) {
+        this.lastNumber = lastLine;
+        this.search = search;
+        this.replaceLine = replaceLine;
+        this.message = message;
+    }
+}
 
 export class SourcePorter {
     private isActive = true;
-    private _gnuDirectives: portSwap[] =
+    private _portsDirectives: portSwap[] =
         [
-            [100, new RegExp(">>CALL-CONVENTION COBOL", "i"), "$set defaultcalls(0)", "Change to defaultcalls(0)"],
-            [100, new RegExp("(>>CALL-CONVENTION EXTERN)", "i"), "*> $1", "Comment out"],
-            [100, new RegExp(">>CALL-CONVENTION STDCALL", "i"), "$set defaultcalls(74)", "Change to defaultcalls(74)"],
-            [100, new RegExp(">>CALL-CONVENTION STATIC", "i"), "$set litlink", "Change to $set litlink"],
-            [100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+FREE|FREE)", "i"), "$set sourceformat(free)", "Change to $set sourceformat(free)"],
-            [100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+FIXED|FIXED)", "i"), "$set sourceformat(fixed)", "Change to $set sourceformat(fixed)"],
-            [100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+VARIABLE|VARIABLE)", "i"), "$set sourceformat(variable)", "Change to $set sourceformat(variable)"]
+            new portSwap(100, new RegExp(">>CALL-CONVENTION COBOL", "i"), "$set defaultcalls(0)", "Change to defaultcalls(0)"),
+            new portSwap(100, new RegExp("(>>CALL-CONVENTION EXTERN)", "i"), "*> $1", "Comment out"),
+            new portSwap(100, new RegExp(">>CALL-CONVENTION STDCALL", "i"), "$set defaultcalls(74)", "Change to defaultcalls(74)"),
+            new portSwap(100, new RegExp(">>CALL-CONVENTION STATIC", "i"), "$set litlink", "Change to $set litlink"),
+            new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+FREE|FREE)", "i"), "$set sourceformat(free)", "Change to $set sourceformat(free)"),
+            new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+FIXED|FIXED)", "i"), "$set sourceformat(fixed)", "Change to $set sourceformat(fixed)"),
+            new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+VARIABLE|VARIABLE)", "i"), "$set sourceformat(variable)", "Change to $set sourceformat(variable)")
         ];
 
     constructor() {
@@ -45,15 +57,15 @@ export class SourcePorter {
         }
 
         /* keep an account of active regex's */
-        let acitveCount = this._gnuDirectives.length;
+        let acitveCount = this._portsDirectives.length;
         this.isActive = true;
-        for (const gnuDirctive of this._gnuDirectives) {
-            if (gnuDirctive[0] > lineNumber) {
+        for (const gnuDirctive of this._portsDirectives) {
+            if (gnuDirctive.lastNumber > lineNumber) {
                 acitveCount--;
             }
-            if (gnuDirctive[1].test(line)) {
-                const repResult = line.replace(gnuDirctive[1], gnuDirctive[2]);
-                return new portResult(filename, lineNumber, repResult, gnuDirctive[3]);
+            if (gnuDirctive.search.test(line)) {
+                const repResult = line.replace(gnuDirctive.search, gnuDirctive.replaceLine);
+                return new portResult(filename, lineNumber, repResult, gnuDirctive.message);
             }
         }
 
