@@ -38,7 +38,8 @@ export class SourcePorter {
             new portSwap(100, new RegExp(">>CALL-CONVENTION STATIC", "i"), "$set litlink", "Change to $set litlink"),
             new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+FREE|FREE)", "i"), "$set sourceformat(free)", "Change to $set sourceformat(free)"),
             new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+FIXED|FIXED)", "i"), "$set sourceformat(fixed)", "Change to $set sourceformat(fixed)"),
-            new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+VARIABLE|VARIABLE)", "i"), "$set sourceformat(variable)", "Change to $set sourceformat(variable)")
+            new portSwap(100, new RegExp(">>SOURCE\\s+FORMAT\\s+(IS\\s+VARIABLE|VARIABLE)", "i"), "$set sourceformat(variable)", "Change to $set sourceformat(variable)"),
+            new portSwap(Number.MAX_VALUE, new RegExp("FUNCTION\\s+SUBSTITUTE","i"),"","Re-write to use 'INSPECT REPLACING' or custom/search replace")
         ];
 
     constructor() {
@@ -59,13 +60,13 @@ export class SourcePorter {
         /* keep an account of active regex's */
         let acitveCount = this._portsDirectives.length;
         this.isActive = true;
-        for (const gnuDirctive of this._portsDirectives) {
-            if (gnuDirctive.lastNumber > lineNumber) {
+        for (const portLine of this._portsDirectives) {
+            if (portLine.lastNumber > lineNumber) {
                 acitveCount--;
             }
-            if (gnuDirctive.search.test(line)) {
-                const repResult = line.replace(gnuDirctive.search, gnuDirctive.replaceLine);
-                return new portResult(filename, lineNumber, repResult, gnuDirctive.message);
+            if (portLine.search.test(line)) {
+                const repResult = portLine.replaceLine.length !== 0 ? line.replace(portLine.search, portLine.replaceLine) : "";
+                return new portResult(filename, lineNumber, repResult, portLine.message);
             }
         }
 

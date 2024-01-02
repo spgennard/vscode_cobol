@@ -64,16 +64,20 @@ export class CobolLinterActionFixer implements CodeActionProvider {
                     portChangeLine = "       " + portChangeLine;
                 }
 
-                codeActions.push({
-                    title: `Change line to ${portChangeLine.trim()}`,
-                    diagnostics: [diagnostic],
-                    command: {
-                        title: "Change line",
-                        command: "cobolplugin.portCodeCommandLine",
-                        arguments: [document.uri, diagnostic.range.start.line, portChangeLine],
-                    },
-                    kind: vscode.CodeActionKind.QuickFix
-                });
+                const trimChangedLine = portChangeLine.trim();
+
+                if (trimChangedLine.length !== 0) {
+                    codeActions.push({
+                        title: `Change line to ${trimChangedLine}`,
+                        diagnostics: [diagnostic],
+                        command: {
+                            title: "Change line",
+                            command: "cobolplugin.portCodeCommandLine",
+                            arguments: [document.uri, diagnostic.range.start.line, portChangeLine],
+                        },
+                        kind: vscode.CodeActionKind.QuickFix
+                    });
+                }
             }
         }
         return codeActions;
@@ -96,10 +100,10 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         const w = vscode.window.activeTextEditor;
 
         if (w !== undefined && code !== undefined) {
-            
+
             await w.edit(edit => {
                 const line = w.document.lineAt(lineNumber);
-                edit.replace(line.range,code);
+                edit.replace(line.range, code);
             });
         }
     }
@@ -251,12 +255,12 @@ export class CobolLinterProvider {
                 }
             }
 
-            if (this.current.portWarnings.size !== 0) {
+            if (this.current.portWarnings.length !== 0) {
                 const qp: COBOLSourceScanner = this.current;
-                for (const [msg, fileSymbol] of qp.portWarnings) {
+                for (const fileSymbol of qp.portWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
-                        const diagMessage = new vscode.Diagnostic(r, msg, this.linterSev);
+                        const diagMessage = new vscode.Diagnostic(r, fileSymbol.message, this.linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
                         diagMessage.code = CobolLinterProviderSymbols.PortMessage + fileSymbol.replaceLine;
                         if (diagRefs.has(fileSymbol.filename)) {

@@ -646,7 +646,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public methods: Map<string, COBOLToken>;
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
     public diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
-    public portWarnings: Map<string, portResult>;
+    public portWarnings: portResult[];
 
     public commentReferences: COBOLFileAndColumnSymbol[];
 
@@ -762,7 +762,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.diagMissingFileWarnings = new Map<string, COBOLFileSymbol>();
-        this.portWarnings = new Map<string, portResult>();
+        this.portWarnings = [];
         this.commentReferences = [];
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
@@ -994,7 +994,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (this.isCOBOLLanguageId) {
                     const portResult = this.sourcePorter.isDirectiveChangeRequired(this.filename, l, line);
                     if (portResult !== undefined) {
-                        this.portWarnings.set(portResult.message, portResult);
+                        this.portWarnings.push(portResult);
                     }
                 }
             }
