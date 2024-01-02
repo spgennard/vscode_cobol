@@ -183,7 +183,7 @@ export class CobolLinterProvider {
     private settings: ICOBOLSettings;
 
     private collection: vscode.DiagnosticCollection;
-    private linterSev: vscode.DiagnosticSeverity;
+    private readonly linterSev: vscode.DiagnosticSeverity;
 
     private current: COBOLSourceScanner | undefined;
     private currentVersion?: number;
@@ -219,7 +219,6 @@ export class CobolLinterProvider {
             if (this.sourceRefs !== undefined && !this.current.sourceIsCopybook) {
                 const qp: COBOLSourceScanner = this.current;
 
-                this.linterSev = this.settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
 
                 // handle sections & paragraphs
                 this.processScannedDocumentForUnusedSymbols(qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections);
@@ -234,7 +233,7 @@ export class CobolLinterProvider {
                 for (const [msg, fileSymbol] of qp.diagMissingFileWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.lnum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
-                        const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
+                        const diagMessage = new vscode.Diagnostic(r, msg, this.linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
                         diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound + fileSymbol.missingFile;
                         if (diagRefs.has(fileSymbol.filename)) {
@@ -257,7 +256,7 @@ export class CobolLinterProvider {
                 for (const [msg, fileSymbol] of qp.portWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
-                        const diagMessage = new vscode.Diagnostic(r, msg, vscode.DiagnosticSeverity.Information);
+                        const diagMessage = new vscode.Diagnostic(r, msg, this.linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
                         diagMessage.code = CobolLinterProviderSymbols.PortMessage + fileSymbol.replaceLine;
                         if (diagRefs.has(fileSymbol.filename)) {
