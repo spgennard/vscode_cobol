@@ -99,6 +99,7 @@
         "coboleditor.linter_mark_as_information",
         "coboleditor.linter_unused_sections",
         "coboleditor.linter_unused_paragraphs",
+        "coboleditor.linter_port_helper",
         "coboleditor.sourceview",
         "coboleditor.sourceview_include_jcl_files",
         "coboleditor.sourceview_include_hlasm_files",
@@ -465,6 +466,11 @@
         "coboleditor.linter_unused_paragraphs": {
           "type": "boolean",
           "description": "When enabled, activate basic linting (limited to paragraph use)",
+          "default": true
+        },
+        "coboleditor.linter_port_helper" : {
+          "type": "boolean",
+          "description": "When enabled, activate basic source code portation linting",
           "default": true
         },
         "coboleditor.sourceview": {

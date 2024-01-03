@@ -43,7 +43,8 @@ export class VSCOBOLConfiguration {
         settings.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
         settings.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
         settings.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
-
+        settings.linter_port_helper = getBoolean("linter_port_helper", true);
+        
         // scan for comments can cause a file access.. so it cannot be trusted
         settings.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
 

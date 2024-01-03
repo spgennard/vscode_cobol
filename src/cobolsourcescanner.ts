@@ -685,7 +685,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public scanAborted: boolean;
 
     private languageId: string;
-    private isCOBOLLanguageId: boolean;
+    private usePortationSourceScanner: boolean;
     private currentExec = "";
     private currentExecVerb = "";
 
@@ -773,10 +773,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         switch(this.languageId.toLocaleLowerCase()) {
             case "cobol":
             case "bitlang-cobol":
-                    this.isCOBOLLanguageId = true;
+                    this.usePortationSourceScanner = configHandler.linter_port_helper;
                     break;
             default:
-                    this.isCOBOLLanguageId = false;
+                    this.usePortationSourceScanner = false;
                     break;
         }
 
@@ -991,7 +991,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
 
                 // only do this for "COBOL" language
-                if (this.isCOBOLLanguageId) {
+                if (this.usePortationSourceScanner) {
                     const portResult = this.sourcePorter.isDirectiveChangeRequired(this.filename, l, line);
                     if (portResult !== undefined) {
                         this.portWarnings.push(portResult);
