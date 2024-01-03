@@ -1,5 +1,11 @@
 # CHANGELOG
 
+
+## 10.1.1, origin/main, origin/HEAD add config for the portation scanner
+* b7a8a8c add "function sub" lint message
+* 43e4d5e use cached linter severity in a consistent manor
+
+## 9.12.28 
 * dd7bf2b add >>elif to the non-portable bit
 * ad81afa only enable directives convertor for COBOL/BITLANG-COBOL
 
