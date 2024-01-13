@@ -912,6 +912,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 sourceLooksLikeCOBOL = true;
             }
 
+            /* if the source has an extension, then continue on.. */
+            if (hasCOBOLExtension) {
+                sourceLooksLikeCOBOL = true;
+            }
+            
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
                 if (filename.length > 0) {
@@ -921,11 +926,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
                     }
                 }
-            }
-
-            /* if the source has an extension, then continue on.. */
-            if (hasCOBOLExtension) {
-                sourceLooksLikeCOBOL = true;
             }
 
             // drop out early
