@@ -1,7 +1,10 @@
 # CHANGELOG
 
+* a362766 COBOL extension supplements pre-parse check
+* 8c6771e standard is okay
 
-## 10.1.1, origin/main, origin/HEAD add config for the portation scanner
+## 10.1.1 
+* b4f505f add config for the portation scanner
 * b7a8a8c add "function sub" lint message
 * 43e4d5e use cached linter severity in a consistent manor
 
