@@ -28,6 +28,54 @@ class portSwap {
     }
 }
 
+
+// https://www.ibm.com/docs/en/cobol-zos/6.1?topic=program-compiler-options
+// https://www.microfocus.com/documentation/enterprise-developer/ed90/ED-EclipseUNIX/HRCDRHCDIR0W.html
+const ibm2mf = [
+    [ "QUOTE","QUOTE" ],
+    [ "APOST","APOST" ],
+    [ "CICS", "CICSECM"],
+    [ "CODEPAGE(XX)", ""],
+    [ "CURRENCY", ""],
+    [ "NOCURRENCY", ""],
+    [ "NSYMBOL(NATIONAL)", "NSYMBOL(NATIONAL)"],
+    [ "NS(DBDC)", "NSYMBOL(DBCS)"],
+    [ "NS(NAT)", "NSYMBOL(NATIONAL)"],
+    [ "NUMBER", ""],
+    [ "NONUMBER", ""],
+    [ "QUALIFY(COMPAT)", ""],
+    [ "QUA(C)", ""],
+    [ "QUA(E)", ""],
+    [ "SEQUENCE", "SQCHK"],
+    [ "SEQ", "SQCHK"],
+    [ "NOSEQ", "NOSQCHK"],
+    [ "SQL", "SQL"],
+    [ "NOSQL", "NOSQL"],
+    [ "SQLCCSID", ""],
+    [ "SQLC", ""],
+    [ "SQLIMS", ""],
+    [ "SUPPRESS", ""],
+    [ "SUPPR", ""],
+    [ "WORD", "ADDRSV"],
+    [ "NOWORD", ""],
+    [ "XMLPARSE(XMLSS", "XMLPARSE(XMLSS)"],
+    [ "XP(X)", "XMLPARSE(XMLSS)"],
+    [ "XP(C)", "XMLPARSE(COMPAT)"],
+    [ "INTDATE(ANSI)", "INTDATE(ANSI)"],
+    [ "INTDATE(LILIAN)", "INTDATE(LILIAN)"],
+    [ "LANGUAGE(ENGLISH)", ""],
+    [ "LANG(EN)", "NOJAPANESE"],
+    [ "LANG(UE)", ""],
+    [ "LANG(JA)", "JAPANESE"],
+    [ "LANG(JP)", "JAPANESE"],
+    [ "LINECOUNT(60)", "LINE-COUNT(60)"],
+    [ "LC(60)", "LINE-COUNT(60)"],
+    [ "LIST", "LIST"],
+    [ "NOLIST", "NOLIST"],
+    [ "MAP", "XREF"],
+    [ "NOMAP", "NOXREF"],
+];
+
 export class SourcePorter {
     private isActive = true;
     private _portsDirectives: portSwap[] =
