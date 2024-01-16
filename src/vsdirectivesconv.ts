@@ -31,7 +31,7 @@ class portSwap {
 
 // https://www.ibm.com/docs/en/cobol-zos/6.1?topic=program-compiler-options
 // https://www.microfocus.com/documentation/enterprise-developer/ed90/ED-EclipseUNIX/HRCDRHCDIR0W.html
-const ibm2mf = [
+export const ibm2mf = [
     [ "QUOTE","QUOTE" ],
     [ "APOST","APOST" ],
     [ "CICS", "CICSECM"],

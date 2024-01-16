@@ -2619,7 +2619,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const commandTrimmed = command !== undefined ? command.trim() : undefined;
         if (commandTrimmed !== undefined) {
             if (commandTrimmed === CobolLinterProviderSymbols.NotReferencedMarker_external ||
-                commandTrimmed === CobolLinterProviderSymbols.OLD_NotReferencedMarker_internal) {
+                commandTrimmed === CobolLinterProviderSymbols.OLD_NotReferencedMarker_external) {
                 for (const offset in args) {
                     this.sourceReferences.ignoreUnusedSymbol.set(args[offset].toLowerCase(), args[offset]);
                 }
