@@ -1,5 +1,13 @@
 # CHANGELOG
 
+
+## 10.1.15, origin/main, origin/HEAD Merge branch 'main' of github.com:spgennard/vscode_cobol
+* a01a70b tweak "exec dli"
+* b409c89 Update vsdirectivesconv.ts
+* 290ede2 Update cobolsourcescanner.ts
+* 423dec3 save away table
+
+## 10.1.12 
 * a362766 COBOL extension supplements pre-parse check
 * 8c6771e standard is okay
 
