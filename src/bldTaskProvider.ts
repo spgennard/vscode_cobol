@@ -89,7 +89,6 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			const dname = path.dirname(scriptName);
 			const fname = `${scriptName.substring(1 + dname.length)} (in ${dname})`;
 			task.detail = `Execute ${fname}`;
-
 			return rtask;
 		}
 
