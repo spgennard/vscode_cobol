@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 10.1.15, origin/main, origin/HEAD Merge branch 'main' of github.com:spgennard/vscode_cobol
+## 10.1.15 
+* c9a5463 Merge branch 'main' of github.com:spgennard/vscode_cobol
 * a01a70b tweak "exec dli"
 * b409c89 Update vsdirectivesconv.ts
 * 290ede2 Update cobolsourcescanner.ts
