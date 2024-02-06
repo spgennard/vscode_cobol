@@ -496,5 +496,14 @@
 		],
 		"description": "Wrapping working-storage items that are interoperable with Java",
 		"scope": "cobol"
+	},
+	"exec-dli-log" : {
+		"prefix": "exec dli log",
+		"body" : [
+			"EXEC DLI LOG",
+       		"     FROM(${1}) LENGTH(${2})",
+			"END-EXEC"
+		],
+		"scope": "cobol"
 	}
 }
