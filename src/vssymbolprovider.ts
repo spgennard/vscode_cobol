@@ -302,6 +302,10 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
                         case COBOLTokenStyle.Constructor:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Constructor, container, lrange));
                             break;
+
+                        case COBOLTokenStyle.Region:
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.File, container, lrange));
+                            break;
                     }
                 }
             }

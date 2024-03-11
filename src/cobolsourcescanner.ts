@@ -44,6 +44,7 @@ export enum COBOLTokenStyle {
     EndExec = "EndExec",
     Declaratives = "Declaratives",
     EndDeclaratives = "EndDeclaratives",
+    Region = "Region",
     Unknown = "Unknown",
     Null = "Null"
 }
@@ -281,6 +282,10 @@ class Token {
         this.tokenIndex++;
         this.setupNextToken();
         return false;
+    }
+
+    public endToken() {
+        this.tokenIndex = this.stokens.length;
     }
 
     public isTokenPresent(possibleToken: string): boolean {
@@ -693,6 +698,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private sourcePorter: SourcePorter = new SourcePorter();
 
+    private activeRegions: COBOLToken[] = [];
+
+    private regions: COBOLToken[] = [];
+
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean,
@@ -770,14 +779,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.scanAborted = false;
         this.languageId = this.sourceHandler.getLanguageId();
         this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(this.languageId);
-        switch(this.languageId.toLocaleLowerCase()) {
+        switch (this.languageId.toLocaleLowerCase()) {
             case "cobol":
             case "bitlang-cobol":
-                    this.usePortationSourceScanner = configHandler.linter_port_helper;
-                    break;
+                this.usePortationSourceScanner = configHandler.linter_port_helper;
+                break;
             default:
-                    this.usePortationSourceScanner = false;
-                    break;
+                this.usePortationSourceScanner = false;
+                break;
         }
 
         let sourceLooksLikeCOBOL = false;
@@ -916,7 +925,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             if (hasCOBOLExtension) {
                 sourceLooksLikeCOBOL = true;
             }
-            
+
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
                 if (filename.length > 0) {
@@ -1916,6 +1925,29 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
                     }
                     continue;
+                }
+
+                if (prevToken === "$") {
+                    if (currentLower === "region") {
+                        const trimmedCurrent = COBOLSourceScanner.trimLiteral(current);
+                        const restOfLine = line.substring(token.currentCol);
+                        const ctoken = this.newCOBOLToken(COBOLTokenStyle.Region, lineNumber, line, tcurrentCurrentCol, trimmedCurrent, restOfLine, state.currentDivision);
+
+                        this.activeRegions.push(ctoken);
+                        token.endToken();
+                        continue;
+                    }
+
+                    if (currentLower === "end-region") {
+                        if (this.activeRegions.length > 0) {
+                            const ctoken = this.activeRegions.pop();
+                            if (ctoken !== undefined) {
+                                ctoken.endLine = lineNumber;
+                                ctoken.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
+                                this.regions.push(ctoken);
+                            }
+                        }
+                    }
                 }
 
                 if (state.declaratives !== undefined && prevTokenLower === "end" && currentLower === "declaratives") {
