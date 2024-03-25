@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 10.3.24, origin/main, origin/HEAD 
+## 10.3.24 
+* 9b6da43 Update
 
 ## 10.3.10 
 * 85331d4 dev: add $region/$end-region into symbol provider (helps with nav)
