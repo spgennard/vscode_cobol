@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 10.3.10 
 * 85331d4 dev: add $region/$end-region into symbol provider (helps with nav)
 * 4a754a2 tweak
 
