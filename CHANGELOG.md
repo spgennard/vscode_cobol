@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## 10.4.11, origin/main, origin/HEAD add comments (COBOL and SQL, into exec sql/ado
+* bc83f51 move vsce dep
+
+## 10.4.9 
+
 ## 10.3.25 
 
 ## 10.3.24 
