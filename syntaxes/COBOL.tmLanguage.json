@@ -413,6 +413,14 @@
           "match": "(^\\s*\\*.*)$",
           "name": "comment.line.sql"
         },
+          {
+          "match": "(--.*$)",
+          "name": "comment.line.sql"
+        },
+        {
+          "match": "(\\*>.*$)",
+          "name": "comment.line.modern"
+        },
         {
           "match": "(\\:([0-9a-zA-Z\\-_])*)",
           "name": "variable.cobol"
@@ -494,6 +502,10 @@
       "contentName": "meta.embedded.block.sql",
       "patterns": [
         {
+          "match": "(\\*>.*$)",
+          "name": "comment.line.modern"
+        },
+        {
           "match": "(\\:([a-zA-Z\\-])*)",
           "name": "variable.cobol"
         },
@@ -508,6 +520,14 @@
       "name": "keyword.verb.cobol",
       "contentName": "meta.embedded.block.sql",
       "patterns": [
+        {
+          "match": "(--.*$)",
+          "name": "comment.line.sql"
+        },
+        {
+          "match": "(\\*>.*$)",
+          "name": "comment.line.modern"
+        },
         {
           "match": "(\\:([a-zA-Z\\-])*)",
           "name": "variable.cobol"
@@ -1107,7 +1127,7 @@
     "dli-options": {
       "match": "(?<![\\-\\w])(?i:statusgroup|checkpoint|chkp|id|lockclass|segment|info|where|from|using|keyfeedback|feedbacklen|variable|first|last|current|seglength|offset|locked|movenext|getfirst|set|setcond|setzero|setparent|fieldlength|keys|maxlength|length[0-9]*|area[0-9]*|psc|pcs|pcb|sysserve|into)(?![\\-\\w])",
       "name": "keyword.other.dli"
-    },    
+    },
     "string-quoted-constant": {
       "begin": "'",
       "beginCaptures": {
