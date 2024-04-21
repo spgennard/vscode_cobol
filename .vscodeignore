@@ -23,8 +23,10 @@ publishit2gitonly.sh
 gen_changelog.sh
 gen_third_party.sh
 rm_git_release.sh
+get_dotfiles.sh
 tsconfig.json
 tslint.json
 webpack.config.js
 workspace.code-workspace
+IDEAS.md
 CODE_OF_CONDUCT.md

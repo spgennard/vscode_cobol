@@ -10,6 +10,7 @@ echo Updating
 
 [ -d ".vscode_test" ] && cp -r .vscode-test ..
 git clean -fdx
+./get_dotfiles.sh
 npm install
 git push
 #npm run beforepublish
