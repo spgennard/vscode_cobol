@@ -95,6 +95,21 @@ function openChangeLog(currentContext: ExtensionContext): void {
     }
 }
 
+
+function getDOTFILE_RC(currentContext: ExtensionContext): string {
+    const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
+    if (thisExtension !== undefined) {
+        const extPath = `${thisExtension.extensionPath}`;
+        const rcFile = path.join(extPath, "dotfiles","scan4install.rc");
+        if (VSExternalFeatures.isFile(rcFile)) {
+            return rcFile;
+        }
+    }
+
+    return "";
+}
+
+
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",      // code scanner
     ExtensionDefaults.microFocusCOBOLExtension,  // Micro Focus COBOL Extension,
@@ -366,8 +381,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
             try {
                 const editor_semanticHighlighting_enabled = workspace.getConfiguration("editor.semanticHighlighting").get<number>("enabled");
                 VSLogger.logMessage(` editor.semanticHighlighting.enabled        : ${editor_semanticHighlighting_enabled}`);
-            } catch
-            {
+            } catch {
                 //
             }
 
@@ -375,16 +389,14 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
                 const editor_semanticHighlighting_enabled = workspace.getConfiguration("editor.semanticHighlighting",
                     { languageId: ExtensionDefaults.defaultCOBOLLanguage }).get<number>("enabled");
                 VSLogger.logMessage(` [COBOL]editor.semanticHighlighting.enabled : ${editor_semanticHighlighting_enabled}`);
-            } catch
-            {
+            } catch {
                 //
             }
 
             try {
                 const workbench_theme = workspace.getConfiguration("workbench").get<string>("colorTheme");
                 VSLogger.logMessage(` workbench color theme                      : ${workbench_theme}`);
-            } catch
-            {
+            } catch {
                 //
             }
 
@@ -760,7 +772,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const md_types = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_types`);
         const md_metadata_files = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_files`);
         const md_metadata_knowncopybooks = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_knowncopybooks`);
-        const md_copybookdirs = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.copybookdirs`);        
+        const md_copybookdirs = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.copybookdirs`);
         const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
         const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
         const enable_comments_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_comments_tags`);
@@ -870,7 +882,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }));
 
 
-    context.subscriptions.push(commands.registerCommand("cobolplugin.findCopyBookDirectory", function (docUri: vscode.Uri, linenum:number, code: string) {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.findCopyBookDirectory", function (docUri: vscode.Uri, linenum: number, code: string) {
         cobolfixer.findCopyBookDirectory(settings, docUri, linenum, code);
     }));
 
@@ -1170,6 +1182,27 @@ export async function activate(context: ExtensionContext): Promise<void> {
     for (const vte of vscode.window.visibleTextEditors) {
         await updateDecorationsOnTextEditor(vte);
     }
+
+    vscode.window.registerTerminalProfileProvider('bitlang.terminals', {
+        provideTerminalProfile(token: vscode.CancellationToken): ProviderResult<vscode.TerminalProfile> {
+            const rcFile = getDOTFILE_RC(context);
+            let args: string[] = [
+                    "--rcfile",
+                    rcFile
+            ];
+            return {
+                options:
+                {
+                    name: 'COBOL Terminal',
+                    shellPath: "/bin/bash",
+                    cwd: "/tmp",
+                    shellArgs: args
+                }
+            };
+        }
+    });
+
+    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolReferenceProvider()));
 
     if (settings.process_metadata_cache_on_start) {
         try {

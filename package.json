@@ -181,8 +181,8 @@
           ],
           "description": "COBOL tabstops"
         },
-        "coboleditor.enable_tabstops_anchors" : {
-          "type":"boolean",
+        "coboleditor.enable_tabstops_anchors": {
+          "type": "boolean",
           "markdownDescription": "Enable tabstop anchors",
           "default": false
         },
@@ -210,8 +210,8 @@
                   }
                 }
               },
-              "out_of_range_tabstop_size" : {
-                "type":"number",
+              "out_of_range_tabstop_size": {
+                "type": "number",
                 "description": "tabstop size for out of range tabs"
               }
             }
@@ -222,7 +222,7 @@
               "tabstops": [
                 6
               ],
-              "out_of_range_tabstop_size":0
+              "out_of_range_tabstop_size": 0
             }
           ],
           "description": "An array of filenames/patterns and its associated source format"
@@ -469,7 +469,7 @@
           "description": "When enabled, activate basic linting (limited to paragraph use)",
           "default": true
         },
-        "coboleditor.linter_port_helper" : {
+        "coboleditor.linter_port_helper": {
           "type": "boolean",
           "description": "When enabled, activate basic source code portation linting",
           "default": true
@@ -1297,7 +1297,7 @@
         "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[ACUCOBOL]": {
-        "coboleditor.linter":true,
+        "coboleditor.linter": true,
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,
         "editor.insertSpaces": true,
@@ -1314,7 +1314,7 @@
         "editor.wordSeparators": "`~!#$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[dir]": {
-        "coboleditor.linter":true,
+        "coboleditor.linter": true,
         "editor.semanticHighlighting.enabled": false,
         "editor.insertSpaces": true,
         "editor.guides.indentation": false,
@@ -2785,7 +2785,15 @@
           }
         }
       }
-    ]
+    ],
+    "terminal": {
+      "profiles": [
+        {
+          "title": "BitLang COBOL Terminals",
+          "id": "bitlang.terminals"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile && webpack --mode production",
