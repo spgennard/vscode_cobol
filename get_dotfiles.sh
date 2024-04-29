@@ -1,6 +1,6 @@
 TOP=$(pwd)
-mkdir dotfiles
-mkdir tmp
+mkdir -p dotfiles
+mkdir -p tmp
 cd tmp
 git clone --depth 1 git@github.com:spgennard/dotfiles.git 
 cd dotfiles
