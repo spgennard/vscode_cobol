@@ -50,6 +50,7 @@ import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
 import { COBOLTypeFormatter } from "./vsformatter";
 import { TabUtils } from "./tabstopper";
+import { VSTerminal } from "./vsterminals";
 
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
@@ -96,18 +97,7 @@ function openChangeLog(currentContext: ExtensionContext): void {
 }
 
 
-function getDOTFILE_RC(currentContext: ExtensionContext): string {
-    const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
-    if (thisExtension !== undefined) {
-        const extPath = `${thisExtension.extensionPath}`;
-        const rcFile = path.join(extPath, "dotfiles","scan4install.rc");
-        if (VSExternalFeatures.isFile(rcFile)) {
-            return rcFile;
-        }
-    }
 
-    return "";
-}
 
 
 const blessed_extensions: string[] = [
@@ -1183,24 +1173,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await updateDecorationsOnTextEditor(vte);
     }
 
-    vscode.window.registerTerminalProfileProvider('bitlang.terminals', {
-        provideTerminalProfile(token: vscode.CancellationToken): ProviderResult<vscode.TerminalProfile> {
-            const rcFile = getDOTFILE_RC(context);
-            let args: string[] = [
-                    "--rcfile",
-                    rcFile
-            ];
-            return {
-                options:
-                {
-                    name: 'COBOL Terminal',
-                    shellPath: "/bin/bash",
-                    cwd: "/tmp",
-                    shellArgs: args
-                }
-            };
-        }
-    });
+    vscode.window.registerTerminalProfileProvider('bitlang.terminals', new VSTerminal(context));
 
     context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolReferenceProvider()));
 

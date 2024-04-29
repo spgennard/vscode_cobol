@@ -1,5 +1,8 @@
 import * as vscode from "vscode";
 import * as cp from "child_process";
+import { ExtensionDefaults } from "./extensionDefaults";
+import { VSExternalFeatures } from "./vsexternalfeatures";
+import path from "path";
 
 /**
  * Execute async shell command.
@@ -69,4 +72,42 @@ export function runSync(cmd: string, suppressError = false, processEncoding: "ut
         return null;
     }
     return result;
+}
+
+function getDOTFILE_RC(currentContext: vscode.ExtensionContext): string {
+    const thisExtension = vscode.extensions.getExtension(ExtensionDefaults.thisExtensionName);
+    if (thisExtension !== undefined) {
+        const extPath = `${thisExtension.extensionPath}`;
+        const rcFile = path.join(extPath, "dotfiles","scan4install.rc");
+        if (VSExternalFeatures.isFile(rcFile)) {
+            return rcFile;
+        }
+    }
+
+    return "";
+}
+
+export class VSTerminal implements vscode.TerminalProfileProvider {
+    
+    private context:vscode.ExtensionContext;
+
+    constructor(context:vscode.ExtensionContext) {
+        this.context = context;
+    }
+    provideTerminalProfile(token: vscode.CancellationToken): vscode.ProviderResult<vscode.TerminalProfile> {
+        const rcFile = getDOTFILE_RC(this.context);
+            let args: string[] = [
+                    "--rcfile",
+                    rcFile
+            ];
+            return {
+                options:
+                {
+                    name: 'COBOL Terminal',
+                    shellPath: "/bin/bash",
+                    cwd: "/tmp",
+                    shellArgs: args
+                }
+            };
+    }
 }
