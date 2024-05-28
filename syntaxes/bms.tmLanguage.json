@@ -128,6 +128,34 @@
 			}
 		},
 		{
+			"match": "(?i:(picin|picout)(\\=)('.*'))",
+			"captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "punctuation.definition.string.bms"
+				}
+			}
+		},
+		{
+			"match": "(?i:(case)(\\=)(mixed))",
+			"captures": {
+				"1": {
+					"name": "keyword.verb.bms"
+				},
+				"2": {
+					"name": "keyword.operator.bms"
+				},
+				"3": {
+					"name": "entity.name.function.bms"
+				}
+			}
+		},
+		{
 			"match": "((?i:type)(\\=)((?i:dsect|map|final|&\\w+|&&\\w+)))",
 			"captures": {
 				"1": {
