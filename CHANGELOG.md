@@ -1,7 +1,15 @@
 # CHANGELOG
 
+* 9ab859b add temp "windows/mac" exclusion
+* 901ff08 BMS: Missing items Fix #332
+* 7fd0f93 slight refactor
+* d158050 add some early support for my 'dotfiles' COBOL terminal
+* b4e50f6 remove warning
+* afc5e5e add get_dotfiles to build process
+* 9c4ac21 remove eslint
 
-## 10.4.11, origin/main, origin/HEAD add comments (COBOL and SQL, into exec sql/ado
+## 10.4.11 
+* e23b4cd add comments (COBOL and SQL), into exec sql/ado
 * bc83f51 move vsce dep
 
 ## 10.4.9 
