@@ -1173,7 +1173,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
         await updateDecorationsOnTextEditor(vte);
     }
 
-    vscode.window.registerTerminalProfileProvider('bitlang.terminals', new VSTerminal(context));
+    // currently linux only
+    if (process.platform === 'linux') {
+        vscode.window.registerTerminalProfileProvider('bitlang.terminals', new VSTerminal(context));
+    }
 
     context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolReferenceProvider()));
 
