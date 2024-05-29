@@ -94,6 +94,7 @@ export class VSTerminal implements vscode.TerminalProfileProvider {
     constructor(context:vscode.ExtensionContext) {
         this.context = context;
     }
+
     provideTerminalProfile(token: vscode.CancellationToken): vscode.ProviderResult<vscode.TerminalProfile> {
         const rcFile = getDOTFILE_RC(this.context);
             let args: string[] = [

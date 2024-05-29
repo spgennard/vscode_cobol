@@ -1896,6 +1896,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             cbInfo.fileName = fileName;
                             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
                             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
+                            const qfile = new FileSourceHandler(fileName, this.externalFeatures);
+                            const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
+                            this.sourceReferences.state.ignoreInOutlineView = true;
+                            this.sourceReferences.topLevel = true;
+
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures);
+                            this.sourceReferences.topLevel = true;
+                            this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                         }
                         state.currentToken = copyToken;
                         continue;
