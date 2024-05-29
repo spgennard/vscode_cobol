@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 23431c2 add sql copybook file to references list - Fix #333
+
+## 10.5.28 
 * 9ab859b add temp "windows/mac" exclusion
 * 901ff08 BMS: Missing items Fix #332
 * 7fd0f93 slight refactor
