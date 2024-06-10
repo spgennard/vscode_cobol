@@ -77,17 +77,27 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "ACUCOBOL");
     }));
 
-    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_cobol", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_cobol", async function () {
         const act = vscode.window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
         }
 
         vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.defaultCOBOLLanguage);
+        
+        const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+        if (mfExt) {
+            const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+            await mfeditorConfig.update("languageServerAutostart", false);
+
+            const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
+            microFocusPLIConfig.update("autostart", false)
+        }
+
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.defaultCOBOLLanguage);
     }));
 
-    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_mfcobol", function () {
+    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_mfcobol", async function () {
         const act = vscode.window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
@@ -95,6 +105,15 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
         vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.microFocusCOBOLLanguageId);
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.microFocusCOBOLLanguageId);
+
+        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+        await mfeditorConfig.update("languageServerAutostart", true);
+
+        const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
+        microFocusPLIConfig.update("autostart", true)
+
+        vscode.window.showInformationMessage("Micro Focus Language Server may not be running.. please review");
+        vscode.commands.executeCommand("mfcobol.languageServer.controls");
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
