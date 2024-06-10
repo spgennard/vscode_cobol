@@ -1,6 +1,10 @@
 # CHANGELOG
 
-* 17046b7 (origin/main, origin/HEAD) add fix for #334
+
+## 10.6.10, origin/main, origin/HEAD ensure 'flip' command is present everywhere
+
+## 10.6.9 
+* 17046b7 add fix for #334
 
 ## 10.5.29 
 * 23431c2 add sql copybook file to references list - Fix #333
