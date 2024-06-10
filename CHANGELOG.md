@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 17046b7 (origin/main, origin/HEAD) add fix for #334
+
+## 10.5.29 
 * 23431c2 add sql copybook file to references list - Fix #333
 
 ## 10.5.28 
