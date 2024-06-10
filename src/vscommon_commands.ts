@@ -404,7 +404,13 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         await VSDiagCommands.DumpAllSymbols();
     }));
 
-    for (const langid of settings.valid_cobol_language_ids) {
+    const langIds = settings.valid_cobol_language_ids;
+    const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+    if (mfExt) {
+        langIds.push(ExtensionDefaults.microFocusCOBOLLanguageId);
+    }
+
+    for (const langid of langIds) {
         if (langid !== ExtensionDefaults.microFocusCOBOLLanguageId) {
             context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", settings, langid + "_1", langid));
         }
@@ -417,7 +423,6 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
                 {
                     context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid + "_3", langid));
 
-                    const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
                     if (mfExt !== undefined) {
                         context.subscriptions.push(getLangStatusItem("Switch to 'Micro Focus COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", settings, langid + "_5", langid));
                     }
@@ -430,8 +435,6 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
         context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider(settings)));
     }
-
-    context.subscriptions.push
 }
 
 function getLangStatusItem(text: string, command: string, title: string, settings: ICOBOLSettings, id: string, langid: string): vscode.LanguageStatusItem {
