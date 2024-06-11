@@ -1,7 +1,10 @@
 # CHANGELOG
 
+* 7f0c9f7 fix bug in the setting updates for lsp
+* 46687b6 Add setting to enable/disable 'Micro Focus LSP' enable/disable behaviour  - part of #334
 
-## 10.6.10, origin/main, origin/HEAD ensure 'flip' command is present everywhere
+## 10.6.10 
+* f0e9ace ensure 'flip' command is present everywhere
 
 ## 10.6.9 
 * 17046b7 add fix for #334
