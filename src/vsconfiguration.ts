@@ -160,6 +160,8 @@ export class VSCOBOLConfiguration {
         
         settings.enable_tabstops_anchors = getBoolean("enable_tabstops_anchors",settings.enable_tabstops_anchors);
         
+        settings.enable_microfocus_lsp_when_active = getBoolean("enable_microfocus_lsp_when_active", settings.enable_microfocus_lsp_when_active);
+        
         return settings;
     }
 

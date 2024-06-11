@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "10.6.10",
+  "version": "10.6.11",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -186,6 +186,11 @@
           "type": "boolean",
           "markdownDescription": "Enable tabstop anchors",
           "default": false
+        },
+        "coboleditor.enable_microfocus_lsp_when_active" : {
+          "type" : "boolean",
+          "markdownDescription": "Enable 'Micro Focus COBOL Extensions LSP' when active",
+          "default": true
         },
         "coboleditor.tabstops_anchors": {
           "type": "array",
