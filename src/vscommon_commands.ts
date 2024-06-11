@@ -72,7 +72,7 @@ export function isMicroFocusLSPActive() : boolean {
 }
 
 export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boolean):Promise<void> {
-    if (settings.enable_microfocus_lsp_when_active === false) {
+    if (settings.enable_microfocus_lsp_when_active === onOrOff) {
         return;
     }
     const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
