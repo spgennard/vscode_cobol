@@ -162,6 +162,8 @@ export class VSCOBOLConfiguration {
         
         settings.enable_microfocus_lsp_when_active = getBoolean("enable_microfocus_lsp_when_active", settings.enable_microfocus_lsp_when_active);
         
+        settings.enable_microfocus_lsp_lang_server_control = getBoolean("enable_microfocus_lsp_lang_server_control", settings.enable_microfocus_lsp_lang_server_control);
+
         return settings;
     }
 

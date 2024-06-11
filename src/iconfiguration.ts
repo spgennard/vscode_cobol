@@ -158,6 +158,8 @@ export interface ICOBOLSettings {
     enable_tabstops_anchors:boolean;
 
     enable_microfocus_lsp_when_active: boolean;
+
+    enable_microfocus_lsp_lang_server_control : boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -280,6 +282,8 @@ export class COBOLSettings implements ICOBOLSettings {
     enable_tabstops_anchors: boolean;
     
     enable_microfocus_lsp_when_active:boolean;
+
+    enable_microfocus_lsp_lang_server_control: boolean;
     
     constructor() {
         this.enable_tabstop = true;
@@ -380,5 +384,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.anchor_tabstops = [];
         this.enable_tabstops_anchors = true;
         this.enable_microfocus_lsp_when_active = true;
+        this.enable_microfocus_lsp_lang_server_control = true;
     }
 }

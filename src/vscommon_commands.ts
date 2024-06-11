@@ -66,12 +66,17 @@ function newFile(title: string, template: string, doclang: string) {
     });
 }
 
-function isMicroFocusLSPActive() : boolean {
+function isMicroFocusLSPActive(): boolean {
     const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
     return mfeditorConfig.get<boolean>("languageServerAutostart", true);
 }
 
-export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boolean):Promise<void> {
+function isMicroFocusPLI_LSPActive(): boolean {
+    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI");
+    return mfeditorConfig.get<boolean>("languageServer.autostart", true);
+}
+
+export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boolean): Promise<void> {
     // is it disabled?
     if (settings.enable_microfocus_lsp_when_active === false) {
         return;
@@ -83,8 +88,10 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boo
         await mfeditorConfig.update("languageServerAutostart", onOrOff);
     }
 
-    const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
-    microFocusPLIConfig.update("languageServer.autostart", onOrOff)
+    if (isMicroFocusPLI_LSPActive() != onOrOff) {
+        const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
+        microFocusPLIConfig.update("languageServer.autostart", onOrOff);
+    }
 }
 
 export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
@@ -105,7 +112,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         }
 
         vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.defaultCOBOLLanguage);
-        
+
         const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
         if (mfExt) {
             await toggleMicroFocusLSP(settings, false);
@@ -125,8 +132,10 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
         await toggleMicroFocusLSP(settings, true);
 
-        //vscode.window.showInformationMessage("Micro Focus Language Server may not be running.. please review");
-        //vscode.commands.executeCommand("mfcobol.languageServer.controls");
+        // invoke 'Micro Focus LSP Control'
+        if (settings.enable_microfocus_lsp_lang_server_control) {
+            vscode.commands.executeCommand("mfcobol.languageServer.controls");
+        }
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.move2pd", function () {
