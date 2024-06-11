@@ -66,20 +66,25 @@ function newFile(title: string, template: string, doclang: string) {
     });
 }
 
-export function isMicroFocusLSPActive() : boolean {
+function isMicroFocusLSPActive() : boolean {
     const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
     return mfeditorConfig.get<boolean>("languageServerAutostart", true);
 }
 
 export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boolean):Promise<void> {
-    if (settings.enable_microfocus_lsp_when_active === onOrOff) {
+    // is it disabled?
+    if (settings.enable_microfocus_lsp_when_active === false) {
         return;
     }
-    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
-    await mfeditorConfig.update("languageServerAutostart", onOrOff);
+
+    // is it already set?
+    if (isMicroFocusLSPActive() !== onOrOff) {
+        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+        await mfeditorConfig.update("languageServerAutostart", onOrOff);
+    }
 
     const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
-    microFocusPLIConfig.update("autostart", onOrOff)
+    microFocusPLIConfig.update("languageServer.autostart", onOrOff)
 }
 
 export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {

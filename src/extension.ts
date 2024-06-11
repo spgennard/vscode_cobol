@@ -44,7 +44,7 @@ import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
-import { activateCommonCommands, isMicroFocusLSPActive, toggleMicroFocusLSP } from "./vscommon_commands";
+import { activateCommonCommands, toggleMicroFocusLSP } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
@@ -1177,7 +1177,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         // if we have a document assigned to the 'Micro Focus' language id, then turn the lsp setting on
         if (!toggleDone && vte.document.languageId === ExtensionDefaults.microFocusCOBOLLanguageId) {
             const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
-            if (mfExt && isMicroFocusLSPActive() === false) {
+            if (mfExt) {
                 await toggleMicroFocusLSP(settings,true);
             }
             toggleDone = true;
