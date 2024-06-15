@@ -290,6 +290,9 @@
     "coboleditor.metadata_symbols": [
         "a,a.cbl"
     ],
+    "microFocusCOBOL.languageServerAutostart": false,
+    "microFocusPLI.languageServer.autostart": false,
+
     "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,
@@ -313,5 +316,27 @@
     "coboleditor.metadata_types": [],
     "coboleditor.metadata_files": [],
     "editor.autoIndent": "advanced",
-    "editor.guides.indentation": false
+    "editor.guides.indentation": false,
+    "files.associations": {
+        "*.cob": "COBOL",
+        "*.COB": "COBOL",
+        "*.cbl": "COBOL",
+        "*.CBL": "COBOL",
+        "*.cblle": "COBOL",
+        "*.CBLLE": "COBOL",
+        "*.sqlcblle": "COBOL",
+        "*.SQLCBLLE": "COBOL",
+        "*.cobol": "COBOL",
+        "*.COBOL": "COBOL",
+        "*.scbl": "COBOL",
+        "*.SCBL": "COBOL",
+        "*.pco": "COBOL",
+        "*.PCO": "COBOL",
+        "*.eco": "COBOL",
+        "*.ECO": "COBOL",
+        "*.copy": "COBOL",
+        "*.COPY": "COBOL",
+        "*.cobcopy": "COBOL",
+        "*.COBCOPY": "COBOL"
+    }
 }

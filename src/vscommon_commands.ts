@@ -85,12 +85,20 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boo
     // is it already set?
     if (isMicroFocusLSPActive() !== onOrOff) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
-        await mfeditorConfig.update("languageServerAutostart", onOrOff);
+        if (VSWorkspaceFolders.get() === undefined) {
+            await mfeditorConfig.update("languageServerAutostart", onOrOff, vscode.ConfigurationTarget.Global);
+        } else {
+            await mfeditorConfig.update("languageServerAutostart", onOrOff, vscode.ConfigurationTarget.Workspace);
+        }
     }
 
     if (isMicroFocusPLI_LSPActive() != onOrOff) {
         const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
-        microFocusPLIConfig.update("languageServer.autostart", onOrOff);
+        if (VSWorkspaceFolders.get() === undefined) {
+            microFocusPLIConfig.update("languageServer.autostart", onOrOff, vscode.ConfigurationTarget.Global);
+        } else {
+            microFocusPLIConfig.update("languageServer.autostart", onOrOff, vscode.ConfigurationTarget.Workspace);
+        }
     }
 }
 
