@@ -119,8 +119,9 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             return;
         }
 
-        vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.defaultCOBOLLanguage);
-
+        // ensure all documents with the same id are change to the current ext id
+        await COBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.defaultCOBOLLanguage);
+ 
         const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
         if (mfExt) {
             await toggleMicroFocusLSP(settings, false);
@@ -135,7 +136,8 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             return;
         }
 
-        vscode.languages.setTextDocumentLanguage(act.document, ExtensionDefaults.microFocusCOBOLLanguageId);
+        // ensure all documents with the same id are change to the 'Micro Focus COBOL lang id'
+        await COBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.microFocusCOBOLExtension);
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.microFocusCOBOLLanguageId);
 
         await toggleMicroFocusLSP(settings, true);
@@ -476,3 +478,4 @@ function getLangStatusItem(text: string, command: string, title: string, setting
     };
     return langStatusItem;
 }
+

@@ -883,6 +883,15 @@ export class COBOLUtils {
         }
     }
 
+    public static async changeDocumentId(fromID: string, toID: string)
+    {
+        for (const vte of vscode.window.visibleTextEditors) {
+            if (vte.document.languageId == fromID) {
+                await vscode.languages.setTextDocumentLanguage(vte.document, toID);
+            }
+        }
+    }
+    
     public static enforceFileExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean, requiredLanguage: string) {
         // const fileConfig = vscode.workspace
         const filesConfig = vscode.workspace.getConfiguration("files");
