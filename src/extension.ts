@@ -1178,7 +1178,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!toggleDone && vte.document.languageId === ExtensionDefaults.microFocusCOBOLLanguageId) {
             const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
             if (mfExt) {
-                await toggleMicroFocusLSP(settings,true);
+                await toggleMicroFocusLSP(settings,vte.document, true);
             }
             toggleDone = true;
         }

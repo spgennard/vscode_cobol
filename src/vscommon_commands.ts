@@ -66,24 +66,34 @@ function newFile(title: string, template: string, doclang: string) {
     });
 }
 
-function isMicroFocusLSPActive(): boolean {
-    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+function isMicroFocusLSPActive(document: vscode.TextDocument): boolean {
+    if (VSWorkspaceFolders.get()) {
+        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+        return mfeditorConfig.get<boolean>("languageServerAutostart", true);
+    }
+    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL", document);
     return mfeditorConfig.get<boolean>("languageServerAutostart", true);
+
 }
 
-function isMicroFocusPLI_LSPActive(): boolean {
-    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI");
+function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolean {
+    if (VSWorkspaceFolders.get()) {
+        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI");
+        return mfeditorConfig.get<boolean>("languageServer.autostart", true);
+    }
+    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI", document);
     return mfeditorConfig.get<boolean>("languageServer.autostart", true);
+
 }
 
-export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boolean): Promise<void> {
+export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vscode.TextDocument, onOrOff: boolean): Promise<void> {
     // is it disabled?
     if (settings.enable_microfocus_lsp_when_active === false) {
         return;
     }
 
     // is it already set?
-    if (isMicroFocusLSPActive() !== onOrOff) {
+    if (isMicroFocusLSPActive(document) !== onOrOff) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
         if (VSWorkspaceFolders.get() === undefined) {
             await mfeditorConfig.update("languageServerAutostart", onOrOff, vscode.ConfigurationTarget.Global);
@@ -92,7 +102,7 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, onOrOff: boo
         }
     }
 
-    if (isMicroFocusPLI_LSPActive() != onOrOff) {
+    if (isMicroFocusPLI_LSPActive(document) != onOrOff) {
         const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
         if (VSWorkspaceFolders.get() === undefined) {
             microFocusPLIConfig.update("languageServer.autostart", onOrOff, vscode.ConfigurationTarget.Global);
@@ -121,10 +131,10 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
         // ensure all documents with the same id are change to the current ext id
         await COBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.defaultCOBOLLanguage);
- 
+
         const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
         if (mfExt) {
-            await toggleMicroFocusLSP(settings, false);
+            await toggleMicroFocusLSP(settings, act.document, false);
         }
 
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.defaultCOBOLLanguage);
@@ -140,7 +150,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         await COBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.microFocusCOBOLExtension);
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.microFocusCOBOLLanguageId);
 
-        await toggleMicroFocusLSP(settings, true);
+        await toggleMicroFocusLSP(settings, act.document, true);
 
         // invoke 'Micro Focus LSP Control'
         if (settings.enable_microfocus_lsp_lang_server_control) {
@@ -175,12 +185,6 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(commands.registerCommand("cobolplugin.revtab", async function () {
         await TabUtils.processTabKey(false);
     }));
-
-    // context.subscriptions.push(commands.registerCommand("web_cobolplugin.commentline", function () {
-    //     if (vscode.window.activeTextEditor !== undefined) {
-    //         commentUtils.processCommentLine();
-    //     }
-    // }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.removeAllComments", () => {
         if (vscode.window.activeTextEditor) {
