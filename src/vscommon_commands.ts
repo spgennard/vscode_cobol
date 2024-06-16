@@ -86,6 +86,21 @@ function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolean {
 
 }
 
+export async function setMicroFocusSuppressFileAssociationsPrompt(settings: ICOBOLSettings, onOrOff: boolean) {
+    // is it disabled?
+    if (settings.enable_microfocus_lsp_when_active === false) {
+        return;
+    }
+    
+    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+    if (VSWorkspaceFolders.get() === undefined) {
+        await mfeditorConfig.update("suppressFileAssociationsPrompt", onOrOff, vscode.ConfigurationTarget.Global);
+    } else {
+        await mfeditorConfig.update("suppressFileAssociationsPrompt", onOrOff, vscode.ConfigurationTarget.Workspace);
+    }
+
+}
+
 export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vscode.TextDocument, onOrOff: boolean): Promise<void> {
     // is it disabled?
     if (settings.enable_microfocus_lsp_when_active === false) {

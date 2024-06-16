@@ -15,6 +15,7 @@ import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { SplitTokenizer } from "./splittoken";
 import { VSExtensionUtils } from "./vsextutis";
+import { setMicroFocusSuppressFileAssociationsPrompt } from "./vscommon_commands";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
@@ -896,6 +897,12 @@ export class COBOLUtils {
         // const fileConfig = vscode.workspace
         const filesConfig = vscode.workspace.getConfiguration("files");
 
+        if (requiredLanguage == ExtensionDefaults.microFocusCOBOLLanguageId){
+            setMicroFocusSuppressFileAssociationsPrompt(settings, true);
+        } else {
+            setMicroFocusSuppressFileAssociationsPrompt(settings, false);
+        }
+        
         const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("associations") ?? {} as { [key: string]: string }
         let updateRequired = false;
 
