@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
 
-import { extensions, workspace } from "vscode";
+import { workspace } from "vscode";
 import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
