@@ -44,7 +44,7 @@ import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
-import { activateCommonCommands, toggleMicroFocusLSP } from "./vscommon_commands";
+import { activateCommonCommands, isMicroFocusCOBOL_LSPActive, toggleMicroFocusLSP } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
@@ -404,6 +404,9 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
             }
             if (mfExt !== undefined) {
                 VSLogger.logMessage(` Micro Focus COBOL                          : ${mfExt.packageJSON.version}`);
+                if (window.activeTextEditor) {
+                    VSLogger.logMessage(`  microFocusCOBOL.languageServerAutostart   = ${isMicroFocusCOBOL_LSPActive(window.activeTextEditor.document)}`);
+                }
             }
         }
     }
@@ -1178,7 +1181,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         if (!toggleDone && vte.document.languageId === ExtensionDefaults.microFocusCOBOLLanguageId) {
             const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
             if (mfExt) {
-                await toggleMicroFocusLSP(settings,vte.document, true);
+                await toggleMicroFocusLSP(settings, vte.document, true);
             }
             toggleDone = true;
         }

@@ -66,7 +66,7 @@ function newFile(title: string, template: string, doclang: string) {
     });
 }
 
-function isMicroFocusCOBOL_LSPActive(document: vscode.TextDocument): boolean {
+export function isMicroFocusCOBOL_LSPActive(document: vscode.TextDocument): boolean {
     if (VSWorkspaceFolders.get()) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
         return mfeditorConfig.get<boolean>("languageServerAutostart", true);
@@ -76,7 +76,7 @@ function isMicroFocusCOBOL_LSPActive(document: vscode.TextDocument): boolean {
 
 }
 
-function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolean {
+export function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolean {
     if (VSWorkspaceFolders.get()) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI");
         return mfeditorConfig.get<boolean>("languageServer.autostart", true);

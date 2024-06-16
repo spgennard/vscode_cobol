@@ -1199,7 +1199,7 @@
         },
         "coboleditor.outline_max_depth": {
           "type": "number",
-          "description": "maximum folder depth for outline view",
+          "description": "mfExtmaximum folder depth for outline view",
           "default": 5
         }
       }
