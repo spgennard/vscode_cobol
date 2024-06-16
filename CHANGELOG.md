@@ -1,5 +1,16 @@
 # CHANGELOG
 
+* f6cfed0 add info about lang server setting to console
+* 3f87e49 remove unused
+* 636316b remove enable_language_switcher it's impl is confused
+* 061ac7f Fix 'just introduced bug' #334
+* 3a1befd start to handle suppressFileAssociationsPrompt
+* 0eae770 use global if ws not present #334
+* e7ad5b0 Need to change active documents on previous lang id to the new one #334
+* 7cafc88 Add support for updating non-workspace flags #334
+* 44feec9 add extra config option to server control exec & checking is PLI lsp
+
+## 10.6.11 
 * 7f0c9f7 fix bug in the setting updates for lsp
 * 46687b6 Add setting to enable/disable 'Micro Focus LSP' enable/disable behaviour  - part of #334
 
