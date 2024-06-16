@@ -85,18 +85,9 @@ export class VSCOBOLConfiguration {
             }
         }
 
-        settings.enable_language_switcher = getBoolean("enable_language_switcher", settings.enable_language_switcher);
-
         if (valid) {
             settings.valid_cobol_language_ids = user_cobol_language_ids;
             settings.valid_cobol_language_ids_for_intellisense = [...user_cobol_language_ids];
-
-            if (settings.enable_language_switcher) {
-                const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
-                if (mfExt !== undefined) {
-                    settings.valid_cobol_language_ids.push(ExtensionDefaults.microFocusCOBOLLanguageId);
-                }
-            }
         }
 
         settings.files_exclude = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig).get<string[]>("files_exclude", settings.files_exclude);

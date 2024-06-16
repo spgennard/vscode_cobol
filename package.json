@@ -1201,11 +1201,6 @@
           "type": "number",
           "description": "maximum folder depth for outline view",
           "default": 5
-        },
-        "coboleditor.enable_language_switcher": {
-          "type": "boolean",
-          "description": "When enabled, language switcher",
-          "default": false
         }
       }
     },

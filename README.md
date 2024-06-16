@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This unofficial extension provides syntax highlighting for `Micro Focus™` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focusdirective files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
+This unofficial extension provides syntax highlighting for `Micro Focus™` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
 Some of the features this extension provides are:
 
@@ -21,7 +21,7 @@ Some of the features this extension provides are:
 - Intellisense support for keywords in lowercase, uppercase and camelcase
 - Snippet support for various keywords
   - including callable COBOL library routines
-  - and intrinisic functions
+  - and intrinsic functions
 - Source code linter for in house/internal COBOL standards
 - Compiler directive file colourisation
 - Unit test report colourisation
@@ -48,7 +48,7 @@ While also being able to use it with the official `Micro Focus COBOL extension` 
 
  ![sieve_jcl](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/screenshot_three.png)
 
-### IntelliSense example
+### Intellisense example
 
 ![perform_add](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/perform_add.gif)
 
@@ -116,7 +116,7 @@ Only active when `coboleditor.xedit_keymap` is set to true.
 
 ## New File
 
-New file creation support is provided for COBOL and ACUCOBOL programs with addditional support for Micro Focus Unit Test programs.
+New file creation support is provided for COBOL and ACUCOBOL programs with additional support for Micro Focus Unit Test programs.
 
 ## Changing the default file associations
 
@@ -372,7 +372,7 @@ Things to consider:
 
 The COBOL linter included with the extension performs two functions, the first function is to identify sections/paragraphs that are not used and the second is to apply any "house" standards.
 
-The section/parapgraph linter by default generates warning message but if you prefer the messages to be marked as information, you change the ```coboleditor.linter_mark_as_information``` boolean setting, for example:
+The section/paragraph linter by default generates warning message but if you prefer the messages to be marked as information, you change the ```coboleditor.linter_mark_as_information``` boolean setting, for example:
 
  ```json
  "coboleditor.linter_mark_as_information": true
@@ -466,13 +466,13 @@ For example, to ensure you use utf8 for all you files use:
 
 ## Intellisense and case formatting
 
-A overall intellisense style can be selected via the ```coboleditor.intellisense_style``` property.
+A overall Intellisense style can be selected via the ```coboleditor.intellisense_style``` property.
 
 If you find a keyword or snippet includes a extra space, you can amend the ```coboleditor.intellisense_add_space_keywords``` property to include it.
 
 Custom formatting rules can be enabled for a specific item or prefixed item via the ```coboleditor.custom_intellisense_rules``` setting.
 
-The format is an array of strings, that are in two parts, seperated by a ```:```.   The first part of item and the second is one of four characters, that denote the case style.  
+The format is an array of strings, that are in two parts, separated by a ```:```.   The first part of item and the second is one of four characters, that denote the case style.  
 
     u = Uppercase
     l = Lowercase
@@ -595,6 +595,10 @@ The extension only enables features that allow basic editing, making it ideal fo
 ```
 
 This can be changed by amending your user/workspace settings.
+
+When a user chooses to change to the *Micro Focus COBOL* extension via the editors language dropdown button the extension will ensure the language server is enabled.
+
+If this behavior is not desired, then the setting *coboleditor.enable_microfocus_lsp_when_active* can be set to false.
 
 ### Settings defaults for GitHub Copilot
 

@@ -91,7 +91,7 @@ export async function setMicroFocusSuppressFileAssociationsPrompt(settings: ICOB
     if (settings.enable_microfocus_lsp_when_active === false) {
         return;
     }
-    
+
     const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
     if (VSWorkspaceFolders.get() === undefined) {
         await mfeditorConfig.update("suppressFileAssociationsPrompt", onOrOff, vscode.ConfigurationTarget.Global);
@@ -399,13 +399,12 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
             const dialects = ["COBOL", "ACUCOBOL", "RMCOBOL", "COBOLIT"];
+            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
 
-            if (settings.enable_language_switcher) {
-                const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
-                if (mfExt !== undefined) {
-                    dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
-                }
+            if (mfExt !== undefined) {
+                dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
             }
+
 
             vscode.window.showQuickPick(dialects, { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
                 if (vscode.window.activeTextEditor && dialect) {

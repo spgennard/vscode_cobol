@@ -147,8 +147,6 @@ export interface ICOBOLSettings {
 
     enable_codelens_section_paragraph_references_threshold: number;
 
-    enable_language_switcher:boolean;
-
     hover_show_variable_definition:boolean;
 
     out_of_range_tabstop_size: number;
@@ -271,8 +269,6 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_codelens_section_paragraph_references_threshold:number;
 
-    enable_language_switcher:boolean;
-
     hover_show_variable_definition:boolean;
 
     out_of_range_tabstop_size: number;
@@ -378,7 +374,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_codelens_copy_replacing = true;
         this.outline_max_depth = 5;
         this.enable_codelens_section_paragraph_references_threshold = 2;
-        this.enable_language_switcher = false;
         this.hover_show_variable_definition = true;
         this.out_of_range_tabstop_size = 4;
         this.anchor_tabstops = [];
