@@ -86,7 +86,7 @@ While also being able to use it with the official `Micro Focus COBOL extension` 
 | right mouse/peek  |             Peek copybook without opening the file)             |
 | ctrl+alt+a        |                 Adjust line to cursor position                  |
 | ctrl+alt+l        |                 Left adjust line to left margin                 |
-| alt+right         |                  Insert spaces to column 72                     |
+| alt+right         |                   Insert spaces to column 72                    |
 
 ## Keybindings - xedit'ish
 
@@ -586,19 +586,27 @@ When in limited functionality mode the extension disables all functionality that
 The extension only enables features that allow basic editing, making it ideal for browsing untrusted source.
 
 
-### Setting defaults for Micro Focus COBOL extension
+### CO-Existence with the Micro Focus COBOL extension
 
-```jsonc
-"microFocusCOBOL.suppressFileAssociationsPrompt": true,
-"microFocusCOBOL.languageServerAutostart": false,
-"microFocusPLI.languageServer.autostart": false
-```
+Using two extensions that both provide the same features can be problematic but this extension tries it's best to ensure both can used used.
 
-This can be changed by amending your user/workspace settings.
+This extension provides commands that allow the developer to flip between the two extensions.  It does this by changing the *file.associations* settings and changing settings for the *Micro Focus COBOL* extension to allow the two to co-exist.
 
-When a user chooses to change to the *Micro Focus COBOL* extension via the editors language dropdown button the extension will ensure the language server is enabled.
+| From 'Micro Focus COBOL Extension'     | From this Extensions              |
+| -------------------------------------- | --------------------------------- |
+|                                        |                                   |
+| ![alt text](images/switch2bitlang.png) | ![alt text](images/switch2mf.png) |
+|                                        |                                   |
 
-If this behavior is not desired, then the setting *coboleditor.enable_microfocus_lsp_when_active* can be set to false.
+When a user chooses to change to the *Micro Focus COBOL* extension via the editors language dropdown button this extension will ensure the language server is enabled.
+
+Or you can use the *COBOL: Enforce extension via file.associations* command.
+
+![alt text](images/enforce_command.png)
+
+The language *COBOL* is this extension and lower-case *cobol* is the *Micro Focus COBOL* extension.
+
+If this behavior is not desired, then the setting ```coboleditor.enable_microfocus_lsp_when_active``` can be set to false or alternatively you can disable one of the extensions on a per-workspace basis or you have a scenario then the use of [profiles](https://code.visualstudio.com/docs/editor/profiles) is another mechanism that can isolate extensions from each other.
 
 ### Settings defaults for GitHub Copilot
 
