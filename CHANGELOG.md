@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* f25c6cb parial docs update #334
+
+## 10.6.15 
 * f6cfed0 add info about lang server setting to console
 * 3f87e49 remove unused
 * 636316b remove enable_language_switcher it's impl is confused
