@@ -608,7 +608,14 @@ The language *COBOL* is this extension and lower-case *cobol* is the *Micro Focu
 
 If this behavior is not desired, then the setting ```coboleditor.enable_microfocus_lsp_when_active``` can be set to false or alternatively you can disable one of the extensions on a per-workspace basis or you have a scenario then the use of [profiles](https://code.visualstudio.com/docs/editor/profiles) is another mechanism that can isolate extensions from each other.
 
-### Settings defaults for GitHub Copilot
+
+### Settings defaults for Micro Focus COBOL Extension
+
+```jsonc
+      "microFocusCOBOL.suppressFileAssociationsPrompt": true
+```
+
+### Settings defaults for GitHub Copilot Extension
 
 ```jsonc
       "github.copilot.inlineSuggest.enable": true,
