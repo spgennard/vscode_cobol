@@ -622,8 +622,10 @@ If this behavior is not desired, then the setting ```coboleditor.enable_microfoc
       "github.copilot.editor.enableAutoCompletions": true,
       "github.copilot.enable": {
         "COBOL": true,
+        "BITLANG-COBOL": true,
         "COBOLIT": true,
         "ACUCOBOL": true,
+        "RMCOBOL": true,
         "COBOL_MF_LISTFILE": false,
         "COBOL_PCOB_LISTFILE": false,
         "COBOL_ACU_LISTFILE": false,
