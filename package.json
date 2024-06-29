@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "10.6.17",
+  "version": "10.6.28",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1243,6 +1243,8 @@
         "*.cob": "MFU*$(basename).cpy,Test$(basename).cpy",
         "*.COB": "MFU*$(basename).cpy,Test$(basename).cpy"
       },
+      "explorer.fileNesting.enabled": true,
+      "files.defaultLanguage": "COBOL",
       "microFocusCOBOL.suppressFileAssociationsPrompt": true,
       "github.copilot.inlineSuggest.enable": true,
       "github.copilot.editor.enableAutoCompletions": true,
