@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* 0036b8d (origin/main, origin/HEAD) keep README.md in-sync with package.json
+
+## 10.6.17 
+* 0036b8d keep README.md in-sync with package.json
 * 7a545b4 enable rmcobol/bitlang-cobol when using github co-pilot
 * 9e23760 Minor tweak #334
 
