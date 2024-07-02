@@ -2828,11 +2828,11 @@
     "glob": "^10.4.2",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
-    "mocha": "^10.5.2",
+    "mocha": "^10.6.0",
     "nth-check": ">=2.1.1",
     "process": "^0.11.10",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.5.2",
+    "typescript": "^5.5.3",
     "@vscode/vsce": "^2.29.0",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4"
