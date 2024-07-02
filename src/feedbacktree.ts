@@ -38,16 +38,12 @@ export class VSHelpAndFeedViewHandler {
                     VSHelpAndFeedViewHandler.openUrl("https://community.microfocus.com/cobol/");
                     break;
 
-                case FeedBackItem.followUs:
-                    VSHelpAndFeedViewHandler.openUrl("https://twitter.com/spgennard");
-                    break;
-
                 case FeedBackItem.review:
                     VSHelpAndFeedViewHandler.openUrl("https://marketplace.visualstudio.com/items?itemName=bitlang.cobol&ssr=false#review-details");
                     break;
 
                 case FeedBackItem.courses:
-                    VSHelpAndFeedViewHandler.openUrl("https://ondemand.microfocus.com/course_category/cobol-and-mainframe-solutions/");
+                    VSHelpAndFeedViewHandler.openUrl("https://www.rocketsoftware.com/learn-cobol");
                     break;
 
                 case FeedBackItem.introToOO:
@@ -67,7 +63,6 @@ enum FeedBackItem {
     reviewIssues = "Review Issues",
     reportIssue = "Report Issue",
     joinCommunity = "Join the 'Micro Focus' Community",
-    followUs = "Follow our Progress",
     courses = "'Micro Focus' On-Demand Courses",
     introToOO = "Introduction to OO Programming"
 }
@@ -111,10 +106,6 @@ export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem
 
             case FeedBackItem.joinCommunity:
                 iconPath = new vscode.ThemeIcon("organization");
-                break;
-
-            case FeedBackItem.followUs:
-                iconPath = new vscode.ThemeIcon("twitter");
                 break;
 
             case FeedBackItem.review:
