@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* b86e5ef tweak feedback links
+
+## 10.6.28 
 
 ## 10.6.17 
 * 0036b8d keep README.md in-sync with package.json
