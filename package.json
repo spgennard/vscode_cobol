@@ -2825,7 +2825,7 @@
     "ansi-regex": ">=6.0.1",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
-    "glob": "^10.4.3",
+    "glob": "^11.0.0",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
     "mocha": "^10.6.0",
