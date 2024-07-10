@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 10.7.6, origin/main, origin/HEAD move up glob version
+## 10.7.6 
+* c17303d move up glob version
 * 01a388e Update
 * 0191584 update versions
 
