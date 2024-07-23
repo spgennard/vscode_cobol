@@ -416,11 +416,59 @@ const simpleSnippets: ISimpleSnippet[] = [
     },
     {
         "prefix": "perform",
+        "label": "perform p1 through p2 ",
+        "body": [
+            "perform ${1:procedure-name-1} ${2|thru,through|} ${3:procedure-name-2}"
+        ],
+        "description": "perform p1 through p2",
+        "triggerIntellisense": true,
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
         "label": "perform paragraph ⦃⦄ times",
         "body": [
             "perform ${1:paragraph-name} ${2:value-1} times"
         ],
         "description": "perform paragraph ⦃⦄ times",
+        "triggerIntellisense": true,
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
+        "label": "perform procedure-name-1 [thru procedure-name-2] with test until..",
+        "body": [
+            "perform ${1:procedure-name-1} ${3|thru,though|} ${4:procedure-name}",
+            "\t${5|with test before,with test after|}",
+            "\tuntil ${6|condition,exit|}",
+            "end-perform"
+        ],
+        "description": "perform procedure-name-1 [thru|through] procedure-name-2 with test until [condition|exit]",
+        "triggerIntellisense": true,
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
+        "label": "perform procedure-name with test until..",
+        "body": [
+            "perform ${1:procedure-name-1}",
+            "\t${2|with test before,with test after|}",
+            "\tuntil ${3|condition,exit|}",
+            "end-perform"
+        ],
+        "description": "perform procedure-name with test until..",
+        "triggerIntellisense": true,
+        "scope": "cobol"
+    },
+    {
+        "prefix": "perform",
+        "label": "perform paragraph-name",
+        "body": [
+            "perform ${1:paragraph-name}",
+            "${0}"
+        ],
+        "description": "perform paragraph-name",
+        "triggerIntellisense": true,
         "scope": "cobol"
     },
     {
@@ -428,9 +476,8 @@ const simpleSnippets: ISimpleSnippet[] = [
         "label": "perform .. end-perform",
         "body": [
             "perform ${1:paragraph-name}",
-            "\t${2}",
-            "end-perform",
-            "${0}"
+            "\t${0}",
+            "end-perform"
         ],
         "description": "perform <block> end-perform",
         "triggerIntellisense": true,
@@ -443,9 +490,11 @@ const simpleSnippets: ISimpleSnippet[] = [
             "perform ${1:paragraph-name} varying ${2:field-1}",
             " from ${3:value-1} by ${4:value-2}",
             " until ${5:condition}",
+            "end-perform",
             "$0"
         ],
         "description": "perform paragraph varying",
+        "triggerIntellisense": true,
         "scope": "cobol"
     },
     {
@@ -468,11 +517,12 @@ const simpleSnippets: ISimpleSnippet[] = [
     },
     {
         "prefix": "exhibit",
-        "label": "exhibit named",
+        "label": "exhibit named variable",
         "body": [
-            "exhibit named \"$0\""
+            "exhibit named ${1:variable}",
+            "$0"
         ],
-        "description": "exhibit named literal",
+        "description": "exhibit named variable",
         "scope": "cobol"
     },
     {
@@ -1310,15 +1360,15 @@ const isoSnippets: ISimpleSnippet[] = [
         "description": ">>evaluate.. >>when... >>end-evaluate",
         "scope": "cobol"
     },
-    
+
     {
-         "label": ">>java-shareable [on|off]",
+        "label": ">>java-shareable [on|off]",
         "prefix": ">>java-shareable",
         "body": [
             ">>java-shareable ${1|on,off|}",
         ],
         "description": ">>java-shareable [on|off]",
-        "scope": "cobol"       
+        "scope": "cobol"
     }
 
 ];
