@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 10.7.22, origin/main, origin/HEAD tweak perform snippets
+## 10.7.22 
+* 117b90f tweak perform snippets
 
 ## 10.7.9 
 
