@@ -635,22 +635,24 @@ If this behavior is not desired, then the setting ```coboleditor.enable_microfoc
       }
 ```
 
-### Editor defaults
 
-The following are set:
+### File Editor defaults
+
+The following settings are set by default:
 
 ```json
- "files.defaultLanguage": "COBOL",
- "workbench.editor.untitled.labelFormat": "name",
+    "files.defaultLanguage": "COBOL",
+    "workbench.editor.untitled.labelFormat": "name",
  ```
 
 When files.defaultLanguage is set to COBOL any file without an extension is not guessed but is assumed to be COBOL.   If you do not want this, please change the language to double quotes eg:
 
 ```json
-"files.defaultLanguage": "",
+    "files.defaultLanguage": "",
 ```
 
-Or use an file extension.
+Or use an file extension, which will ensure you have the right document language for editing.
+
 
 ## Online resources
 
