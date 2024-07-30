@@ -579,7 +579,7 @@ Although this extension does not understand comments in COBOL source files, it c
 }
 ```
 
-## Visual Studio Code Workspace Trust security
+## Visual Studio Code Work>space Trust security
 
 When in limited functionality mode the extension disables all functionality that might be use for malicious purposes.
 
@@ -612,7 +612,7 @@ If this behavior is not desired, then the setting ```coboleditor.enable_microfoc
 ### Settings defaults for Micro Focus COBOL Extension
 
 ```jsonc
-      "microFocusCOBOL.suppressFileAssociationsPrompt": true
+      "microFocusCOBOL.suppressFileAssociationsPrompt": true,
 ```
 
 ### Settings defaults for GitHub Copilot Extension
@@ -635,7 +635,23 @@ If this behavior is not desired, then the setting ```coboleditor.enable_microfoc
       }
 ```
 
-This can be changed by amending your user/workspace settings.
+### Editor defaults
+
+The following are set:
+
+```json
+ "files.defaultLanguage": "COBOL",
+ "workbench.editor.untitled.labelFormat": "name",
+ ```
+
+When files.defaultLanguage is set to COBOL any file without an extension is not guessed but is assumed to be COBOL.   If you do not want this, please change the language to double quotes eg:
+
+```json
+"files.defaultLanguage": "",
+```
+
+Or use an file extension.
+
 ## Online resources
 
 - Online communities
