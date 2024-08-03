@@ -52,6 +52,17 @@ import { COBOLTypeFormatter } from "./vsformatter";
 import { TabUtils } from "./tabstopper";
 import { VSTerminal } from "./vsterminals";
 
+// import type MarkdownIt from 'markdown-it';
+// import hijs from 'highlight.js/lib/core';
+
+// try {
+//     // hijs.registerLanguage('COBOL', hljsCOBOL);
+//     hijs.registerLanguage('shell', require('highlight.js/lib/languages/shell'));
+//     hijs.registerLanguage('COBOL', require('highlightjs-cobol'));
+// } catch {
+//     //
+// }
+
 export const progressStatusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
 
 let bldscriptTaskProvider: vscode.Disposable | undefined;
@@ -689,7 +700,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 
 }
 
-export async function activate(context: ExtensionContext): Promise<void> {
+export async function activate(context: ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
@@ -1207,6 +1218,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     openChangeLog(context);
 
     updateDecorationsOnTextEditorEnabled = true;
+
+//     return {
+//         extendMarkdownIt(md: MarkdownIt) {
+//             return md.use(require('markdown-it-highlightjs/core'), {hijs});
+//         }
+//     };
 }
 
 export async function deactivateAsync(): Promise<void> {

@@ -62,8 +62,8 @@ enum FeedBackItem {
     review = "Review extension",
     reviewIssues = "Review Issues",
     reportIssue = "Report Issue",
-    joinCommunity = "Join the 'Micro Focus' Community",
-    courses = "'Micro Focus' On-Demand Courses",
+    joinCommunity = "Join the 'Rocket Software' Community",
+    courses = "'Rocket Software' On-Demand Courses",
     introToOO = "Introduction to OO Programming"
 }
 

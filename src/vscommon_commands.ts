@@ -16,6 +16,47 @@ import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSDiagCommands } from "./vsdiagcommands";
 import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
 
+async function emptyFile(title:string, doclang: string) {
+    let fpath = "";
+    let data = "";
+    let fdir = "";
+
+    const ws = VSWorkspaceFolders.get();
+    if (ws) {
+        fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
+    } else {
+        fpath = path.join(process.cwd(), data + ".cbl");
+    }
+
+    vscode.window.showInputBox({
+        title: title,
+        prompt: `In directory : ${fdir}`,
+        value: "untitled",
+        validateInput: (text: string): string | undefined => {
+            if (!text || !COBOLSourceScanner.isValidLiteral(text)) {
+                return "Invalid program name";
+            }
+
+            fpath = path.join(fdir, text + ".cbl");
+
+            if (fs.existsSync(fpath)) {
+                return `File already exists (${fpath})`;
+            }
+
+            return undefined;
+        }
+    }
+    ).then(async function (data) {
+        const furl = vscode.Uri.file(fpath).with({ scheme: "untitled" });
+        await vscode.workspace.openTextDocument(furl).then(async document => {
+            const editor = await vscode.window.showTextDocument(document);
+            if (editor !== undefined) {
+                await vscode.languages.setTextDocumentLanguage(document, doclang);
+            }
+        });
+    })
+}
+
 function newFile(title: string, template: string, doclang: string) {
     let fpath = "";
     let fdir = "";
@@ -436,6 +477,9 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         COBOLUtils.selectionToNXHEX(false);
     }));
 
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_BlankFile", async function () {
+        emptyFile("Empty COBOL file","COBOL");
+    }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
         newFile("COBOL program name?", "coboleditor.template_microfocus", "COBOL");
