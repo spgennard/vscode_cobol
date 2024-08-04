@@ -1230,6 +1230,12 @@
       ]
     },
     "configurationDefaults": {
+      "workbench.editor.languageDetectionHints": {
+        "untitledEditors": true,
+        "notebookEditors": true
+      },
+      "workbench.editor.empty.hint": "text",
+      "workbench.editor.languageDetection": true,
       "workbench.editor.untitled.labelFormat": "name",
       "explorer.fileNesting.patterns": {
         "*.ts": "${capture}.js",
@@ -1244,7 +1250,6 @@
         "*.COB": "MFU*$(basename).cpy,Test$(basename).cpy"
       },
       "explorer.fileNesting.enabled": true,
-      "files.defaultLanguage": "COBOL",
       "microFocusCOBOL.suppressFileAssociationsPrompt": true,
       "github.copilot.inlineSuggest.enable": true,
       "github.copilot.editor.enableAutoCompletions": true,
@@ -1281,6 +1286,7 @@
         "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[BITLANG-COBOL]": {
+        "workbench.editor.languageDetection": false,
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,
         "files.autoGuessEncoding": false,
@@ -1300,6 +1306,25 @@
         "editor.wordSeparators": "`~!@$%^&*()=+[{]}\\|;:'\",.<>/?"
       },
       "[ACUCOBOL]": {
+        "workbench.editor.languageDetection": false,
+        "coboleditor.linter": true,
+        "editor.semanticHighlighting.enabled": true,
+        "editor.bracketPairColorization.enabled": false,
+        "editor.insertSpaces": true,
+        "editor.guides.indentation": false,
+        "files.autoGuessEncoding": false,
+        "editor.autoIndent": "full",
+        "editor.formatOnType": false,
+        "editor.rulers": [
+          6,
+          7,
+          72
+        ],
+        "editor.detectIndentation": false,
+        "editor.wordSeparators": "`~!#$%^&*()=+[{]}\\|;:'\",.<>/?"
+      },
+      "[RMCOBOL]": {
+        "workbench.editor.languageDetection": false,
         "coboleditor.linter": true,
         "editor.semanticHighlighting.enabled": true,
         "editor.bracketPairColorization.enabled": false,
