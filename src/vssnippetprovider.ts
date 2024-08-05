@@ -1313,7 +1313,26 @@ const dollarSnippets: ISimpleSnippet[] = [
         ],
         "description": "$display VCS = version-number",
         "scope": "cobol"
-    }
+    },
+    {
+        "prefix": "$end-region",
+        "label": "$end-region",
+        "body": [
+            "\\$end-region",
+            "$0"
+        ],
+        "description": "$end-region",
+        "scope": "cobol"
+    },
+    {
+        "prefix": "$region",
+        "label": "$region",
+        "body": [
+            "\\$region ${1:description}"
+        ],
+        "description": "$region",
+        "scope": "cobol"
+    },
 ];
 
 const isoSnippets: ISimpleSnippet[] = [

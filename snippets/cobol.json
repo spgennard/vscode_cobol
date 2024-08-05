@@ -444,6 +444,17 @@
 		"description": "try catch",
 		"scope": "cobol"
 	},
+	"$region $end-region(wrap)": {
+		"prefix": "$region",
+		"body": [
+			"\\$region ${1:description}",
+			"  ${TM_SELECTED_TEXT}",
+			"\\$end-region",
+			"${0}"
+		],
+		"description": "$region .. $end-region",
+		"scope": "cobol"
+	},
 	"try catch end-try (wrap)": {
 		"prefix": "try",
 		"body": [
