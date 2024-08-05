@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## 10.8.3, origin/main, origin/HEAD prep
+* d620eea add missing region/end-region, as it makes my life easier
+* b879cf4 fix $end
+* 48cf85b tweak settings for language detection
+* 23dc465 add 'New File'/Empty file and order entries
+* 21737c6 Fix #337
+* 58445d1 Fix #334
+
+## 10.7.23 
+
 ## 10.7.22 
 * 117b90f tweak perform snippets
 
