@@ -1267,7 +1267,7 @@ const dollarSnippets: ISimpleSnippet[] = [
         "prefix": "$end",
         "label": "$end",
         "body": [
-            "$end",
+            "\\$end",
             "$0"
         ],
         "description": "$end",
