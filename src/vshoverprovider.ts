@@ -5,7 +5,7 @@ import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { COBOLUtils } from "./cobolutils";
 import { COBOLSourceScanner, COBOLVariable } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { ESourceFormat } from "./externalfeatures";
+// import { ESourceFormat } from "./externalfeatures";
 
 const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-Fa-f]*[\"']");
 const hexRegEx = new RegExp("[xX][\"'][0-9A-Fa-f]*[\"']");
@@ -71,20 +71,33 @@ export class VSHoverProvider {
             for (const variable of variables) {
                 if (variable.token !== undefined) {
                     const token = variable.token;
-                    let line = document.lineAt(token.startLine).text;
-                    // not interested in margins
-                    if (sf.sourceFormat === ESourceFormat.fixed) {
-                        if (line.length > 72) {
-                            line = line.substring(7, 72);
-                        } else if (line.length > 7) {
-                            line = line.substring(7,line.length);
-                        }
+                    let line = sf.sourceHandler.getLine(token.startLine, false);
+                    if (line === undefined) {
+                        continue;
                     }
-                    hoverMessage += line.replace(/\s+/g, " ").trim() + "\n\n";
+                    // // not interested in margins
+                    // if (sf.sourceFormat === ESourceFormat.fixed) {
+                    //     if (line.length > 72) {
+                    //         line = line.substring(7, 72);
+                    //     } else if (line.length > 7) {
+                    //         line = line.substring(7,line.length);
+                    //     }
+                    // }
+                    let newHoverMessage = line.replace(/\s+/g, " ").trim() + "\n\n";
+                    let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+                    let commentLineMarkdown = commentLine.length == 0 ? "" : "*"+commentLine+"*\n\n";
+
+                    hoverMessage += commentLineMarkdown;
+                    hoverMessage += "```COBOL\n"+newHoverMessage+"```\n";
                 }
             }
 
-            return hoverMessage.length === 0 ? undefined : new vscode.Hover(hoverMessage);
+            if (hoverMessage.length === 0) {
+                return undefined;
+            }
+            
+            let md = new vscode.MarkdownString(hoverMessage);
+            return new vscode.Hover(md);
         }
 
         return undefined;

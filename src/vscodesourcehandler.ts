@@ -17,8 +17,7 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     languageId: string;
     notedCommentRanges: commentRange[];
 
-    public constructor(document: vscode.TextDocument) 
-    {
+    public constructor(document: vscode.TextDocument) {
         this.document = document;
         this.lineCount = this.document.lineCount;
         this.languageId = document.languageId;
@@ -47,7 +46,7 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
         return lineText === undefined ? undefined : lineText.text;
     }
 
-    getLineTabExpanded(lineNumber: number):string|undefined {
+    getLineTabExpanded(lineNumber: number): string | undefined {
         const unexpandedLine = this.getRawLine(lineNumber);
         if (unexpandedLine === undefined) {
             return undefined;
@@ -80,6 +79,10 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     getNotedComments(): commentRange[] {
         return this.notedCommentRanges;
     }
+
+    getCommentAtLine(lineNumber: number): string {
+        return "";
+    }
 }
 
 export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
@@ -99,8 +102,9 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     externalFeatures: IExternalFeatures
     notedCommentRanges: commentRange[];
 
-    public constructor(document: vscode.TextDocument) 
-    {
+    commentsIndex: Map<number, string>;
+
+    public constructor(document: vscode.TextDocument) {
         this.document = document;
         this.dumpNumbersInAreaA = false;
         this.dumpAreaBOnwards = false;
@@ -111,6 +115,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.format = ESourceFormat.unknown;
         this.externalFeatures = VSExternalFeatures;
         this.notedCommentRanges = [];
+        this.commentsIndex = new Map<number, string>();
 
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
@@ -134,7 +139,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.document = undefined;
         this.lineCount = 0;
     }
-    
+
     private isFileExcluded(): boolean {
         const config = VSCOBOLConfiguration.get();
 
@@ -179,6 +184,21 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     private static paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
 
     private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
+
+        if (this.commentsIndex.has(lineNumber) === false) {
+            let l = line.substring(startPos).trimStart();
+            if (l.startsWith("*>")) {
+                l = l.substring(2).trim();
+            } else {
+                if (format === ESourceFormat.fixed) {
+                    if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
+                        l = line.substring(7).trimStart();
+                    }
+                }
+            }
+            this.commentsIndex.set(lineNumber, l);
+        }
+
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
                 commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
@@ -209,14 +229,14 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         // drop variable format line
         if (line.length > 1 && line[0] === "*") {
             this.commentCount++;
-            this.sendCommentCallback(line, lineNumber,0, ESourceFormat.free);
+            this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.free);
             return "";
         }
 
         // drop fixed format line
         if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
             this.commentCount++;
-            this.sendCommentCallback(line, lineNumber,6, ESourceFormat.fixed);
+            this.sendCommentCallback(line, lineNumber, 6, ESourceFormat.fixed);
             return "";
         }
 
@@ -224,7 +244,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         if (this.format === ESourceFormat.terminal) {
             if (line.startsWith("\\D") || line.startsWith("|")) {
                 this.commentCount++;
-                this.sendCommentCallback(line, lineNumber,0, ESourceFormat.terminal);
+                this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.terminal);
                 return "";
             }
         }
@@ -333,5 +353,19 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     getNotedComments(): commentRange[] {
         return this.notedCommentRanges;
+    }
+
+    getCommentAtLine(lineNumber: number): string {
+
+        if (this.commentsIndex.has(lineNumber)) {
+            return "" + this.commentsIndex.get(lineNumber);
+        }
+
+        if (lineNumber > 1) {
+            if (this.commentsIndex.has(lineNumber - 1)) {
+                return "" + this.commentsIndex.get(lineNumber - 1);
+            }
+        }
+        return "";
     }
 }

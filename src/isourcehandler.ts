@@ -25,6 +25,7 @@ export interface ISourceHandlerLite {
     getFilename(): string;
     getLineTabExpanded(lineNumber: number):string|undefined;
     getNotedComments(): commentRange[];
+    getCommentAtLine(lineNumber: number):string;
 }
 
 export interface ISourceHandler {
@@ -46,4 +47,5 @@ export interface ISourceHandler {
     getLanguageId():string;
     setSourceFormat(format: ESourceFormat):void;
     getNotedComments(): commentRange[];
+    getCommentAtLine(lineNumber: number):string;
 }

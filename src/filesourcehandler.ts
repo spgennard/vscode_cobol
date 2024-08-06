@@ -263,4 +263,8 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     getNotedComments(): commentRange[] {
         return this.notedCommentRanges;
     }
+
+    getCommentAtLine(lineNumber: number): string {
+        return "";
+    }
 }
