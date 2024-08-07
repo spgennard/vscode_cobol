@@ -1,7 +1,11 @@
 # CHANGELOG
 
 
-## 10.8.3, origin/main, origin/HEAD prep
+## 10.8.4, origin/main, origin/HEAD dev: only use "*>" comment if on the same line
+* 48492d1 add some experimental code that picks up comments for variables
+
+## 10.8.3 
+* e188f36 prep
 * d620eea add missing region/end-region, as it makes my life easier
 * b879cf4 fix $end
 * 48cf85b tweak settings for language detection
