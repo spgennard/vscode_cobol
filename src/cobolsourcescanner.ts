@@ -120,11 +120,13 @@ export class COBOLToken {
 }
 
 export class COBOLVariable {
+    public sourceHandler: ISourceHandler;
     public ignoreInOutlineView: boolean;
     public token: COBOLToken;
     public tokenType: COBOLTokenStyle;
 
-    constructor(token: COBOLToken) {
+    constructor(sourceHandler: ISourceHandler, token: COBOLToken) {
+        this.sourceHandler = sourceHandler;
         this.token = token;
         this.tokenType = token.tokenType;
         this.ignoreInOutlineView = token.ignoreInOutlineView;
@@ -1538,12 +1540,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private addVariableOrConstant(lowerCaseVariable: string, cobolToken: COBOLToken) {
         const constantsOrVariablesToken = this.constantsOrVariables.get(lowerCaseVariable);
         if (constantsOrVariablesToken !== undefined) {
-            constantsOrVariablesToken.push(new COBOLVariable(cobolToken));
+            constantsOrVariablesToken.push(new COBOLVariable(this.sourceHandler,cobolToken));
             return;
         }
 
         const tokens: COBOLVariable[] = [];
-        tokens.push(new COBOLVariable(cobolToken));
+        tokens.push(new COBOLVariable(this.sourceHandler,cobolToken));
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
     }
 

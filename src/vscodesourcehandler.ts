@@ -103,6 +103,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     notedCommentRanges: commentRange[];
 
     commentsIndex: Map<number, string>;
+    commentsIndexInline: Map<number, boolean>;
 
     public constructor(document: vscode.TextDocument) {
         this.document = document;
@@ -116,6 +117,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.externalFeatures = VSExternalFeatures;
         this.notedCommentRanges = [];
         this.commentsIndex = new Map<number, string>();
+        this.commentsIndexInline = new Map<number, boolean>();
 
         const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
@@ -186,17 +188,21 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
 
         if (this.commentsIndex.has(lineNumber) === false) {
+            let isInline = false;
             let l = line.substring(startPos).trimStart();
             if (l.startsWith("*>")) {
+                isInline = true;
                 l = l.substring(2).trim();
             } else {
                 if (format === ESourceFormat.fixed) {
                     if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
                         l = line.substring(7).trimStart();
+                        isInline = false;
                     }
                 }
             }
             this.commentsIndex.set(lineNumber, l);
+            this.commentsIndexInline.set(lineNumber, isInline);
         }
 
         if (this.commentCallbacks !== undefined) {
@@ -363,7 +369,11 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
         if (lineNumber > 1) {
             if (this.commentsIndex.has(lineNumber - 1)) {
-                return "" + this.commentsIndex.get(lineNumber - 1);
+                // only interested in non-inline comments for previous line
+                // todo... prehaps go back further?
+                if (this.commentsIndexInline.get(lineNumber) === false) {
+                    return "" + this.commentsIndex.get(lineNumber - 1);
+                }
             }
         }
         return "";

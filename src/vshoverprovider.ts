@@ -71,7 +71,7 @@ export class VSHoverProvider {
             for (const variable of variables) {
                 if (variable.token !== undefined) {
                     const token = variable.token;
-                    let line = sf.sourceHandler.getLine(token.startLine, false);
+                    let line = variable.sourceHandler.getLine(token.startLine, false);
                     if (line === undefined) {
                         continue;
                     }
