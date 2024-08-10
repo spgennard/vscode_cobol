@@ -88,11 +88,15 @@ export class COBOLToken {
     public extraInformation1: string;
     public inSection: COBOLToken | undefined;
     public tokenOffset: number;
+    public sourceHandler: ISourceHandler;
 
     public constructor(
+        sourceHandler: ISourceHandler,
         filenameAsURI: string, filename: string, tokenType: COBOLTokenStyle, startLine: number,
         startColumn: number, token: string, description: string,
         parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string) {
+
+        this.sourceHandler = sourceHandler;
         this.ignoreInOutlineView = false;
         this.filenameAsURI = filenameAsURI;
         this.filename = filename;
@@ -120,13 +124,11 @@ export class COBOLToken {
 }
 
 export class COBOLVariable {
-    public sourceHandler: ISourceHandler;
     public ignoreInOutlineView: boolean;
     public token: COBOLToken;
     public tokenType: COBOLTokenStyle;
 
-    constructor(sourceHandler: ISourceHandler, token: COBOLToken) {
-        this.sourceHandler = sourceHandler;
+    constructor(token: COBOLToken) {
         this.token = token;
         this.tokenType = token.tokenType;
         this.ignoreInOutlineView = token.ignoreInOutlineView;
@@ -1175,6 +1177,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
         const ctoken = new COBOLToken(
+            this.sourceHandler,
             this.sourceHandler.getUriAsString(), this.filename, tokenType, startLine, startColumn, token, description, parentToken, state.inProcedureDivision, extraInformation1);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = this.sourceReferences.state.currentSection;
@@ -1544,12 +1547,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private addVariableOrConstant(lowerCaseVariable: string, cobolToken: COBOLToken) {
         const constantsOrVariablesToken = this.constantsOrVariables.get(lowerCaseVariable);
         if (constantsOrVariablesToken !== undefined) {
-            constantsOrVariablesToken.push(new COBOLVariable(this.sourceHandler,cobolToken));
+            constantsOrVariablesToken.push(new COBOLVariable(cobolToken));
             return;
         }
 
         const tokens: COBOLVariable[] = [];
-        tokens.push(new COBOLVariable(this.sourceHandler,cobolToken));
+        tokens.push(new COBOLVariable(cobolToken));
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
     }
 

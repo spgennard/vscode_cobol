@@ -3,7 +3,7 @@ import vscode from "vscode";
 import { ICOBOLSettings, hoverApi } from "./iconfiguration";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { COBOLUtils } from "./cobolutils";
-import { COBOLSourceScanner, COBOLVariable } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken, COBOLVariable } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 // import { ESourceFormat } from "./externalfeatures";
 
@@ -45,17 +45,23 @@ export class VSHoverProvider {
             }
         }
 
-        if (settings.hover_show_variable_definition) {
-            const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
-            const word = document.getText(wordRange);
-            if (word === undefined || word.length === 0) {
-                return undefined;
-            }
-            const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
-            if (sf === undefined) {
-                return undefined;
-            }
+        const wordRange = document.getWordRangeAtPosition(position, variableRegEx);
+        const word = document.getText(wordRange);
+        if (word === undefined || word.length === 0) {
+            return undefined;
+        }
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        if (sf === undefined) {
+            return undefined;
+        }
 
+
+        let inProcedureDivision = false;
+        if (sf.sourceReferences.state.procedureDivision?.startLine !== undefined && position.line > sf.sourceReferences.state.procedureDivision?.startLine) {
+            inProcedureDivision = true;
+        }
+
+        if (settings.hover_show_variable_definition) {
             // only show when in the procedure division
             if (sf.sourceReferences.state.procedureDivision?.startLine !== undefined && position.line < sf.sourceReferences.state.procedureDivision?.startLine) {
                 return undefined;
@@ -63,45 +69,75 @@ export class VSHoverProvider {
 
             const tokenLower: string = word.toLowerCase();
             const variables: COBOLVariable[] | undefined = sf.constantsOrVariables.get(tokenLower);
-            if (variables === undefined || variables.length === 0) {
-                return undefined;
-            }
+            if (variables !== undefined && variables.length !== 0) {
+                let hoverMessage = "";
+                for (const variable of variables) {
+                    if (variable.token !== undefined) {
+                        const token = variable.token;
+                        let line = token.sourceHandler.getLine(token.startLine, false);
+                        if (line === undefined) {
+                            continue;
+                        }
 
-            let hoverMessage = "";
-            for (const variable of variables) {
-                if (variable.token !== undefined) {
-                    const token = variable.token;
-                    let line = variable.sourceHandler.getLine(token.startLine, false);
-                    if (line === undefined) {
-                        continue;
+                        let newHoverMessage = line.trimEnd() + "\n\n";
+                        let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+
+                        hoverMessage += commentLine.length == 0 ? "" : "*" + commentLine + "*\n\n";;
+                        hoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
                     }
-                    // // not interested in margins
-                    // if (sf.sourceFormat === ESourceFormat.fixed) {
-                    //     if (line.length > 72) {
-                    //         line = line.substring(7, 72);
-                    //     } else if (line.length > 7) {
-                    //         line = line.substring(7,line.length);
-                    //     }
-                    // }
-                    // let newHoverMessage = line.replace(/\s+/g, " ").trim() + "\n\n";
-                    let newHoverMessage = line.trimEnd()+"\n\n";
-                    let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
-                    let commentLineMarkdown = commentLine.length == 0 ? "" : "*"+commentLine+"*\n\n";
+                }
 
-                    hoverMessage += commentLineMarkdown;
-                    hoverMessage += "```COBOL\n"+newHoverMessage+"```\n";
+                if (hoverMessage.length !== 0) {
+                    let md = new vscode.MarkdownString(hoverMessage);
+                    return new vscode.Hover(md);
                 }
             }
+        }
 
-            if (hoverMessage.length === 0) {
-                return undefined;
+
+        const showSection = true;
+        if (showSection && inProcedureDivision) {
+            const tokenLower: string = word.toLowerCase();
+            const token: COBOLToken | undefined = sf.sections.get(tokenLower);
+            if (token !== undefined && token.startLine !== position.line) {
+                let line = token.sourceHandler.getLine(token.startLine, false);
+                if (line !== undefined) {
+                    let newHoverMessage = line.trimEnd() + "\n\n";
+                    let sectionsHoverMessage = "";
+                    let sectionsCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+                    sectionsHoverMessage += sectionsCommentLine.length === 0 ? "" : "*" + sectionsCommentLine.trim() + "*\n\n";
+                    sectionsHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+
+                    if (sectionsHoverMessage.length !== 0) {
+                        let md = new vscode.MarkdownString(sectionsHoverMessage);
+                        return new vscode.Hover(md);
+                    }
+                }
             }
-            
-            let md = new vscode.MarkdownString(hoverMessage);
-            return new vscode.Hover(md);
+        }
+
+        if (showSection && inProcedureDivision) {
+            const tokenLower: string = word.toLowerCase();
+            const token: COBOLToken | undefined = sf.paragraphs.get(tokenLower);
+            if (token !== undefined && token.startLine !== position.line) {
+                let line = token.sourceHandler.getLine(token.startLine, false);
+                if (line !== undefined) {
+                    let newHoverMessage = line.trimEnd() + "\n\n";
+                    let paragraphHoverMessage = "";
+                    let paragraphCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+                    paragraphHoverMessage += paragraphCommentLine.length === 0 ? "" : "*" + paragraphCommentLine.trim() + "*\n\n";
+                    paragraphHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+
+                    if (paragraphHoverMessage.length !== 0) {
+                        let md = new vscode.MarkdownString(paragraphHoverMessage);
+                        return new vscode.Hover(md);
+                    }
+                }
+            }
         }
 
         return undefined;
     }
+
 
 }
