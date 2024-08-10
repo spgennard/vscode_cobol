@@ -83,7 +83,8 @@ export class VSHoverProvider {
                     //         line = line.substring(7,line.length);
                     //     }
                     // }
-                    let newHoverMessage = line.replace(/\s+/g, " ").trim() + "\n\n";
+                    // let newHoverMessage = line.replace(/\s+/g, " ").trim() + "\n\n";
+                    let newHoverMessage = line.trimEnd()+"\n\n";
                     let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
                     let commentLineMarkdown = commentLine.length == 0 ? "" : "*"+commentLine+"*\n\n";
 
