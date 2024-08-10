@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 0d0e472 enable coloured comments don't complain about source files that contain few lines mark BroadcomMFD.cobol-language-support as an extension that performs the same features as this but can clash
 
-## 10.8.4, origin/main, origin/HEAD dev: only use "*>" comment if on the same line
+## 10.8.4 
+* 74498e2 dev: only use "*>" comment if on the same line
 * 48492d1 add some experimental code that picks up comments for variables
 
 ## 10.8.3 
