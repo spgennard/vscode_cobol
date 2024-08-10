@@ -931,10 +931,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             /* leave early */
             if (sourceLooksLikeCOBOL === false) {
                 if (filename.length > 0) {
-                    if (sourceHandler.getLineCount() > maxLines) {
+                    const linesinSource = sourceHandler.getLineCount();
+                    if (linesinSource > maxLines) {
                         this.externalFeatures.logMessage(` Warning - Unable to determine if ${filename} is COBOL after scanning ${maxLines} lines (configurable via ${ExtensionDefaults.defaultEditorConfig}.pre_scan_line_limit setting)`);
                     } else {
-                        this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
+                        // if the number of lines is low, don't comment on it
+                        if (linesinSource > 5) {
+                            this.externalFeatures.logMessage(` Unable to determine if ${filename} is COBOL and how it is used`);
+                        }
                     }
                 }
             }

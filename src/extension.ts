@@ -118,6 +118,7 @@ const blessed_extensions: string[] = [
 ];
 
 const known_problem_extensions: string[][] = [
+    ["bitlang.cobol already provides autocomplete and highlight for COBOL source code","BroadcomMFD.cobol-language-support",],
     ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf"],             // control flow extension
     ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb"]
 ];
