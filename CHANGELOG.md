@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 10.8.9, origin/main, origin/HEAD add hover support for para's & sections with comments
+## 10.8.12, origin/main, origin/HEAD change colour comment tags to have a space prefix
+
+## 10.8.9 
+* 5396d2c add hover support for para's & sections with comments
 
 ## 10.8.6 
 * 0d0e472 enable coloured comments don't complain about source files that contain few lines mark BroadcomMFD.cobol-language-support as an extension that performs the same features as this but can clash
