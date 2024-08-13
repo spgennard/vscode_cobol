@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "10.8.9",
+  "version": "10.8.12",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -936,7 +936,7 @@
           },
           "default": [
             {
-              "tag": "!",
+              "tag": " !",
               "color": "#FF2D00",
               "strikethrough": false,
               "underline": false,
@@ -945,7 +945,7 @@
               "italic": false
             },
             {
-              "tag": "?",
+              "tag": " ?",
               "color": "#3498DB",
               "strikethrough": false,
               "underline": false,
@@ -954,7 +954,7 @@
               "italic": false
             },
             {
-              "tag": "todo",
+              "tag": " todo",
               "color": "#FF8C00",
               "strikethrough": false,
               "underline": false,
@@ -963,7 +963,7 @@
               "italic": false
             },
             {
-              "tag": "* ",
+              "tag": " * ",
               "color": "#98C379",
               "strikethrough": false,
               "underline": false,
@@ -972,7 +972,7 @@
               "italic": false
             },
             {
-              "tag": "//",
+              "tag": " //",
               "color": "#474747",
               "strikethrough": true,
               "underline": false,
@@ -981,7 +981,7 @@
               "italic": false
             },
             {
-              "tag": "note",
+              "tag": " note",
               "color": "#FF8C00",
               "strikethrough": false,
               "underline": false,
