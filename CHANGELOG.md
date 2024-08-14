@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 10.8.12, origin/main, origin/HEAD change colour comment tags to have a space prefix
+## 10.8.13, origin/main, origin/HEAD add multi-line comments (upto 5 lines, may change or make configurable
+
+## 10.8.12 
+* bb537c7 change colour comment tags to have a space prefix
 
 ## 10.8.9 
 * 5396d2c add hover support for para's & sections with comments
