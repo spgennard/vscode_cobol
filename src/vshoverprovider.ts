@@ -16,24 +16,29 @@ export class VSHoverProvider {
 
     private static wrapCommentAndCode(comment: string, code: string) : string
     {
-        if (comment.trim().length === 0) {
-            return `\`\`\`COBOL\n${code}\n\n\`\`\``;
-        }
-
         let cleanCode=code;
         if (code.endsWith("\n")) {
             cleanCode = code.slice(0, -1) 
         }
 
+        if (comment.trim().length === 0) {
+            // return just the code
+            return `\`\`\`COBOL
+${cleanCode}
+\`\`\`
+`;
+        }
+
+        // return both the comment and the code
         return `\`\`\`text
 ${comment}
 \`\`\`
 
----
-
 \`\`\`COBOL
 ${cleanCode}
-\`\`\``;
+\`\`\`
+
+`;
     }
     
     public static provideHover(settings: ICOBOLSettings, document: vscode.TextDocument, position: vscode.Position): ProviderResult<vscode.Hover> {
@@ -103,10 +108,10 @@ ${cleanCode}
 
                         let newHoverMessage = line.trimEnd();
                         let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
-
+                        if (hoverMessage.length !== 0) {
+                            hoverMessage += "\n\n----\n\n";
+                        }
                         hoverMessage += VSHoverProvider.wrapCommentAndCode(commentLine, newHoverMessage);
-                        // hoverMessage += commentLine.length == 0 ? "" : "```\n\n" + commentLine + "\n```\n";;
-                        // hoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
                     }
                 }
 
@@ -126,11 +131,8 @@ ${cleanCode}
                 let line = token.sourceHandler.getLine(token.startLine, false);
                 if (line !== undefined) {
                     let newHoverMessage = line.trimEnd();
-                    let sectionsHoverMessage = "";
                     let sectionsCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
-                    // sectionsHoverMessage += sectionsCommentLine.length === 0 ? "" : "```\n\n" + sectionsCommentLine.trim() + "\n```\n";
-                    // sectionsHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
-                    sectionsHoverMessage += VSHoverProvider.wrapCommentAndCode(sectionsCommentLine, newHoverMessage);
+                    let sectionsHoverMessage = VSHoverProvider.wrapCommentAndCode(sectionsCommentLine, newHoverMessage);
 
                     if (sectionsHoverMessage.length !== 0) {
                         let md = new vscode.MarkdownString(sectionsHoverMessage);
@@ -147,12 +149,8 @@ ${cleanCode}
                 let line = token.sourceHandler.getLine(token.startLine, false);
                 if (line !== undefined) {
                     let newHoverMessage = line.trimEnd();
-                    let paragraphHoverMessage = "";
                     let paragraphCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
-                    // paragraphHoverMessage += paragraphCommentLine.length === 0 ? "" : "\n\n````" + paragraphCommentLine.trim() + "\n````\n";
-                    // paragraphHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
-
-                    paragraphHoverMessage += VSHoverProvider.wrapCommentAndCode(paragraphCommentLine, newHoverMessage);
+                    let paragraphHoverMessage = VSHoverProvider.wrapCommentAndCode(paragraphCommentLine, newHoverMessage);
 
                     if (paragraphHoverMessage.length !== 0) {
                         let md = new vscode.MarkdownString(paragraphHoverMessage);
