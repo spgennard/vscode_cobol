@@ -29,12 +29,13 @@
 		"coboleditor.metadata_symbols": [
 			"sample,issue189_coboldoc.cbl,5",
 			"fred,rainbow_code.cbl,1",
-			"untitled-1,fred.cbl"
+			"untitled-1,fred.cbl",
+			"hello-world,comments.cbl,1"
 		],
 		"coboleditor.metadata_entrypoints": [],
 		"coboleditor.metadata_types": [],
 		"coboleditor.metadata_files": [
-			"1689364040678,src/fred.cbl"
+			"1723625406369,issues/comments.cbl"
 		],
 		"coboleditor.metadata_knowncopybooks": [],
 		"coboleditor.enable_tab_inline": true

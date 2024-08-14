@@ -375,7 +375,30 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 // only interested in non-inline comments for previous line
                 // todo... prehaps go back further?
                 if (this.commentsIndexInline.get(lineNumber - 1) === false) {
-                    return "" + this.commentsIndex.get(lineNumber - 1);
+                    let maxIncludedLines = 5;
+                    let backwardsCount = 2;
+                    let lines = "" + this.commentsIndex.get(lineNumber - 1)+"\n";
+
+                    while(maxIncludedLines > 0)
+                    {
+                        if (this.commentsIndex.has(lineNumber - backwardsCount) === false)
+                        {
+                            break;
+                        }
+
+                        if (this.commentsIndexInline.get(lineNumber - backwardsCount) === true)
+                        {
+                            break;
+                        }
+
+                        let prevLines = lines;
+                        lines = ""+this.commentsIndex.get(lineNumber - backwardsCount) + "\n"+prevLines;
+
+                        backwardsCount++;
+                        maxIncludedLines--;
+                    }
+
+                    return lines;
                 }
             }
         }

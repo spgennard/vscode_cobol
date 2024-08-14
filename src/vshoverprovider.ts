@@ -14,6 +14,28 @@ const variableRegEx = new RegExp("[$#0-9a-zA-Z_][a-zA-Z0-9-_]*");
 
 export class VSHoverProvider {
 
+    private static wrapCommentAndCode(comment: string, code: string) : string
+    {
+        if (comment.trim().length === 0) {
+            return `\`\`\`COBOL\n${code}\n\n\`\`\``;
+        }
+
+        let cleanCode=code;
+        if (code.endsWith("\n")) {
+            cleanCode = code.slice(0, -1) 
+        }
+
+        return `\`\`\`text
+${comment}
+\`\`\`
+
+---
+
+\`\`\`COBOL
+${cleanCode}
+\`\`\``;
+    }
+    
     public static provideHover(settings: ICOBOLSettings, document: vscode.TextDocument, position: vscode.Position): ProviderResult<vscode.Hover> {
         if (settings.hover_show_known_api !== hoverApi.Off) {
             const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
@@ -79,11 +101,12 @@ export class VSHoverProvider {
                             continue;
                         }
 
-                        let newHoverMessage = line.trimEnd() + "\n\n";
+                        let newHoverMessage = line.trimEnd();
                         let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
 
-                        hoverMessage += commentLine.length == 0 ? "" : "*" + commentLine + "*\n\n";;
-                        hoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+                        hoverMessage += VSHoverProvider.wrapCommentAndCode(commentLine, newHoverMessage);
+                        // hoverMessage += commentLine.length == 0 ? "" : "```\n\n" + commentLine + "\n```\n";;
+                        // hoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
                     }
                 }
 
@@ -102,11 +125,12 @@ export class VSHoverProvider {
             if (token !== undefined && token.startLine !== position.line) {
                 let line = token.sourceHandler.getLine(token.startLine, false);
                 if (line !== undefined) {
-                    let newHoverMessage = line.trimEnd() + "\n\n";
+                    let newHoverMessage = line.trimEnd();
                     let sectionsHoverMessage = "";
                     let sectionsCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
-                    sectionsHoverMessage += sectionsCommentLine.length === 0 ? "" : "*" + sectionsCommentLine.trim() + "*\n\n";
-                    sectionsHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+                    // sectionsHoverMessage += sectionsCommentLine.length === 0 ? "" : "```\n\n" + sectionsCommentLine.trim() + "\n```\n";
+                    // sectionsHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+                    sectionsHoverMessage += VSHoverProvider.wrapCommentAndCode(sectionsCommentLine, newHoverMessage);
 
                     if (sectionsHoverMessage.length !== 0) {
                         let md = new vscode.MarkdownString(sectionsHoverMessage);
@@ -122,11 +146,13 @@ export class VSHoverProvider {
             if (token !== undefined && token.startLine !== position.line) {
                 let line = token.sourceHandler.getLine(token.startLine, false);
                 if (line !== undefined) {
-                    let newHoverMessage = line.trimEnd() + "\n\n";
+                    let newHoverMessage = line.trimEnd();
                     let paragraphHoverMessage = "";
                     let paragraphCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
-                    paragraphHoverMessage += paragraphCommentLine.length === 0 ? "" : "*" + paragraphCommentLine.trim() + "*\n\n";
-                    paragraphHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+                    // paragraphHoverMessage += paragraphCommentLine.length === 0 ? "" : "\n\n````" + paragraphCommentLine.trim() + "\n````\n";
+                    // paragraphHoverMessage += "```COBOL\n" + newHoverMessage + "```\n";
+
+                    paragraphHoverMessage += VSHoverProvider.wrapCommentAndCode(paragraphCommentLine, newHoverMessage);
 
                     if (paragraphHoverMessage.length !== 0) {
                         let md = new vscode.MarkdownString(paragraphHoverMessage);
