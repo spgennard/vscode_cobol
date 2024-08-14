@@ -44,7 +44,7 @@ ${cleanCode}
     public static provideHover(settings: ICOBOLSettings, document: vscode.TextDocument, position: vscode.Position): ProviderResult<vscode.Hover> {
         if (settings.hover_show_known_api !== hoverApi.Off) {
             const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
-            const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(txt);
+            const txtTarget: CallTarget | undefined = KnownAPIs.getCallTarget(document.languageId, txt);
             if (txtTarget !== undefined) {
                 let example = txtTarget.example.length > 0 ? `\n\n---\n\n~~~\n${txtTarget.example.join("\r\n")}\n~~~\n` : "";
                 if (settings.hover_show_known_api === hoverApi.Short) {

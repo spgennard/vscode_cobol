@@ -32,13 +32,14 @@ export class CallTarget {
 	}
 }
 
-const callTargets = new Map<string, CallTarget>();
+const emptyMap = new Map<string, CallTarget>();
+const callTargets_cobol = new Map<string, CallTarget>();
 
-function addApis(a: IKnownApis) {
+function addApis(calltarget:Map<string, CallTarget>, a: IKnownApis) {
 	for (const [key, description] of a.apis) {
 		const possibleExample = a.examples.get(key);
 		const possibleSnippet = a.snippets.get(key);
-		callTargets.set(key, new CallTarget(a.name, a.url, key, description,
+		calltarget.set(key, new CallTarget(a.name, a.url, key, description,
 			(possibleExample === undefined ? [] : possibleExample),
 			(possibleSnippet === undefined ? [] : possibleSnippet)
 		));
@@ -53,17 +54,23 @@ function addApis(a: IKnownApis) {
 
 }
 
-addApis(new CBL_APIs());
-addApis(new MFUNIT_APIs());
-addApis(new ILE_APIs());
+addApis(callTargets_cobol, new CBL_APIs());
+addApis(callTargets_cobol, new MFUNIT_APIs());
+addApis(callTargets_cobol,new ILE_APIs());
 
 export class KnownAPIs {
 	// /* inline decl */
-	public static getCallTarget(api: string): CallTarget | undefined {
-		return callTargets.get(api);
+	public static getCallTarget(language:string, api: string): CallTarget | undefined {
+		switch(language) {
+			case "COBOL": return callTargets_cobol.get(api);
+		}
+		return undefined;
 	}
 
-	public static getCallTargetMap(): Map<string, CallTarget> {
-		return callTargets;
+	public static getCallTargetMap(language:string): Map<string, CallTarget> {
+		switch(language) {
+			case "COBOL": return callTargets_cobol;
+		}		
+		return emptyMap;
 	}
 }

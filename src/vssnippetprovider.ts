@@ -1496,7 +1496,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
         this.dollarTargets.clear();
         this.isoTargets.clear();
 
-        const callMap = KnownAPIs.getCallTargetMap();
+        const callMap = KnownAPIs.getCallTargetMap(ExtensionDefaults.defaultCOBOLLanguage);
         for (const [api,] of callMap) {
             const ci = this.getCompletionItemForAPI(settings, ExtensionDefaults.defaultCOBOLLanguage, api);
             if (ci !== undefined) {
@@ -1547,7 +1547,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getCompletionItemForAPI(settings: ICOBOLSettings, langId: string, api: string): CompletionItem | undefined {
         const keyword = "call";
-        const ki = KnownAPIs.getCallTarget(api);
+        const ki = KnownAPIs.getCallTarget(langId, api);
         if (ki === undefined) {
             return undefined;
         }
