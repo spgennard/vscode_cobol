@@ -167,7 +167,6 @@ export class CBL_APIs implements IKnownApis {
         ["CBL_WRITE_VFILE", ["Writes bytes to a heap."]],
         ["CBL_XOR", ["Does a logical XOR between the bits of two data items."]],
         ["CBL_YIELD_RUN_UNIT", ["Yields the remainder of a run-unit's time-slice."]],
-        ["CBL_GET_FILE_INFO", [""]],
         ["CBL_RUNTIME_ERROR", ["Forces the application to terminate with a run-time error condition."]],
         ["SYSTEM", ["The SYSTEM library routine provides a method of executing an operating system command."]],
         ["CBL_GET_MOUSE_MASK", ["Returns the mouse event mask."]],
@@ -195,9 +194,6 @@ export class CBL_APIs implements IKnownApis {
         ["CBL_FFND_REPORT", ["Enables a COBOL program to invoke FaultFinder"]],
         ["CBL_MONITOR_BROWSE_TO_WRITE", ["Converts monitor browse capability already acquired by the current thread to write capability, blocking until this can be achieved."]],
         ["CBL_MONITOR_WRITE_TO_BROWSE", ["Converts monitor write capability already acquired by the current thread to browse capability."]],
-        ["CBL_SEMAPHORE_CLEAR", [""]],
-        ["CBL_SEMAPHORE_POST", [""]],
-        ["CBL_SEMAPHORE_WAIT", [""]],
         ["CBL_SRV_SERVICE_FLAGS_GET", ["Enables a program running within a COBOL container as part of a service to determine the service's execution characteristics."]],
         ["CBL_SRV_SERVICE_FLAGS_SET", ["Enables a program running within a COBOL container as part of a service to set one or more the service's execution characteristics."]]
 
