@@ -9,7 +9,7 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
 const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-Fa-f]*[\"']");
 const hexRegEx = new RegExp("[xX][\"'][0-9A-Fa-f]*[\"']");
-const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
+const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_$]*");
 const variableRegEx = new RegExp("[$#0-9a-zA-Z_][a-zA-Z0-9-_]*");
 
 export class VSHoverProvider {

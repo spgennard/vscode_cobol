@@ -2,6 +2,7 @@
 import { ILE_APIs } from "./ile_datetime";
 import { CBL_APIs } from "./mf_cbl_apis";
 import { MFUNIT_APIs } from "./mf_mfunit";
+import { ACU_COMMON_APIs } from "./acu_common_apis";
 
 export interface IKnownApis {
 	url: string;
@@ -57,6 +58,7 @@ function addApis(calltarget:Map<string, CallTarget>, a: IKnownApis) {
 addApis(callTargets_cobol, new CBL_APIs());
 addApis(callTargets_cobol, new MFUNIT_APIs());
 addApis(callTargets_cobol,new ILE_APIs());
+addApis(callTargets_cobol,new ACU_COMMON_APIs());
 
 export class KnownAPIs {
 	// /* inline decl */

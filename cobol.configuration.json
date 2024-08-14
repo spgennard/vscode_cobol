@@ -70,7 +70,7 @@
 			"end": "^\\s*\\$end-region\\b"
 		}
 	},
-	"wordPattern": "([#]?[0-9a-zA-Z]?[a-zA-Z-0-9_]*[a-zA-Z0-9])",
+	"wordPattern": "([#]?[0-9a-zA-Z]?[a-zA-Z-0-9_$]*[a-zA-Z0-9])",
 	"onEnterRules": [
 		{
 			"beforeText": "^\\s*[cC][aA][lL][lL].*[uU][sS][iI][nN][gG]$",
