@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 383afeb add markdown dividers between items better handle duplicates variables
 
-## 10.8.13, origin/main, origin/HEAD add multi-line comments (upto 5 lines, may change or make configurable
+## 10.8.13, origin/main, origin/HEAD 
+* 826fe98 add multi-line comments (upto 5 lines, may change or make configurable)
 
 ## 10.8.12 
 * bb537c7 change colour comment tags to have a space prefix
