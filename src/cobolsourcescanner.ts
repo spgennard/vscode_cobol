@@ -645,6 +645,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public lastModifiedTime: BigInt = BigInt(0);
 
     public tokensInOrder: COBOLToken[] = [];
+    public execTokensInOrder: COBOLToken[] = [];
 
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
@@ -695,6 +696,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private languageId: string;
     private usePortationSourceScanner: boolean;
+    private currentExecToken:COBOLToken|undefined = undefined;
     private currentExec = "";
     private currentExecVerb = "";
 
@@ -1866,12 +1868,20 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     this.currentExec = nextSTokenOrBlank;
                     this.currentExecVerb = "";
                     state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, nextSTokenOrBlank, `EXEC ${nextSTokenOrBlank}`, state.currentDivision);
+                    this.currentExecToken = state.currentToken;
                     token.moveToNextToken();
                     continue;
                 }
 
                 /* finish processing end-exec */
                 if (currentLower === "end-exec") {
+                    if (this.currentExecToken !== undefined) {
+                        if (state.currentToken !== undefined) {
+                            this.currentExecToken.endLine = state.currentToken.endLine;
+                            this.currentExecToken.endColumn = state.currentToken.endColumn;
+                            this.execTokensInOrder.push(this.currentExecToken);  // remember token
+                        }
+                    }
                     this.currentExec = "";
                     this.currentExecVerb = "";
                     state.currentToken = undefined;
