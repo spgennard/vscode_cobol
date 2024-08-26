@@ -5,6 +5,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSLogger } from "./vslogger";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
+import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
@@ -69,11 +70,13 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         /* is it a sql cursor? */
         const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (qcp !== undefined) {
-            const loc = this.getSQLCursor(document, qcp, position);
-            if (loc !== undefined) {
-                locations.push(loc);
+            if (VSCOBOLSourceScannerTools.isPositionInEXEC(qcp, position)) {
+                const loc = this.getSQLCursor(document, qcp, position);
+                if (loc !== undefined) {
+                    locations.push(loc);
+                }
+                return locations;
             }
-            return locations;
         }
 
         return locations;
@@ -123,6 +126,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
         return undefined;
     }
+
+
 
     private getSQLCursor(document: vscode.TextDocument, sf: COBOLSourceScanner, position: vscode.Position): vscode.Location | undefined {
         const wordRange = document.getWordRangeAtPosition(position, this.sectionRegEx);
