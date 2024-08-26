@@ -136,6 +136,14 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         }
     }
 
+    public isDebuggerActive(): boolean {
+        // if (debug.activeDebugSession === undefined) {
+        //     return false;
+        // }
+
+        return true;
+    }
+
 }
 
 export const VSExternalFeatures = new VSExternalFeaturesImpl();

@@ -377,22 +377,19 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 if (this.commentsIndexInline.get(lineNumber - 1) === false) {
                     let maxIncludedLines = 5;
                     let backwardsCount = 2;
-                    let lines = "" + this.commentsIndex.get(lineNumber - 1)+"\n";
+                    let lines = "" + this.commentsIndex.get(lineNumber - 1) + "\n";
 
-                    while(maxIncludedLines > 0)
-                    {
-                        if (this.commentsIndex.has(lineNumber - backwardsCount) === false)
-                        {
+                    while (maxIncludedLines > 0) {
+                        if (this.commentsIndex.has(lineNumber - backwardsCount) === false) {
                             break;
                         }
 
-                        if (this.commentsIndexInline.get(lineNumber - backwardsCount) === true)
-                        {
+                        if (this.commentsIndexInline.get(lineNumber - backwardsCount) === true) {
                             break;
                         }
 
                         let prevLines = lines;
-                        lines = ""+this.commentsIndex.get(lineNumber - backwardsCount) + "\n"+prevLines;
+                        lines = "" + this.commentsIndex.get(lineNumber - backwardsCount) + "\n" + prevLines;
 
                         backwardsCount++;
                         maxIncludedLines--;
@@ -401,6 +398,20 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
                     return lines;
                 }
             }
+        }
+        return "";
+    }
+
+
+    getText(startLine: number, startColumn: number, endLine: number, endColumn: number): string {
+        try {
+            if (this.document) {
+                const r = new vscode.Range(startLine, startColumn, endLine, endColumn);
+                return this.document.getText(r);
+            }
+        }
+        catch {
+
         }
         return "";
     }

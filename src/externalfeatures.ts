@@ -24,6 +24,7 @@ export interface IExternalFeatures {
     getURLCopyBookSearchPath(): string[];
     setURLCopyBookSearchPath(fileSearchDirectory: string[]):void;
     isFileASync(possibleFilename:string): Promise<boolean>;
+    isDebuggerActive(): boolean;
 }
 
 export enum ESourceFormat {

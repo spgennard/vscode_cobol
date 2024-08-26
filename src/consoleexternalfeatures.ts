@@ -152,4 +152,8 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     public async isFileASync(possibleFilename: string): Promise<boolean> {
         return false;
     }
+
+    public isDebuggerActive(): boolean {
+        return false;
+    }
 }

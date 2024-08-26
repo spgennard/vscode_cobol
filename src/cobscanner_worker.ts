@@ -28,7 +28,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         this.logMessage(ex.name + ": " + message);
         if (ex !== undefined && ex.stack !== undefined) {
             this.logMessage(ex.stack);
-        } 
+        }
         return;
     }
 
@@ -62,7 +62,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         return "";
     }
 
-    public setWorkspaceFolders(folders: string[]):void {
+    public setWorkspaceFolders(folders: string[]): void {
         this.workspaceFolders = folders;
     }
 
@@ -85,7 +85,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         return undefined;
     }
 
-    public isFile(possibleFilename:string): boolean {
+    public isFile(possibleFilename: string): boolean {
         try {
             if (fs.existsSync(possibleFilename)) {
                 // not on windows, do extra check for +x perms (protects exe & dirs)
@@ -108,13 +108,13 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         return false;
     }
 
-    public isDirectory(possibleDirectory: string) : boolean {
+    public isDirectory(possibleDirectory: string): boolean {
         return COBOLFileUtils.isDirectory(possibleDirectory);
     }
 
-    public getFileModTimeStamp(filename: string):BigInt {
+    public getFileModTimeStamp(filename: string): BigInt {
         try {
-            return (BigInt)(fs.statSync(filename, {bigint: true }).mtimeMs);
+            return (BigInt)(fs.statSync(filename, { bigint: true }).mtimeMs);
         } catch {
             //
         }
@@ -123,12 +123,12 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     }
 
     private fileSearchDirectory: string[] = [];
-    
+
     public getCombinedCopyBookSearchPath(): string[] {
         return this.fileSearchDirectory;
     }
 
-    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void {
+    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]): void {
         this.fileSearchDirectory = fileSearchDirectory;
     }
 
@@ -147,10 +147,15 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         this.URLSearchDirectory = fileSearchDirectory;
     }
 
-     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-     public async isFileASync(possibleFilename: string): Promise<boolean> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async isFileASync(possibleFilename: string): Promise<boolean> {
         return false;
-     }
+    }
+
+    public isDebuggerActive(): boolean {
+        return false;
+    }
+
 }
 
 class threadSender implements ICOBOLSourceScannerEventer {
@@ -171,7 +176,7 @@ if (parentPort !== null) {
         scanData.showStats = false;
         const sd = new ScanStats();
         Scanner.transferScanDataToGlobals(scanData, features);
-        Scanner.processFiles(scanData,features, threadSender.Default, sd);
+        Scanner.processFiles(scanData, features, threadSender.Default, sd);
         parentPort.postMessage(`++${JSON.stringify(sd)}`);
     } catch (e) {
         threadSender.Default.sendMessage((e as Error).message);

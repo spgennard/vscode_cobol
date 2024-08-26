@@ -12,7 +12,6 @@ import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { SimpleStringBuilder } from "./stringutils";
 
-
 export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     document: string;
     dumpNumbersInAreaA: boolean;
@@ -266,5 +265,31 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     getCommentAtLine(lineNumber: number): string {
         return "";
+    }
+
+    getText(startLine: number, startColumn: number, endLine: number, endColumn: number): string {
+        const fl_r = this.getLine(startLine,true);
+        if (!fl_r) {
+            return "";
+        }
+
+        if (startLine === endLine) {
+            return fl_r.substring(startColumn, endColumn - startColumn);
+        }
+
+        let fl = fl_r.substring(startColumn);
+        let lines = (endLine - startLine) - 1;
+        let lc = startLine+1;
+        while(lines-- > 0) {
+            if (lc === endLine) {
+                fl += "\n"+fl_r.substring(0, endColumn);
+            } else {
+                fl += "\n"+this.getLine(lc, true);
+            }
+
+            lc++;
+        }
+ 
+        return fl;
     }
 }

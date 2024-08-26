@@ -48,4 +48,5 @@ export interface ISourceHandler {
     setSourceFormat(format: ESourceFormat):void;
     getNotedComments(): commentRange[];
     getCommentAtLine(lineNumber: number):string;
+    getText(startLine: number, startColumn:number, endLine: number, endColumn:number): string;
 }
