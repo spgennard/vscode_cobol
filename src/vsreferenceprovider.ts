@@ -1,6 +1,6 @@
 
 import * as vscode from "vscode";
-import { COBOLSourceScanner, SourceReference, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceReference_Via_Length, COBOLToken, SharedSourceReferences, SourceReference } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
@@ -71,7 +71,9 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                     const tref = targetRefs[trpos];
                     const uiref = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
-                    list.push(new vscode.Location(uiref, new vscode.Position(tref.line, tref.column)));
+                    const p1 = new vscode.Position(tref.line, tref.column);
+                    const p2 = new vscode.Position(tref.endLine, tref.endColumn)
+                    list.push(new vscode.Location(uiref, new vscode.Range(p1,p2)));
                 }
             }
         }
@@ -89,7 +91,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         // }
 
         if (sourceRefs.targetReferences.has(workLower) === true) {
-            const targetRefs: SourceReference[] | undefined = sourceRefs.targetReferences.get(workLower);
+            const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.targetReferences.get(workLower);
             if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                     const tref = targetRefs[trpos];
@@ -100,7 +102,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         }
 
         if (sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
-            const targetRefs: SourceReference[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
+            const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
             if (targetRefs !== undefined) {
                 for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                     const tref = targetRefs[trpos];

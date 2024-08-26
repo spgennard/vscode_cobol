@@ -148,7 +148,7 @@ export class SQLDeclare {
     }
 }
 
-export class SourceReference {
+export class SourceReference_Via_Length {
     public fileIdentifer: number;
     public line: number;
     public column: number;
@@ -160,6 +160,26 @@ export class SourceReference {
         this.line = line;
         this.column = column;
         this.length = length;
+        this.tokenStyle = tokenStyle;
+    }
+}
+
+export class SourceReference {
+    public fileIdentifer: number;
+    public line: number;
+    public column: number;
+
+    public endLine: number;
+    public endColumn: number;
+
+    public tokenStyle: COBOLTokenStyle;
+
+    public constructor(fileIdentifer: number, line: number, column: number, endLine: number, endColumn: number, tokenStyle: COBOLTokenStyle) {
+        this.fileIdentifer = fileIdentifer;
+        this.line = line;
+        this.column = column;
+        this.endLine = endLine;
+        this.endColumn = endColumn;
         this.tokenStyle = tokenStyle;
     }
 }
@@ -397,10 +417,10 @@ export class SharedSourceReferences {
     public filenames: string[];
     public filenameURIs: string[];
 
-    public targetReferences: Map<string, SourceReference[]>;
-    public constantsOrVariablesReferences: Map<string, SourceReference[]>;
+    public targetReferences: Map<string, SourceReference_Via_Length[]>;
+    public constantsOrVariablesReferences: Map<string, SourceReference_Via_Length[]>;
     public sqlcursorReferences: Map<string, SourceReference[]>;
-    public unknownReferences: Map<string, SourceReference[]>;
+    public unknownReferences: Map<string, SourceReference_Via_Length[]>;
 
     public sharedConstantsOrVariables: Map<string, COBOLVariable[]>;
     public sharedSections: Map<string, COBOLToken>;
@@ -419,10 +439,10 @@ export class SharedSourceReferences {
     constructor(configHandler: ICOBOLSettings, topLevel: boolean, startTime: number) {
         this.filenames = [];
         this.filenameURIs = [];
-        this.targetReferences = new Map<string, SourceReference[]>();
-        this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
+        this.targetReferences = new Map<string, SourceReference_Via_Length[]>();
+        this.constantsOrVariablesReferences = new Map<string, SourceReference_Via_Length[]>();
         this.sqlcursorReferences = new Map<string, SourceReference[]>();
-        this.unknownReferences = new Map<string, SourceReference[]>();
+        this.unknownReferences = new Map<string, SourceReference_Via_Length[]>();
 
         this.sharedConstantsOrVariables = new Map<string, COBOLVariable[]>();
         this.sharedSections = new Map<string, COBOLToken>();
@@ -1114,7 +1134,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     const text = refExecToken.sourceHandler.getText(refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn);
                     this.parseSQLDeclareForReferences(fileid, this.sourceReferences.sqlcursorReferences, sql_declare_name, refExecToken, text);
                 }
-                externalFeatures.logMessage(` - declare ${sql_declare_name} @ ${sql_declare.currentLine} / ${sql_declare.token.description}`);
             }
 
             // setup references for unknown forward references
@@ -1184,7 +1203,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return !foundParagraph.ignoreInOutlineView;
     }
 
-    private transferReference(symbol: string, symbolRefs: SourceReference[], transferReferenceMap: Map<string, SourceReference[]>, tokenStyle: COBOLTokenStyle): void {
+    private transferReference(symbol: string, symbolRefs: SourceReference_Via_Length[], transferReferenceMap: Map<string, SourceReference_Via_Length[]>, tokenStyle: COBOLTokenStyle): void {
         const refList = transferReferenceMap.get(symbol);
         if (refList !== undefined) {
             for (const sourceRef of symbolRefs) {
@@ -1589,15 +1608,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return token;
     }
 
-    private addReference(referencesMap: Map<string, SourceReference[]>, lowerCaseVariable: string, line: number, column: number, tokenStyle: COBOLTokenStyle) {
+    private addReference(referencesMap: Map<string, SourceReference_Via_Length[]>, lowerCaseVariable: string, line: number, column: number, tokenStyle: COBOLTokenStyle) {
         const lowerCaseVariableRefs = referencesMap.get(lowerCaseVariable);
         if (lowerCaseVariableRefs !== undefined) {
-            lowerCaseVariableRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
+            lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
             return;
         }
 
-        const sourceRefs: SourceReference[] = [];
-        sourceRefs.push(new SourceReference(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
+        const sourceRefs: SourceReference_Via_Length[] = [];
+        sourceRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle));
         referencesMap.set(lowerCaseVariable, sourceRefs);
     }
 
@@ -2661,7 +2680,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         refs = []
                         sourceReferences.set(refExecSQLDeclareName, refs);
                     }
-                    refs.push(new SourceReference(fileid, refExecToken.startLine, refExecToken.startColumn, refExecSQLDeclareName.length, COBOLTokenStyle.SQLCursor));
+                    refs.push(new SourceReference(fileid, refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn, COBOLTokenStyle.SQLCursor));
                 }
             }
             currentLine++;

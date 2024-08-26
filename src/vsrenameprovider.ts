@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as vscode from "vscode";
 import { CancellationToken, Position, TextDocument } from "vscode";
-import { COBOLSourceScanner, COBOLVariable, SharedSourceReferences, SourceReference } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLVariable, SharedSourceReferences, SourceReference_Via_Length } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 
@@ -65,7 +65,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                 }
 
                 if (sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
-                    const targetRefs: SourceReference[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
+                    const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
                     if (targetRefs !== undefined) {
                         for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                             const tref = targetRefs[trpos];
@@ -83,7 +83,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
 
         if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
             if (sourceRefs.targetReferences.has(workLower) === true) {
-                const targetRefs: SourceReference[] | undefined = sourceRefs.targetReferences.get(workLower);
+                const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.targetReferences.get(workLower);
                 if (targetRefs !== undefined) {
                     for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                         const tref = targetRefs[trpos];
