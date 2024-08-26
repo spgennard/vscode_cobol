@@ -1,8 +1,18 @@
 # CHANGELOG
 
+* 98a012c start to add in a simple "exec sql declare" scanner
+* a2c8c7f tidy up and a little rename
+* 0fb6c5f allow the symbol description of a "exec xxx bb" to be split over two lines ensure start of exec, it as the start of the verb exec
+* fbab60f Update line information, capture end line number in tokens #340
+* 95c852f Add support for remembering exec tokens in order - part of #340
+* c561b2e add some support for common acu api to the hover support  - allow $ in words
+* 31f37d7 index call target with document lang id  (more work required in this area)
+* ceeaaf8 remove dud entries
+
+## 10.8.14 
 * 383afeb add markdown dividers between items better handle duplicates variables
 
-## 10.8.13, origin/main, origin/HEAD 
+## 10.8.13 
 * 826fe98 add multi-line comments (upto 5 lines, may change or make configurable)
 
 ## 10.8.12 
