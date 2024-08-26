@@ -64,6 +64,18 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             }
         }
 
+
+        if (sourceRefs.sqlcursorReferences.has(word) === true) {
+            const targetRefs: SourceReference[] | undefined = sourceRefs.sqlcursorReferences.get(word);
+            if (targetRefs !== undefined) {
+                for (let trpos = 0; trpos < targetRefs.length; trpos++) {
+                    const tref = targetRefs[trpos];
+                    const uiref = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
+                    list.push(new vscode.Location(uiref, new vscode.Position(tref.line, tref.column)));
+                }
+            }
+        }
+
         // if (qp.constantsOrVariables.has(workLower)) {
         //     const paraVariables: COBOLVariable[] | undefined = qp.constantsOrVariables.get(workLower);
         //     if (paraVariables !== undefined) {

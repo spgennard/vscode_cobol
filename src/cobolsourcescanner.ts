@@ -45,6 +45,7 @@ export enum COBOLTokenStyle {
     Declaratives = "Declaratives",
     EndDeclaratives = "EndDeclaratives",
     Region = "Region",
+    SQLCursor = "SQLCursor",
     Unknown = "Unknown",
     Null = "Null"
 }
@@ -398,12 +399,14 @@ export class SharedSourceReferences {
 
     public targetReferences: Map<string, SourceReference[]>;
     public constantsOrVariablesReferences: Map<string, SourceReference[]>;
+    public sqlcursorReferences: Map<string, SourceReference[]>;
     public unknownReferences: Map<string, SourceReference[]>;
 
     public sharedConstantsOrVariables: Map<string, COBOLVariable[]>;
     public sharedSections: Map<string, COBOLToken>;
     public sharedParagraphs: Map<string, COBOLToken>;
     public copyBooksUsed: Map<string, COBOLCopybookToken>;
+    public execSQLDeclare: Map<string, SQLDeclare>;
     public state: ParseState;
     public tokensInOrder: COBOLToken[];
 
@@ -418,12 +421,14 @@ export class SharedSourceReferences {
         this.filenameURIs = [];
         this.targetReferences = new Map<string, SourceReference[]>();
         this.constantsOrVariablesReferences = new Map<string, SourceReference[]>();
+        this.sqlcursorReferences = new Map<string, SourceReference[]>();
         this.unknownReferences = new Map<string, SourceReference[]>();
 
         this.sharedConstantsOrVariables = new Map<string, COBOLVariable[]>();
         this.sharedSections = new Map<string, COBOLToken>();
         this.sharedParagraphs = new Map<string, COBOLToken>();
         this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
+        this.execSQLDeclare = new Map<string, SQLDeclare>();
         this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
         this.topLevel = topLevel;
@@ -443,6 +448,19 @@ export class SharedSourceReferences {
         this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
         this.ignoreUnusedSymbol.clear();
+    }
+
+    public getSourceFieldId(handFilename: string): number {
+        let xpos = 0;
+        for (const filename of this.filenames) {
+            if (filename === handFilename) {
+                return xpos;
+            }
+
+            xpos++;
+        }
+
+        return -1;
     }
 
     public getReferenceInformation(variable: string, startLine: number, startColumn: number): [number, number] {
@@ -666,7 +684,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public tokensInOrder: COBOLToken[] = [];
     public execTokensInOrder: COBOLToken[] = [];
     public execSQLDeclare: Map<string, SQLDeclare>;
-    
+
     public sections: Map<string, COBOLToken>;
     public paragraphs: Map<string, COBOLToken>;
     public constantsOrVariables: Map<string, COBOLVariable[]>;
@@ -799,7 +817,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.classes = new Map<string, COBOLToken>();
         this.methods = new Map<string, COBOLToken>();
         this.diagMissingFileWarnings = new Map<string, COBOLFileSymbol>();
-        this.execSQLDeclare = new Map<string, SQLDeclare>();
         this.portWarnings = [];
         this.commentReferences = [];
         this.parse4References = sourceHandler !== null;
@@ -824,7 +841,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
         this.sourceReferences = sourceReferences;
 
-        this.sourceFileId = 0;
         this.sourceFileId = sourceReferences.filenames.length;
         sourceReferences.filenames.push(sourceHandler.getFilename());
         sourceReferences.filenameURIs.push(sourceHandler.getUriAsString());
@@ -834,6 +850,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.sections = sourceReferences.sharedSections;
         this.tokensInOrder = sourceReferences.tokensInOrder;
         this.copyBooksUsed = sourceReferences.copyBooksUsed;
+        this.execSQLDeclare = sourceReferences.execSQLDeclare;
 
         // set the source handler for the comment parsing
         sourceHandler.addCommentCallback(this);
@@ -1090,6 +1107,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 this.callTargets.set(this.ImplicitProgramId, state.currentProgramTarget);
             }
 
+            for (const [sql_declare_name, sql_declare] of this.execSQLDeclare) {
+                externalFeatures.logMessage(` - declare ${sql_declare_name} @ ${sql_declare.currentLine} / ${sql_declare.token.description}`);
+                for (const refExecToken of this.execTokensInOrder) {
+                    const fileid = this.sourceReferences.getSourceFieldId(refExecToken.filename);
+                    const text = refExecToken.sourceHandler.getText(refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn);
+                    this.parseSQLDeclareForReferences(fileid, this.sourceReferences.sqlcursorReferences, sql_declare_name, refExecToken, text);
+                }
+                externalFeatures.logMessage(` - declare ${sql_declare_name} @ ${sql_declare.currentLine} / ${sql_declare.token.description}`);
+            }
+
             // setup references for unknown forward references
             const unknown = [];
             // console.log(`DEBUG: unknownReferences : ${this.sourceReferences.unknownReferences.size}`);
@@ -1122,6 +1149,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             this.eventHandler.finish();
         }
     }
+
 
     private clearScanData() {
         this.tokensInOrder = [];
@@ -1917,7 +1945,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             this.execTokensInOrder.push(this.currentExecToken);  // remember token
                         }
 
-                        const text = this.sourceHandler.getText(this.currentExecToken.startLine, this.currentExecToken.startColumn, this.currentExecToken.endLine, this.currentExecToken.endColumn);
+                        const text = this.currentExecToken.sourceHandler.getText(this.currentExecToken.startLine, this.currentExecToken.startColumn, this.currentExecToken.endLine, this.currentExecToken.endColumn);
                         this.parseExecStatement(this.currentExecStype, this.currentExecToken, text);
                     }
                     this.currentExec = "";
@@ -2605,9 +2633,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 for (const execWord of line.replace('\t', ' ').split(" ")) {
                     if (prevDeclare) {
-//                        this.externalFeatures.logMessage(` Found declare ${execWord} at ${currentLine}`);
+                        //                        this.externalFeatures.logMessage(` Found declare ${execWord} at ${currentLine}`);
                         const c = new SQLDeclare(token, currentLine);
-                        this.execSQLDeclare.set(execWord,c)
+                        this.execSQLDeclare.set(execWord, c)
                         prevDeclare = false;
                     } else {
                         if (execWord.toLowerCase() === 'declare') {
@@ -2621,6 +2649,25 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
+    parseSQLDeclareForReferences(fileid: number, sourceReferences: Map<string, SourceReference[]>, refExecSQLDeclareName: string, refExecToken: COBOLToken, lines: string) {
+
+        let currentLine = refExecToken.startLine;
+        for (const line of lines.split("\n")) {
+            for (const execWord of line.replace('\t', ' ').split(" ")) {
+                if (execWord === refExecSQLDeclareName) {
+                    this.externalFeatures.logMessage(`>>> ${currentLine} - ${line}`);
+                    let refs = sourceReferences.get(refExecSQLDeclareName);
+                    if (refs === undefined) {
+                        refs = []
+                        sourceReferences.set(refExecSQLDeclareName, refs);
+                    }
+                    refs.push(new SourceReference(fileid, refExecToken.startLine, refExecToken.startColumn, refExecSQLDeclareName.length, COBOLTokenStyle.SQLCursor));
+                }
+            }
+            currentLine++;
+        }
+
+    }
 
     private processCopyBook(cbInfo: copybookState) {
         const state: ParseState = this.sourceReferences.state;
