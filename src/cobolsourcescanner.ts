@@ -169,22 +169,21 @@ class StreamToken {
     }
 }
 
-class Token {
-    private tokenIndex = 0;
-
+class StreamTokens {
     public currentToken = "";
-    public prevToken = "";
-    // public prevTokenToken: Token | undefined = undefined;
-    public prevTokenLineNumber: number = 0;
     public currentTokenLower = "";
-    public prevTokenLower = "";
     public currentCol = 0;
     public currentLineNumber:number;
     public endsWithDot = false;
 
+    public prevTokenLower = "";
+    public prevToken = "";
+    public prevTokenLineNumber: number = 0;
+
+    private tokenIndex = 0;
     private stokens: StreamToken[] = [];
 
-    public constructor(line: string, lineNumber: number, previousToken: Token | undefined) {
+    public constructor(line: string, lineNumber: number, previousToken: StreamTokens | undefined) {
         const lineTokens: string[] = [];
         // this.prevTokenToken = previousToken;
         this.currentLineNumber = lineNumber;
@@ -216,7 +215,7 @@ class Token {
         }
     }
 
-    public static Blank = new Token("", 0, undefined);
+    public static Blank = new StreamTokens("", 0, undefined);
 
     public nextSTokenOrBlank(): StreamToken {
         if (1 + this.tokenIndex >= this.stokens.length) {
@@ -806,7 +805,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
 
         let sourceLooksLikeCOBOL = false;
-        let prevToken: Token = Token.Blank;
+        let prevToken: StreamTokens = StreamTokens.Blank;
 
         const hasCOBOLExtension = path.extname(filename).length > 0 ? true : false;
         this.sourceReferences = sourceReferences;
@@ -881,7 +880,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             prevToken = this.relaxedParseLineByLine(prevToken, line, l, preParseState);
                         }
                         else {
-                            prevToken = this.relaxedParseLineByLine(Token.Blank, line, l, preParseState);
+                            prevToken = this.relaxedParseLineByLine(StreamTokens.Blank, line, l, preParseState);
                         }
                     } else {
                         maxLines++;     // increase the max lines, as this line is
@@ -982,7 +981,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 break;
         }
 
-        prevToken = Token.Blank;
+        prevToken = StreamTokens.Blank;
         sourceHandler.resetCommentCount();
 
         const sourceTimeout = externalFeatures.getSourceTimeout(this.configHandler);
@@ -1005,7 +1004,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // don't parse a empty line
                 if (line.length > 0) {
-                    const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : Token.Blank;
+                    const prevTokenToParse = prevToken.endsWithDot === false ? prevToken : StreamTokens.Blank;
                     prevToken = this.parseLineByLine(l, prevTokenToParse, line);
                 }
 
@@ -1455,8 +1454,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return false;
     }
 
-    private relaxedParseLineByLine(prevToken: Token, line: string, lineNumber: number, state: PreParseState): Token {
-        const token = new Token(line, lineNumber, prevToken);
+    private relaxedParseLineByLine(prevToken: StreamTokens, line: string, lineNumber: number, state: PreParseState): StreamTokens {
+        const token = new StreamTokens(line, lineNumber, prevToken);
         let tokenCountPerLine = 0;
         do {
             try {
@@ -1581,13 +1580,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return token;
     }
 
-    private parseLineByLine(lineNumber: number, prevToken: Token, line: string): Token {
-        const token = new Token(line, lineNumber, prevToken);
+    private parseLineByLine(lineNumber: number, prevToken: StreamTokens, line: string): StreamTokens {
+        const token = new StreamTokens(line, lineNumber, prevToken);
 
         return this.processToken(lineNumber, token, line, this.sourceReferences.state.replaceMap.size !== 0);
     }
 
-    private processToken(lineNumber: number, token: Token, line: string, replaceOn: boolean): Token {
+    private processToken(lineNumber: number, token: StreamTokens, line: string, replaceOn: boolean): StreamTokens {
         const state: ParseState = this.sourceReferences.state;
 
         do {
@@ -1613,7 +1612,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                             this.sourceHandler.setUpdatedLine(lineNumber, leftLine + rightLine);
                             const lastTokenId = this.tokensInOrder.length;
-                            const newToken = new Token(rightLine as string, lineNumber, new Token(token.prevToken, token.prevTokenLineNumber, undefined));
+                            const newToken = new StreamTokens(rightLine as string, lineNumber, new StreamTokens(token.prevToken, token.prevTokenLineNumber, undefined));
                             const retToken = this.processToken(lineNumber, newToken, rightLine, false);
 
                             // ensure any new token match the original soure
