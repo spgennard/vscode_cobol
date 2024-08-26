@@ -156,14 +156,16 @@ class StreamToken {
     public currentTokenLower: string;
     public endsWithDot: boolean;
     public currentCol: number;
+    public currentLine: number;
 
-    public static Blank = new StreamToken("", "", false, 0);
+    public static Blank = new StreamToken("", "", false, 0,0);
 
-    public constructor(currentToken: string, currentTokenLower: string, endsWithDot: boolean, currentCol: number) {
+    public constructor(currentToken: string, currentTokenLower: string, endsWithDot: boolean, currentLine: number, currentCol: number) {
         this.currentToken = currentToken;
         this.currentTokenLower = currentTokenLower;
         this.endsWithDot = endsWithDot;
         this.currentCol = currentCol;
+        this.currentLine = currentLine;
     }
 }
 
@@ -172,20 +174,23 @@ class Token {
 
     public currentToken = "";
     public prevToken = "";
-    public prevTokenToken: Token | undefined = undefined;
+    // public prevTokenToken: Token | undefined = undefined;
+    public prevTokenLineNumber: number = 0;
     public currentTokenLower = "";
     public prevTokenLower = "";
     public currentCol = 0;
-
+    public currentLineNumber:number;
     public endsWithDot = false;
 
     private stokens: StreamToken[] = [];
 
-    public constructor(line: string, previousToken: Token | undefined) {
+    public constructor(line: string, lineNumber: number, previousToken: Token | undefined) {
         const lineTokens: string[] = [];
-        this.prevTokenToken = previousToken;
+        // this.prevTokenToken = previousToken;
+        this.currentLineNumber = lineNumber;
         if (previousToken !== undefined) {
             this.prevToken = previousToken.currentToken;
+            this.prevTokenLineNumber = previousToken.currentLineNumber;
         }
         SplitTokenizer.splitArgument(line, lineTokens);
         let rollingColumn = 0;
@@ -196,7 +201,7 @@ class Token {
             rollingColumn = line.indexOf(currentToken, rollingColumn);
 
             const endsWithDot = currentToken.length === 0 ? false : currentToken.charAt(currentToken.length - 1) === ".";
-            this.stokens.push(new StreamToken(currentToken, currentTokenLower, endsWithDot, rollingColumn));
+            this.stokens.push(new StreamToken(currentToken, currentTokenLower, endsWithDot, lineNumber, rollingColumn));
         }
         this.tokenIndex = 0;
         this.setupNextToken();
@@ -211,7 +216,7 @@ class Token {
         }
     }
 
-    public static Blank = new Token("", undefined);
+    public static Blank = new Token("", 0, undefined);
 
     public nextSTokenOrBlank(): StreamToken {
         if (1 + this.tokenIndex >= this.stokens.length) {
@@ -264,6 +269,7 @@ class Token {
     private setupNextToken() {
         this.prevToken = this.currentToken;
         this.prevTokenLower = this.currentTokenLower;
+        this.prevTokenLineNumber = this.currentLineNumber;
 
         const stok: StreamToken = this.stokens[this.tokenIndex];
         if (stok !== undefined) {
@@ -271,10 +277,12 @@ class Token {
             this.currentTokenLower = stok.currentTokenLower;
             this.endsWithDot = stok.endsWithDot;
             this.currentCol = stok.currentCol;
+            this.currentLineNumber = stok.currentLine;
         } else {
             this.currentToken = this.currentTokenLower = "";
             this.endsWithDot = false;
             this.currentCol = 0;
+            this.currentLineNumber = 0;
         }
     }
 
@@ -868,10 +876,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     // don't parse a empty line
                     if (line.length > 0) {
                         if (prevToken.endsWithDot === false) {
-                            prevToken = this.relaxedParseLineByLine(prevToken, line, preParseState);
+                            prevToken = this.relaxedParseLineByLine(prevToken, line, l, preParseState);
                         }
                         else {
-                            prevToken = this.relaxedParseLineByLine(Token.Blank, line, preParseState);
+                            prevToken = this.relaxedParseLineByLine(Token.Blank, line, l, preParseState);
                         }
                     } else {
                         maxLines++;     // increase the max lines, as this line is
@@ -1445,8 +1453,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return false;
     }
 
-    private relaxedParseLineByLine(prevToken: Token, line: string, state: PreParseState): Token {
-        const token = new Token(line, prevToken);
+    private relaxedParseLineByLine(prevToken: Token, line: string, lineNumber: number, state: PreParseState): Token {
+        const token = new Token(line, lineNumber, prevToken);
         let tokenCountPerLine = 0;
         do {
             try {
@@ -1572,7 +1580,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private parseLineByLine(lineNumber: number, prevToken: Token, line: string): Token {
-        const token = new Token(line, prevToken);
+        const token = new Token(line, lineNumber, prevToken);
 
         return this.processToken(lineNumber, token, line, this.sourceReferences.state.replaceMap.size !== 0);
     }
@@ -1603,7 +1611,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                             this.sourceHandler.setUpdatedLine(lineNumber, leftLine + rightLine);
                             const lastTokenId = this.tokensInOrder.length;
-                            const newToken = new Token(rightLine as string, new Token(token.prevToken, undefined));
+                            const newToken = new Token(rightLine as string, lineNumber, new Token(token.prevToken, token.prevTokenLineNumber, undefined));
                             const retToken = this.processToken(lineNumber, newToken, rightLine, false);
 
                             // ensure any new token match the original soure
@@ -1877,8 +1885,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (currentLower === "end-exec") {
                     if (this.currentExecToken !== undefined) {
                         if (state.currentToken !== undefined) {
-                            this.currentExecToken.endLine = state.currentToken.endLine;
-                            this.currentExecToken.endColumn = state.currentToken.endColumn;
+                            this.currentExecToken.endLine = token.currentLineNumber;
+                            this.currentExecToken.endColumn = token.currentCol+token.currentToken.length;
                             this.execTokensInOrder.push(this.currentExecToken);  // remember token
                         }
                     }
