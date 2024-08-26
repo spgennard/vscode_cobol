@@ -707,6 +707,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private currentExecToken:COBOLToken|undefined = undefined;
     private currentExec = "";
     private currentExecVerb = "";
+    private currentExecStype = "";
+    private currentExecSCommand = "";
 
     readonly COBOLKeywordDictionary: Map<string, string>;
 
@@ -1872,13 +1874,21 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const prevPlusCurrent = token.prevToken + " " + current;
 
                 if (currentLower === "exec") {
-                    const nextSTokenOrBlank = token.nextSTokenOrBlank().currentToken;
-                    this.currentExec = nextSTokenOrBlank;
+                    this.currentExecStype = token.nextSTokenIndex(1).currentToken;
+                    this.currentExecSCommand = token.nextSTokenIndex(2).currentToken;
                     this.currentExecVerb = "";
-                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, nextSTokenOrBlank, `EXEC ${nextSTokenOrBlank}`, state.currentDivision);
+                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, current, `EXEC ${this.currentExecStype} ${this.currentExecSCommand}`, state.currentDivision);
                     this.currentExecToken = state.currentToken;
                     token.moveToNextToken();
                     continue;
+                }
+
+                // do we have a split line exec
+                if (this.currentExecToken !== undefined) {
+                    if (this.currentExecSCommand.length === 0) {
+                        this.currentExecSCommand = current;
+                        this.currentExecToken.description = `EXEC ${this.currentExecSCommand} ${this.currentExecSCommand}`;
+                    }
                 }
 
                 /* finish processing end-exec */
@@ -1896,6 +1906,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = true;
                     token.endsWithDot = state.endsWithDot;
+                    this.currentExecToken = undefined;
                     continue;
                 }
 
