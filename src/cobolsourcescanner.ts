@@ -2648,8 +2648,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             let prevDeclare = false
             for (const line of lines.split("\n")) {
 
-                // this.externalFeatures.logMessage(`>>> ${currentLine} - ${line}`);
-
                 for (const execWord of line.replace('\t', ' ').split(" ")) {
                     if (prevDeclare) {
                         //                        this.externalFeatures.logMessage(` Found declare ${execWord} at ${currentLine}`);
@@ -2674,7 +2672,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         for (const line of lines.split("\n")) {
             for (const execWord of line.replace('\t', ' ').split(" ")) {
                 if (execWord === refExecSQLDeclareName) {
-                    this.externalFeatures.logMessage(`>>> ${currentLine} - ${line}`);
                     let refs = sourceReferences.get(refExecSQLDeclareName);
                     if (refs === undefined) {
                         refs = []

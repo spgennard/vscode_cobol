@@ -66,6 +66,16 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             return locations;
         }
 
+        /* is it a sql cursor? */
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        if (qcp !== undefined) {
+            const loc = this.getSQLCursor(document, qcp, position);
+            if (loc !== undefined) {
+                locations.push(loc);
+            }
+            return locations;
+        }
+
         return locations;
     }
 
@@ -82,6 +92,52 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
             if (sf.sections.has(wordLower)) {
                 const token = sf.sections.get(wordLower);
+                if (token !== undefined) {
+                    const spos = new vscode.Position(token.startLine, token.startColumn);
+                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const trange = new vscode.Range(spos, rpos);
+                    const uri = vscode.Uri.parse(token.filenameAsURI);
+                    return new vscode.Location(uri, trange);
+                }
+            }
+
+        }
+        catch (e) {
+            VSLogger.logMessage((e as Error).message);
+        }
+
+        try {
+            if (sf.paragraphs.has(wordLower)) {
+                const token = sf.paragraphs.get(wordLower);
+                if (token !== undefined) {
+                    const spos = new vscode.Position(token.startLine, token.startColumn);
+                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const trange = new vscode.Range(spos, rpos);
+                    const uri = vscode.Uri.parse(token.filenameAsURI);
+                    return new vscode.Location(uri, trange);
+                }
+            }
+        }
+        catch (e) {
+            VSLogger.logMessage((e as Error).message);
+        }
+        return undefined;
+    }
+
+    private getSQLCursor(document: vscode.TextDocument, sf: COBOLSourceScanner, position: vscode.Position): vscode.Location | undefined {
+        const wordRange = document.getWordRangeAtPosition(position, this.sectionRegEx);
+        const word = wordRange ? document.getText(wordRange) : "";
+        if (word === "") {
+            return undefined;
+        }
+
+        const wordLower = word.toLowerCase();
+
+        try {
+
+            if (sf.execSQLDeclare.has(word)) {
+                const sd = sf.execSQLDeclare.get(word);
+                const token = sd?.token;
                 if (token !== undefined) {
                     const spos = new vscode.Position(token.startLine, token.startColumn);
                     const rpos = new vscode.Position(token.endLine, token.endColumn);
