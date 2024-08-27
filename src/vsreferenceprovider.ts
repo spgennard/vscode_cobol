@@ -1,6 +1,6 @@
 
 import * as vscode from "vscode";
-import { COBOLSourceScanner, SourceReference_Via_Length, COBOLToken, SharedSourceReferences, SourceReference } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SourceReference_Via_Length, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
@@ -64,45 +64,18 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             }
         }
 
-
-        // if (sourceRefs.sqlcursorReferences.has(word) === true) {
-        //     const targetRefs: SourceReference[] | undefined = sourceRefs.sqlcursorReferences.get(word);
-        //     if (targetRefs !== undefined) {
-        //         for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-        //             const tref = targetRefs[trpos];
-        //             const uiref = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
-        //             const p1 = new vscode.Position(tref.line, tref.column);
-        //             const p2 = new vscode.Position(tref.endLine, tref.endColumn)
-        //             list.push(new vscode.Location(uiref, new vscode.Range(p1,p2)));
-        //         }
-        //     }
-        // }
+        // is the word, a known "exec sql" cursor declare
         if (qp.execSQLDeclare.has(wordLower) === true) {
             const sd = qp.execSQLDeclare.get(wordLower);
             if (sd !== undefined) {
-                const targetRefs: SourceReference[] | undefined = sd.sourceReferences;
-                if (targetRefs !== undefined) {
-                    for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                        const tref = targetRefs[trpos];
-                        const uiref = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
-                        const p1 = new vscode.Position(tref.line, tref.column);
-                        const p2 = new vscode.Position(tref.endLine, tref.endColumn)
-                        list.push(new vscode.Location(uiref, new vscode.Range(p1, p2)));
-                    }
+                for (const tref of sd.sourceReferences) {
+                    const uiref = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
+                    const p1 = new vscode.Position(tref.line, tref.column);
+                    const p2 = new vscode.Position(tref.endLine, tref.endColumn)
+                    list.push(new vscode.Location(uiref, new vscode.Range(p1, p2)));
                 }
             }
         }
-        // if (qp.constantsOrVariables.has(workLower)) {
-        //     const paraVariables: COBOLVariable[] | undefined = qp.constantsOrVariables.get(workLower);
-        //     if (paraVariables !== undefined) {
-        //         for (let ptref = 0; ptref < paraVariables.length; ptref++) {
-        //             const paraVariable = paraVariables[ptref];
-        //             const paraToken = paraVariable.token;
-        //             const qpsUrl: vscode.Uri = vscode.Uri.parse(paraToken.filenameAsURI);
-        //             list.push(new vscode.Location(qpsUrl, new vscode.Position(paraToken.startLine, paraToken.startColumn)));
-        //         }
-        //     }
-        // }
 
         if (sourceRefs.targetReferences.has(wordLower) === true) {
             const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.targetReferences.get(wordLower);

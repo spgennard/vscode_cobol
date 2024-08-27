@@ -2669,12 +2669,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     parseSQLDeclareForReferences(fileid: number, _refExecSQLDeclareName: string, refExecToken: COBOLToken, lines: string, sqldeclare: SQLDeclare) {
 
         let currentLine = refExecToken.startLine;
+        let currentColumn = refExecToken.startColumn;
         const refExecSQLDeclareNameLower = _refExecSQLDeclareName.toLowerCase();
         for (const line of lines.split("\n")) {
             for (const execWord of line.replace('\t', ' ').split(" ")) {
                 const execWordLower = execWord.toLowerCase();
                 if (execWordLower === refExecSQLDeclareNameLower) {
-                    const sr = new SourceReference(fileid, refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn, COBOLTokenStyle.SQLCursor);
+                    currentColumn = line.toLowerCase().indexOf(execWordLower);
+                    const sr = new SourceReference(fileid, currentLine, currentColumn, currentLine, currentColumn+execWord.length, COBOLTokenStyle.SQLCursor);
 
                     sqldeclare.sourceReferences.push(sr);
                 }

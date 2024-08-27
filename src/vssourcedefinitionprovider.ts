@@ -142,13 +142,11 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 const sd = sf.execSQLDeclare.get(wordLower);
                 if (sd !== undefined) {
                     const token = sd.token;
-                    if (token !== undefined) {
-                        const spos = new vscode.Position(token.startLine, token.startColumn);
-                        const rpos = new vscode.Position(token.endLine, token.endColumn);
-                        const trange = new vscode.Range(spos, rpos);
-                        const uri = vscode.Uri.parse(token.filenameAsURI);
-                        return new vscode.Location(uri, trange);
-                    }
+                    const spos = new vscode.Position(token.startLine, token.startColumn);
+                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const trange = new vscode.Range(spos, rpos);
+                    const uri = vscode.Uri.parse(token.filenameAsURI);
+                    return new vscode.Location(uri, trange);
                 }
             }
 
