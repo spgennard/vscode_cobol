@@ -1,5 +1,13 @@
 # CHANGELOG
 
+* e05c48f adjust source reference to more exact with the "exec sql" block #340
+* fa79f5f refine the source refs, move the source ref list to the sql declare object, this should help later
+* a26b24b try to restrict sql cursor look up to "exec statements"
+* aeba4c6 add goto def for sql declare
+* 034857b split SourceReference into two, one length base and the other extact (multi-line).
+* 56e00b5 start to add some sqldeclare references info to the ref provider
+
+## 10.8.25 
 * 98a012c start to add in a simple "exec sql declare" scanner
 * a2c8c7f tidy up and a little rename
 * 0fb6c5f allow the symbol description of a "exec xxx bb" to be split over two lines ensure start of exec, it as the start of the verb exec
