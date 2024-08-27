@@ -136,19 +136,19 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             return undefined;
         }
 
-        const wordLower = word.toLowerCase();
-
         try {
-
-            if (sf.execSQLDeclare.has(word)) {
-                const sd = sf.execSQLDeclare.get(word);
-                const token = sd?.token;
-                if (token !== undefined) {
-                    const spos = new vscode.Position(token.startLine, token.startColumn);
-                    const rpos = new vscode.Position(token.endLine, token.endColumn);
-                    const trange = new vscode.Range(spos, rpos);
-                    const uri = vscode.Uri.parse(token.filenameAsURI);
-                    return new vscode.Location(uri, trange);
+            const wordLower = word.toLowerCase();
+            if (sf.execSQLDeclare.has(wordLower)) {
+                const sd = sf.execSQLDeclare.get(wordLower);
+                if (sd !== undefined) {
+                    const token = sd.token;
+                    if (token !== undefined) {
+                        const spos = new vscode.Position(token.startLine, token.startColumn);
+                        const rpos = new vscode.Position(token.endLine, token.endColumn);
+                        const trange = new vscode.Range(spos, rpos);
+                        const uri = vscode.Uri.parse(token.filenameAsURI);
+                        return new vscode.Location(uri, trange);
+                    }
                 }
             }
 
@@ -157,21 +157,6 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             VSLogger.logMessage((e as Error).message);
         }
 
-        try {
-            if (sf.paragraphs.has(wordLower)) {
-                const token = sf.paragraphs.get(wordLower);
-                if (token !== undefined) {
-                    const spos = new vscode.Position(token.startLine, token.startColumn);
-                    const rpos = new vscode.Position(token.endLine, token.endColumn);
-                    const trange = new vscode.Range(spos, rpos);
-                    const uri = vscode.Uri.parse(token.filenameAsURI);
-                    return new vscode.Location(uri, trange);
-                }
-            }
-        }
-        catch (e) {
-            VSLogger.logMessage((e as Error).message);
-        }
         return undefined;
     }
 

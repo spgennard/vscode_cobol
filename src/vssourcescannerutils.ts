@@ -2,7 +2,7 @@
 import { FileType, Position, Range, Uri, workspace } from "vscode";
 import { COBOLFileUtils } from "./fileutils";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLSourceScanner } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken } from "./cobolsourcescanner";
 
 export class VSCOBOLSourceScannerTools {
 
@@ -31,17 +31,21 @@ export class VSCOBOLSourceScannerTools {
         return false;
     }
 
-    public static isPositionInEXEC(sf: COBOLSourceScanner, position: Position): boolean {
+    public static getExecTokem(sf: COBOLSourceScanner, position: Position): COBOLToken|undefined {
         for (const token of sf.execTokensInOrder) {
             const p1 = new Position(token.startLine, token.startColumn);
             const p2 = new Position(token.endLine, token.endColumn);
             const execPos = new Range(p1, p2);
             if (execPos.contains(position)) {
-                return true;
+                return token;
             }
         }
 
-        return false;
+        return undefined;
+    }
+
+    public static isPositionInEXEC(sf: COBOLSourceScanner, position: Position): boolean {
+        return (VSCOBOLSourceScannerTools.getExecTokem(sf,position) !== undefined) ? true : false;
     }
 }
 

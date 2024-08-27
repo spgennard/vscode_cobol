@@ -90,7 +90,7 @@ export class COBOLToken {
     public inSection: COBOLToken | undefined;
     public tokenOffset: number;
     public sourceHandler: ISourceHandler;
-
+    
     public constructor(
         sourceHandler: ISourceHandler,
         filenameAsURI: string, filename: string, tokenType: COBOLTokenStyle, startLine: number,
@@ -140,11 +140,13 @@ export class SQLDeclare {
     public ignoreInOutlineView: boolean;
     public token: COBOLToken;
     public currentLine: number;
+    public sourceReferences: SourceReference[];
 
     constructor(token: COBOLToken, currentLine: number) {
         this.token = token;
         this.currentLine = currentLine;
         this.ignoreInOutlineView = token.ignoreInOutlineView;
+        this.sourceReferences = [];
     }
 }
 
@@ -419,7 +421,6 @@ export class SharedSourceReferences {
 
     public targetReferences: Map<string, SourceReference_Via_Length[]>;
     public constantsOrVariablesReferences: Map<string, SourceReference_Via_Length[]>;
-    public sqlcursorReferences: Map<string, SourceReference[]>;
     public unknownReferences: Map<string, SourceReference_Via_Length[]>;
 
     public sharedConstantsOrVariables: Map<string, COBOLVariable[]>;
@@ -441,7 +442,6 @@ export class SharedSourceReferences {
         this.filenameURIs = [];
         this.targetReferences = new Map<string, SourceReference_Via_Length[]>();
         this.constantsOrVariablesReferences = new Map<string, SourceReference_Via_Length[]>();
-        this.sqlcursorReferences = new Map<string, SourceReference[]>();
         this.unknownReferences = new Map<string, SourceReference_Via_Length[]>();
 
         this.sharedConstantsOrVariables = new Map<string, COBOLVariable[]>();
@@ -1132,7 +1132,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 for (const refExecToken of this.execTokensInOrder) {
                     const fileid = this.sourceReferences.getSourceFieldId(refExecToken.filename);
                     const text = refExecToken.sourceHandler.getText(refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn);
-                    this.parseSQLDeclareForReferences(fileid, this.sourceReferences.sqlcursorReferences, sql_declare_name, refExecToken, text);
+                    this.parseSQLDeclareForReferences(fileid, sql_declare_name, refExecToken, text, sql_declare);
                 }
             }
 
@@ -2652,7 +2652,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (prevDeclare) {
                         //                        this.externalFeatures.logMessage(` Found declare ${execWord} at ${currentLine}`);
                         const c = new SQLDeclare(token, currentLine);
-                        this.execSQLDeclare.set(execWord, c)
+                        this.execSQLDeclare.set(execWord.toLowerCase(), c)
                         prevDeclare = false;
                     } else {
                         if (execWord.toLowerCase() === 'declare') {
@@ -2666,18 +2666,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
-    parseSQLDeclareForReferences(fileid: number, sourceReferences: Map<string, SourceReference[]>, refExecSQLDeclareName: string, refExecToken: COBOLToken, lines: string) {
+    parseSQLDeclareForReferences(fileid: number, _refExecSQLDeclareName: string, refExecToken: COBOLToken, lines: string, sqldeclare: SQLDeclare) {
 
         let currentLine = refExecToken.startLine;
+        const refExecSQLDeclareNameLower = _refExecSQLDeclareName.toLowerCase();
         for (const line of lines.split("\n")) {
             for (const execWord of line.replace('\t', ' ').split(" ")) {
-                if (execWord === refExecSQLDeclareName) {
-                    let refs = sourceReferences.get(refExecSQLDeclareName);
-                    if (refs === undefined) {
-                        refs = []
-                        sourceReferences.set(refExecSQLDeclareName, refs);
-                    }
-                    refs.push(new SourceReference(fileid, refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn, COBOLTokenStyle.SQLCursor));
+                const execWordLower = execWord.toLowerCase();
+                if (execWordLower === refExecSQLDeclareNameLower) {
+                    const sr = new SourceReference(fileid, refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn, COBOLTokenStyle.SQLCursor);
+
+                    sqldeclare.sourceReferences.push(sr);
                 }
             }
             currentLine++;
