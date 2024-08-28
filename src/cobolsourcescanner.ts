@@ -757,8 +757,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private currentExecToken: COBOLToken | undefined = undefined;
     private currentExec = "";
     private currentExecVerb = "";
-    private currentExecStype = "";
-    private currentExecSCommand = "";
 
     readonly COBOLKeywordDictionary: Map<string, string>;
 
@@ -1938,10 +1936,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const prevPlusCurrent = token.prevToken + " " + current;
 
                 if (currentLower === "exec") {
-                    this.currentExecStype = token.nextSTokenIndex(1).currentToken;
-                    this.currentExecSCommand = token.nextSTokenIndex(2).currentToken;
-                    this.currentExecVerb = "";
-                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, current, `EXEC ${this.currentExecStype} ${this.currentExecSCommand}`, state.currentDivision);
+                    this.currentExec = token.nextSTokenIndex(1).currentToken;
+                    this.currentExecVerb = token.nextSTokenIndex(2).currentToken;
+                    state.currentToken = this.newCOBOLToken(COBOLTokenStyle.Exec, lineNumber, line, 0, current, `EXEC ${this.currentExec} ${this.currentExecVerb}`, state.currentDivision);
                     this.currentExecToken = state.currentToken;
                     token.moveToNextToken();
                     continue;
@@ -1949,9 +1946,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // do we have a split line exec
                 if (this.currentExecToken !== undefined) {
-                    if (this.currentExecSCommand.length === 0) {
-                        this.currentExecSCommand = current;
-                        this.currentExecToken.description = `EXEC ${this.currentExecStype} ${this.currentExecSCommand}`;
+                    if (this.currentExecVerb.length === 0) {
+                        this.currentExecVerb = current;
+                        this.currentExecToken.description = `EXEC ${this.currentExec} ${this.currentExecVerb}`;
                     }
                 }
 
@@ -1965,7 +1962,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
 
                         const text = this.currentExecToken.sourceHandler.getText(this.currentExecToken.startLine, this.currentExecToken.startColumn, this.currentExecToken.endLine, this.currentExecToken.endColumn);
-                        this.parseExecStatement(this.currentExecStype, this.currentExecToken, text);
+                        this.parseExecStatement(this.currentExec, this.currentExecToken, text);
                     }
                     this.currentExec = "";
                     this.currentExecVerb = "";
