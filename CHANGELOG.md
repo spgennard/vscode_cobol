@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 10.8.28, origin/main, origin/HEAD add a simple hover provider for sql declare items
+* de300cc fix "sql include"
+* 2cb3d80 Update
 * e05c48f adjust source reference to more exact with the "exec sql" block #340
 * fa79f5f refine the source refs, move the source ref list to the sql declare object, this should help later
 * a26b24b try to restrict sql cursor look up to "exec statements"
