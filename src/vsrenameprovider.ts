@@ -96,9 +96,31 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                     }
                 }
             }
-
         }
 
+
+        if (qp.execSQLDeclare.has(workLower)) {
+            const sqlDeclare = qp.execSQLDeclare.get(workLower);
+            if (sqlDeclare && sqlDeclare.sourceReferences.length > 0 ) {
+                const sqldefToken = sqlDeclare.token;
+                const sqldefText = sqldefToken.sourceHandler.getText(sqldefToken.startLine, sqldefToken.startColumn, sqldefToken.endLine, sqldefToken.endColumn).replace(word,newName);
+                const uriDef = vscode.Uri.parse(sqldefToken.filenameAsURI);
+                const startPosDef = new vscode.Position(sqldefToken.startLine, sqldefToken.startColumn);
+                const endPosDef = new vscode.Position(sqldefToken.endLine, sqldefToken.endColumn);
+                const rangeDef = new vscode.Range(startPosDef, endPosDef);
+                edits.delete(uriDef, rangeDef);
+                edits.insert(uriDef, startPosDef, sqldefText);
+            
+                for (const tref of sqlDeclare.sourceReferences) {
+                    const uri = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
+                    const startPos = new vscode.Position(tref.line, tref.column);
+                    const endPos = new vscode.Position(tref.endLine, tref.endColumn);
+                    const range = new vscode.Range(startPos, endPos);
+                    edits.delete(uri, range);
+                    edits.insert(uri, startPos, newName);
+                }
+            }
+        }
         return edits;
     }
 
