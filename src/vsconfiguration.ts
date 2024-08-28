@@ -155,6 +155,8 @@ export class VSCOBOLConfiguration {
         
         settings.enable_microfocus_lsp_lang_server_control = getBoolean("enable_microfocus_lsp_lang_server_control", settings.enable_microfocus_lsp_lang_server_control);
 
+        settings.enable_exec_sql_cursors = getBoolean("enable_exec_sql_cursors", settings.enable_exec_sql_cursors);
+        
         return settings;
     }
 

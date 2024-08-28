@@ -192,6 +192,18 @@
           "markdownDescription": "Enable 'Micro Focus COBOL Extensions LSP' when active",
           "default": true
         },
+        "coboleditor.enable_microfocus_lsp_lang_server_control": {
+          "type": "boolean",
+          "markdownDescription": "Invoke 'Micro Focus COBOL LSP Server Control' when switching to Micro Focus language",
+          "default": true
+        },
+        "coboleditor.enable_exec_sql_cursors": {
+          "type": "boolean",
+          "markdownDescription": "When 'enabled' parse 'EXEC SQL Cursor' for usage",
+          "default": true
+        },
+        
+      
         "coboleditor.tabstops_anchors": {
           "type": "array",
           "markdownDescription": "",

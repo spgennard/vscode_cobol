@@ -1961,7 +1961,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
 
                         const text = this.currentExecToken.sourceHandler.getText(this.currentExecToken.startLine, this.currentExecToken.startColumn, this.currentExecToken.endLine, this.currentExecToken.endColumn);
-                        this.parseExecStatement(this.currentExec, this.currentExecToken, text);
+                        if (this.configHandler.enable_exec_sql_cursors) {
+                            this.parseExecStatement(this.currentExec, this.currentExecToken, text);
+                        }
                     }
                     this.currentExec = "";
                     this.currentExecVerb = "";

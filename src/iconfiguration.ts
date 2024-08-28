@@ -158,6 +158,8 @@ export interface ICOBOLSettings {
     enable_microfocus_lsp_when_active: boolean;
 
     enable_microfocus_lsp_lang_server_control : boolean;
+
+    enable_exec_sql_cursors: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -281,6 +283,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_microfocus_lsp_lang_server_control: boolean;
     
+    enable_exec_sql_cursors:boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -380,5 +384,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_tabstops_anchors = true;
         this.enable_microfocus_lsp_when_active = true;
         this.enable_microfocus_lsp_lang_server_control = true;
+        this.enable_exec_sql_cursors = true;
     }
 }
