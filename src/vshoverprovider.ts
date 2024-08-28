@@ -3,7 +3,7 @@ import vscode from "vscode";
 import { ICOBOLSettings, hoverApi } from "./iconfiguration";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { COBOLUtils } from "./cobolutils";
-import { COBOLSourceScanner, COBOLToken, COBOLVariable } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken, COBOLVariable, SQLDeclare } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 // import { ESourceFormat } from "./externalfeatures";
 
@@ -160,6 +160,26 @@ ${cleanCode}
             }
         }
 
+        if (inProcedureDivision) {
+            const tokenLower: string = word.toLowerCase();
+            const sqlToken: SQLDeclare | undefined = sf.execSQLDeclare.get(tokenLower);
+            const token = sqlToken?.token;
+
+            if (token !== undefined && token.startLine !== position.line) {
+                let sc = token.startLine === token.endLine ? token.startColumn : 0;
+                let line = token.sourceHandler.getText(token.startLine, sc, token.endLine, token.endColumn);
+                if (line !== undefined) {
+                    let newHoverMessage = line.trimEnd();
+                    let sqldeclareComment = token.sourceHandler.getCommentAtLine(token.startLine);
+                    let sqldeclareHoverMarkdown = VSHoverProvider.wrapCommentAndCode(sqldeclareComment, newHoverMessage);
+
+                    if (sqldeclareHoverMarkdown.length !== 0) {
+                        let md = new vscode.MarkdownString(sqldeclareHoverMarkdown);
+                        return new vscode.Hover(md);
+                    }
+                }
+            }
+        }
         return undefined;
     }
 

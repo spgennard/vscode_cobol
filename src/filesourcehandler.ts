@@ -28,6 +28,9 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     format: ESourceFormat;
     notedCommentRanges: commentRange[];
 
+    commentsIndex: Map<number, string>;
+    commentsIndexInline: Map<number, boolean>;
+
     public constructor(document: string, features: IExternalFeatures) {
         this.document = document;
         this.dumpNumbersInAreaA = false;
@@ -40,6 +43,8 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.languageId = ExtensionDefaults.defaultCOBOLLanguage;
         this.format = ESourceFormat.unknown;
         this.notedCommentRanges = [];
+        this.commentsIndex = new Map<number, string>();
+        this.commentsIndexInline = new Map<number, boolean>();
 
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
@@ -65,6 +70,27 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
+           if (this.commentsIndex.has(lineNumber) === false) {
+            let isInline = false;
+            let l = line.substring(startPos).trimStart();
+            if (l.startsWith("*>")) {
+                isInline = true;
+                l = l.substring(2).trim();
+            } else {
+                if (format === ESourceFormat.fixed) {
+                    if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
+                        l = line.substring(7).trimStart();
+                        isInline = false;
+                    }
+                }
+            }
+
+            if (l.length !== 0) {
+                this.commentsIndex.set(lineNumber, l);
+                this.commentsIndexInline.set(lineNumber, isInline);
+            }
+        }
+   
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
                 commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
@@ -110,14 +136,14 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             // drop fixed format line
             if (line.length > 1 && line[0] === "*") {
                 this.commentCount++;
-                this.sendCommentCallback(line, lineNumber,0, ESourceFormat.free);
+                this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.free);
                 return "";
             }
 
             // drop fixed format line
             if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
                 this.commentCount++;
-                this.sendCommentCallback(line, lineNumber,6, ESourceFormat.fixed);
+                this.sendCommentCallback(line, lineNumber, 6, ESourceFormat.fixed);
                 return "";
             }
 
@@ -125,7 +151,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             if (this.format === ESourceFormat.terminal) {
                 if (line.startsWith("\\D") || line.startsWith("|")) {
                     this.commentCount++;
-                    this.sendCommentCallback(line, lineNumber,0, ESourceFormat.terminal);
+                    this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.terminal);
                     return "";
                 }
             }
@@ -264,11 +290,46 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     getCommentAtLine(lineNumber: number): string {
+
+        if (this.commentsIndex.has(lineNumber)) {
+            return "" + this.commentsIndex.get(lineNumber);
+        }
+
+        if (lineNumber > 1) {
+            if (this.commentsIndex.has(lineNumber - 1)) {
+                // only interested in non-inline comments for previous line
+                // todo... prehaps go back further?
+                if (this.commentsIndexInline.get(lineNumber - 1) === false) {
+                    let maxIncludedLines = 5;
+                    let backwardsCount = 2;
+                    let lines = "" + this.commentsIndex.get(lineNumber - 1) + "\n";
+
+                    while (maxIncludedLines > 0) {
+                        if (this.commentsIndex.has(lineNumber - backwardsCount) === false) {
+                            break;
+                        }
+
+                        if (this.commentsIndexInline.get(lineNumber - backwardsCount) === true) {
+                            break;
+                        }
+
+                        let prevLines = lines;
+                        lines = "" + this.commentsIndex.get(lineNumber - backwardsCount) + "\n" + prevLines;
+
+                        backwardsCount++;
+                        maxIncludedLines--;
+                    }
+
+                    return lines;
+                }
+            }
+        }
+
         return "";
     }
 
     getText(startLine: number, startColumn: number, endLine: number, endColumn: number): string {
-        const fl_r = this.getLine(startLine,true);
+        let fl_r = this.getLine(startLine, true);
         if (!fl_r) {
             return "";
         }
@@ -280,16 +341,21 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         let fl = fl_r.substring(startColumn);
         let lines = (endLine - startLine) - 1;
         let lc = startLine+1;
-        while(lines-- > 0) {
+        while (lines-- >= 0) {
+            fl_r = this.getLine(lc, true);
+            if (fl_r === undefined) {
+                return fl;
+            }
+
             if (lc === endLine) {
-                fl += "\n"+fl_r.substring(0, endColumn);
+                fl += "\n" + fl_r.substring(0, endColumn);
             } else {
-                fl += "\n"+this.getLine(lc, true);
+                fl += "\n" + fl_r;
             }
 
             lc++;
         }
- 
+
         return fl;
     }
 }

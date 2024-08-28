@@ -1126,7 +1126,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
 
             for (const [sql_declare_name, sql_declare] of this.execSQLDeclare) {
-                externalFeatures.logMessage(` - declare ${sql_declare_name} @ ${sql_declare.currentLine} / ${sql_declare.token.description}`);
                 for (const refExecToken of this.execTokensInOrder) {
                     const fileid = this.sourceReferences.getSourceFieldId(refExecToken.filename);
                     const text = refExecToken.sourceHandler.getText(refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn);
