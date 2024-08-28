@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 10.8.28, origin/main, origin/HEAD add a simple hover provider for sql declare items
+## 10.8.28 
+* 431b174 add a simple hover provider for sql declare items
 * de300cc fix "sql include"
 * 2cb3d80 Update
 * e05c48f adjust source reference to more exact with the "exec sql" block #340
