@@ -107,7 +107,7 @@ ${cleanCode}
                         }
 
                         let newHoverMessage = line.trimEnd();
-                        let commentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+                        let commentLine = token.sourceHandler.getCommentAtLine(token.startLine);
                         if (hoverMessage.length !== 0) {
                             hoverMessage += "\n\n----\n\n";
                         }
@@ -122,7 +122,6 @@ ${cleanCode}
             }
         }
 
-
         const showSection = true;
         if (showSection && inProcedureDivision) {
             const tokenLower: string = word.toLowerCase();
@@ -131,7 +130,7 @@ ${cleanCode}
                 let line = token.sourceHandler.getLine(token.startLine, false);
                 if (line !== undefined) {
                     let newHoverMessage = line.trimEnd();
-                    let sectionsCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+                    let sectionsCommentLine = token.sourceHandler.getCommentAtLine(token.startLine);
                     let sectionsHoverMessage = VSHoverProvider.wrapCommentAndCode(sectionsCommentLine, newHoverMessage);
 
                     if (sectionsHoverMessage.length !== 0) {
@@ -149,7 +148,7 @@ ${cleanCode}
                 let line = token.sourceHandler.getLine(token.startLine, false);
                 if (line !== undefined) {
                     let newHoverMessage = line.trimEnd();
-                    let paragraphCommentLine = sf.sourceHandler.getCommentAtLine(token.startLine);
+                    let paragraphCommentLine = token.sourceHandler.getCommentAtLine(token.startLine);
                     let paragraphHoverMessage = VSHoverProvider.wrapCommentAndCode(paragraphCommentLine, newHoverMessage);
 
                     if (paragraphHoverMessage.length !== 0) {
@@ -160,7 +159,7 @@ ${cleanCode}
             }
         }
 
-        if (inProcedureDivision) {
+        if (inProcedureDivision && settings.enable_exec_sql_cursors) {
             const tokenLower: string = word.toLowerCase();
             const sqlToken: SQLDeclare | undefined = sf.execSQLDeclare.get(tokenLower);
             const token = sqlToken?.token;
