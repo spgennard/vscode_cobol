@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* 012dc18 tidy up
+* 0e0812c add a rename provider to exec sql cursors
+* 8ea0a4f use sourceHandler from token
+* 0ae1998 add config for turning off sql declare parsing
+
+## 10.8.29 
 
 ## 10.8.28 
 * 431b174 add a simple hover provider for sql declare items
