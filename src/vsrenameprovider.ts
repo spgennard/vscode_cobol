@@ -98,7 +98,6 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
             }
         }
 
-
         if (qp.execSQLDeclare.has(workLower)) {
             const sqlDeclare = qp.execSQLDeclare.get(workLower);
             if (sqlDeclare && sqlDeclare.sourceReferences.length > 0 ) {

@@ -14,11 +14,10 @@ const variableRegEx = new RegExp("[$#0-9a-zA-Z_][a-zA-Z0-9-_]*");
 
 export class VSHoverProvider {
 
-    private static wrapCommentAndCode(comment: string, code: string) : string
-    {
-        let cleanCode=code;
+    private static wrapCommentAndCode(comment: string, code: string): string {
+        let cleanCode = code;
         if (code.endsWith("\n")) {
-            cleanCode = code.slice(0, -1) 
+            cleanCode = code.slice(0, -1)
         }
 
         if (comment.trim().length === 0) {
@@ -40,7 +39,7 @@ ${cleanCode}
 
 `;
     }
-    
+
     public static provideHover(settings: ICOBOLSettings, document: vscode.TextDocument, position: vscode.Position): ProviderResult<vscode.Hover> {
         if (settings.hover_show_known_api !== hoverApi.Off) {
             const txt = document.getText(document.getWordRangeAtPosition(position, wordRegEx));
@@ -159,22 +158,23 @@ ${cleanCode}
             }
         }
 
-        if (inProcedureDivision && settings.enable_exec_sql_cursors) {
+        if (settings.enable_exec_sql_cursors) {
             const tokenLower: string = word.toLowerCase();
             const sqlToken: SQLDeclare | undefined = sf.execSQLDeclare.get(tokenLower);
-            const token = sqlToken?.token;
+            if (sqlToken !== undefined) {
+                const token = sqlToken.token;
+                if (token !== undefined && token.startLine !== position.line) {
+                    let sc = token.startLine === token.endLine ? token.startColumn : 0;
+                    let lines = token.sourceHandler.getText(token.startLine, sc, token.endLine, token.endColumn);
+                    if (lines !== undefined) {
+                        let newHoverMessage = lines.trimEnd();
+                        let sqldeclareComment = token.sourceHandler.getCommentAtLine(token.startLine);
+                        let sqldeclareHoverMarkdown = VSHoverProvider.wrapCommentAndCode(sqldeclareComment, newHoverMessage);
 
-            if (token !== undefined && token.startLine !== position.line) {
-                let sc = token.startLine === token.endLine ? token.startColumn : 0;
-                let line = token.sourceHandler.getText(token.startLine, sc, token.endLine, token.endColumn);
-                if (line !== undefined) {
-                    let newHoverMessage = line.trimEnd();
-                    let sqldeclareComment = token.sourceHandler.getCommentAtLine(token.startLine);
-                    let sqldeclareHoverMarkdown = VSHoverProvider.wrapCommentAndCode(sqldeclareComment, newHoverMessage);
-
-                    if (sqldeclareHoverMarkdown.length !== 0) {
-                        let md = new vscode.MarkdownString(sqldeclareHoverMarkdown);
-                        return new vscode.Hover(md);
+                        if (sqldeclareHoverMarkdown.length !== 0) {
+                            let md = new vscode.MarkdownString(sqldeclareHoverMarkdown);
+                            return new vscode.Hover(md);
+                        }
                     }
                 }
             }

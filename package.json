@@ -202,8 +202,6 @@
           "markdownDescription": "When 'enabled' parse 'EXEC SQL Cursor' for usage",
           "default": true
         },
-        
-      
         "coboleditor.tabstops_anchors": {
           "type": "array",
           "markdownDescription": "",
