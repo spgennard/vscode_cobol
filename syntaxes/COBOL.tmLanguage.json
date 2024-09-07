@@ -407,7 +407,7 @@
     {
       "begin": "(?i:exec\\s+sqlims|exec\\s+sql)",
       "name": "keyword.verb.cobol",
-      "contentName": "meta.embedded.block.sql",
+      "contentName": "meta.embedded.block.openesql",
       "patterns": [
         {
           "match": "(^\\s*\\*.*)$",
@@ -426,7 +426,7 @@
           "name": "variable.cobol"
         },
         {
-          "include": "source.sql"
+          "include": "source.openesql"
         }
       ],
       "end": "(?i:end\\-exec)"
@@ -499,7 +499,7 @@
     {
       "begin": "(?i:exec\\s+sqlims)",
       "name": "keyword.verb.cobol",
-      "contentName": "meta.embedded.block.sql",
+      "contentName": "meta.embedded.block.openesql",
       "patterns": [
         {
           "match": "(\\*>.*$)",
@@ -510,7 +510,7 @@
           "name": "variable.cobol"
         },
         {
-          "include": "source.sql"
+          "include": "source.openesql"
         }
       ],
       "end": "(?i:end\\-exec)"
@@ -518,7 +518,7 @@
     {
       "begin": "(?i:exec\\s+ado)",
       "name": "keyword.verb.cobol",
-      "contentName": "meta.embedded.block.sql",
+      "contentName": "meta.embedded.block.openesql",
       "patterns": [
         {
           "match": "(--.*$)",
@@ -533,7 +533,7 @@
           "name": "variable.cobol"
         },
         {
-          "include": "source.sql"
+          "include": "source.openesql"
         }
       ],
       "end": "(?i:end\\-exec)"

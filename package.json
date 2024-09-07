@@ -1655,6 +1655,10 @@
           "directives.mf"
         ],
         "configuration": "./directivesmf.configuration.json"
+      },
+      {
+        "id": "OpenESQL",
+        "configuration": "./openesql.configuration.json"
       }
     ],
     "grammars": [
@@ -1663,7 +1667,7 @@
         "scopeName": "source.cobol",
         "path": "./syntaxes/COBOL.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.openesql": "openesql",
           "meta.embedded.block.html": "html",
           "meta.embedded.block.java": "java"
         }
@@ -1684,7 +1688,7 @@
         "scopeName": "source.cobol",
         "path": "./syntaxes/COBOL.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.openesql": "openesql",
           "meta.embedded.block.html": "html",
           "meta.embedded.block.java": "java"
         }
@@ -1694,7 +1698,7 @@
         "scopeName": "source.cobol_mf_listfile",
         "path": "./syntaxes/COBOL_mf_listfile.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.openesql": "openesql",
           "meta.embedded.block.html": "html"
         }
       },
@@ -1703,7 +1707,7 @@
         "scopeName": "source.cobol_mfprep",
         "path": "./syntaxes/COBOL_mfprep.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.openesql": "openesql",
           "meta.embedded.block.html": "html"
         }
       },
@@ -1712,7 +1716,7 @@
         "scopeName": "source.cobol_acu_listfile",
         "path": "./syntaxes/COBOL_acu_listfile.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.openesql": "openesql",
           "meta.embedded.block.html": "html"
         }
       },
@@ -1721,7 +1725,7 @@
         "scopeName": "source.cobol_pcob_listfile",
         "path": "./syntaxes/COBOL_pcob_listfile.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql",
+          "meta.embedded.block.openesql": "openesql",
           "meta.embedded.block.html": "html"
         }
       },
@@ -1730,7 +1734,7 @@
         "scopeName": "source.acucobol",
         "path": "./syntaxes/ACUCOBOL.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "sql"
+          "meta.embedded.block.openesql": "openesql"
         }
       },
       {
@@ -1754,7 +1758,7 @@
         "scopeName": "source.cobolit",
         "path": "./syntaxes/COBOLIT.tmLanguage.json",
         "embeddedLanguages": {
-          "meta.embedded.block.sql": "text",
+          "meta.embedded.block.openesql": "text",
           "meta.embedded.block.html": "text",
           "meta.embedded.block.java": "text"
         }
@@ -1857,6 +1861,11 @@
         "language": "directivesmf",
         "scopeName": "source.directivesmf",
         "path": "./syntaxes/directives.mf.json"
+      },
+      {
+        "language": "OpenESQL",
+        "scopeName": "source.openesql",
+        "path": "./syntaxes/openesql.tmLanguage.json"
       }
     ],
     "markdown.markdownItPlugins": false,
