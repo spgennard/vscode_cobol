@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* f521c86 add sql from monaco sources, tweak to make it openesql labeled
+* 57e8ef9 move "exec sql" into a custom openesql syntax, in-due of the changes coming from microsoft reguards changing sql to mssql
+
+## 10.8.31 
 * 012dc18 tidy up
 * 0e0812c add a rename provider to exec sql cursors
 * 8ea0a4f use sourceHandler from token
