@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 16.9.7, origin/main, origin/HEAD add support for the Rocket COBOL Extension Fix #341
+
+## 10.9.7 
 * f521c86 add sql from monaco sources, tweak to make it openesql labeled
 * 57e8ef9 move "exec sql" into a custom openesql syntax, in-due of the changes coming from microsoft reguards changing sql to mssql
 
