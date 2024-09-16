@@ -1,7 +1,12 @@
 # CHANGELOG
 
 
-## 16.9.7, origin/main, origin/HEAD add support for the Rocket COBOL Extension Fix #341
+## 17.9.7, origin/main, origin/HEAD more 'rocket' related tweaks
+* 7e8f38e updat readme
+* a154870 tidy up use of "Micro Focus COBOL" when relating to the extension
+
+## 16.9.7 
+* ef66dae add support for the Rocket COBOL Extension Fix #341
 
 ## 10.9.7 
 * f521c86 add sql from monaco sources, tweak to make it openesql labeled
@@ -1058,7 +1063,7 @@
 * 1817227 remove dep'ed fuzzy search
 
 ## 7.8.1 refresh
-* 283ef8e remove features that extended the 'Rocket COBOL extension' to be compliant with its license.
+* 283ef8e remove features that extended the 'Micro Focus COBOL Extension' to be compliant with its license.
 
 ## 7.7.22 update ver
 * 72b9b13 upd deps
