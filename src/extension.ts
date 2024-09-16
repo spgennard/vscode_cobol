@@ -418,7 +418,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
                 VSLogger.logMessage(` GitHub Copilot                             : ${githubCopilotExtension.packageJSON.version}`);
             }
             if (mfExt !== undefined) {
-                VSLogger.logMessage(` Micro Focus COBOL                          : ${mfExt.packageJSON.version}`);
+                VSLogger.logMessage(` Rocket COBOL                               : ${mfExt.packageJSON.version}`);
                 if (window.activeTextEditor) {
                     VSLogger.logMessage(`  microFocusCOBOL.languageServerAutostart   = ${isMicroFocusCOBOL_LSPActive(window.activeTextEditor.document)}`);
                 }
@@ -751,9 +751,9 @@ export async function activate(context: ExtensionContext) {
 
             const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
             if (mfExt !== undefined) {
-                VSLogger.logMessage("\nYou already have a 'Micro Focus COBOL' compatible debugger installed, so may not need the above extension(s)");
+                VSLogger.logMessage("\nYou already have a 'Rocket COBOL' compatible debugger installed, so may not need the above extension(s)");
             } else {
-                VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.rocketCOBOLExtension}`);
+                VSLogger.logMessage(`\nIf you want a 'Rocket COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.rocketCOBOLExtension}`);
             }
             throw new Error(msg);
         }

@@ -212,7 +212,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             return;
         }
 
-        // ensure all documents with the same id are change to the 'Micro Focus COBOL lang id'
+        // ensure all documents with the same id are change to the 'Rocket COBOL lang id'
         await COBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.microFocusCOBOLLanguageId);
         COBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, ExtensionDefaults.microFocusCOBOLLanguageId);
 
@@ -529,7 +529,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
                     context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid + "_3", langid));
 
                     if (mfExt !== undefined) {
-                        context.subscriptions.push(getLangStatusItem("Switch to 'Micro Focus COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", settings, langid + "_6", langid));
+                        context.subscriptions.push(getLangStatusItem("Switch to 'Rocket COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", settings, langid + "_6", langid));
                     }
                 }
                 break;
