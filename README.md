@@ -2,11 +2,11 @@
 
 [![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
-This unofficial extension provides syntax highlighting for `Micro Focus™` based COBOL languages, as well as syntax highlighting for other related languages/file formats such JCL, PL/I and Micro Focus directive files and [Micro Focus Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
+This unofficial extension provides syntax highlighting for `Rocket ® COBOL` based COBOL languages (previously `Micro Focus COBOL`), as well as syntax highlighting for other related languages/file formats such JCL, PL/I and directive files and [Unit Test Reports](https://www.microfocus.com/documentation/visual-cobol/vc70/VS2017/index.html?t=GUID-F0EE10E3-2C57-4322-BC82-4AD5A5EDA0CB.html).
 
 Some of the features this extension provides are:
 
-- Colourisation and problem matchers for the following Micro Focus COBOL dialects:
+- Colourisation and problem matchers for the following Rocket COBOL dialects:
   - [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
@@ -157,7 +157,7 @@ Below is an example of *build* task that uses *mycobolproject.sln*.
 }
 ```
 
-### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(3)
+### Task: Single file compile using Rocket COBOL - ERRFORMAT(3)
 
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
@@ -193,7 +193,7 @@ The example below shows you how you can create a single task to compile one prog
 }
 ```
 
-### Task: Single file compile using Micro Focus COBOL - ERRFORMAT(2)
+### Task: Single file compile using Rocket COBOL - ERRFORMAT(2)
 
 The example below shows you how you can create a single task to compile one program using the `cobol` command.
 
@@ -513,7 +513,7 @@ Useful tokens that are often changed are: comment.line.cobol.newpage, keyword.op
 
 ##  Usefull Source Code
 
-### [Micro Focus COBOL ported source code](https://github.com/spgennard/mfcobol-ports)
+### [Rocket COBOL ported source code](https://github.com/spgennard/mfcobol-ports)
 
 ## Complementary extensions
 
@@ -590,7 +590,7 @@ The extension only enables features that allow basic editing, making it ideal fo
 
 Using two extensions that both provide the same features can be problematic but this extension tries it's best to ensure both can used used.
 
-This extension provides commands that allow the developer to flip between the two extensions.  It does this by changing the *file.associations* settings and changing settings for the *Micro Focus COBOL* extension to allow the two to co-exist.
+This extension provides commands that allow the developer to flip between the two extensions.  It does this by changing the *file.associations* settings and changing settings for the *Rocket COBOL* extension to allow the two to co-exist.
 
 | From 'Rocket COBOL extension'     | From this Extensions              |
 | -------------------------------------- | --------------------------------- |
@@ -598,13 +598,13 @@ This extension provides commands that allow the developer to flip between the tw
 | ![alt text](images/switch2bitlang.png) | ![alt text](images/switch2mf.png) |
 |                                        |                                   |
 
-When a user chooses to change to the *Micro Focus COBOL* extension via the editors language dropdown button this extension will ensure the language server is enabled.
+When a user chooses to change to the *Rocket COBOL* extension via the editors language dropdown button this extension will ensure the language server is enabled.
 
 Or you can use the *COBOL: Enforce extension via file.associations* command.
 
 ![alt text](images/enforce_command.png)
 
-The language *COBOL* is this extension and lower-case *cobol* is the *Micro Focus COBOL* extension.
+The language *COBOL* is this extension and lower-case *cobol* is the *Rocket COBOL* extension.
 
 If this behavior is not desired, then the setting ```coboleditor.enable_microfocus_lsp_when_active``` can be set to false or alternatively you can disable one of the extensions on a per-workspace basis or you have a scenario then the use of [profiles](https://code.visualstudio.com/docs/editor/profiles) is another mechanism that can isolate extensions from each other.
 
@@ -658,7 +658,7 @@ Or use an file extension, which will ensure you have the right document language
 
 - Online communities
   - [Facebook COBOL Group](https://www.facebook.com/groups/COBOLProgrammers/)
-  - [Micro Focus COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
+  - [Rocket COBOL Community](https://community.microfocus.com/t5/Application-Modernization/ct-p/COBOL)
   - [Open Mainframe Project - COBOL Forum](https://community.openmainframeproject.org/c/cobol-technical-questions)
   - [Tek-Tips - COBOL General discussion](https://www.tek-tips.com/threadminder.cfm?pid=209)
 - Stack Overflow topics/tags:
