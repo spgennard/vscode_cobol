@@ -48,7 +48,7 @@ function showExtensionInformation(): void {
 
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",      // code scanner
-    ExtensionDefaults.microFocusCOBOLExtension,  // Micro Focus COBOL Extension
+    ExtensionDefaults.rocketCOBOLExtension,  // Rocket COBOL extension
     "bitlang.cobol"
 ];
 
@@ -411,11 +411,11 @@ export async function activate(context: vscode.ExtensionContext) {
             const msg = "This Extension is now inactive until conflict is resolved";
             VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
 
-            const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
             if (mfExt !== undefined) {
                 VSLogger.logMessage("\nYou already have a 'Micro Focus COBOL' compatible debugger installed, so may not need the above extension(s)");
             } else {
-                VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.microFocusCOBOLExtension}`);
+                VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.rocketCOBOLExtension}`);
             }
             throw new Error(msg);
         }

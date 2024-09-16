@@ -198,7 +198,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         // ensure all documents with the same id are change to the current ext id
         await COBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.defaultCOBOLLanguage);
 
-        const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+        const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
         if (mfExt) {
             await toggleMicroFocusLSP(settings, act.document, false);
         }
@@ -450,7 +450,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
             const dialects = ["COBOL", "ACUCOBOL", "RMCOBOL", "COBOLIT"];
-            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
 
             if (mfExt !== undefined) {
                 dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
@@ -509,7 +509,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     }));
 
     const langIds = settings.valid_cobol_language_ids;
-    const mfExt = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+    const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
     if (mfExt) {
         langIds.push(ExtensionDefaults.microFocusCOBOLLanguageId);
     }

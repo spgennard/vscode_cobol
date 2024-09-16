@@ -112,10 +112,11 @@ function openChangeLog(currentContext: ExtensionContext): void {
 
 
 const blessed_extensions: string[] = [
-    "HCLTechnologies.hclappscancodesweep",      // code scanner
-    ExtensionDefaults.microFocusCOBOLExtension,  // Micro Focus COBOL Extension,
-    "Micro-Focus-AMC.mfcobol",
-    "micro-focus-amc.mfenterprise",
+    "HCLTechnologies.hclappscancodesweep",          // code scanner
+    ExtensionDefaults.rocketCOBOLExtension,         // Rocket COBOL extension
+    ExtensionDefaults.rocketEnterpriseExtenstion,   // Rocket enterprise extension
+    "Micro-Focus-AMC.mfcobol",                      // old cobol extension
+    "micro-focus-amc.mfenterprise",                 // old enterprise extension
     "bitlang.cobol"
 ];
 
@@ -360,7 +361,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
 
     if (thisExtension !== undefined) {
         const githubCopilotExtension = extensions.getExtension("GitHub.copilot");
-        const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+        const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
 
         if (vscode.env.uriScheme !== "vscode") {
             VSLogger.logMessage("----------------------------------------------------------------------");
@@ -748,11 +749,11 @@ export async function activate(context: ExtensionContext) {
             const msg = "This Extension is now inactive until conflict is resolved";
             VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
 
-            const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
             if (mfExt !== undefined) {
                 VSLogger.logMessage("\nYou already have a 'Micro Focus COBOL' compatible debugger installed, so may not need the above extension(s)");
             } else {
-                VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.microFocusCOBOLExtension}`);
+                VSLogger.logMessage(`\nIf you want a 'Micro Focus COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.rocketCOBOLExtension}`);
             }
             throw new Error(msg);
         }
@@ -1193,7 +1194,7 @@ export async function activate(context: ExtensionContext) {
 
         // if we have a document assigned to the 'Micro Focus' language id, then turn the lsp setting on
         if (!toggleDone && vte.document.languageId === ExtensionDefaults.microFocusCOBOLLanguageId) {
-            const mfExt = extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
             if (mfExt) {
                 await toggleMicroFocusLSP(settings, vte.document, true);
             }

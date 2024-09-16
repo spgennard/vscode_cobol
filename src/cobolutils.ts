@@ -1267,7 +1267,7 @@ export class COBOLUtils {
 
         // TODO: need to add .NET dll support!
         if (fsPath.endsWith("int") || fsPath.endsWith("gnt") || fsPath.endsWith("so") || fsPath.endsWith("dll")) {
-            const mfExtension = vscode.extensions.getExtension(ExtensionDefaults.microFocusCOBOLExtension);
+            const mfExtension = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
 
             if (mfExtension === undefined) {
                 if (COBOLFileUtils.isWin32) {

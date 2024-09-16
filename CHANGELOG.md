@@ -1058,7 +1058,7 @@
 * 1817227 remove dep'ed fuzzy search
 
 ## 7.8.1 refresh
-* 283ef8e remove features that extended the 'Micro Focus COBOL Extension' to be compliant with its license.
+* 283ef8e remove features that extended the 'Rocket COBOL extension' to be compliant with its license.
 
 ## 7.7.22 update ver
 * 72b9b13 upd deps

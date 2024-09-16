@@ -39,7 +39,7 @@ Some of the features this extension provides are:
 - Documentation for using development containers with Visual COBOL
 - and more..
 
-While also being able to use it with the official `Micro Focus COBOL extension` (for debugging for example).
+While also being able to use it with the official `Rocket COBOL extension` (for debugging for example).
 
 
 ## Examples of features provided
@@ -586,13 +586,13 @@ When in limited functionality mode the extension disables all functionality that
 The extension only enables features that allow basic editing, making it ideal for browsing untrusted source.
 
 
-### CO-Existence with the Micro Focus COBOL extension
+### CO-Existence Rocket COBOL extension
 
 Using two extensions that both provide the same features can be problematic but this extension tries it's best to ensure both can used used.
 
 This extension provides commands that allow the developer to flip between the two extensions.  It does this by changing the *file.associations* settings and changing settings for the *Micro Focus COBOL* extension to allow the two to co-exist.
 
-| From 'Micro Focus COBOL Extension'     | From this Extensions              |
+| From 'Rocket COBOL extension'     | From this Extensions              |
 | -------------------------------------- | --------------------------------- |
 |                                        |                                   |
 | ![alt text](images/switch2bitlang.png) | ![alt text](images/switch2mf.png) |
@@ -609,7 +609,7 @@ The language *COBOL* is this extension and lower-case *cobol* is the *Micro Focu
 If this behavior is not desired, then the setting ```coboleditor.enable_microfocus_lsp_when_active``` can be set to false or alternatively you can disable one of the extensions on a per-workspace basis or you have a scenario then the use of [profiles](https://code.visualstudio.com/docs/editor/profiles) is another mechanism that can isolate extensions from each other.
 
 
-### Settings defaults for Micro Focus COBOL Extension
+### Settings defaults for Rocket COBOL extension
 
 ```jsonc
       "microFocusCOBOL.suppressFileAssociationsPrompt": true,
