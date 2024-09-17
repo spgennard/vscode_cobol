@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 17.9.7, origin/main, origin/HEAD more 'rocket' related tweaks
+## 18.9.7, origin/main, origin/HEAD dev: tweak search for references in pd
+
+## 17.9.7 
+* ca09b86 more 'rocket' related tweaks
 * 7e8f38e updat readme
 * a154870 tidy up use of "Micro Focus COBOL" when relating to the extension
 
