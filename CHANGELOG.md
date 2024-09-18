@@ -1,7 +1,10 @@
 # CHANGELOG
 
 
-## 18.9.7, origin/main, origin/HEAD dev: tweak search for references in pd
+## 24.0.0 revert recent change
+
+## 18.9.7 
+* b592baa dev: tweak search for references in pd
 
 ## 17.9.7 
 * ca09b86 more 'rocket' related tweaks
