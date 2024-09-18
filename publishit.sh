@@ -1,4 +1,9 @@
 # exit on error
+VER=$(date +'%2y.%-m.%-d')
+npm version --no-git-tag-version $VER
+if [ $? -ne 0 ]; then
+       exit 1
+fi
 
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 git tag -f $PACKAGE_VERSION
