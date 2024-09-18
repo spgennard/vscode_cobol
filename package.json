@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "24.0.0",
+  "version": "24.9.18",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -2157,7 +2157,6 @@
         "category": "COBOL",
         "title": "New Empty COBOL Program"
       },
-      
       {
         "command": "cobolplugin.dumpAllSymbols",
         "category": "COBOL",
@@ -2180,8 +2179,8 @@
         },
         {
           "command": "cobolplugin.newFile_ACUCOBOL",
-         "group": "ACUCOBOL@1"
-         }
+          "group": "ACUCOBOL@1"
+        }
       ],
       "editor/context": [
         {
