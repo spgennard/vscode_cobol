@@ -1,7 +1,11 @@
 # CHANGELOG
 
 
-## 24.0.0 revert recent change
+## 24.9.18, origin/main, origin/HEAD tweak make tokens
+* c868fb9 Update publishit.sh
+
+## 24.0.0 
+* cfc45a0 revert recent change
 
 ## 18.9.7 
 * b592baa dev: tweak search for references in pd
