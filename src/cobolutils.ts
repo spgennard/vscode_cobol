@@ -631,10 +631,16 @@ export class COBOLUtils {
 
         SplitTokenizer.splitArgument(text, args);
         const textLower = text.toLowerCase();
-        let lastPos = 0;
+        let lastPos =  args.length > 1 ? textLower.indexOf(args[0].toLowerCase()) : 0;
         let foldstyle: intellisenseStyle = defaultFoldStyle; //settings.intellisense_style;
         for (let ic = 0; ic < args.length; ic++) {
             let arg = args[ic];
+
+            if (arg.startsWith("\"") && arg.endsWith("\"")) {
+                lastPos += arg.length;
+                continue;
+            }
+
             if (arg.endsWith(".")) {
                 arg = arg.substr(0, arg.length - 1);
             }
