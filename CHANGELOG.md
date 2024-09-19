@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 24.9.18, origin/main, origin/HEAD tweak make tokens
+## 24.9.18 
+* aec5def tweak make tokens
 * c868fb9 Update publishit.sh
 
 ## 24.0.0 
