@@ -253,7 +253,10 @@ function checkForExtensionConflicts(): string {
                                 if (element !== undefined && element.language !== undefined) {
                                     const l = `${element.language}`.toUpperCase();
                                     if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        reason.push("contributes conflicting grammar");
+                                        reason.push("contributes conflicting grammar (COBOL");
+                                    }
+                                    if (l === ExtensionDefaults.defaultPLIanguage) {
+                                        reason.push("contributes conflicting grammar (PLI)");
                                     }
                                 }
                             } catch {
@@ -271,7 +274,10 @@ function checkForExtensionConflicts(): string {
                                 if (languageElement !== undefined && languageElement.id !== undefined) {
                                     const l = `${languageElement.id}`.toUpperCase();
                                     if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        reason.push("contributes language id");
+                                        reason.push("contributes language id (COBOL)");
+                                    }
+                                    if (l === ExtensionDefaults.defaultPLIanguage) {
+                                        reason.push("contributes language id (PLI)");
                                     }
                                 }
                             }

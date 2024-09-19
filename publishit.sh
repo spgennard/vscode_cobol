@@ -4,6 +4,8 @@ npm version --no-git-tag-version $VER
 if [ $? -ne 0 ]; then
        exit 1
 fi
+git commit -m "bump" -f package.json
+git push
 
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 git tag -f $PACKAGE_VERSION
