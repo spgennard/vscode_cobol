@@ -152,7 +152,8 @@ export class VSCOBOLSourceScanner {
                     new SharedSourceReferences(config, true, startTime),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
-                    VSExternalFeatures);
+                    VSExternalFeatures,
+                    false);
 
                 if (qcpd.scanAborted === false) {
                     const elapsedTime = VSExternalFeatures.performance_now() - startTime;

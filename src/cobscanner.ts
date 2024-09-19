@@ -157,7 +157,8 @@ export class Scanner {
                         new SharedSourceReferences(config, true, startTime), 
                         config.parse_copybooks_for_references, 
                         symbolCatcher, 
-                        features);
+                        features,
+                        false);
                     if (qcp.callTargets.size > 0) {
                         stats.programsDefined++;
                         if (qcp.callTargets !== undefined) {
