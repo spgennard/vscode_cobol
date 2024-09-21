@@ -157,6 +157,8 @@ export class VSCOBOLConfiguration {
 
         settings.enable_exec_sql_cursors = getBoolean("enable_exec_sql_cursors", settings.enable_exec_sql_cursors);
         
+        settings.scan_comments_for_references = getBoolean("scan_comments_for_references", settings.scan_comments_for_references);
+        
         return settings;
     }
 

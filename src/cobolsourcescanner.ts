@@ -1263,7 +1263,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const ctoken = new COBOLToken(
             this.sourceHandler,
             this.sourceHandler.getUriAsString(), this.filename, tokenType, startLine, startColumn, token, description, parentToken, state.inProcedureDivision, extraInformation1,
-            this.isSourceDepCopyBook,);
+            this.isSourceDepCopyBook);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = this.sourceReferences.state.currentSection;
 
@@ -2802,7 +2802,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             this.sourceReferences.topLevel = true;
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, true);
+                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, this.configHandler.scan_comments_for_references);
                             this.sourceReferences.topLevel = true;
                             this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                         }

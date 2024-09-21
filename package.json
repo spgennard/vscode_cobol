@@ -200,6 +200,11 @@
         "coboleditor.enable_exec_sql_cursors": {
           "type": "boolean",
           "markdownDescription": "When 'enabled' parse 'EXEC SQL Cursor' for usage",
+          "default": false
+        },
+        "coboleditor.scan_comments_for_references": {
+          "type": "boolean",
+          "markdownDescription": "When 'enabled' and 'scan_comments_for_hints' is also enabled, include any references in search",
           "default": true
         },
         "coboleditor.tabstops_anchors": {
