@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* c2fec20 avoid using non-viewable tokens with codelens
+
+## 24.9.21 
 * fcc7c9f add scan_comments_for_references and initially disable it
 * 04bc06a add boolean, so we know that source dep copybook, can be processed differently
 
