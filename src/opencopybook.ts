@@ -54,7 +54,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         const config = VSCOBOLConfiguration.get();
         const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {
-            return this.resolveDefinitionsFallback(document, pos, ct);
+            return this.resolveDefinitionsFallback(true, document, pos, ct);
         }
 
         for (const [, b] of qcp.copyBooksUsed) {
@@ -71,7 +71,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                         }
                     } else {
                         if (st.isIn) {
-                            const uri4copybook = await this.getURIForCopybookInDirectory(st.copyBook, st.literal2,VSExternalFeatures, config);
+                            const uri4copybook = await this.getURIForCopybookInDirectory(st.copyBook, st.literal2, VSExternalFeatures, config);
                             if (uri4copybook !== undefined) {
                                 return new vscode.Location(
                                     uri4copybook,
@@ -92,16 +92,20 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             }
         }
 
-        return locations;
+        if (locations.length !== 0) {
+            return locations;
+        }
+
+        return this.resolveDefinitionsFallback(false, document, pos, ct);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private async resolveDefinitionsFallback(doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
+    private async resolveDefinitionsFallback(everything: boolean, doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const config = VSCOBOLConfiguration.get();
         const line = doc.lineAt(pos);
         const text = line.text;
         const textLower = text.toLowerCase().replace("\t", " ");
-        let filename = this.extractCopyBoolFilename(text);
+        let filename = this.extractCopyBookFilename(everything, config, text);
         let inOrOfPos = 0;
 
         const activeTextEditor = vscode.window.activeTextEditor;
@@ -182,54 +186,63 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         return fullPath;
     }
 
-    private extractCopyBoolFilename(str: string): string | undefined {
-        const copyPos = str.toLowerCase().indexOf("copy");
-        if (copyPos !== -1) {
-            const noCopyStr = str.substr(4 + copyPos).trimStart();
-            const spacePos = noCopyStr.indexOf(" ");
-            let justCopyArg = noCopyStr;
-            if (spacePos !== -1) {
-                justCopyArg = justCopyArg.substr(0, spacePos).trim();
-            }
+    private extractCopyBookFilename(everything: boolean, config: ICOBOLSettings, str: string): string | undefined {
+        const strLower = str.toLowerCase();
+ 
+        if (everything) {
+            const copyPos = str.toLowerCase().indexOf("copy");
+            if (copyPos !== -1) {
+                const noCopyStr = str.substr(4 + copyPos).trimStart();
+                const spacePos = noCopyStr.indexOf(" ");
+                let justCopyArg = noCopyStr;
+                if (spacePos !== -1) {
+                    justCopyArg = justCopyArg.substr(0, spacePos).trim();
+                }
 
-            // remove trailing .
-            if (justCopyArg.endsWith(".")) {
-                justCopyArg = justCopyArg.substr(0, justCopyArg.length - 1);
-                justCopyArg = justCopyArg.trim();
-            }
+                // remove trailing .
+                if (justCopyArg.endsWith(".")) {
+                    justCopyArg = justCopyArg.substr(0, justCopyArg.length - 1);
+                    justCopyArg = justCopyArg.trim();
+                }
 
-            // remove double quote
-            if (justCopyArg.startsWith("\"") && justCopyArg.endsWith("\"")) {
-                justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
-                justCopyArg = justCopyArg.trim();
+                // remove double quote
+                if (justCopyArg.startsWith("\"") && justCopyArg.endsWith("\"")) {
+                    justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
+                    justCopyArg = justCopyArg.trim();
+                    return justCopyArg;
+                }
+
+                // remove single quote
+                if (justCopyArg.startsWith("'") && justCopyArg.endsWith("'")) {
+                    justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
+                    justCopyArg = justCopyArg.trim();
+                }
+
                 return justCopyArg;
             }
 
-            // remove single quote
-            if (justCopyArg.startsWith("'") && justCopyArg.endsWith("'")) {
-                justCopyArg = justCopyArg.substr(1, justCopyArg.length - 2);
-                justCopyArg = justCopyArg.trim();
-            }
+            if (strLower.indexOf("exec") !== -1) {
+                if (strLower.includes("sql", strLower.indexOf("exec"))) {
+                    let includePos = strLower.indexOf("include");
+                    if (includePos !== -1) {
+                        includePos += 7;
+                        const strRight = str.substr(includePos).trimStart();
+                        const strRightLower = strRight.toLowerCase();
+                        const endExecPos = strRightLower.indexOf("end-exec");
+                        if (endExecPos !== -1) {
+                            const filename = strRight.substr(0, endExecPos).trim();
 
-            return justCopyArg;
-        }
-
-        const strLower = str.toLowerCase();
-        if (strLower.indexOf("exec") !== -1) {
-            if (strLower.includes("sql", strLower.indexOf("exec"))) {
-                let includePos = strLower.indexOf("include");
-                if (includePos !== -1) {
-                    includePos += 7;
-                    const strRight = str.substr(includePos).trimStart();
-                    const strRightLower = strRight.toLowerCase();
-                    const endExecPos = strRightLower.indexOf("end-exec");
-                    if (endExecPos !== -1) {
-                        const filename = strRight.substr(0, endExecPos).trim();
-
-                        return filename;
+                            return filename;
+                        }
                     }
                 }
             }
+        }
+        
+        const sourceDepPos = strLower.indexOf(config.scan_comment_copybook_token.toLowerCase());
+        if (sourceDepPos !== -1) {
+            const strRight = str.substring(config.scan_comment_copybook_token.length + sourceDepPos).trimStart();
+            return strRight;
         }
         return undefined;
     }
