@@ -1200,6 +1200,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (foundSectionToken === undefined) {
             return false;
         }
+
+        if (foundSectionToken.isTokenFromSourceDependancyCopyBook) {
+            return true;
+        }
+
         return !foundSectionToken.ignoreInOutlineView;
     }
 
@@ -1208,6 +1213,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (foundParagraph === undefined) {
             return false;
         }
+
+        if (foundParagraph.isTokenFromSourceDependancyCopyBook) {
+            return true;
+        }
+        
         return !foundParagraph.ignoreInOutlineView;
     }
 
@@ -2564,7 +2574,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 prevTokenLower === "thru" || prevTokenLower === "through") {
 
                                 /* go nn, could be "move xx to nn" or "go to nn" */
-                                let sourceStyle = COBOLTokenStyle.Unknown;
+                                let sourceStyle =COBOLTokenStyle.Unknown;
                                 let sharedReferences = this.sourceReferences.unknownReferences;
                                 if (this.isVisibleSection(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Section;
@@ -2798,12 +2808,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                             const qfile = new FileSourceHandler(fileName, this.externalFeatures);
                             const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
+                            const currentTopLevel = this.sourceReferences.topLevel;
                             this.sourceReferences.state.ignoreInOutlineView = true;
-                            this.sourceReferences.topLevel = true;
+                            this.sourceReferences.topLevel = false;
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, this.configHandler.scan_comments_for_references);
-                            this.sourceReferences.topLevel = true;
+                            this.sourceReferences.topLevel = currentTopLevel;
                             this.sourceReferences.state.ignoreInOutlineView = currentIgnoreInOutlineView;
                         }
                     } else {
