@@ -84,7 +84,7 @@ export class VSSemanticProvider {
 
             for (const variable of variables) {
                 const token = variable.token;
-                if (token.ignoreInOutlineView === false) {
+                if (token.ignoreInOutlineView === false || token.isTokenFromSourceDependancyCopyBook) {
                     try {
                         if (token.tokenType === COBOLTokenStyle.Constant) {
                             tokensBuilder.push(

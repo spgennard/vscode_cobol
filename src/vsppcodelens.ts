@@ -55,17 +55,17 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                 for (const [avar, vars] of current.constantsOrVariables) {
                     for (const currentVar of vars) {
                         const currentToken = currentVar.token;
-                        const tupRefs = current.sourceReferences.getReferenceInformation(avar,currentToken.startLine, currentToken.startColumn);
+                        if (currentToken.isTokenFromSourceDependancyCopyBook || currentToken.ignoreInOutlineView) {
+                            continue;
+                        }
 
+                        const tupRefs = current.sourceReferences.getReferenceInformation(avar,currentToken.startLine, currentToken.startColumn);
                         // no references found
                         if (tupRefs[1] === 0) {
                             continue;
                         }
 
-                        let defCount = tupRefs[0];
-                        if (defCount === 0) {
-                            defCount = 0;
-                        }
+                        const defCount = tupRefs[0];
                         const refCount = tupRefs[1];
                         const refCounts = defCount+refCount;
                         const refCountMsg = refCounts === 1 ? `${refCounts} reference` : `${refCounts} references`;
