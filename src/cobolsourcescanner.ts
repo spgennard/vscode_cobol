@@ -1144,7 +1144,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
 
-            // setup references for unknown forward references
+            // setup references for unknown forward referencws-item1es
             const unknown = [];
             // console.log(`DEBUG: unknownReferences : ${this.sourceReferences.unknownReferences.size}`);
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
@@ -1153,10 +1153,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     let ttype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                     let addReference = true;
                     for (const token of possibleTokens) {
-                        if (token.ignoreInOutlineView && token.token.isTokenFromSourceDependancyCopyBook === false) {
-                            addReference = false;
-                        } else {
+                        if (token.ignoreInOutlineView == false || token.token.isTokenFromSourceDependancyCopyBook) {
                             ttype = (token.tokenType === COBOLTokenStyle.Unknown) ? ttype : token.tokenType;
+                        } else {
+                            addReference = false;
                         }
                     }
                     if (addReference) {
@@ -1628,6 +1628,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private addReference(referencesMap: Map<string, SourceReference_Via_Length[]>, lowerCaseVariable: string, line: number, column: number, tokenStyle: COBOLTokenStyle) {
+
+        if (lowerCaseVariable.length === 0) {
+            lowerCaseVariable = lowerCaseVariable;
+        }
         const lowerCaseVariableRefs = referencesMap.get(lowerCaseVariable);
         if (lowerCaseVariableRefs !== undefined) {
             lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle, this.isSourceDepCopyBook));
@@ -1640,6 +1644,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private addVariableOrConstant(lowerCaseVariable: string, cobolToken: COBOLToken) {
+        this.addReference(this.sourceReferences.constantsOrVariablesReferences,lowerCaseVariable,cobolToken.startLine, cobolToken.startColumn, cobolToken.tokenType);
         const constantsOrVariablesToken = this.constantsOrVariables.get(lowerCaseVariable);
         if (constantsOrVariablesToken !== undefined) {
             constantsOrVariablesToken.push(new COBOLVariable(cobolToken));
@@ -2049,7 +2054,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                         let addReference = true;
                         for (const varToken of varTokens) {
-                            if (varToken.ignoreInOutlineView === false) {
+                            if (varToken.ignoreInOutlineView === false || varToken.token.isTokenFromSourceDependancyCopyBook) {
                                 ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                             } else {
                                 addReference = false;
@@ -2594,7 +2599,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                                 let addReference = true;
                                 for (const varToken of varTokens) {
-                                    if (varToken.ignoreInOutlineView === false) {
+                                    if (varToken.ignoreInOutlineView === false || varToken.token.isTokenFromSourceDependancyCopyBook) {
                                         ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                                     } else {
                                         addReference = false;
@@ -2632,7 +2637,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                                 let addReference = true;
                                 for (const varToken of varTokens) {
-                                    if (varToken.ignoreInOutlineView === false) {
+                                    if (varToken.ignoreInOutlineView === false || varToken.token.isTokenFromSourceDependancyCopyBook) {
                                         ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                                     } else {
                                         addReference = false;
