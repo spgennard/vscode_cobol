@@ -1255,12 +1255,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         return this.sourceReferences.state.currentSection === undefined ? "" : this.sourceReferences.state.currentSection.tokenName;
     }
 
-    public getCopyFilename(copybook: string, inInfo: string): string {
-        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(copybook.trim(), true);
-
-        return this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, inInfo, this.configHandler);
-    }
-
     private tokensInOrderPush(token: COBOLToken, sendEvent: boolean): void {
         token.tokenOffset = this.tokensInOrder.length;
         this.tokensInOrder.push(token);
@@ -1850,14 +1844,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                     if (trimTokenLower === "value") {
                         state.inValueClause = true;
-                        state.addVariableDuringStipToTag = true;
+                        state.addVariableDuringStipToTag = false;
                         continue;
                     }
 
                     // turn off at keyword
                     if (trimTokenLower === "pic" || trimTokenLower === "picture") {
                         state.skipNextToken = true;
-                        state.addVariableDuringStipToTag = true;
+                        state.addVariableDuringStipToTag = false;
                         continue;
                     }
 
@@ -2072,6 +2066,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             cbInfo.startCol = tcurrentCurrentCol;
                             cbInfo.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
                             const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
+                            if (fileName.length === 0) {
+                                continue;
+                            }
                             cbInfo.fileName = fileName;
                             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
                             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);

@@ -199,8 +199,8 @@
         },
         "coboleditor.enable_exec_sql_cursors": {
           "type": "boolean",
-          "markdownDescription": "When 'enabled' parse 'EXEC SQL Cursor' for usage",
-          "default": false
+          "markdownDescription": "When 'enabled' parse 'EXEC SQL Cursor' for references",
+          "default": true
         },
         "coboleditor.scan_comments_for_references": {
           "type": "boolean",

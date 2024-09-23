@@ -447,6 +447,7 @@ const cobolKeywords: string[] = [
 	"trailing",
 	"true",
 	"type",
+	"typedef",
 	"unit",
 	"unsigned",
 	"unstring",
