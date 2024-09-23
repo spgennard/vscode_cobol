@@ -1641,9 +1641,22 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
+        if (COBOLSourceScanner.isValidLiteral(lowerCaseVariable) === false) {
+            return false;
+        }
+
         const lowerCaseVariableRefs = referencesMap.get(lowerCaseVariable);
         if (lowerCaseVariableRefs !== undefined) {
-            lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle, this.isSourceDepCopyBook));
+            let duplicateFound = false;
+            const l = lowerCaseVariable.length;
+            for (const lowerCaseVariableRef of lowerCaseVariableRefs) {
+                if (lowerCaseVariableRef.line === line && lowerCaseVariableRef.column === column && lowerCaseVariableRef.length === l) {
+                    duplicateFound = true;
+                }
+            }
+            if (duplicateFound === false) {
+                lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, lowerCaseVariable.length, tokenStyle, this.isSourceDepCopyBook));
+            }
             return true;
         }
 
@@ -1711,7 +1724,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 // skip one token
                 if (state.skipNextToken) {
                     state.skipNextToken = false;
-                                        
+
                     // time to leave?  
                     //  [handles "pic x.", where x. is the token to be skipped]
                     if (state.skipToDot && tcurrent.endsWith(".")) {
