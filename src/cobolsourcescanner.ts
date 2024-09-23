@@ -238,7 +238,8 @@ class StreamTokens {
             const currentTokenLower = currentToken.toLowerCase();
 
             rollingColumn = line.indexOf(currentToken, rollingColumn);
-
+            rollingColumn += currentToken.length;
+            
             const endsWithDot = currentToken.length === 0 ? false : currentToken.charAt(currentToken.length - 1) === ".";
             this.stokens.push(new StreamToken(currentToken, currentTokenLower, endsWithDot, lineNumber, rollingColumn));
         }

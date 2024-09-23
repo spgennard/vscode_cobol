@@ -1070,7 +1070,7 @@ export class COBOLUtils {
         }
 
         const buf = Buffer.from(hexx4, "hex");
-        const len = buf.length / 2;
+        const len = (buf.length / 2) | 0;
         const arr = new Array(len);
 
         for (let i = 0; i < len; i++) {
