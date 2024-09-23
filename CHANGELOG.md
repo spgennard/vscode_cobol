@@ -1,5 +1,14 @@
 # CHANGELOG
 
+
+## 24.9.23, origin/main, origin/HEAD add typedef to keywords turn on "sql declare" ref handling
+* ffad3a0 fix bug with skip token in "pic x." partial statement
+* 78eef89 continue work on modernising the reference handling, still more todo
+* f317383 experimental code for add var/reference
+* faaaf20 include section/para from source deps in references
+* e41e117 add simple navigator for source-dep tag
+
+## 24.9.22 
 * c2fec20 avoid using non-viewable tokens with codelens
 
 ## 24.9.21 
