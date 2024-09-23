@@ -39,77 +39,33 @@ export class VSSemanticProvider {
             return tokensBuilder.build();
         }
 
-        for (const [, token] of qcp.sections) {
-            try {
-                if (token.ignoreInOutlineView === false && token.inProcedureDivision) {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                        "function"
-                    );
-                }
-
-            } catch (e) {
-                VSLogger.logException("SemanticProvider: sections", e as Error);
-            }
-        }
-        for (const [, token] of qcp.paragraphs) {
-            try {
-                if (token.ignoreInOutlineView === false && token.inProcedureDivision) {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                        "function"
-                    );
-                }
-
-            } catch (e) {
-                VSLogger.logException("SemanticProvider: paragraphs", e as Error);
-            }
-        }
-
+        const fid = qcp.sourceFileId;
         for (const [, sourceRefs] of qcp.sourceReferences.targetReferences) {
             try {
                 for (const sourceRef of sourceRefs) {
-                    tokensBuilder.push(
-                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
-                        "function"
-                    );
+                    if (sourceRef.fileIdentifer === fid) {
+                        tokensBuilder.push(
+                            new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                            "function"
+                        );
+                    }
                 }
             } catch (e) {
                 VSLogger.logException("SemanticProvider: targetReferences", e as Error);
             }
-
         }
-
-        for (const [, variables] of qcp.constantsOrVariables) {
-
-            for (const variable of variables) {
-                const token = variable.token;
-                if (token.ignoreInOutlineView === false || token.isTokenFromSourceDependancyCopyBook) {
-                    try {
-                        if (token.tokenType === COBOLTokenStyle.Constant) {
-                            tokensBuilder.push(
-                                new vscode.Range(new vscode.Position(token.startLine, token.startColumn), new vscode.Position(token.startLine, token.startColumn + token.tokenName.length)),
-                                "variable",
-                                ["declaration", "readonly"]
-                            );
-                        }
-                    } catch (e) {
-                        VSLogger.logException("SemanticProvider: constantsOrVariables", e as Error);
-                    }
-                }
-            }
-        }
-
         for (const [, sourceRefs] of qcp.sourceReferences.constantsOrVariablesReferences) {
             //
             for (const sourceRef of sourceRefs) {
                 try {
-                    if (sourceRef.tokenStyle === COBOLTokenStyle.Constant) {
-                        tokensBuilder.push(
-                            new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
-                            "variable",
-                            ["readonly"]
-                        );
+                    if (sourceRef.fileIdentifer === fid) {
+                        if (sourceRef.tokenStyle === COBOLTokenStyle.Constant) {
+                            tokensBuilder.push(
+                                new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
+                                "variable",
+                                ["readonly"]
+                            );
+                        }
                     }
                 } catch (e) {
                     VSLogger.logException("SemanticProvider: sourceRefs", e as Error);
