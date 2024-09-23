@@ -1,7 +1,10 @@
 # CHANGELOG
 
+* 65069b8 fix two odd bugs  - nx odd length  - multiple items per line split problem
+* 178be87 filter out anything that can never be a var
 
-## 24.9.23, origin/main, origin/HEAD add typedef to keywords turn on "sql declare" ref handling
+## 24.9.23 
+* 78e8502 add typedef to keywords turn on "sql declare" ref handling
 * ffad3a0 fix bug with skip token in "pic x." partial statement
 * 78eef89 continue work on modernising the reference handling, still more todo
 * f317383 experimental code for add var/reference
