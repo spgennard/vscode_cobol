@@ -560,6 +560,7 @@ class ParseState {
     currentLineIsComment: boolean;
     skipNextToken: boolean;
     inValueClause: boolean;
+    skipToEndLsIgnore: boolean;
 
     inProcedureDivision: boolean;
     inDeclaratives: boolean;
@@ -632,6 +633,7 @@ class ParseState {
         this.inCopyStartColumn = 0;
         this.skipNextToken = false;
         this.inValueClause = false;
+        this.skipToEndLsIgnore = false;
     }
 }
 
@@ -748,6 +750,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public readonly parse_copybooks_for_references: boolean;
     public readonly scan_comments_for_hints: boolean;
     public readonly isSourceDepCopyBook: boolean;
+    public readonly scan_comment_for_ls_control: boolean;
 
     readonly copybookNestedInSection: boolean;
 
@@ -842,6 +845,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.isSourceDepCopyBook = isSourceDepCopyBook;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
+        this.scan_comment_for_ls_control = configHandler.scan_comment_for_ls_control;
         this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
@@ -1176,6 +1180,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     unknown.push(strRef);
                 }
             }
+
+            // if (this.sourceReferences.state.skipToEndLsIgnore) {
+            //     const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
+            //     this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, this.sourceReferences.state.startLineOfSkipToEndToken, trimmedCopyBook));
+            // }
             // console.log(`DEBUG: unprocessed : ${unknown.length}, p=${pcount},v=${vcount},s=${scount}`);
             this.sourceReferences.unknownReferences.clear();
             this.eventHandler.finish();
@@ -1719,6 +1728,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 let tcurrent: string = token.currentToken;
                 // continue now
                 if (tcurrent.length === 0) {
+                    continue;
+                }
+                
+                // if skip to end lsp
+                if (state.skipToEndLsIgnore) {
                     continue;
                 }
 
@@ -2936,5 +2950,19 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             this.processHintComments(commentLine, sourceFilename, sourceLineNumber);
         }
 
+        // ls control
+        if (this.scan_comment_for_ls_control) {
+            if (this.sourceReferences.state.skipToEndLsIgnore) {
+                const startOfEndLs = commentLine.indexOf(this.configHandler.scan_comment_end_ls_ignore);
+                if (startOfEndLs !== -1) {
+                    this.sourceReferences.state.skipToEndLsIgnore = false;
+                }
+            } else {
+                const startOfBeginLS = commentLine.indexOf(this.configHandler.scan_comment_begin_ls_ignore);
+                if (startOfBeginLS !== -1) {
+                    this.sourceReferences.state.skipToEndLsIgnore = true;
+                }                
+            }
+        }
     }
 }

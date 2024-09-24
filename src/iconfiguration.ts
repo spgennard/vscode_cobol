@@ -162,6 +162,12 @@ export interface ICOBOLSettings {
     enable_exec_sql_cursors: boolean;
 
     scan_comments_for_references: boolean;
+
+    scan_comment_for_ls_control: boolean;
+    
+    scan_comment_begin_ls_ignore: string;
+
+    scan_comment_end_ls_ignore: string;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -289,6 +295,12 @@ export class COBOLSettings implements ICOBOLSettings {
 
     scan_comments_for_references: boolean;
 
+    scan_comment_for_ls_control: boolean;
+
+    scan_comment_begin_ls_ignore: string;
+
+    scan_comment_end_ls_ignore: string;
+    
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -390,5 +402,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_microfocus_lsp_lang_server_control = true;
         this.enable_exec_sql_cursors = true;
         this.scan_comments_for_references = false;
+        this.scan_comment_for_ls_control = true;
+        this.scan_comment_begin_ls_ignore = "BEGIN-LS-IGNORE";
+        this.scan_comment_end_ls_ignore = "END-LS-IGNORE";
     }
 }

@@ -207,6 +207,21 @@
           "markdownDescription": "When 'enabled' and 'scan_comments_for_hints' is also enabled, include any references in search",
           "default": true
         },
+        "coboleditor.scan_comment_for_ls_control": {
+          "type": "boolean",
+          "markdownDescription": "When 'enabled' comments are scanned for 'begin/end-ls-ignore' comment",
+          "default": true
+        },
+        "coboleditor.scan_comment_begin_ls_ignore": {
+          "type": "string",
+          "markdownDescription": "'begin-ls-ignore' token",
+          "default": "BEGIN-LS-IGNORE"
+        },
+        "coboleditor.scan_comment_end_ls_ignore": {
+          "type": "string",
+          "markdownDescription": "'begin-ls-ignore' token",
+          "default": "END-LS-IGNORE"
+        },
         "coboleditor.tabstops_anchors": {
           "type": "array",
           "markdownDescription": "",
