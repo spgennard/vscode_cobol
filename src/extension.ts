@@ -927,7 +927,7 @@ export async function activate(context: ExtensionContext) {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Your workspace is large, do you want to extra threads for your metadata scan?" }).then(function (data) {
             if (data === "Yes") {
                 const cpuCount = os.cpus().length;
-                const defCpuCount = cpuCount >= 4 ? (cpuCount / 2) : cpuCount;
+                const defCpuCount = cpuCount >= 4 ? Math.trunc(cpuCount / 2) : cpuCount;
                 vscode.window.showInputBox({
                     prompt: "How many threads do you want to use?",
                     value: "" + defCpuCount,
