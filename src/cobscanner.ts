@@ -145,7 +145,7 @@ export class Scanner {
             let fSendCount = 0;
             for (const file of scanData.Files) {
                 if (Utils.cacheUpdateRequired(file, features)) {
-                    const filesHandler = new FileSourceHandler(file, features);
+                    const filesHandler = new FileSourceHandler(undefined, file, features);
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);

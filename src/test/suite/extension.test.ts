@@ -16,7 +16,7 @@ suite("Core Extension Test Suite", () => {
 	const features = VSExternalFeatures;
 
 	test("Read file [basic] (test.cbl)", () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);
+		const f = new FileSourceHandler(undefined, path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -25,7 +25,7 @@ suite("Core Extension Test Suite", () => {
 	});
 
 	test("Parse file for constants/paragraphs/sections (test.cbl)", () => {
-		const f = new FileSourceHandler(path.join(baseForSource,"test.cbl"), features);
+		const f = new FileSourceHandler(undefined, path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}

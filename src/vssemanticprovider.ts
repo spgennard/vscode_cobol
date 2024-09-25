@@ -48,6 +48,7 @@ export class VSSemanticProvider {
                             new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
                             "function"
                         );
+                        
                     }
                 }
             } catch (e) {

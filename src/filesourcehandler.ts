@@ -30,8 +30,10 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
+    private readonly lineRegExFilter: RegExp|undefined;
 
-    public constructor(document: string, features: IExternalFeatures) {
+    public constructor(regEx: RegExp|undefined, document: string, features: IExternalFeatures) {
+        this.lineRegExFilter = regEx;
         this.document = document;
         this.dumpNumbersInAreaA = false;
         this.commentCallbacks = [];
@@ -55,7 +57,14 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
             while ((line = liner.next())) {
-                this.lines.push(line.toString());
+                const l = line.toString();
+                if (this.lineRegExFilter !== undefined) {
+                    if (this.lineRegExFilter.test(l) === false) {
+                        this.lines.push(l);    
+                    }
+                 } else {
+                    this.lines.push(l);
+                }
             }
             features.logTimedMessage(features.performance_now() - startTime, " - Loading File " + document);
         }
@@ -359,3 +368,4 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return fl;
     }
 }
+
