@@ -1,5 +1,8 @@
 # CHANGELOG
 
+
+## 24.9.26, origin/main, origin/HEAD comment out function until it is used
+* 347ee27 Update
 * f95dc9b add source for simple regex parsing of source-dep file using
 * 99b03cb fix a stoken handler which may affect semantic token'ing wip - continue work on filesource filtering
 * 6b518cc add wip, ls control token scanning
