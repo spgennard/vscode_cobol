@@ -242,14 +242,14 @@ function getNumber(configSection: string, defaultValue: number): number {
     return lineLimit;
 }
 
-function getString(configSection: string, defaultValue: string): string {
-    const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
-    let expEnabled = editorConfig.get<string>(configSection);
-    if (expEnabled === undefined || expEnabled === null) {
-        expEnabled = defaultValue;
-    }
-    return expEnabled;
-}
+// function getString(configSection: string, defaultValue: string): string {
+//     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
+//     let expEnabled = editorConfig.get<string>(configSection);
+//     if (expEnabled === undefined || expEnabled === null) {
+//         expEnabled = defaultValue;
+//     }
+//     return expEnabled;
+// }
 
 function getPreScanLineLimit(): number {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
