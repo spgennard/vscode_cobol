@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* f95dc9b add source for simple regex parsing of source-dep file using
+* 99b03cb fix a stoken handler which may affect semantic token'ing wip - continue work on filesource filtering
+* 6b518cc add wip, ls control token scanning
+* ece6c4e some defensive coding
+
+## 24.9.24 
 * 65069b8 fix two odd bugs  - nx odd length  - multiple items per line split problem
 * 178be87 filter out anything that can never be a var
 
