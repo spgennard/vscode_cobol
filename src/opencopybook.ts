@@ -163,6 +163,24 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             }
         }
 
+        const sourceDepPos = text.indexOf(config.scan_comment_copybook_token.toLowerCase());
+        if (sourceDepPos !== -1) {
+            const fileregex = new RegExp("[-9a-zA-Z\/\\ \.:_]+");
+            const wordRange = doc.getWordRangeAtPosition(pos, fileregex);
+            const wordText = wordRange ? doc.getText(wordRange) : "";
+            if (wordText !== undefined && wordText.length !== 0) {
+                for (const possibleFilename of wordText.split(" ")) {
+                    const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, this.features);
+                    if (fullPath.length !== 0) {
+                        return new vscode.Location(
+                            Uri.file(fullPath),
+                            new Range(new Position(0, 0), new Position(0, 0))
+                        );
+                    }
+                }
+            }
+        }
+
         return [];
 
     }
@@ -188,7 +206,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     private extractCopyBookFilename(everything: boolean, config: ICOBOLSettings, str: string): string | undefined {
         const strLower = str.toLowerCase();
- 
+
         if (everything) {
             const copyPos = str.toLowerCase().indexOf("copy");
             if (copyPos !== -1) {
@@ -238,12 +256,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                 }
             }
         }
-        
-        const sourceDepPos = strLower.indexOf(config.scan_comment_copybook_token.toLowerCase());
-        if (sourceDepPos !== -1) {
-            const strRight = str.substring(config.scan_comment_copybook_token.length + sourceDepPos).trimStart();
-            return strRight;
-        }
+
         return undefined;
     }
 

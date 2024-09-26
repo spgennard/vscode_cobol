@@ -41,7 +41,8 @@ export class CobolLinterProviderSymbols {
     public static NotReferencedMarker_external = "CL002";
     public static CopyBookNotFound = "CL003:";
     public static PortMessage = "CL004:";
-      
+    public static GeneralMessage = "CL005:";
+          
     public static OLD_NotReferencedMarker_internal = "COBOL_NOT_REF";
     public static OLD_NotReferencedMarker_external = "ignore";
     public static OLD_CopyBookNotFound = "CopyBook";

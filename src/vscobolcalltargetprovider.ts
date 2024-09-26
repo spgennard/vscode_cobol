@@ -49,10 +49,10 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
-                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.linenum !== undefined) {
                                 const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(symbol.filename, "", config, this.features);
                                 if (fullFilename.length !== 0) {
-                                    this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
+                                    this.getLocationGivenFile(fullFilename, symbol.linenum, locations);
                                 }
                             }
                         }
@@ -64,10 +64,10 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                     if (symbols !== undefined) {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
-                            if (symbol !== undefined && symbol.filename !== undefined && symbol.lnum !== undefined) {
+                            if (symbol !== undefined && symbol.filename !== undefined && symbol.linenum !== undefined) {
                                 const fullFilename = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(symbol.filename, "", config, this.features);
                                 if (fullFilename.length !== 0) {
-                                    this.getLocationGivenFile(fullFilename, symbol.lnum, locations);
+                                    this.getLocationGivenFile(fullFilename, symbol.linenum, locations);
                                 }
                             }
                         }

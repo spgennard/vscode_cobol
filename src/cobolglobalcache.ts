@@ -54,13 +54,13 @@ export class COBOLSymbolTable {
 
 export class COBOLFileSymbol {
     public filename: string;
-    public lnum: number;
-    public missingFile : string;
+    public linenum: number;
+    public messageOrMissingFile : string;
 
-    public constructor(symbol?: string, lineNumber?: number, missingFile?: string) {
-        this.filename = symbol === undefined ? "" : symbol;
-        this.lnum = lineNumber === undefined ? 0 : lineNumber;
-        this.missingFile = missingFile === undefined ? "" : missingFile;
+    public constructor(filename?: string, lineNumber?: number, missingFile?: string) {
+        this.filename = filename === undefined ? "" : filename;
+        this.linenum = lineNumber === undefined ? 0 : lineNumber;
+        this.messageOrMissingFile = missingFile === undefined ? "" : missingFile;
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types

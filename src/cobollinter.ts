@@ -235,11 +235,11 @@ export class CobolLinterProvider {
             if (this.settings.linter_ignore_missing_copybook === false && this.current.diagMissingFileWarnings.size !== 0) {
                 const qp: COBOLSourceScanner = this.current;
                 for (const [msg, fileSymbol] of qp.diagMissingFileWarnings) {
-                    if (fileSymbol.filename !== undefined && fileSymbol.lnum !== undefined) {
-                        const r = new vscode.Range(new vscode.Position(fileSymbol.lnum, 0), new vscode.Position(fileSymbol.lnum, 0));
+                    if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
+                        const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
                         const diagMessage = new vscode.Diagnostic(r, msg, this.linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
-                        diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound + fileSymbol.missingFile;
+                        diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound + fileSymbol.messageOrMissingFile;
                         if (diagRefs.has(fileSymbol.filename)) {
                             const diags = diagRefs.get(fileSymbol.filename);
                             if (diags !== undefined) {
@@ -277,7 +277,27 @@ export class CobolLinterProvider {
                 }
             }
 
-
+            if (this.current.generalWarnings.length !== 0) {
+                const qp: COBOLSourceScanner = this.current;
+                for (const fileSymbol of qp.generalWarnings) {
+                    if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
+                        const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
+                        const diagMessage = new vscode.Diagnostic(r, fileSymbol.messageOrMissingFile, this.linterSev);
+                        diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
+                        diagMessage.code = CobolLinterProviderSymbols.GeneralMessage + fileSymbol.messageOrMissingFile;
+                        if (diagRefs.has(fileSymbol.filename)) {
+                            const diags = diagRefs.get(fileSymbol.filename);
+                            if (diags !== undefined) {
+                                diags.push(diagMessage);
+                            }
+                        } else {
+                            const arr: vscode.Diagnostic[] = [];
+                            arr.push(diagMessage);
+                            diagRefs.set(fileSymbol.filename, arr);
+                        }
+                    }
+                }
+            }
         }
 
         for (const [f, value] of diagRefs) {

@@ -52,7 +52,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
                         foundCount++;
 
                         // remember last non file line number
-                        if (symbolList[i].lnum !== 1) {
+                        if (symbolList[i].linenum !== 1) {
                             foundLastNonFileSymbol = i;
                         }
                     }
@@ -65,12 +65,12 @@ export class COBOLWorkspaceSymbolCacheHelper {
                 }
                 // if we have only one symbol, then we can update it
                 if (foundCount === 1) {
-                    symbolList[foundLast].lnum = lineNumber;
+                    symbolList[foundLast].linenum = lineNumber;
                     InMemoryGlobalSymbolCache.isDirty = true;
                 } else {
                     // if we have multiple, never update the filename symbol which has a line number of 1
                     if (foundLastNonFileSymbol !== -1) {
-                        symbolList[foundLastNonFileSymbol].lnum = lineNumber;
+                        symbolList[foundLastNonFileSymbol].linenum = lineNumber;
                         InMemoryGlobalSymbolCache.isDirty = true;
                     }
                 }

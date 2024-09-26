@@ -159,11 +159,11 @@ export class VSCOBOLConfiguration {
         
         settings.scan_comments_for_references = getBoolean("scan_comments_for_references", settings.scan_comments_for_references);
 
-        settings.scan_comment_for_ls_control = getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
+        // settings.scan_comment_for_ls_control = getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
 
-        settings.scan_comment_begin_ls_ignore = getString("scan_comment_begin_ls_ignore", settings.scan_comment_begin_ls_ignore);
+        // settings.scan_comment_begin_ls_ignore = getString("scan_comment_begin_ls_ignore", settings.scan_comment_begin_ls_ignore);
 
-        settings.scan_comment_end_ls_ignore = getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
+        // settings.scan_comment_end_ls_ignore = getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
 
         return settings;
     }

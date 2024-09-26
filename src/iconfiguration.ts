@@ -402,7 +402,9 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_microfocus_lsp_lang_server_control = true;
         this.enable_exec_sql_cursors = true;
         this.scan_comments_for_references = false;
-        this.scan_comment_for_ls_control = true;
+
+        // WIP - TODO - end of source checks & config
+        this.scan_comment_for_ls_control = false;
         this.scan_comment_begin_ls_ignore = "BEGIN-LS-IGNORE";
         this.scan_comment_end_ls_ignore = "END-LS-IGNORE";
     }

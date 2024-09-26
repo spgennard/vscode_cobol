@@ -728,8 +728,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public readonly classes: Map<string, COBOLToken>;
     public readonly methods: Map<string, COBOLToken>;
     public readonly copyBooksUsed: Map<string, COBOLCopybookToken>;
+
     public readonly diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
     public readonly portWarnings: portResult[];
+    public readonly generalWarnings: COBOLFileSymbol[];
 
     public readonly commentReferences: COBOLFileAndColumnSymbol[];
 
@@ -859,6 +861,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.methods = new Map<string, COBOLToken>();
         this.diagMissingFileWarnings = new Map<string, COBOLFileSymbol>();
         this.portWarnings = [];
+        this.generalWarnings = [];
         this.commentReferences = [];
         this.parse4References = sourceHandler !== null;
         this.cache4PerformTargets = undefined;
@@ -2885,7 +2888,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     const filenameTrimmed = args[offset].trim();
                     if (filenameTrimmed.startsWith("/") && filenameTrimmed.endsWith("/")) {
                         const regpart = filenameTrimmed.substring(1,filenameTrimmed.length-1);
-                        possRegExe = new RegExp(regpart,"i");
+                        try {
+                            possRegExe = new RegExp(regpart,"i");
+                        }
+                        catch(ex) {
+                            this.generalWarnings.push(
+                                new COBOLFileSymbol(this.filename,sourceLineNumber,`${ex}`)
+                            )
+                        }
                         continue;
                     }
                     const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);

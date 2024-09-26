@@ -182,7 +182,7 @@ export class COBOLUtils {
             const fileSymbol = typeMap.get(i);
             if (fileSymbol !== undefined) {
                 fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                    types.push(`${prefix},${i},${value.filename},${value.lnum}`);
+                    types.push(`${prefix},${i},${value.filename},${value.linenum}`);
                 });
             }
         }
@@ -240,8 +240,8 @@ export class COBOLUtils {
 
                             // do not save a callable that is in the defaultCallableSymbol map
                             if (InMemoryGlobalSymbolCache.defaultCallableSymbols.has(i) === false) {
-                                if (value.lnum !== 0) {
-                                    symbols.push(`${i},${value.filename},${value.lnum}`);
+                                if (value.linenum !== 0) {
+                                    symbols.push(`${i},${value.filename},${value.linenum}`);
                                 } else {
                                     symbols.push(`${i},${value.filename}`);
                                 }
@@ -259,7 +259,7 @@ export class COBOLUtils {
                     const fileSymbol = InMemoryGlobalSymbolCache.entryPoints.get(i);
                     if (fileSymbol !== undefined) {
                         fileSymbol.forEach(function (value: COBOLFileSymbol) {
-                            entrypoints.push(`${i},${value.filename},${value.lnum}`);
+                            entrypoints.push(`${i},${value.filename},${value.linenum}`);
                         });
                     }
                 }
