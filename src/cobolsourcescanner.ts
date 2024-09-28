@@ -77,26 +77,39 @@ export class COBOLToken {
     public readonly filenameAsURI: string;
     public readonly filename: string;
     public readonly tokenType: COBOLTokenStyle;
-    public startLine: number;
-    public startColumn: number;
+    
+    public readonly startLine: number;
+    public readonly startColumn: number;
+    public readonly endLine: number;
+    public readonly endColumn: number;
+
+    public rangeStartLine: number;
+    public rangeStartColumn: number;
+    public rangeEndLine: number;
+    public rangeEndColumn: number;
+
     public readonly tokenName: string;
     public readonly tokenNameLower: string;
+
     public description: string;
     public readonly parentToken: COBOLToken | undefined;
-    public endLine: number;
-    public endColumn: number;
     public readonly inProcedureDivision: boolean;
+
     public extraInformation1: string;
     public inSection: COBOLToken | undefined;
-    public tokenOffset: number;
+
     public readonly sourceHandler: ISourceHandler;
     public readonly isTokenFromSourceDependancyCopyBook: boolean;
 
     public constructor(
         sourceHandler: ISourceHandler,
-        filenameAsURI: string, filename: string, tokenType: COBOLTokenStyle, startLine: number,
-        startColumn: number, token: string, description: string,
-        parentToken: COBOLToken | undefined, inProcedureDivision: boolean, extraInformation1: string,
+        filenameAsURI: string, filename: string, 
+        tokenType: COBOLTokenStyle, 
+        startLine: number, startColumn: number, token: 
+        string, description: string,
+        parentToken: COBOLToken | undefined, 
+        inProcedureDivision: boolean, 
+        extraInformation1: string,
         isTokenFromSourceDependancyCopyBook: boolean) {
 
         this.sourceHandler = sourceHandler;
@@ -105,18 +118,27 @@ export class COBOLToken {
         this.filename = filename;
         this.tokenType = tokenType;
         this.startLine = startLine;
+        this.startColumn = startColumn;
+        this.endLine = this.startLine;
+        if (token.trim() === "jim") {
+            this.tokenName = "odd";
+        }
         this.tokenName = token.trim();
         this.tokenNameLower = this.tokenName.toLowerCase();
-        this.startColumn = startColumn;
-        this.description = description;
-        this.endLine = this.startLine;
         this.endColumn = this.startColumn + this.tokenName.length;
+
+        this.description = description;
         this.parentToken = parentToken;
         this.inProcedureDivision = inProcedureDivision;
         this.extraInformation1 = extraInformation1;
         this.inSection = undefined;
-        this.tokenOffset = 0;
+
         this.isTokenFromSourceDependancyCopyBook = isTokenFromSourceDependancyCopyBook;
+
+        this.rangeStartLine = this.startLine;
+        this.rangeStartColumn = this.startColumn;
+        this.rangeEndLine = this.endLine;
+        this.rangeEndColumn = this.endColumn;
 
         if (this.tokenName.length !== 0) {
             /* ensure we don't have any odd start columns */
@@ -1118,32 +1140,32 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 for (let cp = 0; cp < state.programs.length; cp++) {
                     const currentProgram = state.programs.pop();
                     if (currentProgram !== undefined) {
-                        currentProgram.endLine = sourceHandler.getLineCount();
-                        currentProgram.endColumn = lastLineLength;
+                        currentProgram.rangeEndLine = sourceHandler.getLineCount();
+                        currentProgram.rangeEndColumn = lastLineLength;
                     }
                 }
             }
 
             if (state.currentDivision !== undefined) {
-                state.currentDivision.endLine = sourceHandler.getLineCount();
-                state.currentDivision.endColumn = lastLineLength;
+                state.currentDivision.rangeEndLine = sourceHandler.getLineCount();
+                state.currentDivision.rangeEndColumn = lastLineLength;
             }
 
             if (state.currentSection !== undefined) {
-                state.currentSection.endLine = sourceHandler.getLineCount();
-                state.currentSection.endColumn = lastLineLength;
+                state.currentSection.rangeEndLine = sourceHandler.getLineCount();
+                state.currentSection.rangeEndColumn = lastLineLength;
             }
 
             if (state.currentParagraph !== undefined) {
-                state.currentParagraph.endLine = sourceHandler.getLineCount();
-                state.currentParagraph.endColumn = lastLineLength;
+                state.currentParagraph.rangeEndLine = sourceHandler.getLineCount();
+                state.currentParagraph.rangeEndColumn = lastLineLength;
             }
 
             if (this.ImplicitProgramId.length !== 0) {
                 const ctoken = this.newCOBOLToken(COBOLTokenStyle.ImplicitProgramId, 0, "", 0, this.ImplicitProgramId, this.ImplicitProgramId, undefined);
-                ctoken.endLine = sourceHandler.getLineCount();
-                ctoken.startLine = 0;
-                ctoken.endColumn = lastLineLength;
+                ctoken.rangeEndLine = sourceHandler.getLineCount();
+                ctoken.rangeStartLine = 0;
+                ctoken.rangeEndColumn = lastLineLength;
                 ctoken.ignoreInOutlineView = true;
                 state.currentProgramTarget.Token = ctoken;
                 this.tokensInOrder.pop();
@@ -1272,7 +1294,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private tokensInOrderPush(token: COBOLToken, sendEvent: boolean): void {
-        token.tokenOffset = this.tokensInOrder.length;
         this.tokensInOrder.push(token);
         if (sendEvent) {
             this.eventHandler.processToken(token);
@@ -1305,9 +1326,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         /* if we are in a paragraph update */
         if (state.currentParagraph !== undefined) {
-            state.currentParagraph.endLine = startLine;
+            state.currentParagraph.rangeEndLine = startLine;
             if (ctoken.startColumn !== 0) {
-                state.currentParagraph.endColumn = ctoken.startColumn - 1;
+                state.currentParagraph.rangeEndColumn = ctoken.rangeStartColumn - 1;
             }
         }
 
@@ -1315,16 +1336,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (tokenType === COBOLTokenStyle.Division && state.currentDivision !== undefined) {
 
             state.currentParagraph = undefined;
-            state.currentDivision.endLine = startLine;
+            state.currentDivision.rangeEndLine = startLine;
             // state.currentDivision.endLine = parentToken !== undefined ? parentToken.endLine : startLine;
-            if (ctoken.startColumn !== 0) {
-                state.currentDivision.endColumn = ctoken.startColumn - 1;
+            if (ctoken.rangeStartColumn !== 0) {
+                state.currentDivision.rangeEndColumn = ctoken.rangeStartColumn - 1;
             }
 
             if (state.currentSection !== undefined) {
-                state.currentSection.endLine = startLine;
-                if (ctoken.startColumn !== 0) {
-                    state.currentSection.endColumn = ctoken.startColumn - 1;
+                state.currentSection.rangeEndLine = startLine;
+                if (ctoken.rangeStartColumn !== 0) {
+                    state.currentSection.rangeEndColumn = ctoken.rangeStartColumn - 1;
                 }
                 state.currentSection = undefined;
             }
@@ -1338,9 +1359,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (tokenType === COBOLTokenStyle.Section) {
             if (state.currentSection !== undefined) {
                 state.currentParagraph = undefined;
-                state.currentSection.endLine = startLine;
-                if (ctoken.startColumn !== 0) {
-                    state.currentSection.endColumn = ctoken.startColumn - 1;
+                state.currentSection.rangeEndLine = startLine;
+                if (ctoken.rangeStartColumn !== 0) {
+                    state.currentSection.rangeEndColumn = ctoken.rangeStartColumn - 1;
                 }
             }
             this.tokensInOrderPush(ctoken, state.inProcedureDivision);
@@ -1351,18 +1372,18 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         // new paragraph
         if (tokenType === COBOLTokenStyle.Paragraph) {
             if (state.currentSection !== undefined) {
-                state.currentSection.endLine = startLine;
-                if (ctoken.startColumn !== 0) {
-                    state.currentSection.endColumn = ctoken.startColumn - 1;
+                state.currentSection.rangeEndLine = startLine;
+                if (ctoken.rangeStartColumn !== 0) {
+                    state.currentSection.rangeEndColumn = ctoken.rangeStartColumn - 1;
                 }
             }
 
             state.currentParagraph = ctoken;
 
             if (state.currentDivision !== undefined) {
-                state.currentDivision.endLine = startLine;
-                if (ctoken.startColumn !== 0) {
-                    state.currentDivision.endColumn = ctoken.startColumn - 1;
+                state.currentDivision.rangeEndLine = startLine;
+                if (ctoken.rangeStartColumn !== 0) {
+                    state.currentDivision.rangeEndColumn = ctoken.rangeStartColumn - 1;
                 }
             }
             this.tokensInOrderPush(ctoken, true);
@@ -1777,8 +1798,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             if (lastTokenId !== this.tokensInOrder.length) {
                                 for (let ltid = lastTokenId; ltid < this.tokensInOrder.length; ltid++) {
                                     const addedToken = this.tokensInOrder[ltid];
-                                    addedToken.startColumn = token.currentCol;
-                                    addedToken.endColumn = token.currentCol + _tcurrent.length;
+                                    addedToken.rangeStartColumn = token.currentCol;
+                                    addedToken.rangeEndColumn = token.currentCol + _tcurrent.length;
                                 }
                             }
                             return retToken;
@@ -2056,8 +2077,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (currentLower === "end-exec") {
                     if (this.currentExecToken !== undefined) {
                         if (state.currentToken !== undefined) {
-                            this.currentExecToken.endLine = token.currentLineNumber;
-                            this.currentExecToken.endColumn = token.currentCol + token.currentToken.length;
+                            this.currentExecToken.rangeEndLine = token.currentLineNumber;
+                            this.currentExecToken.rangeEndColumn = token.currentCol + token.currentToken.length;
                             this.execTokensInOrder.push(this.currentExecToken);  // remember token
                         }
 
@@ -2159,8 +2180,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.activeRegions.length > 0) {
                             const ctoken = this.activeRegions.pop();
                             if (ctoken !== undefined) {
-                                ctoken.endLine = lineNumber;
-                                ctoken.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
+                                ctoken.rangeEndLine = lineNumber;
+                                ctoken.rangeEndColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
                                 this.regions.push(ctoken);
                             }
                         }
@@ -2168,8 +2189,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
 
                 if (state.declaratives !== undefined && prevTokenLower === "end" && currentLower === "declaratives") {
-                    state.declaratives.endLine = lineNumber;
-                    state.declaratives.endColumn = line.indexOf(current);
+                    state.declaratives.rangeEndLine = lineNumber;
+                    state.declaratives.rangeEndColumn = line.indexOf(current);
                     state.inDeclaratives = false;
                     state.declaratives = undefined;
                     state.declaratives = this.newCOBOLToken(COBOLTokenStyle.EndDeclaratives, lineNumber, line, currentCol, current, current, state.currentDivision);
@@ -2268,8 +2289,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     const ctoken = this.newCOBOLToken(COBOLTokenStyle.ProgramId, lineNumber, line, prevCurrentCol, trimmedCurrent, prevPlusCurrent, state.currentDivision);
                     state.programs.push(ctoken);
                     if (state.currentDivision !== undefined) {
-                        state.currentDivision.endLine = ctoken.endLine;
-                        state.currentDivision.endColumn = ctoken.endColumn;
+                        state.currentDivision.rangeEndLine = ctoken.endLine;
+                        state.currentDivision.rangeEndColumn = ctoken.endColumn;
                     }
                     if (trimmedCurrent.indexOf(" ") === -1 && token.isTokenPresent("external") === false) {
                         state.parameters = [];
@@ -2295,8 +2316,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 // handle "end class, enum, valuetype"
                 if (state.currentClass !== undefined && prevTokenLower === "end" &&
                     (currentLower === "class" || currentLower === "enum" || currentLower === "valuetype" || currentLower === "interface")) {
-                    state.currentClass.endLine = lineNumber;
-                    state.currentClass.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentClass.rangeEndLine = lineNumber;
+                    state.currentClass.rangeEndColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
 
                     state.currentClass = undefined;
                     state.captureDivisions = true;
@@ -2374,8 +2395,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // handle "end method"
                 if (state.currentMethod !== undefined && prevTokenLower === "end" && currentLower === "method") {
-                    state.currentMethod.endLine = lineNumber;
-                    state.currentMethod.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentMethod.rangeEndLine = lineNumber;
+                    state.currentMethod.rangeEndColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
 
                     state.currentMethod = undefined;
                     state.pickFields = false;
@@ -2386,23 +2407,23 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (state.programs.length !== 0 && prevTokenLower === "end" && currentLower === "program") {
                     const currentProgram: COBOLToken | undefined = state.programs.pop();
                     if (currentProgram !== undefined) {
-                        currentProgram.endLine = lineNumber;
-                        currentProgram.endColumn = line.length;
+                        currentProgram.rangeEndLine = lineNumber;
+                        currentProgram.rangeEndColumn = line.length;
                     }
 
                     if (state.currentDivision !== undefined) {
-                        state.currentDivision.endLine = lineNumber;
-                        state.currentDivision.endColumn = line.length;
+                        state.currentDivision.rangeEndLine = lineNumber;
+                        state.currentDivision.rangeEndColumn = line.length;
                     }
 
                     if (state.currentSection !== undefined) {
-                        state.currentSection.endLine = lineNumber;
-                        state.currentSection.endColumn = line.length;
+                        state.currentSection.rangeEndLine = lineNumber;
+                        state.currentSection.rangeEndColumn = line.length;
                     }
 
                     if (state.currentParagraph !== undefined) {
-                        state.currentParagraph.endLine = lineNumber;
-                        state.currentParagraph.endColumn = line.length;
+                        state.currentParagraph.rangeEndLine = lineNumber;
+                        state.currentParagraph.rangeEndColumn = line.length;
                     }
 
                     state.currentDivision = undefined;
@@ -2415,20 +2436,20 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // handle "end function"
                 if (state.currentFunctionId !== undefined && prevTokenLower === "end" && currentLower === "function") {
-                    state.currentFunctionId.endLine = lineNumber;
-                    state.currentFunctionId.endColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
+                    state.currentFunctionId.rangeEndLine = lineNumber;
+                    state.currentFunctionId.rangeEndColumn = line.toLowerCase().indexOf(currentLower) + currentLower.length;
                     this.newCOBOLToken(COBOLTokenStyle.EndFunctionId, lineNumber, line, currentCol, prevToken, current, state.currentDivision);
 
                     state.pickFields = false;
                     state.inProcedureDivision = false;
 
                     if (state.currentDivision !== undefined) {
-                        state.currentDivision.endLine = lineNumber;
+                        state.currentDivision.rangeEndLine = lineNumber;
                         // state.currentDivision.endColumn = 0;
                     }
 
                     if (state.currentSection !== undefined) {
-                        state.currentSection.endLine = lineNumber;
+                        state.currentSection.rangeEndLine = lineNumber;
                         // state.currentSection.endColumn = 0;
                     }
                     state.currentDivision = undefined;
@@ -2569,8 +2590,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                                 // place the 88 under the 01 item
                                 if (state.currentLevel !== undefined && prevToken === "88") {
-                                    state.currentLevel.endLine = ctoken.startLine;
-                                    state.currentLevel.endColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                    state.currentLevel.rangeEndLine = ctoken.startLine;
+                                    state.currentLevel.rangeEndColumn = ctoken.startColumn + ctoken.tokenName.length;
                                 }
 
                                 if (prevToken !== "88") {
@@ -2589,8 +2610,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 }
 
                                 if (state.current01Group !== undefined) {
-                                    state.current01Group.endLine = ctoken.startLine;
-                                    state.current01Group.endColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                    state.current01Group.rangeEndLine = ctoken.startLine;
+                                    state.current01Group.rangeEndColumn = ctoken.startColumn + ctoken.tokenName.length;
                                 }
 
                                 /* if spans multiple lines, skip to dot */
@@ -2819,8 +2840,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, copyVerb + " " + copyBook, insertInSection);
         }
 
-        copyToken.endLine = cbInfo.endLineNumber;
-        copyToken.endColumn = cbInfo.endCol;
+        copyToken.rangeEndLine = cbInfo.endLineNumber;
+        copyToken.rangeEndColumn = cbInfo.endCol;
 
         state.inCopy = false;
 

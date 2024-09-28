@@ -196,8 +196,8 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
         for (const token of sf.tokensInOrder) {
             try {
                 if (token.ignoreInOutlineView === false) {
-                    const srange = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
-                        new vscode.Position(token.endLine, token.endColumn));
+                    const srange = new vscode.Range(new vscode.Position(token.rangeStartLine, token.rangeStartColumn),
+                        new vscode.Position(token.rangeEndLine, token.rangeEndColumn));
 
                     const lrange = new vscode.Location(ownerUri, srange);
 

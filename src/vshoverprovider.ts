@@ -164,8 +164,8 @@ ${cleanCode}
             if (sqlToken !== undefined) {
                 const token = sqlToken.token;
                 if (token !== undefined && token.startLine !== position.line) {
-                    let sc = token.startLine === token.endLine ? token.startColumn : 0;
-                    let lines = token.sourceHandler.getText(token.startLine, sc, token.endLine, token.endColumn);
+                    let sc = token.rangeStartLine === token.rangeEndLine ? token.rangeStartColumn : 0;
+                    let lines = token.sourceHandler.getText(token.rangeStartLine, sc, token.rangeEndLine, token.rangeEndColumn);
                     if (lines !== undefined) {
                         let newHoverMessage = lines.trimEnd();
                         let sqldeclareComment = token.sourceHandler.getCommentAtLine(token.startLine);

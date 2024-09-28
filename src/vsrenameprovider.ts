@@ -57,8 +57,8 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                     const paraToken = paraVariables[ptref].token;
                     const uri: vscode.Uri = vscode.Uri.parse(paraToken.filenameAsURI);
 
-                    const startPos = new vscode.Position(paraToken.startLine, paraToken.startColumn);
-                    const endPos = new vscode.Position(paraToken.startLine, paraToken.endColumn);
+                    const startPos = new vscode.Position(paraToken.rangeStartLine, paraToken.rangeStartColumn);
+                    const endPos = new vscode.Position(paraToken.rangeStartLine, paraToken.rangeEndColumn);
                     const range = new vscode.Range(startPos, endPos);
                     edits.delete(uri, range);
                     edits.insert(uri, startPos, newName);
@@ -102,10 +102,10 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
             const sqlDeclare = qp.execSQLDeclare.get(workLower);
             if (sqlDeclare && sqlDeclare.sourceReferences.length > 0 ) {
                 const sqldefToken = sqlDeclare.token;
-                const sqldefText = sqldefToken.sourceHandler.getText(sqldefToken.startLine, sqldefToken.startColumn, sqldefToken.endLine, sqldefToken.endColumn).replace(word,newName);
+                const sqldefText = sqldefToken.sourceHandler.getText(sqldefToken.rangeStartLine, sqldefToken.rangeStartColumn, sqldefToken.rangeEndLine, sqldefToken.rangeEndColumn).replace(word,newName);
                 const uriDef = vscode.Uri.parse(sqldefToken.filenameAsURI);
-                const startPosDef = new vscode.Position(sqldefToken.startLine, sqldefToken.startColumn);
-                const endPosDef = new vscode.Position(sqldefToken.endLine, sqldefToken.endColumn);
+                const startPosDef = new vscode.Position(sqldefToken.rangeStartLine, sqldefToken.rangeStartColumn);
+                const endPosDef = new vscode.Position(sqldefToken.rangeEndLine, sqldefToken.rangeEndColumn);
                 const rangeDef = new vscode.Range(startPosDef, endPosDef);
                 edits.delete(uriDef, rangeDef);
                 edits.insert(uriDef, startPosDef, sqldefText);

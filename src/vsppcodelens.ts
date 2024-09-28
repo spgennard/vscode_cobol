@@ -30,8 +30,8 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
         const refs = current.sourceReferences.targetReferences.get(target);
         if (refs !== undefined && refs.length >= this.settings.enable_codelens_section_paragraph_references_threshold) {
-            const r = new vscode.Range(new vscode.Position(targetToken.startLine, targetToken.startColumn),
-                new vscode.Position(targetToken.endLine, targetToken.endColumn));
+            const r = new vscode.Range(new vscode.Position(targetToken.rangeStartLine, targetToken.rangeStartColumn),
+                new vscode.Position(targetToken.rangeEndLine, targetToken.rangeEndColumn));
 
             const cl = new vscode.CodeLens(r);
             cl.command = {
@@ -39,7 +39,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                 tooltip: `${target} referenced ${refs.length} `,
                 command: "editor.action.findReferences",
                 arguments: [
-                    document.uri, new vscode.Position(targetToken.startLine, targetToken.startColumn)
+                    document.uri, new vscode.Position(targetToken.rangeStartLine, targetToken.rangeStartColumn)
                 ]
             };
 
@@ -75,8 +75,8 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         const refCount = tupRefs[1];
                         const refCounts = defCount+refCount;
                         const refCountMsg = refCounts === 1 ? `${refCounts} reference` : `${refCounts} references`;
-                        const r = new vscode.Range(new vscode.Position(currentToken.startLine, currentToken.startColumn),
-                            new vscode.Position(currentToken.endLine, currentToken.endColumn));
+                        const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),
+                            new vscode.Position(currentToken.rangeEndLine, currentToken.rangeEndColumn));
 
                         const cl = new vscode.CodeLens(r);
                         cl.command = {

@@ -266,7 +266,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 if (line.length > 7 && line[6] === " ") {
                     const possibleKeyword = line.substring(0, 6).trim();
                     if (this.isValidKeyword(possibleKeyword) === false) {
-                        line = "       " + line.substring(6);
+                        line = "      " + line.substring(6);
                     }
                 }
             }

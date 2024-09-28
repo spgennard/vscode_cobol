@@ -96,8 +96,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             if (sf.sections.has(wordLower)) {
                 const token = sf.sections.get(wordLower);
                 if (token !== undefined) {
-                    const spos = new vscode.Position(token.startLine, token.startColumn);
-                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const spos = new vscode.Position(token.rangeStartLine, token.rangeStartColumn);
+                    const rpos = new vscode.Position(token.rangeEndLine, token.rangeEndColumn);
                     const trange = new vscode.Range(spos, rpos);
                     const uri = vscode.Uri.parse(token.filenameAsURI);
                     return new vscode.Location(uri, trange);
@@ -113,8 +113,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             if (sf.paragraphs.has(wordLower)) {
                 const token = sf.paragraphs.get(wordLower);
                 if (token !== undefined) {
-                    const spos = new vscode.Position(token.startLine, token.startColumn);
-                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const spos = new vscode.Position(token.rangeStartLine, token.rangeStartColumn);
+                    const rpos = new vscode.Position(token.rangeEndLine, token.rangeEndColumn);
                     const trange = new vscode.Range(spos, rpos);
                     const uri = vscode.Uri.parse(token.filenameAsURI);
                     return new vscode.Location(uri, trange);
@@ -142,8 +142,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 const sd = sf.execSQLDeclare.get(wordLower);
                 if (sd !== undefined) {
                     const token = sd.token;
-                    const spos = new vscode.Position(token.startLine, token.startColumn);
-                    const rpos = new vscode.Position(token.endLine, token.endColumn);
+                    const spos = new vscode.Position(token.rangeStartLine, token.rangeStartColumn);
+                    const rpos = new vscode.Position(token.rangeEndLine, token.rangeEndColumn);
                     const trange = new vscode.Range(spos, rpos);
                     const uri = vscode.Uri.parse(token.filenameAsURI);
                     return new vscode.Location(uri, trange);
@@ -186,8 +186,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
                 continue;
             }
 
-            const spos = new vscode.Position(token.startLine, token.startColumn);
-            const rpos = new vscode.Position(token.endLine, token.endColumn);
+            const spos = new vscode.Position(token.rangeStartLine, token.rangeStartColumn);
+            const rpos = new vscode.Position(token.rangeEndLine, token.rangeEndColumn);
             const trange = new vscode.Range(spos, rpos);
             const uri = vscode.Uri.parse(token.filenameAsURI);
             switch (token.tokenType) {
@@ -231,8 +231,8 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         if (tokenMap.has(workLower)) {
             const token: COBOLToken | undefined = tokenMap.get(workLower);
             if (token !== undefined) {
-                const spos = new vscode.Position(token.startLine, token.startColumn);
-                const rpos = new vscode.Position(token.endLine, token.endColumn);
+                const spos = new vscode.Position(token.rangeStartLine, token.rangeStartColumn);
+                const rpos = new vscode.Position(token.rangeEndLine, token.rangeEndColumn);
                 const trange = new vscode.Range(spos, rpos);
                 const uri = vscode.Uri.parse(token.filenameAsURI);
                 return new vscode.Location(uri, trange);
