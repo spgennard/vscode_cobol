@@ -1740,7 +1740,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private parseLineByLine(lineNumber: number, prevToken: StreamTokens, line: string): StreamTokens {
         const token = new StreamTokens(line, lineNumber, prevToken);
 
-        return this.processToken(lineNumber, token, line, this.sourceReferences.state.replaceMap.size !== 0);
+        const state = this.sourceReferences.state;
+        let stream = this.processToken(lineNumber, token, line, state.replaceMap.size !== 0);
+
+        // update current group to always include the end of current line
+        if (state.current01Group !== undefined && line.length !== 0) {
+            state.current01Group.rangeEndLine = lineNumber;
+            state.current01Group.rangeEndColumn = line.length;
+        }
+
+        return stream;
     }
 
     private processToken(lineNumber: number, token: StreamTokens, line: string, replaceOn: boolean): StreamTokens {
