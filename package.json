@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "24.9.26",
+  "version": "24.9.29",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
