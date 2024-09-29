@@ -30,9 +30,9 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
-    private readonly lineRegExFilter: RegExp|undefined;
+    private readonly lineRegExFilter: RegExp | undefined;
 
-    public constructor(regEx: RegExp|undefined, document: string, features: IExternalFeatures) {
+    public constructor(regEx: RegExp | undefined, document: string, features: IExternalFeatures) {
         this.lineRegExFilter = regEx;
         this.document = document;
         this.dumpNumbersInAreaA = false;
@@ -56,20 +56,25 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         const startTime = features.performance_now();
         try {
             const liner = new lineByLine(document, { readChunk: docChunkSize });
-            while ((line = liner.next())) {
-                const l = line.toString();
-                if (this.lineRegExFilter !== undefined) {
-                    if (this.lineRegExFilter.test(l) === false) {
-                        this.lines.push(l);    
+            if (this.lineRegExFilter !== undefined) {
+                while ((line = liner.next())) {
+                    const l = line.toString();
+                    if (this.lineRegExFilter.test(l)) {
+                        this.lines.push(l);
+                    } else {
+                        // keep line position
+                        this.lines.push("");
                     }
-                 } else {
-                    this.lines.push(l);
+                }
+            } else {
+                while ((line = liner.next())) {
+                     this.lines.push(line.toString());
                 }
             }
             features.logTimedMessage(features.performance_now() - startTime, " - Loading File " + document);
         }
         catch (e) {
-            features.logException("File failed! (" + document + ")", e as Error);
+            features.logException("File load failed! (" + document + ")", e as Error);
         }
     }
 
@@ -79,7 +84,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     private sendCommentCallback(line: string, lineNumber: number, startPos: number, format: ESourceFormat) {
-           if (this.commentsIndex.has(lineNumber) === false) {
+        if (this.commentsIndex.has(lineNumber) === false) {
             let isInline = false;
             let l = line.substring(startPos).trimStart();
             if (l.startsWith("*>")) {
@@ -99,7 +104,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 this.commentsIndexInline.set(lineNumber, isInline);
             }
         }
-   
+
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
                 commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
@@ -349,7 +354,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
         let fl = fl_r.substring(startColumn);
         let lines = (endLine - startLine) - 1;
-        let lc = startLine+1;
+        let lc = startLine + 1;
         while (lines-- >= 0) {
             fl_r = this.getLine(lc, true);
             if (fl_r === undefined) {
