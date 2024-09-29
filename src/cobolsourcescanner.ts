@@ -77,7 +77,7 @@ export class COBOLToken {
     public readonly filenameAsURI: string;
     public readonly filename: string;
     public readonly tokenType: COBOLTokenStyle;
-    
+
     public readonly startLine: number;
     public readonly startColumn: number;
     public readonly endLine: number;
@@ -103,12 +103,12 @@ export class COBOLToken {
 
     public constructor(
         sourceHandler: ISourceHandler,
-        filenameAsURI: string, filename: string, 
-        tokenType: COBOLTokenStyle, 
-        startLine: number, startColumn: number, token: 
-        string, description: string,
-        parentToken: COBOLToken | undefined, 
-        inProcedureDivision: boolean, 
+        filenameAsURI: string, filename: string,
+        tokenType: COBOLTokenStyle,
+        startLine: number, startColumn: number, token:
+            string, description: string,
+        parentToken: COBOLToken | undefined,
+        inProcedureDivision: boolean,
         extraInformation1: string,
         isTokenFromSourceDependancyCopyBook: boolean) {
 
@@ -120,9 +120,6 @@ export class COBOLToken {
         this.startLine = startLine;
         this.startColumn = startColumn;
         this.endLine = this.startLine;
-        if (token.trim() === "jim") {
-            this.tokenName = "odd";
-        }
         this.tokenName = token.trim();
         this.tokenNameLower = this.tokenName.toLowerCase();
         this.endColumn = this.startColumn + this.tokenName.length;
@@ -261,7 +258,7 @@ class StreamTokens {
             const currentTokenLower = currentToken.toLowerCase();
 
             rollingColumn = line.indexOf(currentToken, rollingColumn);
-            
+
             const endsWithDot = currentToken.length === 0 ? false : currentToken.charAt(currentToken.length - 1) === ".";
             this.stokens.push(new StreamToken(currentToken, currentTokenLower, endsWithDot, lineNumber, rollingColumn));
             rollingColumn += currentToken.length;
@@ -1757,7 +1754,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (_tcurrent.length === 0) {
                     continue;
                 }
-                
+
                 // if skip to end lsp
                 if (state.skipToEndLsIgnore) {
                     continue;
@@ -1809,7 +1806,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
                 }
 
-                
+
                 // HACK for "set x to entry"
                 if (token.prevTokenLower === "to" && token.currentTokenLower === "entry") {
                     token.moveToNextToken();
@@ -1832,7 +1829,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const currentCol = token.currentCol;
                 const current: string = _tcurrent;
                 const currentLower: string = _tcurrent.toLowerCase();
- 
+
                 // if pickUpUsing
                 if (state.pickUpUsing) {
                     if (state.endsWithDot) {
@@ -2598,6 +2595,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     state.currentLevel = ctoken;
                                 }
 
+
+                                if (prevToken === "01" || prevToken === "1") {
+                                    // adjust group to include level number
+                                    if (ctoken.rangeStartColumn > prevCurrentCol) {
+                                        ctoken.rangeStartColumn = prevCurrentCol;
+                                    }
+                                }
+
                                 if (prevToken === "01" || prevToken === "1" ||
                                     prevToken === "66" || prevToken === "77" || prevToken === "78") {
                                     if (nextTokenLower.length === 0 ||
@@ -2610,8 +2615,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 }
 
                                 if (state.current01Group !== undefined) {
-                                    state.current01Group.rangeEndLine = ctoken.startLine;
-                                    state.current01Group.rangeEndColumn = ctoken.startColumn + ctoken.tokenName.length;
+                                    state.current01Group.rangeEndLine = ctoken.rangeStartLine;
+                                    state.current01Group.rangeEndColumn = ctoken.rangeEndColumn;
                                 }
 
                                 /* if spans multiple lines, skip to dot */
@@ -2904,17 +2909,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             const commentCommandArgs = commentLine.substring(startOfTokenFor.length + startOfSourceDepIndex).trim();
             const args = commentCommandArgs.split(" ");
             if (args.length !== 0) {
-                let possRegExe : RegExp|undefined = undefined;
+                let possRegExe: RegExp | undefined = undefined;
                 for (const offset in args) {
                     const filenameTrimmed = args[offset].trim();
                     if (filenameTrimmed.startsWith("/") && filenameTrimmed.endsWith("/")) {
-                        const regpart = filenameTrimmed.substring(1,filenameTrimmed.length-1);
+                        const regpart = filenameTrimmed.substring(1, filenameTrimmed.length - 1);
                         try {
-                            possRegExe = new RegExp(regpart,"i");
+                            possRegExe = new RegExp(regpart, "i");
                         }
-                        catch(ex) {
+                        catch (ex) {
                             this.generalWarnings.push(
-                                new COBOLFileSymbol(this.filename,sourceLineNumber,`${ex}`)
+                                new COBOLFileSymbol(this.filename, sourceLineNumber, `${ex}`)
                             )
                         }
                         continue;
@@ -2924,7 +2929,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
 
-                            const qfile = new FileSourceHandler(possRegExe,fileName, this.externalFeatures);
+                            const qfile = new FileSourceHandler(possRegExe, fileName, this.externalFeatures);
                             const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                             const currentTopLevel = this.sourceReferences.topLevel;
                             this.sourceReferences.state.ignoreInOutlineView = true;
@@ -2997,7 +3002,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const startOfBeginLS = commentLine.indexOf(this.configHandler.scan_comment_begin_ls_ignore);
                 if (startOfBeginLS !== -1) {
                     this.sourceReferences.state.skipToEndLsIgnore = true;
-                }                
+                }
             }
         }
     }
