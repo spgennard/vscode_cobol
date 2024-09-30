@@ -159,11 +159,11 @@ export class VSCOBOLConfiguration {
         
         settings.scan_comments_for_references = getBoolean("scan_comments_for_references", settings.scan_comments_for_references);
 
-        // settings.scan_comment_for_ls_control = getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
+        settings.scan_comment_for_ls_control = getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
 
-        // settings.scan_comment_begin_ls_ignore = getString("scan_comment_begin_ls_ignore", settings.scan_comment_begin_ls_ignore);
+        settings.scan_comment_begin_ls_ignore = getString("scan_comment_begin_ls_ignore", settings.scan_comment_begin_ls_ignore);
 
-        // settings.scan_comment_end_ls_ignore = getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
+        settings.scan_comment_end_ls_ignore = getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
 
         return settings;
     }
@@ -242,14 +242,14 @@ function getNumber(configSection: string, defaultValue: number): number {
     return lineLimit;
 }
 
-// function getString(configSection: string, defaultValue: string): string {
-//     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
-//     let expEnabled = editorConfig.get<string>(configSection);
-//     if (expEnabled === undefined || expEnabled === null) {
-//         expEnabled = defaultValue;
-//     }
-//     return expEnabled;
-// }
+function getString(configSection: string, defaultValue: string): string {
+    const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
+    let expEnabled = editorConfig.get<string>(configSection);
+    if (expEnabled === undefined || expEnabled === null) {
+        expEnabled = defaultValue;
+    }
+    return expEnabled;
+}
 
 function getPreScanLineLimit(): number {
     const editorConfig = workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);

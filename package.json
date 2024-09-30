@@ -210,7 +210,7 @@
         "coboleditor.scan_comment_for_ls_control": {
           "type": "boolean",
           "markdownDescription": "When 'enabled' comments are scanned for 'begin/end-ls-ignore' comment",
-          "default": true
+          "default": false
         },
         "coboleditor.scan_comment_begin_ls_ignore": {
           "type": "string",
