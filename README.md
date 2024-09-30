@@ -519,7 +519,7 @@ Useful tokens that are often changed are: comment.line.cobol.newpage, keyword.op
 
 ##  Usefull Source Code
 
-### [Rocket COBOL ported source code](https://github.com/spgennard/mfcobol-ports)
+### [Rocket COBOL ported source code](https://github.com/spgennard/rocket-cobol-ports)
 
 ## Complementary extensions
 
