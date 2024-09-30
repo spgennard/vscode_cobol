@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* a098a57 enable wip support for selective scanning
+* 66efdc2 update readme
+* 7396bcb fix a bug introduced with the rename variable support
+* adb2efa continue work source dep filtering
+
+## 24.9.29 
 * ce67694 ensure program range includes program-id and last section/para does not include "end program"
 * 5422872 update end of range for group item to last end known end of line
 * 6681c98 include "01" in a group in the range
