@@ -416,6 +416,12 @@ For example, if your preprocessor includes the files ```Shared/foo.cbl OldCopyBo
 
 The source-dependency names are separated by a space.
 
+Regular expression filtering can be achieved by using a filename that starts and ends with a "/", for example to only include lines that contain adecp+ from the file proc.cbl, you can do:
+
+```cobol
+*> @source-dependency /adecp+/ proc.cbl
+```
+
 To enable this feature enable the ```scan_comments_for_hints``` setting, for example:
 
 ```json
