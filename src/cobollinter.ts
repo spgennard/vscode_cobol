@@ -342,6 +342,7 @@ export class CobolLinterProvider {
                         }
                         ruleRegexMap.set(token.inSection.tokenNameLower, regexForRule);
                     }
+                    
                     if (regexForRule.test(token.tokenName) === false) {
                         const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));

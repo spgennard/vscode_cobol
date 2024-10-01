@@ -47,6 +47,7 @@ export enum COBOLTokenStyle {
     Region = "Region",
     SQLCursor = "SQLCursor",
     Unknown = "Unknown",
+    IgnoreLS = "IgnoreLS",
     Null = "Null"
 }
 
@@ -1387,6 +1388,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return ctoken;
         }
 
+        // new ignore 
+        if (tokenType === COBOLTokenStyle.IgnoreLS) {
+            this.tokensInOrderPush(ctoken, false);
+            return ctoken;
+        }
+  
         this.tokensInOrderPush(ctoken, true);
 
         return ctoken;
@@ -2977,6 +2984,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
+    private lastCOBOLLS: COBOLToken|undefined = undefined;
+
     public processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
         this.sourceReferences.state.currentLineIsComment = true;
 
@@ -3007,11 +3016,18 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const startOfEndLs = commentLine.indexOf(this.configHandler.scan_comment_end_ls_ignore);
                 if (startOfEndLs !== -1) {
                     this.sourceReferences.state.skipToEndLsIgnore = false;
+                    if (this.lastCOBOLLS !== undefined) {
+                        this.lastCOBOLLS.rangeEndLine = sourceLineNumber;
+                        this.lastCOBOLLS.rangeEndColumn = startOfEndLs+this.configHandler.scan_comment_begin_ls_ignore.length;
+                        this.lastCOBOLLS = undefined;
+                    }
                 }
             } else {
                 const startOfBeginLS = commentLine.indexOf(this.configHandler.scan_comment_begin_ls_ignore);
                 if (startOfBeginLS !== -1) {
                     this.sourceReferences.state.skipToEndLsIgnore = true;
+                    this.lastCOBOLLS = this.newCOBOLToken(COBOLTokenStyle.IgnoreLS,sourceLineNumber, commentLine, startOfBeginLS, this.configHandler.scan_comment_begin_ls_ignore,"Ignore Source",undefined,"");
+                    this.lastCOBOLLS.rangeStartColumn = startPos;
                 }
             }
         }

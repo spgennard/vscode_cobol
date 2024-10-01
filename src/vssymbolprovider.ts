@@ -248,6 +248,9 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
                         case COBOLTokenStyle.ValueTypeId:
                             symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Struct, container, lrange));
                             break;
+                        case COBOLTokenStyle.IgnoreLS:
+                            symbols.push(new vscode.SymbolInformation(token.description, vscode.SymbolKind.Null, container, lrange));
+                            break;
                         case COBOLTokenStyle.Variable:
                             if (includeVars === false) {
                                 break;
