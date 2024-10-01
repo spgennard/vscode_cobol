@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 8f4526b add ignore section as "null" into the outline view
+* e57dbfd rename link
+
+## 24.9.30 
 * a098a57 enable wip support for selective scanning
 * 66efdc2 update readme
 * 7396bcb fix a bug introduced with the rename variable support
