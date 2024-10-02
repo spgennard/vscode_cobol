@@ -451,6 +451,7 @@ export class SharedSourceReferences {
     public readonly targetReferences: Map<string, SourceReference_Via_Length[]>;
     public readonly constantsOrVariablesReferences: Map<string, SourceReference_Via_Length[]>;
     public readonly unknownReferences: Map<string, SourceReference_Via_Length[]>;
+    public readonly ignoreLSRanges: SourceReference[];
 
     public readonly sharedConstantsOrVariables: Map<string, COBOLVariable[]>;
     public readonly sharedSections: Map<string, COBOLToken>;
@@ -483,6 +484,7 @@ export class SharedSourceReferences {
         this.topLevel = topLevel;
         this.startTime = startTime;
         this.ignoreUnusedSymbol = new Map<string, string>();
+        this.ignoreLSRanges = [];
     }
 
     public reset(configHandler: ICOBOLSettings) {
@@ -1773,6 +1775,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 // if skip to end lsp
                 if (state.skipToEndLsIgnore) {
+                    // add skipped token into sourceref range to colour as a comment
+                    if (this.configHandler.enable_semantic_token_provider) {
+                        const sr = new SourceReference(this.sourceFileId, token.currentLineNumber, token.currentCol, token.currentLineNumber, token.currentCol+token.currentToken.length, COBOLTokenStyle.IgnoreLS);
+                        this.sourceReferences.ignoreLSRanges.push(sr);
+                    }
+
                     continue;
                 }
 
@@ -2824,7 +2832,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 if (execWordLower === refExecSQLDeclareNameLower) {
                     currentColumn = line.toLowerCase().indexOf(execWordLower);
                     const sr = new SourceReference(fileid, currentLine, currentColumn, currentLine, currentColumn + execWord.length, COBOLTokenStyle.SQLCursor);
-
                     sqldeclare.sourceReferences.push(sr);
                 }
             }
@@ -3019,6 +3026,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (this.lastCOBOLLS !== undefined) {
                         this.lastCOBOLLS.rangeEndLine = sourceLineNumber;
                         this.lastCOBOLLS.rangeEndColumn = startOfEndLs+this.configHandler.scan_comment_begin_ls_ignore.length;
+
                         this.lastCOBOLLS = undefined;
                     }
                 }

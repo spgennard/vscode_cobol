@@ -5,8 +5,8 @@ import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 
-const tokenTypes = ["label", "variable", "function"];
-const tokenModifiers = ["declaration", "readonly"];
+const tokenTypes = ["label", "variable", "function", "comment"];
+const tokenModifiers = ["declaration", "readonly", "deprecated"];
 
 const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
 
@@ -48,13 +48,14 @@ export class VSSemanticProvider {
                             new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.line, sourceRef.column + sourceRef.length)),
                             "function"
                         );
-                        
+
                     }
                 }
             } catch (e) {
                 VSLogger.logException("SemanticProvider: targetReferences", e as Error);
             }
         }
+
         for (const [, sourceRefs] of qcp.sourceReferences.constantsOrVariablesReferences) {
             //
             for (const sourceRef of sourceRefs) {
@@ -71,6 +72,22 @@ export class VSSemanticProvider {
                 } catch (e) {
                     VSLogger.logException("SemanticProvider: sourceRefs", e as Error);
                 }
+            }
+        }
+
+        for (const sourceRef of qcp.sourceReferences.ignoreLSRanges) {
+            //
+            try {
+                if (sourceRef.fileIdentifer === fid) {
+                    tokensBuilder.push(
+                        new vscode.Range(new vscode.Position(sourceRef.line, sourceRef.column), new vscode.Position(sourceRef.endLine, sourceRef.endColumn)),
+                        "comment",
+                        ["deprecated"]
+                    );
+
+                }
+            } catch (e) {
+                VSLogger.logException("SemanticProvider: sourceRefs", e as Error);
             }
         }
 
