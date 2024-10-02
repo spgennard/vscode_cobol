@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* b0384ff add ignore ls on/off to semantic scanner, so it can be marked as comment
+
+## 24.10.1 
 * 8f4526b add ignore section as "null" into the outline view
 * e57dbfd rename link
 
