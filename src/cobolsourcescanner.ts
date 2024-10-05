@@ -1209,11 +1209,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
 
-            // if (this.sourceReferences.state.skipToEndLsIgnore) {
-            //     const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
-            //     this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, this.sourceReferences.state.startLineOfSkipToEndToken, trimmedCopyBook));
-            // }
-            // console.log(`DEBUG: unprocessed : ${unknown.length}, p=${pcount},v=${vcount},s=${scount}`);
+            if (this.sourceReferences.state.skipToEndLsIgnore) {
+                if (this.lastCOBOLLS !== undefined) {
+                    const diagMessage = `Missing ${configHandler.scan_comment_end_ls_ignore}`;
+                    this.generalWarnings.push(new COBOLFileSymbol(this.filename, this.lastCOBOLLS.startLine, diagMessage));
+                    while (this.sourceReferences.ignoreLSRanges.pop() !== undefined) ;
+                }
+            }
             this.sourceReferences.unknownReferences.clear();
             this.eventHandler.finish();
         }
