@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* f55e831 add message about missing 'ignore ls'
+
+## 24.10.2 
 * b0384ff add ignore ls on/off to semantic scanner, so it can be marked as comment
 
 ## 24.10.1 
