@@ -129,7 +129,7 @@ export function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolea
 
 export async function setMicroFocusSuppressFileAssociationsPrompt(settings: ICOBOLSettings, onOrOff: boolean) {
     // is it disabled?
-    if (settings.enable_microfocus_lsp_when_active === false) {
+    if (settings.enable_rocket_cobol_lsp_when_active === false) {
         return;
     }
 
@@ -144,7 +144,7 @@ export async function setMicroFocusSuppressFileAssociationsPrompt(settings: ICOB
 
 export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vscode.TextDocument, onOrOff: boolean): Promise<void> {
     // is it disabled?
-    if (settings.enable_microfocus_lsp_when_active === false) {
+    if (settings.enable_rocket_cobol_lsp_when_active === false) {
         return;
     }
 
@@ -219,7 +219,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         await toggleMicroFocusLSP(settings, act.document, true);
 
         // invoke 'Micro Focus LSP Control'
-        if (settings.enable_microfocus_lsp_lang_server_control) {
+        if (settings.enable_rocket_cobol_lsp_lang_server_control) {
             vscode.commands.executeCommand("mfcobol.languageServer.controls");
         }
     }));
@@ -492,11 +492,11 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
-        newFile("COBOL program name?", "coboleditor.template_microfocus", "COBOL");
+        newFile("COBOL program name?", "coboleditor.template_rocket_cobol", "COBOL");
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus_mfunit", async function () {
-        newFile("COBOL Unit Test program name?", "coboleditor.template_microfocus_mfunit", "COBOL");
+        newFile("COBOL Unit Test program name?", "coboleditor.template_rocket_cobol_mfunit", "COBOL");
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_ACUCOBOL", async function () {

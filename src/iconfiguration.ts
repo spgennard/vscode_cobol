@@ -155,9 +155,9 @@ export interface ICOBOLSettings {
 
     enable_tabstops_anchors:boolean;
 
-    enable_microfocus_lsp_when_active: boolean;
+    enable_rocket_cobol_lsp_when_active: boolean;
 
-    enable_microfocus_lsp_lang_server_control : boolean;
+    enable_rocket_cobol_lsp_lang_server_control : boolean;
 
     enable_exec_sql_cursors: boolean;
 
@@ -287,9 +287,9 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_tabstops_anchors: boolean;
     
-    enable_microfocus_lsp_when_active:boolean;
+    enable_rocket_cobol_lsp_when_active:boolean;
 
-    enable_microfocus_lsp_lang_server_control: boolean;
+    enable_rocket_cobol_lsp_lang_server_control: boolean;
     
     enable_exec_sql_cursors:boolean;
 
@@ -398,8 +398,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.out_of_range_tabstop_size = 4;
         this.anchor_tabstops = [];
         this.enable_tabstops_anchors = true;
-        this.enable_microfocus_lsp_when_active = true;
-        this.enable_microfocus_lsp_lang_server_control = true;
+        this.enable_rocket_cobol_lsp_when_active = true;
+        this.enable_rocket_cobol_lsp_lang_server_control = true;
         this.enable_exec_sql_cursors = true;
         this.scan_comments_for_references = false;
 

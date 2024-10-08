@@ -151,9 +151,9 @@ export class VSCOBOLConfiguration {
         
         settings.enable_tabstops_anchors = getBoolean("enable_tabstops_anchors",settings.enable_tabstops_anchors);
         
-        settings.enable_microfocus_lsp_when_active = getBoolean("enable_microfocus_lsp_when_active", settings.enable_microfocus_lsp_when_active);
+        settings.enable_rocket_cobol_lsp_when_active = getBoolean("enable_rocket_cobol_lsp_when_active", settings.enable_rocket_cobol_lsp_when_active);
         
-        settings.enable_microfocus_lsp_lang_server_control = getBoolean("enable_microfocus_lsp_lang_server_control", settings.enable_microfocus_lsp_lang_server_control);
+        settings.enable_rocket_cobol_lsp_lang_server_control = getBoolean("enable_rocket_cobol_lsp_lang_server_control", settings.enable_rocket_cobol_lsp_lang_server_control);
 
         settings.enable_exec_sql_cursors = getBoolean("enable_exec_sql_cursors", settings.enable_exec_sql_cursors);
         
