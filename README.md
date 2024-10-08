@@ -692,9 +692,3 @@ Or use an file extension, which will ensure you have the right document language
 I would like to thank the follow contributors for providing patches, fixes, kind words of wisdom and enhancements.
 
 - Ted John of Berkshire, UK
-
- Contributions originally provided for this that have now been moved into the GnuCOBOL extension where provided by:
-
-- Kevin Abel of Lincoln, NE, USA
-- Simon Sobisch of Germany
-
