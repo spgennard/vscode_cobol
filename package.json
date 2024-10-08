@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "24.10.5",
+  "version": "24.10.8",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -187,12 +187,12 @@
           "markdownDescription": "Enable tabstop anchors",
           "default": false
         },
-        "coboleditor.enable_microfocus_lsp_when_active": {
+        "coboleditor.enable_rocket_cobol_lsp_when_active": {
           "type": "boolean",
           "markdownDescription": "Enable 'Micro Focus COBOL Extensions LSP' when active",
           "default": true
         },
-        "coboleditor.enable_microfocus_lsp_lang_server_control": {
+        "coboleditor.enable_rocket_cobol_lsp_lang_server_control": {
           "type": "boolean",
           "markdownDescription": "Invoke 'Micro Focus COBOL LSP Server Control' when switching to Micro Focus language",
           "default": true
@@ -1102,7 +1102,7 @@
           "description": "When enabled, process coboleditor.fileformat before scanning the file",
           "default": true
         },
-        "coboleditor.template_microfocus": {
+        "coboleditor.template_rocket_cobol": {
           "type": "array",
           "items": {
             "type": "string"
@@ -1126,7 +1126,7 @@
           ],
           "description": "Template for a minimum 'Micro Focus' COBOL program"
         },
-        "coboleditor.template_microfocus_mfunit": {
+        "coboleditor.template_rocket_cobol_mfunit": {
           "type": "array",
           "items": {
             "type": "string"
