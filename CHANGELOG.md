@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* b19c5d8 gnucobol is no-more
+
+## 24.10.5 
 * f55e831 add message about missing 'ignore ls'
 
 ## 24.10.2 
