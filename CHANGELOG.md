@@ -1,5 +1,8 @@
 # CHANGELOG
 
+
+## 24.10.8, origin/main, origin/HEAD move with the times and drop micro focus if we are not talk about the dialect.. let the Rocketeers rule
+* abab92a Update
 * b19c5d8 gnucobol is no-more
 
 ## 24.10.5 
