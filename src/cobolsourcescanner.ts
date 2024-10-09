@@ -1176,7 +1176,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             for (const [sql_declare_name, sql_declare] of this.execSQLDeclare) {
                 for (const refExecToken of this.execTokensInOrder) {
                     const fileid = this.sourceReferences.getSourceFieldId(refExecToken.filename);
-                    const text = refExecToken.sourceHandler.getText(refExecToken.startLine, refExecToken.startColumn, refExecToken.endLine, refExecToken.endColumn);
+                    const text = refExecToken.sourceHandler.getText(refExecToken.rangeStartLine, refExecToken.rangeStartColumn, refExecToken.rangeEndLine, refExecToken.rangeEndColumn);
                     this.parseSQLDeclareForReferences(fileid, sql_declare_name, refExecToken, text, sql_declare);
                 }
             }
@@ -1273,6 +1273,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (this.isValidKeyword(symbol)) {
             return;
         }
+        
         const refList = transferReferenceMap.get(symbol);
         if (refList !== undefined) {
             for (const sourceRef of symbolRefs) {
@@ -2105,8 +2106,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             this.execTokensInOrder.push(this.currentExecToken);  // remember token
                         }
 
-                        const text = this.currentExecToken.sourceHandler.getText(this.currentExecToken.startLine, this.currentExecToken.startColumn, this.currentExecToken.endLine, this.currentExecToken.endColumn);
                         if (this.configHandler.enable_exec_sql_cursors) {
+                            const text = this.currentExecToken.sourceHandler.getText(this.currentExecToken.rangeStartLine, this.currentExecToken.rangeStartColumn, this.currentExecToken.rangeEndLine, this.currentExecToken.rangeEndColumn);
                             this.parseExecStatement(this.currentExec, this.currentExecToken, text);
                         }
                     }

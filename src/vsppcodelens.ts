@@ -66,8 +66,9 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         }
 
                         const tupRefs = current.sourceReferences.getReferenceInformation(avar,currentToken.startLine, currentToken.startColumn);
+                        
                         // no references found
-                        if (tupRefs[1] === 0) {
+                        if (tupRefs[0] === 0 || tupRefs[1] === 0) {
                             continue;
                         }
 
