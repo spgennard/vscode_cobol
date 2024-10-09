@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 8ea2205 tweak exec sql only use source references if have something defined use source range for sql declare
 
-## 24.10.8, origin/main, origin/HEAD move with the times and drop micro focus if we are not talk about the dialect.. let the Rocketeers rule
+## 24.10.8 
+* ab9b2f3 move with the times and drop micro focus if we are not talk about the dialect.. let the Rocketeers rule
 * abab92a Update
 * b19c5d8 gnucobol is no-more
 
