@@ -80,7 +80,11 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         }
 
                         const refCount = tupRefs[1];
-                        const refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
+                        let refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
+                        if (vars.length !== 1) {
+                            refCountMsg = "View references";
+                        }
+                        
                         const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),
                             new vscode.Position(currentToken.rangeEndLine, currentToken.rangeEndColumn));
 
