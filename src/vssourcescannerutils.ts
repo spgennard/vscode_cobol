@@ -33,8 +33,8 @@ export class VSCOBOLSourceScannerTools {
 
     public static getExecTokem(sf: COBOLSourceScanner, position: Position): COBOLToken|undefined {
         for (const token of sf.execTokensInOrder) {
-            const p1 = new Position(token.startLine, token.startColumn);
-            const p2 = new Position(token.endLine, token.endColumn);
+            const p1 = new Position(token.rangeStartLine, token.rangeStartColumn);
+            const p2 = new Position(token.rangeEndLine, token.rangeEndColumn);
             const execPos = new Range(p1, p2);
             if (execPos.contains(position)) {
                 return token;
