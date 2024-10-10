@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* df730f5 tweak exec token range check
+
+## 24.10.9 
 * 8ea2205 tweak exec sql only use source references if have something defined use source range for sql declare
 
 ## 24.10.8 
