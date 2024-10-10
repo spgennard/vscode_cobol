@@ -22,21 +22,28 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
     }
 
     private scanTargetUse(document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
-
         // not interested
-        if (targetToken.isTokenFromSourceDependancyCopyBook) {
+        if (targetToken.isTokenFromSourceDependancyCopyBook || targetToken.ignoreInOutlineView) {
             return;
         }
 
         const refs = current.sourceReferences.targetReferences.get(target);
-        if (refs !== undefined && refs.length >= this.settings.enable_codelens_section_paragraph_references_threshold) {
+        if (refs !== undefined && this.settings.enable_codelens_section_paragraph_references) {
+            const tupRefs = current.sourceReferences.getReferenceInformation4targetRefs(target,targetToken.startLine, targetToken.startColumn);
+            
+            // no references found
+            if (tupRefs[0] === 0 || tupRefs[1] === 0) {
+                return;
+            }
+
+            const refCount = tupRefs[1];
+            const refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
             const r = new vscode.Range(new vscode.Position(targetToken.rangeStartLine, targetToken.rangeStartColumn),
-                new vscode.Position(targetToken.rangeEndLine, targetToken.rangeEndColumn));
+                                       new vscode.Position(targetToken.rangeEndLine, targetToken.rangeEndColumn));
 
             const cl = new vscode.CodeLens(r);
             cl.command = {
-                title: `${refs.length} references`,
-                tooltip: `${target} referenced ${refs.length} `,
+                title: `${refCountMsg}`,
                 command: "editor.action.findReferences",
                 arguments: [
                     document.uri, new vscode.Position(targetToken.rangeStartLine, targetToken.rangeStartColumn)
@@ -65,24 +72,21 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                             continue;
                         }
 
-                        const tupRefs = current.sourceReferences.getReferenceInformation(avar,currentToken.startLine, currentToken.startColumn);
+                        const tupRefs = current.sourceReferences.getReferenceInformation4variables(avar,currentToken.startLine, currentToken.startColumn);
                         
                         // no references found
                         if (tupRefs[0] === 0 || tupRefs[1] === 0) {
                             continue;
                         }
 
-                        const defCount = tupRefs[0];
                         const refCount = tupRefs[1];
-                        const refCounts = defCount+refCount;
-                        const refCountMsg = refCounts === 1 ? `${refCounts} reference` : `${refCounts} references`;
+                        const refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
                         const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),
                             new vscode.Position(currentToken.rangeEndLine, currentToken.rangeEndColumn));
 
                         const cl = new vscode.CodeLens(r);
                         cl.command = {
                             title: `${refCountMsg}`,
-                            tooltip: `${refCountMsg}`,
                             command: "editor.action.findReferences",
                             arguments: [
                                 document.uri, new vscode.Position(currentToken.startLine, currentToken.startColumn)

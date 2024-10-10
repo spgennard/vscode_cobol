@@ -514,10 +514,10 @@ export class SharedSourceReferences {
         return -1;
     }
 
-    public getReferenceInformation(variable: string, startLine: number, startColumn: number): [number, number] {
-        let defvars = this.constantsOrVariablesReferences.get(variable);
+    private getReferenceInformation4(refMap:Map<string, SourceReference_Via_Length[]>, variable: string, startLine: number, startColumn: number): [number, number] {
+        let defvars = refMap.get(variable);
         if (defvars === undefined) {
-            defvars = this.constantsOrVariablesReferences.get(variable.toLowerCase());
+            defvars = refMap.get(variable.toLowerCase());
         }
 
         if (defvars === undefined) {
@@ -538,6 +538,13 @@ export class SharedSourceReferences {
         return [definedCount, referencedCount];
     }
 
+    public getReferenceInformation4variables(variable: string, startLine: number, startColumn: number): [number, number] {
+        return this.getReferenceInformation4(this.constantsOrVariablesReferences, variable, startLine, startColumn);
+    }
+
+    public getReferenceInformation4targetRefs(variable: string, startLine: number, startColumn: number): [number, number] {
+        return this.getReferenceInformation4(this.targetReferences, variable, startLine, startColumn);
+    }
 }
 
 export enum UsingState {
@@ -1181,9 +1188,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
 
-            // setup references for unknown forward referencws-item1es
+            // setup references for unknown forward reference-items
             const unknown = [];
-            // console.log(`DEBUG: unknownReferences : ${this.sourceReferences.unknownReferences.size}`);
             for (const [strRef, sourceRefs] of this.sourceReferences.unknownReferences) {
                 const possibleTokens = this.constantsOrVariables.get(strRef);
                 if (possibleTokens !== undefined) {

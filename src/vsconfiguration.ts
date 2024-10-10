@@ -141,8 +141,6 @@ export class VSCOBOLConfiguration {
 
         settings.outline_max_depth = getNumber("outline_max_depth", settings.outline_max_depth);
 
-        settings.enable_codelens_section_paragraph_references_threshold = getNumber("enable_codelens_section_paragraph_references_threshold", settings.enable_codelens_section_paragraph_references_threshold);
-
         settings.hover_show_variable_definition = getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
         settings.out_of_range_tabstop_size = getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);

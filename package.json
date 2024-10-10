@@ -1212,11 +1212,6 @@
           "description": "When enabled, turn on codelens for variable references",
           "default": true
         },
-        "coboleditor.enable_codelens_section_paragraph_references_threshold": {
-          "type": "number",
-          "description": "When enable_codelens_variable_references is enabled provides minimum threshold",
-          "default": 2
-        },
         "coboleditor.enable_codelens_section_paragraph_references": {
           "type": "boolean",
           "description": "When enabled, turn on codelens for sections/paragraphs references",
