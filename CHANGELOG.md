@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 24.10.10, origin/main, origin/HEAD 
 * 42fb0a0 if a var is defined more than 1 time, then do not include any reference count information
 * ab97ead prep for tomorrow
 * 2dff575 remove threshold hack and scan source references map (inline with variable) handling
