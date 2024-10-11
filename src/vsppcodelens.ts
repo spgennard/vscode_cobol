@@ -23,13 +23,13 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
     private scanTargetUse(document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
         // not interested
-        if (targetToken.isTokenFromSourceDependancyCopyBook || targetToken.ignoreInOutlineView) {
+        if (targetToken.isTokenFromSourceDependancyCopyBook) {
             return;
         }
 
         const refs = current.sourceReferences.targetReferences.get(target);
         if (refs !== undefined && this.settings.enable_codelens_section_paragraph_references) {
-            const tupRefs = current.sourceReferences.getReferenceInformation4targetRefs(target,targetToken.startLine, targetToken.startColumn);
+            const tupRefs = current.sourceReferences.getReferenceInformation4targetRefs(target, current.sourceFileId, targetToken.startLine, targetToken.startColumn);
             
             // no references found
             if (tupRefs[0] === 0 || tupRefs[1] === 0) {
@@ -62,17 +62,19 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             return lens;
         }
 
+        const sourceFileId = current.sourceFileId;
+
         // if codelens for variables enabled?
         if (this.settings.enable_codelens_variable_references) {
             if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
                 for (const [avar, vars] of current.constantsOrVariables) {
                     for (const currentVar of vars) {
                         const currentToken = currentVar.token;
-                        if (currentToken.isTokenFromSourceDependancyCopyBook || currentToken.ignoreInOutlineView) {
+                        if (currentToken.isTokenFromSourceDependancyCopyBook) {
                             continue;
                         }
 
-                        const tupRefs = current.sourceReferences.getReferenceInformation4variables(avar,currentToken.startLine, currentToken.startColumn);
+                        const tupRefs = current.sourceReferences.getReferenceInformation4variables(avar, sourceFileId, currentToken.startLine, currentToken.startColumn);
                         
                         // no references found
                         if (tupRefs[0] === 0 || tupRefs[1] === 0) {
@@ -82,7 +84,8 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         const refCount = tupRefs[1];
                         let refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
                         if (vars.length !== 1) {
-                            refCountMsg = "View references";
+                            //refCountMsg = `View references [${currentToken.tokenName}]`;
+                            refCountMsg = `View references`;
                         }
                         
                         const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),

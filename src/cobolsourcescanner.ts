@@ -514,7 +514,7 @@ export class SharedSourceReferences {
         return -1;
     }
 
-    private getReferenceInformation4(refMap:Map<string, SourceReference_Via_Length[]>, variable: string, startLine: number, startColumn: number): [number, number] {
+    private getReferenceInformation4(refMap:Map<string, SourceReference_Via_Length[]>, sourceFileId: number, variable: string, startLine: number, startColumn: number): [number, number] {
         let defvars = refMap.get(variable);
         if (defvars === undefined) {
             defvars = refMap.get(variable.toLowerCase());
@@ -529,7 +529,10 @@ export class SharedSourceReferences {
 
         for (const defvar of defvars) {
             if (defvar.line === startLine && defvar.column === startColumn) {
-                definedCount++;
+                // drop anything not releated to this file
+                if (defvar.fileIdentifer === sourceFileId) {
+                    definedCount++;
+                }
             } else {
                 referencedCount++;
             }
@@ -538,12 +541,12 @@ export class SharedSourceReferences {
         return [definedCount, referencedCount];
     }
 
-    public getReferenceInformation4variables(variable: string, startLine: number, startColumn: number): [number, number] {
-        return this.getReferenceInformation4(this.constantsOrVariablesReferences, variable, startLine, startColumn);
+    public getReferenceInformation4variables(variable: string, sourceFileId:number,startLine: number, startColumn: number): [number, number] {
+        return this.getReferenceInformation4(this.constantsOrVariablesReferences,sourceFileId, variable, startLine, startColumn);
     }
 
-    public getReferenceInformation4targetRefs(variable: string, startLine: number, startColumn: number): [number, number] {
-        return this.getReferenceInformation4(this.targetReferences, variable, startLine, startColumn);
+    public getReferenceInformation4targetRefs(variable: string, sourceFileId:number, startLine: number, startColumn: number): [number, number] {
+        return this.getReferenceInformation4(this.targetReferences,sourceFileId, variable, startLine, startColumn);
     }
 }
 
@@ -1884,9 +1887,23 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.using = UsingState.RETURNING;
                             break;
                         default:
-                            if (state.using === UsingState.UNKNOWN) {
+                            // if entry or procedure division does not have "." then parsing must end now
+                            if (this.isValidKeyword(currentLower)) {
+                                state.currentProgramTarget.CallParameters = state.parameters;
+                                state.using = UsingState.UNKNOWN;
+                                state.pickUpUsing = false
+                                const diagMessage = `Unexpected keyword '${current}' when scanning USING parameters`;
+                                let nearestLine = state.currentProgramTarget.Token !== undefined ? state.currentProgramTarget.Token.startLine : lineNumber;
+                                this.generalWarnings.push(new COBOLFileSymbol(this.filename, nearestLine, diagMessage));
                                 break;
                             }
+
+                            // of are after a returning statement with a "." then parsing must end now
+                            if (state.using === UsingState.UNKNOWN) {
+                                state.pickUpUsing = false
+                                break;
+                            }
+
                             if (this.sourceReferences !== undefined) {
                                 if (currentLower === "any") {
                                     state.parameters.push(new COBOLParameter(state.using, current));
@@ -1905,6 +1922,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
                     if (state.endsWithDot) {
                         state.currentProgramTarget.CallParameters = state.parameters;
+                        state.pickUpUsing = false;
                     }
 
                     continue;
