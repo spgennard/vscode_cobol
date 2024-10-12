@@ -1,5 +1,8 @@
 # CHANGELOG
 
+
+## 24.10.12, origin/main, origin/HEAD ensure we don't bleed any hidden items into the codelens
+* 8a61580 Update
 * 2a3170a ensure references are only shown if the definition is in the current file
 
 ## 24.10.11 
