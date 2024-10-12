@@ -1,7 +1,10 @@
 # CHANGELOG
 
+* 2a3170a ensure references are only shown if the definition is in the current file
 
-## 24.10.10, origin/main, origin/HEAD 
+## 24.10.11 
+
+## 24.10.10 
 * 42fb0a0 if a var is defined more than 1 time, then do not include any reference count information
 * ab97ead prep for tomorrow
 * 2dff575 remove threshold hack and scan source references map (inline with variable) handling
