@@ -554,6 +554,7 @@ export enum UsingState {
     BY_VALUE,
     BY_REF,
     BY_CONTENT,
+    BY_OUTPUT,
     RETURNING,
     UNKNOWN
 }
@@ -1871,7 +1872,19 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (state.endsWithDot) {
                         state.pickUpUsing = false;
                     }
+                    if (token.prevTokenLower !== "type") {
+                        continue;
+                    }
+                    
                     switch (currentLower) {
+                        case "signed":
+                            break;
+                        case "unsigned":
+                            break;
+                        case "as" :
+                            break;
+                        case "type":
+                            break;
                         case "using":
                             state.using = UsingState.BY_REF;
                             break;
@@ -1883,21 +1896,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         case "value":
                             state.using = UsingState.BY_VALUE;
                             break;
+                        case "output":
+                            state.using = UsingState.BY_OUTPUT;
+                            break;                            
                         case "returning":
                             state.using = UsingState.RETURNING;
                             break;
                         default:
-                            // if entry or procedure division does not have "." then parsing must end now
-                            if (this.isValidKeyword(currentLower)) {
-                                state.currentProgramTarget.CallParameters = state.parameters;
-                                state.using = UsingState.UNKNOWN;
-                                state.pickUpUsing = false
-                                const diagMessage = `Unexpected keyword '${current}' when scanning USING parameters`;
-                                let nearestLine = state.currentProgramTarget.Token !== undefined ? state.currentProgramTarget.Token.startLine : lineNumber;
-                                this.generalWarnings.push(new COBOLFileSymbol(this.filename, nearestLine, diagMessage));
-                                break;
-                            }
-
                             // of are after a returning statement with a "." then parsing must end now
                             if (state.using === UsingState.UNKNOWN) {
                                 state.pickUpUsing = false
@@ -1918,6 +1923,19 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             if (state.using === UsingState.RETURNING) {
                                 state.using = UsingState.UNKNOWN;
                             }
+
+                            // if entry or procedure division does not have "." then parsing must end now
+                            if (currentLower !== "any" && this.isValidKeyword(currentLower)) {
+                                state.currentProgramTarget.CallParameters = state.parameters;
+                                state.using = UsingState.UNKNOWN;
+                                state.pickUpUsing = false
+                                const diagMessage = `Unexpected keyword '${current}' when scanning USING parameters`;
+                                let nearestLine = state.currentProgramTarget.Token !== undefined ? state.currentProgramTarget.Token.startLine : lineNumber;
+                                this.generalWarnings.push(new COBOLFileSymbol(this.filename, nearestLine, diagMessage));
+                                break;
+                            }
+
+
                         // logMessage(`INFO: using parameter : ${tcurrent}`);
                     }
                     if (state.endsWithDot) {
