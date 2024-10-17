@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 1b5f885 amend url for community
 
-## 24.10.15, origin/main, origin/HEAD fix issue with scanning using with extended micro focus syntax
+## 24.10.15 
+* c2b4b37 fix issue with scanning using with extended micro focus syntax
 
 ## 24.10.12 
 * 3adeda2 ensure we don't bleed any hidden items into the codelens
