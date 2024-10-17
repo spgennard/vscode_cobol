@@ -35,7 +35,7 @@ export class VSHelpAndFeedViewHandler {
                     break;
 
                 case FeedBackItem.joinCommunity:
-                    VSHelpAndFeedViewHandler.openUrl("https://community.microfocus.com/cobol/");
+                    VSHelpAndFeedViewHandler.openUrl("https://community.rocketsoftware.com/forums/forum-home?CommunityKey=fc99efc3-3189-48e3-860f-01928efec020");
                     break;
 
                 case FeedBackItem.review:
