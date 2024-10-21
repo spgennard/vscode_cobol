@@ -172,10 +172,12 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
                 for (const possibleFilename of wordText.split(" ")) {
                     const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, this.features);
                     if (fullPath.length !== 0) {
-                        return new vscode.Location(
-                            Uri.file(fullPath),
-                            new Range(new Position(0, 0), new Position(0, 0))
-                        );
+                        if (this.features.isFile(fullPath) && !this.features.isDirectory(fullPath)) {
+                            return new vscode.Location(
+                                Uri.file(fullPath),
+                                new Range(new Position(0, 0), new Position(0, 0))
+                            );
+                        }
                     }
                 }
             }
