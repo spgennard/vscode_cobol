@@ -115,11 +115,11 @@ export class COBOLFileUtils {
         let trimmedFilename = filename.trim();
 
         if (trimmedFilename.startsWith("\"") && trimmedFilename.endsWith("\"")) {
-            return trimmedFilename.substring(1, trimmedFilename.length-2);
+            return trimmedFilename.substring(1, trimmedFilename.length-1);
         }
 
         if (trimmedFilename.startsWith("\'") && trimmedFilename.endsWith("\'")) {
-            return trimmedFilename.substring(1, trimmedFilename.length-2);
+            return trimmedFilename.substring(1, trimmedFilename.length-1);
         }
         
         return trimmedFilename;
