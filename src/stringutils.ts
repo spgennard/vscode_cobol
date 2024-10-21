@@ -9,7 +9,7 @@ export class SimpleStringBuilder {
 
     private static IsNullOrWhiteSpace(value: string): boolean {
         try {
-            if (value === null || value === "undefined") {
+            if (value === null || value === undefined || value === "undefined" ) {
                 return true;
             }
 
