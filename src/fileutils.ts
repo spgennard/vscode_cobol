@@ -98,8 +98,6 @@ export class COBOLFileUtils {
         return false;
     }
 
-
-
     public static isDirectory(sdir: string): boolean {
         try {
             const f = fs.statSync(sdir, { bigint: true });
@@ -111,5 +109,19 @@ export class COBOLFileUtils {
             return false;
         }
         return false;
+    }
+
+    public static cleanupFilename(filename: string): string {
+        let trimmedFilename = filename.trim();
+
+        if (trimmedFilename.startsWith("\"") && trimmedFilename.endsWith("\"")) {
+            return trimmedFilename.substring(2, trimmedFilename.length-2);
+        }
+
+        if (trimmedFilename.startsWith("\'") && trimmedFilename.endsWith("\'")) {
+            return trimmedFilename.substring(2, trimmedFilename.length-2);
+        }
+        
+        return trimmedFilename;
     }
 }

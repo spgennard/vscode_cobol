@@ -1,10 +1,6 @@
 import fs from "fs";
 
 import { ISourceHandler, ICommentCallback, ISourceHandlerLite, commentRange } from "./isourcehandler";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const lineByLine = require("n-readlines");
-
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { pathToFileURL } from "url";
 import path from "path";
@@ -50,14 +46,15 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
-        const docChunkSize = docstat.size < 4096 ? 4096 : 96 * 1024;
-        let line: string;
+
         this.documentVersionId = docstat.mtimeMs;
         const startTime = features.performance_now();
         try {
-            const liner = new lineByLine(document, { readChunk: docChunkSize });
+            let line: string;
+
+            const linesRead = fs.readFileSync(document).toString().split(/\r?\n/);
             if (this.lineRegExFilter !== undefined) {
-                while ((line = liner.next())) {
+                for(line of linesRead) {
                     const l = line.toString();
                     if (this.lineRegExFilter.test(l)) {
                         this.lines.push(l);
@@ -67,9 +64,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
                     }
                 }
             } else {
-                while ((line = liner.next())) {
-                     this.lines.push(line.toString());
-                }
+                this.lines = linesRead;
             }
             features.logTimedMessage(features.performance_now() - startTime, " - Loading File " + document);
         }

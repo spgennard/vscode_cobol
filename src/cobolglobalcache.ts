@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
+import { COBOLFileUtils } from "./fileutils";
+
 export class COBOLWorkspaceFile {
     lastModifiedTime:BigInt;
     workspaceFilename: string;
@@ -53,12 +55,14 @@ export class COBOLSymbolTable {
 }
 
 export class COBOLFileSymbol {
-    public filename: string;
+    public readonly filename: string;
     public linenum: number;
-    public messageOrMissingFile : string;
+    public readonly messageOrMissingFile : string;
 
     public constructor(filename?: string, lineNumber?: number, missingFile?: string) {
-        this.filename = filename === undefined ? "" : filename;
+        let cleanFilename = filename === undefined ? "" : filename.trim();
+        this.filename = COBOLFileUtils.cleanupFilename(cleanFilename.trim());
+
         this.linenum = lineNumber === undefined ? 0 : lineNumber;
         this.messageOrMissingFile = missingFile === undefined ? "" : missingFile;
     }
@@ -89,7 +93,9 @@ export class COBOLFileAndColumnSymbol {
     public startColumn: number;
 
     public constructor(symbol?: string, lineNumber?: number, startColumn?: number) {
-        this.filename = symbol === undefined ? "" : symbol;
+        let cleanFilename = symbol === undefined ? "" : symbol;
+        this.filename = COBOLFileUtils.cleanupFilename(cleanFilename.trim());
+
         this.lnum = lineNumber === undefined ? 0 : lineNumber;
         this.startColumn = startColumn === undefined ? 0 : startColumn;
     }

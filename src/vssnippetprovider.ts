@@ -1698,7 +1698,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     private getExactCallSnipetOrPartialSnippet(position: Position, position_plus1: Position, preWord: string, line: TextLine, position_plus1_char: string, snippets: CompletionItem[]) {
         const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("call");
-        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
+        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord,false);
         const preTrimmedWorkUpper = preTrimmedWork.toUpperCase();
         const cis = this.allCallTargets.get(preTrimmedWorkUpper);
         if (cis !== undefined) {
@@ -1733,7 +1733,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     private getExactFunctionSnipetOrPartialSnippet(position: Position, position_plus1: Position, preWord: string, line: TextLine, position_plus1_char: string, snippets: CompletionItem[]) {
         const charPosForCall = line.text.toLocaleLowerCase().lastIndexOf("function");
-        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
+        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord, true);
         const preTrimmedWorkLower = preTrimmedWork.toLowerCase();
         const cis = this.functionTargets.get(preTrimmedWorkLower);
         if (cis !== undefined && cis.length > 0) {
@@ -1761,7 +1761,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     private getExactDollorOrPartial(position: Position, position_plus1: Position, preWord: string, line: TextLine, position_plus1_char: string, snippets: CompletionItem[]) {
         const charPosForDollar = line.text.toLocaleLowerCase().lastIndexOf("$");
-        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
+        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord, true);
         const preTrimmedWorkLower = preTrimmedWork.toLowerCase();
         const dis = this.dollarTargets.get(preTrimmedWorkLower);
         if (dis !== undefined && dis.length > 0) {
@@ -1788,7 +1788,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
 
     private getExactIsoOrPartial(position: Position, position_plus1: Position, preWord: string, line: TextLine, position_plus1_char: string, snippets: CompletionItem[]) {
         const charPosForISO = line.text.toLocaleLowerCase().lastIndexOf(">>");
-        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord);
+        const preTrimmedWork = COBOLSourceScanner.trimLiteral(preWord, false);
         const preTrimmedWorkLower = preTrimmedWork.toLowerCase();
         const dis = this.isoTargets.get(preTrimmedWorkLower);
         if (dis !== undefined && dis.length > 0) {

@@ -6,6 +6,7 @@ import { COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { IExternalFeatures } from "./externalfeatures";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { ICOBOLSettings } from "./iconfiguration";
+import { COBOLFileUtils } from "./fileutils";
 
 export enum TypeCategory {
     ClassId = "T",
@@ -106,7 +107,8 @@ export class COBOLWorkspaceSymbolCacheHelper {
             return;
         }
         
-        const fileName = InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename);
+        const _fileName = InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename);
+        const fileName = COBOLFileUtils.cleanupFilename(_fileName);
         const fileNameNoExt = path.basename(fileName, path.extname(fileName));
         const callableSymbolFromFilenameLower = fileNameNoExt.toLowerCase();
 
@@ -140,12 +142,12 @@ export class COBOLWorkspaceSymbolCacheHelper {
         if (srcfilename.length === 0 || symbolUnchanged.length === 0) {
             return;
         }
-        COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(
-            InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename), symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
+        const filename = COBOLFileUtils.cleanupFilename(InMemoryGlobalCacheHelper.getFilenameWithoutPath(srcfilename));
+        COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(filename, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
     public static addReferencedCopybook(copybook: string, fullInFilename: string) {
-        const inFilename = InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullInFilename);
+        const inFilename = COBOLFileUtils.cleanupFilename(InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullInFilename));
         const encodedKey = `${copybook},${inFilename}`;
         if (!InMemoryGlobalSymbolCache.knownCopybooks.has(encodedKey)) {
             InMemoryGlobalSymbolCache.knownCopybooks.set(encodedKey, copybook);
