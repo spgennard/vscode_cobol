@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* cbd2162 harden method
+* dad4d09 substring different to substr
+* d83af2e fix typo and avoid directories
+* e1d04a2 use specific flag for trim, tweak file reader
+
+## 24.10.17 
 * 1b5f885 amend url for community
 
 ## 24.10.15 
