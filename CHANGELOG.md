@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* a467c9c use editor.tabstop from resource continue some refectoring
+* 0bf3fcd start to centralise the config handling
+
+## 24.10.22 
 * cbd2162 harden method
 * dad4d09 substring different to substr
 * d83af2e fix typo and avoid directories
