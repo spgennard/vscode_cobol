@@ -9,7 +9,7 @@ import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { COBOLUtils } from "./cobolutils";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import path from "path";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSCOBOLEditorConfiguration } from "./vsconfiguration";
 
 export class CobolLinterActionFixer implements CodeActionProvider {
 
@@ -165,7 +165,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         }
 
         if (update) {
-            const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+            const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
             await editorConfig.update("copybookdirs", this.uniqByFilter(fileSearchDirectory));
         }
 

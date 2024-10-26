@@ -1024,7 +1024,7 @@
         },
         "coboleditor.snippets": {
           "type": "boolean",
-          "description": "Dynamic snippets support (expect this property to renamed/removed, when feature is complete)",
+          "description": "Dynamic snippets support",
           "default": true
         },
         "coboleditor.enable_columns_tags": {

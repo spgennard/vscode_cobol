@@ -16,7 +16,7 @@ import { VSCustomIntelliseRules } from "./vscustomrules";
 import { SplitTokenizer } from "./splittoken";
 import { VSExtensionUtils } from "./vsextutis";
 import { setMicroFocusSuppressFileAssociationsPrompt } from "./vscommon_commands";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSCOBOLEditorConfiguration } from "./vsconfiguration";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
@@ -195,7 +195,7 @@ export class COBOLUtils {
             return;
         }
 
-        const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+        const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
         editorConfig.update("metadata_symbols", [], false);
         editorConfig.update("metadata_entrypoints", [], false);
         editorConfig.update("metadata_types", [], false);
@@ -285,7 +285,7 @@ export class COBOLUtils {
 
             if (update) {
                 try {
-                    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+                    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
                     editorConfig.update("metadata_symbols", symbols, false);
                     editorConfig.update("metadata_entrypoints", entrypoints, false);
                     editorConfig.update("metadata_types", types, false);
@@ -371,7 +371,7 @@ export class COBOLUtils {
 
         // update copybookdirs with optimized version
         if (updateCopybookdirs) {
-            const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+            const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
             editorConfig.update("copybookdirs", fileSearchDirectory);
             VSLogger.logMessage("Copybook settings and workspace has been updated.");
         } else {
@@ -497,7 +497,7 @@ export class COBOLUtils {
     }
 
     public static getMFUnitAnsiColorConfig(): boolean {
-        const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+        const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
         let expEnabled = editorConfig.get<boolean>("mfunit.diagnostic.color");
         if (expEnabled === undefined || expEnabled === null) {
             expEnabled = false;

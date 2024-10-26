@@ -16,12 +16,17 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     lineCount: number;
     languageId: string;
     notedCommentRanges: commentRange[];
-
+    tabSize: number;
+    
     public constructor(document: vscode.TextDocument) {
         this.document = document;
         this.lineCount = this.document.lineCount;
         this.languageId = document.languageId;
         this.notedCommentRanges = [];
+
+        const resource = document.uri;
+        const editorConfig = workspace.getConfiguration("editor",resource);
+        this.tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
     }
 
     public getLineCount(): number {
@@ -57,16 +62,13 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
             return unexpandedLine;
         }
 
-        const editorConfig = workspace.getConfiguration("editor");
-        const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
-
         let col = 0;
         const buf = new SimpleStringBuilder();
         for (const c of unexpandedLine) {
             if (c === "\t") {
                 do {
                     buf.Append(" ");
-                } while (++col % tabSize !== 0);
+                } while (++col % this.tabSize !== 0);
             } else {
                 buf.Append(c);
             }
@@ -105,6 +107,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
 
+    tabSize:number;
+    
     public constructor(document: vscode.TextDocument) {
         this.document = document;
         this.dumpNumbersInAreaA = false;
@@ -123,6 +127,10 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
         this.updatedSource = new Map<number, string>();
+
+        const resource = document.uri;
+        const editorConfig = workspace.getConfiguration("editor",resource);
+        this.tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
 
         // if we cannot be trusted and the file is outside the workspace, dont read it
         if (vscode.workspace.isTrusted === false && !this.isSourceInWorkSpace) {
@@ -290,16 +298,13 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
             return unexpandedLine;
         }
 
-        const editorConfig = workspace.getConfiguration("editor");
-        const tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
-
         let col = 0;
         const buf = new SimpleStringBuilder();
         for (const c of unexpandedLine) {
             if (c === "\t") {
                 do {
                     buf.Append(" ");
-                } while (++col % tabSize !== 0);
+                } while (++col % this.tabSize !== 0);
             } else {
                 buf.Append(c);
             }

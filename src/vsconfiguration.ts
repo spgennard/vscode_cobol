@@ -1,28 +1,47 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
 
-import { workspace } from "vscode";
+import { TextDocument, workspace, WorkspaceConfiguration } from "vscode";
 import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
 
-export class VSCOBOLConfiguration {
-    private static settings: ICOBOLSettings = new COBOLSettings();
+export class VSCOBOLEditorConfiguration {
 
-    public constructor(externalFeatures: IExternalFeatures) {
-        VSCOBOLConfiguration.initSettings(VSCOBOLConfiguration.settings, externalFeatures);
-    }
-
-    public static getEditorConfig() {
+    public static getEditorConfig():WorkspaceConfiguration {
         return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
     }
 
+
+    public static getResourceEditorConfig(document: TextDocument): WorkspaceConfiguration {
+        const resource = document.uri; workspace.getConfiguration()
+        if (resource.scheme === 'file') {
+            return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig,resource);
+        }
+        else {
+            return VSCOBOLEditorConfiguration.getEditorConfig();
+        }
+    }
+}
+
+export function cloneObject<T>(a: T): T {
+    return JSON.parse(JSON.stringify(a));
+}
+
+export class VSCOBOLConfiguration {
+    private static _settings: ICOBOLSettings = new COBOLSettings();
+
+    private constructor(settings: ICOBOLSettings) {
+
+    }
     private static initSettings(settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
+        const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
+
         settings.enable_tabstop = getBoolean("enable_tabstop", false);
         settings.copybooks_nested = getBoolean("copybooks_nested", false);
         settings.outline = isOutlineEnabled();
-        settings.config_copybookdirs = VSCOBOLConfiguration.getEditorConfig().get<string[]>("copybookdirs", []);
+        settings.config_copybookdirs = editorConfig.get<string[]>("copybookdirs", []);
         settings.copybookdirs = getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs);
         settings.pre_scan_line_limit = getPreScanLineLimit();
         settings.copybookexts = getCopybookExts();
@@ -30,7 +49,7 @@ export class VSCOBOLConfiguration {
         settings.tabstops = getTabStops();
         settings.linter = getBoolean("linter", false);
         settings.line_comment = getBoolean("line_comment", false);
-        settings.fileformat_strategy = VSCOBOLConfiguration.getEditorConfig().get<fileformatStrategy>("fileformat_strategy", fileformatStrategy.Normal);
+        settings.fileformat_strategy = editorConfig.get<fileformatStrategy>("fileformat_strategy", fileformatStrategy.Normal);
         settings.enable_data_provider = getBoolean("enable_data_provider", true);
         settings.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
         settings.intellisense_item_limit = getIntellisense_item_limit();
@@ -48,7 +67,7 @@ export class VSCOBOLConfiguration {
         settings.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
         settings.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
         settings.linter_port_helper = getBoolean("linter_port_helper", true);
-        
+
         // scan for comments can cause a file access.. so it cannot be trusted
         settings.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
 
@@ -63,8 +82,8 @@ export class VSCOBOLConfiguration {
         settings.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
         settings.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
         settings.sourceview_include_test_files = getBoolean("sourceview_include_test_files", true);
-        settings.format_on_return = VSCOBOLConfiguration.getEditorConfig().get<boolean>("format_on_return", false);
-        settings.intellisense_style = VSCOBOLConfiguration.getEditorConfig().get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
+        settings.format_on_return = editorConfig.get<boolean>("format_on_return", false);
+        settings.intellisense_style = editorConfig.get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
         settings.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
         settings.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
         settings.metadata_symbols = getmetadata_symbols(settings);
@@ -78,7 +97,7 @@ export class VSCOBOLConfiguration {
 
         settings.enable_source_scanner = getBoolean("enable_source_scanner", true);
 
-        const user_cobol_language_ids =  VSCOBOLConfiguration.getEditorConfig().get<string[]>("valid_cobol_language_ids", settings.valid_cobol_language_ids);
+        const user_cobol_language_ids = editorConfig.get<string[]>("valid_cobol_language_ids", settings.valid_cobol_language_ids);
         let valid = true;
 
         for (const languageId of user_cobol_language_ids) {
@@ -94,37 +113,37 @@ export class VSCOBOLConfiguration {
             settings.valid_cobol_language_ids_for_intellisense = [...user_cobol_language_ids];
         }
 
-        settings.files_exclude = VSCOBOLConfiguration.getEditorConfig().get<string[]>("files_exclude", settings.files_exclude);
+        settings.files_exclude = editorConfig.get<string[]>("files_exclude", settings.files_exclude);
 
-        settings.scan_line_limit = VSCOBOLConfiguration.getEditorConfig().get<number>("scan_line_limit", settings.scan_line_limit);
+        settings.scan_line_limit = editorConfig.get<number>("scan_line_limit", settings.scan_line_limit);
 
-        settings.scan_time_limit = VSCOBOLConfiguration.getEditorConfig().get<number>("scan_time_limit", settings.scan_time_limit);
+        settings.scan_time_limit = editorConfig.get<number>("scan_time_limit", settings.scan_time_limit);
 
-        settings.in_memory_cache_size = VSCOBOLConfiguration.getEditorConfig().get<number>("in_memory_cache_size", settings.in_memory_cache_size);
+        settings.in_memory_cache_size = editorConfig.get<number>("in_memory_cache_size", settings.in_memory_cache_size);
 
-        settings.suggest_variables_when_context_is_unknown = VSCOBOLConfiguration.getEditorConfig().get<boolean>("suggest_variables_when_context_is_unknown", settings.suggest_variables_when_context_is_unknown);
+        settings.suggest_variables_when_context_is_unknown = editorConfig.get<boolean>("suggest_variables_when_context_is_unknown", settings.suggest_variables_when_context_is_unknown);
 
-        settings.hover_show_known_api = VSCOBOLConfiguration.getEditorConfig().get<hoverApi>("hover_show_known_api", settings.hover_show_known_api);
+        settings.hover_show_known_api = editorConfig.get<hoverApi>("hover_show_known_api", settings.hover_show_known_api);
 
-        settings.enable_comment_tags = VSCOBOLConfiguration.getEditorConfig().get<boolean>("enable_comment_tags", settings.enable_comment_tags);
+        settings.enable_comment_tags = editorConfig.get<boolean>("enable_comment_tags", settings.enable_comment_tags);
 
-        settings.comment_tag_word = VSCOBOLConfiguration.getEditorConfig().get<boolean>("comment_tag_word", settings.comment_tag_word);
+        settings.comment_tag_word = editorConfig.get<boolean>("comment_tag_word", settings.comment_tag_word);
 
-        settings.snippets = VSCOBOLConfiguration.getEditorConfig().get<boolean>("snippets", settings.snippets);
+        settings.snippets = editorConfig.get<boolean>("snippets", settings.snippets);
 
-        settings.enable_columns_tags = VSCOBOLConfiguration.getEditorConfig().get<boolean>("enable_columns_tags", settings.enable_columns_tags);
+        settings.enable_columns_tags = editorConfig.get<boolean>("enable_columns_tags", settings.enable_columns_tags);
 
-        settings.hover_show_encoded_literals = VSCOBOLConfiguration.getEditorConfig().get<boolean>("hover_show_encoded_literals", settings.hover_show_encoded_literals);
+        settings.hover_show_encoded_literals = editorConfig.get<boolean>("hover_show_encoded_literals", settings.hover_show_encoded_literals);
 
-        settings.check_file_format_before_file_scan = VSCOBOLConfiguration.getEditorConfig().get<boolean>("check_file_format_before_file_scan", settings.check_file_format_before_file_scan);
+        settings.check_file_format_before_file_scan = editorConfig.get<boolean>("check_file_format_before_file_scan", settings.check_file_format_before_file_scan);
 
         if (!workspace.isTrusted) {
             VSCOBOLConfiguration.adjustForUntructedEnv(settings);
         }
 
-        settings.intellisense_add_space_keywords = VSCOBOLConfiguration.getEditorConfig().get<string[]>("intellisense_add_space_keywords", settings.intellisense_add_space_keywords);
+        settings.intellisense_add_space_keywords = editorConfig.get<string[]>("intellisense_add_space_keywords", settings.intellisense_add_space_keywords);
 
-        settings.custom_intellisense_rules = VSCOBOLConfiguration.getEditorConfig().get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
+        settings.custom_intellisense_rules = editorConfig.get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
 
         settings.format_constants_to_uppercase = getBoolean("format_constants_to_uppercase", settings.format_constants_to_uppercase);
 
@@ -148,17 +167,17 @@ export class VSCOBOLConfiguration {
         settings.hover_show_variable_definition = getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
         settings.out_of_range_tabstop_size = getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);
-        
+
         settings.anchor_tabstops = getIAnchorTabInfo();
-        
-        settings.enable_tabstops_anchors = getBoolean("enable_tabstops_anchors",settings.enable_tabstops_anchors);
-        
+
+        settings.enable_tabstops_anchors = getBoolean("enable_tabstops_anchors", settings.enable_tabstops_anchors);
+
         settings.enable_rocket_cobol_lsp_when_active = getBoolean("enable_rocket_cobol_lsp_when_active", settings.enable_rocket_cobol_lsp_when_active);
-        
+
         settings.enable_rocket_cobol_lsp_lang_server_control = getBoolean("enable_rocket_cobol_lsp_lang_server_control", settings.enable_rocket_cobol_lsp_lang_server_control);
 
         settings.enable_exec_sql_cursors = getBoolean("enable_exec_sql_cursors", settings.enable_exec_sql_cursors);
-        
+
         settings.scan_comments_for_references = getBoolean("scan_comments_for_references", settings.scan_comments_for_references);
 
         settings.scan_comment_for_ls_control = getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
@@ -195,11 +214,13 @@ export class VSCOBOLConfiguration {
     }
 
     public static get(): ICOBOLSettings {
-        return VSCOBOLConfiguration.settings;
+        // const j = cloneObject<ICOBOLSettings>(VSCOBOLConfiguration._settings);
+        // j.scan_comment_begin_ls_ignore;
+        return VSCOBOLConfiguration._settings;
     }
 
     public static reinit(externalFeatures: IExternalFeatures): ICOBOLSettings {
-        VSCOBOLConfiguration.initSettings(VSCOBOLConfiguration.settings, externalFeatures);
+        VSCOBOLConfiguration.initSettings(VSCOBOLConfiguration._settings, externalFeatures);
         return VSCOBOLConfiguration.get();
     }
 }
@@ -207,7 +228,7 @@ export class VSCOBOLConfiguration {
 
 
 function getIAnchorTabInfo(): IAnchorTabInfo[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     const files: IAnchorTabInfo[] | undefined = editorConfig.get<IAnchorTabInfo[]>("tabstops_anchors");
     if (files === undefined || files === null) {
         return [];
@@ -217,7 +238,7 @@ function getIAnchorTabInfo(): IAnchorTabInfo[] {
 }
 
 function getFileFormatConfiguration(): IEditorMarginFiles[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
     if (files === undefined || files === null) {
         return [];
@@ -227,7 +248,7 @@ function getFileFormatConfiguration(): IEditorMarginFiles[] {
 }
 
 function getBoolean(configSection: string, defaultValue: boolean): boolean {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let expEnabled = editorConfig.get<boolean>(configSection);
     if (expEnabled === undefined || expEnabled === null) {
         expEnabled = defaultValue;
@@ -236,7 +257,7 @@ function getBoolean(configSection: string, defaultValue: boolean): boolean {
 }
 
 function getNumber(configSection: string, defaultValue: number): number {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let lineLimit = editorConfig.get<number>(configSection);
     if (lineLimit === undefined || lineLimit === null) {
         lineLimit = defaultValue;
@@ -245,7 +266,7 @@ function getNumber(configSection: string, defaultValue: number): number {
 }
 
 function getString(configSection: string, defaultValue: string): string {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let expEnabled = editorConfig.get<string>(configSection);
     if (expEnabled === undefined || expEnabled === null) {
         expEnabled = defaultValue;
@@ -254,7 +275,7 @@ function getString(configSection: string, defaultValue: string): string {
 }
 
 function getPreScanLineLimit(): number {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let lineLimit = editorConfig.get<number>("pre_scan_line_limit");
     if (lineLimit === undefined || lineLimit === null) {
         lineLimit = 25;
@@ -263,7 +284,7 @@ function getPreScanLineLimit(): number {
 }
 
 function getscan_comment_copybook_token(): string {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let hintToken = editorConfig.get<string>("scan_comment_copybook_token");
     if (hintToken === undefined || hintToken === null) {
         hintToken = "source-dependency";
@@ -272,7 +293,7 @@ function getscan_comment_copybook_token(): string {
 }
 
 function getIntellisense_item_limit(): number {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let itemLimit = editorConfig.get<number>("intellisense_item_limit");
     if (itemLimit === undefined || itemLimit === null) {
         itemLimit = 0;
@@ -281,7 +302,7 @@ function getIntellisense_item_limit(): number {
 }
 
 function isOutlineEnabled(): outlineFlag {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     const outlineEnabled = editorConfig.get("outline");
     if (outlineEnabled === undefined || outlineEnabled === null) {
         return outlineFlag.On;
@@ -323,7 +344,7 @@ function getPathDelimiter(): string {
 }
 
 function getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSearchDirectory: string[]): string[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let dirs = editorConfig.get<string[]>("copybookdirs");
     if (!dirs || (dirs !== null && dirs.length === 0)) {
         dirs = DEFAULT_COPYBOOK_DIR;
@@ -388,7 +409,7 @@ const DEFAULT_COPYBOOK_EXTS = ["cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", 
 const DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
 
 function getCopybookExts(): string[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let extensions = editorConfig.get<string[]>("copybookexts");
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_COPYBOOK_EXTS;
@@ -398,7 +419,7 @@ function getCopybookExts(): string[] {
 }
 
 function getProgram_extensions(): string[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let extensions = editorConfig.get<string[]>("program_extensions");
     if (!extensions || (extensions !== null && extensions.length === 0)) {
         extensions = DEFAULT_PROGRAM_EXTS;
@@ -410,7 +431,7 @@ function getProgram_extensions(): string[] {
 const DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
 
 function getTabStops(): number[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let tabStops = editorConfig.get<number[]>("tabstops");
     if (!tabStops || (tabStops !== null && tabStops.length === 0)) {
         tabStops = DEFAULT_RULER;
@@ -419,7 +440,7 @@ function getTabStops(): number[] {
 }
 
 function getWorkspacefolders_order(): string[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let dirs = editorConfig.get<string[]>("workspacefolders_order");
     if (!dirs || (dirs !== null && dirs.length === 0)) {
         dirs = [];
@@ -429,7 +450,7 @@ function getWorkspacefolders_order(): string[] {
 
 
 function getlinter_house_standards_rules(): string[] {
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let standards = editorConfig.get<string[]>("linter_house_standards_rules");
     if (!standards || (standards !== null && standards.length === 0)) {
         standards = [];
@@ -441,7 +462,7 @@ function getmetadata_symbols(settings: ICOBOLSettings): string[] {
     if (settings.maintain_metadata_cache === false) {
         return [];
     }
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let symbols = editorConfig.get<string[]>("metadata_symbols");
     if (!symbols || (symbols !== null && symbols.length === 0)) {
         symbols = [];
@@ -454,7 +475,7 @@ function getmetadata_entrypoints(settings: ICOBOLSettings): string[] {
     if (settings.maintain_metadata_cache === false) {
         return [];
     }
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let entrypoints = editorConfig.get<string[]>("metadata_entrypoints");
     if (!entrypoints || (entrypoints !== null && entrypoints.length === 0)) {
         entrypoints = [];
@@ -466,7 +487,7 @@ function getmetadata_types(settings: ICOBOLSettings): string[] {
     if (settings.maintain_metadata_cache === false) {
         return [];
     }
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let metadata_types = editorConfig.get<string[]>("metadata_types");
     if (!metadata_types || (metadata_types !== null && metadata_types.length === 0)) {
         metadata_types = [];
@@ -480,7 +501,7 @@ function getmetadata_files(config: ICOBOLSettings): string[] {
         return [];
     }
 
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let metadata_files = editorConfig.get<string[]>("metadata_files");
     if (!metadata_files || (metadata_files !== null && metadata_files.length === 0)) {
         metadata_files = [];
@@ -495,7 +516,7 @@ function getmetadata_knowncopybooks(config: ICOBOLSettings): string[] {
         return [];
     }
 
-    const editorConfig = VSCOBOLConfiguration.getEditorConfig();
+    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
     let metadata_knowncopybooks = editorConfig.get<string[]>("metadata_knowncopybooks");
     if (!metadata_knowncopybooks || (metadata_knowncopybooks !== null && metadata_knowncopybooks.length === 0)) {
         metadata_knowncopybooks = [];
