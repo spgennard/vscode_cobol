@@ -666,7 +666,8 @@
         "coboleditor.parse_copybooks_for_references": {
           "type": "boolean",
           "description": "Scan copybook for reference (default false)",
-          "default": false
+          "default": false,
+          "scope": "resource"
         },
         "coboleditor.workspacefolders_order": {
           "type": "array",

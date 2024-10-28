@@ -711,7 +711,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 }
 
 export async function activate(context: ExtensionContext) {
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
@@ -799,7 +799,7 @@ export async function activate(context: ExtensionContext) {
         const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`);
 
         if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
+            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 VSCOBOLSourceScanner.clearCOBOLCache();
                 setupLogChannelAndPaths(true, settings, true);
@@ -906,7 +906,7 @@ export async function activate(context: ExtensionContext) {
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 if (settings.line_comment) {
-                    commentUtils.processCommentLine();
+                    commentUtils.processCommentLine(settings);
                 } else {
                     commands.executeCommand("editor.action.commentLine");
                 }
@@ -959,7 +959,7 @@ export async function activate(context: ExtensionContext) {
 
 
     context.subscriptions.push(workspace.onDidChangeWorkspaceFolders(async () => {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
         setupLogChannelAndPaths(false, settings, true);
     }));

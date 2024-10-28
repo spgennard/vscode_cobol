@@ -371,7 +371,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinit(VSExternalFeatures);
+    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
     VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
@@ -438,13 +438,13 @@ export async function activate(context: vscode.ExtensionContext) {
         const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig);
 
         if (updated) {
-            VSCOBOLConfiguration.reinit(VSExternalFeatures);
+            VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
         }
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.commentline", function () {
         if (vscode.window.activeTextEditor !== undefined) {
-            commentUtils.processCommentLine();
+            commentUtils.processCommentLine(settings);
         }
     }));
 

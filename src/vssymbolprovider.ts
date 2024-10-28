@@ -5,6 +5,7 @@ import { VSLogger } from "./vslogger";
 import { outlineFlag } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { SplitTokenizer } from "./splittoken";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 
 export class MFDirectivesSymbolProvider implements vscode.DocumentSymbolProvider {
@@ -164,14 +165,15 @@ export class CobolSymbolInformationProvider implements vscode.DocumentSymbolProv
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
-        const settings = VSCOBOLConfiguration.get();
-        const outlineLevel = settings.outline;
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+
+        const outlineLevel = config.outline;
 
         if (outlineLevel === outlineFlag.Off) {
             return symbols;
         }
 
-        const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const sf = VSCOBOLSourceScanner.getCachedObject(document,config);
 
         if (sf === undefined) {
             return symbols;

@@ -56,7 +56,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getALlPerformTargets(document: TextDocument, settings: ICOBOLSettings): CompletionItem[] {
-        const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const sf = VSCOBOLSourceScanner.getCachedObject(document, this.iconfig);
         const items: CompletionItem[] = [];
 
         if (sf !== undefined) {

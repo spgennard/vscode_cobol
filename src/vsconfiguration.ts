@@ -9,7 +9,7 @@ import { COBOLFileUtils } from "./fileutils";
 
 export class VSCOBOLEditorConfiguration {
 
-    public static getEditorConfig():WorkspaceConfiguration {
+    public static getEditorConfig(): WorkspaceConfiguration {
         return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig);
     }
 
@@ -17,7 +17,7 @@ export class VSCOBOLEditorConfiguration {
     public static getResourceEditorConfig(document: TextDocument): WorkspaceConfiguration {
         const resource = document.uri; workspace.getConfiguration()
         if (resource.scheme === 'file') {
-            return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig,resource);
+            return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig, resource);
         }
         else {
             return VSCOBOLEditorConfiguration.getEditorConfig();
@@ -31,71 +31,68 @@ export function cloneObject<T>(a: T): T {
 
 export class VSCOBOLConfiguration {
     private static _settings: ICOBOLSettings = new COBOLSettings();
-
-    private constructor(settings: ICOBOLSettings) {
-
-    }
-    private static initSettings(settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
-        const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-
-        settings.enable_tabstop = getBoolean("enable_tabstop", false);
-        settings.copybooks_nested = getBoolean("copybooks_nested", false);
-        settings.outline = isOutlineEnabled();
+    
+    private static initSettings(editorConfig: WorkspaceConfiguration, settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
+        const editorHelper = new VSCOBOLConfigurationHelper(editorConfig);
+        
+        settings.enable_tabstop = editorHelper.getBoolean("enable_tabstop", false);
+        settings.copybooks_nested = editorHelper.getBoolean("copybooks_nested", false);
+        settings.outline = editorHelper.isOutlineEnabled();
         settings.config_copybookdirs = editorConfig.get<string[]>("copybookdirs", []);
-        settings.copybookdirs = getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs);
-        settings.pre_scan_line_limit = getPreScanLineLimit();
-        settings.copybookexts = getCopybookExts();
-        settings.program_extensions = getProgram_extensions();
-        settings.tabstops = getTabStops();
-        settings.linter = getBoolean("linter", false);
-        settings.line_comment = getBoolean("line_comment", false);
+        settings.copybookdirs = editorHelper.getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs);
+        settings.pre_scan_line_limit = editorHelper.getPreScanLineLimit();
+        settings.copybookexts = editorHelper.getCopybookExts();
+        settings.program_extensions = editorHelper.getProgram_extensions();
+        settings.tabstops = editorHelper.getTabStops();
+        settings.linter = editorHelper.getBoolean("linter", false);
+        settings.line_comment = editorHelper.getBoolean("line_comment", false);
         settings.fileformat_strategy = editorConfig.get<fileformatStrategy>("fileformat_strategy", fileformatStrategy.Normal);
-        settings.enable_data_provider = getBoolean("enable_data_provider", true);
-        settings.disable_unc_copybooks_directories = getBoolean("disable_unc_copybooks_directories", false);
-        settings.intellisense_item_limit = getIntellisense_item_limit();
-        settings.process_metadata_cache_on_start = getBoolean("process_metadata_cache_on_start", false);
+        settings.enable_data_provider = editorHelper.getBoolean("enable_data_provider", true);
+        settings.disable_unc_copybooks_directories = editorHelper.getBoolean("disable_unc_copybooks_directories", false);
+        settings.intellisense_item_limit = editorHelper.getIntellisense_item_limit();
+        settings.process_metadata_cache_on_start = editorHelper.getBoolean("process_metadata_cache_on_start", false);
         // vsconfig.cache_metadata = getcache_metadata();
-        settings.cache_metadata_inactivity_timeout = getNumber("cache_metadata_inactivity_timeout", 5000);
-        settings.cache_metadata_verbose_messages = getBoolean("cache_metadata_verbose_messages", false);
-        settings.parse_copybooks_for_references = getBoolean("parse_copybooks_for_references", false);
-        settings.workspacefolders_order = getWorkspacefolders_order();
-        settings.linter_unused_sections = getBoolean("linter_unused_sections", true);
-        settings.linter_unused_paragraphs = getBoolean("linter_unused_paragraphs", true);
-        settings.linter_house_standards = getBoolean("linter_house_standards", true);
-        settings.linter_house_standards_rules = getlinter_house_standards_rules();
-        settings.linter_mark_as_information = getBoolean("linter_mark_as_information", true);
-        settings.linter_ignore_section_before_entry = getBoolean("linter_ignore_section_before_entry", true);
-        settings.linter_ignore_missing_copybook = getBoolean("linter_ignore_missing_copybook", false);
-        settings.linter_port_helper = getBoolean("linter_port_helper", true);
+        settings.cache_metadata_inactivity_timeout = editorHelper.getNumber("cache_metadata_inactivity_timeout", 5000);
+        settings.cache_metadata_verbose_messages = editorHelper.getBoolean("cache_metadata_verbose_messages", false);
+        settings.parse_copybooks_for_references = editorHelper.getBoolean("parse_copybooks_for_references", false);
+        settings.workspacefolders_order = editorHelper.getWorkspacefolders_order();
+        settings.linter_unused_sections = editorHelper.getBoolean("linter_unused_sections", true);
+        settings.linter_unused_paragraphs = editorHelper.getBoolean("linter_unused_paragraphs", true);
+        settings.linter_house_standards = editorHelper.getBoolean("linter_house_standards", true);
+        settings.linter_house_standards_rules = editorHelper.getlinter_house_standards_rules();
+        settings.linter_mark_as_information = editorHelper.getBoolean("linter_mark_as_information", true);
+        settings.linter_ignore_section_before_entry = editorHelper.getBoolean("linter_ignore_section_before_entry", true);
+        settings.linter_ignore_missing_copybook = editorHelper.getBoolean("linter_ignore_missing_copybook", false);
+        settings.linter_port_helper = editorHelper.getBoolean("linter_port_helper", true);
 
         // scan for comments can cause a file access.. so it cannot be trusted
-        settings.scan_comments_for_hints = !workspace.isTrusted ? false : getBoolean("scan_comments_for_hints", false);
+        settings.scan_comments_for_hints = !workspace.isTrusted ? false : editorHelper.getBoolean("scan_comments_for_hints", false);
 
-        settings.scan_comment_copybook_token = getscan_comment_copybook_token();
+        settings.scan_comment_copybook_token = editorHelper.getscan_comment_copybook_token();
         settings.editor_maxTokenizationLineLength = workspace.getConfiguration("editor").get<number>("maxTokenizationLineLength", 20000);
 
-        settings.sourceview = getBoolean("sourceview", false);
-        settings.sourceview_include_jcl_files = getBoolean("sourceview_include_jcl_files", true);
-        settings.sourceview_include_hlasm_files = getBoolean("sourceview_include_hlasm_files", true);
-        settings.sourceview_include_pli_files = getBoolean("sourceview_include_pli_files", true);
-        settings.sourceview_include_doc_files = getBoolean("sourceview_include_doc_files", true);
-        settings.sourceview_include_script_files = getBoolean("sourceview_include_script_files", true);
-        settings.sourceview_include_object_files = getBoolean("sourceview_include_object_files", true);
-        settings.sourceview_include_test_files = getBoolean("sourceview_include_test_files", true);
+        settings.sourceview = editorHelper.getBoolean("sourceview", false);
+        settings.sourceview_include_jcl_files = editorHelper.getBoolean("sourceview_include_jcl_files", true);
+        settings.sourceview_include_hlasm_files = editorHelper.getBoolean("sourceview_include_hlasm_files", true);
+        settings.sourceview_include_pli_files = editorHelper.getBoolean("sourceview_include_pli_files", true);
+        settings.sourceview_include_doc_files = editorHelper.getBoolean("sourceview_include_doc_files", true);
+        settings.sourceview_include_script_files = editorHelper.getBoolean("sourceview_include_script_files", true);
+        settings.sourceview_include_object_files = editorHelper.getBoolean("sourceview_include_object_files", true);
+        settings.sourceview_include_test_files = editorHelper.getBoolean("sourceview_include_test_files", true);
         settings.format_on_return = editorConfig.get<boolean>("format_on_return", false);
         settings.intellisense_style = editorConfig.get<intellisenseStyle>("intellisense_style", intellisenseStyle.Unchanged);
-        settings.maintain_metadata_cache = getBoolean("maintain_metadata_cache", true);
-        settings.maintain_metadata_recursive_search = getBoolean("maintain_metadata_recursive_search", false);
-        settings.metadata_symbols = getmetadata_symbols(settings);
-        settings.metadata_entrypoints = getmetadata_entrypoints(settings);
-        settings.metadata_types = getmetadata_types(settings);
-        settings.metadata_files = getmetadata_files(settings);
-        settings.metadata_knowncopybooks = getmetadata_knowncopybooks(settings);
-        settings.enable_semantic_token_provider = getBoolean("enable_semantic_token_provider", false);
-        settings.enable_text_replacement = getBoolean("enable_text_replacement", false);
-        settings.editor_margin_files = getFileFormatConfiguration();
+        settings.maintain_metadata_cache = editorHelper.getBoolean("maintain_metadata_cache", true);
+        settings.maintain_metadata_recursive_search = editorHelper.getBoolean("maintain_metadata_recursive_search", false);
+        settings.metadata_symbols = editorHelper.getmetadata_symbols(settings);
+        settings.metadata_entrypoints = editorHelper.getmetadata_entrypoints(settings);
+        settings.metadata_types = editorHelper.getmetadata_types(settings);
+        settings.metadata_files = editorHelper.getmetadata_files(settings);
+        settings.metadata_knowncopybooks = editorHelper.getmetadata_knowncopybooks(settings);
+        settings.enable_semantic_token_provider = editorHelper.getBoolean("enable_semantic_token_provider", false);
+        settings.enable_text_replacement = editorHelper.getBoolean("enable_text_replacement", false);
+        settings.editor_margin_files = editorHelper.getFileFormatConfiguration();
 
-        settings.enable_source_scanner = getBoolean("enable_source_scanner", true);
+        settings.enable_source_scanner = editorHelper.getBoolean("enable_source_scanner", true);
 
         const user_cobol_language_ids = editorConfig.get<string[]>("valid_cobol_language_ids", settings.valid_cobol_language_ids);
         let valid = true;
@@ -145,15 +142,15 @@ export class VSCOBOLConfiguration {
 
         settings.custom_intellisense_rules = editorConfig.get<string[]>("custom_intellisense_rules", settings.custom_intellisense_rules);
 
-        settings.format_constants_to_uppercase = getBoolean("format_constants_to_uppercase", settings.format_constants_to_uppercase);
+        settings.format_constants_to_uppercase = editorHelper.getBoolean("format_constants_to_uppercase", settings.format_constants_to_uppercase);
 
-        settings.margin = getBoolean("margin", settings.margin);
+        settings.margin = editorHelper.getBoolean("margin", settings.margin);
 
-        settings.enable_codelens_variable_references = getBoolean("enable_codelens_variable_references", settings.enable_codelens_variable_references);
+        settings.enable_codelens_variable_references = editorHelper.getBoolean("enable_codelens_variable_references", settings.enable_codelens_variable_references);
 
-        settings.enable_codelens_section_paragraph_references = getBoolean("enable_codelens_section_paragraph_references", settings.enable_codelens_section_paragraph_references);
+        settings.enable_codelens_section_paragraph_references = editorHelper.getBoolean("enable_codelens_section_paragraph_references", settings.enable_codelens_section_paragraph_references);
 
-        settings.enable_codelens_copy_replacing = getBoolean("enable_codelens_copy_replacing", settings.enable_codelens_copy_replacing);
+        settings.enable_codelens_copy_replacing = editorHelper.getBoolean("enable_codelens_copy_replacing", settings.enable_codelens_copy_replacing);
 
         // use the enable_source_scanner to turn off other features.. aka lets dum things down
         if (settings.enable_source_scanner === false) {
@@ -162,29 +159,29 @@ export class VSCOBOLConfiguration {
             settings.enable_text_replacement = false;
         }
 
-        settings.outline_max_depth = getNumber("outline_max_depth", settings.outline_max_depth);
+        settings.outline_max_depth = editorHelper.getNumber("outline_max_depth", settings.outline_max_depth);
 
-        settings.hover_show_variable_definition = getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
+        settings.hover_show_variable_definition = editorHelper.getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
-        settings.out_of_range_tabstop_size = getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);
+        settings.out_of_range_tabstop_size = editorHelper.getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);
 
-        settings.anchor_tabstops = getIAnchorTabInfo();
+        settings.anchor_tabstops = editorHelper.getIAnchorTabInfo();
 
-        settings.enable_tabstops_anchors = getBoolean("enable_tabstops_anchors", settings.enable_tabstops_anchors);
+        settings.enable_tabstops_anchors = editorHelper.getBoolean("enable_tabstops_anchors", settings.enable_tabstops_anchors);
 
-        settings.enable_rocket_cobol_lsp_when_active = getBoolean("enable_rocket_cobol_lsp_when_active", settings.enable_rocket_cobol_lsp_when_active);
+        settings.enable_rocket_cobol_lsp_when_active = editorHelper.getBoolean("enable_rocket_cobol_lsp_when_active", settings.enable_rocket_cobol_lsp_when_active);
 
-        settings.enable_rocket_cobol_lsp_lang_server_control = getBoolean("enable_rocket_cobol_lsp_lang_server_control", settings.enable_rocket_cobol_lsp_lang_server_control);
+        settings.enable_rocket_cobol_lsp_lang_server_control = editorHelper.getBoolean("enable_rocket_cobol_lsp_lang_server_control", settings.enable_rocket_cobol_lsp_lang_server_control);
 
-        settings.enable_exec_sql_cursors = getBoolean("enable_exec_sql_cursors", settings.enable_exec_sql_cursors);
+        settings.enable_exec_sql_cursors = editorHelper.getBoolean("enable_exec_sql_cursors", settings.enable_exec_sql_cursors);
 
-        settings.scan_comments_for_references = getBoolean("scan_comments_for_references", settings.scan_comments_for_references);
+        settings.scan_comments_for_references = editorHelper.getBoolean("scan_comments_for_references", settings.scan_comments_for_references);
 
-        settings.scan_comment_for_ls_control = getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
+        settings.scan_comment_for_ls_control = editorHelper.getBoolean("scan_comment_for_ls_control", settings.scan_comments_for_references);
 
-        settings.scan_comment_begin_ls_ignore = getString("scan_comment_begin_ls_ignore", settings.scan_comment_begin_ls_ignore);
+        settings.scan_comment_begin_ls_ignore = editorHelper.getString("scan_comment_begin_ls_ignore", settings.scan_comment_begin_ls_ignore);
 
-        settings.scan_comment_end_ls_ignore = getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
+        settings.scan_comment_end_ls_ignore = editorHelper.getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
 
         return settings;
     }
@@ -214,313 +211,302 @@ export class VSCOBOLConfiguration {
     }
 
     public static get(): ICOBOLSettings {
-        // const j = cloneObject<ICOBOLSettings>(VSCOBOLConfiguration._settings);
-        // j.scan_comment_begin_ls_ignore;
         return VSCOBOLConfiguration._settings;
     }
 
-    public static reinit(externalFeatures: IExternalFeatures): ICOBOLSettings {
-        VSCOBOLConfiguration.initSettings(VSCOBOLConfiguration._settings, externalFeatures);
+    public static get_using_textdocument(doc: TextDocument,externalFeatures: IExternalFeatures): ICOBOLSettings {
+        const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(doc);
+        const config = new COBOLSettings();
+        VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
+        return config;
+    }
+
+    public static reinitWorkspaceSettings(externalFeatures: IExternalFeatures): ICOBOLSettings {
+        const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
+        VSCOBOLConfiguration.initSettings(editorConfig, VSCOBOLConfiguration._settings, externalFeatures);
         return VSCOBOLConfiguration.get();
     }
 }
 
 
-
-function getIAnchorTabInfo(): IAnchorTabInfo[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    const files: IAnchorTabInfo[] | undefined = editorConfig.get<IAnchorTabInfo[]>("tabstops_anchors");
-    if (files === undefined || files === null) {
-        return [];
+class VSCOBOLConfigurationHelper {
+    readonly editorConfig:WorkspaceConfiguration;
+    readonly DEFAULT_COPYBOOK_DIR: string[] = [];
+    readonly DEFAULT_COPYBOOK_EXTS = ["cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", "dds", "ss", "wks"];
+    readonly DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
+    readonly DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
+    
+    constructor(editorConfig: WorkspaceConfiguration) {
+        this.editorConfig = editorConfig;
     }
 
-    return files;
-}
+    public getIAnchorTabInfo(): IAnchorTabInfo[] {
+        const files: IAnchorTabInfo[] | undefined = this.editorConfig.get<IAnchorTabInfo[]>("tabstops_anchors");
+        if (files === undefined || files === null) {
+            return [];
+        }
 
-function getFileFormatConfiguration(): IEditorMarginFiles[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    const files: IEditorMarginFiles[] | undefined = editorConfig.get<IEditorMarginFiles[]>("fileformat");
-    if (files === undefined || files === null) {
-        return [];
+        return files;
     }
 
-    return files;
-}
+    public getFileFormatConfiguration(): IEditorMarginFiles[] {
+        const files: IEditorMarginFiles[] | undefined = this.editorConfig.get<IEditorMarginFiles[]>("fileformat");
+        if (files === undefined || files === null) {
+            return [];
+        }
 
-function getBoolean(configSection: string, defaultValue: boolean): boolean {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let expEnabled = editorConfig.get<boolean>(configSection);
-    if (expEnabled === undefined || expEnabled === null) {
-        expEnabled = defaultValue;
+        return files;
     }
-    return expEnabled;
-}
 
-function getNumber(configSection: string, defaultValue: number): number {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let lineLimit = editorConfig.get<number>(configSection);
-    if (lineLimit === undefined || lineLimit === null) {
-        lineLimit = defaultValue;
+    public getBoolean(configSection: string, defaultValue: boolean): boolean {
+        let expEnabled = this.editorConfig.get<boolean>(configSection);
+        if (expEnabled === undefined || expEnabled === null) {
+            expEnabled = defaultValue;
+        }
+        return expEnabled;
     }
-    return lineLimit;
-}
 
-function getString(configSection: string, defaultValue: string): string {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let expEnabled = editorConfig.get<string>(configSection);
-    if (expEnabled === undefined || expEnabled === null) {
-        expEnabled = defaultValue;
+    public getNumber(configSection: string, defaultValue: number): number {
+        let lineLimit = this.editorConfig.get<number>(configSection);
+        if (lineLimit === undefined || lineLimit === null) {
+            lineLimit = defaultValue;
+        }
+        return lineLimit;
     }
-    return expEnabled;
-}
 
-function getPreScanLineLimit(): number {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let lineLimit = editorConfig.get<number>("pre_scan_line_limit");
-    if (lineLimit === undefined || lineLimit === null) {
-        lineLimit = 25;
+    public getString(configSection: string, defaultValue: string): string {
+        let expEnabled = this.editorConfig.get<string>(configSection);
+        if (expEnabled === undefined || expEnabled === null) {
+            expEnabled = defaultValue;
+        }
+        return expEnabled;
     }
-    return lineLimit;
-}
 
-function getscan_comment_copybook_token(): string {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let hintToken = editorConfig.get<string>("scan_comment_copybook_token");
-    if (hintToken === undefined || hintToken === null) {
-        hintToken = "source-dependency";
+    public getPreScanLineLimit(): number {
+        let lineLimit = this.editorConfig.get<number>("pre_scan_line_limit");
+        if (lineLimit === undefined || lineLimit === null) {
+            lineLimit = 25;
+        }
+        return lineLimit;
     }
-    return hintToken;
-}
 
-function getIntellisense_item_limit(): number {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let itemLimit = editorConfig.get<number>("intellisense_item_limit");
-    if (itemLimit === undefined || itemLimit === null) {
-        itemLimit = 0;
+    public getscan_comment_copybook_token(): string {
+        let hintToken = this.editorConfig.get<string>("scan_comment_copybook_token");
+        if (hintToken === undefined || hintToken === null) {
+            hintToken = "source-dependency";
+        }
+        return hintToken;
     }
-    return itemLimit;
-}
 
-function isOutlineEnabled(): outlineFlag {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    const outlineEnabled = editorConfig.get("outline");
-    if (outlineEnabled === undefined || outlineEnabled === null) {
+    public getIntellisense_item_limit(): number {
+        let itemLimit = this.editorConfig.get<number>("intellisense_item_limit");
+        if (itemLimit === undefined || itemLimit === null) {
+            itemLimit = 0;
+        }
+        return itemLimit;
+    }
+
+    public isOutlineEnabled(): outlineFlag {
+        const outlineEnabled = this.editorConfig.get("outline");
+        if (outlineEnabled === undefined || outlineEnabled === null) {
+            return outlineFlag.On;
+        }
+
+        switch (outlineEnabled) {
+            case "on": return outlineFlag.On;
+            case "off": return outlineFlag.Off;
+            case "partial": return outlineFlag.Partial;
+            case "skeleton": return outlineFlag.Skeleton;
+        }
         return outlineFlag.On;
     }
 
-    switch (outlineEnabled) {
-        case "on": return outlineFlag.On;
-        case "off": return outlineFlag.Off;
-        case "partial": return outlineFlag.Partial;
-        case "skeleton": return outlineFlag.Skeleton;
-    }
-    return outlineFlag.On;
-}
+    public expandEnvVars(startEnv: string): string {
+        let complete = false;
+        let env: string = startEnv;
 
-const DEFAULT_COPYBOOK_DIR: string[] = [];
-
-function expandEnvVars(startEnv: string): string {
-    let complete = false;
-    let env: string = startEnv;
-
-    while (complete === false) {
-        const indexOfEnv = env.indexOf("${env:");
-        if (indexOfEnv === -1) {
-            complete = true;
-        } else {
-            const lenOfValue = env.indexOf("}") - (indexOfEnv + 6);
-            const envValue = env.substr(6 + indexOfEnv, lenOfValue);
-            const left = env.substring(0, indexOfEnv);
-            const right = env.substring(1 + env.indexOf("}"));
-            env = left + process.env[envValue] + right;
-        }
-    }
-
-    return env;
-}
-
-function getPathDelimiter(): string {
-    return process.platform === "win32" ? ";" : ":";
-}
-
-function getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSearchDirectory: string[]): string[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let dirs = editorConfig.get<string[]>("copybookdirs");
-    if (!dirs || (dirs !== null && dirs.length === 0)) {
-        dirs = DEFAULT_COPYBOOK_DIR;
-    }
-
-    const extraDirs: string[] = [];
-
-    for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
-        let dir = dirs[dirpos];
-        if (COBOLFileUtils.isDirectPath(dir)) {
-            externalFeatures.logMessage(` non portable copybook directory ${dir} defined`);
-        }
-
-        /* remove ${workspaceFolder} */
-        dir = expandEnvVars(dir);
-
-        // eslint-disable-next-line no-template-curly-in-string
-        if (dir.startsWith("${workspaceFolder}")) {
-            // eslint-disable-next-line no-template-curly-in-string
-            dir = dir.replace("${workspaceFolder}", "").trim();
-
-            // remove / or \ forward
-            if (dir.startsWith("/") || dir.startsWith("\\")) {
-                dir = dir.substring(1).trim();
-            }
-        }
-
-        // ignore empty elements
-        if (dir.length !== 0) {
-            if (dir.startsWith("$")) {
-                const e = process.env[dir.substring(1)];
-                if (e !== undefined && e !== null) {
-                    e.split(getPathDelimiter()).forEach(function (item) {
-                        if (item !== undefined && item !== null && item.length > 0) {
-                            if (externalFeatures !== undefined) {
-                                if (externalFeatures.isDirectory(item)) {
-                                    extraDirs.push(item);
-                                } else {
-                                    invalidSearchDirectory.push(item);
-                                }
-                            } else {
-                                // just assume it is okay
-                                extraDirs.push(item);
-                            }
-                        }
-                    });
-                } else {
-                    invalidSearchDirectory.push(dir);
-                }
+        while (complete === false) {
+            const indexOfEnv = env.indexOf("${env:");
+            if (indexOfEnv === -1) {
+                complete = true;
             } else {
-                if (dir !== ".") {
-                    extraDirs.push(dir);
+                const lenOfValue = env.indexOf("}") - (indexOfEnv + 6);
+                const envValue = env.substr(6 + indexOfEnv, lenOfValue);
+                const left = env.substring(0, indexOfEnv);
+                const right = env.substring(1 + env.indexOf("}"));
+                env = left + process.env[envValue] + right;
+            }
+        }
+
+        return env;
+    }
+
+    public getPathDelimiter(): string {
+        return process.platform === "win32" ? ";" : ":";
+    }
+
+    public getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSearchDirectory: string[]): string[] {
+        let dirs = this.editorConfig.get<string[]>("copybookdirs");
+        if (!dirs || (dirs !== null && dirs.length === 0)) {
+            dirs = this.DEFAULT_COPYBOOK_DIR;
+        }
+
+        const extraDirs: string[] = [];
+
+        for (let dirpos = 0; dirpos < dirs.length; dirpos++) {
+            let dir = dirs[dirpos];
+            if (COBOLFileUtils.isDirectPath(dir)) {
+                externalFeatures.logMessage(` non portable copybook directory ${dir} defined`);
+            }
+
+            /* remove ${workspaceFolder} */
+            dir = this.expandEnvVars(dir);
+
+            // eslint-disable-next-line no-template-curly-in-string
+            if (dir.startsWith("${workspaceFolder}")) {
+                // eslint-disable-next-line no-template-curly-in-string
+                dir = dir.replace("${workspaceFolder}", "").trim();
+
+                // remove / or \ forward
+                if (dir.startsWith("/") || dir.startsWith("\\")) {
+                    dir = dir.substring(1).trim();
+                }
+            }
+
+            // ignore empty elements
+            if (dir.length !== 0) {
+                if (dir.startsWith("$")) {
+                    const e = process.env[dir.substring(1)];
+                    if (e !== undefined && e !== null) {
+                        e.split(this.getPathDelimiter()).forEach(function (item) {
+                            if (item !== undefined && item !== null && item.length > 0) {
+                                if (externalFeatures !== undefined) {
+                                    if (externalFeatures.isDirectory(item)) {
+                                        extraDirs.push(item);
+                                    } else {
+                                        invalidSearchDirectory.push(item);
+                                    }
+                                } else {
+                                    // just assume it is okay
+                                    extraDirs.push(item);
+                                }
+                            }
+                        });
+                    } else {
+                        invalidSearchDirectory.push(dir);
+                    }
+                } else {
+                    if (dir !== ".") {
+                        extraDirs.push(dir);
+                    }
                 }
             }
         }
+
+        return extraDirs;
     }
 
-    return extraDirs;
-}
-
-const DEFAULT_COPYBOOK_EXTS = ["cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", "dds", "ss", "wks"];
-const DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
-
-function getCopybookExts(): string[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let extensions = editorConfig.get<string[]>("copybookexts");
-    if (!extensions || (extensions !== null && extensions.length === 0)) {
-        extensions = DEFAULT_COPYBOOK_EXTS;
-    }
-    extensions.push("");
-    return extensions;
-}
-
-function getProgram_extensions(): string[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let extensions = editorConfig.get<string[]>("program_extensions");
-    if (!extensions || (extensions !== null && extensions.length === 0)) {
-        extensions = DEFAULT_PROGRAM_EXTS;
-    }
-    return extensions;
-}
-
-
-const DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
-
-function getTabStops(): number[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let tabStops = editorConfig.get<number[]>("tabstops");
-    if (!tabStops || (tabStops !== null && tabStops.length === 0)) {
-        tabStops = DEFAULT_RULER;
-    }
-    return tabStops;
-}
-
-function getWorkspacefolders_order(): string[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let dirs = editorConfig.get<string[]>("workspacefolders_order");
-    if (!dirs || (dirs !== null && dirs.length === 0)) {
-        dirs = [];
-    }
-    return dirs;
-}
-
-
-function getlinter_house_standards_rules(): string[] {
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let standards = editorConfig.get<string[]>("linter_house_standards_rules");
-    if (!standards || (standards !== null && standards.length === 0)) {
-        standards = [];
-    }
-    return standards;
-}
-
-function getmetadata_symbols(settings: ICOBOLSettings): string[] {
-    if (settings.maintain_metadata_cache === false) {
-        return [];
-    }
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let symbols = editorConfig.get<string[]>("metadata_symbols");
-    if (!symbols || (symbols !== null && symbols.length === 0)) {
-        symbols = [];
-    }
-    return symbols;
-}
-
-
-function getmetadata_entrypoints(settings: ICOBOLSettings): string[] {
-    if (settings.maintain_metadata_cache === false) {
-        return [];
-    }
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let entrypoints = editorConfig.get<string[]>("metadata_entrypoints");
-    if (!entrypoints || (entrypoints !== null && entrypoints.length === 0)) {
-        entrypoints = [];
-    }
-    return entrypoints;
-}
-
-function getmetadata_types(settings: ICOBOLSettings): string[] {
-    if (settings.maintain_metadata_cache === false) {
-        return [];
-    }
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let metadata_types = editorConfig.get<string[]>("metadata_types");
-    if (!metadata_types || (metadata_types !== null && metadata_types.length === 0)) {
-        metadata_types = [];
-    }
-    return metadata_types;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getmetadata_files(config: ICOBOLSettings): string[] {
-    if (config.maintain_metadata_cache === false) {
-        return [];
+    public getCopybookExts(): string[] {
+        let extensions = this.editorConfig.get<string[]>("copybookexts");
+        if (!extensions || (extensions !== null && extensions.length === 0)) {
+            extensions = this.DEFAULT_COPYBOOK_EXTS;
+        }
+        extensions.push("");
+        return extensions;
     }
 
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let metadata_files = editorConfig.get<string[]>("metadata_files");
-    if (!metadata_files || (metadata_files !== null && metadata_files.length === 0)) {
-        metadata_files = [];
+    public getProgram_extensions(): string[] {
+        let extensions = this.editorConfig.get<string[]>("program_extensions");
+        if (!extensions || (extensions !== null && extensions.length === 0)) {
+            extensions = this.DEFAULT_PROGRAM_EXTS;
+        }
+        return extensions;
+    }
+ 
+    public getTabStops(): number[] {
+        let tabStops = this.editorConfig.get<number[]>("tabstops");
+        if (!tabStops || (tabStops !== null && tabStops.length === 0)) {
+            tabStops = this.DEFAULT_RULER;
+        }
+        return tabStops;
     }
 
-    return metadata_files;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getmetadata_knowncopybooks(config: ICOBOLSettings): string[] {
-    if (config.maintain_metadata_cache === false) {
-        return [];
+    public getWorkspacefolders_order(): string[] {
+        let dirs = this.editorConfig.get<string[]>("workspacefolders_order");
+        if (!dirs || (dirs !== null && dirs.length === 0)) {
+            dirs = [];
+        }
+        return dirs;
     }
 
-    const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
-    let metadata_knowncopybooks = editorConfig.get<string[]>("metadata_knowncopybooks");
-    if (!metadata_knowncopybooks || (metadata_knowncopybooks !== null && metadata_knowncopybooks.length === 0)) {
-        metadata_knowncopybooks = [];
+
+    public getlinter_house_standards_rules(): string[] {
+        let standards = this.editorConfig.get<string[]>("linter_house_standards_rules");
+        if (!standards || (standards !== null && standards.length === 0)) {
+            standards = [];
+        }
+        return standards;
     }
 
-    return metadata_knowncopybooks;
+    public getmetadata_symbols(settings: ICOBOLSettings): string[] {
+        if (settings.maintain_metadata_cache === false) {
+            return [];
+        }
+        let symbols = this.editorConfig.get<string[]>("metadata_symbols");
+        if (!symbols || (symbols !== null && symbols.length === 0)) {
+            symbols = [];
+        }
+        return symbols;
+    }
+
+
+    public getmetadata_entrypoints(settings: ICOBOLSettings): string[] {
+        if (settings.maintain_metadata_cache === false) {
+            return [];
+        }
+        let entrypoints = this.editorConfig.get<string[]>("metadata_entrypoints");
+        if (!entrypoints || (entrypoints !== null && entrypoints.length === 0)) {
+            entrypoints = [];
+        }
+        return entrypoints;
+    }
+
+    public getmetadata_types(settings: ICOBOLSettings): string[] {
+        if (settings.maintain_metadata_cache === false) {
+            return [];
+        }
+        let metadata_types = this.editorConfig.get<string[]>("metadata_types");
+        if (!metadata_types || (metadata_types !== null && metadata_types.length === 0)) {
+            metadata_types = [];
+        }
+        return metadata_types;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getmetadata_files(config: ICOBOLSettings): string[] {
+        if (config.maintain_metadata_cache === false) {
+            return [];
+        }
+
+        let metadata_files = this.editorConfig.get<string[]>("metadata_files");
+        if (!metadata_files || (metadata_files !== null && metadata_files.length === 0)) {
+            metadata_files = [];
+        }
+
+        return metadata_files;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getmetadata_knowncopybooks(config: ICOBOLSettings): string[] {
+        if (config.maintain_metadata_cache === false) {
+            return [];
+        }
+
+        let metadata_knowncopybooks = this.editorConfig.get<string[]>("metadata_knowncopybooks");
+        if (!metadata_knowncopybooks || (metadata_knowncopybooks !== null && metadata_knowncopybooks.length === 0)) {
+            metadata_knowncopybooks = [];
+        }
+
+        return metadata_knowncopybooks;
+    }
 }

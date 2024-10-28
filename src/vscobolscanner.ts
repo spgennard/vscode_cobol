@@ -10,7 +10,6 @@ import { COBOLUtils } from "./cobolutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 
 import { VSExternalFeatures } from "./vsexternalfeatures";
-// import { VSExtensionUtils } from "./vsextutis";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
@@ -103,6 +102,7 @@ export class VSCOBOLSourceScanner {
     }
 
     public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
+
         if (config.enable_source_scanner === false) {
             return undefined;
         }

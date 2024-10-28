@@ -739,7 +739,7 @@ export class COBOLUtils {
         defaultFoldStyle: intellisenseStyle): void {
         const uri = activeEditor.document.uri;
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document,settings);
         if (current === undefined) {
             VSLogger.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
             return;

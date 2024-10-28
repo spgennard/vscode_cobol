@@ -10,6 +10,7 @@ import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { ColourTagHandler } from "./vscolourcomments";
 import { fileformatStrategy } from "./iconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 const defaultTrailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
     light: {
@@ -78,7 +79,7 @@ export class VSmargindecorations extends ColourTagHandler {
 
         const doc: TextDocument = activeTextEditor.document;
         const defaultDecorationOptions: DecorationOptions[] = [];
-        const configHandler = VSCOBOLConfiguration.get();
+        const configHandler = VSCOBOLConfiguration.get_using_textdocument(doc, VSExternalFeatures);
         const textLanguage: TextLanguage = VSExtensionUtils.isSupportedLanguage(doc);
 
         if (textLanguage === TextLanguage.Unknown) {

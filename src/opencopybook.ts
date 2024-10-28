@@ -51,8 +51,8 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const locations: vscode.Location[] = [];
 
-        const config = VSCOBOLConfiguration.get();
-        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (qcp === undefined) {
             return this.resolveDefinitionsFallback(true, document, pos, ct);
         }

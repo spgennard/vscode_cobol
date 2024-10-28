@@ -6,6 +6,8 @@ import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { COBOLUtils, FoldAction } from "./cobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class COBOLCaseFormatter {
 
@@ -36,8 +38,8 @@ export class COBOLCaseFormatter {
         }
 
         const langid = document.languageId;
-
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.settings);
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (current === undefined) {
             return;
         }

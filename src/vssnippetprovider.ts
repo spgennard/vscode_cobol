@@ -7,6 +7,7 @@ import { KnownAPIs } from "./keywords/cobolCallTargets";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCustomIntelliseRules } from "./vscustomrules";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 const jsonCRLF = "\r\n";
 
@@ -1625,7 +1626,8 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
             return [];
         }
 
-        const config = VSCOBOLConfiguration.get();
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+
         if (config.snippets === false) {
             return [];
         }

@@ -6,6 +6,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSLogger } from "./vslogger";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class COBOLSourceDefinition implements vscode.DefinitionProvider {
 
@@ -21,11 +22,11 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         const locations: vscode.Location[] = [];
 
         let loc;
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.get();
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
 
         const theline = document.lineAt(position.line).text;
         if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {
-            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
             if (qcp === undefined) {
                 return locations;
             }
@@ -38,7 +39,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         if (theline.match(/.*(new\s*|type).*$/i)) {
-            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
             if (qcp === undefined) {
                 return locations;
             }
@@ -51,7 +52,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         if (theline.match(/.*(invoke\s*|::)(.*$)/i)) {
-            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+            const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
             if (qcp === undefined) {
                 return locations;
             }
@@ -63,12 +64,12 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         /* is it a known variable? */
-        if (this.getVariableInCurrentDocument(locations, document, position, settings)) {
+        if (this.getVariableInCurrentDocument(locations, document, position, config)) {
             return locations;
         }
 
         /* is it a sql cursor? */
-        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (qcp !== undefined) {
             if (VSCOBOLSourceScannerTools.isPositionInEXEC(qcp, position)) {
                 const loc = this.getSQLCursor(document, qcp, position);
@@ -170,7 +171,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
             return false;
         }
 
-        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,settings);
         if (sf === undefined) {
             return false;
         }

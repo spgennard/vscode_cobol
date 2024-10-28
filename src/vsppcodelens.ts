@@ -5,15 +5,13 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { ExtensionDefaults } from "./extensionDefaults";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class VSPPCodeLens implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
 
-    private settings: ICOBOLSettings;
-
     constructor() {
-        this.settings = VSCOBOLConfiguration.get();
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         vscode.workspace.onDidChangeConfiguration((_) => {
@@ -21,14 +19,14 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         });
     }
 
-    private scanTargetUse(document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
+    private scanTargetUse(settings: ICOBOLSettings, document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
         // not interested
         if (targetToken.isTokenFromSourceDependancyCopyBook || targetToken.ignoreInOutlineView) {
             return;
         }
 
         const refs = current.sourceReferences.targetReferences.get(target);
-        if (refs !== undefined && this.settings.enable_codelens_section_paragraph_references) {
+        if (refs !== undefined && settings.enable_codelens_section_paragraph_references) {
             const tupRefs = current.sourceReferences.getReferenceInformation4targetRefs(target, current.sourceFileId, targetToken.startLine, targetToken.startColumn);
             
             // no references found
@@ -57,7 +55,8 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
     public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
         const lens: vscode.CodeLens[] = [];
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.settings);
+        const settings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (current === undefined) {
             return lens;
         }
@@ -65,7 +64,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         const sourceFileId = current.sourceFileId;
 
         // if codelens for variables enabled?
-        if (this.settings.enable_codelens_variable_references) {
+        if (settings.enable_codelens_variable_references) {
             if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
                 for (const [avar, vars] of current.constantsOrVariables) {
                     for (const currentVar of vars) {
@@ -108,20 +107,20 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         }
 
         // codelens for sections & paragraphs enabled?
-        if (this.settings.enable_codelens_section_paragraph_references) {
+        if (settings.enable_codelens_section_paragraph_references) {
             if (current.sourceReferences !== undefined && current.sourceReferences.sharedParagraphs !== undefined) {
                 for (const [a, b] of current.sections) {
-                    this.scanTargetUse(document, lens, current, a, b);
+                    this.scanTargetUse(settings, document, lens, current, a, b);
                 }
 
                 for (const [a, b] of current.paragraphs) {
-                    this.scanTargetUse(document, lens, current, a, b);
+                    this.scanTargetUse(settings, document, lens, current, a, b);
                 }
             }
         }
 
         // codelens for simple copy replacing
-        if (this.settings.enable_codelens_copy_replacing) {
+        if (settings.enable_codelens_copy_replacing) {
             for (const [, cbInfo] of current.copyBooksUsed) {
                 if (!cbInfo.scanComplete) {
                     continue;
