@@ -170,7 +170,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			}
 		}
 
-		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get_using_textdocument(document,VSExternalFeatures);
+		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get_resource_settings(document,VSExternalFeatures);
 		return this.getKeywordsGivenPartialWord(iconfig, wordToComplete, 128, document.languageId);
 	}
 }

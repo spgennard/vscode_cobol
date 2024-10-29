@@ -210,11 +210,11 @@ export class VSCOBOLConfiguration {
         settings.enable_text_replacement = false;
     }
 
-    public static get(): ICOBOLSettings {
+    public static get_workspace_settings(): ICOBOLSettings {
         return VSCOBOLConfiguration._settings;
     }
 
-    public static get_using_textdocument(doc: TextDocument,externalFeatures: IExternalFeatures): ICOBOLSettings {
+    public static get_resource_settings(doc: TextDocument,externalFeatures: IExternalFeatures): ICOBOLSettings {
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(doc);
         const config = new COBOLSettings();
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
@@ -224,7 +224,7 @@ export class VSCOBOLConfiguration {
     public static reinitWorkspaceSettings(externalFeatures: IExternalFeatures): ICOBOLSettings {
         const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
         VSCOBOLConfiguration.initSettings(editorConfig, VSCOBOLConfiguration._settings, externalFeatures);
-        return VSCOBOLConfiguration.get();
+        return VSCOBOLConfiguration.get_workspace_settings();
     }
 }
 

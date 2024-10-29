@@ -920,9 +920,9 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("cobolplugin.processAllFilesInWorkspace", async () => {
         let settings: ICOBOLSettings;
         if (window.activeTextEditor !== undefined) {
-            settings = VSCOBOLConfiguration.get_using_textdocument(window.activeTextEditor.document, VSExternalFeatures);
+            settings = VSCOBOLConfiguration.get_resource_settings(window.activeTextEditor.document, VSExternalFeatures);
         } else {
-            settings = VSCOBOLConfiguration.get();
+            settings = VSCOBOLConfiguration.get_workspace_settings();
         }
         if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
             VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings,true, false, -1);
@@ -1242,7 +1242,7 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivateAsync(): Promise<void> {
-    COBOLUtils.saveGlobalCacheToWorkspace(VSCOBOLConfiguration.get());
+    COBOLUtils.saveGlobalCacheToWorkspace(VSCOBOLConfiguration.get_workspace_settings());
 }
 
 

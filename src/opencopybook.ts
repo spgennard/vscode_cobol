@@ -51,7 +51,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const locations: vscode.Location[] = [];
 
-        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
         const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (qcp === undefined) {
             return this.resolveDefinitionsFallback(true, document, pos, ct);
@@ -101,7 +101,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async resolveDefinitionsFallback(everything: boolean, doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
-        const config = VSCOBOLConfiguration.get_using_textdocument(doc, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(doc, VSExternalFeatures);
         const line = doc.lineAt(pos);
         const text = line.text;
         const textLower = text.toLowerCase().replace("\t", " ");

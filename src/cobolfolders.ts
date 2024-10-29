@@ -8,7 +8,7 @@ export class VSWorkspaceFolders {
             return ws;
         }
 
-        const folders_order = VSCOBOLConfiguration.get().workspacefolders_order;
+        const folders_order = VSCOBOLConfiguration.get_workspace_settings().workspacefolders_order;
 
         // make a map of the folders
         const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();

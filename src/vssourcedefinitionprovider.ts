@@ -22,7 +22,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         const locations: vscode.Location[] = [];
 
         let loc;
-        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
 
         const theline = document.lineAt(position.line).text;
         if (theline.match(/.*(perform|thru|go\s*to|until|varying).*$/i)) {

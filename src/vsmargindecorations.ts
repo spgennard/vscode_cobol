@@ -79,7 +79,7 @@ export class VSmargindecorations extends ColourTagHandler {
 
         const doc: TextDocument = activeTextEditor.document;
         const defaultDecorationOptions: DecorationOptions[] = [];
-        const configHandler = VSCOBOLConfiguration.get_using_textdocument(doc, VSExternalFeatures);
+        const configHandler = VSCOBOLConfiguration.get_resource_settings(doc, VSExternalFeatures);
         const textLanguage: TextLanguage = VSExtensionUtils.isSupportedLanguage(doc);
 
         if (textLanguage === TextLanguage.Unknown) {

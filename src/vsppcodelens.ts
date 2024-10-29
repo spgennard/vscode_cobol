@@ -55,7 +55,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
     public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
         const lens: vscode.CodeLens[] = [];
 
-        const settings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
          const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (current === undefined) {
             return lens;

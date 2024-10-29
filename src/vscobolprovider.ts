@@ -251,7 +251,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         let items: CompletionItem[] = [];
 
-        const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
 
         if (iconfig.enable_data_provider === false) {
             return new CompletionList(items, false);

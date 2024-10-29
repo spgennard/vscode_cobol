@@ -8,7 +8,7 @@ export class VSCustomIntelliseRules {
     private customStartsWithRule = new Map<string, intellisenseStyle>();
 
     constructor() {
-        const settings = VSCOBOLConfiguration.get();
+        const settings = VSCOBOLConfiguration.get_workspace_settings();
         VSCustomIntelliseRules.Default = this;
         this.reFreshConfiguration(settings);
     }

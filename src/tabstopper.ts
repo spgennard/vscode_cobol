@@ -53,7 +53,7 @@ export class TabUtils {
     }
 
     public async executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): Promise<void> {
-        const settings = VSCOBOLConfiguration.get_using_textdocument(editor.document,VSExternalFeatures);
+        const settings = VSCOBOLConfiguration.get_resource_settings(editor.document,VSExternalFeatures);
 
         if (this.tabregMap.size === 0) {
             for (const lineTab of settings.anchor_tabstops) {

@@ -140,7 +140,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
             this.clear();
         }
 
-        this.config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        this.config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
         if (this.isFileExcluded(this.config)) {
             this.clear();
         }

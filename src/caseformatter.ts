@@ -38,7 +38,7 @@ export class COBOLCaseFormatter {
         }
 
         const langid = document.languageId;
-        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (current === undefined) {
             return;

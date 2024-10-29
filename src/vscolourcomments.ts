@@ -122,7 +122,7 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
             return;
         }
 
-        const configHandler = VSCOBOLConfiguration.get_using_textdocument(activeTextEditor.document, VSExternalFeatures);
+        const configHandler = VSCOBOLConfiguration.get_resource_settings(activeTextEditor.document, VSExternalFeatures);
         if (!configHandler.enable_comment_tags) {
             return;
         }

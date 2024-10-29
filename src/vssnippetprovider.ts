@@ -1626,7 +1626,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
             return [];
         }
 
-        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
 
         if (config.snippets === false) {
             return [];

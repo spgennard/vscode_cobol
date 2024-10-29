@@ -29,7 +29,7 @@ export class VSSemanticProvider {
     }
 
     private static providerImpl(document: vscode.TextDocument): vscode.ProviderResult<vscode.SemanticTokens> {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.get_using_textdocument(document,VSExternalFeatures);
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.get_resource_settings(document,VSExternalFeatures);
         const tokensBuilder = new vscode.SemanticTokensBuilder(legend);
         if (settings.enable_semantic_token_provider === false) {
             return tokensBuilder.build();
