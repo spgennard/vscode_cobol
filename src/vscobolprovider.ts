@@ -8,14 +8,12 @@ import { VSLogger } from "./vslogger";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { IExternalFeatures } from "./externalfeatures";
 import { VSCustomIntelliseRules } from "./vscustomrules";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
-
-    private iconfig: ICOBOLSettings;
     private features: IExternalFeatures;
 
     public constructor(config: ICOBOLSettings, features: IExternalFeatures) {
-        this.iconfig = config;
         this.features = features;
     }
 
@@ -25,8 +23,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         return ci;
     }
 
-    private getPerformTargets(document: TextDocument): TrieSearch {
-        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, this.iconfig);
+    private getPerformTargets(iconfig: ICOBOLSettings, document: TextDocument): TrieSearch {
+        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, iconfig);
 
         if (sf !== undefined) {
             if (sf.cache4PerformTargets === undefined) {
@@ -56,7 +54,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getALlPerformTargets(document: TextDocument, settings: ICOBOLSettings): CompletionItem[] {
-        const sf = VSCOBOLSourceScanner.getCachedObject(document, this.iconfig);
+        const sf = VSCOBOLSourceScanner.getCachedObject(document, settings);
         const items: CompletionItem[] = [];
 
         if (sf !== undefined) {
@@ -110,9 +108,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
 
-    private getItemsFromList(tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
-        const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
-
+    private getItemsFromList(iconfig: ICOBOLSettings, tsearch: TrieSearch, wordToComplete: string, kind: CompletionItemKind): CompletionItem[] {
         const limit: number = iconfig.intellisense_item_limit;
 
         const words: COBOLToken[] = tsearch.get(wordToComplete);
@@ -255,7 +251,9 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList> {
         let items: CompletionItem[] = [];
 
-        if (this.iconfig.enable_data_provider === false) {
+        const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+
+        if (iconfig.enable_data_provider === false) {
             return new CompletionList(items, false);
         }
 
@@ -343,11 +341,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "goto":
                         {
                             if (wordToComplete.length === 0) {
-                                items = this.getALlPerformTargets(document, this.iconfig);
+                                items = this.getALlPerformTargets(document, iconfig);
                                 listComplete = true;
                             } else {
-                                const words = this.getPerformTargets(document);
-                                items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Method);
+                                const words = this.getPerformTargets(iconfig, document);
+                                items = this.getItemsFromList(iconfig, words, wordToComplete, CompletionItemKind.Method);
                                 listComplete = false;
                             }
                             break;
@@ -355,7 +353,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
 
                     case "move":
                         {
-                            const words = this.getConstantsOrVariables(document, this.iconfig, false);
+                            const words = this.getConstantsOrVariables(document, iconfig, false);
 
                             // TODO:
                             //
@@ -374,7 +372,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                             //     words.addWord("high-values");
                             // }
 
-                            items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                            items = this.getItemsFromList(iconfig, words, wordToComplete, CompletionItemKind.Variable);
                             listComplete = false;
                             break;
                         }
@@ -412,11 +410,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "reference":
                         {
                             if (wordToComplete.length === 0) {
-                                items = this.getAllConstantsOrVariables(document, this.iconfig, false);
+                                items = this.getAllConstantsOrVariables(document, iconfig, false);
                                 listComplete = true;
                             } else {
-                                const words = this.getConstantsOrVariables(document, this.iconfig, false);
-                                items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                                const words = this.getConstantsOrVariables(document, iconfig, false);
+                                items = this.getItemsFromList(iconfig, words, wordToComplete, CompletionItemKind.Variable);
                                 listComplete = false;
                             }
                         }
@@ -424,11 +422,11 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "of":
                         {
                             if (wordToComplete.length === 0) {
-                                items = this.getAllConstantsOrVariables(document, this.iconfig, true);
+                                items = this.getAllConstantsOrVariables(document, iconfig, true);
                                 listComplete = true;
                             } else {
-                                const words = this.getConstantsOrVariables(document, this.iconfig, true);
-                                items = this.getItemsFromList(words, wordToComplete, CompletionItemKind.Variable);
+                                const words = this.getConstantsOrVariables(document, iconfig, true);
+                                items = this.getItemsFromList(iconfig, words, wordToComplete, CompletionItemKind.Variable);
                                 listComplete = false;
                             }
                         }
@@ -444,9 +442,8 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
         }
 
         if (items.length === 0 && wordBefore !== "$" && wordBefore !== ">>") {
-            const settings = VSCOBOLConfiguration.get();
-            if (settings.suggest_variables_when_context_is_unknown) {
-                items = this.getAllConstantsOrVariables(document, this.iconfig, false);
+            if (iconfig.suggest_variables_when_context_is_unknown) {
+                items = this.getAllConstantsOrVariables(document, iconfig, false);
                 listComplete = false;
             }
         }

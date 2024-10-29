@@ -13,7 +13,7 @@ export class MFDirectivesSymbolProvider implements vscode.DocumentSymbolProvider
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
-        const settings = VSCOBOLConfiguration.get();
+        const settings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
 
         if (settings.outline === outlineFlag.Off) {
             return symbols;
@@ -96,7 +96,7 @@ export class JCLDocumentSymbolProvider implements vscode.DocumentSymbolProvider 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async provideDocumentSymbols(document: vscode.TextDocument, canceltoken: vscode.CancellationToken): Promise<vscode.SymbolInformation[]> {
         const symbols: vscode.SymbolInformation[] = [];
-        const settings = VSCOBOLConfiguration.get();
+        const settings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
 
         if (settings.outline === outlineFlag.Off) {
             return symbols;

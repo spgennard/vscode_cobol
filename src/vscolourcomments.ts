@@ -6,6 +6,7 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { VSLogger } from "./vslogger";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class ColourTagHandler {
 
@@ -121,7 +122,7 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
             return;
         }
 
-        const configHandler = VSCOBOLConfiguration.get();
+        const configHandler = VSCOBOLConfiguration.get_using_textdocument(activeTextEditor.document, VSExternalFeatures);
         if (!configHandler.enable_comment_tags) {
             return;
         }

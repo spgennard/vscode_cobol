@@ -5,6 +5,7 @@ import { COBOLGlobalSymbolTable } from "./cobolglobalcache";
 import { COBOLCopyBookProvider } from "./opencopybook";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { IExternalFeatures } from "./externalfeatures";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
 
@@ -26,7 +27,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private resolveDefinitions(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Definition> {
         const locations: vscode.Location[] = [];
-        const config = VSCOBOLConfiguration.get();
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
 
         const theline = document.lineAt(position).text;
 

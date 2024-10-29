@@ -4,6 +4,7 @@ import { CancellationToken, Position, TextDocument } from "vscode";
 import { COBOLSourceScanner, COBOLVariable, SharedSourceReferences, SourceReference_Via_Length } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
@@ -20,7 +21,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
         }
 
         const workLower = word.toLowerCase();
-        const settings = VSCOBOLConfiguration.get();
+        const settings = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
         // cache current document, so interactive searches can be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
             const newCurrent = VSCOBOLSourceScanner.getCachedObject(document, settings);

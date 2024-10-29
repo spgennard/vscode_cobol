@@ -6,6 +6,7 @@ import { getCOBOLKeywordList } from "./keywords/cobolKeywords";
 import { jclStatements } from "./keywords/jclstatements";
 import { KeywordSnippetProvider, SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { VSCustomIntelliseRules } from "./vscustomrules";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class KeywordAutocompleteCompletionItemProvider implements CompletionItemProvider {
 	private isCOBOL: boolean;
@@ -33,12 +34,10 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 		}
 	}
 
-	private getKeywordsGivenPartialWord(wordToComplete: string, limit: number, langid: string): CompletionItem[] {
+	private getKeywordsGivenPartialWord(iconfig: ICOBOLSettings, wordToComplete: string, limit: number, langid: string): CompletionItem[] {
 		if (wordToComplete.length === 0) {
 			return [];
 		}
-
-		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get();
 
 		const items: CompletionItem[] = [];
 		const wordToCompleteLower = wordToComplete.toLowerCase();
@@ -171,6 +170,7 @@ export class KeywordAutocompleteCompletionItemProvider implements CompletionItem
 			}
 		}
 
-		return this.getKeywordsGivenPartialWord(wordToComplete, 128, document.languageId);
+		const iconfig: ICOBOLSettings = VSCOBOLConfiguration.get_using_textdocument(document,VSExternalFeatures);
+		return this.getKeywordsGivenPartialWord(iconfig, wordToComplete, 128, document.languageId);
 	}
 }

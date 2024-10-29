@@ -4,6 +4,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 const tokenTypes = ["label", "variable", "function", "comment"];
 const tokenModifiers = ["declaration", "readonly", "deprecated"];
@@ -28,7 +29,7 @@ export class VSSemanticProvider {
     }
 
     private static providerImpl(document: vscode.TextDocument): vscode.ProviderResult<vscode.SemanticTokens> {
-        const settings: ICOBOLSettings = VSCOBOLConfiguration.get();
+        const settings: ICOBOLSettings = VSCOBOLConfiguration.get_using_textdocument(document,VSExternalFeatures);
         const tokensBuilder = new vscode.SemanticTokensBuilder(legend);
         if (settings.enable_semantic_token_provider === false) {
             return tokensBuilder.build();

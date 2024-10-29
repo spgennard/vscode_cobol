@@ -10,6 +10,7 @@ import { colourCommentHandler } from "./vscolourcomments";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     document: vscode.TextDocument | undefined;
@@ -137,7 +138,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
             this.clear();
         }
 
-        if (this.isFileExcluded()) {
+        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        if (this.isFileExcluded(config)) {
             this.clear();
         }
 
@@ -150,9 +152,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.lineCount = 0;
     }
 
-    private isFileExcluded(): boolean {
-        const config = VSCOBOLConfiguration.get();
-
+    private isFileExcluded(config: ICOBOLSettings): boolean {
+  
         if (this.document !== undefined) {
             if (this.document.lineCount > config.scan_line_limit) {
                 this.externalFeatures.logMessage(`Aborted scanning ${this.shortWorkspaceFilename} after line limit of ${config.scan_line_limit} has been exceeded`);

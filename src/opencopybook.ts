@@ -101,7 +101,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async resolveDefinitionsFallback(everything: boolean, doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
-        const config = VSCOBOLConfiguration.get();
+        const config = VSCOBOLConfiguration.get_using_textdocument(doc, VSExternalFeatures);
         const line = doc.lineAt(pos);
         const text = line.text;
         const textLower = text.toLowerCase().replace("\t", " ");

@@ -3,6 +3,7 @@
 import { Position, Range, TextDocument, TextEditor, TextEditorEdit, Selection, window, commands } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { IAnchorTabInfo, ICOBOLSettings } from "./iconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class TabUtils {
 
@@ -52,7 +53,7 @@ export class TabUtils {
     }
 
     public async executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): Promise<void> {
-        const settings = VSCOBOLConfiguration.get();
+        const settings = VSCOBOLConfiguration.get_using_textdocument(editor.document,VSExternalFeatures);
 
         if (this.tabregMap.size === 0) {
             for (const lineTab of settings.anchor_tabstops) {
