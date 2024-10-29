@@ -85,8 +85,6 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
 
-    private fileSearchDirectory: string[] = [];
-
     // eslint-disable-next-line @typescript-eslint/ban-types
     public getFileModTimeStamp(filename: string): BigInt {
         try {
@@ -97,14 +95,6 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         }
 
         return (BigInt)(0);
-    }
-
-    public getCombinedCopyBookSearchPath(): string[] {
-        return this.fileSearchDirectory;
-    }
-
-    public setCombinedCopyBookSearchPath(fileSearchDirectory: string[]): void {
-        this.fileSearchDirectory = fileSearchDirectory;
     }
 
     public getSourceTimeout(config: ICOBOLSettings): number {

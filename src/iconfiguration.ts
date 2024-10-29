@@ -166,9 +166,14 @@ export interface ICOBOLSettings {
     scan_comment_begin_ls_ignore: string;
 
     scan_comment_end_ls_ignore: string;
+
+    // start of in memory settimgs
+    id: number;
+    file_search_directory: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
+    id: number;
     enable_tabstop: boolean;
     pre_scan_line_limit: number;
     copybooks_nested: boolean;
@@ -296,8 +301,11 @@ export class COBOLSettings implements ICOBOLSettings {
     scan_comment_begin_ls_ignore: string;
 
     scan_comment_end_ls_ignore: string;
-    
+
+    file_search_directory: string[] = [];
+
     constructor() {
+        this.id = 0;
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;

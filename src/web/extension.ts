@@ -372,7 +372,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
 
 export async function activate(context: vscode.ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
-    VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
+    settings.file_search_directory = fileSearchDirectory;
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
     await setupLogChannelAndPaths(true, settings);

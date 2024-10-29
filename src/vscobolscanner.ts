@@ -12,7 +12,7 @@ import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacec
 import { VSExternalFeatures } from "./vsexternalfeatures";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InMemoryCache: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
+const InMemoryCache_SourceScanner: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
 
 const InProgress: Map<string,number> = new Map<string,number>();
 
@@ -95,23 +95,22 @@ export class VSCOBOLSourceScanner {
         }
 
         const fileName: string = document.fileName;
-        const cachedObject = InMemoryCache.get(fileName);
+        const cachedObject = InMemoryCache_SourceScanner.get(fileName);
         if (cachedObject !== undefined) {
-            InMemoryCache.delete(fileName);
+            InMemoryCache_SourceScanner.delete(fileName);
         }
     }
 
     public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
-
         if (config.enable_source_scanner === false) {
             return undefined;
         }
 
         const fileName: string = document.fileName;
-        let cachedObject = InMemoryCache.get(fileName);
+        let cachedObject = InMemoryCache_SourceScanner.get(fileName);
         if (cachedObject !== undefined) {
             if (cachedObject.sourceHandler.getDocumentVersionId() !== BigInt(document.version)) {
-                InMemoryCache.delete(fileName);
+                InMemoryCache_SourceScanner.delete(fileName);
                 cachedObject = undefined;
             }
         }
@@ -165,22 +164,22 @@ export class VSCOBOLSourceScanner {
                         VSLogger.logMessage(` - Parsing of ${sourceHandler.getShortWorkspaceFilename()} complete ${elapsedTimeF2}ms / ${linesPerSeconds}ls `);
                     }
                     
-                    if (1+InMemoryCache.size >= config.in_memory_cache_size) {
+                    if (1+InMemoryCache_SourceScanner.size >= config.in_memory_cache_size) {
                         // drop the smallest..
                         let smallest = Number.MAX_VALUE;
                         let dropKey = "";
-                        for (const [key, val] of InMemoryCache) {
+                        for (const [key, val] of InMemoryCache_SourceScanner) {
                             if (val.tokensInOrder.length < smallest) {
                                 dropKey = key;
                                 smallest = val.tokensInOrder.length;
                             }
                         }
                         if (dropKey.length !== 0) {
-                            InMemoryCache.delete(dropKey);
+                            InMemoryCache_SourceScanner.delete(dropKey);
                         }
                     }
                 }
-                InMemoryCache.set(fileName, qcpd);
+                InMemoryCache_SourceScanner.set(fileName, qcpd);
                 return qcpd;
             }
             catch (e) {
@@ -197,7 +196,7 @@ export class VSCOBOLSourceScanner {
     }
 
     public static clearCOBOLCache(): void {
-        InMemoryCache.clear();
+        InMemoryCache_SourceScanner.clear();
         InMemoryGlobalSymbolCache.isDirty = false;
     }
 }

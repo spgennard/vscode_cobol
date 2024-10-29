@@ -7,6 +7,8 @@ import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
 
+const InMemoryCache_Settings: Map<string, ICOBOLSettings> = new Map<string, ICOBOLSettings>();
+
 export class VSCOBOLEditorConfiguration {
 
     public static getEditorConfig(): WorkspaceConfiguration {
@@ -15,7 +17,8 @@ export class VSCOBOLEditorConfiguration {
 
 
     public static getResourceEditorConfig(document: TextDocument): WorkspaceConfiguration {
-        const resource = document.uri; workspace.getConfiguration()
+        const resource = document.uri;
+
         if (resource.scheme === 'file') {
             return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig, resource);
         }
@@ -31,10 +34,10 @@ export function cloneObject<T>(a: T): T {
 
 export class VSCOBOLConfiguration {
     private static _settings: ICOBOLSettings = new COBOLSettings();
-    
+
     private static initSettings(editorConfig: WorkspaceConfiguration, settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
         const editorHelper = new VSCOBOLConfigurationHelper(editorConfig);
-        
+
         settings.enable_tabstop = editorHelper.getBoolean("enable_tabstop", false);
         settings.copybooks_nested = editorHelper.getBoolean("copybooks_nested", false);
         settings.outline = editorHelper.isOutlineEnabled();
@@ -214,11 +217,35 @@ export class VSCOBOLConfiguration {
         return VSCOBOLConfiguration._settings;
     }
 
-    public static get_resource_settings(doc: TextDocument,externalFeatures: IExternalFeatures): ICOBOLSettings {
-        const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(doc);
+    public static get_resource_settings(document: TextDocument, externalFeatures: IExternalFeatures): ICOBOLSettings {
+        const id = document.version;
+        const filename = document.uri.fsPath;
+
+        let cachedSettings = InMemoryCache_Settings.get(filename);
+        if (cachedSettings !== undefined) {
+            if (cachedSettings.id !== id) {
+                InMemoryCache_Settings.delete(filename);
+                cachedSettings = undefined;
+            } else {
+                return cachedSettings;
+            }
+        }
+
+        const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(document);
         const config = new COBOLSettings();
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
+        config.id = id;
+        InMemoryCache_Settings.set(filename, config);
         return config;
+    }
+
+    public static clearResourceCache(document: TextDocument) {
+        const filename = document.uri.fsPath;
+
+        let cachedSettings = InMemoryCache_Settings.get(filename);
+        if (cachedSettings !== undefined) {
+            InMemoryCache_Settings.delete(filename);
+        }
     }
 
     public static reinitWorkspaceSettings(externalFeatures: IExternalFeatures): ICOBOLSettings {
@@ -230,12 +257,12 @@ export class VSCOBOLConfiguration {
 
 
 class VSCOBOLConfigurationHelper {
-    readonly editorConfig:WorkspaceConfiguration;
+    readonly editorConfig: WorkspaceConfiguration;
     readonly DEFAULT_COPYBOOK_DIR: string[] = [];
     readonly DEFAULT_COPYBOOK_EXTS = ["cpy", "scr", "CPY", "SCR", "cbl", "CBL", "ccp", "dds", "ss", "wks"];
     readonly DEFAULT_PROGRAM_EXTS = ["cob", "COB", "cbl", "CBL", "cobol", "scbl", "pco"];
     readonly DEFAULT_RULER = [0, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71, 75, 79];
-    
+
     constructor(editorConfig: WorkspaceConfiguration) {
         this.editorConfig = editorConfig;
     }
@@ -422,7 +449,7 @@ class VSCOBOLConfigurationHelper {
         }
         return extensions;
     }
- 
+
     public getTabStops(): number[] {
         let tabStops = this.editorConfig.get<number[]>("tabstops");
         if (!tabStops || (tabStops !== null && tabStops.length === 0)) {

@@ -18,8 +18,6 @@ export interface IExternalFeatures {
     isFile(possibleFilename:string): boolean;
     isDirectory(possibleDirectory: string) : boolean;
     getFileModTimeStamp(filename:string):BigInt;
-    getCombinedCopyBookSearchPath(): string[];
-    setCombinedCopyBookSearchPath(fileSearchDirectory: string[]):void;
     getSourceTimeout(config: ICOBOLSettings): number;
     getURLCopyBookSearchPath(): string[];
     setURLCopyBookSearchPath(fileSearchDirectory: string[]):void;

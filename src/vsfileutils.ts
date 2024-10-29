@@ -86,7 +86,7 @@ export class VSCOBOLFileUtils {
 
         const hasDot = filename.indexOf(".");
 
-        for (const copybookdir of features.getCombinedCopyBookSearchPath()) {
+        for (const copybookdir of config.file_search_directory) {
 
             /* check for the file as is.. */
             const firstPossibleFile = path.join(copybookdir, filename);
@@ -117,7 +117,7 @@ export class VSCOBOLFileUtils {
 
         const hasDot = filename.indexOf(".");
 
-        for (const baseCopybookdir of features.getCombinedCopyBookSearchPath()) {
+        for (const baseCopybookdir of config.file_search_directory) {
             const copybookdir = path.join(baseCopybookdir, inDirectory);
 
             /* check for the file as is.. */

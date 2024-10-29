@@ -107,10 +107,6 @@ function openChangeLog(currentContext: ExtensionContext): void {
     }
 }
 
-
-
-
-
 const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",          // code scanner
     ExtensionDefaults.rocketCOBOLExtension,         // Rocket COBOL extension
@@ -712,7 +708,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 
 export async function activate(context: ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
-    VSExternalFeatures.setCombinedCopyBookSearchPath(fileSearchDirectory);
+    settings.file_search_directory = fileSearchDirectory;
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
     await setupLogChannelAndPaths(true, settings, false);
@@ -1008,7 +1004,9 @@ export async function activate(context: ExtensionContext) {
 
     context.subscriptions.push(workspace.onDidCloseTextDocument(async (doc: vscode.TextDocument) => {
         if (VSExtensionUtils.isSupportedLanguage(doc)) {
-            VSCOBOLSourceScanner.removeCachedObject(doc, settings);
+            const config = VSCOBOLConfiguration.get_resource_settings(doc, VSExternalFeatures);
+            VSCOBOLSourceScanner.removeCachedObject(doc, config);
+            VSCOBOLConfiguration.clearResourceCache(doc);
         }
     }));
 

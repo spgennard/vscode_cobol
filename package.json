@@ -275,6 +275,7 @@
               }
             }
           },
+          "scope": "resource",
           "default": [
             "cpy",
             "CPY",
@@ -349,6 +350,7 @@
               }
             }
           },
+          "scope": "resource",
           "default": [
             "$COBCPY",
             "$COPYPATH"
