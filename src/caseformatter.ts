@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import { CancellationToken, FormattingOptions, TextDocument, TextEdit, Position } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
-import { COBOLUtils, FoldAction } from "./cobolutils";
+import { COBOLUtils, FoldAction } from "./vscobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";

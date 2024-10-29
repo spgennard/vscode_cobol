@@ -7,6 +7,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { VSLogger } from "./vslogger";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export class ColourTagHandler {
 
@@ -83,8 +84,7 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
     }
  
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
-        const configHandler = VSCOBOLConfiguration.get();
+    processComment(configHandler: ICOBOLSettings, sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
         if (!configHandler.enable_comment_tags) {
             return;
         }

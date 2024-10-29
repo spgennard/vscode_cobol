@@ -17,7 +17,7 @@ import { CobolReferenceProvider } from "./vsreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./vssourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./vscobolprovider";
-import { COBOLUtils } from "./cobolutils";
+import { COBOLUtils } from "./vscobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -693,7 +693,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.processAllFilesInWorkspaceOnStartup", async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(false, false, -1);
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings,false, false, -1);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runCommand", function (si: SourceOrFolderTreeItem) {
@@ -918,9 +918,14 @@ export async function activate(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.processAllFilesInWorkspace", async () => {
-
+        let settings: ICOBOLSettings;
+        if (window.activeTextEditor !== undefined) {
+            settings = VSCOBOLConfiguration.get_using_textdocument(window.activeTextEditor.document, VSExternalFeatures);
+        } else {
+            settings = VSCOBOLConfiguration.get();
+        }
         if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
-            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false, -1);
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings,true, false, -1);
             return;
         }
 
@@ -947,12 +952,12 @@ export async function activate(context: ExtensionContext) {
                     }
 
                     const threadCount: number = Number.parseInt(value, 10);
-                    VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, true, threadCount);
+                    VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, true, true, threadCount);
 
                 });
 
             } else {
-                VSCobScanner.processAllFilesInWorkspaceOutOfProcess(true, false, -1);
+                VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, true, false, -1);
             }
         });
     }));

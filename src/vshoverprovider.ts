@@ -2,7 +2,7 @@ import { ProviderResult } from "vscode";
 import vscode from "vscode";
 import { ICOBOLSettings, hoverApi } from "./iconfiguration";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
-import { COBOLUtils } from "./cobolutils";
+import { COBOLUtils } from "./vscobolutils";
 import { COBOLSourceScanner, COBOLToken, COBOLVariable, SQLDeclare } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 // import { ESourceFormat } from "./externalfeatures";

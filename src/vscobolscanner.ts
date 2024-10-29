@@ -6,7 +6,7 @@ import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalca
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTable } from "./cobolglobalcache";
-import { COBOLUtils } from "./cobolutils";
+import { COBOLUtils } from "./vscobolutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 
 import { VSExternalFeatures } from "./vsexternalfeatures";

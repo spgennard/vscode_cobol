@@ -7,6 +7,7 @@ import path from "path";
 import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { SimpleStringBuilder } from "./stringutils";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     document: string;
@@ -27,8 +28,9 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
     private readonly lineRegExFilter: RegExp | undefined;
+    settings: ICOBOLSettings;
 
-    public constructor(regEx: RegExp | undefined, document: string, features: IExternalFeatures) {
+    public constructor(settings: ICOBOLSettings, regEx: RegExp | undefined, document: string, features: IExternalFeatures) {
         this.lineRegExFilter = regEx;
         this.document = document;
         this.dumpNumbersInAreaA = false;
@@ -43,7 +45,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.notedCommentRanges = [];
         this.commentsIndex = new Map<number, string>();
         this.commentsIndexInline = new Map<number, boolean>();
-
+        this.settings = settings;
         this.shortFilename = this.findShortWorkspaceFilename(document, features);
         const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
 
@@ -102,7 +104,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
-                commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
+                commentCallback.processComment(this.settings, this, line, this.getFilename(), lineNumber, startPos, format);
             }
         }
     }

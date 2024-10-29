@@ -6,7 +6,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { CobolLinterProviderSymbols } from "./externalfeatures";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
-import { COBOLUtils } from "./cobolutils";
+import { COBOLUtils } from "./vscobolutils";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import path from "path";
 import { VSCOBOLEditorConfiguration } from "./vsconfiguration";

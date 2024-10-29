@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { ESourceFormat } from "./externalfeatures";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export interface ICommentCallback {
-    processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber:number, startPos: number, format: ESourceFormat) : void;
+    processComment(config: ICOBOLSettings, sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber:number, startPos: number, format: ESourceFormat) : void;
 }
 
 export class commentRange {

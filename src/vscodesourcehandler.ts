@@ -110,6 +110,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     tabSize:number;
     
+    config: ICOBOLSettings;
+
     public constructor(document: vscode.TextDocument) {
         this.document = document;
         this.dumpNumbersInAreaA = false;
@@ -138,8 +140,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
             this.clear();
         }
 
-        const config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
-        if (this.isFileExcluded(config)) {
+        this.config = VSCOBOLConfiguration.get_using_textdocument(document, VSExternalFeatures);
+        if (this.isFileExcluded(this.config)) {
             this.clear();
         }
 
@@ -219,7 +221,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
         if (this.commentCallbacks !== undefined) {
             for (const commentCallback of this.commentCallbacks) {
-                commentCallback.processComment(this, line, this.getFilename(), lineNumber, startPos, format);
+                commentCallback.processComment(this.config, this, line, this.getFilename(), lineNumber, startPos, format);
             }
         }
     }

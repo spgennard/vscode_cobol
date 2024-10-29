@@ -6,7 +6,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
-import { COBOLUtils } from "./cobolutils";
+import { COBOLUtils } from "./vscobolutils";
 
 let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;

@@ -2191,7 +2191,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             cbInfo.fileName = fileName;
                             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
                             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
-                            const qfile = new FileSourceHandler(undefined, fileName, this.externalFeatures);
+                            const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                             const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                             this.sourceReferences.state.ignoreInOutlineView = true;
                             this.sourceReferences.topLevel = true;
@@ -2939,7 +2939,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                         // add the specific version
                         this.copyBooksUsed.set(fileName, copybookToken);
-                        const qfile = new FileSourceHandler(undefined, fileName, this.externalFeatures);
+                        const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                         const currentTopLevel = this.sourceReferences.topLevel;
                         const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
                         state.ignoreInOutlineView = true;
@@ -2998,7 +2998,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
 
-                            const qfile = new FileSourceHandler(possRegExe, fileName, this.externalFeatures);
+                            const qfile = new FileSourceHandler(this.configHandler, possRegExe, fileName, this.externalFeatures);
                             const currentIgnoreInOutlineView: boolean = this.sourceReferences.state.ignoreInOutlineView;
                             const currentTopLevel = this.sourceReferences.topLevel;
                             this.sourceReferences.state.ignoreInOutlineView = true;
@@ -3038,7 +3038,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private lastCOBOLLS: COBOLToken|undefined = undefined;
 
-    public processComment(sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
+    public processComment(configHandler: ICOBOLSettings, sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void {
         this.sourceReferences.state.currentLineIsComment = true;
 
         // should consider other inline comments (aka terminal) and fixed position comments

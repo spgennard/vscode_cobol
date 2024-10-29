@@ -13,7 +13,7 @@ import { COBOLOutputChannel, VSLogger } from "../vslogger";
 import { COBOLSourceDefinition } from "../vssourcedefinitionprovider";
 import { KeywordAutocompleteCompletionItemProvider } from "../vskeywordprovider";
 import { CobolSourceCompletionItemProvider } from "../vscobolprovider";
-import { COBOLUtils } from "../cobolutils";
+import { COBOLUtils } from "../vscobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
 import { commands, extensions, languages, ProviderResult, workspace } from "vscode";

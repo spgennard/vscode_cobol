@@ -1,6 +1,6 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument, TextLine } from "vscode";
 import { COBOLSourceScanner, SourceScannerUtils } from "./cobolsourcescanner";
-import { COBOLUtils, FoldAction } from "./cobolutils";
+import { COBOLUtils, FoldAction } from "./vscobolutils";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { KnownAPIs } from "./keywords/cobolCallTargets";

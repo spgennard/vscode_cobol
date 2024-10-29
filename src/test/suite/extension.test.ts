@@ -14,9 +14,10 @@ suite("Core Extension Test Suite", () => {
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 	const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
 	const features = VSExternalFeatures;
+	const settings = new COBOLSettings();
 
 	test("Read file [basic] (test.cbl)", () => {
-		const f = new FileSourceHandler(undefined, path.join(baseForSource,"test.cbl"), features);
+		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -25,13 +26,12 @@ suite("Core Extension Test Suite", () => {
 	});
 
 	test("Parse file for constants/paragraphs/sections (test.cbl)", () => {
-		const f = new FileSourceHandler(undefined, path.join(baseForSource,"test.cbl"), features);
+		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
 
 		assert.ok(f.getFilename().length > 0, "filename is invalid");
-		const settings = new COBOLSettings();
 		const s = COBOLSourceScanner.ScanUncached(f, settings, false, eventHandler, features);
 
 		assert.ok(s.constantsOrVariables.size > 0, "should contain at least one field");

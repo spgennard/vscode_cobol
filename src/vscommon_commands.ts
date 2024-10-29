@@ -5,7 +5,7 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 import { COBOLProgramCommands } from "./cobolprogram";
 import { TabUtils } from "./tabstopper";
 import { VSLogger } from "./vslogger";
-import { AlignStyle, COBOLUtils, FoldAction } from "./cobolutils";
+import { AlignStyle, COBOLUtils, FoldAction } from "./vscobolutils";
 import { commands } from "vscode";
 import { VSPPCodeLens } from "./vsppcodelens";
 import { ExtensionDefaults } from "./extensionDefaults";
