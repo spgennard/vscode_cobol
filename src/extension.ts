@@ -117,7 +117,7 @@ const blessed_extensions: string[] = [
 ];
 
 const known_problem_extensions: string[][] = [
-    ["bitlang.cobol already provides autocomplete and highlight for COBOL source code","BroadcomMFD.cobol-language-support",],
+    ["bitlang.cobol already provides autocomplete and highlight for COBOL source code", "BroadcomMFD.cobol-language-support",],
     ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf"],             // control flow extension
     ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb"]
 ];
@@ -349,7 +349,7 @@ function checkForExtensionConflicts(): string {
     return dupExtensionMessage;
 }
 
-async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
+async function setupLogChannel(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
     if (!quiet) {
         if (hide) {
             COBOLOutputChannel.hide();
@@ -427,11 +427,14 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
             }
         }
     }
+}
+
+async function setupPaths(settings: ICOBOLSettings) {
 
     fileSearchDirectory.length = 0;
     URLSearchDirectory.length = 0;
 
-    const extsdir = settings.copybookdirs;
+    let extsdir = settings.copybookdirs;
     invalidSearchDirectory = settings.invalid_copybookdirs;
     invalidSearchDirectory.length = 0;
 
@@ -547,47 +550,45 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings, 
 
     invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
 
-    if (thisExtension !== undefined) {
-        if (ws !== undefined && ws.length !== 0) {
-            VSLogger.logMessage("  Workspace Folders:");
-            for (const folder of ws) {
+    if (ws !== undefined && ws.length !== 0) {
+        VSLogger.logMessage("  Workspace Folders:");
+        for (const folder of ws) {
+            VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+        }
+    } else {
+        if (wsURLs !== undefined && wsURLs.length !== 0) {
+            VSLogger.logMessage("  Workspace Folders (URLs):");
+            for (const folder of wsURLs) {
                 VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
             }
-        } else {
-            if (wsURLs !== undefined && wsURLs.length !== 0) {
-                VSLogger.logMessage("  Workspace Folders (URLs):");
-                for (const folder of wsURLs) {
-                    VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
-                }
-            }
         }
-
-        let extsdir = fileSearchDirectory;
-        if (extsdir.length !== 0) {
-            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
-            for (const sdir of extsdir) {
-                VSLogger.logMessage("   => " + sdir);
-            }
-        }
-
-        const extdirURL = URLSearchDirectory;
-        if (extdirURL.length !== 0) {
-            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
-            for (const sdir of extdirURL) {
-                VSLogger.logMessage("   => " + sdir);
-            }
-        }
-
-        extsdir = invalidSearchDirectory;
-        if (extsdir.length !== 0) {
-            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
-            for (const sdir of extsdir) {
-                VSLogger.logMessage("   => " + sdir);
-            }
-        }
-
-        VSLogger.logMessage("");
     }
+
+    extsdir = fileSearchDirectory;
+    if (extsdir.length !== 0) {
+        VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
+        for (const sdir of extsdir) {
+            VSLogger.logMessage("   => " + sdir);
+        }
+    }
+
+    const extdirURL = URLSearchDirectory;
+    if (extdirURL.length !== 0) {
+        VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
+        for (const sdir of extdirURL) {
+            VSLogger.logMessage("   => " + sdir);
+        }
+    }
+
+    extsdir = invalidSearchDirectory;
+    if (extsdir.length !== 0) {
+        VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
+        for (const sdir of extsdir) {
+            VSLogger.logMessage("   => " + sdir);
+        }
+    }
+
+    VSLogger.logMessage("");
 
     if (settings.maintain_metadata_recursive_search) {
         COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
@@ -689,7 +690,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.processAllFilesInWorkspaceOnStartup", async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings,false, false, -1);
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, false, false, -1);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runCommand", function (si: SourceOrFolderTreeItem) {
@@ -711,7 +712,8 @@ export async function activate(context: ExtensionContext) {
     settings.file_search_directory = fileSearchDirectory;
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
-    await setupLogChannelAndPaths(true, settings, false);
+    await setupLogChannel(true, settings, true);
+    await setupPaths(settings);
 
     const checkForExtensionConflictsMessage = checkForExtensionConflicts();
 
@@ -770,7 +772,7 @@ export async function activate(context: ExtensionContext) {
 
     // re-init if something gets installed or removed
     context.subscriptions.push(vscode.extensions.onDidChange(() => {
-        setupLogChannelAndPaths(true, settings, false);
+        setupLogChannel(true, settings, false);
         VSLogger.logMessage("extensions changed");
     }));
 
@@ -798,7 +800,8 @@ export async function activate(context: ExtensionContext) {
             const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
             if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
                 VSCOBOLSourceScanner.clearCOBOLCache();
-                setupLogChannelAndPaths(true, settings, true);
+                setupLogChannel(true, settings, true);
+                setupPaths(settings);
                 async () => {
                     await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
                 }
@@ -831,7 +834,9 @@ export async function activate(context: ExtensionContext) {
 
             if (md_copybookdirs) {
                 VSCOBOLSourceScanner.clearCOBOLCache();
-                setupLogChannelAndPaths(true, settings, true);
+                setupLogChannel(true, settings, true);
+                setupPaths(settings);
+
                 COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
                 COBOLUtils.populateDefaultCopyBooksSync(settings, true);
             }
@@ -921,7 +926,7 @@ export async function activate(context: ExtensionContext) {
             settings = VSCOBOLConfiguration.get_workspace_settings();
         }
         if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
-            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings,true, false, -1);
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, true, false, -1);
             return;
         }
 
@@ -962,7 +967,9 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(workspace.onDidChangeWorkspaceFolders(async () => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
-        setupLogChannelAndPaths(false, settings, true);
+        await setupLogChannel(false, settings, true);
+        await setupPaths(settings);
+
     }));
 
     // default to on.. but only when "extend mf" is enabled via "when" clause.. 
@@ -1232,11 +1239,11 @@ export async function activate(context: ExtensionContext) {
 
     updateDecorationsOnTextEditorEnabled = true;
 
-//     return {
-//         extendMarkdownIt(md: MarkdownIt) {
-//             return md.use(require('markdown-it-highlightjs/core'), {hijs});
-//         }
-//     };
+    //     return {
+    //         extendMarkdownIt(md: MarkdownIt) {
+    //             return md.use(require('markdown-it-highlightjs/core'), {hijs});
+    //         }
+    //     };
 }
 
 export async function deactivateAsync(): Promise<void> {

@@ -167,8 +167,9 @@ export interface ICOBOLSettings {
 
     scan_comment_end_ls_ignore: string;
 
-    // start of in memory settimgs
+    // start of in memory settimgs>
     id: number;
+    create_from_document: boolean;
     file_search_directory: string[];
 }
 
@@ -304,8 +305,9 @@ export class COBOLSettings implements ICOBOLSettings {
 
     file_search_directory: string[] = [];
 
+    create_from_document: boolean;
+    
     constructor() {
-        this.id = 0;
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;
@@ -410,5 +412,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_comment_for_ls_control = false;
         this.scan_comment_begin_ls_ignore = "BEGIN-LS-IGNORE";
         this.scan_comment_end_ls_ignore = "END-LS-IGNORE";
+ 
+        this.id = 0;
+        this.create_from_document = false;
     }
 }

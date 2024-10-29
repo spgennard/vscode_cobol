@@ -234,6 +234,8 @@ export class VSCOBOLConfiguration {
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(document);
         const config = new COBOLSettings();
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
+        config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
+        config.create_from_document = true;
         config.id = id;
         InMemoryCache_Settings.set(filename, config);
         return config;
