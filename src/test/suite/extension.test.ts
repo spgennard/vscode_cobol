@@ -14,7 +14,7 @@ suite("Core Extension Test Suite", () => {
 	const baseForSource = __dirname+"/../../../src/test/suite/";
 	const eventHandler = EmptyCOBOLSourceScannerEventHandler.Default;
 	const features = VSExternalFeatures;
-	const settings = new COBOLSettings();
+	const settings = new COBOLSettings(0, false);
 
 	test("Read file [basic] (test.cbl)", () => {
 		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features);

@@ -7,7 +7,15 @@ import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
 
-const InMemoryCache_Settings: Map<string, ICOBOLSettings> = new Map<string, ICOBOLSettings>();
+class WorkspaceSettings {
+    public settings: ICOBOLSettings;
+    public files = new Map<string, string>();
+
+    constructor(settings: ICOBOLSettings) {
+        this.settings = settings;
+    }
+}
+const InMemoryCache_Settings: Map<string, WorkspaceSettings> = new Map<string, WorkspaceSettings>();
 
 export class VSCOBOLEditorConfiguration {
 
@@ -33,7 +41,7 @@ export function cloneObject<T>(a: T): T {
 }
 
 export class VSCOBOLConfiguration {
-    private static _settings: ICOBOLSettings = new COBOLSettings();
+    private static _settings: ICOBOLSettings = new COBOLSettings(0, false);
 
     private static initSettings(editorConfig: WorkspaceConfiguration, settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
         const editorHelper = new VSCOBOLConfigurationHelper(editorConfig);
@@ -219,34 +227,50 @@ export class VSCOBOLConfiguration {
 
     public static get_resource_settings(document: TextDocument, externalFeatures: IExternalFeatures): ICOBOLSettings {
         const id = document.version;
-        const filename = document.uri.fsPath;
+        const workspaceDirectory = workspace.getWorkspaceFolder(document.uri);
+        if (workspaceDirectory === undefined) {
+            return VSCOBOLConfiguration._settings;
+        }
 
-        let cachedSettings = InMemoryCache_Settings.get(filename);
+        const workspaceDirectoryString = workspaceDirectory.uri.fsPath;
+        const path2wd = document.uri.fsPath;
+        let cachedSettings = InMemoryCache_Settings.get(workspaceDirectoryString);
         if (cachedSettings !== undefined) {
-            if (cachedSettings.id !== id) {
-                InMemoryCache_Settings.delete(filename);
-                cachedSettings = undefined;
-            } else {
-                return cachedSettings;
+            
+            if (cachedSettings.files.get(path2wd) === undefined) {
+                cachedSettings.files.set(path2wd, path2wd);
             }
+            return cachedSettings.settings;
         }
 
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(document);
-        const config = new COBOLSettings();
+        const config = new COBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
         config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
-        config.create_from_document = true;
-        config.id = id;
-        InMemoryCache_Settings.set(filename, config);
+        const workspaceSettings = new WorkspaceSettings(config);
+        workspaceSettings.files.set(path2wd, path2wd);
+
+        InMemoryCache_Settings.set(workspaceDirectoryString, workspaceSettings);
         return config;
     }
 
     public static clearResourceCache(document: TextDocument) {
-        const filename = document.uri.fsPath;
-
-        let cachedSettings = InMemoryCache_Settings.get(filename);
+        const workspaceDirectory = workspace.getWorkspaceFolder(document.uri);
+        if (workspaceDirectory === undefined) {
+            return;
+        }
+        
+        const workspaceDirectoryString = workspaceDirectory.uri.fsPath;
+        let cachedSettings = InMemoryCache_Settings.get(workspaceDirectoryString);
         if (cachedSettings !== undefined) {
-            InMemoryCache_Settings.delete(filename);
+            const path2wd = document.uri.fsPath;
+            if (cachedSettings.files.get(path2wd) !== undefined) {
+                cachedSettings.files.delete(path2wd);
+            }
+
+            if (cachedSettings.files.size === 0) {
+                InMemoryCache_Settings.delete(workspaceDirectoryString);
+            }
         }
     }
 

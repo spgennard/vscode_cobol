@@ -174,7 +174,6 @@ export interface ICOBOLSettings {
 }
 
 export class COBOLSettings implements ICOBOLSettings {
-    id: number;
     enable_tabstop: boolean;
     pre_scan_line_limit: number;
     copybooks_nested: boolean;
@@ -305,9 +304,10 @@ export class COBOLSettings implements ICOBOLSettings {
 
     file_search_directory: string[] = [];
 
+    id: number;
     create_from_document: boolean;
     
-    constructor() {
+    constructor(id: number, create_from_document: boolean) {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;
@@ -413,7 +413,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_comment_begin_ls_ignore = "BEGIN-LS-IGNORE";
         this.scan_comment_end_ls_ignore = "END-LS-IGNORE";
  
-        this.id = 0;
-        this.create_from_document = false;
+        this.id = id;
+        this.create_from_document = create_from_document;
     }
 }
