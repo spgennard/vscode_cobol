@@ -685,10 +685,6 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
     }));
 
 
-    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.migrateCopybooksToWorkspace", () => {
-        COBOLUtils.migrateCopybooksToWorkspace(settings);
-    }));
-
     context.subscriptions.push(commands.registerCommand("cobolplugin.processAllFilesInWorkspaceOnStartup", async () => {
         await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, false, false, -1);
     }));

@@ -2071,12 +2071,6 @@
         "enablement": "!isWeb && isWorkspaceTrusted"
       },
       {
-        "command": "cobolplugin.migrateCopybooksToWorkspace",
-        "category": "COBOL",
-        "title": "Migrate copybook settings to workspace (for performance)",
-        "enablement": "!isWeb && isWorkspaceTrusted"
-      },
-      {
         "command": "cobolplugin.showCOBOLChannel",
         "category": "COBOL",
         "title": "Show COBOL Channel"
