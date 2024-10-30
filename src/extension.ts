@@ -17,7 +17,7 @@ import { CobolReferenceProvider } from "./vsreferenceprovider";
 import { CobolLinterProvider, CobolLinterActionFixer } from "./cobollinter";
 import { VSSourceTreeViewHandler } from "./vssourceviewtree";
 import { CobolSourceCompletionItemProvider } from "./vscobolprovider";
-import { COBOLUtils } from "./vscobolutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -591,8 +591,8 @@ async function setupPaths(settings: ICOBOLSettings) {
     VSLogger.logMessage("");
 
     if (settings.maintain_metadata_recursive_search) {
-        COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-        COBOLUtils.populateDefaultCopyBooksSync(settings, true);
+        VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+        VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
     }
 }
 
@@ -601,7 +601,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
     context.subscriptions.push(commands.registerCommand("cobolplugin.clearGlobalCache", function () {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === "Yes") {
-                COBOLUtils.clearGlobalCache();
+                VSCOBOLUtils.clearGlobalCache();
                 VSLogger.logMessage("Metadata cache cleared");
             }
         });
@@ -622,7 +622,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.extractSelectionTo(vscode.window.activeTextEditor, true);
+                VSCOBOLUtils.extractSelectionTo(vscode.window.activeTextEditor, true);
             }
         }
     }));
@@ -632,7 +632,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                COBOLUtils.extractSelectionTo(vscode.window.activeTextEditor, false);
+                VSCOBOLUtils.extractSelectionTo(vscode.window.activeTextEditor, false);
             }
         }
     }));
@@ -647,7 +647,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             }
 
             unitTestTerminal.show(true);
-            const enableAnsiColor = COBOLUtils.getMFUnitAnsiColorConfig();
+            const enableAnsiColor = VSCOBOLUtils.getMFUnitAnsiColorConfig();
 
             const properties = propertiesReader(fileUri.fsPath);
             const prefRunner = properties.get("global.preferred-runner");
@@ -658,7 +658,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             return;
         }
 
-        COBOLUtils.runOrDebug(fsPath, false);
+        VSCOBOLUtils.runOrDebug(fsPath, false);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.explorerDebug", function (fileUri) {
@@ -670,7 +670,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             }
 
             unitTestTerminal.show(true);
-            const enableAnsiColor = COBOLUtils.getMFUnitAnsiColorConfig();
+            const enableAnsiColor = VSCOBOLUtils.getMFUnitAnsiColorConfig();
 
             const properties = propertiesReader(fileUri.fsPath);
             const prefRunner = properties.get("global.preferred-runner");
@@ -681,7 +681,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
             return;
         }
 
-        COBOLUtils.runOrDebug(fsPath, true);
+        VSCOBOLUtils.runOrDebug(fsPath, true);
     }));
 
 
@@ -833,13 +833,13 @@ export async function activate(context: ExtensionContext) {
                 setupLogChannel(true, settings, true);
                 setupPaths(settings);
 
-                COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-                COBOLUtils.populateDefaultCopyBooksSync(settings, true);
+                VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+                VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
             }
 
             if (maintain_metadata_recursive_search) {
-                COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-                COBOLUtils.populateDefaultCopyBooksSync(settings, true);
+                VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+                VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
             }
 
             if (outline_changed) {
@@ -986,7 +986,7 @@ export async function activate(context: ExtensionContext) {
         const ws = VSWorkspaceFolders.get();
         if (ws !== undefined) {
             await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
-            await COBOLUtils.populateDefaultCallableSymbols(settings, false);
+            await VSCOBOLUtils.populateDefaultCallableSymbols(settings, false);
         }
     }));
 
@@ -1159,7 +1159,7 @@ export async function activate(context: ExtensionContext) {
             for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
                 const textSelection = e.textEditor.document.lineAt(startLine).text;
                 const line = textSelection.trimEnd();
-                const sipos = COBOLUtils.getStorageItemPosition(line);
+                const sipos = VSCOBOLUtils.getStorageItemPosition(line);
                 if (sipos !== -1) {
                     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
                     return;
@@ -1243,7 +1243,7 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivateAsync(): Promise<void> {
-    COBOLUtils.saveGlobalCacheToWorkspace(VSCOBOLConfiguration.get_workspace_settings());
+    VSCOBOLUtils.saveGlobalCacheToWorkspace(VSCOBOLConfiguration.get_workspace_settings());
 }
 
 

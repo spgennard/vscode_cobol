@@ -6,7 +6,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSWorkspaceFolders } from "./cobolfolders";
 import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
-import { COBOLUtils } from "./vscobolutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 
 let sourceTreeView: SourceViewTree | undefined = undefined;
 let sourceTreeWatcher: vscode.FileSystemWatcher | undefined = undefined;
@@ -48,7 +48,7 @@ export class VSSourceTreeViewHandler {
             fsPath = si.uri.path as string;
         }
 
-        COBOLUtils.runOrDebug(fsPath, debug);
+        VSCOBOLUtils.runOrDebug(fsPath, debug);
     }
 }
 

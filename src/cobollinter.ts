@@ -6,7 +6,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { CobolLinterProviderSymbols } from "./externalfeatures";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
-import { COBOLUtils } from "./vscobolutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import path from "path";
 import { VSCOBOLEditorConfiguration } from "./vsconfiguration";
@@ -143,7 +143,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 
         files = await vscode.workspace.findFiles(`**/${copybook}`);
         if (files.length === 0) {
-            const globPattern = COBOLUtils.getCopyBookGlobPatternForPartialName(settings, copybook);
+            const globPattern = VSCOBOLUtils.getCopyBookGlobPatternForPartialName(settings, copybook);
             files = await vscode.workspace.findFiles(globPattern);
         }
 

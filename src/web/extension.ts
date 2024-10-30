@@ -13,7 +13,7 @@ import { COBOLOutputChannel, VSLogger } from "../vslogger";
 import { COBOLSourceDefinition } from "../vssourcedefinitionprovider";
 import { KeywordAutocompleteCompletionItemProvider } from "../vskeywordprovider";
 import { CobolSourceCompletionItemProvider } from "../vscobolprovider";
-import { COBOLUtils } from "../vscobolutils";
+import { VSCOBOLUtils } from "../vscobolutils";
 import { VSSemanticProvider } from "../vssemanticprovider";
 import { ExtensionDefaults } from "../extensionDefaults";
 import { commands, extensions, languages, ProviderResult, workspace } from "vscode";
@@ -365,8 +365,8 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
     }
 
     if (settings.maintain_metadata_recursive_search) {
-        COBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-        COBOLUtils.populateDefaultCopyBooksSync(settings, true);
+        VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+        VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
     }
 }
 
@@ -533,7 +533,7 @@ export async function activate(context: vscode.ExtensionContext) {
             for (let startLine = sel.start.line; startLine <= sel.end.line; startLine++) {
                 const textSelection = e.textEditor.document.lineAt(startLine).text;
                 const line = textSelection.trimEnd();
-                const sipos = COBOLUtils.getStorageItemPosition(line);
+                const sipos = VSCOBOLUtils.getStorageItemPosition(line);
                 if (sipos !== -1) {
                     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
                     return;

@@ -1,6 +1,6 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, MarkdownString, Position, ProviderResult, Range, SnippetString, TextDocument, TextLine } from "vscode";
 import { COBOLSourceScanner, SourceScannerUtils } from "./cobolsourcescanner";
-import { COBOLUtils, FoldAction } from "./vscobolutils";
+import { VSCOBOLUtils, FoldAction } from "./vscobolutils";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
 import { KnownAPIs } from "./keywords/cobolCallTargets";
@@ -1397,7 +1397,7 @@ class SnippetHelper {
     protected foldKeywordLine(texts: string[], languageid: string, settings: ICOBOLSettings): string {
         const sb = [];
         for (const text of texts) {
-            sb.push(COBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords, false, languageid, settings, settings.intellisense_style));
+            sb.push(VSCOBOLUtils.foldTokenLine(text, undefined, FoldAction.Keywords, false, languageid, settings, settings.intellisense_style));
         }
 
         return sb.join(jsonCRLF);

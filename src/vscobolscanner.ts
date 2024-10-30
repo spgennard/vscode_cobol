@@ -6,7 +6,7 @@ import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalca
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbolTable } from "./cobolglobalcache";
-import { COBOLUtils } from "./vscobolutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 
 import { VSExternalFeatures } from "./vsexternalfeatures";
@@ -84,7 +84,7 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
     }
 
     public finish(): void {
-        COBOLUtils.saveGlobalCacheToWorkspace(this.config);
+        VSCOBOLUtils.saveGlobalCacheToWorkspace(this.config);
     }
 }
 

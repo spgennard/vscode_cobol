@@ -9,7 +9,7 @@ import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { fork, ForkOptions } from "child_process";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
-import { COBOLUtils } from "./vscobolutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
@@ -82,7 +82,7 @@ export class VSCobScanner {
                 progressStatusBarItem.hide();
             }
             if (updateNow) {
-                COBOLUtils.saveGlobalCacheToWorkspace(settings);
+                VSCOBOLUtils.saveGlobalCacheToWorkspace(settings);
             }
         });
 
@@ -233,15 +233,15 @@ export class VSCobScanner {
         VSLogger.logMessage("");
         VSLogger.logMessage(`Starting to process metadata from workspace folders ${msgViaCommand}`);
 
-        await COBOLUtils.populateDefaultCallableSymbols(settings, false);
+        await VSCOBOLUtils.populateDefaultCallableSymbols(settings, false);
         for (const [, b] of InMemoryGlobalSymbolCache.defaultCallableSymbols) {
             files.push(b);
         }
 
-        COBOLUtils.saveGlobalCacheToWorkspace(settings, false);
+        VSCOBOLUtils.saveGlobalCacheToWorkspace(settings, false);
 
         const sf = this.getScanData(settings, ws, stats, files);
         await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, useThreaded, threadCount);
-        COBOLUtils.saveGlobalCacheToWorkspace(settings, true);
+        VSCOBOLUtils.saveGlobalCacheToWorkspace(settings, true);
     }
 }

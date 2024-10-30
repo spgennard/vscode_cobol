@@ -2,7 +2,7 @@ import { ProviderResult } from "vscode";
 import vscode from "vscode";
 import { ICOBOLSettings, hoverApi } from "./iconfiguration";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
-import { COBOLUtils } from "./vscobolutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 import { COBOLSourceScanner, COBOLToken, COBOLVariable, SQLDeclare } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 // import { ESourceFormat } from "./externalfeatures";
@@ -56,7 +56,7 @@ ${cleanCode}
         if (settings.hover_show_encoded_literals) {
             const nxtxt = document.getText(document.getWordRangeAtPosition(position, nhexRegEx));
             if (nxtxt.toLowerCase().startsWith("nx\"") || nxtxt.toLowerCase().startsWith("nx'")) {
-                const ascii = COBOLUtils.nxhex2a(nxtxt);
+                const ascii = VSCOBOLUtils.nxhex2a(nxtxt);
                 if (ascii.length !== 0) {
                     return new vscode.Hover(`UTF16=${ascii}`);
                 }
@@ -64,7 +64,7 @@ ${cleanCode}
             }
             const txt = document.getText(document.getWordRangeAtPosition(position, hexRegEx));
             if (txt.toLowerCase().startsWith("x\"") || txt.toLowerCase().startsWith("x'")) {
-                const ascii = COBOLUtils.hex2a(txt);
+                const ascii = VSCOBOLUtils.hex2a(txt);
                 if (ascii.length !== 0) {
                     return new vscode.Hover(`ASCII=${ascii}`);
                 }

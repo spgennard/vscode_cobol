@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import { CancellationToken, FormattingOptions, TextDocument, TextEdit, Position } from "vscode";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
-import { COBOLUtils, FoldAction } from "./vscobolutils";
+import { VSCOBOLUtils, FoldAction } from "./vscobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
@@ -20,9 +20,9 @@ export class COBOLCaseFormatter {
     private convertLine(line: string, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
         const oldText = line;
         const defaultStyle = this.settings.intellisense_style;
-        let newText = COBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, this.settings,defaultStyle);
-        newText = COBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, this.settings, defaultStyle);
-        return COBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, this.settings, defaultStyle);
+        let newText = VSCOBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, this.settings,defaultStyle);
+        newText = VSCOBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, this.settings, defaultStyle);
+        return VSCOBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, this.settings, defaultStyle);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
