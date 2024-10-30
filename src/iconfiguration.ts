@@ -302,10 +302,11 @@ export class COBOLSettings implements ICOBOLSettings {
 
     scan_comment_end_ls_ignore: string;
 
-    file_search_directory: string[] = [];
+    // dynamic
 
     id: number;
     create_from_document: boolean;
+    file_search_directory: string[];
     
     constructor(id: number, create_from_document: boolean) {
         this.enable_tabstop = true;
@@ -415,5 +416,6 @@ export class COBOLSettings implements ICOBOLSettings {
  
         this.id = id;
         this.create_from_document = create_from_document;
+        this.file_search_directory = [];
     }
 }

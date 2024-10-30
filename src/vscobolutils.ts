@@ -17,6 +17,8 @@ import { SplitTokenizer } from "./splittoken";
 import { VSExtensionUtils } from "./vsextutis";
 import { setMicroFocusSuppressFileAssociationsPrompt } from "./vscommon_commands";
 import { VSCOBOLEditorConfiguration } from "./vsconfiguration";
+import { workspace } from "vscode";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
@@ -71,13 +73,13 @@ export class VSCOBOLUtils {
         return globString;
     }
 
-    public static getCopyBookGlobPatternForPartialName(config: ICOBOLSettings, partialFilename="*"): string {
-        let globString = "**/"+partialFilename+"{,";
+    public static getCopyBookGlobPatternForPartialName(config: ICOBOLSettings, partialFilename = "*"): string {
+        let globString = "**/" + partialFilename + "{,";
 
         for (const ext of config.copybookexts) {
             if (ext.length !== 0) {
                 if (globString.endsWith("{")) {
-                    globString += "."+ext;
+                    globString += "." + ext;
                 } else {
                     globString += ",." + ext;
                 }
@@ -560,7 +562,7 @@ export class VSCOBOLUtils {
 
         SplitTokenizer.splitArgument(text, args);
         const textLower = text.toLowerCase();
-        let lastPos =  args.length > 1 ? textLower.indexOf(args[0].toLowerCase()) : 0;
+        let lastPos = args.length > 1 ? textLower.indexOf(args[0].toLowerCase()) : 0;
         let foldstyle: intellisenseStyle = defaultFoldStyle; //settings.intellisense_style;
         for (let ic = 0; ic < args.length; ic++) {
             let arg = args[ic];
@@ -667,7 +669,7 @@ export class VSCOBOLUtils {
         defaultFoldStyle: intellisenseStyle): void {
         const uri = activeEditor.document.uri;
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document,settings);
+        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
             VSLogger.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
             return;
@@ -819,25 +821,24 @@ export class VSCOBOLUtils {
         }
     }
 
-    public static async changeDocumentId(fromID: string, toID: string)
-    {
+    public static async changeDocumentId(fromID: string, toID: string) {
         for (const vte of vscode.window.visibleTextEditors) {
             if (vte.document.languageId == fromID) {
                 await vscode.languages.setTextDocumentLanguage(vte.document, toID);
             }
         }
     }
-    
+
     public static enforceFileExtensions(settings: ICOBOLSettings, activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures, verbose: boolean, requiredLanguage: string) {
         // const fileConfig = vscode.workspace
         const filesConfig = vscode.workspace.getConfiguration("files");
 
-        if (requiredLanguage == ExtensionDefaults.microFocusCOBOLLanguageId){
+        if (requiredLanguage == ExtensionDefaults.microFocusCOBOLLanguageId) {
             setMicroFocusSuppressFileAssociationsPrompt(settings, true);
         } else {
             setMicroFocusSuppressFileAssociationsPrompt(settings, false);
         }
-        
+
         const filesAssociationsConfig = filesConfig.get<{ [name: string]: string }>("associations") ?? {} as { [key: string]: string }
         let updateRequired = false;
 
@@ -852,8 +853,7 @@ export class VSCOBOLUtils {
                 externalFeatures.logMessage(` ${assoc} = ${assocTo}`)
             }
 
-            if (requiredLanguage !== ExtensionDefaults.microFocusCOBOLLanguageId) 
-            {
+            if (requiredLanguage !== ExtensionDefaults.microFocusCOBOLLanguageId) {
                 // grab back 
                 if (assocTo === ExtensionDefaults.microFocusCOBOLLanguageId) {
                     filesAssociationsConfig[assoc] = requiredLanguage;
@@ -1049,6 +1049,176 @@ export class VSCOBOLUtils {
             }
         }
         return str;
+    }
+
+    public static async setupPaths(settings: ICOBOLSettings) {
+        let invalidSearchDirectory: string[] = [];
+        let fileSearchDirectory: string[] = [];
+        let URLSearchDirectory: string[] = VSExternalFeatures.getURLCopyBookSearchPath();
+
+        fileSearchDirectory.length = 0;
+        URLSearchDirectory.length = 0;
+
+        let extsdir = settings.copybookdirs;
+        invalidSearchDirectory = settings.invalid_copybookdirs;
+        invalidSearchDirectory.length = 0;
+
+        const ws = VSWorkspaceFolders.get();
+        const wsURLs = VSWorkspaceFolders.get("");
+
+        // step 1 look through the copybook default dirs for "direct" paths and include them in search path
+        for (const ddir of extsdir) {
+            try {
+                if (workspace.isTrusted === false) {
+                    // copybooks that have a direct path or a network are only available in full trust
+                    if (COBOLFileUtils.isDirectPath(ddir) || COBOLFileUtils.isNetworkPath(ddir)) {
+                        invalidSearchDirectory.push(ddir);
+                        continue;
+                    }
+                } else {
+                    if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
+                        VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
+                        invalidSearchDirectory.push(ddir);
+                    }
+                    else if (COBOLFileUtils.isDirectPath(ddir)) {
+                        if (workspace !== undefined && ws !== undefined) {
+                            if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
+                                if (COBOLFileUtils.isNetworkPath(ddir)) {
+                                    VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
+                                }
+                            }
+                        }
+
+                        const startTime = VSExternalFeatures.performance_now();
+                        if (COBOLFileUtils.isDirectory(ddir)) {
+                            const totalTimeInMS = VSExternalFeatures.performance_now() - startTime;
+                            const timeTaken = totalTimeInMS.toFixed(2);
+                            if (totalTimeInMS <= 2000) {
+                                fileSearchDirectory.push(ddir);
+                            } else {
+                                VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
+                                invalidSearchDirectory.push(ddir);
+                            }
+                        } else {
+                            invalidSearchDirectory.push(ddir);
+                        }
+                    }
+                }
+            }
+            catch (e) {
+                // continue
+            }
+        }
+
+        // step 2
+        if (ws !== undefined) {
+            for (const folder of ws) {
+                // place the workspace folder in the copybook path
+                fileSearchDirectory.push(folder.uri.fsPath);
+
+                /* now add any extra directories that are below this workspace folder */
+                for (const extdir of extsdir) {
+                    try {
+                        if (COBOLFileUtils.isDirectPath(extdir) === false) {
+                            const sdir = path.join(folder.uri.fsPath, extdir);
+
+                            if (COBOLFileUtils.isDirectory(sdir)) {
+                                if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
+                                    VSLogger.logMessage(" The directory " + sdir + " for performance should be part of the workspace");
+                                }
+
+                                fileSearchDirectory.push(sdir);
+                            } else {
+                                invalidSearchDirectory.push(sdir);
+                            }
+                        }
+                    }
+                    catch (e) {
+                        // VSLogger.logException("dir", e as Error);
+                    }
+                }
+            }
+        }
+
+        // step 3
+        if (wsURLs !== undefined) {
+            for (const folder of wsURLs) {
+                // place the workspace folder in the copybook path
+                URLSearchDirectory.push(folder.uri.toString());
+
+                /* now add any extra directories that are below this workspace folder */
+                for (const extdir of extsdir) {
+                    try {
+                        if (COBOLFileUtils.isDirectPath(extdir) === false) {
+                            const sdir = `${folder.uri.toString()}/${extdir}`;
+
+                            const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
+                            if (sdirStat.type & vscode.FileType.Directory) {
+                                URLSearchDirectory.push(sdir);
+                            } else {
+                                invalidSearchDirectory.push("URL as " + sdir);
+                            }
+                        }
+                    }
+                    catch (e) {
+                        // VSLogger.logException("dir", e as Error);
+                    }
+                }
+            }
+        }
+
+        const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
+        fileSearchDirectory.length = 0;
+        for (const fsd of filterfileSearchDirectory) {
+            fileSearchDirectory.push(fsd);
+        }
+
+        invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
+
+        if (ws !== undefined && ws.length !== 0) {
+            VSLogger.logMessage("  Workspace Folders:");
+            for (const folder of ws) {
+                VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+            }
+        } else {
+            if (wsURLs !== undefined && wsURLs.length !== 0) {
+                VSLogger.logMessage("  Workspace Folders (URLs):");
+                for (const folder of wsURLs) {
+                    VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
+                }
+            }
+        }
+
+        extsdir = fileSearchDirectory;
+        if (extsdir.length !== 0) {
+            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
+            for (const sdir of extsdir) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        const extdirURL = URLSearchDirectory;
+        if (extdirURL.length !== 0) {
+            VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
+            for (const sdir of extdirURL) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        extsdir = invalidSearchDirectory;
+        if (extsdir.length !== 0) {
+            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
+            for (const sdir of extsdir) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        VSLogger.logMessage("");
+
+        if (settings.maintain_metadata_recursive_search) {
+            VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+            VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
+        }
     }
 
     // public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
