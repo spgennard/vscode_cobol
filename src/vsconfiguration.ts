@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
 
-import { TextDocument, workspace, WorkspaceConfiguration } from "vscode";
+import { ConfigurationScope, TextDocument, Uri, workspace, WorkspaceConfiguration } from "vscode";
 import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
@@ -9,10 +9,12 @@ import { COBOLFileUtils } from "./fileutils";
 
 class WorkspaceSettings {
     public settings: ICOBOLSettings;
-    public files = new Map<string, string>();
+    public files = new Map<string, Uri>();
+    public firstResource: Uri;
 
-    constructor(settings: ICOBOLSettings) {
+    constructor(settings: ICOBOLSettings, firstResource: Uri) {
         this.settings = settings;
+        this.firstResource = firstResource;
     }
 }
 const InMemoryCache_Settings: Map<string, WorkspaceSettings> = new Map<string, WorkspaceSettings>();
@@ -24,10 +26,8 @@ export class VSCOBOLEditorConfiguration {
     }
 
 
-    public static getResourceEditorConfig(document: TextDocument): WorkspaceConfiguration {
-        const resource = document.uri;
-
-        if (resource.scheme === 'file') {
+    public static getResourceEditorConfig(resource: Uri): WorkspaceConfiguration {
+           if (resource.scheme === 'file') {
             return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig, resource);
         }
         else {
@@ -226,29 +226,32 @@ export class VSCOBOLConfiguration {
     }
 
     public static get_resource_settings(document: TextDocument, externalFeatures: IExternalFeatures): ICOBOLSettings {
-        const id = document.version;
-        const workspaceDirectory = workspace.getWorkspaceFolder(document.uri);
+        return VSCOBOLConfiguration.get_resource_settings_via_uri(document.uri, document.version, externalFeatures);
+    }
+
+    public static get_resource_settings_via_uri(documentUri: Uri, id: number, externalFeatures: IExternalFeatures): ICOBOLSettings {
+        const workspaceDirectory = workspace.getWorkspaceFolder(documentUri);
         if (workspaceDirectory === undefined) {
             return VSCOBOLConfiguration._settings;
         }
 
         const workspaceDirectoryString = workspaceDirectory.uri.fsPath;
-        const path2wd = document.uri.fsPath;
+        const path2wd = documentUri.fsPath;
         let cachedSettings = InMemoryCache_Settings.get(workspaceDirectoryString);
         if (cachedSettings !== undefined) {
-            
+
             if (cachedSettings.files.get(path2wd) === undefined) {
-                cachedSettings.files.set(path2wd, path2wd);
+                cachedSettings.files.set(path2wd, documentUri);
             }
             return cachedSettings.settings;
         }
 
-        const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(document);
+        const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(documentUri);
         const config = new COBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
         config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
-        const workspaceSettings = new WorkspaceSettings(config);
-        workspaceSettings.files.set(path2wd, path2wd);
+        const workspaceSettings = new WorkspaceSettings(config, documentUri);
+        workspaceSettings.files.set(path2wd, documentUri);
 
         InMemoryCache_Settings.set(workspaceDirectoryString, workspaceSettings);
         return config;
@@ -259,7 +262,7 @@ export class VSCOBOLConfiguration {
         if (workspaceDirectory === undefined) {
             return;
         }
-        
+
         const workspaceDirectoryString = workspaceDirectory.uri.fsPath;
         let cachedSettings = InMemoryCache_Settings.get(workspaceDirectoryString);
         if (cachedSettings !== undefined) {
@@ -277,7 +280,16 @@ export class VSCOBOLConfiguration {
     public static reinitWorkspaceSettings(externalFeatures: IExternalFeatures): ICOBOLSettings {
         const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
         VSCOBOLConfiguration.initSettings(editorConfig, VSCOBOLConfiguration._settings, externalFeatures);
-        return VSCOBOLConfiguration.get_workspace_settings();
+        return VSCOBOLConfiguration._settings;
+    }
+
+    public static reinitWorkspaceSettingsScoped(externalFeatures: IExternalFeatures): void {
+        for (const workspace of InMemoryCache_Settings.values()) {
+            const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(workspace.firstResource);
+            VSCOBOLConfiguration.initSettings(editorConfig, workspace.settings, externalFeatures);
+        }
+
+        VSCOBOLConfiguration.reinitWorkspaceSettings(externalFeatures);
     }
 }
 

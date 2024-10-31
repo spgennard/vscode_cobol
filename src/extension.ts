@@ -532,6 +532,107 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 
 }
 
+function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode.ConfigurationScope) {
+    const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig, scope);
+    const outline_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig, scope}.outline`, scope);
+    const md_syms = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_symbols`, scope);
+    const md_eps = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_entrypoints`, scope);
+    const md_types = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_types`, scope);
+    const md_metadata_files = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_files`, scope);
+    const md_metadata_knowncopybooks = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_knowncopybooks`, scope);
+    const md_copybookdirs = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.copybookdirs`, scope);
+    const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`, scope);
+    const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`, scope);
+    const enable_comments_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_comments_tags`, scope);
+    const comments_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.comments_tags`, scope);
+    const intellisense_style_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_style`, scope);
+    const enable_columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_columns_tags`, scope);
+    const columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`, scope);
+    const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`, scope);
+    const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`, scope);
+    const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`, scope);
+
+    if (updated) {
+        VSCOBOLConfiguration.reinitWorkspaceSettingsScoped(VSExternalFeatures);
+        const settings = VSCOBOLConfiguration.get_workspace_settings();
+        if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
+            VSCOBOLSourceScanner.clearCOBOLCache();
+            setupLogChannel(true, settings, true);
+            VSCOBOLUtils.setupPaths(settings);
+            async () => {
+                await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
+            }
+        }
+
+        if (md_syms) {
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, true);
+        }
+
+        if (md_eps) {
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, true);
+        }
+
+        if (md_types) {
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, true);
+        }
+
+        if (md_metadata_files) {
+            COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, VSExternalFeatures, settings.metadata_files, true);
+        }
+
+        if (enable_semantic_token_provider && !shown_enable_semantic_token_provider) {
+            shown_enable_semantic_token_provider = true;
+            vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session`);
+        }
+
+        if (md_metadata_knowncopybooks) {
+            COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, true);
+        }
+
+        if (md_copybookdirs) {
+            VSCOBOLSourceScanner.clearCOBOLCache();
+            setupLogChannel(true, settings, true);
+            VSCOBOLUtils.setupPaths(settings);
+
+            VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+            VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
+        }
+
+        if (maintain_metadata_recursive_search) {
+            VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+            VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
+        }
+
+        if (outline_changed) {
+            vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session`);
+        }
+
+        if (custom_intellisense_rules_changed) {
+            VSCustomIntelliseRules.Default.reFreshConfiguration(settings);
+        }
+
+        if (enable_comments_tags_changed || comments_tags_changed) {
+            colourCommentHandler.setupTags();
+        }
+
+        if (enable_columns_tags_changed || columns_tags_changed) {
+            vsMarginHandler.setupTags();
+        }
+
+        // ensure we update the map
+        if (intellisense_style_changed) {
+            SnippetCompletionItemProvider.Default.reInitCallMap(settings);
+        }
+
+        if (intellisense_add_space_keywords_changed) {
+            KeywordAutocompleteCompletionItemProvider.Default4COBOL.reFreshConfiguration(settings);
+        }
+
+        if (tabstops_anchors_changed) {
+            TabUtils.clearTabstopCache();
+        }
+    }
+}
 export async function activate(context: ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
@@ -600,104 +701,7 @@ export async function activate(context: ExtensionContext) {
     }));
 
     const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
-        const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig);
-        const outline_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.outline`);
-        const md_syms = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_symbols`);
-        const md_eps = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_entrypoints`);
-        const md_types = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_types`);
-        const md_metadata_files = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_files`);
-        const md_metadata_knowncopybooks = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_knowncopybooks`);
-        const md_copybookdirs = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.copybookdirs`);
-        const enable_semantic_token_provider = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider`);
-        const maintain_metadata_recursive_search = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.maintain_metadata_recursive_search`);
-        const enable_comments_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_comments_tags`);
-        const comments_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.comments_tags`);
-        const intellisense_style_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_style`);
-        const enable_columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_columns_tags`);
-        const columns_tags_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.columns_tags`);
-        const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`);
-        const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`);
-        const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`);
-
-        if (updated) {
-            const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
-            if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
-                VSCOBOLSourceScanner.clearCOBOLCache();
-                setupLogChannel(true, settings, true);
-                VSCOBOLUtils.setupPaths(settings);
-                async () => {
-                    await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
-                }
-            }
-
-            if (md_syms) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, true);
-            }
-
-            if (md_eps) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, true);
-            }
-
-            if (md_types) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, true);
-            }
-
-            if (md_metadata_files) {
-                COBOLWorkspaceSymbolCacheHelper.loadFileCacheFromArray(settings, VSExternalFeatures, settings.metadata_files, true);
-            }
-
-            if (enable_semantic_token_provider && !shown_enable_semantic_token_provider) {
-                shown_enable_semantic_token_provider = true;
-                vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.enable_semantic_token_provider' has changed but you may not see the affects until you have either close/reload your documents or restarted this session`);
-            }
-
-            if (md_metadata_knowncopybooks) {
-                COBOLWorkspaceSymbolCacheHelper.loadGlobalKnownCopybooksFromArray(settings, settings.metadata_knowncopybooks, true);
-            }
-
-            if (md_copybookdirs) {
-                VSCOBOLSourceScanner.clearCOBOLCache();
-                setupLogChannel(true, settings, true);
-                VSCOBOLUtils.setupPaths(settings);
-
-                VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-                VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
-            }
-
-            if (maintain_metadata_recursive_search) {
-                VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-                VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
-            }
-
-            if (outline_changed) {
-                vscode.window.showInformationMessage(`The configuration setting '${ExtensionDefaults.defaultEditorConfig}.outline' has changed but you may not see the affects until you have either reloaded your window or restarted this session`);
-            }
-
-            if (custom_intellisense_rules_changed) {
-                VSCustomIntelliseRules.Default.reFreshConfiguration(settings);
-            }
-
-            if (enable_comments_tags_changed || comments_tags_changed) {
-                colourCommentHandler.setupTags();
-            }
-
-            if (enable_columns_tags_changed || columns_tags_changed) {
-                vsMarginHandler.setupTags();
-            }
-
-            // ensure we update the map
-            if (intellisense_style_changed) {
-                SnippetCompletionItemProvider.Default.reInitCallMap(settings);
-            }
-
-            if (intellisense_add_space_keywords_changed) {
-                KeywordAutocompleteCompletionItemProvider.Default4COBOL.reFreshConfiguration(settings);
-            }
-
-            if (tabstops_anchors_changed) {
-                TabUtils.clearTabstopCache();
-            }
-        }
+        handleScopedChange(event,undefined);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 
