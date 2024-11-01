@@ -4,7 +4,7 @@ import * as path from "path";
 
 import * as vscode from "vscode";
 import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from "vscode";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { IVSCOBOLSettings, VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
@@ -187,7 +187,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     }
 
-    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: IVSCOBOLSettings, features: IExternalFeatures): string {
 
         if (inDirectory === null || inDirectory.length === 0) {
             const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);

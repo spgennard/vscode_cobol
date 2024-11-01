@@ -2,17 +2,17 @@
 "use strict";
 
 import { TextDocument, Uri, workspace, WorkspaceConfiguration } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo, IDynCOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
 
 class WorkspaceSettings {
-    public settings: ICOBOLSettings;
+    public settings: IVSCOBOLSettings;
     public files = new Map<string, Uri>();
     public firstResource: Uri;
 
-    constructor(settings: ICOBOLSettings, firstResource: Uri) {
+    constructor(settings: IVSCOBOLSettings, firstResource: Uri) {
         this.settings = settings;
         this.firstResource = firstResource;
     }
@@ -40,10 +40,18 @@ export function cloneObject<T>(a: T): T {
     return JSON.parse(JSON.stringify(a));
 }
 
-export class VSCOBOLConfiguration {
-    private static _settings: ICOBOLSettings = new COBOLSettings(0, false);
+export interface IVSCOBOLSettings extends ICOBOLSettings, IDynCOBOLSettings {
 
-    private static initSettings(editorConfig: WorkspaceConfiguration, settings: ICOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
+}
+
+export class VSCOBOLSettings extends COBOLSettings {
+
+}
+
+export class VSCOBOLConfiguration {
+    private static _settings: IVSCOBOLSettings = new VSCOBOLSettings(0, false);
+
+    private static initSettings(editorConfig: WorkspaceConfiguration, settings: IVSCOBOLSettings, externalFeatures: IExternalFeatures): ICOBOLSettings {
         const editorHelper = new VSCOBOLConfigurationHelper(editorConfig);
 
         settings.enable_tabstop = editorHelper.getBoolean("enable_tabstop", false);
@@ -200,7 +208,7 @@ export class VSCOBOLConfiguration {
     static logCacheMetadataDone = false;
     static logMarginDone = false;
 
-    static adjustForUntructedEnv(settings: ICOBOLSettings): void {
+    static adjustForUntructedEnv(settings: IVSCOBOLSettings): void {
         settings.enable_source_scanner = false;
         settings.disable_unc_copybooks_directories = true;
         settings.process_metadata_cache_on_start = false;
@@ -221,15 +229,15 @@ export class VSCOBOLConfiguration {
         settings.enable_text_replacement = false;
     }
 
-    public static get_workspace_settings(): ICOBOLSettings {
+    public static get_workspace_settings(): IVSCOBOLSettings {
         return VSCOBOLConfiguration._settings;
     }
 
-    public static get_resource_settings(document: TextDocument, externalFeatures: IExternalFeatures): ICOBOLSettings {
+    public static get_resource_settings(document: TextDocument, externalFeatures: IExternalFeatures): IVSCOBOLSettings {
         return VSCOBOLConfiguration.get_resource_settings_via_uri(document.uri, document.version, externalFeatures);
     }
 
-    public static get_resource_settings_via_uri(documentUri: Uri, id: number, externalFeatures: IExternalFeatures): ICOBOLSettings {
+    public static get_resource_settings_via_uri(documentUri: Uri, id: number, externalFeatures: IExternalFeatures): IVSCOBOLSettings {
         const workspaceDirectory = workspace.getWorkspaceFolder(documentUri);
         if (workspaceDirectory === undefined) {
             return VSCOBOLConfiguration._settings;
@@ -249,6 +257,7 @@ export class VSCOBOLConfiguration {
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(documentUri);
         const config = new COBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
+        // VSCOBOLUtils.setupPaths(config);
         config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
         const workspaceSettings = new WorkspaceSettings(config, documentUri);
         workspaceSettings.files.set(path2wd, documentUri);
@@ -277,7 +286,7 @@ export class VSCOBOLConfiguration {
         }
     }
 
-    public static reinitWorkspaceSettings(externalFeatures: IExternalFeatures): ICOBOLSettings {
+    public static reinitWorkspaceSettings(externalFeatures: IExternalFeatures): IVSCOBOLSettings {
         const editorConfig = VSCOBOLEditorConfiguration.getEditorConfig();
         VSCOBOLConfiguration.initSettings(editorConfig, VSCOBOLConfiguration._settings, externalFeatures);
         return VSCOBOLConfiguration._settings;

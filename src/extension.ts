@@ -532,7 +532,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 
 }
 
-function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode.ConfigurationScope) {
+async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode.ConfigurationScope) {
     const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig, scope);
     const outline_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig, scope}.outline`, scope);
     const md_syms = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_symbols`, scope);
@@ -700,8 +700,8 @@ export async function activate(context: ExtensionContext) {
         VSLogger.logMessage("extensions changed");
     }));
 
-    const onDidChangeConfiguration = workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
-        handleScopedChange(event,undefined);
+    const onDidChangeConfiguration = workspace.onDidChangeConfiguration(async (event: ConfigurationChangeEvent) => {
+        await handleScopedChange(event,undefined);
     });
     context.subscriptions.push(onDidChangeConfiguration);
 

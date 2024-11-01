@@ -6,6 +6,7 @@ import { Range, TextEditor, Uri, window, workspace, WorkspaceFolder } from "vsco
 
 import { ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
+import { IVSCOBOLSettings } from "./vsconfiguration";
 
 export class VSCOBOLFileUtils {
 
@@ -79,7 +80,7 @@ export class VSCOBOLFileUtils {
         return bestShortName.length === 0 ? undefined : bestShortName;
     }
 
-    public static findCopyBook(filename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    public static findCopyBook(filename: string, config: IVSCOBOLSettings, features: IExternalFeatures): string {
         if (!filename) {
             return "";
         }
@@ -110,7 +111,7 @@ export class VSCOBOLFileUtils {
         return "";
     }
 
-    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: IVSCOBOLSettings, features: IExternalFeatures): string {
         if (!filename) {
             return "";
         }

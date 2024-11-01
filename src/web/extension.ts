@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { VSCOBOLConfiguration } from "../vsconfiguration";
+import { IVSCOBOLSettings, VSCOBOLConfiguration } from "../vsconfiguration";
 import { ICOBOLSettings } from "../iconfiguration";
 import { VSExtensionUtils } from "../vsextutis";
 import { CobolSymbolInformationProvider } from "../vssymbolprovider";
@@ -371,7 +371,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-    const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
+    const settings: IVSCOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
     settings.file_search_directory = fileSearchDirectory;
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
