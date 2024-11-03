@@ -21,7 +21,7 @@ export class VSSourceTreeViewHandler {
 
         if (config.sourceview && sourceTreeView === undefined) {
             sourceTreeView = new SourceViewTree(config);
-            await sourceTreeView.init();
+            await sourceTreeView.init(config);
             sourceTreeWatcher = workspace.createFileSystemWatcher("**/*");
 
             sourceTreeWatcher.onDidCreate((uri) => {
@@ -162,9 +162,9 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
         }
     }
 
-    public async init() {
+    public async init(settings: ICOBOLSettings) {
         // file items
-        let folders = VSWorkspaceFolders.get();
+        let folders = VSWorkspaceFolders.get(settings);
         if (folders) {
             for (const folder of folders) {
                 await this.addWorkspace(folder);
@@ -172,7 +172,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
         }
 
         // non file items
-        folders = VSWorkspaceFolders.get_filtered("");
+        folders = VSWorkspaceFolders.get_filtered("", settings);
         if (folders) {
             for (const folder of folders) {
                 await this.addWorkspace(folder);

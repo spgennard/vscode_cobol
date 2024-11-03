@@ -46,7 +46,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.commentsIndex = new Map<number, string>();
         this.commentsIndexInline = new Map<number, boolean>();
         this.settings = settings;
-        this.shortFilename = this.findShortWorkspaceFilename(document, features);
+        this.shortFilename = this.findShortWorkspaceFilename(document, features, settings);
         const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
 
         this.documentVersionId = docstat.mtimeMs;
@@ -264,8 +264,8 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.updatedSource.set(lineNumber, line);
     }
 
-    private findShortWorkspaceFilename(ddir: string, features: IExternalFeatures): string {
-        const ws = features.getWorkspaceFolders();
+    private findShortWorkspaceFilename(ddir: string, features: IExternalFeatures, config: ICOBOLSettings): string {
+        const ws = features.getWorkspaceFolders(config);
         if (ws === undefined || ws.length === 0) {
             return "";
         }

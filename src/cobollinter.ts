@@ -148,7 +148,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
         }
 
         for (const uri of files) {
-            const workspaceFile = VSCOBOLFileUtils.getShortWorkspaceFilename(uri.scheme, uri.fsPath);
+            const workspaceFile = VSCOBOLFileUtils.getShortWorkspaceFilename(uri.scheme, uri.fsPath, settings);
             if (workspaceFile) {
                 let newDirname = path.dirname(workspaceFile);
                 if (copybook.indexOf("/") !== -1) {

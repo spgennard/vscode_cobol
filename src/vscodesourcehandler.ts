@@ -126,7 +126,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.commentsIndex = new Map<number, string>();
         this.commentsIndexInline = new Map<number, boolean>();
 
-        const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName);
+        this.config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+        const workspaceFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(document.uri.scheme, document.fileName, this.config);
         this.shortWorkspaceFilename = workspaceFilename === undefined ? "" : workspaceFilename;
         this.isSourceInWorkSpace = this.shortWorkspaceFilename.length !== 0;
         this.updatedSource = new Map<number, string>();
@@ -140,7 +141,6 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
             this.clear();
         }
 
-        this.config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
         if (this.isFileExcluded(this.config)) {
             this.clear();
         }

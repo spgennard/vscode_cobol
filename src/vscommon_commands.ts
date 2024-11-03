@@ -15,13 +15,14 @@ import fs from "fs";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { VSDiagCommands } from "./vsdiagcommands";
 import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 
-async function emptyFile(title:string, doclang: string) {
+async function emptyFile(title:string, doclang: string, config: ICOBOLSettings) {
     let fpath = "";
     let data = "";
     let fdir = "";
 
-    const ws = VSWorkspaceFolders.get();
+    const ws = VSWorkspaceFolders.get(config);
     if (ws) {
         fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
     } else {
@@ -57,10 +58,10 @@ async function emptyFile(title:string, doclang: string) {
     })
 }
 
-function newFile(title: string, template: string, doclang: string) {
+function newFile(title: string, template: string, doclang: string, config: ICOBOLSettings) {
     let fpath = "";
     let fdir = "";
-    const ws = VSWorkspaceFolders.get();
+    const ws = VSWorkspaceFolders.get(config);
     if (ws) {
         fdir = ws[0].uri.fsPath;
     } else {
@@ -86,7 +87,7 @@ function newFile(title: string, template: string, doclang: string) {
         }
     }
     ).then(async function (data) {
-        const ws = VSWorkspaceFolders.get();
+        const ws = VSWorkspaceFolders.get(config);
         if (ws) {
             fpath = path.join(ws[0].uri.fsPath, data + ".cbl");
         } else {
@@ -108,7 +109,8 @@ function newFile(title: string, template: string, doclang: string) {
 }
 
 export function isMicroFocusCOBOL_LSPActive(document: vscode.TextDocument): boolean {
-    if (VSWorkspaceFolders.get()) {
+    const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+    if (VSWorkspaceFolders.get(settings)) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
         return mfeditorConfig.get<boolean>("languageServerAutostart", true);
     }
@@ -118,7 +120,9 @@ export function isMicroFocusCOBOL_LSPActive(document: vscode.TextDocument): bool
 }
 
 export function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolean {
-    if (VSWorkspaceFolders.get()) {
+    const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+
+    if (VSWorkspaceFolders.get(settings)) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI");
         return mfeditorConfig.get<boolean>("languageServer.autostart", true);
     }
@@ -134,7 +138,7 @@ export async function setMicroFocusSuppressFileAssociationsPrompt(settings: ICOB
     }
 
     const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
-    if (VSWorkspaceFolders.get() === undefined) {
+    if (VSWorkspaceFolders.get(settings) === undefined) {
         await mfeditorConfig.update("suppressFileAssociationsPrompt", onOrOff, vscode.ConfigurationTarget.Global);
     } else {
         await mfeditorConfig.update("suppressFileAssociationsPrompt", onOrOff, vscode.ConfigurationTarget.Workspace);
@@ -151,7 +155,7 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vs
     // is it already set?
     if (isMicroFocusCOBOL_LSPActive(document) !== onOrOff) {
         const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
-        if (VSWorkspaceFolders.get() === undefined) {
+        if (VSWorkspaceFolders.get(settings) === undefined) {
             await mfeditorConfig.update("languageServerAutostart", onOrOff, vscode.ConfigurationTarget.Global);
         } else {
             await mfeditorConfig.update("languageServerAutostart", onOrOff, vscode.ConfigurationTarget.Workspace);
@@ -160,7 +164,7 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vs
 
     if (isMicroFocusPLI_LSPActive(document) != onOrOff) {
         const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
-        if (VSWorkspaceFolders.get() === undefined) {
+        if (VSWorkspaceFolders.get(settings) === undefined) {
             microFocusPLIConfig.update("languageServer.autostart", onOrOff, vscode.ConfigurationTarget.Global);
         } else {
             microFocusPLIConfig.update("languageServer.autostart", onOrOff, vscode.ConfigurationTarget.Workspace);
@@ -488,19 +492,19 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_BlankFile", async function () {
-        emptyFile("Empty COBOL file","COBOL");
+        emptyFile("Empty COBOL file","COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
-        newFile("COBOL program name?", "coboleditor.template_rocket_cobol", "COBOL");
+        newFile("COBOL program name?", "coboleditor.template_rocket_cobol", "COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus_mfunit", async function () {
-        newFile("COBOL Unit Test program name?", "coboleditor.template_rocket_cobol_mfunit", "COBOL");
+        newFile("COBOL Unit Test program name?", "coboleditor.template_rocket_cobol_mfunit", "COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_ACUCOBOL", async function () {
-        newFile("ACUCOBOL program name?", "coboleditor.template_acucobol", "ACUCOBOL");
+        newFile("ACUCOBOL program name?", "coboleditor.template_acucobol", "ACUCOBOL", settings);
     }));
 
 

@@ -39,7 +39,6 @@ export enum fileformatStrategy {
 }
 
 export interface IDynCOBOLSettings {
-   // start of in memory settimgs>
     file_search_directory: string[];
 }
 

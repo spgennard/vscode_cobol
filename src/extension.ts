@@ -430,7 +430,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
     context.subscriptions.push(commands.registerCommand("cobolplugin.clearGlobalCache", function () {
         window.showQuickPick(["Yes", "No"], { placeHolder: "Are you sure you want to clear the metadata?" }).then(function (data) {
             if (data === "Yes") {
-                VSCOBOLUtils.clearGlobalCache();
+                VSCOBOLUtils.clearGlobalCache(settings);
                 VSLogger.logMessage("Metadata cache cleared");
             }
         });
@@ -814,7 +814,7 @@ export async function activate(context: ExtensionContext) {
         }
 
         //no metadata, then seed it with basic implicit program-id symbols based on the files in workspace
-        const ws = VSWorkspaceFolders.get();
+        const ws = VSWorkspaceFolders.get(settings);
         if (ws !== undefined) {
             await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
             await VSCOBOLUtils.populateDefaultCallableSymbols(settings, false);
@@ -969,7 +969,7 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(progressStatusBarItem);
 
     if (workspace.isTrusted) {
-        bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
+        bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider(settings));
         context.subscriptions.push(bldscriptTaskProvider);
     }
 

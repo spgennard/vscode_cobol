@@ -66,7 +66,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         this.workspaceFolders = folders;
     }
 
-    public getWorkspaceFolders(): string[] {
+    public getWorkspaceFolders(settings: ICOBOLSettings): string[] {
         return this.workspaceFolders;
     }
 

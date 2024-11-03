@@ -2,6 +2,7 @@ import path, { dirname } from "path";
 import * as vscode from "vscode";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { COBOLFileUtils } from "./fileutils";
+import { ICOBOLSettings } from "./iconfiguration";
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
 	arguments: string;
@@ -19,12 +20,18 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 	public static scriptPrefix = COBOLFileUtils.isWin32 ? "cmd.exe /c " : "";
 
 
+	private settings: ICOBOLSettings;
+
+	constructor(settings: ICOBOLSettings) {
+		this.settings = settings;
+	}
+
 	public provideTasks(): Thenable<vscode.Task[]> | undefined {
 		if (!vscode.workspace.isTrusted) {
 			return undefined;
 		}
 
-		const scriptFilename = this.getFileFromWorkspace();
+		const scriptFilename = this.getFileFromWorkspace(this.settings);
 		if (scriptFilename === undefined) {
 			return undefined;
 
@@ -70,7 +77,7 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			return undefined;
 		}
 
-		const scriptName = this.getFileFromWorkspace();
+		const scriptName = this.getFileFromWorkspace(this.settings);
 
 		// does this workspace have a bld.sh or bld.bat
 		if (scriptName === undefined) {
@@ -95,8 +102,8 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 		return undefined;
 	}
 
-	private getFileFromWorkspace(): string | undefined {
-		const ws = VSWorkspaceFolders.get();
+	private getFileFromWorkspace(settings: ICOBOLSettings): string | undefined {
+		const ws = VSWorkspaceFolders.get(settings);
 		if (ws !== undefined) {
 			for (const folder of ws) {
 				if (folder.uri.scheme === "file") {

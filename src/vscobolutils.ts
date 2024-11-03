@@ -97,7 +97,7 @@ export class VSCOBOLUtils {
     }
 
     static async populateDefaultCallableSymbols(settings: ICOBOLSettings, reset: boolean): Promise<void> {
-        const ws = VSWorkspaceFolders.get();
+        const ws = VSWorkspaceFolders.get(settings);
         if (ws === undefined) {
             return;
         }
@@ -141,7 +141,7 @@ export class VSCOBOLUtils {
     }
 
     static async populateDefaultCopyBooks(settings: ICOBOLSettings, reset: boolean): Promise<void> {
-        const ws = VSWorkspaceFolders.get();
+        const ws = VSWorkspaceFolders.get(settings);
         if (ws === undefined) {
             return;
         }
@@ -191,9 +191,9 @@ export class VSCOBOLUtils {
         }
     }
 
-    public static clearGlobalCache(): void {
+    public static clearGlobalCache(settings: ICOBOLSettings): void {
         // only update if we have a workspace
-        if (VSWorkspaceFolders.get() === undefined) {
+        if (VSWorkspaceFolders.get(settings) === undefined) {
             return;
         }
 
@@ -208,7 +208,7 @@ export class VSCOBOLUtils {
 
     public static saveGlobalCacheToWorkspace(settings: ICOBOLSettings, update = true): void {
         // only update if we have a workspace
-        if (VSWorkspaceFolders.get() === undefined) {
+        if (VSWorkspaceFolders.get(settings) === undefined) {
             return;
         }
 
@@ -887,7 +887,7 @@ export class VSCOBOLUtils {
         }
 
         if (updateRequired) {
-            if (VSWorkspaceFolders.get() === undefined) {
+            if (VSWorkspaceFolders.get(settings) === undefined) {
                 filesConfig.update("associations", filesAssociationsConfig, vscode.ConfigurationTarget.Global);
             } else {
                 filesConfig.update("associations", filesAssociationsConfig, vscode.ConfigurationTarget.Workspace);
@@ -1063,8 +1063,8 @@ export class VSCOBOLUtils {
         invalidSearchDirectory = settings.invalid_copybookdirs;
         invalidSearchDirectory.length = 0;
 
-        const ws = VSWorkspaceFolders.get();
-        const wsURLs = VSWorkspaceFolders.get_filtered("");
+        const ws = VSWorkspaceFolders.get(settings);
+        const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
 
         // step 1 look through the copybook default dirs for "direct" paths and include them in search path
         for (const ddir of extsdir) {
@@ -1082,7 +1082,7 @@ export class VSCOBOLUtils {
                     }
                     else if (COBOLFileUtils.isDirectPath(ddir)) {
                         if (workspace !== undefined && ws !== undefined) {
-                            if (VSCOBOLFileUtils.isPathInWorkspace(ddir) === false) {
+                            if (VSCOBOLFileUtils.isPathInWorkspace(ddir, settings) === false) {
                                 if (COBOLFileUtils.isNetworkPath(ddir)) {
                                     VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                                 }
@@ -1123,7 +1123,7 @@ export class VSCOBOLUtils {
                             const sdir = path.join(folder.uri.fsPath, extdir);
 
                             if (COBOLFileUtils.isDirectory(sdir)) {
-                                if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir) === false) {
+                                if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir, settings) === false) {
                                     VSLogger.logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                                 }
 

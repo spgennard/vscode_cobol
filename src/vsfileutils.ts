@@ -10,8 +10,8 @@ import { IVSCOBOLSettings } from "./vsconfiguration";
 
 export class VSCOBOLFileUtils {
 
-    public static isPathInWorkspace(ddir: string): boolean {
-        const ws = VSWorkspaceFolders.get();
+    public static isPathInWorkspace(ddir: string, config: ICOBOLSettings): boolean {
+        const ws = VSWorkspaceFolders.get(config);
         if (workspace === undefined || ws === undefined) {
             return false;
         }
@@ -27,8 +27,8 @@ export class VSCOBOLFileUtils {
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    public static getFullWorkspaceFilename(features: IExternalFeatures, sdir: string, sdirMs: BigInt): string | undefined {
-        const ws = VSWorkspaceFolders.get();
+    public static getFullWorkspaceFilename(features: IExternalFeatures, sdir: string, sdirMs: BigInt, config: ICOBOLSettings): string | undefined {
+        const ws = VSWorkspaceFolders.get(config);
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }
@@ -49,12 +49,12 @@ export class VSCOBOLFileUtils {
         return undefined;
     }
 
-    public static getShortWorkspaceFilename(schema: string, ddir: string): string | undefined {
+    public static getShortWorkspaceFilename(schema: string, ddir: string, config: ICOBOLSettings): string | undefined {
         // if schema is untitle, we treat it as a non-workspace file, so it is never cached
         if (schema === "untitled") {
             return undefined;
         }
-        const ws = VSWorkspaceFolders.get();
+        const ws = VSWorkspaceFolders.get(config);
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }

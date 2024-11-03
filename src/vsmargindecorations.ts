@@ -9,7 +9,7 @@ import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { ColourTagHandler } from "./vscolourcomments";
-import { fileformatStrategy } from "./iconfiguration";
+import { fileformatStrategy, ICOBOLSettings } from "./iconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 
 const defaultTrailingSpacesDecoration: TextEditorDecorationType = window.createTextEditorDecorationType({
@@ -42,8 +42,8 @@ export class VSmargindecorations extends ColourTagHandler {
         super.setupTags("columns_tags", this.tags);
     }
 
-    private isEnabledViaWorkspace4jcl(): boolean {
-        if (VSWorkspaceFolders.get() === undefined) {
+    private isEnabledViaWorkspace4jcl(settings: ICOBOLSettings): boolean {
+        if (VSWorkspaceFolders.get(settings) === undefined) {
             return false;
         }
 
@@ -89,7 +89,7 @@ export class VSmargindecorations extends ColourTagHandler {
 
         /* is it enabled? */
         if (textLanguage === TextLanguage.JCL) {
-            if (!this.isEnabledViaWorkspace4jcl()) {
+            if (!this.isEnabledViaWorkspace4jcl(configHandler)) {
                 activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
             } else {
                 await this.updateJCLDecorations(doc, activeTextEditor, defaultTrailingSpacesDecoration);

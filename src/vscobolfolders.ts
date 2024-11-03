@@ -1,15 +1,16 @@
 import { workspace, WorkspaceFolder } from "vscode";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export class VSWorkspaceFolders {
-    public static get(): ReadonlyArray<WorkspaceFolder> | undefined {
+    public static get(settings: ICOBOLSettings): ReadonlyArray<WorkspaceFolder> | undefined {
+
         const ws = workspace.workspaceFolders;
         if (ws === undefined) {
             return ws;
         }
 
         const requiredSchema = "file";
-        const folders_order = VSCOBOLConfiguration.get_workspace_settings().workspacefolders_order;
+        const folders_order = settings.workspacefolders_order;
 
         // make a map of the folders
         const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();
@@ -39,13 +40,13 @@ export class VSWorkspaceFolders {
         return f;
     }
 
-    public static get_filtered(requiredSchema:string): ReadonlyArray<WorkspaceFolder> | undefined {
+    public static get_filtered(requiredSchema:string, settings: ICOBOLSettings): ReadonlyArray<WorkspaceFolder> | undefined {
         const ws = workspace.workspaceFolders;
         if (ws === undefined) {
             return ws;
         }
 
-        const folders_order = VSCOBOLConfiguration.get_workspace_settings().workspacefolders_order;
+        const folders_order = settings.workspacefolders_order;
 
         // make a map of the folders
         const folderMap: Map<string, WorkspaceFolder> = new Map<string, WorkspaceFolder>();

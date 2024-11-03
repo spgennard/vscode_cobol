@@ -12,9 +12,9 @@ export interface IExternalFeatures {
     logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean;
     performance_now(): number;
     expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string;
-    getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined;
+    getFullWorkspaceFilename(sdir: string, sdirMs: BigInt, config: ICOBOLSettings): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
-    getWorkspaceFolders(): string[];
+    getWorkspaceFolders(settings: ICOBOLSettings): string[];
     isFile(possibleFilename:string): boolean;
     isDirectory(possibleDirectory: string) : boolean;
     getFileModTimeStamp(filename:string):BigInt;

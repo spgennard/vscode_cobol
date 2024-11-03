@@ -36,8 +36,8 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt): string | undefined {
-        return VSCOBOLFileUtils.getFullWorkspaceFilename(this, sdir, sdirMs);
+    public getFullWorkspaceFilename(sdir: string, sdirMs: BigInt, config: ICOBOLSettings): string | undefined {
+        return VSCOBOLFileUtils.getFullWorkspaceFilename(this, sdir, sdirMs, config);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,8 +45,8 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         //
     }
 
-    public getWorkspaceFolders(): string[] {
-        const folders = VSWorkspaceFolders.get();
+    public getWorkspaceFolders(config: ICOBOLSettings): string[] {
+        const folders = VSWorkspaceFolders.get(config);
         if (folders === undefined) {
             return [];
         }

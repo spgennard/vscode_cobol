@@ -279,7 +279,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
             const fileValues = symbol.split(",");
             if (fileValues.length === 2) {
                 const ms = BigInt(fileValues[0]);
-                const fullDir = externalFeatures.getFullWorkspaceFilename(fileValues[1], ms);
+                const fullDir = externalFeatures.getFullWorkspaceFilename(fileValues[1], ms, settings);
                 if (fullDir !== undefined) {
                     const cws = new COBOLWorkspaceFile(ms, fileValues[1]);
                     InMemoryGlobalSymbolCache.sourceFilenameModified.set(fullDir as string, cws);

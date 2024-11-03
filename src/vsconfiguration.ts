@@ -6,8 +6,9 @@ import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverAp
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
+import { VSCOBOLUtils } from "./vscobolutils";
 
-class WorkspaceSettings {
+export class WorkspaceSettings {
     public settings: IVSCOBOLSettings;
     public files = new Map<string, Uri>();
     public firstResource: Uri;
@@ -46,7 +47,6 @@ export interface IVSCOBOLSettings extends ICOBOLSettings, IDynCOBOLSettings {
 }
 
 export class VSCOBOLSettings extends COBOLSettings implements IVSCOBOLSettings {
-  // dynamic
 
     id: number;
     create_from_document: boolean;
@@ -269,8 +269,8 @@ export class VSCOBOLConfiguration {
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(documentUri);
         const config = new VSCOBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
-        // VSCOBOLUtils.setupPaths(config);
-        config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
+        VSCOBOLUtils.setupPaths(config);
+        // config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
         const workspaceSettings = new WorkspaceSettings(config, documentUri);
         workspaceSettings.files.set(path2wd, documentUri);
 

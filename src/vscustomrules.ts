@@ -1,5 +1,4 @@
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
-import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 export class VSCustomIntelliseRules {
     public static Default: VSCustomIntelliseRules = new VSCustomIntelliseRules();
@@ -8,9 +7,7 @@ export class VSCustomIntelliseRules {
     private customStartsWithRule = new Map<string, intellisenseStyle>();
 
     constructor() {
-        const settings = VSCOBOLConfiguration.get_workspace_settings();
         VSCustomIntelliseRules.Default = this;
-        this.reFreshConfiguration(settings);
     }
 
     public reFreshConfiguration(settings: ICOBOLSettings) {

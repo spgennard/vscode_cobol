@@ -139,7 +139,7 @@ export class VSCobScanner {
                     const ms = BigInt(args[1]);
                     const fullFilename = args[2];
                     const fsUri = Uri.file(fullFilename);
-                    const shortFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(fsUri.scheme, fullFilename);
+                    const shortFilename = VSCOBOLFileUtils.getShortWorkspaceFilename(fsUri.scheme, fullFilename, settings);
                     if (shortFilename !== undefined) {
                         const cws = new COBOLWorkspaceFile(ms, shortFilename);
                         COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(shortFilename);
@@ -216,7 +216,7 @@ export class VSCobScanner {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
 
-        const ws = VSWorkspaceFolders.get();
+        const ws = VSWorkspaceFolders.get(settings);
         const stats = new FileScanStats();
         const files: string[] = [];
 
