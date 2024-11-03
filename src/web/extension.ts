@@ -288,7 +288,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
     invalidSearchDirectory.length = 0;
 
     const ws = VSWorkspaceFolders.get();
-    const wsURLs = VSWorkspaceFolders.get("");
+    const wsURLs = VSWorkspaceFolders.get_filtered("");
 
     if (wsURLs !== undefined) {
         for (const folder of wsURLs) {

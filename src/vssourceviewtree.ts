@@ -172,7 +172,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
         }
 
         // non file items
-        folders = VSWorkspaceFolders.get("");
+        folders = VSWorkspaceFolders.get_filtered("");
         if (folders) {
             for (const folder of folders) {
                 await this.addWorkspace(folder);

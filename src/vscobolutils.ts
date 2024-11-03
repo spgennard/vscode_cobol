@@ -1064,7 +1064,7 @@ export class VSCOBOLUtils {
         invalidSearchDirectory.length = 0;
 
         const ws = VSWorkspaceFolders.get();
-        const wsURLs = VSWorkspaceFolders.get("");
+        const wsURLs = VSWorkspaceFolders.get_filtered("");
 
         // step 1 look through the copybook default dirs for "direct" paths and include them in search path
         for (const ddir of extsdir) {
