@@ -41,11 +41,23 @@ export function cloneObject<T>(a: T): T {
 }
 
 export interface IVSCOBOLSettings extends ICOBOLSettings, IDynCOBOLSettings {
-
+    id: number;
+    create_from_document: boolean;
 }
 
-export class VSCOBOLSettings extends COBOLSettings {
+export class VSCOBOLSettings extends COBOLSettings implements IVSCOBOLSettings {
+  // dynamic
 
+    id: number;
+    create_from_document: boolean;
+
+    public constructor(id: number, create_from_document:boolean) {
+        super();
+
+        this.id = id;
+        this.create_from_document = create_from_document;
+ 
+    }
 }
 
 export class VSCOBOLConfiguration {
@@ -255,7 +267,7 @@ export class VSCOBOLConfiguration {
         }
 
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(documentUri);
-        const config = new COBOLSettings(id, true);
+        const config = new VSCOBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
         // VSCOBOLUtils.setupPaths(config);
         config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];

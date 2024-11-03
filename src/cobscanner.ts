@@ -17,7 +17,7 @@ import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 
 const args = process.argv.slice(2);
-const settings: ICOBOLSettings = new COBOLSettings(0, false);
+const settings: ICOBOLSettings = new COBOLSettings();
 
 const progressPercentage = 5;
 
@@ -146,7 +146,7 @@ export class Scanner {
             for (const file of scanData.Files) {
                 if (Utils.cacheUpdateRequired(file, features)) {
                     const filesHandler = new FileSourceHandler(settings, undefined, file, features);
-                    const config = new COBOLSettings(0, false);
+                    const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);
                     const startTime = features.performance_now();

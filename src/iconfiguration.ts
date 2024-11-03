@@ -40,8 +40,6 @@ export enum fileformatStrategy {
 
 export interface IDynCOBOLSettings {
    // start of in memory settimgs>
-    id: number;
-    create_from_document: boolean;
     file_search_directory: string[];
 }
 
@@ -304,14 +302,10 @@ export class COBOLSettings implements ICOBOLSettings {
     scan_comment_begin_ls_ignore: string;
 
     scan_comment_end_ls_ignore: string;
-
-    // dynamic
-
-    id: number;
-    create_from_document: boolean;
-    file_search_directory: string[];
     
-    constructor(id: number, create_from_document: boolean) {
+    file_search_directory: string[];
+
+    constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
         this.copybooks_nested = false;
@@ -417,8 +411,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_comment_begin_ls_ignore = "BEGIN-LS-IGNORE";
         this.scan_comment_end_ls_ignore = "END-LS-IGNORE";
  
-        this.id = id;
-        this.create_from_document = create_from_document;
         this.file_search_directory = [];
     }
 }
