@@ -1,6 +1,6 @@
 import path, { dirname } from "path";
 import * as vscode from "vscode";
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { COBOLFileUtils } from "./fileutils";
 
 interface BldScriptDefinition extends vscode.TaskDefinition {

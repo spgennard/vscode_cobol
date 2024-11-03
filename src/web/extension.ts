@@ -20,7 +20,7 @@ import { commands, extensions, languages, ProviderResult, workspace } from "vsco
 import { VSCobolRenameProvider } from "../vsrenameprovider";
 import { VSPPCodeLens } from "../vsppcodelens";
 import { activateCommonCommands } from "../vscommon_commands";
-import { VSWorkspaceFolders } from "../cobolfolders";
+import { VSWorkspaceFolders } from "../vscobolfolders";
 import { VSSourceTreeViewHandler } from "../vssourceviewtree";
 import { VSHelpAndFeedViewHandler } from "../feedbacktree";
 import { VSHoverProvider } from "../vshoverprovider";

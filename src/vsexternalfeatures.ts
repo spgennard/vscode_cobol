@@ -8,7 +8,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 
 import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { FileType, Uri, workspace } from "vscode";
 import { IVSCOBOLSettings } from "./vsconfiguration";
 

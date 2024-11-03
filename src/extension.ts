@@ -21,7 +21,7 @@ import { ICOBOLSettings } from "./iconfiguration";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const propertiesReader = require("properties-reader");
 
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { COBOLSourceDefinition } from "./vssourcedefinitionprovider";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCobScanner } from "./vscobscanner";

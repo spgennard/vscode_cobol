@@ -2,7 +2,7 @@
 import path from "path";
 
 import { extensions, Uri, WorkspaceFolder } from "vscode";
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { progressStatusBarItem } from "./extension";
 import { VSLogger } from "./vslogger";

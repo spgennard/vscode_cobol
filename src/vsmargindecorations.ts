@@ -4,7 +4,7 @@ import { DecorationOptions, Range, TextEditor, Position, window, ThemeColor, Tex
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ESourceFormat } from "./externalfeatures";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { VSCodeSourceHandlerLite } from "./vscodesourcehandler";
 import { SourceFormat } from "./sourceformat";
 import { TextLanguage, VSExtensionUtils } from "./vsextutis";

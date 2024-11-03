@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { SourceOrFolderTreeItem } from "./sourceItem";
 import { workspace } from "vscode";
 import { ICOBOLSettings } from "./iconfiguration";
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScannerTools } from "./vssourcescannerutils";
 import { VSCOBOLUtils } from "./vscobolutils";

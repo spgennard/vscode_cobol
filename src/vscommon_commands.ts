@@ -12,7 +12,7 @@ import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import path from "path";
 import fs from "fs";
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { VSDiagCommands } from "./vsdiagcommands";
 import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
 

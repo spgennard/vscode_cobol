@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-import { VSWorkspaceFolders } from "./cobolfolders";
+import { VSWorkspaceFolders } from "./vscobolfolders";
 import { Range, TextEditor, Uri, window, workspace, WorkspaceFolder } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
