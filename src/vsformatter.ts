@@ -8,9 +8,9 @@ export class COBOLTypeFormatter implements OnTypeFormattingEditProvider {
     caseFormatter: COBOLCaseFormatter;
     docFormatter: COBOLDocumentationCommentHandler;
 
-    constructor(settings: ICOBOLSettings) {
-        this.caseFormatter = new COBOLCaseFormatter(settings);
-        this.docFormatter = new COBOLDocumentationCommentHandler(settings);
+    constructor() {
+        this.caseFormatter = new COBOLCaseFormatter();
+        this.docFormatter = new COBOLDocumentationCommentHandler();
     }
 
     provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
@@ -45,6 +45,6 @@ export class COBOLTypeFormatter implements OnTypeFormattingEditProvider {
     static register(settings: ICOBOLSettings): any {
         const langPlusSchemas = VSExtensionUtils.getAllCobolSelectors(settings, false);
 
-        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLTypeFormatter(settings), "\n");
+        return languages.registerOnTypeFormattingEditProvider(langPlusSchemas, new COBOLTypeFormatter(), "\n");
     }
 }

@@ -11,18 +11,12 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class COBOLCaseFormatter {
 
-    private settings: ICOBOLSettings;
-
-    public constructor(settings: ICOBOLSettings) {
-        this.settings = settings;
-    }
-
-    private convertLine(line: string, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
+    private convertLine(settings: ICOBOLSettings, line: string, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
         const oldText = line;
-        const defaultStyle = this.settings.intellisense_style;
-        let newText = VSCOBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, this.settings,defaultStyle);
-        newText = VSCOBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, this.settings, defaultStyle);
-        return VSCOBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, this.settings, defaultStyle);
+        const defaultStyle = settings.intellisense_style;
+        let newText = VSCOBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, settings,defaultStyle);
+        newText = VSCOBOLUtils.foldTokenLine(newText, current, FoldAction.ConstantsOrVariables, foldConstantToUpper, langid, settings, defaultStyle);
+        return VSCOBOLUtils.foldTokenLine(newText, current, FoldAction.PerformTargets, foldConstantToUpper, langid, settings, defaultStyle);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,7 +27,9 @@ export class COBOLCaseFormatter {
             return;
         }
 
-        if (this.settings.format_on_return === false) {
+        const settings = VSCOBOLConfiguration.get_resource_settings(document,VSExternalFeatures);
+
+        if (settings.format_on_return === false) {
             return;
         }
 
@@ -47,7 +43,7 @@ export class COBOLCaseFormatter {
         const line = document.lineAt(l);
         if (line) {
             const oldText = line.text;
-            const newText = this.convertLine(oldText, current, this.settings.format_constants_to_uppercase, langid);
+            const newText = this.convertLine(settings, oldText, current, settings.format_constants_to_uppercase, langid);
 
             if (newText !== oldText) {
                 const startPos = new vscode.Position(l, 0);

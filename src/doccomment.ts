@@ -1,15 +1,8 @@
 "use strict";
 
 import { CancellationToken, FormattingOptions,  TextDocument, TextEdit, Position } from "vscode";
-import { ICOBOLSettings } from "./iconfiguration";
 
 export class COBOLDocumentationCommentHandler {
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    constructor(settings: ICOBOLSettings)
-    {
-
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): TextEdit[]|undefined {

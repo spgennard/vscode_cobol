@@ -172,13 +172,14 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vs
     }
 }
 
-export function activateCommonCommands(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
+export function activateCommonCommands(context: vscode.ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_acu", function () {
         const act = vscode.window.activeTextEditor;
         if (act === null || act === undefined) {
             return;
         }
 
+        const settings = VSCOBOLConfiguration.get_resource_settings(act.document, VSExternalFeatures);
         vscode.languages.setTextDocumentLanguage(act.document, "ACUCOBOL");
         VSCOBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "ACUCOBOL");
     }));
@@ -189,6 +190,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
             return;
         }
 
+        const settings = VSCOBOLConfiguration.get_resource_settings(act.document, VSExternalFeatures);
         vscode.languages.setTextDocumentLanguage(act.document, "RMCOBOL");
         VSCOBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "RMCOBOL");
     }));
@@ -202,6 +204,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         // ensure all documents with the same id are change to the current ext id
         await VSCOBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.defaultCOBOLLanguage);
 
+        const settings = VSCOBOLConfiguration.get_resource_settings(act.document, VSExternalFeatures);
         const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
         if (mfExt) {
             await toggleMicroFocusLSP(settings, act.document, false);
@@ -215,6 +218,8 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         if (act === null || act === undefined) {
             return;
         }
+
+        const settings = VSCOBOLConfiguration.get_resource_settings(act.document, VSExternalFeatures);
 
         // ensure all documents with the same id are change to the 'Rocket COBOL lang id'
         await VSCOBOLUtils.changeDocumentId(act.document.languageId, ExtensionDefaults.microFocusCOBOLLanguageId);
@@ -260,6 +265,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.RemoveComments(vscode.window.activeTextEditor);
             }
@@ -269,6 +275,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.removeIdentificationArea", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.RemoveIdentificationArea(vscode.window.activeTextEditor);
@@ -279,6 +286,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.removeColumnNumbers", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.removeColumnNumbers(vscode.window.activeTextEditor);
@@ -289,6 +297,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeKeywordsLowercase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, langid, intellisenseStyle.LowerCase);
@@ -299,6 +308,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeKeywordsUppercase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, langid, intellisenseStyle.UpperCase);
@@ -309,6 +319,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeKeywordsCamelCase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.Keywords, langid, intellisenseStyle.CamelCase);
@@ -319,6 +330,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeFieldsLowercase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid, intellisenseStyle.LowerCase);
@@ -329,6 +341,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeFieldsUppercase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid, intellisenseStyle.UpperCase);
@@ -339,6 +352,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeFieldsCamelCase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.ConstantsOrVariables, langid, intellisenseStyle.CamelCase);
@@ -349,6 +363,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makePerformTargetsLowerCase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid, intellisenseStyle.LowerCase);
@@ -359,6 +374,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makePerformTargetsUpperCase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid, intellisenseStyle.UpperCase);
@@ -369,6 +385,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makePerformTargetsCamelCase", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
                 VSCOBOLUtils.foldToken(VSExternalFeatures, settings, vscode.window.activeTextEditor, FoldAction.PerformTargets, langid, intellisenseStyle.CamelCase);
@@ -383,6 +400,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.resequenceColumnNumbers", () => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
 
@@ -455,6 +473,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         if (vscode.window.activeTextEditor) {
             const dialects = ["COBOL", "ACUCOBOL", "RMCOBOL", "COBOLIT"];
             const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
+            const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (mfExt !== undefined) {
                 dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
@@ -492,18 +511,35 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_BlankFile", async function () {
+        if (vscode.window.activeTextEditor === undefined) {
+            return;
+        }
+        const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
+
         emptyFile("Empty COBOL file","COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
+        if (vscode.window.activeTextEditor === undefined) {
+            return;
+        }
+        const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
         newFile("COBOL program name?", "coboleditor.template_rocket_cobol", "COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus_mfunit", async function () {
+        if (vscode.window.activeTextEditor === undefined) {
+            return;
+        }
+        const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
         newFile("COBOL Unit Test program name?", "coboleditor.template_rocket_cobol_mfunit", "COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_ACUCOBOL", async function () {
+        if (vscode.window.activeTextEditor === undefined) {
+            return;
+        }
+        const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
         newFile("ACUCOBOL program name?", "coboleditor.template_acucobol", "ACUCOBOL", settings);
     }));
 
@@ -512,7 +548,8 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
         await VSDiagCommands.DumpAllSymbols();
     }));
 
-    const langIds = settings.valid_cobol_language_ids;
+    const _settings = VSCOBOLConfiguration.get_workspace_settings();
+    const langIds = _settings.valid_cobol_language_ids;
     const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
     if (mfExt) {
         langIds.push(ExtensionDefaults.microFocusCOBOLLanguageId);
@@ -520,33 +557,33 @@ export function activateCommonCommands(context: vscode.ExtensionContext, setting
 
     for (const langid of langIds) {
         if (langid !== ExtensionDefaults.microFocusCOBOLLanguageId) {
-            context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", settings, langid + "_1", langid));
+            context.subscriptions.push(getLangStatusItem("Output Window", "cobolplugin.showCOBOLChannel", "Show", _settings, langid + "_1", langid));
         }
 
         switch (langid) {
             case "ACUCOBOL":
-                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", settings, langid + "_2", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_2", langid));
                 break;
             case "BITLANG-COBOL":
             case "COBOL":
                 {
-                    context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid + "_3", langid));
+                    context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", _settings, langid + "_3", langid));
 
                     if (mfExt !== undefined) {
-                        context.subscriptions.push(getLangStatusItem("Switch to 'Rocket COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", settings, langid + "_6", langid));
+                        context.subscriptions.push(getLangStatusItem("Switch to 'Rocket COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", _settings, langid + "_6", langid));
                     }
                 }
                 break;
             case "RMCOBOL":
-                context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", settings, langid + "_2", langid));
-                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", settings, langid + "_5", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", _settings, langid + "_2", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_5", langid));
                 break;
             case ExtensionDefaults.microFocusCOBOLLanguageId:
-                context.subscriptions.push(getLangStatusItem("Switch to 'BitLang COBOL'", "cobolplugin.change_lang_to_cobol", "Change", settings, langid + "_6", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to 'BitLang COBOL'", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_6", langid));
                 break;
         }
 
-        context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider(settings)));
+        context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider()));
     }
 }
 

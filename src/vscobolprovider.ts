@@ -13,7 +13,7 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
     private features: IExternalFeatures;
 
-    public constructor(config: ICOBOLSettings, features: IExternalFeatures) {
+    public constructor(features: IExternalFeatures) {
         this.features = features;
     }
 

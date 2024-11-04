@@ -3,23 +3,21 @@ import * as vscode from "vscode"
 import * as URI from "vscode-uri"
 import { ICOBOLSettings } from "./iconfiguration"
 import { COBOLFileUtils } from "./fileutils";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 
 export class CopyBookDragDropProvider implements vscode.DocumentDropEditProvider {
-    private settings: ICOBOLSettings;
-
-    public constructor(settings: ICOBOLSettings) {
-        this.settings = settings;
-    }
-
     async provideDocumentDropEdits(document: vscode.TextDocument,
         _position: vscode.Position,
         dataTransfer: vscode.DataTransfer,
         token: vscode.CancellationToken
     ): Promise<vscode.DocumentDropEdit | undefined> {
 
+        const settings = VSCOBOLConfiguration.get_resource_settings(document,VSExternalFeatures);
+        
         // Return the text or snippet to insert at the drop location.
-        const snippet = await this.tryGetUriListSnippet(document, dataTransfer, token, this.settings)
+        const snippet = await this.tryGetUriListSnippet(document, dataTransfer, token, settings)
         return snippet ? new vscode.DocumentDropEdit(snippet) : undefined
     }
 

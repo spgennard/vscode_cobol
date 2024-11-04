@@ -582,7 +582,8 @@
           ],
           "default": "unchanged",
           "markdownDescription": "Include results in specific format",
-          "title": "Include results in specific format"
+          "title": "Include results in specific format",
+          "scope": "resource"
         },
         "coboleditor.intellisense_add_space_keywords": {
           "type": "array",
@@ -741,7 +742,8 @@
           "type": "boolean",
           "default": "false",
           "markdownDescription": "Format line on return key",
-          "title": "Format line on return key"
+          "title": "Format line on return key",
+          "scope": "resource"
         },
         "coboleditor.format_constants_to_uppercase": {
           "type": "boolean",

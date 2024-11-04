@@ -695,7 +695,7 @@ export async function activate(context: ExtensionContext) {
     }
 
     activateDesktop(context, settings);
-    activateCommonCommands(context, settings);
+    activateCommonCommands(context);
 
     // re-init if something gets installed or removed
     context.subscriptions.push(vscode.extensions.onDidChange(() => {
@@ -898,7 +898,7 @@ export async function activate(context: ExtensionContext) {
 
     }
 
-    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolSourceCompletionItemProvider(settings, VSExternalFeatures)));
+    context.subscriptions.push(languages.registerCompletionItemProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolSourceCompletionItemProvider(VSExternalFeatures)));
 
     // const cobolCommentProvider = new CobolCommentProvider(VSCOBOLConfiguration.get());
     // const cobolCommentProviderDisposible = languages.registerCompletionItemProvider(allCobolSelectors, cobolCommentProvider);
@@ -972,7 +972,7 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(progressStatusBarItem);
 
     if (workspace.isTrusted) {
-        bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider(settings));
+        bldscriptTaskProvider = vscode.tasks.registerTaskProvider(BldScriptTaskProvider.BldScriptType, new BldScriptTaskProvider());
         context.subscriptions.push(bldscriptTaskProvider);
     }
 

@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { COBOLFileUtils } from "./fileutils";
 import { ICOBOLSettings } from "./iconfiguration";
+import { VSCOBOLConfiguration } from "./vsconfiguration";
 
 interface BldScriptDefinition extends vscode.TaskDefinition {
 	arguments: string;
@@ -20,18 +21,13 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 	public static scriptPrefix = COBOLFileUtils.isWin32 ? "cmd.exe /c " : "";
 
 
-	private settings: ICOBOLSettings;
-
-	constructor(settings: ICOBOLSettings) {
-		this.settings = settings;
-	}
-
 	public provideTasks(): Thenable<vscode.Task[]> | undefined {
 		if (!vscode.workspace.isTrusted) {
 			return undefined;
 		}
 
-		const scriptFilename = this.getFileFromWorkspace(this.settings);
+		const settings = VSCOBOLConfiguration.get_workspace_settings();
+		const scriptFilename = this.getFileFromWorkspace(settings);
 		if (scriptFilename === undefined) {
 			return undefined;
 
@@ -77,7 +73,8 @@ export class BldScriptTaskProvider implements vscode.TaskProvider {
 			return undefined;
 		}
 
-		const scriptName = this.getFileFromWorkspace(this.settings);
+		const settings = VSCOBOLConfiguration.get_workspace_settings();
+		const scriptName = this.getFileFromWorkspace(settings);
 
 		// does this workspace have a bld.sh or bld.bat
 		if (scriptName === undefined) {
