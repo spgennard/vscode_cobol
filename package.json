@@ -180,12 +180,14 @@
             75,
             79
           ],
-          "description": "COBOL tabstops"
+          "description": "COBOL tabstops",
+          "scope": "resource"
         },
         "coboleditor.enable_tabstops_anchors": {
           "type": "boolean",
           "markdownDescription": "Enable tabstop anchors",
-          "default": false
+          "default": false,
+          "scope": "resource"
         },
         "coboleditor.enable_rocket_cobol_lsp_when_active": {
           "type": "boolean",
@@ -930,7 +932,8 @@
         "coboleditor.enable_comment_tags": {
           "type": "boolean",
           "description": "Enable coloured comments",
-          "default": true
+          "default": true,
+          "scope": "resource"
         },
         "coboleditor.comment_tag_word": {
           "type": "boolean",
@@ -969,6 +972,7 @@
               }
             }
           },
+          "scope": "resource",
           "default": [
             {
               "tag": " !",
@@ -1035,7 +1039,8 @@
         "coboleditor.enable_columns_tags": {
           "type": "boolean",
           "description": "Enable coloured margin",
-          "default": false
+          "default": false,
+          "scope": "resource"
         },
         "coboleditor.columns_tags": {
           "type": "array",

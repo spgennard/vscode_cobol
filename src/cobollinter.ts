@@ -9,7 +9,8 @@ import { TextLanguage, VSExtensionUtils } from "./vsextutis";
 import { VSCOBOLUtils } from "./vscobolutils";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import path from "path";
-import { VSCOBOLEditorConfiguration } from "./vsconfiguration";
+import { VSCOBOLConfiguration, VSCOBOLEditorConfiguration } from "./vsconfiguration";
+import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class CobolLinterActionFixer implements CodeActionProvider {
 
@@ -184,25 +185,21 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 }
 
 export class CobolLinterProvider {
-    private settings: ICOBOLSettings;
-
     private collection: vscode.DiagnosticCollection;
-    private readonly linterSev: vscode.DiagnosticSeverity;
-
     private current: COBOLSourceScanner | undefined;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
-    constructor(collection: vscode.DiagnosticCollection, settings: ICOBOLSettings) {
+    constructor(collection: vscode.DiagnosticCollection) {
         this.collection = collection;
-        this.settings = settings;
-        this.linterSev = settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
     }
 
     public async updateLinter(document: vscode.TextDocument): Promise<void> {
-
+        const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+        const linterSev: vscode.DiagnosticSeverity = settings.linter_mark_as_information ? vscode.DiagnosticSeverity.Information : vscode.DiagnosticSeverity.Hint;
+    
         /* drop out early */
-        if (this.settings.linter === false) {
+        if (settings.linter === false) {
             return;
         }
 
@@ -212,7 +209,7 @@ export class CobolLinterProvider {
         }
 
         /* has it changed? */
-        if (this.setupCOBOLScannner(document) === false) {
+        if (this.setupCOBOLScannner(document, settings) === false) {
             return;
         }
 
@@ -225,19 +222,19 @@ export class CobolLinterProvider {
 
 
                 // handle sections & paragraphs
-                this.processScannedDocumentForUnusedSymbols(qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections);
+                this.processScannedDocumentForUnusedSymbols(settings, qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections, linterSev);
 
                 if (qp.configHandler.linter_house_standards_rules) {
-                    this.processParsedDocumentForStandards(qp, diagRefs);
+                    this.processParsedDocumentForStandards(qp, diagRefs, linterSev);
                 }
             }
 
-            if (this.settings.linter_ignore_missing_copybook === false && this.current.diagMissingFileWarnings.size !== 0) {
+            if (settings.linter_ignore_missing_copybook === false && this.current.diagMissingFileWarnings.size !== 0) {
                 const qp: COBOLSourceScanner = this.current;
                 for (const [msg, fileSymbol] of qp.diagMissingFileWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
-                        const diagMessage = new vscode.Diagnostic(r, msg, this.linterSev);
+                        const diagMessage = new vscode.Diagnostic(r, msg, linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
                         diagMessage.code = CobolLinterProviderSymbols.CopyBookNotFound + fileSymbol.messageOrMissingFile;
                         if (diagRefs.has(fileSymbol.filename)) {
@@ -260,7 +257,7 @@ export class CobolLinterProvider {
                 for (const fileSymbol of qp.portWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
-                        const diagMessage = new vscode.Diagnostic(r, fileSymbol.message, this.linterSev);
+                        const diagMessage = new vscode.Diagnostic(r, fileSymbol.message, linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
                         diagMessage.code = CobolLinterProviderSymbols.PortMessage + fileSymbol.replaceLine;
                         if (diagRefs.has(fileSymbol.filename)) {
@@ -282,7 +279,7 @@ export class CobolLinterProvider {
                 for (const fileSymbol of qp.generalWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
-                        const diagMessage = new vscode.Diagnostic(r, fileSymbol.messageOrMissingFile, this.linterSev);
+                        const diagMessage = new vscode.Diagnostic(r, fileSymbol.messageOrMissingFile, linterSev);
                         diagMessage.tags = [vscode.DiagnosticTag.Unnecessary];
                         diagMessage.code = CobolLinterProviderSymbols.GeneralMessage + fileSymbol.messageOrMissingFile;
                         if (diagRefs.has(fileSymbol.filename)) {
@@ -306,7 +303,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processParsedDocumentForStandards(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>) {
+    private processParsedDocumentForStandards(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, linterSev: vscode.DiagnosticSeverity) {
 
         if (this.sourceRefs === undefined) {
             return;
@@ -347,7 +344,7 @@ export class CobolLinterProvider {
                         const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                             new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
 
-                        const d = new vscode.Diagnostic(r, key + " breaks house standards rule for " + token.inSection.tokenNameLower + " section", this.linterSev);
+                        const d = new vscode.Diagnostic(r, key + " breaks house standards rule for " + token.inSection.tokenNameLower + " section", linterSev);
                         d.tags = [vscode.DiagnosticTag.Unnecessary];
 
                         if (diagRefs.has(token.filename)) {
@@ -366,7 +363,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processScannedDocumentForUnusedSymbols(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, processParas: boolean, processSections: boolean) {
+    private processScannedDocumentForUnusedSymbols(settings: ICOBOLSettings, qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, processParas: boolean, processSections: boolean, linterSev: vscode.DiagnosticSeverity) {
 
         if (this.sourceRefs === undefined) {
             return;
@@ -385,7 +382,7 @@ export class CobolLinterProvider {
                 if (refs !== undefined && refs.length === 1) {
                     const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                         new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                    const d = new vscode.Diagnostic(r, key + " paragraph is not referenced", this.linterSev);
+                    const d = new vscode.Diagnostic(r, key + " paragraph is not referenced", linterSev);
                     d.tags = [vscode.DiagnosticTag.Unnecessary];
                     d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
 
@@ -416,7 +413,7 @@ export class CobolLinterProvider {
                     if (refs !== undefined && refs.length === 1) {
                         let ignore = false;
 
-                        if (this.settings.linter_ignore_section_before_entry) {
+                        if (settings.linter_ignore_section_before_entry) {
                             const nextLine = qp.sourceHandler.getLine(1 + token.startLine, false);
                             if (nextLine?.toLowerCase().indexOf("entry") !== -1) {
                                 ignore = true;
@@ -426,7 +423,7 @@ export class CobolLinterProvider {
                         if (!ignore) {
                             const r = new vscode.Range(new vscode.Position(token.startLine, token.startColumn),
                                 new vscode.Position(token.startLine, token.startColumn + token.tokenName.length));
-                            const d = new vscode.Diagnostic(r, key + " section is not referenced", this.linterSev);
+                            const d = new vscode.Diagnostic(r, key + " section is not referenced", linterSev);
                             d.code = CobolLinterProviderSymbols.NotReferencedMarker_internal + " " + key;
                             d.tags = [vscode.DiagnosticTag.Unnecessary];
 
@@ -447,14 +444,14 @@ export class CobolLinterProvider {
         }
     }
 
-    private setupCOBOLScannner(document: vscode.TextDocument): boolean {
+    private setupCOBOLScannner(document: vscode.TextDocument, settings: ICOBOLSettings): boolean {
         if (this.current !== undefined && this.current.filename !== document.fileName) {
             this.current = undefined;
         }
 
         // cache current document, interactive search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSCOBOLSourceScanner.getCachedObject(document, this.settings);
+            this.current = VSCOBOLSourceScanner.getCachedObject(document, settings);
             if (this.current !== undefined) {
                 this.sourceRefs = this.current.sourceReferences;
             }

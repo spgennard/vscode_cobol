@@ -709,7 +709,7 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(onDidChangeConfiguration);
 
     const collection = languages.createDiagnosticCollection("cobolDiag");
-    const linter = new CobolLinterProvider(collection, settings);
+    const linter = new CobolLinterProvider(collection);
     const cobolfixer = new CobolLinterActionFixer();
 
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, false);
