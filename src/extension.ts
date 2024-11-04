@@ -560,6 +560,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             setupLogChannel(true, settings, true);
             VSCOBOLUtils.setupFilePaths(settings);
             async () => {
+                await VSCOBOLUtils.setupUrlPaths(settings);
                 await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
             }
         }
@@ -592,7 +593,8 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
         if (md_copybookdirs) {
             VSCOBOLSourceScanner.clearCOBOLCache();
             setupLogChannel(true, settings, true);
-            await VSCOBOLUtils.setupFilePaths(settings);
+            VSCOBOLUtils.setupFilePaths(settings);
+            await VSCOBOLUtils.setupUrlPaths(settings);
 
             VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
             VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
@@ -637,7 +639,8 @@ export async function activate(context: ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
     await setupLogChannel(true, settings, true);
-    await VSCOBOLUtils.setupFilePaths(settings);
+    VSCOBOLUtils.setupFilePaths(settings);
+    await VSCOBOLUtils.setupUrlPaths(settings);
 
     const checkForExtensionConflictsMessage = checkForExtensionConflicts();
 
@@ -795,8 +798,8 @@ export async function activate(context: ExtensionContext) {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
         await setupLogChannel(false, settings, true);
-        await VSCOBOLUtils.setupFilePaths(settings);
-
+        VSCOBOLUtils.setupFilePaths(settings);
+        await VSCOBOLUtils.setupUrlPaths(settings);
     }));
 
     // default to on.. but only when "extend mf" is enabled via "when" clause.. 

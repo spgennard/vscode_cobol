@@ -270,7 +270,7 @@ export class VSCOBOLConfiguration {
         const config = new VSCOBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
         VSCOBOLUtils.setupFilePaths(config);
-        // config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
+        VSCOBOLUtils.setupUrlPathsSync(config);
         const workspaceSettings = new WorkspaceSettings(config, documentUri);
         workspaceSettings.files.set(path2wd, documentUri);
 

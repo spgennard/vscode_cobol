@@ -1060,7 +1060,6 @@ export class VSCOBOLUtils {
         invalidSearchDirectory.length = 0;
 
         const ws = VSWorkspaceFolders.get(settings);
-        const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
 
         // step 1 look through the copybook default dirs for "direct" paths and include them in search path
         for (const ddir of extsdir) {
@@ -1149,13 +1148,6 @@ export class VSCOBOLUtils {
             for (const folder of ws) {
                 VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
             }
-        } else {
-            if (wsURLs !== undefined && wsURLs.length !== 0) {
-                VSLogger.logMessage("  Workspace Folders (URLs):");
-                for (const folder of wsURLs) {
-                    VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
-                }
-            }
         }
 
         extsdir = fileSearchDirectory;
@@ -1182,7 +1174,13 @@ export class VSCOBOLUtils {
         }
     }
 
-    public async setupUrlPaths(settings: ICOBOLSettings) {
+    public static setupUrlPathsSync(settings: ICOBOLSettings) {
+        async() => {
+            await VSCOBOLUtils.setupUrlPaths(settings);
+        }
+    }
+
+    public static async setupUrlPaths(settings: ICOBOLSettings) {
         let invalidSearchDirectory: string[] = [];
         let URLSearchDirectory: string[] = VSExternalFeatures.getURLCopyBookSearchPath();
 
@@ -1190,7 +1188,10 @@ export class VSCOBOLUtils {
         invalidSearchDirectory = settings.invalid_copybookdirs;
 
         const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
-
+        if (wsURLs === undefined || wsURLs.length === 0) {
+            return;
+        }
+        
         // step 3
         if (wsURLs !== undefined) {
             for (const folder of wsURLs) {
@@ -1244,11 +1245,6 @@ export class VSCOBOLUtils {
         }
 
         VSLogger.logMessage("");
-
-        if (settings.maintain_metadata_recursive_search) {
-            VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
-            VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
-        }
     }
 
     // public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
