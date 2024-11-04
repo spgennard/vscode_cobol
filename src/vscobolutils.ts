@@ -1051,13 +1051,9 @@ export class VSCOBOLUtils {
         return str;
     }
 
-    public static async setupPaths(settings: ICOBOLSettings) {
-        let invalidSearchDirectory: string[] = [];
-        let fileSearchDirectory: string[] = [];
-        let URLSearchDirectory: string[] = VSExternalFeatures.getURLCopyBookSearchPath();
-
-        fileSearchDirectory.length = 0;
-        URLSearchDirectory.length = 0;
+    public static setupFilePaths(settings: ICOBOLSettings) {
+        let invalidSearchDirectory: string[] = settings.invalid_copybookdirs;
+        let fileSearchDirectory: string[] = settings.file_search_directory;
 
         let extsdir = settings.copybookdirs;
         invalidSearchDirectory = settings.invalid_copybookdirs;
@@ -1140,33 +1136,6 @@ export class VSCOBOLUtils {
             }
         }
 
-        // step 3
-        if (wsURLs !== undefined) {
-            for (const folder of wsURLs) {
-                // place the workspace folder in the copybook path
-                URLSearchDirectory.push(folder.uri.toString());
-
-                /* now add any extra directories that are below this workspace folder */
-                for (const extdir of extsdir) {
-                    try {
-                        if (COBOLFileUtils.isDirectPath(extdir) === false) {
-                            const sdir = `${folder.uri.toString()}/${extdir}`;
-
-                            const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
-                            if (sdirStat.type & vscode.FileType.Directory) {
-                                URLSearchDirectory.push(sdir);
-                            } else {
-                                invalidSearchDirectory.push("URL as " + sdir);
-                            }
-                        }
-                    }
-                    catch (e) {
-                        // VSLogger.logException("dir", e as Error);
-                    }
-                }
-            }
-        }
-
         const filterfileSearchDirectory = fileSearchDirectory.filter((elem, pos) => fileSearchDirectory.indexOf(elem) === pos);
         fileSearchDirectory.length = 0;
         for (const fsd of filterfileSearchDirectory) {
@@ -1194,6 +1163,67 @@ export class VSCOBOLUtils {
             VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
             for (const sdir of extsdir) {
                 VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        extsdir = invalidSearchDirectory;
+        if (extsdir.length !== 0) {
+            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
+            for (const sdir of extsdir) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        VSLogger.logMessage("");
+
+        if (settings.maintain_metadata_recursive_search) {
+            VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
+            VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
+        }
+    }
+
+    public async setupUrlPaths(settings: ICOBOLSettings) {
+        let invalidSearchDirectory: string[] = [];
+        let URLSearchDirectory: string[] = VSExternalFeatures.getURLCopyBookSearchPath();
+
+        let extsdir = settings.copybookdirs;
+        invalidSearchDirectory = settings.invalid_copybookdirs;
+
+        const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
+
+        // step 3
+        if (wsURLs !== undefined) {
+            for (const folder of wsURLs) {
+                // place the workspace folder in the copybook path
+                URLSearchDirectory.push(folder.uri.toString());
+
+                /* now add any extra directories that are below this workspace folder */
+                for (const extdir of extsdir) {
+                    try {
+                        if (COBOLFileUtils.isDirectPath(extdir) === false) {
+                            const sdir = `${folder.uri.toString()}/${extdir}`;
+
+                            const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
+                            if (sdirStat.type & vscode.FileType.Directory) {
+                                URLSearchDirectory.push(sdir);
+                            } else {
+                                invalidSearchDirectory.push("URL as " + sdir);
+                            }
+                        }
+                    }
+                    catch (e) {
+                        // VSLogger.logException("dir", e as Error);
+                    }
+                }
+            }
+        }
+
+        invalidSearchDirectory = invalidSearchDirectory.filter((elem, pos) => invalidSearchDirectory.indexOf(elem) === pos);
+
+        if (wsURLs !== undefined && wsURLs.length !== 0) {
+            VSLogger.logMessage("  Workspace Folders (URLs):");
+            for (const folder of wsURLs) {
+                VSLogger.logMessage("   => " + folder.name + " @ " + folder.uri.fsPath);
             }
         }
 

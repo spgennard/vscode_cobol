@@ -558,7 +558,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
         if (!md_syms && !md_eps && !md_types && !md_metadata_files && !md_metadata_knowncopybooks && !enable_semantic_token_provider) {
             VSCOBOLSourceScanner.clearCOBOLCache();
             setupLogChannel(true, settings, true);
-            VSCOBOLUtils.setupPaths(settings);
+            VSCOBOLUtils.setupFilePaths(settings);
             async () => {
                 await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
             }
@@ -592,7 +592,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
         if (md_copybookdirs) {
             VSCOBOLSourceScanner.clearCOBOLCache();
             setupLogChannel(true, settings, true);
-            VSCOBOLUtils.setupPaths(settings);
+            await VSCOBOLUtils.setupFilePaths(settings);
 
             VSCOBOLUtils.populateDefaultCallableSymbolsSync(settings, true);
             VSCOBOLUtils.populateDefaultCopyBooksSync(settings, true);
@@ -637,7 +637,7 @@ export async function activate(context: ExtensionContext) {
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
     await setupLogChannel(true, settings, true);
-    await VSCOBOLUtils.setupPaths(settings);
+    await VSCOBOLUtils.setupFilePaths(settings);
 
     const checkForExtensionConflictsMessage = checkForExtensionConflicts();
 
@@ -795,7 +795,7 @@ export async function activate(context: ExtensionContext) {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
         await setupLogChannel(false, settings, true);
-        await VSCOBOLUtils.setupPaths(settings);
+        await VSCOBOLUtils.setupFilePaths(settings);
 
     }));
 

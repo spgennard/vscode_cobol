@@ -48,6 +48,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
         return undefined;
     }
+    
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const locations: vscode.Location[] = [];
 

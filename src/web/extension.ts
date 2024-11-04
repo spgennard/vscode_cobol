@@ -26,7 +26,6 @@ import { VSHelpAndFeedViewHandler } from "../feedbacktree";
 import { VSHoverProvider } from "../vshoverprovider";
 import { CobolReferenceProvider } from "../vsreferenceprovider";
 
-const fileSearchDirectory: string[] = [];
 const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
 
@@ -280,7 +279,6 @@ function checkForExtensionConflicts(): string {
 
 async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) {
 
-    fileSearchDirectory.length = 0;
     URLSearchDirectory.length = 0;
 
     const extsdir = settings.copybookdirs;
@@ -290,6 +288,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
     const ws = VSWorkspaceFolders.get(settings);
     const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
 
+    const fileSearchDirectory = settings.file_search_directory;
     if (wsURLs !== undefined) {
         for (const folder of wsURLs) {
             // place the workspace folder in the copybook path
@@ -372,7 +371,6 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
 
 export async function activate(context: vscode.ExtensionContext) {
     const settings: IVSCOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
-    settings.file_search_directory = fileSearchDirectory;
     VSExternalFeatures.setURLCopyBookSearchPath(URLSearchDirectory);
 
     await setupLogChannelAndPaths(true, settings);

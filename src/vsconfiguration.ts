@@ -2,7 +2,7 @@
 "use strict";
 
 import { TextDocument, Uri, workspace, WorkspaceConfiguration } from "vscode";
-import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo, IDynCOBOLSettings } from "./iconfiguration";
+import { ICOBOLSettings, COBOLSettings, outlineFlag, IEditorMarginFiles, hoverApi, intellisenseStyle, fileformatStrategy, IAnchorTabInfo } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLFileUtils } from "./fileutils";
@@ -41,7 +41,7 @@ export function cloneObject<T>(a: T): T {
     return JSON.parse(JSON.stringify(a));
 }
 
-export interface IVSCOBOLSettings extends ICOBOLSettings, IDynCOBOLSettings {
+export interface IVSCOBOLSettings extends ICOBOLSettings {
     id: number;
     create_from_document: boolean;
 }
@@ -269,7 +269,7 @@ export class VSCOBOLConfiguration {
         const editorConfig = VSCOBOLEditorConfiguration.getResourceEditorConfig(documentUri);
         const config = new VSCOBOLSettings(id, true);
         VSCOBOLConfiguration.initSettings(editorConfig, config, externalFeatures);
-        VSCOBOLUtils.setupPaths(config);
+        VSCOBOLUtils.setupFilePaths(config);
         // config.copybookdirs = [...VSCOBOLConfiguration._settings.copybookdirs];
         const workspaceSettings = new WorkspaceSettings(config, documentUri);
         workspaceSettings.files.set(path2wd, documentUri);

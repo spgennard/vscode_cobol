@@ -38,10 +38,6 @@ export enum fileformatStrategy {
     Normal = "normal"
 }
 
-export interface IDynCOBOLSettings {
-    file_search_directory: string[];
-}
-
 export interface ICOBOLSettings {
     enable_tabstop: boolean;
     pre_scan_line_limit: number;
@@ -171,6 +167,7 @@ export interface ICOBOLSettings {
 
     scan_comment_end_ls_ignore: string;
 
+    file_search_directory: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -301,7 +298,7 @@ export class COBOLSettings implements ICOBOLSettings {
     scan_comment_begin_ls_ignore: string;
 
     scan_comment_end_ls_ignore: string;
-    
+
     file_search_directory: string[];
 
     constructor() {
