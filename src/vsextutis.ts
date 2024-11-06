@@ -109,6 +109,10 @@ export class VSExtensionUtils {
         return false;
     }
 
+    public static isKnownPLILanguageId(config: ICOBOLSettings, possibleLangid: string): boolean {
+        return (possibleLangid.toLowerCase() === "pli");
+    }
+
     private static readonly bmsColumnNumber = /^([0-9][0-9][0-9][0-9][0-9][0-9]).*$/g;
 
     public static flip_plaintext(doc: vscode.TextDocument): void {

@@ -42,7 +42,7 @@ import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
-import { activateCommonCommands, isMicroFocusCOBOL_LSPActive, toggleMicroFocusLSP } from "./vscommon_commands";
+import { activateCommonCommands, checkForExtensionConflicts, isMicroFocusCOBOL_LSPActive, toggleMicroFocusLSP } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
@@ -70,6 +70,7 @@ let activeEditor: vscode.TextEditor;
 let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
 let updateDecorationsOnTextEditorEnabled = false;
+let sharedContext: ExtensionContext;
 
 function openChangeLog(currentContext: ExtensionContext): void {
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -100,248 +101,6 @@ function openChangeLog(currentContext: ExtensionContext): void {
             }
         }
     }
-}
-
-const blessed_extensions: string[] = [
-    "HCLTechnologies.hclappscancodesweep",          // code scanner
-    ExtensionDefaults.rocketCOBOLExtension,         // Rocket COBOL extension
-    ExtensionDefaults.rocketEnterpriseExtenstion,   // Rocket enterprise extension
-    "Micro-Focus-AMC.mfcobol",                      // old cobol extension
-    "micro-focus-amc.mfenterprise",                 // old enterprise extension
-    "bitlang.cobol"
-];
-
-const known_problem_extensions: string[][] = [
-    ["bitlang.cobol already provides autocomplete and highlight for COBOL source code", "BroadcomMFD.cobol-language-support",],
-    ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf"],             // control flow extension
-    ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb"]
-];
-
-let conflictsFound = false;
-let conflictingDebuggerFound = false;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reasons: string[]): string {
-    let dupExtensionMessage = "";
-
-    if (grab_info_for_ext.packageJSON === undefined) {
-        return dupExtensionMessage
-    }
-
-    if (grab_info_for_ext.packageJSON !== undefined && grab_info_for_ext.packageJSON.publisher === "bitlang") {
-        return dupExtensionMessage;
-    }
-
-    if (grab_info_for_ext.packageJSON.id !== undefined) {
-        dupExtensionMessage += `\nThe extension ${grab_info_for_ext.packageJSON.name} from ${grab_info_for_ext.packageJSON.publisher} has conflicting functionality\n`;
-        dupExtensionMessage += " Solution      : Disable or uninstall this extension, eg: use command:\n";
-        dupExtensionMessage += `                 code --uninstall-extension ${grab_info_for_ext.packageJSON.id}\n`;
-    }
-
-    if (reasons.length !== 0) {
-        let rcount = 1;
-        const reasonMessage = reasons.length === 1 ? "Reason " : "Reasons";
-        for (const reason of reasons) {
-            if (rcount === 1) {
-                dupExtensionMessage += ` ${reasonMessage}       : ${reason}\n`;
-            } else {
-                dupExtensionMessage += `               : ${reason}\n`;
-            }
-            rcount++;
-        }
-    }
-
-    if (grab_info_for_ext.packageJSON.id !== undefined) {
-        dupExtensionMessage += ` Id            : ${grab_info_for_ext.packageJSON.id}\n`;
-
-        if (grab_info_for_ext.packageJSON.description !== undefined) {
-            dupExtensionMessage += ` Description   : ${grab_info_for_ext.packageJSON.description}\n`;
-        }
-        if (grab_info_for_ext.packageJSON.version !== undefined) {
-            dupExtensionMessage += ` Version       : ${grab_info_for_ext.packageJSON.version}\n`;
-        }
-        if (grab_info_for_ext.packageJSON.repository !== undefined && grab_info_for_ext.packageJSON.repository.url !== undefined) {
-            dupExtensionMessage += ` Repository    : ${grab_info_for_ext.packageJSON.repository.url}\n`;
-        }
-        if (grab_info_for_ext.packageJSON.bugs !== undefined && grab_info_for_ext.packageJSON.bugs.url !== undefined) {
-            dupExtensionMessage += ` Bug Reporting : ${grab_info_for_ext.packageJSON.bugs.url}\n`;
-        }
-        if (grab_info_for_ext.packageJSON.bugs !== undefined && grab_info_for_ext.packageJSON.bugs.email !== undefined) {
-            dupExtensionMessage += ` Bug Email     : ${grab_info_for_ext.packageJSON.bugs.email}\n`;
-        }
-        if (dupExtensionMessage.length !== 0) {
-            dupExtensionMessage += "\n";
-        }
-    }
-
-    return dupExtensionMessage;
-}
-
-
-function checkForExtensionConflicts(): string {
-    let dupExtensionMessage = "";
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const ext of extensions.all) {
-        const reason = [];
-        let ignore_blessed = false;
-        if (ext !== undefined && ext.packageJSON !== undefined) {
-            if (ext.packageJSON.id !== undefined) {
-                if (ext.packageJSON.id === ExtensionDefaults.thisExtensionName) {
-                    continue;
-                }
-
-                for (const blessed_extension of blessed_extensions) {
-                    if (blessed_extension === ext.packageJSON.id) {
-                        ignore_blessed = true;
-                    }
-                }
-
-                if (!ignore_blessed) {
-                    for (const [type_of_extension, known_problem_extension] of known_problem_extensions) {
-                        if (known_problem_extension.toLowerCase() === ext.packageJSON.id.toLowerCase()) {
-                            reason.push(`contributes '${type_of_extension}'`);
-                            if (type_of_extension.includes("debugger")) {
-                                conflictingDebuggerFound = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!ignore_blessed) {
-                let extMarkedAsDebugger = false;
-                //categories
-
-                if (ext.packageJSON.categories !== undefined) {
-                    const categoriesBody = ext.packageJSON.categories;
-                    if (categoriesBody !== undefined && categoriesBody instanceof Object) {
-                        for (const key in categoriesBody) {
-                            try {
-                                const element = categoriesBody[key];
-                                if (element !== undefined) {
-                                    const l = `${element}`.toUpperCase();
-                                    if (l === "DEBUGGERS") {
-                                        extMarkedAsDebugger = true;
-                                    }
-                                }
-                            } catch {
-                                // just incase
-                            }
-                        }
-                    }
-                }
-
-                if (ext.packageJSON.contributes !== undefined) {
-                    const grammarsBody = ext.packageJSON.contributes.grammars;
-                    const languagesBody = ext.packageJSON.contributes.languages;
-
-                    // check for unexpected duplicate COBOL language
-                    if (grammarsBody !== undefined && grammarsBody instanceof Object) {
-                        for (const key in grammarsBody) {
-                            try {
-                                const element = grammarsBody[key];
-                                if (element !== undefined && element.language !== undefined) {
-                                    const l = `${element.language}`.toUpperCase();
-                                    if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        reason.push("contributes conflicting grammar (COBOL");
-                                    }
-                                    if (l === ExtensionDefaults.defaultPLIanguage) {
-                                        reason.push("contributes conflicting grammar (PLI)");
-                                    }
-                                }
-                            } catch {
-                                // just incase
-                            }
-                        }
-                    }
-
-                    // check for language id
-                    if (languagesBody !== undefined && languagesBody instanceof Object) {
-                        for (const key in languagesBody) {
-                            const languageElement = languagesBody[key];
-                            try {
-
-                                if (languageElement !== undefined && languageElement.id !== undefined) {
-                                    const l = `${languageElement.id}`.toUpperCase();
-                                    if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        reason.push("contributes language id (COBOL)");
-                                    }
-                                    if (l === ExtensionDefaults.defaultPLIanguage) {
-                                        reason.push("contributes language id (PLI)");
-                                    }
-                                }
-                            }
-                            catch {
-                                // just incase
-                            }
-                        }
-                    }
-
-                    if (extMarkedAsDebugger) {
-                        const debuggerBody = ext.packageJSON.contributes.debuggers;
-                        const breakpointsBody = ext.packageJSON.contributes.breakpoints;
-                        if (debuggerBody !== undefined && debuggerBody instanceof Object) {
-                            for (const key in debuggerBody) {
-                                try {
-                                    const debuggerElement = debuggerBody[key];
-                                    if (debuggerElement !== undefined) {
-                                        // if (debuggerElement.enableBreakpointsFor !== undefined) {
-                                        //     if (debuggerElement.enableBreakpointsFor.languageIds !== undefined) {
-                                        //         for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
-                                        //             const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
-                                        //             const l = `${languageElement}`;
-                                        //             if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        //                 reason.push("extension includes a debug breakpoint support for a different COBOL vendor");
-                                        //                 conflictingDebuggerFound = true;
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // }
-                                        const debuggerLanguages = debuggerElement.languages;
-                                        if (debuggerLanguages !== undefined && debuggerLanguages instanceof Object) {
-                                            for (const keyLanguage of debuggerLanguages) {
-                                                if (keyLanguage === ExtensionDefaults.defaultCOBOLLanguage) {
-                                                    reason.push(`extension includes a debugger for a different COBOL vendor -> ${debuggerElement.label} of debugger type ${debuggerElement.type}`);
-                                                    conflictingDebuggerFound = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                catch {
-                                    // just incase
-                                }
-                            }
-                        }
-
-                        if (breakpointsBody !== undefined && breakpointsBody instanceof Object) {
-                            try {
-                                for (const bpLangKey of breakpointsBody) {
-                                    if (bpLangKey !== undefined && bpLangKey.language !== undefined) {
-                                        const bpLang = `${bpLangKey.language}`;
-                                        if (bpLang === ExtensionDefaults.defaultCOBOLLanguage) {
-                                            reason.push("extension includes debug breakpoint support for a different COBOL vendor");
-                                            conflictingDebuggerFound = true;
-                                        }
-                                    }
-                                }
-                            }
-                            catch {
-                                // just incase
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (reason.length !== 0) {
-                dupExtensionMessage += getExtensionInformation(ext, reason);
-            }
-        }
-    }
-
-    return dupExtensionMessage;
 }
 
 async function setupLogChannel(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
@@ -633,64 +392,19 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
         if (tabstops_anchors_changed) {
             TabUtils.clearTabstopCache();
         }
+
+        checkForExtensionConflicts(settings, sharedContext);
     }
 }
 export async function activate(context: ExtensionContext) {
+    sharedContext = context;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
     await setupLogChannel(true, settings, true);
     VSCOBOLUtils.setupFilePaths(settings);
     await VSCOBOLUtils.setupUrlPaths(settings);
 
-    const checkForExtensionConflictsMessage = checkForExtensionConflicts();
-
-    // display the message
-    if (checkForExtensionConflictsMessage.length !== 0) {
-        conflictsFound = true;
-        VSLogger.logMessage(checkForExtensionConflictsMessage);
-
-        if (conflictingDebuggerFound) {
-            for (const veditor of vscode.window.visibleTextEditors) {
-                const doc = veditor.document;
-                if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                    languages.setTextDocumentLanguage(doc, "plaintext");
-                }
-            }
-
-            const onDidOpenTextDocumentHandler = workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
-                if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                    languages.setTextDocumentLanguage(doc, "plaintext");
-                }
-            });
-            context.subscriptions.push(onDidOpenTextDocumentHandler);
-        }
-
-        window.showInformationMessage(
-            `${ExtensionDefaults.thisExtensionName} Extension has located duplicate or conflicting functionality`,
-            { modal: true })
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            .then(function (data) {
-                VSLogger.logChannelSetPreserveFocus(false);
-            });
-
-
-        if (conflictingDebuggerFound) {
-            const msg = "This Extension is now inactive until conflict is resolved";
-            VSLogger.logMessage(`\n${msg}\nRestart 'vscode' once the conflict is resolved or you can disabled the ${ExtensionDefaults.thisExtensionName} extension`);
-
-            const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
-            if (mfExt !== undefined) {
-                VSLogger.logMessage("\nYou already have a 'Rocket COBOL' compatible debugger installed, so may not need the above extension(s)");
-            } else {
-                VSLogger.logMessage(`\nIf you want a 'Rocket COBOL' compatible debugger install the extension using the following command\ncode --install-extension ${ExtensionDefaults.rocketCOBOLExtension}`);
-            }
-            throw new Error(msg);
-        }
-    }
-
-    if (conflictsFound && conflictingDebuggerFound) {
+    if (checkForExtensionConflicts(settings, context)) {
         throw new Error("Unable to activate extension due to conflicts");
     }
 
