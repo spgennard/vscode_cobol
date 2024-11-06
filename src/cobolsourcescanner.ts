@@ -218,7 +218,7 @@ class StreamToken {
     public currentCol: number;
     public currentLine: number;
 
-    public static Blank = new StreamToken("", "", false, 0, 0);
+    public static readonly Blank = new StreamToken("", "", false, 0, 0);
 
     public constructor(currentToken: string, currentTokenLower: string, endsWithDot: boolean, currentLine: number, currentCol: number) {
         this.currentToken = currentToken;
@@ -278,7 +278,7 @@ class StreamTokens {
         }
     }
 
-    public static Blank = new StreamTokens("", 0, undefined);
+    public static readonly Blank = new StreamTokens("", 0, undefined);
 
     public nextSTokenOrBlank(): StreamToken {
         if (1 + this.tokenIndex >= this.stokens.length) {
@@ -435,7 +435,7 @@ export class COBOLCopybookToken {
     public scanComplete: boolean;
     public statementInformation: copybookState | undefined;
 
-    public static Null = new COBOLCopybookToken(undefined, false, undefined);
+    public static readonly Null = new COBOLCopybookToken(undefined, false, undefined);
 
     constructor(token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
         this.token = token;

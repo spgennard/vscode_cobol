@@ -7,12 +7,9 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 
 export class TabUtils {
 
-    private static handler = new TabUtils();
+    // TODO: Look at move this into a workspace locale area
+    private static readonly handler = new TabUtils();
     private tabregMap = new Map<IAnchorTabInfo, RegExp>();
-
-    constructor() {
-
-    }
 
     private escapeString(str: string) : string {
         const chrs:string[] = [];

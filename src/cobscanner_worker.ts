@@ -159,7 +159,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 }
 
 class threadSender implements ICOBOLSourceScannerEventer {
-    public static Default = new threadSender();
+    public static readonly Default = new threadSender();
 
     sendMessage(message: string): void {
         if (parentPort !== null) {

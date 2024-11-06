@@ -215,9 +215,6 @@ export class VSCOBOLConfiguration {
         return settings;
     }
 
-    static logCacheMetadataDone = false;
-    static logMarginDone = false;
-
     static adjustForUntructedEnv(settings: IVSCOBOLSettings): void {
         settings.enable_source_scanner = false;
         settings.disable_unc_copybooks_directories = true;

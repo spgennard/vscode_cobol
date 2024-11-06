@@ -187,7 +187,7 @@
           "type": "boolean",
           "markdownDescription": "Enable tabstop anchors",
           "default": false,
-          "scope": "resource"
+          "scope": "window"
         },
         "coboleditor.enable_rocket_cobol_lsp_when_active": {
           "type": "boolean",

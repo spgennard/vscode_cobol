@@ -1,7 +1,7 @@
 
 export class SplitTokenizer {
 
-    private static wordSeperator = "~!@$%^&*()=+[{]}\\|;,<>/?";
+    private static readonly wordSeperator = "~!@$%^&*()=+[{]}\\|;,<>/?";
 
     public static splitArgument(input: string, ret: string[]): void {
         let inQuote = false;
