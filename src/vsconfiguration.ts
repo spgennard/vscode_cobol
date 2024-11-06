@@ -190,8 +190,6 @@ export class VSCOBOLConfiguration {
             settings.enable_text_replacement = false;
         }
 
-        settings.outline_max_depth = editorHelper.getNumber("outline_max_depth", settings.outline_max_depth);
-
         settings.hover_show_variable_definition = editorHelper.getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
         settings.out_of_range_tabstop_size = editorHelper.getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);

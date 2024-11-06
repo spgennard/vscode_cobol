@@ -765,7 +765,8 @@
             }
           },
           "default": [],
-          "uniqueItems": true
+          "uniqueItems": true,
+          "scope": "window"
         },
         "coboleditor.metadata_entrypoints": {
           "type": "array",
@@ -781,7 +782,8 @@
             "readOnly": true
           },
           "default": [],
-          "uniqueItems": true
+          "uniqueItems": true,
+          "scope": "window"
         },
         "coboleditor.metadata_types": {
           "type": "array",
@@ -796,7 +798,8 @@
             }
           },
           "default": [],
-          "uniqueItems": true
+          "uniqueItems": true,
+          "scope": "window"
         },
         "coboleditor.metadata_files": {
           "type": "array",
@@ -811,7 +814,8 @@
             }
           },
           "default": [],
-          "uniqueItems": true
+          "uniqueItems": true,
+          "scope": "window"
         },
         "coboleditor.metadata_knowncopybooks": {
           "type": "array",
@@ -826,17 +830,20 @@
             }
           },
           "default": [],
-          "uniqueItems": true
+          "uniqueItems": true,
+          "scope": "window"
         },
         "coboleditor.maintain_metadata_cache": {
           "type": "boolean",
           "description": "Maintain Metadata Cache",
-          "default": true
+          "default": true,
+          "scope": "window"
         },
         "coboleditor.maintain_metadata_recursive_search": {
           "type": "boolean",
           "description": "When 'Maintain Metadata Cache' is enabled, recursive search for source code filenames/copybooks",
-          "default": false
+          "default": false,
+          "scope": "window"
         },
         "coboleditor.enable_semantic_token_provider": {
           "type": "boolean",
@@ -851,7 +858,8 @@
         "coboleditor.enable_source_scanner": {
           "type": "boolean",
           "description": "Scan source code (default true)",
-          "default": true
+          "default": true,
+          "scope": "resource"
         },
         "coboleditor.valid_cobol_language_ids": {
           "type": "array",
@@ -869,7 +877,8 @@
             "ACUCOBOL",
             "RMCOBOL"
           ],
-          "uniqueItems": true
+          "uniqueItems": true,
+          "scope": "window"
         },
         "coboleditor.xedit_keymap": {
           "type": "boolean",
@@ -906,7 +915,8 @@
           "description": "Size of internal memory cache for scanned source code",
           "default": 6,
           "minimum": 2,
-          "maximum": 24
+          "maximum": 24,
+          "scope": "window"
         },
         "coboleditor.suggest_variables_when_context_is_unknown": {
           "type": "boolean",
@@ -938,7 +948,8 @@
         "coboleditor.comment_tag_word": {
           "type": "boolean",
           "description": "Colourise the tag only",
-          "default": true
+          "default": true,
+          "scope": "resource"
         },
         "coboleditor.comments_tags": {
           "type": "array",
@@ -1134,7 +1145,8 @@
             "       end program $1.",
             ""
           ],
-          "description": "Template for a minimum 'Micro Focus' COBOL program"
+          "description": "Template for a minimum 'Micro Focus' COBOL program",
+          "scope": "resource"
         },
         "coboleditor.template_rocket_cobol_mfunit": {
           "type": "array",
@@ -1199,7 +1211,8 @@
             "      \\$end-region",
             "",
             "       end program Test${1}."
-          ]
+          ],
+          "scope": "resource"
         },
         "coboleditor.template_acucobol": {
           "type": "array",
@@ -1215,7 +1228,8 @@
             "           $0",
             "           GoBack.",
             "       End Program $1."
-          ]
+          ],
+          "scope": "resource"
         },
         "coboleditor.enable_codelens_variable_references": {
           "type": "boolean",
@@ -1231,11 +1245,6 @@
           "type": "boolean",
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
-        },
-        "coboleditor.outline_max_depth": {
-          "type": "number",
-          "description": "mfExtmaximum folder depth for outline view",
-          "default": 5
         }
       }
     },

@@ -19,7 +19,6 @@ export class MFDirectivesSymbolProvider implements vscode.DocumentSymbolProvider
             return symbols;
         }
 
-
         const ownerUri = document.uri;
 
         const container = "";
