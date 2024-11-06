@@ -18,7 +18,7 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     languageId: string;
     notedCommentRanges: commentRange[];
     tabSize: number;
-    
+
     public constructor(document: vscode.TextDocument) {
         this.document = document;
         this.lineCount = this.document.lineCount;
@@ -26,7 +26,7 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
         this.notedCommentRanges = [];
 
         const resource = document.uri;
-        const editorConfig = workspace.getConfiguration("editor",resource);
+        const editorConfig = workspace.getConfiguration("editor", resource);
         this.tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
     }
 
@@ -108,8 +108,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
 
-    tabSize:number;
-    
+    tabSize: number;
+
     config: ICOBOLSettings;
 
     public constructor(document: vscode.TextDocument) {
@@ -133,7 +133,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.updatedSource = new Map<number, string>();
 
         const resource = document.uri;
-        const editorConfig = workspace.getConfiguration("editor",resource);
+        const editorConfig = workspace.getConfiguration("editor", resource);
         this.tabSize = editorConfig === undefined ? 4 : editorConfig.get<number>("tabSize", 4);
 
         // if we cannot be trusted and the file is outside the workspace, dont read it
@@ -155,7 +155,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     private isFileExcluded(config: ICOBOLSettings): boolean {
-  
+
         if (this.document !== undefined) {
             if (this.document.lineCount > config.scan_line_limit) {
                 this.externalFeatures.logMessage(`Aborted scanning ${this.shortWorkspaceFilename} after line limit of ${config.scan_line_limit} has been exceeded`);
@@ -201,15 +201,19 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         if (this.commentsIndex.has(lineNumber) === false) {
             let isInline = false;
             let l = line.substring(startPos).trimStart();
-            if (l.startsWith("*>")) {
+
+            if (l.startsWith("*>") && (format !== ESourceFormat.fixed)) {
                 isInline = true;
                 l = l.substring(2).trim();
             } else {
-                if (format === ESourceFormat.fixed) {
-                    if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
-                        l = line.substring(7).trimStart();
-                        isInline = false;
-                    }
+                const lastPos = line.length < 72 ? line.length : 72;
+
+                if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
+                    if (line[6] === '*' && line[7] === '>')
+                        l = line.substring(8,lastPos).trim();
+                    else
+                        l = line.substring(7,lastPos).trim();
+                    isInline = false;
                 }
             }
 
@@ -240,7 +244,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         }
 
         const startComment = line.indexOf("*>");
-        if (startComment !== -1) {
+        if (startComment !== -1 && startComment !== 6) {
             this.commentCount++;
             this.sendCommentCallback(line, lineNumber, startComment, ESourceFormat.variable);
             line = line.substring(0, startComment);
@@ -249,7 +253,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
         // drop variable format line
         if (line.length > 1 && line[0] === "*") {
             this.commentCount++;
-            this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.free);
+            this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.variable);
             return "";
         }
 

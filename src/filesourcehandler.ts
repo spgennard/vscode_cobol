@@ -84,15 +84,19 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         if (this.commentsIndex.has(lineNumber) === false) {
             let isInline = false;
             let l = line.substring(startPos).trimStart();
-            if (l.startsWith("*>")) {
+
+            if (l.startsWith("*>") && (format !== ESourceFormat.fixed)) {
                 isInline = true;
                 l = l.substring(2).trim();
             } else {
-                if (format === ESourceFormat.fixed) {
-                    if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
-                        l = line.substring(7).trimStart();
-                        isInline = false;
-                    }
+                const lastPos = line.length < 72 ? line.length : 72;
+
+                if (line.length >= 7 && (line[6] === "*" || line[6] === "/")) {
+                    if (line[6] === '*' && line[7] === '>')
+                        l = line.substring(8,lastPos).trim();
+                    else
+                        l = line.substring(7,lastPos).trim();
+                    isInline = false;
                 }
             }
 
@@ -138,16 +142,16 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
             }
 
             const startComment = line.indexOf("*>");
-            if (startComment !== -1) {
+            if (startComment !== -1 && startComment !== 6) {
+                this.commentCount++;
                 this.sendCommentCallback(line, lineNumber, startComment, ESourceFormat.variable);
                 line = line.substring(0, startComment);
-                this.commentCount++;
             }
 
             // drop fixed format line
             if (line.length > 1 && line[0] === "*") {
                 this.commentCount++;
-                this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.free);
+                this.sendCommentCallback(line, lineNumber, 0, ESourceFormat.variable);
                 return "";
             }
 
