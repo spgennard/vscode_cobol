@@ -17,7 +17,7 @@ import { VSDiagCommands } from "./vsdiagcommands";
 import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 
-async function emptyFile(title:string, doclang: string, config: ICOBOLSettings) {
+async function emptyFile(title: string, doclang: string, config: ICOBOLSettings) {
     let fpath = "";
     let data = "";
     let fdir = "";
@@ -182,23 +182,13 @@ const blessed_extensions: string[] = [
     "bitlang.cobol"
 ];
 
-const known_problem_extensions: string[][] = [
-    ["bitlang.cobol already provides autocomplete and highlight for COBOL source code", "BroadcomMFD.cobol-language-support",],
-    ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf"],             // control flow extension
-    ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb"],
-    ["Inline completion provider causes problems with this extension","bloop.bloop-write"]
+const known_problem_extensions: [string,string, boolean][] = [
+    ["bitlang.cobol already provides autocomplete and highlight for COBOL source code", "BroadcomMFD.cobol-language-support", true],
+    ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf", true],             // control flow extension
+    ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb", true],
+    ["Inline completion provider causes problems with this extension", "bloop.bloop-write", false]
 ];
 
-export let conflictsFound = false;
-export let conflictingDebuggerFound = false;
-
-export function set_conflictsFound(v:boolean) {
-    conflictsFound = v;
-}
-
-export function set_conflictingDebuggerFound(v: boolean) {
-    conflictingDebuggerFound = v;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reasons: string[]): string {
@@ -257,8 +247,11 @@ function getExtensionInformation(grab_info_for_ext: vscode.Extension<any>, reaso
     return dupExtensionMessage;
 }
 
-function checkExtensions(): string {
+
+function checkExtensions(): [string, boolean, boolean] {
     let dupExtensionMessage = "";
+    let conflictingDebuggerFound = false;
+    let fatalEditorConflict = false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const ext of vscode.extensions.all) {
@@ -277,12 +270,13 @@ function checkExtensions(): string {
                 }
 
                 if (!ignore_blessed) {
-                    for (const [type_of_extension, known_problem_extension] of known_problem_extensions) {
+                    for (const [type_of_extension, known_problem_extension, editor_confict] of known_problem_extensions) {
                         if (known_problem_extension.toLowerCase() === ext.packageJSON.id.toLowerCase()) {
                             reason.push(`contributes '${type_of_extension}'`);
                             if (type_of_extension.includes("debugger")) {
                                 conflictingDebuggerFound = true;
                             }
+                            fatalEditorConflict = editor_confict;
                         }
                     }
                 }
@@ -324,9 +318,11 @@ function checkExtensions(): string {
                                     const l = `${element.language}`.toUpperCase();
                                     if (l === ExtensionDefaults.defaultCOBOLLanguage) {
                                         reason.push("contributes conflicting grammar (COBOL");
+                                        fatalEditorConflict = true;
                                     }
                                     if (l === ExtensionDefaults.defaultPLIanguage) {
                                         reason.push("contributes conflicting grammar (PLI)");
+                                        fatalEditorConflict = true;
                                     }
                                 }
                             } catch {
@@ -345,9 +341,11 @@ function checkExtensions(): string {
                                     const l = `${languageElement.id}`.toUpperCase();
                                     if (l === ExtensionDefaults.defaultCOBOLLanguage) {
                                         reason.push("contributes language id (COBOL)");
+                                        fatalEditorConflict = true;
                                     }
                                     if (l === ExtensionDefaults.defaultPLIanguage) {
                                         reason.push("contributes language id (PLI)");
+                                        fatalEditorConflict = true;
                                     }
                                 }
                             }
@@ -383,6 +381,7 @@ function checkExtensions(): string {
                                                 if (keyLanguage === ExtensionDefaults.defaultCOBOLLanguage) {
                                                     reason.push(`extension includes a debugger for a different COBOL vendor -> ${debuggerElement.label} of debugger type ${debuggerElement.type}`);
                                                     conflictingDebuggerFound = true;
+                                                    fatalEditorConflict = true;
                                                 }
                                             }
                                         }
@@ -402,6 +401,7 @@ function checkExtensions(): string {
                                         if (bpLang === ExtensionDefaults.defaultCOBOLLanguage) {
                                             reason.push("extension includes debug breakpoint support for a different COBOL vendor");
                                             conflictingDebuggerFound = true;
+                                            fatalEditorConflict = true;
                                         }
                                     }
                                 }
@@ -420,43 +420,47 @@ function checkExtensions(): string {
         }
     }
 
-    return dupExtensionMessage;
+    return [dupExtensionMessage, conflictingDebuggerFound, fatalEditorConflict];
 }
 
-export function checkForExtensionConflicts(settings: ICOBOLSettings, context:ExtensionContext):boolean {
+export function checkForExtensionConflicts(settings: ICOBOLSettings, context: ExtensionContext): boolean {
 
-    const checkForExtensionConflictsMessage = checkExtensions()
-    
+    const checkResults = checkExtensions()
+    const checkForExtensionConflictsMessage = checkResults[0];
+    const conflictingDebuggerFound = checkResults[1];
+    const fatalEditorConflict = checkResults[2];
+
     // display the message
     if (checkForExtensionConflictsMessage.length !== 0) {
-        set_conflictsFound(true);
         VSLogger.logMessage(checkForExtensionConflictsMessage);
 
-        for (const veditor of vscode.window.visibleTextEditors) {
-            const doc = veditor.document;
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                vscode.languages.setTextDocumentLanguage(doc, "plaintext");
+        if (fatalEditorConflict) {
+            for (const veditor of vscode.window.visibleTextEditors) {
+                const doc = veditor.document;
+                if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
+                    vscode.languages.setTextDocumentLanguage(doc, "plaintext");
+                }
+
+                if (VSExtensionUtils.isKnownPLILanguageId(settings, doc.languageId)) {
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
+                    languages.setTextDocumentLanguage(doc, "plaintext");
+                }
             }
-            
-            if (VSExtensionUtils.isKnownPLILanguageId(settings, doc.languageId)) {
-                VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                languages.setTextDocumentLanguage(doc, "plaintext");
-            }
+
+            const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+                if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
+                    vscode.languages.setTextDocumentLanguage(doc, "plaintext");
+                }
+                if (VSExtensionUtils.isKnownPLILanguageId(settings, doc.languageId)) {
+                    VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the PLI extension is inactive`);
+                    vscode.languages.setTextDocumentLanguage(doc, "plaintext");
+                }
+            });
+
+            context.subscriptions.push(onDidOpenTextDocumentHandler);
         }
-
-        const onDidOpenTextDocumentHandler = vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
-            if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, doc.languageId)) {
-                VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the COBOL extension is inactive`);
-                vscode.languages.setTextDocumentLanguage(doc, "plaintext");
-            }
-            if (VSExtensionUtils.isKnownPLILanguageId(settings, doc.languageId)) {
-                VSLogger.logMessage(`Document ${doc.fileName} changed to plaintext to avoid errors, as the PLI extension is inactive`);
-                vscode.languages.setTextDocumentLanguage(doc, "plaintext");
-            }
-        });
-
-        context.subscriptions.push(onDidOpenTextDocumentHandler);
 
         vscode.window.showInformationMessage(
             `${ExtensionDefaults.thisExtensionName} Extension has located duplicate or conflicting functionality`,
@@ -831,7 +835,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
         }
         const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
-        emptyFile("Empty COBOL file","COBOL", settings);
+        emptyFile("Empty COBOL file", "COBOL", settings);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.newFile_MicroFocus", async function () {
