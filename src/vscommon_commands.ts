@@ -182,11 +182,12 @@ const blessed_extensions: string[] = [
     "bitlang.cobol"
 ];
 
-const known_problem_extensions: [string,string, boolean][] = [
+const known_problem_extensions: [string, string, boolean][] = [
     ["bitlang.cobol already provides autocomplete and highlight for COBOL source code", "BroadcomMFD.cobol-language-support", true],
     ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf", true],             // control flow extension
     ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb", true],
-    ["Inline completion provider causes problems with this extension", "bloop.bloop-write", false]
+    ["Inline completion provider causes problems with this extension", "bloop.bloop-write", false],
+    ["Language provider of COBOL/PLI that is not supported with extension", "heirloomcomputinginc", true]
 ];
 
 
@@ -259,19 +260,39 @@ function checkExtensions(): [string, boolean, boolean] {
         let ignore_blessed = false;
         if (ext !== undefined && ext.packageJSON !== undefined) {
             if (ext.packageJSON.id !== undefined) {
+                const idLower = `${ext.packageJSON.id}`.toLowerCase();
                 if (ext.packageJSON.id === ExtensionDefaults.thisExtensionName) {
                     continue;
                 }
 
                 for (const blessed_extension of blessed_extensions) {
-                    if (blessed_extension === ext.packageJSON.id) {
-                        ignore_blessed = true;
+                    if (blessed_extensions.indexOf(".") !== -1) {
+                        if (blessed_extension === ext.packageJSON.id) {
+                            ignore_blessed = true;
+                        }
+                    } else {
+                        if (`${ext.packageJSON.id}`.toLowerCase().startsWith(blessed_extension)) {
+                            ignore_blessed = true;
+                        }
                     }
                 }
 
-                if (!ignore_blessed) {
-                    for (const [type_of_extension, known_problem_extension, editor_confict] of known_problem_extensions) {
-                        if (known_problem_extension.toLowerCase() === ext.packageJSON.id.toLowerCase()) {
+                if (ignore_blessed) {
+                    continue;
+                }
+
+                for (const [type_of_extension, known_problem_extension, editor_confict] of known_problem_extensions) {
+                    if (known_problem_extension.indexOf(".") !== -1) {
+                        // exact match
+                        if (known_problem_extension.toLowerCase() === idLower) {
+                            reason.push(`contributes '${type_of_extension}'`);
+                            if (type_of_extension.includes("debugger")) {
+                                conflictingDebuggerFound = true;
+                            }
+                            fatalEditorConflict = editor_confict;
+                        }
+                    } else {
+                        if (idLower.startsWith(known_problem_extension.toLowerCase())) {
                             reason.push(`contributes '${type_of_extension}'`);
                             if (type_of_extension.includes("debugger")) {
                                 conflictingDebuggerFound = true;
@@ -282,133 +303,131 @@ function checkExtensions(): [string, boolean, boolean] {
                 }
             }
 
-            if (!ignore_blessed) {
-                let extMarkedAsDebugger = false;
-                //categories
+            let extMarkedAsDebugger = false;
+            //categories
 
-                if (ext.packageJSON.categories !== undefined) {
-                    const categoriesBody = ext.packageJSON.categories;
-                    if (categoriesBody !== undefined && categoriesBody instanceof Object) {
-                        for (const key in categoriesBody) {
-                            try {
-                                const element = categoriesBody[key];
-                                if (element !== undefined) {
-                                    const l = `${element}`.toUpperCase();
-                                    if (l === "DEBUGGERS") {
-                                        extMarkedAsDebugger = true;
-                                    }
+            if (ext.packageJSON.categories !== undefined) {
+                const categoriesBody = ext.packageJSON.categories;
+                if (categoriesBody !== undefined && categoriesBody instanceof Object) {
+                    for (const key in categoriesBody) {
+                        try {
+                            const element = categoriesBody[key];
+                            if (element !== undefined) {
+                                const l = `${element}`.toUpperCase();
+                                if (l === "DEBUGGERS") {
+                                    extMarkedAsDebugger = true;
                                 }
-                            } catch {
-                                // just incase
                             }
+                        } catch {
+                            // just incase
+                        }
+                    }
+                }
+            }
+
+            if (ext.packageJSON.contributes !== undefined) {
+                const grammarsBody = ext.packageJSON.contributes.grammars;
+                const languagesBody = ext.packageJSON.contributes.languages;
+
+                // check for unexpected duplicate COBOL language
+                if (grammarsBody !== undefined && grammarsBody instanceof Object) {
+                    for (const key in grammarsBody) {
+                        try {
+                            const element = grammarsBody[key];
+                            if (element !== undefined && element.language !== undefined) {
+                                const l = `${element.language}`.toUpperCase();
+                                if (l === ExtensionDefaults.defaultCOBOLLanguage) {
+                                    reason.push("contributes conflicting grammar (COBOL");
+                                    fatalEditorConflict = true;
+                                }
+                                if (l === ExtensionDefaults.defaultPLIanguage) {
+                                    reason.push("contributes conflicting grammar (PLI)");
+                                    fatalEditorConflict = true;
+                                }
+                            }
+                        } catch {
+                            // just incase
                         }
                     }
                 }
 
-                if (ext.packageJSON.contributes !== undefined) {
-                    const grammarsBody = ext.packageJSON.contributes.grammars;
-                    const languagesBody = ext.packageJSON.contributes.languages;
+                // check for language id
+                if (languagesBody !== undefined && languagesBody instanceof Object) {
+                    for (const key in languagesBody) {
+                        const languageElement = languagesBody[key];
+                        try {
 
-                    // check for unexpected duplicate COBOL language
-                    if (grammarsBody !== undefined && grammarsBody instanceof Object) {
-                        for (const key in grammarsBody) {
-                            try {
-                                const element = grammarsBody[key];
-                                if (element !== undefined && element.language !== undefined) {
-                                    const l = `${element.language}`.toUpperCase();
-                                    if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        reason.push("contributes conflicting grammar (COBOL");
-                                        fatalEditorConflict = true;
-                                    }
-                                    if (l === ExtensionDefaults.defaultPLIanguage) {
-                                        reason.push("contributes conflicting grammar (PLI)");
-                                        fatalEditorConflict = true;
-                                    }
+                            if (languageElement !== undefined && languageElement.id !== undefined) {
+                                const l = `${languageElement.id}`.toUpperCase();
+                                if (l === ExtensionDefaults.defaultCOBOLLanguage) {
+                                    reason.push("contributes language id (COBOL)");
+                                    fatalEditorConflict = true;
                                 }
-                            } catch {
-                                // just incase
-                            }
-                        }
-                    }
-
-                    // check for language id
-                    if (languagesBody !== undefined && languagesBody instanceof Object) {
-                        for (const key in languagesBody) {
-                            const languageElement = languagesBody[key];
-                            try {
-
-                                if (languageElement !== undefined && languageElement.id !== undefined) {
-                                    const l = `${languageElement.id}`.toUpperCase();
-                                    if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        reason.push("contributes language id (COBOL)");
-                                        fatalEditorConflict = true;
-                                    }
-                                    if (l === ExtensionDefaults.defaultPLIanguage) {
-                                        reason.push("contributes language id (PLI)");
-                                        fatalEditorConflict = true;
-                                    }
+                                if (l === ExtensionDefaults.defaultPLIanguage) {
+                                    reason.push("contributes language id (PLI)");
+                                    fatalEditorConflict = true;
                                 }
                             }
-                            catch {
-                                // just incase
-                            }
+                        }
+                        catch {
+                            // just incase
                         }
                     }
+                }
 
-                    if (extMarkedAsDebugger) {
-                        const debuggerBody = ext.packageJSON.contributes.debuggers;
-                        const breakpointsBody = ext.packageJSON.contributes.breakpoints;
-                        if (debuggerBody !== undefined && debuggerBody instanceof Object) {
-                            for (const key in debuggerBody) {
-                                try {
-                                    const debuggerElement = debuggerBody[key];
-                                    if (debuggerElement !== undefined) {
-                                        // if (debuggerElement.enableBreakpointsFor !== undefined) {
-                                        //     if (debuggerElement.enableBreakpointsFor.languageIds !== undefined) {
-                                        //         for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
-                                        //             const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
-                                        //             const l = `${languageElement}`;
-                                        //             if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                        //                 reason.push("extension includes a debug breakpoint support for a different COBOL vendor");
-                                        //                 conflictingDebuggerFound = true;
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // }
-                                        const debuggerLanguages = debuggerElement.languages;
-                                        if (debuggerLanguages !== undefined && debuggerLanguages instanceof Object) {
-                                            for (const keyLanguage of debuggerLanguages) {
-                                                if (keyLanguage === ExtensionDefaults.defaultCOBOLLanguage) {
-                                                    reason.push(`extension includes a debugger for a different COBOL vendor -> ${debuggerElement.label} of debugger type ${debuggerElement.type}`);
-                                                    conflictingDebuggerFound = true;
-                                                    fatalEditorConflict = true;
-                                                }
+                if (extMarkedAsDebugger) {
+                    const debuggerBody = ext.packageJSON.contributes.debuggers;
+                    const breakpointsBody = ext.packageJSON.contributes.breakpoints;
+                    if (debuggerBody !== undefined && debuggerBody instanceof Object) {
+                        for (const key in debuggerBody) {
+                            try {
+                                const debuggerElement = debuggerBody[key];
+                                if (debuggerElement !== undefined) {
+                                    // if (debuggerElement.enableBreakpointsFor !== undefined) {
+                                    //     if (debuggerElement.enableBreakpointsFor.languageIds !== undefined) {
+                                    //         for (const bpLangidKey in debuggerElement.enableBreakpointsFor.languageIds) {
+                                    //             const languageElement = debuggerElement.enableBreakpointsFor.languageIds[bpLangidKey];
+                                    //             const l = `${languageElement}`;
+                                    //             if (l === ExtensionDefaults.defaultCOBOLLanguage) {
+                                    //                 reason.push("extension includes a debug breakpoint support for a different COBOL vendor");
+                                    //                 conflictingDebuggerFound = true;
+                                    //             }
+                                    //         }
+                                    //     }
+                                    // }
+                                    const debuggerLanguages = debuggerElement.languages;
+                                    if (debuggerLanguages !== undefined && debuggerLanguages instanceof Object) {
+                                        for (const keyLanguage of debuggerLanguages) {
+                                            if (keyLanguage === ExtensionDefaults.defaultCOBOLLanguage) {
+                                                reason.push(`extension includes a debugger for a different COBOL vendor -> ${debuggerElement.label} of debugger type ${debuggerElement.type}`);
+                                                conflictingDebuggerFound = true;
+                                                fatalEditorConflict = true;
                                             }
                                         }
                                     }
                                 }
-                                catch {
-                                    // just incase
-                                }
-                            }
-                        }
-
-                        if (breakpointsBody !== undefined && breakpointsBody instanceof Object) {
-                            try {
-                                for (const bpLangKey of breakpointsBody) {
-                                    if (bpLangKey !== undefined && bpLangKey.language !== undefined) {
-                                        const bpLang = `${bpLangKey.language}`;
-                                        if (bpLang === ExtensionDefaults.defaultCOBOLLanguage) {
-                                            reason.push("extension includes debug breakpoint support for a different COBOL vendor");
-                                            conflictingDebuggerFound = true;
-                                            fatalEditorConflict = true;
-                                        }
-                                    }
-                                }
                             }
                             catch {
                                 // just incase
                             }
+                        }
+                    }
+
+                    if (breakpointsBody !== undefined && breakpointsBody instanceof Object) {
+                        try {
+                            for (const bpLangKey of breakpointsBody) {
+                                if (bpLangKey !== undefined && bpLangKey.language !== undefined) {
+                                    const bpLang = `${bpLangKey.language}`;
+                                    if (bpLang === ExtensionDefaults.defaultCOBOLLanguage) {
+                                        reason.push("extension includes debug breakpoint support for a different COBOL vendor");
+                                        conflictingDebuggerFound = true;
+                                        fatalEditorConflict = true;
+                                    }
+                                }
+                            }
+                        }
+                        catch {
+                            // just incase
                         }
                     }
                 }
