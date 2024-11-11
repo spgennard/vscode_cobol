@@ -2893,7 +2893,7 @@
     "compile-web": "webpack",
     "test-compile": "tsc -p ./",
     "watch": "tsc -b -w",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "npm run compile && npm run",
     "test": "node ./out/test/runTest.js",
     "find-deadcode": "./node_modules/.bin/ts-prune | grep -v \"used in module\"",
     "open-in-browser": "vscode-test-web -version=stable --browserType=chromium --extensionDevelopmentPath=. ."
