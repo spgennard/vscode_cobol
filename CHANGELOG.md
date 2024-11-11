@@ -1,5 +1,35 @@
 # CHANGELOG
 
+* fa3bc1e start to simplify the conflicting extensions
+* 95ad4e5 add ability to just give a warning rather than disabling the extension on conflict
+* d473764 move extension check into common area  - add bloop ai extension as cause problems due to duplicate    intellisense
+* d2d8f22 tweak comment processing
+* dc675ea continue with the cleanup
+* 48d199d remove used property and set the scope of settings that will have to be workspace
+* 3d34ea5 start work on linter
+* 021dd70 contine work on settings seperation / enable format_on_return
+* 05e9bf0 re-introduce url path support
+* f6735ee continue work on file copydir and settings
+* 459b5b6 start to pass down settings
+* 1f2533c split workspace get into two
+* c360f2a move vs related values to vs settings
+* 88385c3 rename cobolfolders to vscobolfolders
+* 6567e53 add IVSCOBOLSettings and seperate vs settings v out of process settings
+* ccc93c5 tidy up
+* 63bd091 refresh all known settings on workspace change
+* 627c3ea Update COBOL.tmLanguage.json
+* 30a5571 move copybookdir handling to vscobolutils
+* 06bb426 rename cobolutil to vscobolutils
+* 946875c drop migrateCopybooksToWorkspace
+* 1a61034 add more caching
+* 00b4903 copy copybook dirs from non resource settings in prep to adding in resource folder dirs
+* d610fdc start the process of moving global file search data to settings
+* dcb9071 rename .get for settings
+* ed10ecd rename cobolutils to vscobolutils change more .get to .get with textdocument
+* 9b5c6a1 untested changes - more refactoring
+* 4bb3cf0 start to use document to get resoure config  - may need to introduce a cache but get the basics working first
+
+## 24.10.26 
 * a467c9c use editor.tabstop from resource continue some refectoring
 * 0bf3fcd start to centralise the config handling
 
