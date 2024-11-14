@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* 374ae58 minor tweak
+* 2472425 Fix #350
+* 58cd00b test tweak
+
+## 24.11.11 
 * fa3bc1e start to simplify the conflicting extensions
 * 95ad4e5 add ability to just give a warning rather than disabling the extension on conflict
 * d473764 move extension check into common area  - add bloop ai extension as cause problems due to duplicate    intellisense
