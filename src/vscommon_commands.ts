@@ -177,9 +177,13 @@ const blessed_extensions: string[] = [
     "HCLTechnologies.hclappscancodesweep",          // code scanner
     ExtensionDefaults.rocketCOBOLExtension,         // Rocket COBOL extension
     ExtensionDefaults.rocketEnterpriseExtenstion,   // Rocket enterprise extension
-    "Micro-Focus-AMC.mfcobol",                      // old cobol extension
-    "micro-focus-amc.mfenterprise",                 // old enterprise extension
-    "bitlang.cobol"
+    "micro-focus-amc.",                             // old micro focus extension's
+    "bitlang.",                                     // mine
+    "vscode.",                                      // vscode internal extensions
+    "ms-vscode.",                                   //
+    "ms-python.",                                   //
+    "redhat.",                                      // redhat
+    "rocketsoftware."                               // rockset software
 ];
 
 const known_problem_extensions: [string, string, boolean][] = [
@@ -267,11 +271,11 @@ function checkExtensions(): [string, boolean, boolean] {
 
                 for (const blessed_extension of blessed_extensions) {
                     if (blessed_extensions.indexOf(".") !== -1) {
-                        if (blessed_extension === ext.packageJSON.id) {
+                        if (blessed_extension.toLowerCase() === idLower) {
                             ignore_blessed = true;
                         }
                     } else {
-                        if (`${ext.packageJSON.id}`.toLowerCase().startsWith(blessed_extension)) {
+                        if (idLower.startsWith(blessed_extension.toLowerCase())) {
                             ignore_blessed = true;
                         }
                     }
@@ -337,7 +341,7 @@ function checkExtensions(): [string, boolean, boolean] {
                             if (element !== undefined && element.language !== undefined) {
                                 const l = `${element.language}`.toUpperCase();
                                 if (l === ExtensionDefaults.defaultCOBOLLanguage) {
-                                    reason.push("contributes conflicting grammar (COBOL");
+                                    reason.push("contributes conflicting grammar (COBOL)");
                                     fatalEditorConflict = true;
                                 }
                                 if (l === ExtensionDefaults.defaultPLIanguage) {

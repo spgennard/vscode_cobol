@@ -113,7 +113,6 @@ suite("Issues Raised Test Suite", () => {
 								}
 								console.log(` MISSED: ${patternName} => "${compilerOutput}"`);
 								missingCount++;
-
 							}
 						}
 						const percenMatched = (resultCount / (resultCount + missingCount)) * 100;
