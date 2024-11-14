@@ -182,6 +182,7 @@ const blessed_extensions: string[] = [
     "vscode.",                                      // vscode internal extensions
     "ms-vscode.",                                   //
     "ms-python.",                                   //
+    "ms-vscode-remote.",
     "redhat.",                                      // redhat
     "rocketsoftware."                               // rockset software
 ];
