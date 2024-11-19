@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 0f4bffd tweak comment to work better, re-structure to make it cleaner
+
+## 24.11.14 
 * 374ae58 minor tweak
 * 2472425 Fix #350
 * 58cd00b test tweak
