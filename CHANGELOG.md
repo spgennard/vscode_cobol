@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* f71d285 update & enforce program_extensions scope
+
+## 24.11.19 
 * 0f4bffd tweak comment to work better, re-structure to make it cleaner
 
 ## 24.11.14 
