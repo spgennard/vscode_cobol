@@ -1298,13 +1298,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
-    public getCurrentDivision(): string {
-        return this.sourceReferences.state.currentDivision === undefined ? "" : this.sourceReferences.state.currentDivision.tokenName;
-    }
+    // public getCurrentDivision(): string {
+    //     return this.sourceReferences.state.currentDivision === undefined ? "" : this.sourceReferences.state.currentDivision.tokenName;
+    // }
 
-    public getCurrentSection(): string {
-        return this.sourceReferences.state.currentSection === undefined ? "" : this.sourceReferences.state.currentSection.tokenName;
-    }
+    // public getCurrentSection(): npm list --production --parseable --depth=99999 --loglevel=errorstring {
+    //     return this.sourceReferences.state.currentSection === undefined ? "" : this.sourceReferences.state.currentSection.tokenName;
+    // }
 
     private tokensInOrderPush(token: COBOLToken, sendEvent: boolean): void {
         this.tokensInOrder.push(token);

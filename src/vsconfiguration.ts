@@ -37,9 +37,9 @@ export class VSCOBOLEditorConfiguration {
     }
 }
 
-export function cloneObject<T>(a: T): T {
-    return JSON.parse(JSON.stringify(a));
-}
+// export function cloneObject<T>(a: T): T {
+//     return JSON.parse(JSON.stringify(a));
+// }
 
 export interface IVSCOBOLSettings extends ICOBOLSettings {
     id: number;
