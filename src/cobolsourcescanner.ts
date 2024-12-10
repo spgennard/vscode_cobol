@@ -1760,12 +1760,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private addTargetReference(referencesMap: Map<string, SourceReference_Via_Length[]>, targetReference: string, line: number, column: number, tokenStyle: COBOLTokenStyle, csp: string): boolean {
-        // if (tokenStyle == COBOLTokenStyle.Unknown)
-        //     return false;
-
-        // // only handle sections or paras
-        // if (!(tokenStyle == COBOLTokenStyle.Section || tokenStyle == COBOLTokenStyle.Paragraph))
-        //     return false;
 
         const l = targetReference.length;
         if (l === 0) {
@@ -1782,22 +1776,28 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, targetReference, csp);
         const state = this.sourceReferences.state;
-        let inToken = state.currentParagraph !== undefined ? state.currentParagraph : state.currentSection;
+        let inSectionOrParaToken = state.currentParagraph !== undefined ? state.currentParagraph : state.currentSection;
 
-        const lowerCaseVariableRefs = referencesMap.get(targetReference);
-        if (lowerCaseVariableRefs !== undefined && inToken !== undefined) {
+        // do we have a reference map for the target?
+        let lowerCaseTargetRefs = referencesMap.get(targetReference);
+        if (lowerCaseTargetRefs === undefined) {
+            lowerCaseTargetRefs = []
+            referencesMap.set(targetReference, lowerCaseTargetRefs);
+        }
+
+        if (inSectionOrParaToken !== undefined && inSectionOrParaToken.inProcedureDivision) {
             let duplicateFound = false;
-            for (const lowerCaseVariableRef of lowerCaseVariableRefs) {
+            for (const lowerCaseVariableRef of lowerCaseTargetRefs) {
                 if (lowerCaseVariableRef.line === line && lowerCaseVariableRef.column === column && lowerCaseVariableRef.length === l) {
                     duplicateFound = true;
                 }
             }
             if (duplicateFound === false) {
-                lowerCaseVariableRefs.push(srl);
-                let csr = state.currentSectionInRefs.get(inToken.tokenName);
+                lowerCaseTargetRefs.push(srl);
+                let csr = state.currentSectionInRefs.get(inSectionOrParaToken.tokenName);
                 if (csr === undefined) {
                     csr = [];
-                    state.currentSectionInRefs.set(inToken.tokenName, csr);
+                    state.currentSectionInRefs.set(inSectionOrParaToken.tokenName, csr);
                 }
                 csr.push(srl)
 
@@ -1805,18 +1805,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return true;
         }
 
-        const sourceRefs: SourceReference_Via_Length[] = [];
-        if (state.inProcedureDivision && inToken !== undefined) {
-            let csr = state.currentSectionInRefs.get(inToken.tokenName);
-            if (csr === undefined) {
-                csr = [];
-                state.currentSectionInRefs.set(inToken.tokenName, csr);
-            }
-            csr.push(srl)
-        }
-
-        sourceRefs.push(srl);
-        referencesMap.set(targetReference, sourceRefs);
+        lowerCaseTargetRefs.push(srl);
         return true;
     }
 
