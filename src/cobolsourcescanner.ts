@@ -578,7 +578,7 @@ class ParseState {
     currentRegion: COBOLToken | undefined;
     currentDivision: COBOLToken | undefined;
     currentSection: COBOLToken | undefined;
-    currentSectionInRefs: Map<string, SourceReference_Via_Length[]>;
+    currentSectionOutRefs: Map<string, SourceReference_Via_Length[]>;
     currentParagraph: COBOLToken | undefined;
     currentClass: COBOLToken | undefined;
     currentMethod: COBOLToken | undefined;
@@ -675,7 +675,7 @@ class ParseState {
         this.skipNextToken = false;
         this.inValueClause = false;
         this.skipToEndLsIgnore = false;
-        this.currentSectionInRefs = new Map<string, SourceReference_Via_Length[]>
+        this.currentSectionOutRefs = new Map<string, SourceReference_Via_Length[]>
     }
 }
 
@@ -1307,7 +1307,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         if (tokenStyle === COBOLTokenStyle.Section || tokenStyle === COBOLTokenStyle.Paragraph) {
             const state = this.sourceReferences.state;
-            let csr = state.currentSectionInRefs.get(symbol);
+            let csr = state.currentSectionOutRefs.get(symbol);
             if (csr !== undefined && symbolRefs.length !== 1) {
                 let firstCSP = symbolRefs[0].section_paragraph;
                 // this.addTargetReference(transferReferenceMap,)
@@ -1794,10 +1794,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
             if (duplicateFound === false) {
                 lowerCaseTargetRefs.push(srl);
-                let csr = state.currentSectionInRefs.get(inSectionOrParaToken.tokenName);
+                let csr = state.currentSectionOutRefs.get(inSectionOrParaToken.tokenName);
                 if (csr === undefined) {
                     csr = [];
-                    state.currentSectionInRefs.set(inSectionOrParaToken.tokenName, csr);
+                    state.currentSectionOutRefs.set(inSectionOrParaToken.tokenName, csr);
                 }
                 csr.push(srl)
 
