@@ -3185,4 +3185,20 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
     }
+
+    public findNearestSectionOrParagraph(line: number):COBOLToken|undefined {
+        let nearToken : COBOLToken|undefined = undefined;
+        for(const [, token] of this.sections) {
+            if (line >= token.rangeStartLine && line <= token.rangeEndLine) {
+                nearToken = token;
+            }
+        }
+        for(const [, token] of this.paragraphs) {
+            if (line >= token.rangeStartLine && line <= token.rangeEndLine) {
+                nearToken = token;;
+            }
+        }
+
+        return nearToken;
+    }
 }
