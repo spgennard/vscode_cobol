@@ -936,11 +936,20 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
     }
 }
 
-function install_call_hierarchy(_settings:ICOBOLSettings,  context: ExtensionContext) {
+
+let installed_call_hierarchy:boolean = false;
+
+export function install_call_hierarchy(_settings:ICOBOLSettings,  context: ExtensionContext) {
+    // already installed
+    if (installed_call_hierarchy) {
+        return;
+    }
+
     const langIds = _settings.valid_cobol_language_ids;
     for (const langid of langIds) {
         context.subscriptions.push(vscode.languages.registerCallHierarchyProvider(VSExtensionUtils.getAllCobolSelector(langid), new COBOLHierarchyProvider()));
     }
+    installed_call_hierarchy=true;
 }
 
 function getLangStatusItem(text: string, command: string, title: string, settings: ICOBOLSettings, id: string, langid: string): vscode.LanguageStatusItem {

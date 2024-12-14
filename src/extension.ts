@@ -42,7 +42,7 @@ import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./vssnippetprovider";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSCobolRenameProvider } from "./vsrenameprovider";
-import { activateCommonCommands, checkForExtensionConflicts, isMicroFocusCOBOL_LSPActive, toggleMicroFocusLSP } from "./vscommon_commands";
+import { activateCommonCommands, checkForExtensionConflicts, install_call_hierarchy, isMicroFocusCOBOL_LSPActive, toggleMicroFocusLSP } from "./vscommon_commands";
 import { VSHelpAndFeedViewHandler } from "./feedbacktree";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSHoverProvider } from "./vshoverprovider";
@@ -310,6 +310,8 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
     const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`, scope);
     const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`, scope);
     const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`, scope);
+    const enable_call_hierarchy_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_call_hierarchy`, scope);
+
 
     if (updated) {
         VSCOBOLConfiguration.reinitWorkspaceSettingsScoped(VSExternalFeatures);
@@ -393,6 +395,9 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             TabUtils.clearTabstopCache();
         }
 
+        if (enable_call_hierarchy_changed && settings.enable_call_hierarchy) {
+            install_call_hierarchy(settings, sharedContext)
+        }
         checkForExtensionConflicts(settings, sharedContext);
     }
 }
