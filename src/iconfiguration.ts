@@ -166,6 +166,8 @@ export interface ICOBOLSettings {
     scan_comment_end_ls_ignore: string;
 
     file_search_directory: string[];
+
+    enable_call_hierarchy: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -297,6 +299,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     file_search_directory: string[];
 
+    enable_call_hierarchy: boolean;
+    
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -403,5 +407,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_comment_end_ls_ignore = "END-LS-IGNORE";
  
         this.file_search_directory = [];
+
+        this.enable_call_hierarchy = false;
     }
 }

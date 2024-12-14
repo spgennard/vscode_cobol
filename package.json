@@ -1246,6 +1246,11 @@
           "type": "boolean",
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
+        },
+        "coboleditor.enable_call_hierarchy": {
+          "type": "boolean",
+          "description": "When enabled, turn on call hierarchy provider",
+          "default": false
         }
       }
     },

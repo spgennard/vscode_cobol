@@ -12,6 +12,10 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
         if (range) {
             let word = document.getText(range);
             const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+            if (settings.enable_call_hierarchy === false) {
+                return undefined;
+            }
+            
             this.current = VSCOBOLSourceScanner.getCachedObject(document, settings);
             if (this.current !== undefined) {
                 const sourceRefs: SharedSourceReferences = this.current.sourceReferences;
