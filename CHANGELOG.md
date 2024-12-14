@@ -1,5 +1,17 @@
 # CHANGELOG
 
+* c88bcd2 add WIP comment
+* 7dc0e57 add simple jit install of called by provider
+* eedbdbf only use registerCallHierarchyProvider when enable_call_hierarchy is set
+* 1e99c1a add enable_call_hierarchy property
+* b9f63da add nearest section/method to aid calledby support
+* 363238f a litte refactor and add first impl of both in/out but still wip
+* fef5b2a tidy up
+* 1f603d0 next step in 'called' support changer linter to use common reference counter
+* ca55a5c add wip call heirarchy
+* 1fb0fe4 add wip heirarchy provider
+
+## 24.11.28 
 * f71d285 update & enforce program_extensions scope
 
 ## 24.11.19 
