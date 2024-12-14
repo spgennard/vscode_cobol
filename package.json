@@ -1249,7 +1249,7 @@
         },
         "coboleditor.enable_call_hierarchy": {
           "type": "boolean",
-          "description": "When enabled, turn on call hierarchy provider",
+          "description": "When enabled, turn on call hierarchy provider (WIP)",
           "default": false,
           "scope": "resource"
         }
