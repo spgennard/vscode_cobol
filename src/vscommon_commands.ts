@@ -929,6 +929,16 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
 
         context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider()));
     
+    }
+
+    if (_settings.enable_call_hierarchy) {        
+        install_call_hierarchy(_settings, context)
+    }
+}
+
+function install_call_hierarchy(_settings:ICOBOLSettings,  context: ExtensionContext) {
+    const langIds = _settings.valid_cobol_language_ids;
+    for (const langid of langIds) {
         context.subscriptions.push(vscode.languages.registerCallHierarchyProvider(VSExtensionUtils.getAllCobolSelector(langid), new COBOLHierarchyProvider()));
     }
 }

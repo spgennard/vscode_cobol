@@ -1250,7 +1250,8 @@
         "coboleditor.enable_call_hierarchy": {
           "type": "boolean",
           "description": "When enabled, turn on call hierarchy provider",
-          "default": false
+          "default": false,
+          "scope": "resource"
         }
       }
     },

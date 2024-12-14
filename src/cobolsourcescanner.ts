@@ -182,8 +182,9 @@ export class SourceReference_Via_Length {
     public readonly isSourceDepCopyBook: boolean;
     public readonly name: string;
     public readonly section_paragraph: string;
+    public readonly reasonLower: string;
 
-    public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle, isSourceDepCopyBook: boolean, name: string, section_paragraph: string) {
+    public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle, isSourceDepCopyBook: boolean, name: string, section_paragraph: string, reason: string) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
         this.column = column;
@@ -192,6 +193,7 @@ export class SourceReference_Via_Length {
         this.isSourceDepCopyBook = isSourceDepCopyBook;
         this.name = name;
         this.section_paragraph = section_paragraph;
+        this.reasonLower = reason.toLowerCase();
     }
 }
 
@@ -1748,18 +1750,18 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
             if (duplicateFound === false) {
-                lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, lowerCaseVariable, ""));
+                lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, lowerCaseVariable, "", ""));
             }
             return true;
         }
 
         const sourceRefs: SourceReference_Via_Length[] = [];
-        sourceRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, lowerCaseVariable, ""));
+        sourceRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, lowerCaseVariable, "", ""));
         referencesMap.set(lowerCaseVariable, sourceRefs);
         return true;
     }
 
-    private addTargetReference(referencesMap: Map<string, SourceReference_Via_Length[]>, targetReference: string, line: number, column: number, tokenStyle: COBOLTokenStyle, csp: string): boolean {
+    private addTargetReference(referencesMap: Map<string, SourceReference_Via_Length[]>, targetReference: string, line: number, column: number, tokenStyle: COBOLTokenStyle, csp: string, reason:string): boolean {
 
         const l = targetReference.length;
         if (l === 0) {
@@ -1774,7 +1776,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, targetReference, csp);
+        const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, targetReference, csp, reason);
         const state = this.sourceReferences.state;
         let inSectionOrParaToken = state.currentParagraph !== undefined ? state.currentParagraph : state.currentSection;
 
@@ -2849,7 +2851,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     sharedReferences = this.sourceReferences.targetReferences;
                                 }
                                 const csp = state.currentDivision?.tokenName + "/" + state.currentSection?.tokenName;
-                                this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp);
+                                this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp, prevTokenLower);
                                 continue;
                             }
 
@@ -2882,14 +2884,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                         if (this.isVisibleSection(currentLower)) {
                                             sourceStyle = COBOLTokenStyle.Section;
                                             sharedReferences = this.sourceReferences.targetReferences;
-                                            this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp);
+                                            this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp,"");
                                         } else if (this.isVisibleParagraph(currentLower)) {
                                             sourceStyle = COBOLTokenStyle.Paragraph;
                                             sharedReferences = this.sourceReferences.targetReferences;
-                                            this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp);
+                                            this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp,"");
                                         } else {
                                             if (!(state.endsWithDot || nextTokenLower.startsWith("section"))) {
-                                                this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp);
+                                                this.addTargetReference(sharedReferences, currentLower, lineNumber, currentCol, sourceStyle, csp,"");
                                             }
                                         }
                                     }
