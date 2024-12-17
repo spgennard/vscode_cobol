@@ -11,33 +11,33 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
         let range = document.getWordRangeAtPosition(position);
         if (range) {
             let word = document.getText(range);
+            let wordLower = word.toLowerCase();
             const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
             if (settings.enable_call_hierarchy === false) {
                 return undefined;
             }
             
             this.current = VSCOBOLSourceScanner.getCachedObject(document, settings);
+            let detail = "";
             if (this.current !== undefined) {
                 const sourceRefs: SharedSourceReferences = this.current.sourceReferences;
                 if (sourceRefs.targetReferences.has(word.toLowerCase()) === false) {
                     const foundToken = this.current.findNearestSectionOrParagraph(position.line);
                     if (foundToken !== undefined) {
-                        word = foundToken.tokenNameLower;
+                        word = foundToken.tokenName;
+                        wordLower = foundToken.tokenNameLower;
+                        detail = `@${1+foundToken.startLine}`;
                         range = new vscode.Range(new vscode.Position(foundToken.rangeStartLine, foundToken.rangeStartColumn),
                                                  new vscode.Position(foundToken.rangeEndLine, foundToken.rangeEndColumn));
                     }
                 }
 
-                if (sourceRefs.targetReferences.has(word.toLowerCase()) === true) {
-                    return this.createCallHierarchyItem(word, '', document, range);
+                if (sourceRefs.targetReferences.has(wordLower) === true) {
+                    return new vscode.CallHierarchyItem(vscode.SymbolKind.Method, word, detail, document.uri, range, range);
                 }
             }
         }
         return undefined;
-    }
-
-    private createCallHierarchyItem(word: string, type: string, document: vscode.TextDocument, range: vscode.Range): vscode.CallHierarchyItem {
-        return new vscode.CallHierarchyItem(vscode.SymbolKind.Method, word, `(${type})`, document.uri, range, range);
     }
 
     provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyIncomingCall[]> {
@@ -73,7 +73,9 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
                     const uiref = vscode.Uri.parse(sourceRefs.filenameURIs[sr.fileIdentifer]);
                     const range = new vscode.Range(new vscode.Position(sr.line, sr.column),
                         new vscode.Position(sr.line, sr.column + sr.length));
-                    const newitem = new vscode.CallHierarchyItem(vscode.SymbolKind.Method, "perform " + sr.name.toLowerCase(), "", uiref, range, range);
+                    const r = sr.reason.length == 0 ? sr.name : sr.reason+" "+sr.name;
+                    const d = `@${1+sr.line}`;
+                    const newitem = new vscode.CallHierarchyItem(vscode.SymbolKind.Method, r, d, uiref, range, range);
                     let call = new vscode.CallHierarchyIncomingCall(newitem, [range]);
                     results.push(call);
                 }
@@ -87,7 +89,7 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
 
     provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyOutgoingCall[]> {
 
-        let results: vscode.CallHierarchyOutgoingCall[] = []
+        let results: vscode.CallHierarchyOutgoingCall[] =   []
         let wordLower = item.name.toLowerCase();
 
         if (this.current === undefined) {
@@ -107,13 +109,14 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
                     const srefs = state.currentSectionOutRefs.get(inToken.tokenNameLower);
                     if (srefs !== undefined) {
                         for (const sr of srefs) {
-                            if (sr.name.toLowerCase() === wordLower) {
+                            if (sr.nameLower === wordLower) {
                                 continue
                             }
                             if (sr.tokenStyle === COBOLTokenStyle.Section || sr.tokenStyle === COBOLTokenStyle.Paragraph) {
                                 const range = new vscode.Range(new vscode.Position(sr.line, sr.column),
                                     new vscode.Position(sr.line, sr.column + sr.length));
-                                const newitem = new vscode.CallHierarchyItem(vscode.SymbolKind.Method, sr.name.toLowerCase(), "", item.uri, range, range);
+                                const r = `@${1+sr.line}`;
+                                const newitem = new vscode.CallHierarchyItem(vscode.SymbolKind.Method, sr.name, r, item.uri, range, range);
                                 let call = new vscode.CallHierarchyOutgoingCall(newitem, [range]);
                                 results.push(call);
                             }
