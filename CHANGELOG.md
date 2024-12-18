@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 451d9fe add description, ensure name & name lower is okay
+
+## 24.12.14 
 * c88bcd2 add WIP comment
 * 7dc0e57 add simple jit install of called by provider
 * eedbdbf only use registerCallHierarchyProvider when enable_call_hierarchy is set
