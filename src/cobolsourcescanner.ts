@@ -1036,6 +1036,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 else if ((preParseState.workingStorageRelatedTokens !== 0 && preParseState.numberTokensInHeader !== 0)) {
                     const fakeDivision = this.newCOBOLToken(COBOLTokenStyle.Division, 0, "Data Division", 0, "Data", "Data Division (CopyBook)", state.currentDivision);
                     state.currentSection = undefined;
+                    state.currentParagraph = undefined;
                     state.currentDivision = fakeDivision;
                     state.pickFields = true;
                     state.inProcedureDivision = false;
@@ -2387,6 +2388,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 this.ImplicitProgramId = "";        /* don't need it */
                             }
                             state.currentSection = undefined;
+                            state.currentParagraph = undefined;
                             state.currentDivision = this.newCOBOLToken(COBOLTokenStyle.Division, lineNumber, "Data Division", 0, "Data", "Data Division (Optional)", state.currentDivision);
                             state.currentDivision.ignoreInOutlineView = true;
                         }
@@ -2417,6 +2419,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         state.pickFields = false;
                         state.procedureDivision = state.currentDivision;
                         state.currentSection = undefined;
+                        state.currentParagraph = undefined;
                         if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }
