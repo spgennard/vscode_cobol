@@ -2415,17 +2415,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                         // create implicit section/paragraph and also a duplicate "procedure division" named fake section
                         let pname = this.implicitCount === 0 ? prevToken : prevToken+"-"+this.implicitCount;
-                        let pname_desc = this.implicitCount === 0 ? prevPlusCurrent : prevPlusCurrent+"-"+this.implicitCount;
-                        const pname_desc_lower = pname_desc.toLowerCase();
-                        const newTokenSection = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, pname, pname_desc, state.currentDivision,"",true);
-                        newTokenSection.ignoreInOutlineView = true;
-                        this.sections.set(newTokenSection.tokenNameLower, newTokenSection);
-                        
-                        this.sourceReferences.ignoreUnusedSymbol.set(newTokenSection.tokenNameLower,newTokenSection.tokenNameLower);
-                        this.sourceReferences.ignoreUnusedSymbol.set(pname_desc_lower,pname_desc_lower);
+                        const pname_lower = pname.toLowerCase();
+                        const newTokenParagraph = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, pname_lower, prevPlusCurrent, state.currentDivision,"",true);
+                        newTokenParagraph.ignoreInOutlineView = true;
+                        this.paragraphs.set(pname_lower, newTokenParagraph);
+                        this.sourceReferences.ignoreUnusedSymbol.set(newTokenParagraph.tokenNameLower,newTokenParagraph.tokenNameLower);
+                        this.sourceReferences.ignoreUnusedSymbol.set(pname_lower,pname_lower);
 
-                        state.currentSection = newTokenSection;
-                        state.currentParagraph = undefined;
+                        state.currentParagraph = newTokenParagraph;
+                        state.currentSection = undefined;
                         if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }

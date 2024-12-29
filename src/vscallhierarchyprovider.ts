@@ -24,9 +24,12 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
                 if (sourceRefs.targetReferences.has(word.toLowerCase()) === false) {
                     const foundToken = this.current.findNearestSectionOrParagraph(position.line);
                     if (foundToken !== undefined) {
-                        word = foundToken.description;
-                        // wordLower = foundToken.tokenNameLower;
-                        detail = `@${1+foundToken.startLine}`;
+                        word = foundToken.tokenNameLower;
+                        if (foundToken.isImplicitToken) {
+                            detail = foundToken.description;
+                        } else {
+                            detail = `@${1+foundToken.startLine}`;
+                        }
                         range = new vscode.Range(new vscode.Position(foundToken.rangeStartLine, foundToken.rangeStartColumn),
                                                  new vscode.Position(foundToken.rangeEndLine, foundToken.rangeEndColumn));
                     }
