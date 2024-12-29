@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { SourceReference_Via_Length } from "./cobolsourcescanner";
+import { COBOLTokenStyle, SourceReference_Via_Length } from "./cobolsourcescanner";
 
 
 export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
@@ -16,7 +16,7 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
         return;
     }
     let pos = file.lastIndexOf(".");
-    const newFileName = file.substring(0, pos < 0 ? file.length : pos) + ".md";
+    const newFileName = file.substring(0, pos < 0 ? file.length : pos) + "_callgraph.md";
     const doclang = "markdown";
     const ws = VSWorkspaceFolders.get(settings);
     if (ws) {
@@ -27,24 +27,35 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
         linesArray.push("");
         linesArray.push("```mermaid");
         linesArray.push("graph TD;");
-        
-        for (const [section,] of current.sections) {
+
+        for (const [section,targetToken] of current.sections) {
             const wordLower = section.toLowerCase();
             const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
             if (targetRefs !== undefined) {
-                for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                    const sr = targetRefs[trpos];
-                    linesArray.push(`${section} --> ${sr.name};`);
+                for (const sr of targetRefs) {
+                    // skip definition
+                    if (sr.line === targetToken.startLine && sr.column === targetToken.startColumn) {
+                        continue;
+                    }
+                    if (sr.tokenStyle === COBOLTokenStyle.Section) {
+                        linesArray.push(`${targetToken.tokenNameLower} --> ${sr.nameLower};`);
+                    }
                 }
             }
         }
-        for (const [paragraph,] of current.paragraphs) {
+        for (const [paragraph,targetToken] of current.paragraphs) {
             const wordLower = paragraph.toLowerCase();
             const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
             if (targetRefs !== undefined) {
-                for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                    const sr = targetRefs[trpos];
-                    linesArray.push(`${paragraph} --> ${sr.name};`);
+                for (const sr of targetRefs) {
+                    // skip definition
+                    if (sr.line === targetToken.startLine && sr.column === targetToken.startColumn) {
+                        continue;
+                    }
+
+                    if (sr.tokenStyle === COBOLTokenStyle.Paragraph) {
+                        linesArray.push(`${targetToken.tokenNameLower} --> ${sr.nameLower}`);
+                    }
                 }
             }
         }
@@ -54,7 +65,7 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
         await vscode.workspace.openTextDocument(furl).then(async document => {
             const editor = await vscode.window.showTextDocument(document);
             if (editor !== undefined) {
-                const linesAsOne = linesArray.join("\n"); linesArray
+                const linesAsOne = linesArray.join("\n"); 
                 await editor.insertSnippet(new vscode.SnippetString(linesAsOne), new vscode.Range(0, 0, 1 + linesArray.length, 0));
                 await vscode.languages.setTextDocumentLanguage(document, doclang);
             }
