@@ -11,7 +11,7 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
         let range = document.getWordRangeAtPosition(position);
         if (range) {
             let word = document.getText(range);
-            let wordLower = word.toLowerCase();
+            // let wordLower = word.toLowerCase();wordLower
             const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
             if (settings.enable_call_hierarchy === false) {
                 return undefined;
@@ -25,16 +25,16 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
                     const foundToken = this.current.findNearestSectionOrParagraph(position.line);
                     if (foundToken !== undefined) {
                         word = foundToken.tokenName;
-                        wordLower = foundToken.tokenNameLower;
+                        // wordLower = foundToken.tokenNameLower;
                         detail = `@${1+foundToken.startLine}`;
                         range = new vscode.Range(new vscode.Position(foundToken.rangeStartLine, foundToken.rangeStartColumn),
                                                  new vscode.Position(foundToken.rangeEndLine, foundToken.rangeEndColumn));
                     }
                 }
 
-                if (sourceRefs.targetReferences.has(wordLower) === true) {
-                    return new vscode.CallHierarchyItem(vscode.SymbolKind.Method, word, detail, document.uri, range, range);
-                }
+                // if (sourceRefs.targetReferences.has(wordLower) === true) {
+                return new vscode.CallHierarchyItem(vscode.SymbolKind.Method, word, detail, document.uri, range, range);
+                // }
             }
         }
         return undefined;

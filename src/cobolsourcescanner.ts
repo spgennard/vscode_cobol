@@ -2418,8 +2418,20 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         state.inProcedureDivision = true;
                         state.pickFields = false;
                         state.procedureDivision = state.currentDivision;
-                        state.currentSection = undefined;
-                        state.currentParagraph = undefined;
+
+                        const newTokenSection = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, prevToken, prevPlusCurrent, state.currentDivision);
+                        newTokenSection.ignoreInOutlineView = true;
+                        this.sections.set(newTokenSection.tokenNameLower, newTokenSection);
+
+                        const newTokenParagraph = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, prevToken, prevPlusCurrent, state.currentDivision);
+                        newTokenParagraph.ignoreInOutlineView = true;
+                        this.paragraphs.set(newTokenParagraph.tokenNameLower, newTokenParagraph);
+ 
+                        this.sourceReferences.ignoreUnusedSymbol.set(newTokenSection.tokenNameLower,newTokenSection.tokenNameLower);
+                         this.sourceReferences.ignoreUnusedSymbol.set(newTokenParagraph.tokenNameLower,newTokenParagraph.tokenNameLower);
+
+                        // state.currentSection = undefined;
+                        // state.currentParagraph = undefined;
                         if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }
