@@ -17,6 +17,7 @@ import { VSDiagCommands } from "./vsdiagcommands";
 import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { COBOLHierarchyProvider } from "./vscallhierarchyprovider";
+import { newFile_dot_callgraph } from "./vsdotmarkdown";
 
 async function emptyFile(title: string, doclang: string, config: ICOBOLSettings) {
     let fpath = "";
@@ -930,6 +931,14 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.languages.registerDocumentDropEditProvider(VSExtensionUtils.getAllCobolSelector(langid), new CopyBookDragDropProvider()));
     
     }
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.dot_callgraph", async function () {
+        if (vscode.window.activeTextEditor === undefined) {
+            return;
+        }
+        const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
+        newFile_dot_callgraph(settings);
+    }));
 
     if (_settings.enable_call_hierarchy) {        
         install_call_hierarchy(_settings, context)

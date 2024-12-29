@@ -2196,7 +2196,12 @@
         "command": "cobolplugin.dumpAllSymbols",
         "category": "COBOL",
         "title": "Diagnostic: Dump All Symbol"
-      }
+      },
+      {
+        "command": "cobolplugin.dot_callgraph",
+        "category": "COBOL",
+        "title": "Diagnostic: Dump call graph"
+      }      
     ],
     "menus": {
       "file/newFile": [
