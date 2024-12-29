@@ -828,6 +828,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private readonly regions: COBOLToken[] = [];
 
+    private implicitCount = 0;
+    
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean,
@@ -1350,7 +1352,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (startColumn === -1) {
             startColumn = _line.indexOf(token);
             if (startColumn === -1) {
-                startColumn = 0;
+                if (currentCol <= _line.length) {
+                    startColumn = currentCol;
+                } else {
+                    startColumn = 0;
+                }
             }
         }
         const ctoken = new COBOLToken(
@@ -2419,22 +2425,29 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         state.pickFields = false;
                         state.procedureDivision = state.currentDivision;
 
-                        const newTokenSection = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, prevToken, prevPlusCurrent, state.currentDivision);
+                        // create implicit section/paragraph and also a duplicate "procedure division" named fake section
+                        let pname = this.implicitCount === 0 ? prevToken : prevToken+"-"+this.implicitCount;
+                        let pname_desc = this.implicitCount === 0 ? prevPlusCurrent : prevPlusCurrent+"-"+this.implicitCount;
+                        const pname_desc_lower = pname_desc.toLowerCase();
+                        const newTokenSection = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, pname, pname_desc, state.currentDivision);
                         newTokenSection.ignoreInOutlineView = true;
                         this.sections.set(newTokenSection.tokenNameLower, newTokenSection);
-
-                        const newTokenParagraph = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, prevToken, prevPlusCurrent, state.currentDivision);
+                        this.sections.set(pname_desc_lower, newTokenSection);
+                        
+                        const newTokenParagraph = this.newCOBOLToken(COBOLTokenStyle.Paragraph, lineNumber, line, 0, pname, pname_desc, state.currentDivision);
                         newTokenParagraph.ignoreInOutlineView = true;
                         this.paragraphs.set(newTokenParagraph.tokenNameLower, newTokenParagraph);
  
                         this.sourceReferences.ignoreUnusedSymbol.set(newTokenSection.tokenNameLower,newTokenSection.tokenNameLower);
-                         this.sourceReferences.ignoreUnusedSymbol.set(newTokenParagraph.tokenNameLower,newTokenParagraph.tokenNameLower);
+                        this.sourceReferences.ignoreUnusedSymbol.set(newTokenParagraph.tokenNameLower,newTokenParagraph.tokenNameLower);
+                        this.sourceReferences.ignoreUnusedSymbol.set(pname_desc_lower,pname_desc_lower);
 
                         // state.currentSection = undefined;
                         // state.currentParagraph = undefined;
                         if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }
+                        this.implicitCount++;
                     }
 
                     continue;

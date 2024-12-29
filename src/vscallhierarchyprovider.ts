@@ -10,7 +10,7 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
     prepareCallHierarchy(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyItem | vscode.CallHierarchyItem[]> {
         let range = document.getWordRangeAtPosition(position);
         if (range) {
-            let word = document.getText(range);
+            let word = document.    getText(range);
             // let wordLower = word.toLowerCase();wordLower
             const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
             if (settings.enable_call_hierarchy === false) {
@@ -24,7 +24,7 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
                 if (sourceRefs.targetReferences.has(word.toLowerCase()) === false) {
                     const foundToken = this.current.findNearestSectionOrParagraph(position.line);
                     if (foundToken !== undefined) {
-                        word = foundToken.tokenName;
+                        word = foundToken.description;
                         // wordLower = foundToken.tokenNameLower;
                         detail = `@${1+foundToken.startLine}`;
                         range = new vscode.Range(new vscode.Position(foundToken.rangeStartLine, foundToken.rangeStartColumn),
