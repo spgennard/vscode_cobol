@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "24.12.29",
+  "version": "24.12.30",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -2201,7 +2201,7 @@
         "command": "cobolplugin.dot_callgraph",
         "category": "COBOL",
         "title": "Diagnostic: Dump call graph"
-      }      
+      }
     ],
     "menus": {
       "file/newFile": [
