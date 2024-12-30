@@ -1,5 +1,15 @@
 # CHANGELOG
 
+* 3c4de8b interim release
+* ae7f19b don't save the markdown, just use a untitled document
+* 7771b6c shorten name of implicit name
+* 1df1272 remove csp
+* 8189ac3 diag dot file for calls diag command  - wip
+* 3c38dd8 change to use the full description and include it in the refs and un-used area
+* dff78e6 add top-level section/paragraph
+* 1bee479 ensure section/paragraph are consistently set to undefined
+
+## 24.12.18 
 * 451d9fe add description, ensure name & name lower is okay
 
 ## 24.12.14 
