@@ -2,8 +2,34 @@ import * as vscode from "vscode";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { COBOLTokenStyle, SourceReference_Via_Length } from "./cobolsourcescanner";
+import { COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
 
+function generate_partial_graph(linesArray: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
+    for (const [paragraph, targetToken] of para_or_section) {
+        const wordLower = paragraph.toLowerCase();
+        const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
+        if (targetRefs !== undefined) {
+            if (targetToken.isImplicitToken) {
+                linesArray.push(`${targetToken.tokenNameLower}[${targetToken.description}]`);
+            }
+
+            for (const sr of targetRefs) {
+                // skip definition
+                if (sr.line === targetToken.startLine && sr.column === targetToken.startColumn) {
+                    continue;
+                }
+
+                if (sr.tokenStyle === COBOLTokenStyle.Paragraph || sr.tokenStyle === COBOLTokenStyle.Section) {
+                    if (sr.reason === 'perform') {
+                        linesArray.push(`${targetToken.tokenNameLower} --> ${sr.nameLower}`);
+                    } else {
+                        linesArray.push(`${targetToken.tokenNameLower} -->|${sr.reason}|${sr.nameLower}`);
+                    }
+                }
+            }
+        }
+    }
+}
 
 export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
     if (!vscode.window.activeTextEditor) {
@@ -18,51 +44,22 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
     const ws = VSWorkspaceFolders.get(settings);
     if (ws) {
         const linesArray: string[] = [];
-        // const sourceRefs: SharedSourceReferences = current.sourceReferences;
         const state = current.sourceReferences.state;
-        linesArray.push("# " + current?.filename);
+        if (current.ImplicitProgramId.length !== 0) {
+            linesArray.push("# " + current.ImplicitProgramId);
+        } else {
+            if (current.ProgramId.length !== 0) {
+                linesArray.push("# " + current.ProgramId);
+            } else {
+                linesArray.push(" # Unknown");
+            }
+        }
         linesArray.push("");
         linesArray.push("```mermaid");
         linesArray.push("graph TD;");
 
-        for (const [section, targetToken] of current.sections) {
-            const wordLower = section.toLowerCase();
-            const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
-            if (targetRefs !== undefined) {
-                if (targetToken.isImplicitToken) {
-                    linesArray.push(`${targetToken.tokenNameLower}[${targetToken.description}]`);
-                }
-                for (const sr of targetRefs) {
-                    // skip definition
-                    if (sr.line === targetToken.startLine && sr.column === targetToken.startColumn) {
-                        continue;
-                    }
-                    if (sr.tokenStyle === COBOLTokenStyle.Section) {
-                        linesArray.push(`${targetToken.tokenNameLower} --> ${sr.nameLower};`);
-                    }
-                }
-            }
-        }
-        for (const [paragraph, targetToken] of current.paragraphs) {
-            const wordLower = paragraph.toLowerCase();
-            const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
-            if (targetRefs !== undefined) {
-                if (targetToken.isImplicitToken) {
-                    linesArray.push(`${targetToken.tokenNameLower}[${targetToken.description}]`);
-                }
-
-                for (const sr of targetRefs) {
-                    // skip definition
-                    if (sr.line === targetToken.startLine && sr.column === targetToken.startColumn) {
-                        continue;
-                    }
-
-                    if (sr.tokenStyle === COBOLTokenStyle.Paragraph) {
-                        linesArray.push(`${targetToken.tokenNameLower} --> ${sr.nameLower}`);
-                    }
-                }
-            }
-        }
+        generate_partial_graph(linesArray, state, current.sections);
+        generate_partial_graph(linesArray, state, current.paragraphs);
         linesArray.push("```")
 
         vscode.workspace.openTextDocument({ language: "markdown" }).then(async document => {

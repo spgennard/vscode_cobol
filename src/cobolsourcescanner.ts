@@ -579,7 +579,7 @@ export class COBOLParameter {
     }
 }
 
-class ParseState {
+export class ParseState {
     currentToken: COBOLToken | undefined;
     currentRegion: COBOLToken | undefined;
     currentDivision: COBOLToken | undefined;
@@ -790,6 +790,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public cache4ConstantsOrVars: any | undefined = undefined;
 
     public ImplicitProgramId = "";
+    public ProgramId = "";
 
     public sourceFormat: ESourceFormat = ESourceFormat.unknown;
 
@@ -2465,6 +2466,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         state.parameters = [];
                         state.currentProgramTarget = new CallTargetInformation(current, ctoken, false, []);
                         this.callTargets.set(trimmedCurrent, state.currentProgramTarget);
+                        this.ProgramId = trimmedCurrent;
                     }
                     this.ImplicitProgramId = "";        /* don't need it */
                     continue;
