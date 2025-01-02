@@ -634,7 +634,7 @@ export async function activate(context: ExtensionContext) {
 
     const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
         await vsMarginHandler.updateDecorations(editor);
-        if (editor.document) {
+        if (editor && editor.document) {
             await linter.updateLinter(editor.document);
         }
         await colourCommentHandler.updateDecorations(editor);

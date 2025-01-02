@@ -45,8 +45,8 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     const resourcesDirectory = vscode.Uri.joinPath(context.extensionUri, 'resources')
 
     const webviewPanel = vscode.window.createWebviewPanel(
-        'vscodeTest',
-        'VsCode test webview',
+        'cobolCallGraph',
+        'COBOL Call Graph',
         {
             viewColumn: vscode.ViewColumn.Beside,
             preserveFocus: true
@@ -85,7 +85,6 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
         style-src cspSource 'unsafe-inline';
         script-src 'nonce-nonce' 'unsafe-inline';
         ">
-    <link href="webview.css" rel="stylesheet">
   </head>
   <body>
     <script type="text/javascript">
@@ -98,10 +97,11 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
       };
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js" />
-    <script>
-        let config = { startOnLoad: true, darkMode: true, useMaxWidth: true };
-        mermaid.initialize(config);
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+      let config = { startOnLoad: true, useMaxWidth: true, theme: "neutral" };
+      mermaid.initialize(config);
     </script>
 
     <div class="mermaid">
