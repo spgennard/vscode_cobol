@@ -67,7 +67,20 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
         undefined,
         context.subscriptions
     );
+
     setHtmlContent(webviewPanel.webview, context, linesArray);
+
+    vscode.workspace.onDidChangeTextDocument(changeEvent => {
+        if (vscode.window.activeTextEditor?.document) {
+            if (changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
+            let current = VSCOBOLSourceScanner.getCachedObject(vscode.window.activeTextEditor.document, settings);
+            if (current === undefined) {
+                return;
+            }
+            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
+            setHtmlContent(webviewPanel.webview, context, updatedLinesArray);
+        }
+    });
 }
 
 function saveAsPng(messageText: string) {
@@ -76,7 +89,8 @@ function saveAsPng(messageText: string) {
 }
 
 function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.ExtensionContext, linesArray: string[]) {
-    let htmlContent =   `<html>
+    let htmlContent = `<!DOCTYPE html>
+  <html>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,7 +100,7 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
         script-src 'nonce-nonce' 'unsafe-inline';
         ">
   </head>
-  <body>
+  <body class="vscode-body">
     <script type="text/javascript">
       const _config = {
         vscode: {
@@ -118,7 +132,7 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
     htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
     htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
     htmlContent = htmlContent.replace(/<link /g, `<link nonce="${nonce}" `);
-    
+
     htmlContent = htmlContent.replace('cspSource', webview.cspSource);
 
     webview.html = htmlContent;
