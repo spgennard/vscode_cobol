@@ -42,6 +42,8 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
 
     const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
 
+    const resourcesDirectory = vscode.Uri.joinPath(context.extensionUri, 'resources')
+
     const webviewPanel = vscode.window.createWebviewPanel(
         'vscodeTest',
         'VsCode test webview',
@@ -50,7 +52,8 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
             preserveFocus: true
         },
         {
-            enableScripts: true
+            enableScripts: true,
+            localResourceRoots: [resourcesDirectory]
         }
     );
     webviewPanel.webview.onDidReceiveMessage(
@@ -73,20 +76,33 @@ function saveAsPng(messageText: string) {
 }
 
 function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.ExtensionContext, linesArray: string[]) {
-    let htmlContent = `<html>
+    let htmlContent =   `<html>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src cspSource; script-src 'nonce-nonce';">
+     <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'none'; 
+        style-src cspSource 'unsafe-inline';
+        script-src 'nonce-nonce' 'unsafe-inline';
+        ">
     <link href="webview.css" rel="stylesheet">
   </head>
   <body>
-    <div id="buttons">
-      <input type="button" id="saveAsPngButton" value="Save as png">
-    </div>
-    <script type="text/javascript" src="body.js"></script>
-    <script type="text/javascript" src="mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script type="text/javascript">
+      const _config = {
+        vscode: {
+          minimap: false,
+          dark: 'dark',
+          light: 'neutral'
+        }
+      };
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js" />
+    <script>
+        let config = { startOnLoad: true, darkMode: true, useMaxWidth: true };
+        mermaid.initialize(config);
+    </script>
 
     <div class="mermaid">
     ${linesArray.join("\n")}
@@ -94,22 +110,15 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
 
   </body>
 </html>`;
-    const jsFilePath = vscode.Uri.joinPath(extensionContext.extensionUri, 'web', 'body.js');
-    const visUri = webview.asWebviewUri(jsFilePath);
-    htmlContent = htmlContent.replace('body.js', visUri.toString());
-
-    const jsMermaidPath = vscode.Uri.joinPath(extensionContext.extensionUri, 'web', 'mermaid.min.js');
-    const jsMerVis = webview.asWebviewUri(jsMermaidPath);
-    htmlContent = htmlContent.replace('mermaid.min.js', jsMerVis.toString());
-
-
-    const cssPath = vscode.Uri.joinPath(extensionContext.extensionUri, 'css', 'webview.css');
-    const cssUri = webview.asWebviewUri(cssPath);
-    htmlContent = htmlContent.replace('webview.css', cssUri.toString());
+    // const jsMermaidPath = vscode.Uri.joinPath(extensionContext.extensionUri, 'resources', 'mermaid.min.js');
+    // const jsMerVis = webview.asWebviewUri(jsMermaidPath);
+    // htmlContent = htmlContent.replace('mermaid.min.js', jsMerVis.toString());
 
     const nonce = getNonce();
     htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
     htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
+    htmlContent = htmlContent.replace(/<link /g, `<link nonce="${nonce}" `);
+    
     htmlContent = htmlContent.replace('cspSource', webview.cspSource);
 
     webview.html = htmlContent;
