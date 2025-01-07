@@ -2207,7 +2207,6 @@
         "category": "COBOL",
         "title": "View call graph"
       }
-      
     ],
     "menus": {
       "file/newFile": [
@@ -2903,9 +2902,10 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile && webpack --mode production",
-    "webpack": "npm run compile && webpack --mode development",
-    "package-web": "webpack --mode production --devtool hidden-source-map",
+    "webpack": "npm run compile && npm run cp-mermaid && webpack --mode development",
+    "package-web": "npm run compile && npm run cp-mermaid && webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch --mode development",
+    "cp-mermaid": "npx shx cp -r ./node_modules/mermaid/dist/ ./resources/mermaid",
     "just-compile": "tsc -b",
     "compile": "tsc -b",
     "compile-web": "webpack",
@@ -2932,9 +2932,11 @@
     "glob": "^11.0.0",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
+    "mermaid": "^11.4.1",
     "mocha": "^11.0.1",
     "nth-check": ">=2.1.1",
     "process": "^0.11.10",
+    "shx": "^0.3.4",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1",

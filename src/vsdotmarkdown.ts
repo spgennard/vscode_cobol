@@ -112,7 +112,7 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
     </script>
     
     <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      import mermaid from 'mermaid.esm.min.mjs';
 
       let config = { startOnLoad: true, useMaxWidth: true, theme: "neutral" };
       mermaid.initialize(config);
@@ -124,9 +124,9 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
 
   </body>
 </html>`;
-    // const jsMermaidPath = vscode.Uri.joinPath(extensionContext.extensionUri, 'resources', 'mermaid.min.js');
-    // const jsMerVis = webview.asWebviewUri(jsMermaidPath);
-    // htmlContent = htmlContent.replace('mermaid.min.js', jsMerVis.toString());
+    const jsMermaidPath = vscode.Uri.joinPath(extensionContext.extensionUri, 'resources', 'mermaid', 'mermaid.esm.min.mjs');
+    const jsMerVis = webview.asWebviewUri(jsMermaidPath);
+    htmlContent = htmlContent.replace('mermaid.esm.min.mjs', jsMerVis.toString());
 
     const nonce = getNonce();
     htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
