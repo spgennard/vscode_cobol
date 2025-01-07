@@ -30,66 +30,46 @@ function generate_partial_graph(linesArray: string[], state: ParseState, para_or
     }
 }
 
-export async function view_dot_callgraph(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
-    if (!vscode.window.activeTextEditor) {
-        return;
+export class DotGraphPanelView {
+    public static currentPanel: DotGraphPanelView | undefined;
+    private readonly _panel: vscode.WebviewPanel;
+    private _disposables: vscode.Disposable[] = [];
+
+    private constructor(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, linesArray: string[]) {
+        // ... other code ...
+        this._panel = panel;
+        this._panel.webview.html = this._getWebviewContent(context, panel, linesArray);
+    
+        this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
     }
 
-    const current = VSCOBOLSourceScanner.getCachedObject(vscode.window.activeTextEditor.document, settings);
-    if (current === undefined) {
-        return;
+    public static render(context: vscode.ExtensionContext, linesArray: string[]) {
+        if (DotGraphPanelView.currentPanel) {
+            DotGraphPanelView.currentPanel._panel.reveal(vscode.ViewColumn.Beside,true);
+            DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, DotGraphPanelView.currentPanel._panel, linesArray);
+
+            return DotGraphPanelView.currentPanel._panel;
+        } else {
+            const resourcesDirectory = vscode.Uri.joinPath(context.extensionUri, 'resources')
+
+            const panel = vscode.window.createWebviewPanel(
+                'cobolCallGraph',
+                'COBOL Call Graph',
+                {
+                    viewColumn: vscode.ViewColumn.Beside,
+                    preserveFocus: true
+                },
+                {
+                    enableScripts: true,
+                    localResourceRoots: [resourcesDirectory]
+                }
+            );
+            DotGraphPanelView.currentPanel = new DotGraphPanelView(context, panel, linesArray);
+            return panel;
+        }
     }
-
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
-
-    const resourcesDirectory = vscode.Uri.joinPath(context.extensionUri, 'resources')
-
-    const webviewPanel = vscode.window.createWebviewPanel(
-        'cobolCallGraph',
-        'COBOL Call Graph',
-        {
-            viewColumn: vscode.ViewColumn.Beside,
-            preserveFocus: true
-        },
-        {
-            enableScripts: true,
-            localResourceRoots: [resourcesDirectory]
-        }
-    );
-    webviewPanel.webview.onDidReceiveMessage(
-        message => {
-            switch (message.command) {
-                case 'saveAsPng':
-                    saveAsPng(message.text);
-                    return;
-            }
-        },
-        undefined,
-        context.subscriptions
-    );
-
-    setHtmlContent(webviewPanel.webview, context, linesArray);
-
-    vscode.workspace.onDidChangeTextDocument(changeEvent => {
-        if (vscode.window.activeTextEditor?.document) {
-            if (changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
-            let current = VSCOBOLSourceScanner.getCachedObject(vscode.window.activeTextEditor.document, settings);
-            if (current === undefined) {
-                return;
-            }
-            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
-            setHtmlContent(webviewPanel.webview, context, updatedLinesArray);
-        }
-    });
-}
-
-function saveAsPng(messageText: string) {
-    const dataUrl = messageText.split(',');
-    return dataUrl;
-}
-
-function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.ExtensionContext, linesArray: string[]) {
-    let htmlContent = `<!DOCTYPE html>
+    private _getWebviewContent(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, linesArray: string[]) {
+        let htmlContent = `<!DOCTYPE html>
   <html>
   <head>
     <meta charset="UTF-8">
@@ -124,19 +104,86 @@ function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.Extens
 
   </body>
 </html>`;
-    const jsMermaidPath = vscode.Uri.joinPath(extensionContext.extensionUri, 'resources', 'mermaid', 'mermaid.esm.min.mjs');
-    const jsMerVis = webview.asWebviewUri(jsMermaidPath);
-    htmlContent = htmlContent.replace('mermaid.esm.min.mjs', jsMerVis.toString());
 
-    const nonce = getNonce();
-    htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
-    htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
-    htmlContent = htmlContent.replace(/<link /g, `<link nonce="${nonce}" `);
+        const jsMermaidPath = vscode.Uri.joinPath(context.extensionUri, 'resources', 'mermaid', 'mermaid.esm.min.mjs');
+        const jsMerVis = panel.webview.asWebviewUri(jsMermaidPath);
+        htmlContent = htmlContent.replace('mermaid.esm.min.mjs', jsMerVis.toString());
 
-    htmlContent = htmlContent.replace('cspSource', webview.cspSource);
+        const nonce = getNonce();
+        htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
+        htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
+        htmlContent = htmlContent.replace(/<link /g, `<link nonce="${nonce}" `);
 
-    webview.html = htmlContent;
+        htmlContent = htmlContent.replace('cspSource', panel.webview.cspSource);
+
+        return htmlContent;
+    }
+
+    public dispose() {
+        DotGraphPanelView.currentPanel = undefined;
+
+        this._panel.dispose();
+
+        while (this._disposables.length) {
+            const disposable = this._disposables.pop();
+            if (disposable) {
+                disposable.dispose();
+            }
+        }
+    }
 }
+
+export async function view_dot_callgraph(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
+    if (!vscode.window.activeTextEditor) {
+        return;
+    }
+
+    const current = VSCOBOLSourceScanner.getCachedObject(vscode.window.activeTextEditor.document, settings);
+    if (current === undefined) {
+        return;
+    }
+
+    if (settings.enable_call_hierarchy === false) {
+        vscode.window.showErrorMessage("COBOL call-graph is not enabled (coboleditor.enable_call_hierarchy)");
+        return;
+    }
+
+    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
+    const webviewPanel = DotGraphPanelView.render(context, linesArray);
+    webviewPanel.webview.onDidReceiveMessage(
+        message => {
+            switch (message.command) {
+                case 'saveAsPng':
+                    saveAsPng(message.text);
+                    return;
+            }
+        },
+        undefined,
+        context.subscriptions
+    );
+
+    vscode.workspace.onDidChangeTextDocument(changeEvent => {
+        if (vscode.window.activeTextEditor?.document) {
+            if (changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
+            let current = VSCOBOLSourceScanner.getCachedObject(vscode.window.activeTextEditor.document, settings);
+            if (current === undefined) {
+                return;
+            }
+            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
+            DotGraphPanelView.render(context, updatedLinesArray);
+        }
+    });
+}
+
+function saveAsPng(messageText: string) {
+    const dataUrl = messageText.split(',');
+    return dataUrl;
+}
+
+// function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.ExtensionContext) {
+
+//     webview.html = htmlContent;
+// }
 
 function getNonce() {
     let text = '';

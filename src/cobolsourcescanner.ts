@@ -681,7 +681,7 @@ export class ParseState {
         this.skipNextToken = false;
         this.inValueClause = false;
         this.skipToEndLsIgnore = false;
-        this.currentSectionOutRefs = new Map<string, SourceReference_Via_Length[]>
+        this.currentSectionOutRefs = new Map<string, SourceReference_Via_Length[]>();
     }
 }
 

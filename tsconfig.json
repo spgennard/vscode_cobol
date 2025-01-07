@@ -23,7 +23,7 @@
         "noFallthroughCasesInSwitch": true,
         "alwaysStrict": true,
         "noImplicitReturns": true,
-        "exactOptionalPropertyTypes": true,
+        /* "exactOptionalPropertyTypes": true, */
         "noImplicitThis": true,
         "skipLibCheck":true
     },
