@@ -2200,12 +2200,14 @@
       {
         "command": "cobolplugin.dot_callgraph",
         "category": "COBOL",
-        "title": "Diagnostic: Dump call graph"
+        "title": "Diagnostic: Dump call graph",
+        "enablement": "coboleditor.enable_call_hierarchy"
       },
       {
         "command": "cobolplugin.view_dot_callgraph",
         "category": "COBOL",
-        "title": "View call graph"
+        "title": "View call graph",
+        "enablement": "coboleditor.enable_call_hierarchy"
       }
     ],
     "menus": {
