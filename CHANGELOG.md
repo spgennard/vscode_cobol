@@ -1,5 +1,22 @@
 # CHANGELOG
 
+
+## 25.1.9, origin/main, origin/HEAD add pre-copy
+* 436be31 add enablement for commands
+* f6c116b add a variable reference for "to"  - could be related to #353 but no example or real detail given
+* 280ab58 tweak
+* 303978f drop the toolkit (for now)
+* ba53af1 start to refactor webview code
+* dfb8c88 move to an embedded version of mermaid (fingers crossed)
+* a0c8f74 add refresh code
+* 73920f4 wip - fix dark/light by using neutral theme (could be better)
+* 1a52ed2 continue wip
+* 6ae5d84 wip - use webview for mermaid graph  - colours not right
+* 2b47365 update for new year
+* 6e86535 update LICENSE date
+* fb8595e tidy up and setup program-id, so we can re-use it
+
+## 24.12.30 
 * 3c4de8b interim release
 * ae7f19b don't save the markdown, just use a untitled document
 * 7771b6c shorten name of implicit name
