@@ -2862,6 +2862,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 } else if (this.isVisibleParagraph(currentLower)) {
                                     sourceStyle = COBOLTokenStyle.Paragraph;
                                     sharedReferences = this.sourceReferences.targetReferences;
+                                } else if (this.constantsOrVariables.has(current)) {
+                                    sourceStyle = COBOLTokenStyle.Variable;
+                                    sharedReferences = this.sourceReferences.constantsOrVariablesReferences;
                                 }
                                 this.addTargetReference(sharedReferences, current, lineNumber, currentCol, sourceStyle, prevTokenLower);
                                 continue;
