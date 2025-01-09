@@ -2903,7 +2903,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile && webpack --mode production",
+    "vscode:prepublish": "npm run cp-mermaid && npm run compile && webpack --mode production",
     "webpack": "npm run compile && npm run cp-mermaid && webpack --mode development",
     "package-web": "npm run compile && npm run cp-mermaid && webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch --mode development",
