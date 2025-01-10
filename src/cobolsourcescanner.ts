@@ -3054,6 +3054,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                         const currentTopLevel = this.sourceReferences.topLevel;
                         const currentIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
+                        const current01group = state.current01Group;
                         state.ignoreInOutlineView = true;
                         this.sourceReferences.topLevel = false;
                         const prevRepMap = this.sourceReferences.state.replaceMap;
@@ -3067,7 +3068,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         this.sourceReferences.state.replaceMap = prevRepMap;
                         this.sourceReferences.topLevel = currentTopLevel;
                         state.ignoreInOutlineView = currentIgnoreInOutlineView;
-
+                        state.current01Group = current01group;
                         copybookToken.scanComplete = true;
                     }
                 } else {
