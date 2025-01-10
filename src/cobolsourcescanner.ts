@@ -2876,11 +2876,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                                 let addReference = true;
                                 for (const varToken of varTokens) {
-                                    if (varToken.ignoreInOutlineView === false || varToken.token.isTokenFromSourceDependancyCopyBook) {
-                                        ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
-                                    } else {
-                                        addReference = false;
-                                    }
+                                    addReference = varToken.tokenType === COBOLTokenStyle.Variable ? addReference : false;
                                 }
                                 if (addReference) {
                                     this.addVariableReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, ctype);
