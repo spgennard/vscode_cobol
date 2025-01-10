@@ -1,7 +1,10 @@
 # CHANGELOG
 
+* ec4b2ec add reference to a known variable, ignoring outline #353
+* b50e060 add dir/README
 
-## 25.1.9, origin/main, origin/HEAD add pre-copy
+## 25.1.9 
+* 87a03f5 add pre-copy
 * 436be31 add enablement for commands
 * f6c116b add a variable reference for "to"  - could be related to #353 but no example or real detail given
 * 280ab58 tweak
