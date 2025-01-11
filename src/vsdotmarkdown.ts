@@ -79,6 +79,19 @@ export class DotGraphPanelView {
         style-src cspSource 'unsafe-inline';
         script-src 'nonce-nonce' 'unsafe-inline';
         ">
+    <style type="text/css">
+        .diagram-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        svg {
+            cursor: grab;
+        }
+    </style>
   </head>
   <body class="vscode-body">
     <script type="text/javascript">
@@ -91,15 +104,38 @@ export class DotGraphPanelView {
       };
     </script>
     
+    <script src="panzoom.min.js"></script>
+
     <script type="module">
       import mermaid from 'mermaid.esm.min.mjs';
 
-      let config = { startOnLoad: true, useMaxWidth: true, theme: "neutral" };
+      let config = { startOnLoad: false, useMaxWidth: true, theme: "neutral" };
       mermaid.initialize(config);
+      await mermaid.run({
+        querySelector: '.mermaid',
+        postRenderCallback: (id) => {
+            const container = document.getElementById("diagram-container");
+            const svgElement = container.querySelector("svg");
+
+            // Initialize Panzoom
+            const panzoomInstance = Panzoom(svgElement, {
+                maxScale: 5,
+                minScale: 0.5,
+                step: 0.1,
+            });
+
+            // Add mouse wheel zoom
+            container.addEventListener("wheel", (event) => {
+                panzoomInstance.zoomWithWheel(event);
+            });
+        }
+      });
     </script>
 
+    <div class="diagram-container" id="diagram-container">
     <div class="mermaid">
     ${linesArray.join("\n")}
+    </div>
     </div>
 
   </body>
@@ -108,6 +144,10 @@ export class DotGraphPanelView {
         const jsMermaidPath = vscode.Uri.joinPath(context.extensionUri, 'resources', 'mermaid', 'mermaid.esm.min.mjs');
         const jsMerVis = panel.webview.asWebviewUri(jsMermaidPath);
         htmlContent = htmlContent.replace('mermaid.esm.min.mjs', jsMerVis.toString());
+
+        const jsPanzoomPath = vscode.Uri.joinPath(context.extensionUri, 'resources', 'panzoom', 'panzoom.min.js');
+        const jsPanzoomPathVis = panel.webview.asWebviewUri(jsPanzoomPath);
+        htmlContent = htmlContent.replace('panzoom.min.js', jsPanzoomPathVis.toString());
 
         const nonce = getNonce();
         htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);

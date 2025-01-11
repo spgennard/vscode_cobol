@@ -2200,14 +2200,12 @@
       {
         "command": "cobolplugin.dot_callgraph",
         "category": "COBOL",
-        "title": "Diagnostic: Dump call graph",
-        "enablement": "coboleditor.enable_call_hierarchy"
+        "title": "Diagnostic: Dump call graph"
       },
       {
         "command": "cobolplugin.view_dot_callgraph",
         "category": "COBOL",
-        "title": "View call graph",
-        "enablement": "coboleditor.enable_call_hierarchy"
+        "title": "View call graph"
       }
     ],
     "menus": {
@@ -2903,11 +2901,13 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run cp-mermaid && npm run compile && webpack --mode production",
-    "webpack": "npm run compile && npm run cp-mermaid && webpack --mode development",
-    "package-web": "npm run compile && npm run cp-mermaid && webpack --mode production --devtool hidden-source-map",
+    "vscode:prepublish": "npm run cp-resources && npm run compile && webpack --mode production",
+    "webpack": "npm run compile && npm run cp-resources && webpack --mode development",
+    "package-web": "npm run compile && npm run cp-resources && webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch --mode development",
+    "cp-resources": "npm run cp-mermaid && npm run cp-panzoom",
     "cp-mermaid": "npx shx cp -r ./node_modules/mermaid/dist/ ./resources/mermaid",
+    "cp-panzoom": "npx shx cp -r node_modules/@panzoom/panzoom/dist/ ./resources/panzoom",
     "just-compile": "tsc -b",
     "compile": "tsc -b",
     "compile-web": "webpack",
@@ -2935,6 +2935,7 @@
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
     "mermaid": "^11.4.1",
+    "@panzoom/panzoom": "^4.5.1",
     "mocha": "^11.0.1",
     "nth-check": ">=2.1.1",
     "process": "^0.11.10",
