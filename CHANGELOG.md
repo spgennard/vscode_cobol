@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 25f98f5 add panzoom
+* 0588f98 preserve current 01 level for inline/scanned copybook #354
+
+## 25.1.10 
 * ec4b2ec add reference to a known variable, ignoring outline #353
 * b50e060 add dir/README
 
