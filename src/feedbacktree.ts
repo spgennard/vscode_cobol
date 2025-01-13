@@ -47,7 +47,8 @@ export class VSHelpAndFeedViewHandler {
                     break;
 
                 case FeedBackItem.introToOO:
-                    VSHelpAndFeedViewHandler.openUrl("https://supportline.microfocus.com/Documentation/books/VisualCOBOL/Intro_to_OO_Programming_for_COBOL_Developers.pdf");
+                    VSHelpAndFeedViewHandler.openUrl("https://docs-be.rocketsoftware.com/bundle/enterprisedeveloper_dg5_100_pdf/raw/resource/enus/enterprise_developer_intro_to_oo_programming_for_cobol_developers_vvc70.pdf");
+                    
                     break;
             }
             
