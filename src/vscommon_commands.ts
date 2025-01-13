@@ -194,7 +194,9 @@ const known_problem_extensions: [string, string, boolean][] = [
     ["A control flow extension that is not compatible with this dialect of COBOL", "BroadcomMFD.ccf", true],             // control flow extension
     ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb", true],
     ["Inline completion provider causes problems with this extension", "bloop.bloop-write", false],
-    ["Language provider of COBOL/PLI that is not supported with extension", "heirloomcomputinginc", true]
+    ["Language provider of COBOL/PLI that is not supported with extension", "heirloomcomputinginc", true],
+    ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "jsaila.coboler", false],
+    ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "zokugun.cobol-folding", false]
 ];
 
 
