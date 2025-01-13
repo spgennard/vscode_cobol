@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 952aa65 preserve 01-group info between embedded includes #354
+
+## 25.1.11 
 * 25f98f5 add panzoom
 * 0588f98 preserve current 01 level for inline/scanned copybook #354
 
