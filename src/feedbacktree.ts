@@ -48,8 +48,9 @@ export class VSHelpAndFeedViewHandler {
 
                 case FeedBackItem.introToOO:
                     VSHelpAndFeedViewHandler.openUrl("https://docs-be.rocketsoftware.com/bundle/enterprisedeveloper_dg5_100_pdf/raw/resource/enus/enterprise_developer_intro_to_oo_programming_for_cobol_developers_vvc70.pdf");
-                    
                     break;
+
+                    
             }
             
         });
