@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* dc60eb0 simplify state use tweak meta symbol
+* 096bae2 update link
+* 28dcae1 add util ext's that don't work this extension
+
+## 25.1.13 
 * 952aa65 preserve 01-group info between embedded includes #354
 
 ## 25.1.11 
