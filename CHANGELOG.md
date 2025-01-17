@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 9cd930b continue work on refactoring inline scanning
+
+## 25.1.16 
 * dc60eb0 simplify state use tweak meta symbol
 * 096bae2 update link
 * 28dcae1 add util ext's that don't work this extension
