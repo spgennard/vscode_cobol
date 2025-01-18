@@ -438,6 +438,11 @@ export class copybookState implements IReplaceState {
     public isLeading = false;
     public fileName = "";
     public isPseudoTextDelimiter = false;
+    public saved01Group: COBOLToken | undefined;
+
+    constructor(current01Group: COBOLToken|undefined) {
+        this.saved01Group = current01Group;
+    }
 }
 
 export class COBOLCopybookToken {
@@ -679,7 +684,7 @@ export class ParseState {
         this.replaceRight = "";
         this.replaceMap = new Map<string, replaceToken>();
         this.enable_text_replacement = configHandler.enable_text_replacement;
-        this.copybook_state = new copybookState();
+        this.copybook_state = new copybookState(undefined);
         this.inCopyStartColumn = 0;
         this.skipNextToken = false;
         this.inValueClause = false;
@@ -860,14 +865,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private static ScanUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: COBOLSourceScanner,
-        parse_copybooks_for_references: boolean,
-        eventHandler: ICOBOLSourceScannerEvents,
-        externalFeatures: IExternalFeatures,
         isSourceDepCopyBook: boolean
     ): void {
 
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
+
+        const parse_copybooks_for_references = parentSource.parse_copybooks_for_references;
+        const eventHandler = parentSource.eventHandler;
+        const externalFeatures = parentSource.externalFeatures;
 
         const state: ParseState = parentSource.sourceReferences.state;
         
@@ -884,6 +890,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         state.current01Group = undefined;
         state.restorePrevState = false;
         state.restorePrevState = true;
+        state.ignoreInOutlineView = true;
   
         new COBOLSourceScanner(
             sharedSource.startTime,
@@ -1891,7 +1898,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         let stream = this.processToken(lineNumber, token, line, state.replaceMap.size !== 0);
 
         // update current group to always include the end of current line
-        if (state.current01Group !== undefined && line.length !== 0) {
+        if (state.current01Group !== undefined && line.length !== 0 && state.inCopy === false) {
             state.current01Group.rangeEndLine = lineNumber;
             state.current01Group.rangeEndColumn = line.length;
         }
@@ -2301,7 +2308,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         this.tokensInOrder.pop();
                         const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, currentCol, trimmedCopyBook, "EXEC SQL INCLUDE " + sqlCopyBook, insertInSection,"",false);
                         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
-                            const cbInfo = new copybookState();
+                            const cbInfo = new copybookState(state.current01Group);
                             cbInfo.trimmedCopyBook = trimmedCopyBook;
                             cbInfo.copyBook = sqlCopyBook;
                             cbInfo.line = line;
@@ -2324,7 +2331,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             const prevRepMap = state.replaceMap;
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, false);
+                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this,false);
                             state.ignoreInOutlineView = prevIgnoreInOutlineView;
                             state.replaceMap = prevRepMap;
                             this.sourceReferences.topLevel = currentTopLevel;
@@ -2682,7 +2689,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                 //remember copy
                 if (currentLower === "copy") {
-                    state.copybook_state = new copybookState();
+                    state.copybook_state = new copybookState(state.current01Group);
+                    state.current01Group = undefined;
                     state.inCopy = true;
                     state.inCopyStartColumn = token.currentCol;
                     state.skipToDot = true;
@@ -2830,7 +2838,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     }
                                 }
 
-                                if (state.current01Group !== undefined) {
+                                if (state.current01Group !== undefined && state.inCopy === false) {
                                     state.current01Group.rangeEndLine = ctoken.rangeStartLine;
                                     state.current01Group.rangeEndColumn = ctoken.rangeEndColumn;
                                 }
@@ -3096,13 +3104,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                         const currentTopLevel = this.sourceReferences.topLevel;
                         this.sourceReferences.topLevel = false;
+                        
                         const prevRepMap = state.replaceMap;
 
                         if (this.configHandler.enable_text_replacement) {
                             state.replaceMap = new Map<string, replaceToken>([...cbInfo.copyReplaceMap, ...prevRepMap]);
                         }
                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, false);
+                        COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this,false);
                         state.replaceMap = prevRepMap;
                         this.sourceReferences.topLevel = currentTopLevel;
                         copybookToken.scanComplete = true;
@@ -3152,7 +3161,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             this.sourceReferences.topLevel = false;
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.parse_copybooks_for_references, this.eventHandler, this.externalFeatures, this.configHandler.scan_comments_for_references);
+                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.configHandler.scan_comments_for_references);
                             this.sourceReferences.topLevel = currentTopLevel;
                         }
                     } else {
