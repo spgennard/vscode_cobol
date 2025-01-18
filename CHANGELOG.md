@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 8d771bd only restore 01group level if changed in copybook and restore if not
+* 845e8e5 Continue work on embedded copybook support #354
+
+## 25.1.17 
 * 9cd930b continue work on refactoring inline scanning
 
 ## 25.1.16 
