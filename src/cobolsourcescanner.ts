@@ -878,7 +878,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const state: ParseState = parentSource.sourceReferences.state;
         
         const prevIgnoreInOutlineView: boolean = state.ignoreInOutlineView;
-        const prev01group = state.current01Group;
         const prevEndsWithDot = state.endsWithDot;
         const prevPrevEndsWithDot = state.prevEndsWithDot;
         const prevCurrentDivision = state.currentDivision;
@@ -902,7 +901,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             externalFeatures,
             isSourceDepCopyBook);
 
-        state.current01Group = prev01group;
+        // unless the state has been replaces
+        if (state.current01Group === undefined) {
+            state.current01Group = state.copybook_state.saved01Group;
+        }
         state.ignoreInOutlineView = prevIgnoreInOutlineView;
         state.endsWithDot = prevEndsWithDot;
         state.pickFields = prevPickFields;
@@ -2239,7 +2241,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (state.inCopy) {
                             state.copybook_state.endLineNumber = lineNumber;
                             state.copybook_state.endCol = token.currentCol + token.currentToken.length;
-                            this.processCopyBook(state.copybook_state);
+                            if (!this.processCopyBook(state.copybook_state)) {
+                                state.current01Group = state.copybook_state.saved01Group;
+                            }
                         }
                         state.inCopy = false;
                     }
@@ -2308,20 +2312,20 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         this.tokensInOrder.pop();
                         const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, currentCol, trimmedCopyBook, "EXEC SQL INCLUDE " + sqlCopyBook, insertInSection,"",false);
                         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
-                            const cbInfo = new copybookState(state.current01Group);
-                            cbInfo.trimmedCopyBook = trimmedCopyBook;
-                            cbInfo.copyBook = sqlCopyBook;
-                            cbInfo.line = line;
-                            cbInfo.startLineNumber = lineNumber;
-                            cbInfo.endLineNumber = lineNumber;
-                            cbInfo.startCol = currentCol;
-                            cbInfo.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
+                            state.copybook_state = new copybookState(state.current01Group);
+                            state.copybook_state.trimmedCopyBook = trimmedCopyBook;
+                            state.copybook_state.copyBook = sqlCopyBook;
+                            state.copybook_state.line = line;
+                            state.copybook_state.startLineNumber = lineNumber;
+                            state.copybook_state.endLineNumber = lineNumber;
+                            state.copybook_state.startCol = currentCol;
+                            state.copybook_state.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
                             const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
                             if (fileName.length === 0) {
                                 continue;
                             }
-                            cbInfo.fileName = fileName;
-                            const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
+                            state.copybook_state.fileName = fileName;
+                            const copybookToken = new COBOLCopybookToken(copyToken, false, state.copybook_state);
                             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
                             const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                             const prevIgnoreInOutlineView = state.ignoreInOutlineView;
@@ -3047,7 +3051,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     }
 
-    private processCopyBook(cbInfo: copybookState) {
+    private processCopyBook(cbInfo: copybookState):boolean {
         const state: ParseState = this.sourceReferences.state;
 
         let copyToken: COBOLToken | undefined = undefined;
@@ -3088,7 +3092,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             if (fileName.length > 0) {
                 cbInfo.fileName = fileName;
             } else {
-                return;
+                return false;
             }
 
             if (this.sourceReferences !== undefined) {
@@ -3124,6 +3128,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
         }
+
+        return true;
     }
 
     private cobolLintLiteral = "cobol-lint";
