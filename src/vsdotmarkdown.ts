@@ -3,14 +3,18 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
 
-function generate_partial_graph(linesArray: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
+function generate_partial_graph(linesArray: string[], clickLines: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
     for (const [paragraph, targetToken] of para_or_section) {
         const wordLower = paragraph.toLowerCase();
         const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
+
+        clickLines.push(`click ${targetToken.tokenNameLower} call callback("${targetToken.tokenName}","${targetToken.filenameAsURI}", ${targetToken.startLine},${targetToken.startColumn}) "${targetToken.description}"`)
+
         if (targetRefs !== undefined) {
             if (targetToken.isImplicitToken) {
                 linesArray.push(`${targetToken.tokenNameLower}[${targetToken.description}]`);
             }
+
 
             for (const sr of targetRefs) {
                 // skip definition
@@ -39,13 +43,13 @@ export class DotGraphPanelView {
         // ... other code ...
         this._panel = panel;
         this._panel.webview.html = this._getWebviewContent(context, panel, linesArray);
-    
+
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
     }
 
     public static render(context: vscode.ExtensionContext, linesArray: string[]) {
         if (DotGraphPanelView.currentPanel) {
-            DotGraphPanelView.currentPanel._panel.reveal(vscode.ViewColumn.Beside,true);
+            DotGraphPanelView.currentPanel._panel.reveal(vscode.ViewColumn.Beside, true);
             DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, DotGraphPanelView.currentPanel._panel, linesArray);
 
             return DotGraphPanelView.currentPanel._panel;
@@ -108,8 +112,22 @@ export class DotGraphPanelView {
 
     <script type="module">
       import mermaid from 'mermaid.esm.min.mjs';
+      const vscode = acquireVsCodeApi();
 
-      let config = { startOnLoad: false, useMaxWidth: true, theme: "neutral" };
+      window.callback = function (message,filename,line,col) {
+        console.log('A callback was triggered '+message+" to "+filename);
+        // Call back to the extension context to save the image to the workspace folder.
+        vscode.postMessage({
+            command: 'golink',
+            text: message+","+filename+","+line+","+col
+        });
+      };
+
+      let config = { startOnLoad: false, 
+                     useMaxWidth: true, 
+                     theme: "neutral",
+                     securityLevel: 'loose'
+                     };
       mermaid.initialize(config);
       await mermaid.run({
         querySelector: '.mermaid',
@@ -191,10 +209,10 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
     const webviewPanel = DotGraphPanelView.render(context, linesArray);
     webviewPanel.webview.onDidReceiveMessage(
-        message => {
+        async message => {
             switch (message.command) {
-                case 'saveAsPng':
-                    saveAsPng(message.text);
+                case 'golink':
+                    await goto_link(message.text);
                     return;
             }
         },
@@ -215,9 +233,22 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     });
 }
 
-function saveAsPng(messageText: string) {
-    const dataUrl = messageText.split(',');
-    return dataUrl;
+async function goto_link(messageText: string) {
+    const messages = messageText.split(',');
+    // const place = messages[0];
+    const place_url = messages[1];
+    const place_line = Number.parseInt(messages[2]);
+    const place_col = Number.parseInt(messages[3]);
+    var pos1 = new vscode.Position(place_line, place_col);
+    var openPath = vscode.Uri.parse(place_url);
+    await vscode.workspace.openTextDocument(openPath).then(doc => {
+        vscode.window.showTextDocument(doc).then(editor => {
+            editor.selections = [new vscode.Selection(pos1, pos1)];
+            var range = new vscode.Range(pos1, pos1);
+            editor.revealRange(range);
+        });
+    });
+
 }
 
 // function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.ExtensionContext) {
@@ -236,6 +267,7 @@ function getNonce() {
 
 function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSourceScanner, asMarkdown: boolean) {
     const linesArray: string[] = [];
+    const clickArray: string[] = [];
     const state = current.sourceReferences.state;
 
     if (asMarkdown) {
@@ -254,8 +286,10 @@ function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSour
     }
     linesArray.push("graph TD;");
 
-    generate_partial_graph(linesArray, state, current.sections);
-    generate_partial_graph(linesArray, state, current.paragraphs);
+    generate_partial_graph(linesArray, clickArray, state, current.sections);
+    generate_partial_graph(linesArray, clickArray, state, current.paragraphs);
+
+    linesArray.push(...clickArray);
 
     if (asMarkdown) {
         linesArray.push("```")
