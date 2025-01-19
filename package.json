@@ -2205,7 +2205,11 @@
       {
         "command": "cobolplugin.view_dot_callgraph",
         "category": "COBOL",
-        "title": "View call graph"
+        "title": "View call graph",
+         "icon": {
+					"light": "images/preview-right-light.svg",
+					"dark": "images/preview-right-dark.svg"
+				}
       }
     ],
     "menus": {
@@ -2266,6 +2270,13 @@
           "group": "navigation_cobol"
         }
       ],
+      "editor/title": [
+				{
+					"command": "cobolplugin.view_dot_callgraph",
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !editorHasSelection",
+					"group": "navigation"
+				}
+			],
       "cobolplugin.selectionmenu": [
         {
           "command": "cobolplugin.extractSelectionToParagraph",
