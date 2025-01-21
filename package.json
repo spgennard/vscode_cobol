@@ -2971,7 +2971,7 @@
     "promisify-child-process": "^4.1.2",
     "properties-reader": "^2.3.0",
     "stream-browserify": "^3.0.0",
-    "trie-search": "^2.1.0",
+    "trie-search": "^2.2.0",
     "ts-prune": "^0.10.3",
     "url": "^0.11.4"
   },
