@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* d61931e add vscode-elements.css
+* 6f052f6 add some node link support
+* eb6ed05 link view graph to preview
+
+## 25.1.18 
 * 8d771bd only restore 01group level if changed in copybook and restore if not
 * 845e8e5 Continue work on embedded copybook support #354
 
