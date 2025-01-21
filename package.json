@@ -2206,10 +2206,10 @@
         "command": "cobolplugin.view_dot_callgraph",
         "category": "COBOL",
         "title": "View call graph",
-         "icon": {
-					"light": "images/preview-right-light.svg",
-					"dark": "images/preview-right-dark.svg"
-				}
+        "icon": {
+          "light": "images/preview-right-light.svg",
+          "dark": "images/preview-right-dark.svg"
+        }
       }
     ],
     "menus": {
@@ -2271,12 +2271,12 @@
         }
       ],
       "editor/title": [
-				{
-					"command": "cobolplugin.view_dot_callgraph",
+        {
+          "command": "cobolplugin.view_dot_callgraph",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !editorHasSelection",
-					"group": "navigation"
-				}
-			],
+          "group": "navigation"
+        }
+      ],
       "cobolplugin.selectionmenu": [
         {
           "command": "cobolplugin.extractSelectionToParagraph",
@@ -2916,7 +2916,8 @@
     "webpack": "npm run compile && npm run cp-resources && webpack --mode development",
     "package-web": "npm run compile && npm run cp-resources && webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch --mode development",
-    "cp-resources": "npm run cp-mermaid && npm run cp-panzoom",
+    "cp-vscode-elements-lite": "npx shx cat node_modules/@vscode-elements/elements-lite/components/button/button.css node_modules/@vscode-elements/elements-lite/components/divider/divider.css >./resources/vscode-elements.css",
+    "cp-resources": "npm run cp-mermaid && npm run cp-panzoom && npm run cp-vscode-elements-lite",
     "cp-mermaid": "npx shx cp -r ./node_modules/mermaid/dist/ ./resources/mermaid",
     "cp-panzoom": "npx shx cp -r node_modules/@panzoom/panzoom/dist/ ./resources/panzoom",
     "just-compile": "tsc -b",
@@ -2930,6 +2931,7 @@
     "open-in-browser": "vscode-test-web -version=stable --browserType=chromium --extensionDevelopmentPath=. ."
   },
   "devDependencies": {
+    "@panzoom/panzoom": "^4.6.0",
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
@@ -2946,7 +2948,6 @@
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
     "mermaid": "^11.4.1",
-    "@panzoom/panzoom": "^4.6.0",
     "mocha": "^11.0.1",
     "nth-check": ">=2.1.1",
     "process": "^0.11.10",
@@ -2957,6 +2958,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@vscode-elements/elements-lite": "^0.3.0",
     "ansi-regex": ">=6.1.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",

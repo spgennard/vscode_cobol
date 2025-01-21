@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
+var fs = require('fs');
 
 function generate_partial_graph(linesArray: string[], clickLines: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
     for (const [paragraph, targetToken] of para_or_section) {
@@ -47,7 +48,7 @@ export class DotGraphPanelView {
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
     }
 
-    public static render(context: vscode.ExtensionContext, linesArray: string[]) {
+    public static render(context: vscode.ExtensionContext, linesArray: string[], programName: string) {
         if (DotGraphPanelView.currentPanel) {
             DotGraphPanelView.currentPanel._panel.reveal(vscode.ViewColumn.Beside, true);
             DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, DotGraphPanelView.currentPanel._panel, linesArray);
@@ -58,7 +59,7 @@ export class DotGraphPanelView {
 
             const panel = vscode.window.createWebviewPanel(
                 'cobolCallGraph',
-                'COBOL Call Graph',
+                'Program:' +programName,
                 {
                     viewColumn: vscode.ViewColumn.Beside,
                     preserveFocus: true
@@ -72,6 +73,7 @@ export class DotGraphPanelView {
             return panel;
         }
     }
+    
     private _getWebviewContent(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, linesArray: string[]) {
         let htmlContent = `<!DOCTYPE html>
   <html>
@@ -151,10 +153,17 @@ export class DotGraphPanelView {
     </script>
 
     <div class="diagram-container" id="diagram-container">
-    <div class="mermaid">
+     <div class="mermaid">
     ${linesArray.join("\n")}
+     </div>
     </div>
-    </div>
+
+    <p />
+    <p />
+    <hr class="vscode-divider">
+    <p />
+    <p />
+    <h5>This is a navigation aid not a source analysis feature.</h5>
 
   </body>
 </html>`;
@@ -167,6 +176,11 @@ export class DotGraphPanelView {
         const jsPanzoomPathVis = panel.webview.asWebviewUri(jsPanzoomPath);
         htmlContent = htmlContent.replace('panzoom.min.js', jsPanzoomPathVis.toString());
 
+        const cssElements = vscode.Uri.joinPath(context.extensionUri, 'resources', 'vscode-elements.css');
+        
+        const elementsCode: string = fs.readFileSync(cssElements.path).toString();
+        htmlContent = htmlContent.replace('vscode-elements.', elementsCode);
+       
         const nonce = getNonce();
         htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
         htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
@@ -207,7 +221,7 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     }
 
     const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
-    const webviewPanel = DotGraphPanelView.render(context, linesArray);
+    const webviewPanel = DotGraphPanelView.render(context, linesArray, getProgramName(current));
     webviewPanel.webview.onDidReceiveMessage(
         async message => {
             switch (message.command) {
@@ -228,7 +242,7 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
                 return;
             }
             const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
-            DotGraphPanelView.render(context, updatedLinesArray);
+            DotGraphPanelView.render(context, updatedLinesArray, getProgramName(current));
         }
     });
 }
@@ -265,22 +279,25 @@ function getNonce() {
     return text;
 }
 
+function getProgramName(current:COBOLSourceScanner) {
+    if (current.ImplicitProgramId.length !== 0) {
+        return current.ImplicitProgramId;
+    } else {
+        if (current.ProgramId.length !== 0) {
+            return current.ProgramId;
+        } else {
+            return "?"
+        }
+    }
+}
+
 function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSourceScanner, asMarkdown: boolean) {
     const linesArray: string[] = [];
     const clickArray: string[] = [];
     const state = current.sourceReferences.state;
 
     if (asMarkdown) {
-        if (current.ImplicitProgramId.length !== 0) {
-            linesArray.push("# " + current.ImplicitProgramId);
-        } else {
-            if (current.ProgramId.length !== 0) {
-                linesArray.push("# " + current.ProgramId);
-            } else {
-                linesArray.push(" # Unknown");
-            }
-        }
-
+        linesArray.push(`# ${getProgramName(current)}`);
         linesArray.push("");
         linesArray.push("```mermaid");
     }
