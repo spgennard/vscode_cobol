@@ -4,6 +4,8 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
 var fs = require('fs');
 
+let current_style = "TD";
+
 function generate_partial_graph(linesArray: string[], clickLines: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
     for (const [paragraph, targetToken] of para_or_section) {
         const wordLower = paragraph.toLowerCase();
@@ -59,7 +61,7 @@ export class DotGraphPanelView {
 
             const panel = vscode.window.createWebviewPanel(
                 'cobolCallGraph',
-                'Program:' +programName,
+                'Program:' + programName,
                 {
                     viewColumn: vscode.ViewColumn.Beside,
                     preserveFocus: true
@@ -73,7 +75,7 @@ export class DotGraphPanelView {
             return panel;
         }
     }
-    
+
     private _getWebviewContent(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, linesArray: string[]) {
         let htmlContent = `<!DOCTYPE html>
   <html>
@@ -117,13 +119,22 @@ export class DotGraphPanelView {
       const vscode = acquireVsCodeApi();
 
       window.callback = function (message,filename,line,col) {
-        console.log('A callback was triggered '+message+" to "+filename);
         // Call back to the extension context to save the image to the workspace folder.
         vscode.postMessage({
             command: 'golink',
             text: message+","+filename+","+line+","+col
         });
       };
+      
+
+
+      document.querySelector('#chart-style').addEventListener("change", function() {
+        // Call back to the extension context to save the image to the workspace folder
+        vscode.postMessage({
+            command: 'change-style',
+            text: this.value
+        });
+      });
 
       let config = { startOnLoad: false, 
                      useMaxWidth: true, 
@@ -150,14 +161,27 @@ export class DotGraphPanelView {
             });
         }
       });
+
+      
     </script>
 
     <div class="diagram-container" id="diagram-container">
-     <div class="mermaid">
+     <div class="mermaid" id="mermaid1">
     ${linesArray.join("\n")}
      </div>
     </div>
 
+
+    <p>Style:
+    <div class="vscode-select">
+      <select name="chart-style" id="chart-style"">
+          <option value="TD">Top Down</option>
+          <option value="BT">Bottom-to-top</option>
+          <option value="RL">Right-to-left</option>
+          <option value="LR">Left-to-right</option>
+      </select>
+    </div>
+    </p>
     <p />
     <p />
     <hr class="vscode-divider">
@@ -177,10 +201,10 @@ export class DotGraphPanelView {
         htmlContent = htmlContent.replace('panzoom.min.js', jsPanzoomPathVis.toString());
 
         const cssElements = vscode.Uri.joinPath(context.extensionUri, 'resources', 'vscode-elements.css');
-        
+
         const elementsCode: string = fs.readFileSync(cssElements.path).toString();
         htmlContent = htmlContent.replace('vscode-elements.', elementsCode);
-       
+
         const nonce = getNonce();
         htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
         htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
@@ -221,12 +245,18 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     }
 
     const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
-    const webviewPanel = DotGraphPanelView.render(context, linesArray, getProgramName(current));
+    const curp = getProgramName(current);
+    const webviewPanel = DotGraphPanelView.render(context, linesArray, curp);
     webviewPanel.webview.onDidReceiveMessage(
         async message => {
             switch (message.command) {
                 case 'golink':
                     await goto_link(message.text);
+                    return;
+                case 'change-style':
+                    current_style = message.text;
+                    linesArray[0] = "flowchart "+current_style+";";
+                    DotGraphPanelView.render(context, linesArray, curp);
                     return;
             }
         },
@@ -235,6 +265,10 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     );
 
     vscode.workspace.onDidChangeTextDocument(changeEvent => {
+        // if (vscode.window.activeTextEditor && changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
+
+        // refresh_document(context, settings);
+
         if (vscode.window.activeTextEditor?.document) {
             if (changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
             let current = VSCOBOLSourceScanner.getCachedObject(vscode.window.activeTextEditor.document, settings);
@@ -244,6 +278,7 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
             const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
             DotGraphPanelView.render(context, updatedLinesArray, getProgramName(current));
         }
+
     });
 }
 
@@ -265,11 +300,6 @@ async function goto_link(messageText: string) {
 
 }
 
-// function setHtmlContent(webview: vscode.Webview, extensionContext: vscode.ExtensionContext) {
-
-//     webview.html = htmlContent;
-// }
-
 function getNonce() {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -279,7 +309,7 @@ function getNonce() {
     return text;
 }
 
-function getProgramName(current:COBOLSourceScanner) {
+function getProgramName(current: COBOLSourceScanner) {
     if (current.ImplicitProgramId.length !== 0) {
         return current.ImplicitProgramId;
     } else {
@@ -301,7 +331,7 @@ function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSour
         linesArray.push("");
         linesArray.push("```mermaid");
     }
-    linesArray.push("graph TD;");
+    linesArray.push(`flowchart ${current_style};`);
 
     generate_partial_graph(linesArray, clickArray, state, current.sections);
     generate_partial_graph(linesArray, clickArray, state, current.paragraphs);

@@ -2916,7 +2916,7 @@
     "webpack": "npm run compile && npm run cp-resources && webpack --mode development",
     "package-web": "npm run compile && npm run cp-resources && webpack --mode production --devtool hidden-source-map",
     "watch-web": "webpack --watch --mode development",
-    "cp-vscode-elements-lite": "npx shx cat node_modules/@vscode-elements/elements-lite/components/button/button.css node_modules/@vscode-elements/elements-lite/components/divider/divider.css >./resources/vscode-elements.css",
+    "cp-vscode-elements-lite": "npx shx cat node_modules/@vscode-elements/elements-lite/components/button/button.css node_modules/@vscode-elements/elements-lite/components/divider/divider.css node_modules/@vscode-elements/elements-lite/components/select/select.css >./resources/vscode-elements.css",
     "cp-resources": "npm run cp-mermaid && npm run cp-panzoom && npm run cp-vscode-elements-lite",
     "cp-mermaid": "npx shx cp -r ./node_modules/mermaid/dist/ ./resources/mermaid",
     "cp-panzoom": "npx shx cp -r node_modules/@panzoom/panzoom/dist/ ./resources/panzoom",

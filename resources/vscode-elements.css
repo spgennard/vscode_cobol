@@ -106,3 +106,87 @@
   margin-bottom: 10px;
   margin-top: 10px;
 }
+.vscode-select {
+  position: relative;
+  width: 320px;
+}
+
+.vscode-select select {
+  appearance: none;
+  background-color: var(--vscode-settings-dropdownBackground);
+  border-color: var(--vscode-settings-dropdownBorder);
+  border-radius: 2px;
+  border-style: solid;
+  border-width: 1px;
+  color: var(--vscode-settings-dropdownForeground);
+  cursor: pointer;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  font-weight: var(--vscode-font-weight);
+  line-height: 18px;
+  margin: 0;
+  padding: 3px 4px;
+  width: 100%;
+}
+
+.vscode-select select:focus {
+  border-color: var(--vscode-focusBorder);
+  outline: none;
+}
+
+.vscode-select.invalid select,
+.vscode-select select:invalid {
+  background-color: var(--vscode-inputValidation-errorBackground);
+  border-color: var(--vscode-inputValidation-errorBorder, #be1100);
+}
+
+.vscode-select option {
+  cursor: pointer;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  font-weight: var(--vscode-font-weight);
+}
+
+.vscode-select .chevron-icon {
+  color: var(--vscode-foreground);
+  display: block;
+  height: 14px;
+  pointer-events: none;
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  width: 14px;
+}
+
+.vscode-select select[multiple] {
+  padding: 0;
+}
+
+.vscode-select select[multiple] + .chevron-icon {
+  display: none;
+}
+
+.vscode-select select[multiple] option {
+  color: var(--vscode-foreground);
+  cursor: pointer;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  font-weight: var(--vscode-font-weight);
+  line-height: 18px;
+  padding: 2px 3px;
+}
+
+.vscode-select select[multiple] option:hover {
+  background-color: var(--vscode-list-hoverBackground);
+  color: var(--vscode-list-hoverForeground);
+}
+
+.vscode-select select[multiple] option:checked {
+  background-color: var(--vscode-list-hoverBackground) !important;
+  color: var(--vscode-list-hoverForeground) !important;
+}
+
+.vscode-select select[multiple]:focus option:checked {
+  background-color: var(--vscode-list-activeSelectionBackground) !important;
+  color: var(--vscode-list-activeSelectionForeground) !important;
+}
