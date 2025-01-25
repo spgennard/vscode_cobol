@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 12d88bd tidy up enable of view
+* 7221d40 a little messy but its wip
+
+## 25.1.21 
 * d61931e add vscode-elements.css
 * 6f052f6 add some node link support
 * eb6ed05 link view graph to preview
