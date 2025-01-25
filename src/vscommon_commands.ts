@@ -939,7 +939,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
             return;
         }
         const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
-        newFile_dot_callgraph(settings);
+        await newFile_dot_callgraph(settings);
     }));
 
 
@@ -948,7 +948,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
             return;
         }
         const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
-        view_dot_callgraph(context,settings);
+        await view_dot_callgraph(context,settings);
     }));
 
     if (_settings.enable_call_hierarchy) {        

@@ -230,6 +230,10 @@ export class DotGraphPanelView {
 }
 
 export async function view_dot_callgraph(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
+    if (settings.enable_call_hierarchy === false) {
+        vscode.window.showErrorMessage("COBOL call-graph is not enabled (coboleditor.enable_call_hierarchy)");
+        return;
+    }
     if (!vscode.window.activeTextEditor) {
         return;
     }
@@ -239,12 +243,7 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
         return;
     }
 
-    if (settings.enable_call_hierarchy === false) {
-        vscode.window.showErrorMessage("COBOL call-graph is not enabled (coboleditor.enable_call_hierarchy)");
-        return;
-    }
-
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
+    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false, true);
     const curp = getProgramName(current);
     const webviewPanel = DotGraphPanelView.render(context, linesArray, curp);
     webviewPanel.webview.onDidReceiveMessage(
@@ -265,9 +264,9 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     );
 
     vscode.workspace.onDidChangeTextDocument(changeEvent => {
-        // if (vscode.window.activeTextEditor && changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
-
-        // refresh_document(context, settings);
+        if (settings.enable_call_hierarchy === false) {
+            return;
+        }
 
         if (vscode.window.activeTextEditor?.document) {
             if (changeEvent.document.uri != vscode.window.activeTextEditor.document.uri) return;
@@ -275,7 +274,7 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
             if (current === undefined) {
                 return;
             }
-            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false);
+            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false, true);
             DotGraphPanelView.render(context, updatedLinesArray, getProgramName(current));
         }
 
@@ -321,7 +320,7 @@ function getProgramName(current: COBOLSourceScanner) {
     }
 }
 
-function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSourceScanner, asMarkdown: boolean) {
+function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSourceScanner, asMarkdown: boolean, includeEvents: boolean) {
     const linesArray: string[] = [];
     const clickArray: string[] = [];
     const state = current.sourceReferences.state;
@@ -336,7 +335,9 @@ function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSour
     generate_partial_graph(linesArray, clickArray, state, current.sections);
     generate_partial_graph(linesArray, clickArray, state, current.paragraphs);
 
-    linesArray.push(...clickArray);
+    if (includeEvents) {
+        linesArray.push(...clickArray);
+    }
 
     if (asMarkdown) {
         linesArray.push("```")
@@ -355,7 +356,7 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
         return;
     }
     const doclang = "markdown";
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, true);
+    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, true, false);
     vscode.workspace.openTextDocument({ language: "markdown" }).then(async document => {
         vscode.window.showTextDocument(document);
         const editor = await vscode.window.showTextDocument(document);
