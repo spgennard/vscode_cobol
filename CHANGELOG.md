@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 6e5dec1 fix bug in handling of malformed "pd/entry using..."
+
+## 25.1.25 
 * 12d88bd tidy up enable of view
 * 7221d40 a little messy but its wip
 
