@@ -2006,7 +2006,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (state.endsWithDot) {
                         state.pickUpUsing = false;
                     }
-                    if (token.prevTokenLower !== "type") {
+
+                    if (token.prevTokenLower === "type") {
                         continue;
                     }
 
@@ -2039,7 +2040,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         default:
                             // of are after a returning statement with a "." then parsing must end now
                             if (state.using === UsingState.UNKNOWN) {
-                                state.pickUpUsing = false
+                                state.pickUpUsing = false;
                                 break;
                             }
 
@@ -2063,9 +2064,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 state.currentProgramTarget.CallParameters = state.parameters;
                                 state.using = UsingState.UNKNOWN;
                                 state.pickUpUsing = false
-                                const diagMessage = `Unexpected keyword '${current}' when scanning USING parameters`;
-                                let nearestLine = state.currentProgramTarget.Token !== undefined ? state.currentProgramTarget.Token.startLine : lineNumber;
-                                this.generalWarnings.push(new COBOLFileSymbol(this.filename, nearestLine, diagMessage));
+                                if (this.configHandler.linter_ignore_malformed_using === false) {
+                                    const diagMessage = `Unexpected keyword '${current}' when scanning USING parameters`;
+                                    let nearestLine = state.currentProgramTarget.Token !== undefined ? state.currentProgramTarget.Token.startLine : lineNumber;
+                                    this.generalWarnings.push(new COBOLFileSymbol(this.filename, nearestLine, diagMessage));
+                                }
                                 break;
                             }
 

@@ -67,6 +67,7 @@ export interface ICOBOLSettings {
     linter_house_standards_rules: string[];
     linter_ignore_section_before_entry: boolean;
     linter_ignore_missing_copybook: boolean;
+    linter_ignore_malformed_using: boolean;
     linter_port_helper: boolean;
 
     scan_comments_for_hints: boolean;
@@ -199,6 +200,7 @@ export class COBOLSettings implements ICOBOLSettings {
     linter_house_standards_rules: string[];
     linter_ignore_section_before_entry: boolean;
     linter_ignore_missing_copybook: boolean;
+    linter_ignore_malformed_using: boolean;
     linter_port_helper: boolean;
 
     scan_comments_for_hints: boolean;
@@ -329,6 +331,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.linter_house_standards = true;
         this.linter_house_standards_rules = [];
         this.linter_ignore_missing_copybook = false;
+        this.linter_ignore_malformed_using = true;
         this.linter_port_helper = false;
         this.scan_comments_for_hints = false;
         this.scan_comment_copybook_token = "source-dependency";

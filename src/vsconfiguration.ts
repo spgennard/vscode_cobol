@@ -94,6 +94,7 @@ export class VSCOBOLConfiguration {
         settings.linter_mark_as_information = editorHelper.getBoolean("linter_mark_as_information", true);
         settings.linter_ignore_section_before_entry = editorHelper.getBoolean("linter_ignore_section_before_entry", true);
         settings.linter_ignore_missing_copybook = editorHelper.getBoolean("linter_ignore_missing_copybook", false);
+        settings.linter_ignore_malformed_using = editorHelper.getBoolean("linter_ignore_malformed_using", true);
         settings.linter_port_helper = editorHelper.getBoolean("linter_port_helper", true);
 
         // scan for comments can cause a file access.. so it cannot be trusted
