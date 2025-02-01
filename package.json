@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "25.1.25",
+  "version": "25.2.1",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -735,7 +735,7 @@
           "type": "boolean",
           "description": "When enabled, do not generate missing warnings about malformed 'using'",
           "default": true
-        },        
+        },
         "coboleditor.scan_comments_for_hints": {
           "type": "boolean",
           "description": "When enabled, process scanner hints embedded in comments",
