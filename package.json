@@ -1252,7 +1252,7 @@
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
         },
-        "coboleditor.enable_call_hierarchy": {
+        "coboleditor.enable_program_information": {
           "type": "boolean",
           "description": "When enabled, turn on call hierarchy provider (WIP)",
           "default": false,
@@ -2210,8 +2210,8 @@
       {
         "command": "cobolplugin.view_dot_callgraph",
         "category": "COBOL",
-        "title": "Program Infomation",
-        "enablement": "config.coboleditor.enable_call_hierarchy",
+        "title": "Program Information",
+        "enablement": "config.coboleditor.enable_program_information",
         "icon": {
           "light": "images/preview-right-light.svg",
           "dark": "images/preview-right-dark.svg"
@@ -2279,7 +2279,7 @@
       "editor/title": [
         {
           "command": "cobolplugin.view_dot_callgraph",
-          "when": "config.coboleditor.enable_call_hierarchy && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !editorHasSelection",
+          "when": "config.coboleditor.enable_program_information && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL|^COBOLIT$/ && !editorHasSelection",
           "group": "navigation"
         }
       ],

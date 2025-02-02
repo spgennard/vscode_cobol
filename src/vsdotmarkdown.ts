@@ -4,7 +4,28 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
 var fs = require('fs');
 
-let current_style = "TD";
+class programWindowState {
+    current_style: string;
+    current_program: COBOLSourceScanner;
+
+    private constructor(current_style: string, current_program: COBOLSourceScanner) {
+        this.current_style = current_style;
+        this.current_program = current_program;
+    }
+
+    static current_style_map = new Map<string,programWindowState>();
+
+    static get_programWindowState(url: string, current_program: COBOLSourceScanner):programWindowState {
+        let value = programWindowState.current_style_map.get(url)   
+        if (value !== undefined) {
+            return value;
+        }
+
+        value = new programWindowState("TD", current_program);
+        programWindowState.current_style_map.set(url, value);
+        return value;
+    }
+}
 
 function generate_partial_graph(linesArray: string[], clickLines: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
     for (const [paragraph, targetToken] of para_or_section) {
@@ -42,18 +63,18 @@ export class DotGraphPanelView {
     private readonly _panel: vscode.WebviewPanel;
     private _disposables: vscode.Disposable[] = [];
 
-    private constructor(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, linesArray: string[]) {
+    private constructor(context: vscode.ExtensionContext, url:string, style: string, panel: vscode.WebviewPanel, linesArray: string[]) {
         // ... other code ...
         this._panel = panel;
-        this._panel.webview.html = this._getWebviewContent(context, panel, linesArray);
+        this._panel.webview.html = this._getWebviewContent(context, url, style, panel, linesArray);
 
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
     }
 
-    public static render(context: vscode.ExtensionContext, linesArray: string[], programName: string) {
+    public static render(context: vscode.ExtensionContext, url: string, style: string, linesArray: string[], programName: string) {
         if (DotGraphPanelView.currentPanel) {
             DotGraphPanelView.currentPanel._panel.reveal(vscode.ViewColumn.Beside, true);
-            DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, DotGraphPanelView.currentPanel._panel, linesArray);
+            DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, url, style, DotGraphPanelView.currentPanel._panel, linesArray);
 
             return DotGraphPanelView.currentPanel._panel;
         } else {
@@ -71,12 +92,12 @@ export class DotGraphPanelView {
                     localResourceRoots: [resourcesDirectory]
                 }
             );
-            DotGraphPanelView.currentPanel = new DotGraphPanelView(context, panel, linesArray);
+            DotGraphPanelView.currentPanel = new DotGraphPanelView(context, url, style, panel, linesArray);
             return panel;
         }
     }
 
-    private _getWebviewContent(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, linesArray: string[]) {
+    private _getWebviewContent(context: vscode.ExtensionContext, url:string, style:string, panel: vscode.WebviewPanel, linesArray: string[]) {
         let htmlContent = `<!DOCTYPE html>
   <html>
   <head>
@@ -126,13 +147,11 @@ export class DotGraphPanelView {
         });
       };
       
-
-
       document.querySelector('#chart-style').addEventListener("change", function() {
         // Call back to the extension context to save the image to the workspace folder
         vscode.postMessage({
             command: 'change-style',
-            text: this.value
+            text: "_url_"+","+this.value
         });
       });
 
@@ -172,16 +191,18 @@ export class DotGraphPanelView {
     </div>
 
 
-    <p>Style:
     <div class="vscode-select">
-      <select name="chart-style" id="chart-style"">
+      <p>Style:
+      <select name="chart-style" id="chart-style">
+          <option value="" selected="selected" hidden="hidden">Choose here</option>
           <option value="TD">Top Down</option>
           <option value="BT">Bottom-to-top</option>
           <option value="RL">Right-to-left</option>
           <option value="LR">Left-to-right</option>
       </select>
+     </p>
     </div>
-    </p>
+
     <p />
     <p />
     <hr class="vscode-divider">
@@ -212,6 +233,8 @@ export class DotGraphPanelView {
 
         htmlContent = htmlContent.replace('cspSource', panel.webview.cspSource);
 
+        htmlContent = htmlContent.replace("_url_", url);
+        htmlContent = htmlContent.replace("__style__", style)
         return htmlContent;
     }
 
@@ -231,7 +254,7 @@ export class DotGraphPanelView {
 
 export async function view_dot_callgraph(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
     if (settings.enable_program_information === false) {
-        vscode.window.showErrorMessage("COBOL call-graph is not enabled (coboleditor.enable_program_information)");
+        vscode.window.showErrorMessage("Unable to generate call graph (coboleditor.enable_program_information)");
         return;
     }
     if (!vscode.window.activeTextEditor) {
@@ -243,9 +266,11 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
         return;
     }
 
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, false, true);
+    const url = current.sourceHandler.getUriAsString();
+    const current_state = programWindowState.get_programWindowState(url, current)
+    const linesArray: string[] = getCurrentProgramCallGraph(settings, current_state, false, true);
     const curp = getProgramName(current);
-    const webviewPanel = DotGraphPanelView.render(context, linesArray, curp);
+    const webviewPanel = DotGraphPanelView.render(context, url, current_state.current_style, linesArray, curp);
     webviewPanel.webview.onDidReceiveMessage(
         async message => {
             switch (message.command) {
@@ -253,9 +278,13 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
                     await goto_link(message.text);
                     return;
                 case 'change-style':
-                    current_style = message.text;
-                    linesArray[0] = "flowchart "+current_style+";";
-                    DotGraphPanelView.render(context, linesArray, curp);
+                    const messages = message.text.split(",");
+                    const new_url = messages[0];
+                    const new_style = messages[1];
+                    const current_state = programWindowState.get_programWindowState(url, current)
+                    current_state.current_style = new_style;
+                    const newLinesArray: string[] = getCurrentProgramCallGraph(settings, current_state, false, true);
+                    DotGraphPanelView.render(context, new_url, current_state.current_style, newLinesArray, curp);
                     return;
             }
         },
@@ -274,8 +303,11 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
             if (current === undefined) {
                 return;
             }
-            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current, false, true);
-            DotGraphPanelView.render(context, updatedLinesArray, getProgramName(current));
+            const url = current.sourceHandler.getUriAsString();
+            const current_state = programWindowState.get_programWindowState(url, current)
+            current_state.current_program = current;
+            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current_state, false, true);
+            DotGraphPanelView.render(context, url, current_state.current_style, updatedLinesArray, getProgramName(current));
         }
 
     });
@@ -320,7 +352,10 @@ function getProgramName(current: COBOLSourceScanner) {
     }
 }
 
-function getCurrentProgramCallGraph(settings: ICOBOLSettings, current: COBOLSourceScanner, asMarkdown: boolean, includeEvents: boolean) {
+function getCurrentProgramCallGraph(settings: ICOBOLSettings, current_state: programWindowState, asMarkdown: boolean, includeEvents: boolean) {
+    const current = current_state.current_program;
+    const current_style = current_state.current_style;
+
     const linesArray: string[] = [];
     const clickArray: string[] = [];
     const state = current.sourceReferences.state;
@@ -355,8 +390,11 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
     if (current === undefined) {
         return;
     }
+
+    const current_state = programWindowState.get_programWindowState(current.sourceHandler.getUriAsString(), current)
+    current_state.current_program = current;
     const doclang = "markdown";
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current, true, false);
+    const linesArray: string[] = getCurrentProgramCallGraph(settings, current_state, true, false);
     vscode.workspace.openTextDocument({ language: "markdown" }).then(async document => {
         vscode.window.showTextDocument(document);
         const editor = await vscode.window.showTextDocument(document);
