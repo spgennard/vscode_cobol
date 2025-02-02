@@ -230,8 +230,8 @@ export class DotGraphPanelView {
 }
 
 export async function view_dot_callgraph(context: vscode.ExtensionContext, settings: ICOBOLSettings) {
-    if (settings.enable_call_hierarchy === false) {
-        vscode.window.showErrorMessage("COBOL call-graph is not enabled (coboleditor.enable_call_hierarchy)");
+    if (settings.enable_program_information === false) {
+        vscode.window.showErrorMessage("COBOL call-graph is not enabled (coboleditor.enable_program_information)");
         return;
     }
     if (!vscode.window.activeTextEditor) {
@@ -264,7 +264,7 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
     );
 
     vscode.workspace.onDidChangeTextDocument(changeEvent => {
-        if (settings.enable_call_hierarchy === false) {
+        if (settings.enable_program_information === false) {
             return;
         }
 

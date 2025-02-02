@@ -951,7 +951,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
         await view_dot_callgraph(context,settings);
     }));
 
-    if (_settings.enable_call_hierarchy) {        
+    if (_settings.enable_program_information) {        
         install_call_hierarchy(_settings, context)
     }
 }

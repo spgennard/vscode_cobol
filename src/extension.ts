@@ -310,7 +310,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
     const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`, scope);
     const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`, scope);
     const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`, scope);
-    const enable_call_hierarchy_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_call_hierarchy`, scope);
+    const enable_program_information_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_program_information`, scope);
 
 
     if (updated) {
@@ -395,7 +395,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             TabUtils.clearTabstopCache();
         }
 
-        if (enable_call_hierarchy_changed && settings.enable_call_hierarchy) {
+        if (enable_program_information_changed && settings.enable_program_information) {
             install_call_hierarchy(settings, sharedContext)
         }
         checkForExtensionConflicts(settings, sharedContext);

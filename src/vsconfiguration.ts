@@ -213,7 +213,7 @@ export class VSCOBOLConfiguration {
 
         settings.scan_comment_end_ls_ignore = editorHelper.getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
 
-        settings.enable_call_hierarchy = editorHelper.getBoolean("enable_call_hierarchy", settings.enable_call_hierarchy);
+        settings.enable_program_information = editorHelper.getBoolean("enable_program_information", settings.enable_program_information);
         return settings;
     }
 

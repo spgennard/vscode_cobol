@@ -168,7 +168,7 @@ export interface ICOBOLSettings {
 
     file_search_directory: string[];
 
-    enable_call_hierarchy: boolean;
+    enable_program_information: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -301,7 +301,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     file_search_directory: string[];
 
-    enable_call_hierarchy: boolean;
+    enable_program_information: boolean;
     
     constructor() {
         this.enable_tabstop = true;
@@ -411,6 +411,6 @@ export class COBOLSettings implements ICOBOLSettings {
  
         this.file_search_directory = [];
 
-        this.enable_call_hierarchy = false;
+        this.enable_program_information = false;
     }
 }
