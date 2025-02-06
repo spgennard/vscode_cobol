@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* 1c5a59d pass window state rather the field state
+* a233197 Introduce some state management in window
+* 637f08e rename to program info panel
+
+## 25.2.1 
 * 6e5dec1 fix bug in handling of malformed "pd/entry using..."
 
 ## 25.1.25 
