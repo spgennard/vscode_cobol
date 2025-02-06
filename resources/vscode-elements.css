@@ -190,3 +190,71 @@
   background-color: var(--vscode-list-activeSelectionBackground) !important;
   color: var(--vscode-list-activeSelectionForeground) !important;
 }
+.vscode-collapsible + .vscode-collapsible {
+  border-top: 1px solid var(--vscode-sideBarSectionHeader-border);
+}
+
+.vscode-collapsible summary {
+  align-items: center;
+  background-color: var(--vscode-sideBarSectionHeader-background);
+  cursor: pointer;
+  display: flex;
+  height: 22px;
+  line-height: 22px;
+  user-select: none;
+}
+
+.vscode-collapsible summary:focus {
+  opacity: 1;
+  outline-offset: -1px;
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: var(--vscode-focusBorder);
+}
+
+.vscode-collapsible .icon-arrow {
+  display: block;
+  margin: 0 3px;
+}
+
+.vscode-collapsible[open] .icon-arrow {
+  transform: rotate(90deg);
+}
+
+.vscode-collapsible .title {
+  color: var(--vscode-sideBarSectionHeader-foreground);
+  display: block;
+  font-family: var(--vscode-font-family);
+  font-size: 11px;
+  font-weight: 700;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.vscode-collapsible .title .description {
+  display: none;
+  font-weight: 400;
+  margin-left: 10px;
+  text-transform: none;
+  opacity: 0.6;
+}
+
+.vscode-collapsible[open] .title .description {
+  display: inline;
+}
+
+.vscode-collapsible .actions {
+  align-items: center;
+  display: none;
+  height: 22px;
+  margin-left: auto;
+  margin-right: 4px;
+}
+
+.vscode-collapsible.always-show-actions[open] summary .actions,
+.vscode-collapsible[open]:hover summary .actions {
+  display: flex;
+}

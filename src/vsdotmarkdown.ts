@@ -63,18 +63,18 @@ export class DotGraphPanelView {
     private readonly _panel: vscode.WebviewPanel;
     private _disposables: vscode.Disposable[] = [];
 
-    private constructor(context: vscode.ExtensionContext, url:string, style: string, panel: vscode.WebviewPanel, linesArray: string[]) {
+    private constructor(context: vscode.ExtensionContext, url:string, state: programWindowState, panel: vscode.WebviewPanel, linesArray: string[]) {
         // ... other code ...
         this._panel = panel;
-        this._panel.webview.html = this._getWebviewContent(context, url, style, panel, linesArray);
+        this._panel.webview.html = this._getWebviewContent(context, url, state, panel, linesArray);
 
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
     }
 
-    public static render(context: vscode.ExtensionContext, url: string, style: string, linesArray: string[], programName: string) {
+    public static render(context: vscode.ExtensionContext, url: string, wstate: programWindowState, linesArray: string[], programName: string) {
         if (DotGraphPanelView.currentPanel) {
             DotGraphPanelView.currentPanel._panel.reveal(vscode.ViewColumn.Beside, true);
-            DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, url, style, DotGraphPanelView.currentPanel._panel, linesArray);
+            DotGraphPanelView.currentPanel._panel.webview.html = DotGraphPanelView.currentPanel._getWebviewContent(context, url, wstate, DotGraphPanelView.currentPanel._panel, linesArray);
 
             return DotGraphPanelView.currentPanel._panel;
         } else {
@@ -92,12 +92,13 @@ export class DotGraphPanelView {
                     localResourceRoots: [resourcesDirectory]
                 }
             );
-            DotGraphPanelView.currentPanel = new DotGraphPanelView(context, url, style, panel, linesArray);
+            DotGraphPanelView.currentPanel = new DotGraphPanelView(context, url, wstate, panel, linesArray);
             return panel;
         }
     }
 
-    private _getWebviewContent(context: vscode.ExtensionContext, url:string, style:string, panel: vscode.WebviewPanel, linesArray: string[]) {
+    private _getWebviewContent(context: vscode.ExtensionContext, url:string, wstyle:programWindowState, panel: vscode.WebviewPanel, linesArray: string[]) {
+        const style = wstyle.current_style;
         let htmlContent = `<!DOCTYPE html>
   <html>
   <head>
@@ -110,12 +111,13 @@ export class DotGraphPanelView {
         ">
     <style type="text/css">
         .diagram-container {
-            width: 100%;
-            height: 100%;
+            width: 98%;
             overflow: hidden;
             border: 1px solid #ccc;
-            position: relative;
             margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         svg {
             cursor: grab;
@@ -151,7 +153,7 @@ export class DotGraphPanelView {
         // Call back to the extension context to save the image to the workspace folder
         vscode.postMessage({
             command: 'change-style',
-            text: "_url_"+","+this.value
+            text: "__url__"+","+this.value
         });
       });
 
@@ -183,13 +185,13 @@ export class DotGraphPanelView {
 
       
     </script>
-
+    <h3>Program : __program__</h3>
+    <p/>
     <div class="diagram-container" id="diagram-container">
      <div class="mermaid" id="mermaid1">
     ${linesArray.join("\n")}
      </div>
     </div>
-
 
     <div class="vscode-select">
       <p>Style:
@@ -204,9 +206,7 @@ export class DotGraphPanelView {
     </div>
 
     <p />
-    <p />
     <hr class="vscode-divider">
-    <p />
     <p />
     <h5>This is a navigation aid not a source analysis feature.</h5>
 
@@ -233,8 +233,9 @@ export class DotGraphPanelView {
 
         htmlContent = htmlContent.replace('cspSource', panel.webview.cspSource);
 
-        htmlContent = htmlContent.replace("_url_", url);
-        htmlContent = htmlContent.replace("__style__", style)
+        htmlContent = htmlContent.replace("__url__", url);
+        htmlContent = htmlContent.replace("__style__", style);
+        htmlContent = htmlContent.replace("__program__", getProgramName(wstyle.current_program));
         return htmlContent;
     }
 
@@ -268,9 +269,9 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
 
     const url = current.sourceHandler.getUriAsString();
     const current_state = programWindowState.get_programWindowState(url, current)
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current_state, false, true);
+    const linesArray: string[] = getCurrentProgramCallGraph(current_state, false, true);
     const curp = getProgramName(current);
-    const webviewPanel = DotGraphPanelView.render(context, url, current_state.current_style, linesArray, curp);
+    const webviewPanel = DotGraphPanelView.render(context, url, current_state, linesArray, curp);
     webviewPanel.webview.onDidReceiveMessage(
         async message => {
             switch (message.command) {
@@ -283,8 +284,8 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
                     const new_style = messages[1];
                     const current_state = programWindowState.get_programWindowState(url, current)
                     current_state.current_style = new_style;
-                    const newLinesArray: string[] = getCurrentProgramCallGraph(settings, current_state, false, true);
-                    DotGraphPanelView.render(context, new_url, current_state.current_style, newLinesArray, curp);
+                    const newLinesArray: string[] = getCurrentProgramCallGraph(current_state, false, true);
+                    DotGraphPanelView.render(context, new_url, current_state, newLinesArray, curp);
                     return;
             }
         },
@@ -306,8 +307,8 @@ export async function view_dot_callgraph(context: vscode.ExtensionContext, setti
             const url = current.sourceHandler.getUriAsString();
             const current_state = programWindowState.get_programWindowState(url, current)
             current_state.current_program = current;
-            const updatedLinesArray: string[] = getCurrentProgramCallGraph(settings, current_state, false, true);
-            DotGraphPanelView.render(context, url, current_state.current_style, updatedLinesArray, getProgramName(current));
+            const updatedLinesArray: string[] = getCurrentProgramCallGraph(current_state, false, true);
+            DotGraphPanelView.render(context, url, current_state, updatedLinesArray, getProgramName(current));
         }
 
     });
@@ -352,7 +353,7 @@ function getProgramName(current: COBOLSourceScanner) {
     }
 }
 
-function getCurrentProgramCallGraph(settings: ICOBOLSettings, current_state: programWindowState, asMarkdown: boolean, includeEvents: boolean) {
+function getCurrentProgramCallGraph(current_state: programWindowState, asMarkdown: boolean, includeEvents: boolean) {
     const current = current_state.current_program;
     const current_style = current_state.current_style;
 
@@ -394,7 +395,7 @@ export async function newFile_dot_callgraph(settings: ICOBOLSettings) {
     const current_state = programWindowState.get_programWindowState(current.sourceHandler.getUriAsString(), current)
     current_state.current_program = current;
     const doclang = "markdown";
-    const linesArray: string[] = getCurrentProgramCallGraph(settings, current_state, true, false);
+    const linesArray: string[] = getCurrentProgramCallGraph(current_state, true, false);
     vscode.workspace.openTextDocument({ language: "markdown" }).then(async document => {
         vscode.window.showTextDocument(document);
         const editor = await vscode.window.showTextDocument(document);
