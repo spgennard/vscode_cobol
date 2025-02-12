@@ -200,6 +200,7 @@ export class VSmargindecorations extends ColourTagHandler {
                             }
                         }
                     }
+                } else {
                     if (useDefault) {
                         defaultDecorationOptions.push(decoration);
                     }
@@ -250,6 +251,7 @@ export class VSmargindecorations extends ColourTagHandler {
                             }
                         }
                     }
+                } else {
                     if (useDefault) {
                         defaultDecorationOptions.push(decoration);
                     }
