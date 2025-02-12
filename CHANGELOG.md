@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 74fe8b0 fix col1-7 problem with +
+
+## 25.2.6 
 * 1c5a59d pass window state rather the field state
 * a233197 Introduce some state management in window
 * 637f08e rename to program info panel
