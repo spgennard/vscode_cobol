@@ -2947,7 +2947,7 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.5",
     "@types/vscode": "^1.97.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.4.1",
@@ -2966,7 +2966,7 @@
     "shx": "^0.3.4",
     "ts-loader": "^9.5.2",
     "typescript": "^5.7.3",
-    "webpack": "^5.97.1",
+    "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
