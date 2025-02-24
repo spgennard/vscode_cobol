@@ -1,4 +1,4 @@
-import { COBOLSourceScanner, ICOBOLSourceScannerEventer, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, SharedSourceReferences } from "./cobolsourcescanner";
 import { COBOLSymbolTableEventHelper } from "./cobolsymboltableeventhelper";
 import { COBSCANNER_STATUS, ScanData, ScanDataHelper, ScanStats } from "./cobscannerdata";
 import { ConsoleExternalFeatures } from "./consoleexternalfeatures";
@@ -15,6 +15,7 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLSettings, ICOBOLSettings } from "./iconfiguration";
 import { IExternalFeatures } from "./externalfeatures";
+import { ICOBOLSourceScannerEventer } from "./icobolsourcescanner";
 
 const args = process.argv.slice(2);
 const settings: ICOBOLSettings = new COBOLSettings();

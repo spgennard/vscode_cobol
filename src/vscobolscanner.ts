@@ -1,6 +1,6 @@
 import { VSCodeSourceHandler } from "./vscodesourcehandler";
 import { TextDocument, debug } from "vscode";
-import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, ICOBOLSourceScanner, ICOBOLSourceScannerEvents, SharedSourceReferences } from "./cobolsourcescanner";
+import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, EmptyCOBOLSourceScannerEventHandler, SharedSourceReferences } from "./cobolsourcescanner";
 import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalcachehelper";
 
 import { VSLogger } from "./vslogger";
@@ -10,6 +10,7 @@ import { VSCOBOLUtils } from "./vscobolutils";
 import { COBOLWorkspaceSymbolCacheHelper, TypeCategory } from "./cobolworkspacecache";
 
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./icobolsourcescanner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache_SourceScanner: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();

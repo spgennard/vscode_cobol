@@ -14,6 +14,7 @@ import { SourceFormat } from "./sourceformat";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { SplitTokenizer } from "./splittoken";
 import { SourcePorter, portResult } from "./vsdirectivesconv";
+import { ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./icobolsourcescanner";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -727,23 +728,6 @@ export class CallTargetInformation {
     }
 }
 
-export interface ICOBOLSourceScannerEventer {
-    sendMessage(message: string): void;
-}
-
-export interface ICOBOLSourceScannerEvents {
-    start(qp: ICOBOLSourceScanner): void;
-    processToken(token: COBOLToken): void;
-    finish(): void;
-}
-
-export interface ICOBOLSourceScanner {
-    filename: string;
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    lastModifiedTime: BigInt;
-    copyBooksUsed: Map<string, COBOLCopybookToken>;
-    workspaceFile: COBOLWorkspaceFile;
-}
 
 export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerEvents {
 
@@ -763,7 +747,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
     }
 }
 
-export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner {
+export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner, ICOBOLSourceScanner {
     public id: string;
     public readonly sourceHandler: ISourceHandler;
     public filename: string;

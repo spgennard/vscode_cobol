@@ -8,8 +8,8 @@ import * as fs from "fs";
 import * as path from "path";
 import util from "util";
 import { ICOBOLSettings } from "./iconfiguration";
-import { ICOBOLSourceScannerEventer } from "./cobolsourcescanner";
 import { COBOLFileUtils } from "./fileutils";
+import { ICOBOLSourceScannerEventer } from "./icobolsourcescanner";
 
 export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ThreadConsoleExternalFeatures();
