@@ -127,14 +127,20 @@ export class VSmargindecorations extends ColourTagHandler {
                 }
         }
 
+        let decSequenceNumber=true;
+        let decArea73_80=configHandler.margin_73_80_comment;
+
         // use the known file format from the scan itself
         switch (sf) {
             case ESourceFormat.free:
-            case ESourceFormat.variable:
             case ESourceFormat.unknown:
             case ESourceFormat.terminal:
                 activeTextEditor.setDecorations(defaultTrailingSpacesDecoration, defaultDecorationOptions);
                 return;
+        }
+
+        if (sf == ESourceFormat.variable) {
+            decArea73_80 = false;
         }
 
 
@@ -154,7 +160,7 @@ export class VSmargindecorations extends ColourTagHandler {
             // only do it, if we have no tabs on the line..
             const containsTab = line.indexOf("\t");
 
-            if ((containsTab === -1 || containsTab >= 6) && line.length >= 6) {
+            if (decSequenceNumber && (containsTab === -1 || containsTab >= 6) && line.length >= 6) {
                 const startPos = new Position(i, 0);
                 const endPos = new Position(i, 6);
                 const rangePos = new Range(startPos, endPos);
@@ -207,7 +213,7 @@ export class VSmargindecorations extends ColourTagHandler {
                 }
             }
 
-            if ((containsTab === -1 || containsTab > 80) && line.length > 72) {
+            if (decArea73_80 && (containsTab === -1 || containsTab > 80) && line.length > 72) {
                 // only colour 72-80
                 const rangePos = new Range(new Position(i, 72), new Position(i, (line.length < 80 ? line.length : 80)));
                 const decoration = { range: rangePos };
