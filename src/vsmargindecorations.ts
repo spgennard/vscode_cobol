@@ -128,7 +128,7 @@ export class VSmargindecorations extends ColourTagHandler {
         }
 
         let decSequenceNumber=true;
-        let decArea73_80=configHandler.margin_73_80_comment;
+        let decArea73_80=configHandler.margin_identification_area;
 
         // use the known file format from the scan itself
         switch (sf) {

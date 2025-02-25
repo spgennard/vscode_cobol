@@ -397,10 +397,10 @@
           "markdownDescription": "When enabled, *always* apply margin shading for COBOL source code",
           "default": true
         },
-        "coboleditor.margin_73_80_comment": {
+        "coboleditor.margin_identification_area": {
           "type": "boolean",
-          "description": "When enabled, columns 73-80 for fixed format source files are treated comments",
-          "markdownDescription": "When enabled, columns 73-80 for fixed format source files are treated comments",
+          "description": "When enabled, the identification area (columns 73-80) for fixed format source files are treated comments",
+          "markdownDescription": "When enabled, the identification area (columns 73-80) for fixed format source files are treated comments",
           "default": true
         },
         "coboleditor.fileformat_strategy": {

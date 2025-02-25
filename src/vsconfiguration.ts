@@ -178,7 +178,7 @@ export class VSCOBOLConfiguration {
 
         settings.margin = editorHelper.getBoolean("margin", settings.margin);
 
-        settings.margin_73_80_comment = editorHelper.getBoolean("margin_73_80_comment", settings.margin_73_80_comment);
+        settings.margin_identification_area = editorHelper.getBoolean("margin_identification_area", settings.margin_identification_area);
 
         settings.enable_codelens_variable_references = editorHelper.getBoolean("enable_codelens_variable_references", settings.enable_codelens_variable_references);
 

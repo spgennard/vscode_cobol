@@ -138,7 +138,7 @@ export interface ICOBOLSettings {
 
     margin: boolean;
 
-    margin_73_80_comment: boolean;
+    margin_identification_area: boolean;
 
     enable_codelens_variable_references:boolean;
 
@@ -273,7 +273,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     margin: boolean;
 
-    margin_73_80_comment: boolean;
+    margin_identification_area: boolean;
 
     enable_codelens_variable_references: boolean;
 
@@ -396,7 +396,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.intellisense_add_space_keywords = [];
         this.custom_intellisense_rules = [];
         this.margin = true;
-        this.margin_73_80_comment = true;
+        this.margin_identification_area = true;
         this.enable_codelens_variable_references = false;
         this.enable_codelens_section_paragraph_references = false;
         this.enable_codelens_copy_replacing = true;
