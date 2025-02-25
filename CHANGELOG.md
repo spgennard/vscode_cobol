@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* f3d0ecf change margin_73_80_comment to margin_identification_area
+
+## 25.2.24 
 * 5126c64 Add coboleditor.margin_73_80_comment to allow fixed format files to turn off 73-80 behavour #355
 * 200e7d9 start to move fns into interface
 
