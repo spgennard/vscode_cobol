@@ -8,6 +8,7 @@ import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 const jsonCRLF = "\r\n";
 
@@ -1632,7 +1633,7 @@ export class SnippetCompletionItemProvider extends SnippetHelper implements Comp
             return [];
         }
 
-        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
+        const qcp: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {
             return [];
         }

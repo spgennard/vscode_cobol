@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as vscode from "vscode";
-import { COBOLSourceScanner, COBOLToken } from "./cobolsourcescanner";
+import { COBOLToken } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 export class VSPPCodeLens implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
@@ -19,7 +20,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         });
     }
 
-    private scanTargetUse(settings: ICOBOLSettings, document: vscode.TextDocument, lens: vscode.CodeLens[], current: COBOLSourceScanner, target: string, targetToken: COBOLToken) {
+    private scanTargetUse(settings: ICOBOLSettings, document: vscode.TextDocument, lens: vscode.CodeLens[], current: ICOBOLSourceScanner, target: string, targetToken: COBOLToken) {
         // not interested
         if (targetToken.isTokenFromSourceDependancyCopyBook || targetToken.ignoreInOutlineView) {
             return;
@@ -56,7 +57,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         const lens: vscode.CodeLens[] = [];
 
         const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-         const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+         const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (current === undefined) {
             return lens;
         }

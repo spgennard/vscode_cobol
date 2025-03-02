@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as vscode from "vscode";
 import { CancellationToken, Position, TextDocument } from "vscode";
-import { COBOLSourceScanner, COBOLVariable, SharedSourceReferences, SourceReference_Via_Length } from "./cobolsourcescanner";
+import { COBOLVariable, SharedSourceReferences, SourceReference_Via_Length } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
 export class VSCobolRenameProvider implements vscode.RenameProvider {
-    private current?: COBOLSourceScanner;
+    private current?: ICOBOLSourceScanner;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -36,7 +37,7 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
             return Promise.resolve(null);
         }
 
-        const qp: COBOLSourceScanner = this.current;
+        const qp: ICOBOLSourceScanner = this.current;
         const edits = new vscode.WorkspaceEdit()
         const sourceRefs: SharedSourceReferences = this.sourceRefs;
 

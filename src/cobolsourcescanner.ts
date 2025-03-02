@@ -805,8 +805,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     parseHint_LocalStorageFiles: string[] = [];
     parseHint_ScreenSectionFiles: string[] = [];
 
-    private eventHandler: ICOBOLSourceScannerEvents;
-    private externalFeatures: IExternalFeatures;
+    public eventHandler: ICOBOLSourceScannerEvents;
+    public externalFeatures: IExternalFeatures;
 
     public scanAborted: boolean;
 
@@ -831,7 +831,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         parse_copybooks_for_references: boolean,
         eventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures
-    ): COBOLSourceScanner {
+    ): ICOBOLSourceScanner {
 
         const startTime = externalFeatures.performance_now();
         return new COBOLSourceScanner(
@@ -848,7 +848,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private static ScanUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
-        parentSource: COBOLSourceScanner,
+        parentSource: ICOBOLSourceScanner,
         isSourceDepCopyBook: boolean
     ): void {
 

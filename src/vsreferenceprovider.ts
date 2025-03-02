@@ -1,9 +1,10 @@
 
 import * as vscode from "vscode";
-import { COBOLSourceScanner, SourceReference_Via_Length, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
+import { SourceReference_Via_Length, COBOLToken, SharedSourceReferences } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 const wordRegEx = new RegExp("[#0-9a-zA-Z][a-zA-Z0-9-_]*");
 
@@ -18,7 +19,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
         return this.processSearch(document, position);
     }
 
-    private current: COBOLSourceScanner | undefined;
+    private current: ICOBOLSourceScanner | undefined;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -48,7 +49,7 @@ export class CobolReferenceProvider implements vscode.ReferenceProvider {
             return Promise.resolve(null);
         }
 
-        const qp: COBOLSourceScanner = this.current;
+        const qp: ICOBOLSourceScanner = this.current;
         const sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         if (qp.paragraphs.has(wordLower) || qp.sections.has(wordLower)) {

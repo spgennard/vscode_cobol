@@ -13,7 +13,7 @@ import { VSExternalFeatures } from "./vsexternalfeatures";
 import { ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./icobolsourcescanner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InMemoryCache_SourceScanner: Map<string, COBOLSourceScanner> = new Map<string, COBOLSourceScanner>();
+const InMemoryCache_SourceScanner: Map<string, ICOBOLSourceScanner> = new Map<string, ICOBOLSourceScanner>();
 
 const InProgress: Map<string,number> = new Map<string,number>();
 
@@ -102,7 +102,7 @@ export class VSCOBOLSourceScanner {
         }
     }
 
-    public static getCachedObject(document: TextDocument, config: ICOBOLSettings): COBOLSourceScanner | undefined {
+    public static getCachedObject(document: TextDocument, config: ICOBOLSettings): ICOBOLSourceScanner | undefined {
         if (config.enable_source_scanner === false) {
             return undefined;
         }

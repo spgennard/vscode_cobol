@@ -3,8 +3,9 @@ import vscode from "vscode";
 import { ICOBOLSettings, hoverApi } from "./iconfiguration";
 import { CallTarget, KnownAPIs } from "./keywords/cobolCallTargets";
 import { VSCOBOLUtils } from "./vscobolutils";
-import { COBOLSourceScanner, COBOLToken, COBOLVariable, SQLDeclare } from "./cobolsourcescanner";
+import { COBOLToken, COBOLVariable, SQLDeclare } from "./cobolsourcescanner";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 // import { ESourceFormat } from "./externalfeatures";
 
 const nhexRegEx = new RegExp("[nN][xX][\"'][0-9A-Fa-f]*[\"']");
@@ -76,7 +77,7 @@ ${cleanCode}
         if (word === undefined || word.length === 0) {
             return undefined;
         }
-        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const sf: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (sf === undefined) {
             return undefined;
         }

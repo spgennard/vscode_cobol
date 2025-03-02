@@ -1,7 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionContext, ProviderResult, CompletionList, CompletionItemKind, Range } from "vscode";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { ICOBOLSettings, intellisenseStyle } from "./iconfiguration";
-import { COBOLSourceScanner, COBOLToken, COBOLVariable, SourceScannerUtils } from "./cobolsourcescanner";
+import { COBOLToken, COBOLVariable, SourceScannerUtils } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import TrieSearch from "trie-search";
 import { VSLogger } from "./vslogger";
@@ -9,6 +9,7 @@ import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
 import { IExternalFeatures } from "./externalfeatures";
 import { VSCustomIntelliseRules } from "./vscustomrules";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 export class CobolSourceCompletionItemProvider implements CompletionItemProvider {
     private features: IExternalFeatures;
@@ -24,7 +25,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
     }
 
     private getPerformTargets(iconfig: ICOBOLSettings, document: TextDocument): TrieSearch {
-        const sf: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, iconfig);
+        const sf: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, iconfig);
 
         if (sf !== undefined) {
             if (sf.cache4PerformTargets === undefined) {

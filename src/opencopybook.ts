@@ -7,11 +7,11 @@ import { Range, TextDocument, Definition, Position, CancellationToken, Uri } fro
 import { IVSCOBOLSettings, VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { IExternalFeatures } from "./externalfeatures";
 import { VSLogger } from "./vslogger";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
@@ -53,7 +53,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
         const locations: vscode.Location[] = [];
 
         const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
+        const qcp: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (qcp === undefined) {
             return this.resolveDefinitionsFallback(true, document, pos, ct);
         }

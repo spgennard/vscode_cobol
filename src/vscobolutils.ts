@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import path from "path";
-import { COBOLSourceScanner, SourceScannerUtils, COBOLTokenStyle } from "./cobolsourcescanner";
+import { SourceScannerUtils, COBOLTokenStyle } from "./cobolsourcescanner";
 import { cobolRegistersDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 import { VSLogger } from "./vslogger";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -19,6 +19,7 @@ import { setMicroFocusSuppressFileAssociationsPrompt } from "./vscommon_commands
 import { VSCOBOLEditorConfiguration } from "./vsconfiguration";
 import { workspace } from "vscode";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 let commandTerminal: vscode.Terminal | undefined = undefined;
 const commandTerminalName = "COBOL Application";
@@ -556,7 +557,7 @@ export class VSCOBOLUtils {
         return cobolRegistersDictionary.has(keywordLower);
     }
 
-    public static foldTokenLine(text: string, current: COBOLSourceScanner | undefined, action: FoldAction, foldConstantsToUpper: boolean, languageid: string, settings: ICOBOLSettings, defaultFoldStyle: intellisenseStyle): string {
+    public static foldTokenLine(text: string, current: ICOBOLSourceScanner | undefined, action: FoldAction, foldConstantsToUpper: boolean, languageid: string, settings: ICOBOLSettings, defaultFoldStyle: intellisenseStyle): string {
         let newtext = text;
         const args: string[] = [];
 
@@ -669,7 +670,7 @@ export class VSCOBOLUtils {
         defaultFoldStyle: intellisenseStyle): void {
         const uri = activeEditor.document.uri;
 
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
         if (current === undefined) {
             VSLogger.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
             return;
@@ -1250,7 +1251,7 @@ export class VSCOBOLUtils {
     // public static dumpCallTargets(activeEditor: vscode.TextEditor, externalFeatures: IExternalFeatures) {
     //     const settings = VSCOBOLConfiguration.get();
 
-    //     const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
+    //     const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(activeEditor.document, settings);
     //     if (current === undefined) {
     //         externalFeatures.logMessage(`Unable to fold ${externalFeatures}, as it is has not been parsed`);
     //         return;

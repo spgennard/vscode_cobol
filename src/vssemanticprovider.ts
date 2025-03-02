@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
-import { COBOLSourceScanner, COBOLTokenStyle } from "./cobolsourcescanner";
+import { COBOLTokenStyle } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 const tokenTypes = ["label", "variable", "function", "comment"];
 const tokenModifiers = ["declaration", "readonly", "deprecated"];
@@ -35,7 +36,7 @@ export class VSSemanticProvider {
             return tokensBuilder.build();
         }
 
-        const qcp: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const qcp: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (qcp === undefined) {
             return tokensBuilder.build();
         }

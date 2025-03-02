@@ -1,7 +1,7 @@
 import { ISourceHandler, ISourceHandlerLite } from "./isourcehandler";
 import { COBOLFileAndColumnSymbol, COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 import { ICOBOLSettings } from "./iconfiguration";
-import { ESourceFormat } from "./externalfeatures";
+import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { portResult } from "./vsdirectivesconv";
 import { CallTargetInformation, COBOLCopybookToken, COBOLToken, COBOLVariable, SharedSourceReferences, SQLDeclare } from "./cobolsourcescanner";
 
@@ -61,4 +61,6 @@ export interface ICOBOLSourceScanner{
     parseSQLDeclareForReferences(fileid: number, _refExecSQLDeclareName: string, refExecToken: COBOLToken, lines: string, sqldeclare: SQLDeclare): void;
     processComment(configHandler: ICOBOLSettings, sourceHandler: ISourceHandlerLite, commentLine: string, sourceFilename: string, sourceLineNumber: number, startPos: number, format: ESourceFormat): void;
     findNearestSectionOrParagraph(line: number): COBOLToken|undefined;
+    eventHandler: ICOBOLSourceScannerEvents;
+    externalFeatures: IExternalFeatures;
 }

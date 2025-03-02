@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
-import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, SharedSourceReferences, SourceReference_Via_Length } from './cobolsourcescanner';
+import { COBOLToken, COBOLTokenStyle, SharedSourceReferences, SourceReference_Via_Length } from './cobolsourcescanner';
 import { VSCOBOLConfiguration } from './vsconfiguration';
 import { VSExternalFeatures } from './vsexternalfeatures';
 import { VSCOBOLSourceScanner } from './vscobolscanner';
+import { ICOBOLSourceScanner } from './icobolsourcescanner';
 
 export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
-    private current: COBOLSourceScanner | undefined
+    private current: ICOBOLSourceScanner | undefined
 
     prepareCallHierarchy(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyItem | vscode.CallHierarchyItem[]> {
         let range = document.getWordRangeAtPosition(position);
@@ -99,7 +100,7 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
             return results;
         }
 
-        const qp: COBOLSourceScanner = this.current;
+        const qp: ICOBOLSourceScanner = this.current;
 
         if (qp.paragraphs.has(wordLower) || qp.sections.has(wordLower)) {
             let inToken: COBOLToken | undefined = qp.sections.get(wordLower);

@@ -2,16 +2,16 @@
 
 import * as vscode from "vscode";
 import { CancellationToken, FormattingOptions, TextDocument, TextEdit, Position } from "vscode";
-import { COBOLSourceScanner } from "./cobolsourcescanner";
 import { VSCOBOLUtils, FoldAction } from "./vscobolutils";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 export class COBOLCaseFormatter {
 
-    private convertLine(settings: ICOBOLSettings, line: string, current: COBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
+    private convertLine(settings: ICOBOLSettings, line: string, current: ICOBOLSourceScanner, foldConstantToUpper: boolean, langid: string) {
         const oldText = line;
         const defaultStyle = settings.intellisense_style;
         let newText = VSCOBOLUtils.foldTokenLine(oldText, current, FoldAction.Keywords, foldConstantToUpper, langid, settings,defaultStyle);
@@ -35,7 +35,7 @@ export class COBOLCaseFormatter {
 
         const langid = document.languageId;
         const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-        const current: COBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
+        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
         if (current === undefined) {
             return;
         }

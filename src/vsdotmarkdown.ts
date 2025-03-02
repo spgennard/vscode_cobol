@@ -1,21 +1,22 @@
 import * as vscode from "vscode";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { COBOLSourceScanner, COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
+import { COBOLToken, COBOLTokenStyle, ParseState, SourceReference_Via_Length } from "./cobolsourcescanner";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 var fs = require('fs');
 
 class programWindowState {
     current_style: string;
-    current_program: COBOLSourceScanner;
+    current_program: ICOBOLSourceScanner;
 
-    private constructor(current_style: string, current_program: COBOLSourceScanner) {
+    private constructor(current_style: string, current_program: ICOBOLSourceScanner) {
         this.current_style = current_style;
         this.current_program = current_program;
     }
 
     static current_style_map = new Map<string,programWindowState>();
 
-    static get_programWindowState(url: string, current_program: COBOLSourceScanner):programWindowState {
+    static get_programWindowState(url: string, current_program: ICOBOLSourceScanner):programWindowState {
         let value = programWindowState.current_style_map.get(url)   
         if (value !== undefined) {
             return value;
@@ -341,7 +342,7 @@ function getNonce() {
     return text;
 }
 
-function getProgramName(current: COBOLSourceScanner) {
+function getProgramName(current: ICOBOLSourceScanner) {
     if (current.ImplicitProgramId.length !== 0) {
         return current.ImplicitProgramId;
     } else {

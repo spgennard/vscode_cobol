@@ -1,6 +1,6 @@
 
 import * as vscode from "vscode";
-import { COBOLSourceScanner, SharedSourceReferences } from "./cobolsourcescanner";
+import { SharedSourceReferences } from "./cobolsourcescanner";
 import { CodeActionProvider, CodeAction } from "vscode";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
@@ -11,6 +11,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import path from "path";
 import { VSCOBOLConfiguration, VSCOBOLEditorConfiguration } from "./vsconfiguration";
 import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
 export class CobolLinterActionFixer implements CodeActionProvider {
 
@@ -186,7 +187,7 @@ export class CobolLinterActionFixer implements CodeActionProvider {
 
 export class CobolLinterProvider {
     private collection: vscode.DiagnosticCollection;
-    private current: COBOLSourceScanner | undefined;
+    private current: ICOBOLSourceScanner | undefined;
     private currentVersion?: number;
     private sourceRefs?: SharedSourceReferences;
 
@@ -218,7 +219,7 @@ export class CobolLinterProvider {
 
         if (this.current) {
             if (this.sourceRefs !== undefined && !this.current.sourceIsCopybook) {
-                const qp: COBOLSourceScanner = this.current;
+                const qp: ICOBOLSourceScanner = this.current;
 
 
                 // handle sections & paragraphs
@@ -230,7 +231,7 @@ export class CobolLinterProvider {
             }
 
             if (settings.linter_ignore_missing_copybook === false && this.current.diagMissingFileWarnings.size !== 0) {
-                const qp: COBOLSourceScanner = this.current;
+                const qp: ICOBOLSourceScanner = this.current;
                 for (const [msg, fileSymbol] of qp.diagMissingFileWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
@@ -253,7 +254,7 @@ export class CobolLinterProvider {
             }
 
             if (this.current.portWarnings.length !== 0) {
-                const qp: COBOLSourceScanner = this.current;
+                const qp: ICOBOLSourceScanner = this.current;
                 for (const fileSymbol of qp.portWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
@@ -275,7 +276,7 @@ export class CobolLinterProvider {
             }
 
             if (this.current.generalWarnings.length !== 0) {
-                const qp: COBOLSourceScanner = this.current;
+                const qp: ICOBOLSourceScanner = this.current;
                 for (const fileSymbol of qp.generalWarnings) {
                     if (fileSymbol.filename !== undefined && fileSymbol.linenum !== undefined) {
                         const r = new vscode.Range(new vscode.Position(fileSymbol.linenum, 0), new vscode.Position(fileSymbol.linenum, 0));
@@ -303,7 +304,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processParsedDocumentForStandards(qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, linterSev: vscode.DiagnosticSeverity) {
+    private processParsedDocumentForStandards(qp: ICOBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, linterSev: vscode.DiagnosticSeverity) {
 
         if (this.sourceRefs === undefined) {
             return;
@@ -363,7 +364,7 @@ export class CobolLinterProvider {
         }
     }
 
-    private processScannedDocumentForUnusedSymbols(settings: ICOBOLSettings, qp: COBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, processParas: boolean, processSections: boolean, linterSev: vscode.DiagnosticSeverity) {
+    private processScannedDocumentForUnusedSymbols(settings: ICOBOLSettings, qp: ICOBOLSourceScanner, diagRefs: Map<string, vscode.Diagnostic[]>, processParas: boolean, processSections: boolean, linterSev: vscode.DiagnosticSeverity) {
 
         if (this.sourceRefs === undefined) {
             return;
