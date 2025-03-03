@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* b82366c add interface to scanner, to aid testing
+
+## 25.2.25 
 * f3d0ecf change margin_73_80_comment to margin_identification_area
 
 ## 25.2.24 
