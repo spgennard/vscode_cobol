@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 3cdee2f add pointer-32
+
+## 25.3.9 
 
 ## 25.3.3 
 * b82366c add interface to scanner, to aid testing
