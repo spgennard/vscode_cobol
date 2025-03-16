@@ -311,6 +311,7 @@ const cobolKeywords: string[] = [
 	"pic",
 	"picture",
 	"plus",
+	"pointer-32",
 	"pointer",
 	"position",
 	"positive",

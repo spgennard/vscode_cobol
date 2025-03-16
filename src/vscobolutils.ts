@@ -737,6 +737,7 @@ export class VSCOBOLUtils {
         "as",
         "redefines",
         "renames",
+        "pointer-32",
         "pointer"
     ];
 

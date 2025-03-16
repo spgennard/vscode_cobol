@@ -395,6 +395,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "key":
                     case "multiply":
                     case "named":
+                    case "pointer-32":
                     case "pointer":
                     case "search":
                     case "set":
