@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 439cc87 tweak end-xml to be the same as "xml parse"
+
+## 25.3.16 
 * 3cdee2f add pointer-32
 
 ## 25.3.9 
