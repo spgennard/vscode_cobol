@@ -301,7 +301,7 @@ class StreamTokens {
 
     public nextSTokenIndex(index: number): StreamToken {
         const nextIndex = this.tokenIndex + index;
-        if (nextIndex >= this.stokens.length) {
+        if (nextIndex >= this.stokens.length || nextIndex < 0) {
             return StreamToken.Blank;
         }
 

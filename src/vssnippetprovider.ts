@@ -305,6 +305,13 @@ const simpleSnippets: ISimpleSnippet[] = [
         "scope": "cobol"
     },
     {
+        "prefix": "processing",
+        "label": "processing procedure",
+        "body": ["processing procedure "],
+        "description": "processing procedure ⦃⦄",
+        "scope": "cobol"
+    },
+    {
         "prefix": "working-storage",
         "label": "working-storage section",
         "description": "working-storage section",

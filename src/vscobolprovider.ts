@@ -307,6 +307,13 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
             wordBeforeLower = wordBefore.toLowerCase();
         }
 
+        if (wordBeforeLower == "is") {
+            if ((currentLine.toLowerCase().indexOf("processing") !== -1) && 
+                (currentLine.toLowerCase().indexOf("procedure") !== -1)) {
+                wordBefore = wordBeforeLower = "procedure";
+            }
+        }
+
         if (wordBefore.length !== 0) {
             if ((wordBeforeLower.startsWith("'") && wordBeforeLower.endsWith("'")) ||
                 (wordBeforeLower.startsWith("\"") && wordBeforeLower.endsWith("\""))
