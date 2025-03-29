@@ -339,6 +339,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                     case "thru":
                     case "through":
                     case "perform":
+                    case "procedure":
                     case "goto":
                         {
                             if (wordToComplete.length === 0) {
