@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* a725b83 add hook for "xml parse... processing procedure" to bring up a section/paragraph
+
+## 25.3.27 
 * 439cc87 tweak end-xml to be the same as "xml parse"
 
 ## 25.3.16 
