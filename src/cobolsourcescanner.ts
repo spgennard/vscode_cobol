@@ -1412,6 +1412,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 state.currentSection.rangeEndLine = startLine;
                 if (ctoken.rangeStartColumn !== 0) {
                     state.currentSection.rangeEndColumn = ctoken.rangeStartColumn - 1;
+                } else {
+                    state.currentSection.rangeEndColumn = 0;
                 }
                 state.currentSection = undefined;
                 state.currentParagraph = undefined;
