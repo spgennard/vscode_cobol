@@ -35,6 +35,7 @@ export interface IAnchorTabInfo {
 export enum fileformatStrategy {
     AlwaysFixed = "always_fixed",
     AlwaysVariable = "always_variable",
+    AlwaysFree = "always_free",
     Normal = "normal"
 }
 

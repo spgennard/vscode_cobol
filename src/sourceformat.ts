@@ -59,6 +59,7 @@ export class SourceFormat {
         switch (config.fileformat_strategy) {
             case fileformatStrategy.AlwaysFixed: return ESourceFormat.fixed;
             case fileformatStrategy.AlwaysVariable: return ESourceFormat.variable;
+            case fileformatStrategy.AlwaysFree: return ESourceFormat.free;
         }
 
         // check file based overrides..

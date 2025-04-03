@@ -407,14 +407,16 @@
           "enum": [
             "always_fixed",
             "always_variable",
+            "always_free",
             "normal"
           ],
           "default": "normal",
           "markdownDescription": "File format strategy",
-          "title": "always_fixed, always_variable or normal",
+          "title": "always_fixed, always_variable, always_free or normal",
           "enumDescriptions": [
             "Assume source code is fixed source format",
             "Assume source code is variable source format",
+            "Assume source code is free source format",
             "Determine source code format or configure it with fileformat"
           ]
         },
