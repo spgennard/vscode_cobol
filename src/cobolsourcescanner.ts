@@ -2618,6 +2618,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 // handle "end program"
                 if (state.programs.length !== 0 && prevTokenLower === "end" && currentLower === "program") {
                     const currentProgram: COBOLToken | undefined = state.programs.pop();
+                    let _safe_prevCurrentCol = prevCurrentCol == 0 ? 0 : prevCurrentCol - 1;
                     if (currentProgram !== undefined) {
                         currentProgram.rangeEndLine = lineNumber;
                         currentProgram.rangeEndColumn = line.length;
@@ -2625,17 +2626,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                     if (state.currentDivision !== undefined) {
                         state.currentDivision.rangeEndLine = lineNumber;
-                        state.currentDivision.rangeEndColumn = prevCurrentCol - 1;
+                        state.currentDivision.rangeEndColumn = _safe_prevCurrentCol;
                     }
 
                     if (state.currentSection !== undefined) {
                         state.currentSection.rangeEndLine = lineNumber;
-                        state.currentSection.rangeEndColumn = prevCurrentCol - 1;
+                        state.currentSection.rangeEndColumn = _safe_prevCurrentCol;
                     }
 
                     if (state.currentParagraph !== undefined) {
                         state.currentParagraph.rangeEndLine = lineNumber;
-                        state.currentParagraph.rangeEndColumn = prevCurrentCol - 1;
+                        state.currentParagraph.rangeEndColumn = _safe_prevCurrentCol;
                     }
 
                     state.currentDivision = undefined;
