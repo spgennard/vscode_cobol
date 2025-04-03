@@ -36,6 +36,7 @@ export enum fileformatStrategy {
     AlwaysFixed = "always_fixed",
     AlwaysVariable = "always_variable",
     AlwaysFree = "always_free",
+    AlwaysTerminal = "always_terminal",
     Normal = "normal"
 }
 
