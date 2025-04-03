@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* 6c6701c add always_free option #357
+* 65f9946 Bug Report: Outline Not Working When END PROGRAM Starts in First Column (Free-Format COBOL) #357
+* 0b80c29 add "processing procedure" to snippets
+
+## 25.3.29 
 * a725b83 add hook for "xml parse... processing procedure" to bring up a section/paragraph
 
 ## 25.3.27 
