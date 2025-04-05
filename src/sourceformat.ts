@@ -3,6 +3,7 @@ import { fileformatStrategy, ICOBOLSettings, IEditorMarginFiles } from "./iconfi
 import { ISourceHandlerLite } from "./isourcehandler";
 
 import globToRegExp = require("glob-to-regexp");
+import { getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
 const inline_sourceformat: string[] = ["sourceformat", ">>source format"];
 
@@ -71,6 +72,8 @@ export class SourceFormat {
             }
         }
 
+        var COBOLKeywordDictionary = getCOBOLKeywordDictionary(doc.getLanguageId());
+
         // check source for source format
         let linesWithJustNumbers = 0;
         let linesWithIdenticalAreaB = 0;
@@ -83,6 +86,7 @@ export class SourceFormat {
         let invalidFixedLines = 0;
         let skippedLines = 0;
         let linesGT80 = 0;
+        let keywordAtColumn0 = 0;
 
         for (let i = 0; i < maxLines; i++) {
 
@@ -99,12 +103,23 @@ export class SourceFormat {
 
             const line = lineText.toLowerCase();
             const validFixedLine = SourceFormat.isValidFixedLine(line);
+            
             if (validFixedLine) {
                 validFixedLines++;
             } else {
                 invalidFixedLines++;
             }
-
+ 
+            // free
+            const firstSpace = line.indexOf(" ");
+            let firstWord:string = firstSpace == -1 ? line : line.substring(0,firstSpace);
+            if (firstWord.endsWith(".")) {
+                firstWord = firstWord.substring(0, firstWord.length - 1);
+            }
+            if (firstWord.length !== 0 && COBOLKeywordDictionary.has(firstWord))
+            {
+                keywordAtColumn0++;
+            }
             // acu
             if (checkForTerminalFormat) {
                 if (line.startsWith("*") || line.startsWith("|") || line.startsWith("\\D")) {
@@ -166,6 +181,12 @@ export class SourceFormat {
             if (line2right.indexOf("free") !== -1) {
                 return ESourceFormat.free;
             }
+        }
+
+        // does it look like free?
+        if (keywordAtColumn0 >= 2 && invalidFixedLines >= 2)
+        {
+            defFormat = checkForTerminalFormat ? ESourceFormat.terminal : ESourceFormat.free;
         }
 
         // if we cannot be sure, then let the default be variable or terminal
