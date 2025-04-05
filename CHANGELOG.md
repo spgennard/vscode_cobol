@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* bb18823 Add some support for identifying sourceformat free Fix #357
+* c94fffa fix a odd range end problem
+* 6702fd0 add always_terminal option
+
+## 25.4.3 
 * 6c6701c add always_free option #357
 * 65f9946 Bug Report: Outline Not Working When END PROGRAM Starts in First Column (Free-Format COBOL) #357
 * 0b80c29 add "processing procedure" to snippets
