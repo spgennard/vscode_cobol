@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 3dde8d8 update packages
+
+## 25.4.5 
 * bb18823 Add some support for identifying sourceformat free Fix #357
 * c94fffa fix a odd range end problem
 * 6702fd0 add always_terminal option
