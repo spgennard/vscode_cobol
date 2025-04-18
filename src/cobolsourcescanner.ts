@@ -2915,17 +2915,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 continue;
                             }
 
-                            /* is this a reference to a variable? */
+                            /* is this a reference to a variable, constant or condition? */
                             const varTokens = this.constantsOrVariables.get(currentLower);
                             if (varTokens !== undefined) {
                                 let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
-                                let addReference = true;
                                 for (const varToken of varTokens) {
-                                    addReference = varToken.tokenType === COBOLTokenStyle.Variable ? addReference : false;
+                                    ctype = varToken.tokenType;
                                 }
-                                if (addReference) {
-                                    this.addVariableReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, ctype);
-                                }
+                                this.addVariableReference(this.sourceReferences.constantsOrVariablesReferences, currentLower, lineNumber, token.currentCol, ctype);
                             } else {
                                 // possible reference to a para or section
                                 if (currentLower.length > 0) {
