@@ -40,7 +40,7 @@ function generate_partial_graph(linesArray: string[], clickLines: string[], stat
                 linesArray.push(`${targetToken.tokenNameLower}[${targetToken.description}]`);
             }
 
-
+            let tempLines:string[] = [];
             for (const sr of targetRefs) {
                 // skip definition
                 if (sr.line === targetToken.startLine && sr.column === targetToken.startColumn) {
@@ -49,12 +49,17 @@ function generate_partial_graph(linesArray: string[], clickLines: string[], stat
 
                 if (sr.tokenStyle === COBOLTokenStyle.Paragraph || sr.tokenStyle === COBOLTokenStyle.Section) {
                     if (sr.reason === 'perform') {
-                        linesArray.push(`${targetToken.tokenNameLower} --> ${sr.nameLower}`);
+                        tempLines.push(`${targetToken.tokenNameLower} --> ${sr.nameLower}`);
                     } else {
-                        linesArray.push(`${targetToken.tokenNameLower} -->|${sr.reason}|${sr.nameLower}`);
+                        tempLines.push(`${targetToken.tokenNameLower} -->|${sr.reason}|${sr.nameLower}`);
                     }
                 }
             }
+
+            for (const item of new Set(tempLines)) {
+                linesArray.push(item);
+            }
+            
         }
     }
 }
