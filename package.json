@@ -2951,7 +2951,7 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.2",
     "@types/vscode": "^1.99.1",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
@@ -2960,7 +2960,7 @@
     "ansi-regex": ">=6.1.0",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
-    "glob": "^11.0.1",
+    "glob": "^11.0.2",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
     "mermaid": "^11.6.0",
@@ -2970,7 +2970,7 @@
     "shx": "^0.4.0",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
-    "webpack": "^5.99.6",
+    "webpack": "^5.99.7",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
