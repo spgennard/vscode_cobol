@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 5a4c525 remove duplicate lines, as these are not necessary for seeing the flow
+
+## 25.4.18 
 * 2021a85 Fix #358
 
 ## 25.4.16 
