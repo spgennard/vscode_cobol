@@ -36,6 +36,8 @@ export class CallTarget {
 const emptyMap = new Map<string, CallTarget>();
 const callTargets_cobol = new Map<string, CallTarget>();
 
+const callTargets_ilecobol = new Map<string, CallTarget>();
+
 function addApis(calltarget:Map<string, CallTarget>, a: IKnownApis) {
 	for (const [key, description] of a.apis) {
 		const possibleExample = a.examples.get(key);
@@ -57,13 +59,17 @@ function addApis(calltarget:Map<string, CallTarget>, a: IKnownApis) {
 
 addApis(callTargets_cobol, new CBL_APIs());
 addApis(callTargets_cobol, new MFUNIT_APIs());
-addApis(callTargets_cobol,new ILE_APIs());
-addApis(callTargets_cobol,new ACU_COMMON_APIs());
+addApis(callTargets_cobol, new ILE_APIs());
+
+addApis(callTargets_cobol, new ACU_COMMON_APIs());
+
+addApis(callTargets_ilecobol, new ILE_APIs());
 
 export class KnownAPIs {
 	// /* inline decl */
 	public static getCallTarget(language:string, api: string): CallTarget | undefined {
 		switch(language) {
+			case "ILECOBOL": return callTargets_ilecobol.get(api);
 			case "COBOL": return callTargets_cobol.get(api);
 		}
 		return undefined;
@@ -71,6 +77,7 @@ export class KnownAPIs {
 
 	public static getCallTargetMap(language:string): Map<string, CallTarget> {
 		switch(language) {
+			case "ILECOBOL": return callTargets_ilecobol;
 			case "COBOL": return callTargets_cobol;
 		}		
 		return emptyMap;

@@ -829,7 +829,7 @@ const cobolProcedureKeywords: string[] = [
 	"write"
 ];
 
-const cobolCOBOLITKeywords: string[] = [
+const COBOLITKeywords: string[] = [
 	"abend",
 	"accept",
 	"access",
@@ -1305,10 +1305,63 @@ const cobolCOBOLITKeywords: string[] = [
 	"zeros"
 ];
 
+const ilecobolKeywords: string[] = [
+	"acquire",
+	"alias",
+	"background-colour",
+	"beep",
+	"commitment",
+	"control-area",
+	"crt-under",
+	"cursor",
+	"db-format-name",
+	"dbcs-edited",
+	"default",
+	"described",
+	"downdrop",
+	"ebcdic",
+	"empty-check",
+	"externally-described-key",
+	"file-stream",
+	"foreground-colour",
+	"format-of",
+	"format",
+	"fromfull",
+	"indic",
+	"indicator",
+	"indicators",
+	"kanji",
+	"left-justify",
+	"length-check",
+	"library",
+	"locale",
+	"modified",
+	"none",
+	"nono-echo",
+	"null-key-map",
+	"null-map",
+	"parse",
+	"prior",
+	"right-justify",
+	"rolling",
+	"screen",
+	"secure",
+	"space-fill",
+	"starting",
+	"subfile",
+	"substitute",
+	"title",
+	"trailing-sign",
+	"transaction",
+	"vlr",
+	"zero-fill"
+]
+
 const cobolKeywordDictionaryMap = new Map<string, string>();
 const acucobolKeywordDictionaryMap = new Map<string, string>();
 const cobolitKeywordDictionaryMap = new Map<string, string>();
 const rmcobolKeywordDictionaryMap = new Map<string, string>();
+const ilecobolKeywordDictionaryMap = new Map<string,string>();
 
 export const cobolProcedureKeywordDictionary = new Map<string, string>();
 export const cobolStorageKeywordDictionary = new Map<string, string>();
@@ -1317,14 +1370,19 @@ export const cobolRegistersDictionary = new Map<string, string>();
 const cobolList: string[] = [];
 const acucobolList: string[] = [];
 const rmcobolList: string[] = [];
+const ilecobolList: string[] = [];
 
 /* inline decl */
 for (const key of cobolKeywords) {
 	cobolKeywordDictionaryMap.set(key, key);
 	acucobolKeywordDictionaryMap.set(key, key);
+	rmcobolKeywordDictionaryMap.set(key, key);
+	ilecobolKeywordDictionaryMap.set(key,key);
+	
 	cobolList.push(key);
 	acucobolList.push(key);
 	rmcobolList.push(key);
+	ilecobolList.push(key);
 }
 
 for (const key of acuKeywords) {
@@ -1341,6 +1399,13 @@ for (const key of rmKeywords) {
 	}
 }
 
+for (const key of ilecobolKeywords) {
+	if (!ilecobolKeywordDictionaryMap.has(key)) {
+		ilecobolKeywordDictionaryMap.set(key, key);
+		ilecobolList.push(key);
+	}
+}
+
 for (const key of cobolProcedureKeywords) {
 	if (!cobolProcedureKeywordDictionary.has(key)) {
 		cobolProcedureKeywordDictionary.set(key, key);
@@ -1349,6 +1414,9 @@ for (const key of cobolProcedureKeywords) {
 		}
 		if (!acucobolKeywordDictionaryMap.has(key)) {
 			acucobolList.push(key);
+		}
+		if (!ilecobolKeywordDictionaryMap.has(key)) {
+			ilecobolList.push(key);
 		}
 	}
 }
@@ -1362,6 +1430,9 @@ for (const key of cobolStorageKeywords) {
 		if (!acucobolKeywordDictionaryMap.has(key)) {
 			acucobolList.push(key);
 		}
+		if (!ilecobolKeywordDictionaryMap.has(key)) {
+			ilecobolList.push(key);
+		}
 	}
 }
 
@@ -1374,10 +1445,13 @@ for (const key of cobolRegisters) {
 		if (!acucobolKeywordDictionaryMap.has(key)) {
 			acucobolList.push(key);
 		}
+		if (!ilecobolKeywordDictionaryMap.has(key)) {
+			ilecobolList.push(key);
+		}
 	}
 }
 
-for (const key of cobolCOBOLITKeywords) {
+for (const key of COBOLITKeywords) {
 	if (!cobolitKeywordDictionaryMap.has(key)) {
 		cobolitKeywordDictionaryMap.set(key,key);
 	}
@@ -1388,6 +1462,7 @@ export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> 
 		case "ACUCOBOL" : return acucobolKeywordDictionaryMap;
 		case "COBOLIT"  : return cobolitKeywordDictionaryMap;
 		case "RMCOBOL" : return rmcobolKeywordDictionaryMap;
+		case "ILECOBOL" : return ilecobolKeywordDictionaryMap;
 		default : return cobolKeywordDictionaryMap;
 	}
 }
@@ -1396,7 +1471,8 @@ export function getCOBOLKeywordList(dialect: string): string[] {
 	switch(dialect) {
 		case "ACUCOBOL" : return acucobolList;
 		case "RMCOBOL" : return rmcobolList;
-		case "COBOLIT" : return cobolCOBOLITKeywords;
+		case "COBOLIT" : return COBOLITKeywords;
+		case "ILECOBOL" : return ilecobolList;
 		default : return cobolList;
 	}
 }

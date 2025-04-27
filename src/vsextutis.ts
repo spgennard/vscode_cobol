@@ -17,6 +17,7 @@ export class VSExtensionUtils {
             case "cobol":
             case "acucobol":
             case "rmcobol":
+            case "ilecobol":
                 return TextLanguage.COBOL;
             case "jcl":
                 return TextLanguage.JCL;

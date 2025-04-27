@@ -542,6 +542,17 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
         VSCOBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "RMCOBOL");
     }));
 
+    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_ilecobol", function () {
+        const act = vscode.window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        const settings = VSCOBOLConfiguration.get_resource_settings(act.document, VSExternalFeatures);
+        vscode.languages.setTextDocumentLanguage(act.document, "ILECOBOL");
+        VSCOBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "ILECOBOL");
+    }));
+
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_cobol", async function () {
         const act = vscode.window.activeTextEditor;
         if (act === null || act === undefined) {
@@ -818,7 +829,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            const dialects = ["COBOL", "ACUCOBOL", "RMCOBOL", "COBOLIT"];
+            const dialects = ["COBOL", "ACUCOBOL", "RMCOBOL", "ILECOBOL", "COBOLIT"];
             const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
             const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
@@ -923,6 +934,10 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
                 break;
             case "RMCOBOL":
                 context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", _settings, langid + "_2", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_5", langid));
+                break;
+            case "ILECOBOL":
+                context.subscriptions.push(getLangStatusItem("Switch to ILECOBOL", "cobolplugin.change_lang_to_ilecobol", "Change", _settings, langid + "_2", langid));
                 context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_5", langid));
                 break;
             case ExtensionDefaults.microFocusCOBOLLanguageId:

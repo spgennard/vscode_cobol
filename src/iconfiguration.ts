@@ -370,6 +370,7 @@ export class COBOLSettings implements ICOBOLSettings {
             "COBOLIT",
             "ACUCOBOL",
             "RMCOBOL",
+            "ILECOBOL",
             "COBOL_MF_LISTFILE"
         ];
 
@@ -379,6 +380,7 @@ export class COBOLSettings implements ICOBOLSettings {
             "COBOLIT",
             "ACUCOBOL",
             "RMCOBOL",
+            "ILECOBOL",
             "COBOL_MF_LISTFILE"
         ];
 

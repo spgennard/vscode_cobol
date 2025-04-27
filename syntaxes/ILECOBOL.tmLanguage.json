@@ -1,0 +1,35 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2015-2023 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/ILECOBOL.tmLanguage.json",
+  "$schema": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
+  "fileTypes": [],
+  "name": "ILECOBOL",
+  "patterns": [
+    {
+      "begin": "(?<![-_a-zA-Z0-9()-])(?i:remarks\\.)",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.ilecobol"
+        }
+      },
+      "name": "comment.1.block.ilecobol.remark",
+      "end": "(?i:end\\-remark|\\*{Bench}end|environment\\s+division|data\\s+division|working-storage\\s+section|file-control)",
+      "endCaptures": {
+        "0": {
+          "name": "keyword.ilecobol"
+        }
+      }
+    }, 
+    {
+      "match": "(?<![-_])(?i:format-of|acquire|alias|background-colour|beep|commitment|control-area|crt-under|cursor|db-format-name|dbcs-edited|default|described|downdrop|ebcdic|empty-check|externally-described-key|file-stream|foreground-colour|format|fromfull|indic|indicator|indicators|kanji|left-justify|length-check|library|locale|modified|nono-echo|none|null-key-map|null-map|parse|prior|right-justify|rolling|screen|secure|space-fill|starting|subfile|substitute|title|trailing-sign|transaction|vlr|zero-fill)(?![0-9A-Za-z_-])",
+      "name": "variable.language"
+    },
+    {
+      "include": "source.cobol"
+    },
+    {
+      "match": "(^\\\\D.*)$",
+      "name": "token.debug-token"
+    }
+  ],
+  "scopeName": "source.ilecobol"
+}
