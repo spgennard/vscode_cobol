@@ -12,6 +12,8 @@
     "cobol-it",
     "cobol",
     "cobolit",
+    "ibmi",
+    "ilecobol",
     "jcl",
     "ims",
     "mfcobol",
@@ -21,6 +23,7 @@
     "pl/i",
     "pli",
     "visual cobol",
+    "rocket cobol",
     "opentext",
     "copilot"
   ],
