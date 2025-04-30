@@ -119,6 +119,7 @@ async function setupLogChannel(hide: boolean, settings: ICOBOLSettings, quiet: b
         const githubCopilotExtension = extensions.getExtension("GitHub.copilot");
         const mfExt = extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
 
+
         if (vscode.env.uriScheme !== "vscode") {
             VSLogger.logMessage("----------------------------------------------------------------------");
             VSLogger.logMessage(`Warning: you are using a untested environment : ${vscode.env.uriScheme}`);
@@ -129,6 +130,10 @@ async function setupLogChannel(hide: boolean, settings: ICOBOLSettings, quiet: b
         }
         VSLogger.logMessage(` Platform                                   : ${os.platform}`);
         VSLogger.logMessage(` Architecture                               : ${os.arch}`);
+        VSLogger.logMessage(`  URI Scheme                                : ${vscode.env.uriScheme}`)
+        VSLogger.logMessage(`  App Name                                  : ${vscode.env.appName}`);
+        VSLogger.logMessage(`  App Host                                  : ${vscode.env.appHost}`);
+        VSLogger.logMessage(`  App Root                                  : ${vscode.env.appRoot}`);
         VSLogger.logMessage("Extension Information:");
         VSLogger.logMessage(` Extension path                             : ${thisExtension.extensionPath}`);
         VSLogger.logMessage(` Version                                    : ${thisExtension.packageJSON.version}`);

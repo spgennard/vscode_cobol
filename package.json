@@ -1679,7 +1679,8 @@
           ".pc",
           ".pci",
           ".pcx",
-          ".inc"
+          ".inc",
+          ".include"
         ],
         "configuration": "./pli.configuration.json"
       },
@@ -1704,7 +1705,11 @@
           ".hlasm",
           ".asm",
           ".mac",
-          ".mlc"
+          ".mlc",
+          ".mfs",
+          ".pcb",
+          ".assemble",
+          ".hla"
         ],
         "aliases": []
       },
