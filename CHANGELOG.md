@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 35d9a00 add extra extensions
+
+## 25.4.27 
 * 2a663de update readme
 * f7984ad Expand the ILECOBOL support
 
