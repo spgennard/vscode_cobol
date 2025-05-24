@@ -1,8 +1,9 @@
 # exit on error
 VER=$(date +'%2y.%-m.%-d')
-for i in $*
+for i in $@
 do
-	if [ x"yesterday" ]; then
+	echo i is $i
+	if [ "x$i" == "xyesterday" ]; then
 		VER=$(date -d "yesterday" +'%2y.%-m.%-d')
 	elif [ ! "x$i" == "xnobump" ]; then
 		npm version --no-git-tag-version $VER
