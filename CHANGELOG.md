@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 25.5.24, origin/main, origin/HEAD enough being silly and change name
+## 25.5.24 
+* 0e0fd00 enough being silly and change name
 * 5ba3460 fix publishit
 
 ## 25.4.30 
