@@ -1,13 +1,18 @@
 # exit on error
-if [ ! "x$1" == "xnobump" ]; then
-	VER=$(date +'%2y.%-m.%-d')
-	npm version --no-git-tag-version $VER
-	if [ $? -ne 0 ]; then
+VER=$(date +'%2y.%-m.%-d')
+for i in $*
+do
+	if [ x"yesterday" ]; then
+		VER=$(date -d "yesterday" +'%2y.%-m.%-d')
+	elif [ ! "x$i" == "xnobump" ]; then
+		npm version --no-git-tag-version $VER
+		if [ $? -ne 0 ]; then
        		exit 1
+		fi
+		git commit -m "bump" package.json
+		git push
 	fi
-	git commit -m "bump" package.json
-	git push
-fi
+done
 
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 git tag -f $PACKAGE_VERSION
