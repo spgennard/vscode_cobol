@@ -1,7 +1,11 @@
 # CHANGELOG
 
 
-## 25.4.30, origin/main, origin/HEAD add yesterday
+## 25.5.24, origin/main, origin/HEAD enough being silly and change name
+* 5ba3460 fix publishit
+
+## 25.4.30 
+* 8154546 add yesterday
 * a395c84 Update
 * 35d9a00 add extra extensions
 
