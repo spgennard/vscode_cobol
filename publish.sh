@@ -5,16 +5,19 @@ do
 	echo i is $i
 	if [ "x$i" == "xyesterday" ]; then
 		VER=$(date -d "yesterday" +'%2y.%-m.%-d')
-	elif [ ! "x$i" == "xnobump" ]; then
-		npm version --no-git-tag-version $VER
-		if [ $? -ne 0 ]; then
-       		exit 1
-		fi
-		git commit -m "bump" package.json
-		git push
+	elif [ "x$i" == "xnobump" ]; then
+		VER=""
 	fi
 done
 
+if [ ! "x$VER" = "x" ]; then
+	npm version --no-git-tag-version $VER
+	if [ $? -ne 0 ]; then
+       		exit 1
+	fi
+	git commit -m "bump" package.json
+	git push
+fi
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 git tag -f $PACKAGE_VERSION
 git push --tags --force
