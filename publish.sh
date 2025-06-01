@@ -1,5 +1,5 @@
 # exit on error
-VER=$(date +'%2y.%-m.%-d')
+VER=$(date +'%y.%-m.%-d')
 for i in $@
 do
 	echo i is $i
