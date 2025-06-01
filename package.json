@@ -2993,7 +2993,7 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.15.29",
     "@types/vscode": "^1.100.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
