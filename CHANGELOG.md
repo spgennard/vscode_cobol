@@ -1,13 +1,16 @@
 # CHANGELOG
 
+* 714ef8b update for mac
+
+## 25.5.23 
 
 ## 25.5.24 
 * 0e0fd00 enough being silly and change name
 * 5ba3460 fix publishit
+* a1a09d1 Update
+* 8154546 add yesterday
 
 ## 25.4.30 
-* 8154546 add yesterday
-* a395c84 Update
 * 35d9a00 add extra extensions
 
 ## 25.4.27 
