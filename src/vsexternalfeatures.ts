@@ -11,6 +11,7 @@ import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { FileType, Uri, workspace } from "vscode";
 import { IVSCOBOLSettings } from "./vsconfiguration";
+import { ISourceHandler } from "./isourcehandler";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
 
@@ -31,7 +32,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         return Date.now();
     }
 
-    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: IVSCOBOLSettings): string {
+    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
         return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, this);
     }
 

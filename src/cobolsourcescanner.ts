@@ -2309,7 +2309,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.endLineNumber = lineNumber;
                             state.copybook_state.startCol = currentCol;
                             state.copybook_state.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
-                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
                             if (fileName.length === 0) {
                                 continue;
                             }
@@ -3076,7 +3076,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
-            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.configHandler);
+            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
             if (fileName.length > 0) {
                 cbInfo.fileName = fileName;
             } else {
@@ -3146,7 +3146,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
                         continue;
                     }
-                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.configHandler);
+                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
                     if (fileName.length > 0) {
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);

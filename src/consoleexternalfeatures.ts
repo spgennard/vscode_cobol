@@ -8,6 +8,7 @@ import fs from "fs";
 import { IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./fileutils";
+import { ISourceHandler } from "./isourcehandler";
 
 export class ConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ConsoleExternalFeatures();
@@ -60,7 +61,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
+    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, filesHandler: ISourceHandler,  config: ICOBOLSettings): string {
         return "";
     }
 

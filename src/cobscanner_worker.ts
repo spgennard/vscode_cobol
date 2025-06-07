@@ -10,6 +10,7 @@ import util from "util";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./fileutils";
 import { ICOBOLSourceScannerEventer } from "./icobolsourcescanner";
+import { ISourceHandler } from "./isourcehandler";
 
 export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ThreadConsoleExternalFeatures();
@@ -58,7 +59,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings): string {
+    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, source: ISourceHandler, config: ICOBOLSettings): string {
         return "";
     }
 
