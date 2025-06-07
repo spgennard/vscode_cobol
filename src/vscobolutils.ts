@@ -1056,6 +1056,7 @@ export class VSCOBOLUtils {
     public static setupFilePaths(settings: ICOBOLSettings) {
         let invalidSearchDirectory: string[] = settings.invalid_copybookdirs;
         let fileSearchDirectory: string[] = settings.file_search_directory;
+        let perfile_copybookdirs: string[] = settings.perfile_copybookdirs;
 
         let extsdir = settings.copybookdirs;
         invalidSearchDirectory = settings.invalid_copybookdirs;
@@ -1152,18 +1153,23 @@ export class VSCOBOLUtils {
             }
         }
 
-        extsdir = fileSearchDirectory;
-        if (extsdir.length !== 0) {
+        if (fileSearchDirectory.length !== 0) {
             VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search:");
-            for (const sdir of extsdir) {
+            for (const sdir of fileSearchDirectory) {
                 VSLogger.logMessage("   => " + sdir);
             }
         }
 
-        extsdir = invalidSearchDirectory;
-        if (extsdir.length !== 0) {
-            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
-            for (const sdir of extsdir) {
+        if (perfile_copybookdirs.length !== 0) {
+            VSLogger.logMessage("  Per File CopyBook directories (" + perfile_copybookdirs.length + ")");
+            for (const sdir of perfile_copybookdirs) {
+                VSLogger.logMessage("   => " + sdir);
+            }
+        }
+
+        if (invalidSearchDirectory.length !== 0) {
+            VSLogger.logMessage("  Invalid CopyBook directories (" + invalidSearchDirectory.length + ")");
+            for (const sdir of invalidSearchDirectory) {
                 VSLogger.logMessage("   => " + sdir);
             }
         }
@@ -1230,18 +1236,16 @@ export class VSCOBOLUtils {
             }
         }
 
-        const extdirURL = URLSearchDirectory;
-        if (extdirURL.length !== 0) {
+        if (URLSearchDirectory.length !== 0) {
             VSLogger.logMessage("  Combined Workspace and CopyBook Folders to search (URL):");
-            for (const sdir of extdirURL) {
+            for (const sdir of URLSearchDirectory) {
                 VSLogger.logMessage("   => " + sdir);
             }
         }
 
-        extsdir = invalidSearchDirectory;
-        if (extsdir.length !== 0) {
-            VSLogger.logMessage("  Invalid CopyBook directories (" + extsdir.length + ")");
-            for (const sdir of extsdir) {
+        if (invalidSearchDirectory.length !== 0) {
+            VSLogger.logMessage("  Invalid CopyBook directories (" + invalidSearchDirectory.length + ")");
+            for (const sdir of invalidSearchDirectory) {
                 VSLogger.logMessage("   => " + sdir);
             }
         }

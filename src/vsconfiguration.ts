@@ -70,7 +70,7 @@ export class VSCOBOLConfiguration {
         settings.copybooks_nested = editorHelper.getBoolean("copybooks_nested", false);
         settings.outline = editorHelper.isOutlineEnabled();
         settings.config_copybookdirs = editorConfig.get<string[]>("copybookdirs", []);
-        settings.copybookdirs = editorHelper.getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs);
+        settings.copybookdirs = editorHelper.getCopybookdirs_defaults(externalFeatures, settings.invalid_copybookdirs, settings.perfile_copybookdirs);
         settings.pre_scan_line_limit = editorHelper.getPreScanLineLimit();
         settings.copybookexts = editorHelper.getCopybookExts();
         settings.program_extensions = editorHelper.getProgram_extensions();
@@ -430,7 +430,7 @@ class VSCOBOLConfigurationHelper {
         return process.platform === "win32" ? ";" : ":";
     }
 
-    public getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSearchDirectory: string[]): string[] {
+    public getCopybookdirs_defaults(externalFeatures: IExternalFeatures, invalidSearchDirectory: string[], perFileDirs: string[]): string[] {
         let dirs = this.editorConfig.get<string[]>("copybookdirs");
         if (!dirs || (dirs !== null && dirs.length === 0)) {
             dirs = this.DEFAULT_COPYBOOK_DIR;
@@ -444,7 +444,7 @@ class VSCOBOLConfigurationHelper {
                 externalFeatures.logMessage(` non portable copybook directory ${dir} defined`);
             }
 
-            /* remove ${workspaceFolder} */
+            /* expand ${env:}} */
             dir = this.expandEnvVars(dir);
 
             // eslint-disable-next-line no-template-curly-in-string
@@ -456,6 +456,12 @@ class VSCOBOLConfigurationHelper {
                 if (dir.startsWith("/") || dir.startsWith("\\")) {
                     dir = dir.substring(1).trim();
                 }
+            }
+
+            // does it container a per file element?
+            if (dir.indexOf("${filnameDirname}") !== -1) {
+                perFileDirs.push(dir);
+                continue;
             }
 
             // ignore empty elements

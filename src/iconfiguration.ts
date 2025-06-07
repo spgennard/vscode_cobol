@@ -48,6 +48,7 @@ export interface ICOBOLSettings {
     copybookdirs: string[];
     config_copybookdirs: string[];
     invalid_copybookdirs: string[];
+    perfile_copybookdirs: string[];
     copybookexts: string[];
     program_extensions: string[];
     tabstops: number[];
@@ -183,6 +184,7 @@ export class COBOLSettings implements ICOBOLSettings {
     copybookdirs: string[];
     config_copybookdirs: string[];
     invalid_copybookdirs: string[];
+    perfile_copybookdirs: string[];
     copybookexts: string[];
     program_extensions: string[];
     tabstops: number[];
@@ -317,6 +319,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.outline = outlineFlag.Off;
         this.copybookdirs = [];
         this.config_copybookdirs = [];
+        this.perfile_copybookdirs = [];
         this.copybookexts = [];
         this.program_extensions = [];
         this.invalid_copybookdirs = [];
