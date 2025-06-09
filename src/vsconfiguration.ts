@@ -459,7 +459,7 @@ class VSCOBOLConfigurationHelper {
             }
 
             // does it container a per file element?
-            if (dir.indexOf("${filnameDirname}") !== -1) {
+            if (dir.indexOf("${filenameDirname}") !== -1) {
                 perFileDirs.push(dir);
                 continue;
             }

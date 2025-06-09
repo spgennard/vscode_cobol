@@ -33,7 +33,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
-        return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, this);
+        return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, source.getFilename(), this);
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types

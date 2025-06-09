@@ -48,12 +48,12 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
         return undefined;
     }
-    
+
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const locations: vscode.Location[] = [];
 
         const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-        const qcp: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document,config);
+        const qcp: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {
             return this.resolveDefinitionsFallback(true, document, pos, ct);
         }
@@ -154,8 +154,9 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             inDirectory = inDirItems;
         }
 
+        var sourceFilename = doc.fileName;
         if (filename !== null && filename.length !== 0) {
-            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename.trim(), inDirectory, config, this.features);
+            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename.trim(), inDirectory, config, sourceFilename, this.features);
             if (fullPath.length !== 0) {
                 return new vscode.Location(
                     Uri.file(fullPath),
@@ -171,7 +172,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             const wordText = wordRange ? doc.getText(wordRange) : "";
             if (wordText !== undefined && wordText.length !== 0) {
                 for (const possibleFilename of wordText.split(" ")) {
-                    const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, this.features);
+                    const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, sourceFilename, this.features);
                     if (fullPath.length !== 0) {
                         if (this.features.isFile(fullPath) && !this.features.isDirectory(fullPath)) {
                             return new vscode.Location(
@@ -188,7 +189,33 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     }
 
-    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: IVSCOBOLSettings, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: IVSCOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
+
+        if (config.perfile_copybookdirs.length !== 0) {
+            // filenameDirname
+            var filenameDirname = path.dirname(sourceFilename);
+            for (var _perCopydir of config.perfile_copybookdirs) {
+                var perFileDir = _perCopydir.replace("${filenameDirname}", filenameDirname);
+                /* check for the file as is.. */
+                const firstPossibleFile = path.join(perFileDir, filename);
+                if (features.isFile(firstPossibleFile)) {
+                    return firstPossibleFile;
+                }
+
+                const hasDot = filename.indexOf(".");
+                /* no extension? */
+                if (hasDot === -1) {
+                    // search through the possible extensions
+                    for (const ext of config.copybookexts) {
+                        const possibleFile = path.join(perFileDir, filename + "." + ext);
+
+                        if (features.isFile(possibleFile)) {
+                            return possibleFile;
+                        }
+                    }
+                }
+            }
+        }
 
         if (inDirectory === null || inDirectory.length === 0) {
             const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);
