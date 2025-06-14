@@ -35,7 +35,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.100.0"
+    "vscode": "^1.101.0"
   },
   "extensionKind": [
     "workspace"
@@ -2993,20 +2993,20 @@
     "@types/glob": "^8.1.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.15.29",
-    "@types/vscode": "^1.100.0",
+    "@types/node": "^24.0.1",
+    "@types/vscode": "^1.101.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/test-web": "^0.0.69",
-    "@vscode/vsce": "^3.4.2",
+    "@vscode/test-web": "^0.0.70",
+    "@vscode/vsce": "^3.5.0",
     "ansi-regex": ">=6.1.0",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
-    "glob": "^11.0.2",
+    "glob": "^11.0.3",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
     "mermaid": "^11.6.0",
-    "mocha": "^11.5.0",
+    "mocha": "^11.6.0",
     "nth-check": ">=2.1.1",
     "process": "^0.11.10",
     "shx": "^0.4.0",
@@ -3016,13 +3016,14 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@vscode-elements/elements-lite": "^0.3.0",
+    "@vscode-elements/elements-lite": "^0.4.0",
     "ansi-regex": ">=6.1.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "glob-to-regexp": "^0.4.1",
     "js-base64": "^3.7.7",
     "memfs": "^4.17.2",
+    "npm-check-updates": "^18.0.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "performance-now": "2.1.0",
