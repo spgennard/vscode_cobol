@@ -39,6 +39,7 @@ rm -f *.vsix
 mkdir .vscode-test 2>/dev/null && true
 [ -d "../.vscode_test" ] && cp -r ../.vscode-test .
 
-npm-check-updates
+./node_modules/.bin/ncu
+
 
 echo "use: ncu -u"
