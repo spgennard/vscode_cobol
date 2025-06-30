@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 25.6.14 
 * 4f2d9bd Continue work on #360 - basic search, need to review caching
 * fcb9bcc move per file settings into a different list
 * 87649e4 Expand copybook interface to include sourcehandler, in prep for #360
