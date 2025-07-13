@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 0e7fa3d keep current
+
+## 25.6.30 
 
 ## 25.6.14 
 * 4f2d9bd Continue work on #360 - basic search, need to review caching
