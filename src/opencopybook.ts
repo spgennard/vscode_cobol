@@ -192,10 +192,10 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: IVSCOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
 
         if (config.perfile_copybookdirs.length !== 0) {
-            // filenameDirname
-            var filenameDirname = path.dirname(sourceFilename);
+            // fileDirname
+            var fileDirname = path.dirname(sourceFilename);
             for (var _perCopydir of config.perfile_copybookdirs) {
-                var perFileDir = _perCopydir.replace("${filenameDirname}", filenameDirname);
+                var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
                 /* check for the file as is.. */
                 const firstPossibleFile = path.join(perFileDir, filename);
                 if (features.isFile(firstPossibleFile)) {
