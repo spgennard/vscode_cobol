@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* e4a9e91 Updates for #361
+* c6c09b9 Change reference
+* 60be46b Fix #361 - Use change filenameDirname to fileDirname
+
+## 25.7.13 
 * 0e7fa3d keep current
 
 ## 25.6.30 
