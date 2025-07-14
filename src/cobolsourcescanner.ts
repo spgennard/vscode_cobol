@@ -438,6 +438,7 @@ export class copybookState implements IReplaceState {
     public isTrailing = false;
     public isLeading = false;
     public fileName = "";
+    public fileNameMod:BigInt = BigInt(0);
     public isPseudoTextDelimiter = false;
     public saved01Group: COBOLToken | undefined;
 
@@ -3077,12 +3078,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
             const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
-            if (fileName.length > 0) {
-                cbInfo.fileName = fileName;
-            } else {
+            if (fileName.length === 0) {
                 return false;
             }
-
+            cbInfo.fileName = fileName;
+            cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName);
+        
             copyToken.extraInformation1 = fileName;
             if (this.sourceReferences !== undefined) {
                 if (this.parse_copybooks_for_references && fileName.length > 0) {

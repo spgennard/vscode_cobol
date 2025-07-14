@@ -15,7 +15,7 @@ import { ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./icobolsourcesc
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InMemoryCache_SourceScanner: Map<string, ICOBOLSourceScanner> = new Map<string, ICOBOLSourceScanner>();
 
-const InProgress: Map<string,number> = new Map<string,number>();
+const InProgress: Map<string, number> = new Map<string, number>();
 
 export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEvents {
     private st: COBOLSymbolTable | undefined;
@@ -114,6 +114,30 @@ export class VSCOBOLSourceScanner {
                 InMemoryCache_SourceScanner.delete(fileName);
                 cachedObject = undefined;
             }
+            if (cachedObject !== undefined) {
+                let useCache = true;
+                for (const [, cbInfo] of cachedObject.copyBooksUsed) {
+                    if (!cbInfo.scanComplete) {
+                        continue;
+                    }
+
+                    if (cbInfo.statementInformation !== undefined) {
+                        var cpyFile = cbInfo.statementInformation.fileName;
+                        // if file case gone..
+                        if (cachedObject.externalFeatures.isFile(cpyFile) === false) {
+                            useCache = false;
+                        } else if (cachedObject.externalFeatures.getFileModTimeStamp(cpyFile) !== cbInfo.statementInformation.fileNameMod) {
+                            useCache = false;
+                        }
+                    }
+                }
+
+                if (!useCache) {
+                    cachedObject.externalFeatures.logMessage(`Copybook has changed for ${fileName} `);
+                    InMemoryCache_SourceScanner.delete(fileName);
+                    cachedObject = undefined;
+                }
+            }
         }
 
         // in memory document is out of sync with the on-disk document, so reparsing it
@@ -147,8 +171,8 @@ export class VSCOBOLSourceScanner {
                 const startTime = VSExternalFeatures.performance_now();
                 const qcpd = new COBOLSourceScanner(
                     startTime,
-                    sourceHandler, 
-                    config, 
+                    sourceHandler,
+                    config,
                     new SharedSourceReferences(config, true, startTime),
                     config.parse_copybooks_for_references,
                     cacheData ? new COBOLSymbolTableGlobalEventHelper(config) : EmptyCOBOLSourceScannerEventHandler.Default,
@@ -158,14 +182,14 @@ export class VSCOBOLSourceScanner {
                 if (qcpd.scanAborted === false) {
                     const elapsedTime = VSExternalFeatures.performance_now() - startTime;
                     const elapsedTimeF2 = elapsedTime.toFixed(2);
-                    const linesPerSeconds = (lineCount / (elapsedTime/1000)).toFixed(2);
+                    const linesPerSeconds = (lineCount / (elapsedTime / 1000)).toFixed(2);
 
                     // if over 3seconds
                     if (elapsedTime > 3000) {
                         VSLogger.logMessage(` - Parsing of ${sourceHandler.getShortWorkspaceFilename()} complete ${elapsedTimeF2}ms / ${linesPerSeconds}ls `);
                     }
-                    
-                    if (1+InMemoryCache_SourceScanner.size >= config.in_memory_cache_size) {
+
+                    if (1 + InMemoryCache_SourceScanner.size >= config.in_memory_cache_size) {
                         // drop the smallest..
                         let smallest = Number.MAX_VALUE;
                         let dropKey = "";
