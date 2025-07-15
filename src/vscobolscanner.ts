@@ -122,12 +122,12 @@ export class VSCOBOLSourceScanner {
                     }
 
                     if (cbInfo.statementInformation !== undefined) {
-                        useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures) == false;
+                        useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures, config) == false;
                     }
                 }
 
                 if (!useCache) {
-                    cachedObject.externalFeatures.logMessage(`Copybook has changed for ${fileName} `);
+//                    cachedObject.externalFeatures.logMessage(`Copybook has changed for ${fileName} `);
                     InMemoryCache_SourceScanner.delete(fileName);
                     cachedObject = undefined;
                 }

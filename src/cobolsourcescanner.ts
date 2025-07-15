@@ -460,7 +460,7 @@ export class COBOLCopybookToken {
         this.statementInformation = statementInformation;
     }
 
-    public hasCopybookChanged(features: IExternalFeatures) {
+    public hasCopybookChanged(features: IExternalFeatures, configHandler: ICOBOLSettings) {
         if (this.statementInformation !== undefined) {
             var cpyFile = this.statementInformation.fileName;
             // if file case gone..
@@ -469,6 +469,13 @@ export class COBOLCopybookToken {
             }
             if (features.getFileModTimeStamp(cpyFile) !== this.statementInformation.fileNameMod) {
                 return true;
+            }
+
+            if (this.token !== undefined) {
+                const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.token.tokenName, this.token.extraInformation1, this.token.sourceHandler, configHandler);
+                if (newFileName !== this.statementInformation.fileName) {
+                    return true;
+                }
             }
         }
 
@@ -2329,7 +2336,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             if (fileName.length === 0) {
                                 continue;
                             }
-                            copyToken.extraInformation1 = fileName;
                             state.copybook_state.fileName = fileName;
                             const copybookToken = new COBOLCopybookToken(copyToken, false, state.copybook_state);
                             this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
@@ -3098,8 +3104,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
             cbInfo.fileName = fileName;
             cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName);
-
-            copyToken.extraInformation1 = fileName;
             if (this.sourceReferences !== undefined) {
                 if (this.parse_copybooks_for_references && fileName.length > 0) {
                     cbInfo.fileName = fileName;
