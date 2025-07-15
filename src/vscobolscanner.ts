@@ -122,13 +122,7 @@ export class VSCOBOLSourceScanner {
                     }
 
                     if (cbInfo.statementInformation !== undefined) {
-                        var cpyFile = cbInfo.statementInformation.fileName;
-                        // if file case gone..
-                        if (cachedObject.externalFeatures.isFile(cpyFile) === false) {
-                            useCache = false;
-                        } else if (cachedObject.externalFeatures.getFileModTimeStamp(cpyFile) !== cbInfo.statementInformation.fileNameMod) {
-                            useCache = false;
-                        }
+                        useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures) == false;
                     }
                 }
 
