@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* a38ac00 check to see if the copybook is resolved to new location #361
+* 264b8ce refactor #361
+
+## 25.7.14 
 * e4a9e91 Updates for #361
 * c6c09b9 Change reference
 * 60be46b Fix #361 - Use change filenameDirname to fileDirname
