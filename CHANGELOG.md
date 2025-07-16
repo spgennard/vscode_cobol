@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 68643c0 Add back filenameDirname #361
+
+## 25.7.15 
 * a38ac00 check to see if the copybook is resolved to new location #361
 * 264b8ce refactor #361
 
