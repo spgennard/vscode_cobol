@@ -458,6 +458,11 @@ class VSCOBOLConfigurationHelper {
                 }
             }
 
+            // migrate filenameDirname to fileDirname
+            if (dir.indexOf("${filenameDirname}")) {
+                dir = dir.replace("filenameDirname", "fileDirname");
+            }
+
             // does it container a per file element?
             if (dir.indexOf("${fileDirname}") !== -1) {
                 perFileDirs.push(dir);
