@@ -196,7 +196,8 @@ const known_problem_extensions: [string, string, boolean][] = [
     ["Inline completion provider causes problems with this extension", "bloop.bloop-write", false],
     ["Language provider of COBOL/PLI that is not supported with extension", "heirloomcomputinginc", true],
     ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "jsaila.coboler", false],
-    ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "zokugun.cobol-folding", false]
+    ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "zokugun.cobol-folding", false],
+    ["COBOL Formatter that does not support RocketCOBOL","kopo-formatter", false]
 ];
 
 
@@ -301,7 +302,8 @@ function checkExtensions(): [string, boolean, boolean] {
                             fatalEditorConflict = editor_confict;
                         }
                     } else {
-                        if (idLower.startsWith(known_problem_extension.toLowerCase())) {
+                        if (idLower.startsWith(known_problem_extension.toLowerCase()) ||
+                            idLower.endsWith(known_problem_extension.toLowerCase())) {
                             reason.push(`contributes '${type_of_extension}'`);
                             if (type_of_extension.includes("debugger")) {
                                 conflictingDebuggerFound = true;
