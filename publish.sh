@@ -32,7 +32,9 @@ git clean -fdx
 npm install
 git push
 #npm run beforepublish
+rm -f *.vsix
 vsce publish
+ovsx publish *.vsix
 #npm run afterpublish
 rm -f *.vsix
 
