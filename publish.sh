@@ -34,6 +34,7 @@ git push
 #npm run beforepublish
 rm -f *.vsix
 vsce publish
+vsce package
 ovsx publish *.vsix
 #npm run afterpublish
 rm -f *.vsix
