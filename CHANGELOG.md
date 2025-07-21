@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* ef53b65 add in-compatible formatter
+
+## 25.7.16 
 * 68643c0 Add back filenameDirname #361
 
 ## 25.7.15 
