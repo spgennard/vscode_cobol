@@ -53,6 +53,23 @@ export class SplitTokenizer {
                 continue;
             }
 
+            if (c == '=') {
+                // double ==
+                if (1 + i < lineLength && input.charAt(1 + i) === "=") {
+                    currentArgument += "==";
+                    i++;
+                    continue;
+                }
+                if (currentArgument.length !== 0) {
+                    ret.push(currentArgument);
+                    currentArgument = "";
+                }
+                // single =
+                ret.push("" + c);
+                currentArgument = "";
+                continue;             
+            }
+
             // handle : or ::
             if (c === ":") {
                 if (currentArgument.length !== 0) {
