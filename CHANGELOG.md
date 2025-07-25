@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* ed45d2d Ensure ==xx== is one token #362
+
+## 25.7.21 
 * e6b110c Update
 * ef53b65 add in-compatible formatter
 
