@@ -886,8 +886,8 @@
           "items": {
             "type": "string",
             "title": "Valid Visual Studio COBOL Language Id",
-            "pattern": "(^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL$|^COBOL_MF_LISTFILE|^BITLANG-COBOL$)",
-            "patternErrorMessage": "Invalid language id, can be COBOL, COBOLIT, ACUCOBOL, RMCOBOL or COBOL_MF_LISTFILE"
+            "pattern": "(^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL$|^COBOL_MF_LISTFILE$|^BITLANG-COBOL$|^ILECOBOL$)",
+            "patternErrorMessage": "Invalid language id, can be COBOL, COBOLIT, ACUCOBOL, RMCOBOL or COBOL_MF_LISTFILE or ILECOBOL"
           },
           "default": [
             "COBOL",
