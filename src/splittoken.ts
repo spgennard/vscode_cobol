@@ -6,6 +6,7 @@ export class SplitTokenizer {
     public static splitArgument(input: string, ret: string[]): void {
         let inQuote = false;
         let inQuoteSingle = false;
+        let inDoubleEquals = false;
         const lineLength = input.length;
         let currentArgument = "";
 
@@ -33,8 +34,26 @@ export class SplitTokenizer {
                 continue;
             }
 
+            if (c == '=') {
+                // double ==
+                if (1 + i < lineLength && input.charAt(1 + i) === "=") {
+                    currentArgument += "==";
+                    inDoubleEquals = !inDoubleEquals;
+                    i++;
+                    continue;
+                }
+                if (currentArgument.length !== 0) {
+                    ret.push(currentArgument);
+                    currentArgument = "";
+                }
+                // single =
+                ret.push("" + c);
+                currentArgument = "";
+                continue;             
+            }
+
             // include all items in string
-            if (inQuote || inQuoteSingle) {
+            if (inQuote || inQuoteSingle || inDoubleEquals) {
                 currentArgument += c;
                 continue;
             }
@@ -53,22 +72,6 @@ export class SplitTokenizer {
                 continue;
             }
 
-            if (c == '=') {
-                // double ==
-                if (1 + i < lineLength && input.charAt(1 + i) === "=") {
-                    currentArgument += "==";
-                    i++;
-                    continue;
-                }
-                if (currentArgument.length !== 0) {
-                    ret.push(currentArgument);
-                    currentArgument = "";
-                }
-                // single =
-                ret.push("" + c);
-                currentArgument = "";
-                continue;             
-            }
 
             // handle : or ::
             if (c === ":") {

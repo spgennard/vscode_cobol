@@ -1889,17 +1889,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.constantsOrVariables.set(lowerCaseVariable, tokens);
     }
 
-    private cleanupReplaceToken(token: string, rstate: IReplaceState): string {
+    private cleanupReplaceToken(token: string): [string, boolean] {
         if (token.endsWith(",")) {
             token = token.substring(0, token.length - 1);
         }
 
         if (token.startsWith("==") && token.endsWith("==")) {
-            rstate.isPseudoTextDelimiter = true;
-            return token.substring(2, token.length - 2);
+            return [token.substring(2, token.length - 2), true];
         }
 
-        return token;
+        return [token, false];
     }
 
     private parseLineByLine(lineNumber: number, prevToken: StreamTokens, line: string): StreamTokens {
@@ -2167,8 +2166,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                     state.replaceRight += current;
                                 }
                                 if (!state.captureReplaceLeft && current.endsWith("==")) {
-                                    state.replaceMap.set(this.cleanupReplaceToken("" + state.replaceRight, state.replace_state),
-                                        new replaceToken(this.cleanupReplaceToken("" + state.replaceLeft, state.replace_state), state.replace_state));
+                                    let cleanedUpRight = this.cleanupReplaceToken("" + state.replaceRight);
+                                    let cleanedUpLeft = this.cleanupReplaceToken("" + state.replaceLeft);
+                                    let rs = new replaceState();
+                                    if (cleanedUpLeft[1] || cleanedUpRight[1])
+                                        rs.isPseudoTextDelimiter = true;
+                                    else
+                                        rs.isPseudoTextDelimiter = false;
+
+                                    state.replaceMap.set(cleanedUpRight[0], new replaceToken(cleanedUpLeft[0], rs));
                                     state.replaceLeft = state.replaceRight = "";
                                     state.captureReplaceLeft = true;
                                 }
@@ -2220,9 +2226,15 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 }
                                 if (cbState.isReplacingBy) {
                                     if (this.configHandler.enable_text_replacement) {
-                                        cbState.copyReplaceMap.set(
-                                            this.cleanupReplaceToken("" + current, cbState),
-                                            new replaceToken(this.cleanupReplaceToken("" + cbState.replaceLeft, cbState), cbState));
+                                        let cleanedUpRight = this.cleanupReplaceToken("" + current);
+                                        let cleanedUpLeft = this.cleanupReplaceToken("" + cbState.replaceLeft);
+                                        let rs = new replaceState();
+                                        if (cleanedUpLeft[1] || cleanedUpRight[1])
+                                            rs.isPseudoTextDelimiter = true;
+                                        else
+                                            rs.isPseudoTextDelimiter = false;
+
+                                        cbState.copyReplaceMap.set(cleanedUpRight[0], new replaceToken(cleanedUpLeft[0], rs));
                                     }
                                     cbState.isReplacingBy = false;
                                     cbState.isReplacing = true;
