@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 408360f Continue work on #362
+* bb98f6e fix regex for langs
+
+## 25.7.25 
 * ed45d2d Ensure ==xx== is one token #362
 
 ## 25.7.21 
