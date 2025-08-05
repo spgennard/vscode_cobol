@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 25.8.5, origin/main, origin/HEAD 
 * ba78a93 Add found references in copybooks, when text replacement is okay, may need more tweaks #362
 
 ## 25.7.28 
