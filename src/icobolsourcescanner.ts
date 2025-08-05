@@ -48,7 +48,7 @@ export interface ICOBOLSourceScanner{
     workspaceFile: COBOLWorkspaceFile;
     readonly parse_copybooks_for_references: boolean;
     readonly scan_comments_for_hints: boolean;
-    readonly isSourceDepCopyBook: boolean;
+    readonly isFromScanCommentsForReferences: boolean;
     readonly scan_comment_for_ls_control: boolean;
     readonly copybookNestedInSection: boolean;
     readonly configHandler: ICOBOLSettings;

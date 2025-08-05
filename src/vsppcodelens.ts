@@ -22,7 +22,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
     private scanTargetUse(settings: ICOBOLSettings, document: vscode.TextDocument, lens: vscode.CodeLens[], current: ICOBOLSourceScanner, target: string, targetToken: COBOLToken) {
         // not interested
-        if (targetToken.isTokenFromSourceDependancyCopyBook || targetToken.ignoreInOutlineView) {
+        if (targetToken.isFromScanCommentsForReferences || targetToken.ignoreInOutlineView) {
             return;
         }
 
@@ -70,7 +70,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                 for (const [avar, vars] of current.constantsOrVariables) {
                     for (const currentVar of vars) {
                         const currentToken = currentVar.token;
-                        if (currentToken.isTokenFromSourceDependancyCopyBook || currentToken.ignoreInOutlineView) {
+                        if (currentToken.isFromScanCommentsForReferences || currentToken.ignoreInOutlineView) {
                             continue;
                         }
 

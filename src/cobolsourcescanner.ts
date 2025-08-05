@@ -101,7 +101,7 @@ export class COBOLToken {
     public inSection: COBOLToken | undefined;
 
     public readonly sourceHandler: ISourceHandler;
-    public readonly isTokenFromSourceDependancyCopyBook: boolean;
+    public readonly isFromScanCommentsForReferences: boolean;
 
     public readonly isImplicitToken;
 
@@ -114,7 +114,7 @@ export class COBOLToken {
         parentToken: COBOLToken | undefined,
         inProcedureDivision: boolean,
         extraInformation1: string,
-        isTokenFromSourceDependancyCopyBook: boolean,
+        isFromScanCommentsForReferences: boolean,
         isImplicitToken: boolean) {
 
         this.sourceHandler = sourceHandler;
@@ -135,7 +135,7 @@ export class COBOLToken {
         this.extraInformation1 = extraInformation1;
         this.inSection = undefined;
 
-        this.isTokenFromSourceDependancyCopyBook = isTokenFromSourceDependancyCopyBook;
+        this.isFromScanCommentsForReferences = isFromScanCommentsForReferences;
         this.isImplicitToken = isImplicitToken;
 
         this.rangeStartLine = this.startLine;
@@ -184,18 +184,18 @@ export class SourceReference_Via_Length {
     public readonly column: number;
     public readonly length: number;
     public tokenStyle: COBOLTokenStyle;
-    public readonly isSourceDepCopyBook: boolean;
+    public readonly isFromScanCommentsForReferences: boolean;
     public readonly name: string;
     public readonly nameLower: string;
     public readonly reason: string;;
 
-    public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle, isSourceDepCopyBook: boolean, name: string, reason: string) {
+    public constructor(fileIdentifer: number, line: number, column: number, length: number, tokenStyle: COBOLTokenStyle, isFromScanCommentsForReferences: boolean, name: string, reason: string) {
         this.fileIdentifer = fileIdentifer;
         this.line = line;
         this.column = column;
         this.length = length;
         this.tokenStyle = tokenStyle;
-        this.isSourceDepCopyBook = isSourceDepCopyBook;
+        this.isFromScanCommentsForReferences = isFromScanCommentsForReferences;
         this.name = name;
         this.nameLower = name.toLowerCase();
         this.reason = reason;
@@ -816,7 +816,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     public readonly parse_copybooks_for_references: boolean;
     public readonly scan_comments_for_hints: boolean;
-    public readonly isSourceDepCopyBook: boolean;
+    public readonly isFromScanCommentsForReferences: boolean;
     public readonly scan_comment_for_ls_control: boolean;
 
     readonly copybookNestedInSection: boolean;
@@ -872,7 +872,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private static ScanUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: ICOBOLSourceScanner,
-        isSourceDepCopyBook: boolean
+        isFromScanCommentsForReferences: boolean
     ): void {
 
         const configHandler = parentSource.configHandler;
@@ -906,7 +906,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             parse_copybooks_for_references,
             eventHandler,
             externalFeatures,
-            isSourceDepCopyBook);
+            isFromScanCommentsForReferences);
 
         // unless the state has been replaces
         if (state.current01Group === undefined) {
@@ -931,7 +931,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         parse_copybooks_for_references: boolean,
         sourceEventHandler: ICOBOLSourceScannerEvents,
         externalFeatures: IExternalFeatures,
-        isSourceDepCopyBook: boolean) {
+        isFromScanCommentsForReferences: boolean) {
         const filename = sourceHandler.getFilename();
 
         this.sourceHandler = sourceHandler;
@@ -943,7 +943,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.eventHandler = sourceEventHandler;
         this.externalFeatures = externalFeatures;
         this.scan_comments_for_hints = configHandler.scan_comments_for_hints;
-        this.isSourceDepCopyBook = isSourceDepCopyBook;
+        this.isFromScanCommentsForReferences = isFromScanCommentsForReferences;
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.scan_comment_for_ls_control = configHandler.scan_comment_for_ls_control;
@@ -1271,7 +1271,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     let ttype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                     let addReference = true;
                     for (const token of possibleTokens) {
-                        if (token.ignoreInOutlineView == false || token.token.isTokenFromSourceDependancyCopyBook) {
+                        if (this.configHandler.enable_text_replacement == true)
+                        {
+                            addReference = true;
+                        }
+                        else if (token.ignoreInOutlineView == false || token.token.isFromScanCommentsForReferences) {
                             ttype = (token.tokenType === COBOLTokenStyle.Unknown) ? ttype : token.tokenType;
                         } else {
                             addReference = false;
@@ -1326,7 +1330,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        if (foundSectionToken.isTokenFromSourceDependancyCopyBook) {
+        if (foundSectionToken.isFromScanCommentsForReferences) {
             return true;
         }
 
@@ -1339,7 +1343,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        if (foundParagraph.isTokenFromSourceDependancyCopyBook) {
+        if (foundParagraph.isFromScanCommentsForReferences) {
             return true;
         }
 
@@ -1403,7 +1407,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const ctoken = new COBOLToken(
             this.sourceHandler,
             this.sourceHandler.getUriAsString(), this.filename, tokenType, startLine, startColumn, token, description, parentToken, state.inProcedureDivision, extraInformation1,
-            this.isSourceDepCopyBook,
+            this.isFromScanCommentsForReferences,
             isImplicitToken);
         ctoken.ignoreInOutlineView = state.ignoreInOutlineView;
         ctoken.inSection = state.currentSection;
@@ -1804,13 +1808,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
             if (duplicateFound === false) {
-                lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, lowerCaseVariable, ""));
+                lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, lowerCaseVariable, ""));
             }
             return true;
         }
 
         const sourceRefs: SourceReference_Via_Length[] = [];
-        sourceRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, lowerCaseVariable, ""));
+        sourceRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, lowerCaseVariable, ""));
         referencesMap.set(lowerCaseVariable, sourceRefs);
         return true;
     }
@@ -1831,7 +1835,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isSourceDepCopyBook, _targetReference, reason);
+        const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, _targetReference, reason);
         const state = this.sourceReferences.state;
         let inSectionOrParaToken = state.currentParagraph !== undefined ? state.currentParagraph : state.currentSection;
 
@@ -2382,7 +2386,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                         let addReference = true;
                         for (const varToken of varTokens) {
-                            if (varToken.ignoreInOutlineView === false || varToken.token.isTokenFromSourceDependancyCopyBook) {
+                            if (varToken.ignoreInOutlineView === false || varToken.token.isFromScanCommentsForReferences) {
                                 ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                             } else {
                                 addReference = false;
@@ -3000,7 +3004,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 let ctype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                                 let addReference = true;
                                 for (const varToken of varTokens) {
-                                    if (varToken.ignoreInOutlineView === false || varToken.token.isTokenFromSourceDependancyCopyBook) {
+                                    if (varToken.ignoreInOutlineView === false || varToken.token.isFromScanCommentsForReferences) {
                                         ctype = (varToken.tokenType === COBOLTokenStyle.Unknown) ? ctype : varToken.tokenType;
                                     } else {
                                         addReference = false;

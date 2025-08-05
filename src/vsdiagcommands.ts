@@ -5,8 +5,10 @@ export class VSDiagCommands {
 
     private static dumpSymbol(depth: string, symbol: vscode.DocumentSymbol) {
         const symbolKind = vscode.SymbolKind[symbol.kind];
-
-        VSLogger.logMessage(`${depth} Symbol : "${symbol.name}" of ${symbolKind} "${symbol.detail}" (${symbol.tags})`);
+        const detail = symbol.detail !== undefined && symbol.detail.length !== 0 ? ` "{symbol.detail}` : "";
+        const tag = symbol.tags !== undefined ? ` (${symbol.tags})` : "";
+        
+        VSLogger.logMessage(`${depth} Symbol : "${symbol.name}" of ${symbolKind} ${detail}${tag}`);
         for (const childSymbol of symbol.children) {
             VSDiagCommands.dumpSymbol(depth + " ", childSymbol);
         }
