@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* ba78a93 Add found references in copybooks, when text replacement is okay, may need more tweaks #362
+
+## 25.7.28 
 * 408360f Continue work on #362
 * bb98f6e fix regex for langs
 
