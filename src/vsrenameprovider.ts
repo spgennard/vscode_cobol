@@ -42,12 +42,16 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
         const sourceRefs: SharedSourceReferences = this.sourceRefs;
 
         if (qp.constantsOrVariables.has(workLower)) {
-            const consMaps = new Map<string,vscode.Range>();
-
+            const consMaps = new Map<string, vscode.Range>();
+            let safeToRename = true;
             const paraVariables: COBOLVariable[] | undefined = qp.constantsOrVariables.get(workLower);
             if (paraVariables !== undefined) {
                 for (let ptref = 0; ptref < paraVariables.length; ptref++) {
                     const paraToken = paraVariables[ptref].token;
+                    if (paraToken.ignoreInOutlineView) {
+                        safeToRename = false;
+                        continue;
+                    }
                     const uri: vscode.Uri = vscode.Uri.parse(paraToken.filenameAsURI);
 
                     const startPos = new vscode.Position(paraToken.startLine, paraToken.startColumn);
@@ -61,8 +65,43 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                     }
                 }
 
-                if (sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
+                if (safeToRename && sourceRefs.constantsOrVariablesReferences.has(workLower) === true) {
                     const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.constantsOrVariablesReferences.get(workLower);
+                    if (targetRefs !== undefined) {
+
+                        for (let trpos = 0; trpos < targetRefs.length; trpos++) {
+                            const tref = targetRefs[trpos];
+                            const uri = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
+                            const startPos = new vscode.Position(tref.line, tref.column);
+                            const endPos = new vscode.Position(tref.line, tref.column + tref.length);
+                            const range = new vscode.Range(startPos, endPos);
+                            const constMapKey = `${tref.line}_${tref.column}`;
+                            if (consMaps.has(constMapKey) === false) {
+                                consMaps.set(constMapKey, range);
+                                edits.delete(uri, range);
+                                edits.insert(uri, startPos, newName);
+                            }
+                        }
+                    }
+                }
+                if (!safeToRename) {
+                    vscode.window.showWarningMessage(`Sorry, Unable to rename ${word}, maybe part of a copoybook/replacing`);
+                }
+            }
+        }
+
+        if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
+            if (sourceRefs.targetReferences.has(workLower) === true) {
+                const consMaps = new Map<string, vscode.Range>();
+                let safeToRename = true;
+                if (qp.paragraphs.has(workLower) && qp.paragraphs.get(workLower)?.ignoreInOutlineView) {
+                    safeToRename = false;
+                }
+                if (qp.sections.has(workLower) && qp.sections.get(workLower)?.ignoreInOutlineView) {
+                    safeToRename = false;
+                }
+                if (safeToRename) {
+                    const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.targetReferences.get(workLower);
                     if (targetRefs !== undefined) {
                         for (let trpos = 0; trpos < targetRefs.length; trpos++) {
                             const tref = targetRefs[trpos];
@@ -79,20 +118,39 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                         }
                     }
                 }
+                if (!safeToRename) {
+                    vscode.window.showWarningMessage(`Sorry, Unable to rename ${word}, maybe part of a copoybook/replacing`);
+                }
             }
         }
 
-        if (qp.paragraphs.has(workLower) || qp.sections.has(workLower)) {
-            if (sourceRefs.targetReferences.has(workLower) === true) {
-                const consMaps = new Map<string,vscode.Range>();
+        if (qp.execSQLDeclare.has(workLower)) {
+            const sqlDeclare = qp.execSQLDeclare.get(workLower);
+            if (sqlDeclare && sqlDeclare.sourceReferences.length > 0) {
+                let safeToRename = true;
+                if (qp.execSQLDeclare.has(workLower) && qp.execSQLDeclare.get(workLower)?.ignoreInOutlineView) {
+                    safeToRename = false;
+                }
+                if (safeToRename) {
+                    const consMaps = new Map<string, vscode.Range>();
 
-                const targetRefs: SourceReference_Via_Length[] | undefined = sourceRefs.targetReferences.get(workLower);
-                if (targetRefs !== undefined) {
-                    for (let trpos = 0; trpos < targetRefs.length; trpos++) {
-                        const tref = targetRefs[trpos];
+                    const sqldefToken = sqlDeclare.token;
+                    const sqldefText = sqldefToken.sourceHandler.getText(sqldefToken.rangeStartLine, sqldefToken.rangeStartColumn, sqldefToken.rangeEndLine, sqldefToken.rangeEndColumn).replace(word, newName);
+                    const uriDef = vscode.Uri.parse(sqldefToken.filenameAsURI);
+                    const startPosDef = new vscode.Position(sqldefToken.rangeStartLine, sqldefToken.rangeStartColumn);
+                    const endPosDef = new vscode.Position(sqldefToken.rangeEndLine, sqldefToken.rangeEndColumn);
+                    const rangeDef = new vscode.Range(startPosDef, endPosDef);
+                    const constMapKey = `${sqldefToken.rangeStartLine}_${sqldefToken.rangeStartColumn}`;
+                    if (consMaps.has(constMapKey) === false) {
+                        consMaps.set(constMapKey, rangeDef);
+                        edits.delete(uriDef, rangeDef);
+                        edits.insert(uriDef, startPosDef, sqldefText);
+                    }
+
+                    for (const tref of sqlDeclare.sourceReferences) {
                         const uri = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
                         const startPos = new vscode.Position(tref.line, tref.column);
-                        const endPos = new vscode.Position(tref.line, tref.column + tref.length);
+                        const endPos = new vscode.Position(tref.endLine, tref.endColumn);
                         const range = new vscode.Range(startPos, endPos);
                         const constMapKey = `${tref.line}_${tref.column}`;
                         if (consMaps.has(constMapKey) === false) {
@@ -102,38 +160,8 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                         }
                     }
                 }
-            }
-        }
-
-        if (qp.execSQLDeclare.has(workLower)) {
-            const sqlDeclare = qp.execSQLDeclare.get(workLower);
-            if (sqlDeclare && sqlDeclare.sourceReferences.length > 0 ) {
-                const consMaps = new Map<string,vscode.Range>();
-
-                const sqldefToken = sqlDeclare.token;
-                const sqldefText = sqldefToken.sourceHandler.getText(sqldefToken.rangeStartLine, sqldefToken.rangeStartColumn, sqldefToken.rangeEndLine, sqldefToken.rangeEndColumn).replace(word,newName);
-                const uriDef = vscode.Uri.parse(sqldefToken.filenameAsURI);
-                const startPosDef = new vscode.Position(sqldefToken.rangeStartLine, sqldefToken.rangeStartColumn);
-                const endPosDef = new vscode.Position(sqldefToken.rangeEndLine, sqldefToken.rangeEndColumn);
-                const rangeDef = new vscode.Range(startPosDef, endPosDef);
-                const constMapKey = `${sqldefToken.rangeStartLine}_${sqldefToken.rangeStartColumn}`;
-                if (consMaps.has(constMapKey) === false) {
-                    consMaps.set(constMapKey, rangeDef);
-                    edits.delete(uriDef, rangeDef);
-                    edits.insert(uriDef, startPosDef, sqldefText);
-                }
-
-                for (const tref of sqlDeclare.sourceReferences) {
-                    const uri = vscode.Uri.parse(sourceRefs.filenameURIs[tref.fileIdentifer]);
-                    const startPos = new vscode.Position(tref.line, tref.column);
-                    const endPos = new vscode.Position(tref.endLine, tref.endColumn);
-                    const range = new vscode.Range(startPos, endPos);
-                    const constMapKey = `${tref.line}_${tref.column}`;
-                    if (consMaps.has(constMapKey) === false) {
-                        consMaps.set(constMapKey, range);
-                        edits.delete(uri, range);
-                        edits.insert(uri, startPos, newName);
-                    }
+                if (!safeToRename) {
+                    vscode.window.showWarningMessage(`Sorry, Unable to rename ${word}, maybe part of a copoybook/replacing`);
                 }
             }
         }
