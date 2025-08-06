@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 31e2e51 Ensure rename only works on visible fields/sections/paras
 
-## 25.8.5, origin/main, origin/HEAD 
+## 25.8.5 
+* cb2f456 Update
 * ba78a93 Add found references in copybooks, when text replacement is okay, may need more tweaks #362
 
 ## 25.7.28 
