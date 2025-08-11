@@ -58,34 +58,36 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             return this.resolveDefinitionsFallback(true, document, pos, ct);
         }
 
-        for (const [, b] of qcp.copyBooksUsed) {
-            const st = b.statementInformation;
-            if (st !== undefined) {
-                const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
-                if (stPos.contains(pos)) {
-                    if (document.uri.scheme === "file") {
-                        if (st.fileName.length !== 0) {
-                            return new vscode.Location(
-                                Uri.file(st.fileName),
-                                new Range(new Position(0, 0), new Position(0, 0))
-                            );
-                        }
-                    } else {
-                        if (st.isIn) {
-                            const uri4copybook = await this.getURIForCopybookInDirectory(st.copyBook, st.literal2, VSExternalFeatures, config);
-                            if (uri4copybook !== undefined) {
+        for (const [, bs] of qcp.copyBooksUsed) {
+            for (const b of bs) {
+                const st = b.statementInformation;
+                if (st !== undefined) {
+                    const stPos = new Range(new Position(st.startLineNumber, st.startCol), new Position(st.endLineNumber, st.endCol));
+                    if (stPos.contains(pos)) {
+                        if (document.uri.scheme === "file") {
+                            if (st.fileName.length !== 0) {
                                 return new vscode.Location(
-                                    uri4copybook,
+                                    Uri.file(st.fileName),
                                     new Range(new Position(0, 0), new Position(0, 0))
                                 );
                             }
                         } else {
-                            const uri4copybook = await this.getURIForCopybook(st.copyBook, VSExternalFeatures, config);
-                            if (uri4copybook !== undefined) {
-                                return new vscode.Location(
-                                    uri4copybook,
-                                    new Range(new Position(0, 0), new Position(0, 0))
-                                );
+                            if (st.isIn) {
+                                const uri4copybook = await this.getURIForCopybookInDirectory(st.copyBook, st.literal2, VSExternalFeatures, config);
+                                if (uri4copybook !== undefined) {
+                                    return new vscode.Location(
+                                        uri4copybook,
+                                        new Range(new Position(0, 0), new Position(0, 0))
+                                    );
+                                }
+                            } else {
+                                const uri4copybook = await this.getURIForCopybook(st.copyBook, VSExternalFeatures, config);
+                                if (uri4copybook !== undefined) {
+                                    return new vscode.Location(
+                                        uri4copybook,
+                                        new Range(new Position(0, 0), new Position(0, 0))
+                                    );
+                                }
                             }
                         }
                     }

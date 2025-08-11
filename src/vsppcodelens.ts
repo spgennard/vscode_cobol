@@ -29,7 +29,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         const refs = current.sourceReferences.targetReferences.get(target);
         if (refs !== undefined && settings.enable_codelens_section_paragraph_references) {
             const tupRefs = current.sourceReferences.getReferenceInformation4targetRefs(target, current.sourceFileId, targetToken.startLine, targetToken.startColumn);
-            
+
             // no references found
             if (tupRefs[0] === 0 || tupRefs[1] === 0) {
                 return;
@@ -38,7 +38,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             const refCount = tupRefs[1];
             const refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
             const r = new vscode.Range(new vscode.Position(targetToken.rangeStartLine, targetToken.rangeStartColumn),
-                                       new vscode.Position(targetToken.rangeEndLine, targetToken.rangeEndColumn));
+                new vscode.Position(targetToken.rangeEndLine, targetToken.rangeEndColumn));
 
             const cl = new vscode.CodeLens(r);
             cl.command = {
@@ -57,7 +57,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         const lens: vscode.CodeLens[] = [];
 
         const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-         const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
         if (current === undefined) {
             return lens;
         }
@@ -75,7 +75,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         }
 
                         const tupRefs = current.sourceReferences.getReferenceInformation4variables(avar, sourceFileId, currentToken.startLine, currentToken.startColumn);
-                        
+
                         // no references found
                         if (tupRefs[0] === 0 || tupRefs[1] === 0) {
                             continue;
@@ -87,7 +87,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                             //refCountMsg = `View references [${currentToken.tokenName}]`;
                             refCountMsg = `View references`;
                         }
-                        
+
                         const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),
                             new vscode.Position(currentToken.rangeEndLine, currentToken.rangeEndColumn));
 
@@ -122,46 +122,48 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
         // codelens for simple copy replacing
         if (settings.enable_codelens_copy_replacing) {
-            for (const [, cbInfo] of current.copyBooksUsed) {
-                if (!cbInfo.scanComplete) {
-                    continue;
-                }
-                if (cbInfo.statementInformation !== undefined && cbInfo.statementInformation.copyReplaceMap.size !== 0) {
-                    const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
-                    const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
-                        new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));
-                    const cl = new vscode.CodeLens(r);
-                    let src = "";
-                    let prevSrc = "";
-                    let prevMaxLines = 10;
-                    if (cbInfo.statementInformation.sourceHandler !== undefined) {
-                        for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
-                            src += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                            src += "\n";
-                            if (prevMaxLines > 0) {
-                                prevSrc += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                                prevSrc += "\n";
-                                --prevMaxLines;
+            for (const [, cbInfos] of current.copyBooksUsed) {
+                for (const cbInfo of cbInfos) {
+                    if (!cbInfo.scanComplete) {
+                        continue;
+                    }
+                    if (cbInfo.statementInformation !== undefined && cbInfo.statementInformation.copyReplaceMap.size !== 0) {
+                        const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
+                        const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
+                            new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));
+                        const cl = new vscode.CodeLens(r);
+                        let src = "";
+                        let prevSrc = "";
+                        let prevMaxLines = 10;
+                        if (cbInfo.statementInformation.sourceHandler !== undefined) {
+                            for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
+                                src += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                                src += "\n";
+                                if (prevMaxLines > 0) {
+                                    prevSrc += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
+                                    prevSrc += "\n";
+                                    --prevMaxLines;
+                                }
                             }
                         }
-                    }
 
-                    if (prevMaxLines <= 0) {
-                        prevSrc += "\n......";
-                    }
+                        if (prevMaxLines <= 0) {
+                            prevSrc += "\n......";
+                        }
 
-                    if (src.length !== 0) {
-                        const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
+                        if (src.length !== 0) {
+                            const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
 
-                        cl.command = {
-                            title: "View copybook repacement",
-                            tooltip: prevSrc,
-                            command: "cobolplugin.ppcodelenaction",
-                            arguments: [arg]
-                        };
-                        this.resolveCodeLens(cl, token);
+                            cl.command = {
+                                title: "View copybook repacement",
+                                tooltip: prevSrc,
+                                command: "cobolplugin.ppcodelenaction",
+                                arguments: [arg]
+                            };
+                            this.resolveCodeLens(cl, token);
 
-                        lens.push(cl);
+                            lens.push(cl);
+                        }
                     }
                 }
             }

@@ -495,7 +495,7 @@ export class SharedSourceReferences {
     public readonly sharedConstantsOrVariables: Map<string, COBOLVariable[]>;
     public readonly sharedSections: Map<string, COBOLToken>;
     public readonly sharedParagraphs: Map<string, COBOLToken>;
-    public readonly copyBooksUsed: Map<string, COBOLCopybookToken>;
+    public readonly copyBooksUsed: Map<string, COBOLCopybookToken[]>;
     public readonly execSQLDeclare: Map<string, SQLDeclare>;
     public state: ParseState;
     public tokensInOrder: COBOLToken[];
@@ -516,7 +516,7 @@ export class SharedSourceReferences {
         this.sharedConstantsOrVariables = new Map<string, COBOLVariable[]>();
         this.sharedSections = new Map<string, COBOLToken>();
         this.sharedParagraphs = new Map<string, COBOLToken>();
-        this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
+        this.copyBooksUsed = new Map<string, COBOLCopybookToken[]>();
         this.execSQLDeclare = new Map<string, SQLDeclare>();
         this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
@@ -623,7 +623,7 @@ export class ParseState {
     currentLevel: COBOLToken | undefined;
     currentProgramTarget: CallTargetInformation;
 
-    copyBooksUsed: Map<string, COBOLToken | undefined>;
+    copyBooksUsed: Map<string, COBOLCopybookToken[]>;
 
     procedureDivision: COBOLToken | undefined;
     declaratives: COBOLToken | undefined;
@@ -685,7 +685,7 @@ export class ParseState {
         this.currentProgramTarget = new CallTargetInformation("", undefined, false, []);
         this.programs = [];
         this.captureDivisions = true;
-        this.copyBooksUsed = new Map<string, COBOLToken>();
+        this.copyBooksUsed = new Map<string, COBOLCopybookToken[]>();
         this.pickFields = false;
         this.inProcedureDivision = false;
         this.inDeclaratives = false;
@@ -788,7 +788,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public readonly functionTargets: Map<string, CallTargetInformation>;
     public readonly classes: Map<string, COBOLToken>;
     public readonly methods: Map<string, COBOLToken>;
-    public readonly copyBooksUsed: Map<string, COBOLCopybookToken>;
+    public readonly copyBooksUsed: Map<string, COBOLCopybookToken[]>;
 
     public readonly diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
     public readonly portWarnings: portResult[];
@@ -869,12 +869,18 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         );
     }
 
-    private static ScanUncachedInlineCopybook(
+
+    copybookDepths: ICOBOLSourceScanner[] = [];
+
+    private ScanUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: ICOBOLSourceScanner,
         isFromScanCommentsForReferences: boolean
-    ): void {
-
+    ): boolean {
+        if (this.copybookDepths.length > 32) {
+            return false;
+        }
+        this.copybookDepths.push(parentSource);
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
 
@@ -922,6 +928,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             state.procedureDivision = prevProcedureDivision;
             state.prevEndsWithDot = prevPrevEndsWithDot;
         }
+
+        this.copybookDepths.pop();
+
+        return true;
     }
 
     public constructor(
@@ -947,7 +957,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.scan_comment_for_ls_control = configHandler.scan_comment_for_ls_control;
-        this.copyBooksUsed = new Map<string, COBOLCopybookToken>();
+        this.copyBooksUsed = new Map<string, COBOLCopybookToken[]>();
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
         this.constantsOrVariables = new Map<string, COBOLVariable[]>();
@@ -998,7 +1008,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const state: ParseState = this.sourceReferences.state;
 
         /* mark this has been processed (to help copy of self) */
-        state.copyBooksUsed.set(this.filename, undefined);
+        state.copyBooksUsed.set(this.filename, [COBOLCopybookToken.Null]);
         if (this.sourceReferences.topLevel) {
             this.lastModifiedTime = externalFeatures.getFileModTimeStamp(this.filename);
         }
@@ -1271,8 +1281,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     let ttype: COBOLTokenStyle = COBOLTokenStyle.Variable;
                     let addReference = true;
                     for (const token of possibleTokens) {
-                        if (this.configHandler.enable_text_replacement == true)
-                        {
+                        if (this.configHandler.enable_text_replacement == true) {
                             addReference = true;
                         }
                         else if (token.ignoreInOutlineView == false || token.token.isFromScanCommentsForReferences) {
@@ -2354,7 +2363,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             }
                             state.copybook_state.fileName = fileName;
                             const copybookToken = new COBOLCopybookToken(copyToken, false, state.copybook_state);
-                            this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
+                            this.copyBooksUsed.set(trimmedCopyBook, [copybookToken]);
                             const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                             const prevIgnoreInOutlineView = state.ignoreInOutlineView;
                             state.ignoreInOutlineView = true;
@@ -2363,12 +2372,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             const prevRepMap = state.replaceMap;
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, false);
+                            const isOkay = this.ScanUncachedInlineCopybook(qfile, this, false)
                             state.ignoreInOutlineView = prevIgnoreInOutlineView;
                             state.replaceMap = prevRepMap;
                             this.sourceReferences.topLevel = currentTopLevel;
                             copybookToken.scanComplete = true;
                             state.inCopy = false;
+                            if (!isOkay) {
+                                const diagMessage = `Unable perform inline sql include ${trimmedCopyBook}`;
+                                this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
+                            }
                         }
                         continue;
                     }
@@ -3111,46 +3124,49 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         state.inCopy = false;
 
-        if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
-            const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
-            this.copyBooksUsed.set(trimmedCopyBook, copybookToken);
-            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
-            if (fileName.length === 0) {
-                return false;
+        const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
+
+
+        const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
+        if (fileName.length === 0) {
+            return false;
+        }
+
+        cbInfo.fileName = fileName;
+        cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName);
+        if (this.copyBooksUsed.has(fileName) === false) {
+            this.copyBooksUsed.set(fileName, [copybookToken]);
+        } else {
+            const copybooks = this.copyBooksUsed.get(fileName);
+            if (copybooks != null) {
+                copybooks.push(copybookToken)
             }
-            cbInfo.fileName = fileName;
-            cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName);
-            if (this.sourceReferences !== undefined) {
-                if (this.parse_copybooks_for_references && fileName.length > 0) {
-                    cbInfo.fileName = fileName;
-                    if (this.copyBooksUsed.has(fileName) === false) {
+        }
+        if (this.sourceReferences !== undefined) {
+            if (this.parse_copybooks_for_references && fileName.length > 0) {
+                cbInfo.fileName = fileName;
+                const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
+                const currentTopLevel = this.sourceReferences.topLevel;
+                this.sourceReferences.topLevel = false;
 
-                        // move the source version of the copybook
-                        this.copyBooksUsed.delete(trimmedCopyBook);
+                const prevRepMap = state.replaceMap;
 
-                        // add the specific version
-                        this.copyBooksUsed.set(fileName, copybookToken);
-                        const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
-                        const currentTopLevel = this.sourceReferences.topLevel;
-                        this.sourceReferences.topLevel = false;
-
-                        const prevRepMap = state.replaceMap;
-
-                        if (this.configHandler.enable_text_replacement) {
-                            state.replaceMap = new Map<string, replaceToken>([...cbInfo.copyReplaceMap, ...prevRepMap]);
-                        }
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, false);
-                        state.replaceMap = prevRepMap;
-                        this.sourceReferences.topLevel = currentTopLevel;
-                        copybookToken.scanComplete = true;
-                    }
-                } else {
-                    if (this.parse_copybooks_for_references && this.configHandler.linter_ignore_missing_copybook === false) {
-                        const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
-                        this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
-                    }
+                if (this.configHandler.enable_text_replacement) {
+                    state.replaceMap = new Map<string, replaceToken>([...cbInfo.copyReplaceMap, ...prevRepMap]);
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                if (this.ScanUncachedInlineCopybook(qfile, this, false) == false) {
+                    const diagMessage = `Unable perform inline copybook scan ${trimmedCopyBook}`;
+                    this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
+                }
+                state.replaceMap = prevRepMap;
+                this.sourceReferences.topLevel = currentTopLevel;
+                copybookToken.scanComplete = true;
+            }
+        } else {
+            if (this.parse_copybooks_for_references && this.configHandler.linter_ignore_missing_copybook === false) {
+                const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
+                this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
             }
         }
 
@@ -3185,14 +3201,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
                     if (fileName.length > 0) {
                         if (this.copyBooksUsed.has(fileName) === false) {
-                            this.copyBooksUsed.set(fileName, COBOLCopybookToken.Null);
+                            this.copyBooksUsed.set(fileName, [COBOLCopybookToken.Null]);
 
                             const qfile = new FileSourceHandler(this.configHandler, possRegExe, fileName, this.externalFeatures);
                             const currentTopLevel = this.sourceReferences.topLevel;
                             this.sourceReferences.topLevel = false;
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            COBOLSourceScanner.ScanUncachedInlineCopybook(qfile, this, this.configHandler.scan_comments_for_references);
+                            if (this.ScanUncachedInlineCopybook(qfile, this, this.configHandler.scan_comments_for_references) == false) {
+                                const diagMessage = `${startOfTokenFor}: Unable to process inline copybook ${filenameTrimmed} specified in embedded comment`;
+                                this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber, filenameTrimmed));
+                            }
                             this.sourceReferences.topLevel = currentTopLevel;
                         }
                     } else {

@@ -116,18 +116,20 @@ export class VSCOBOLSourceScanner {
             }
             if (cachedObject !== undefined) {
                 let useCache = true;
-                for (const [, cbInfo] of cachedObject.copyBooksUsed) {
-                    if (!cbInfo.scanComplete) {
-                        continue;
-                    }
+                for (const [, cbInfos] of cachedObject.copyBooksUsed) {
+                    for (const cbInfo of cbInfos) {
+                        if (!cbInfo.scanComplete) {
+                            continue;
+                        }
 
-                    if (cbInfo.statementInformation !== undefined) {
-                        useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures, config) == false;
+                        if (cbInfo.statementInformation !== undefined) {
+                            useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures, config) == false;
+                        }
                     }
                 }
 
                 if (!useCache) {
-//                    cachedObject.externalFeatures.logMessage(`Copybook has changed for ${fileName} `);
+                    //                    cachedObject.externalFeatures.logMessage(`Copybook has changed for ${fileName} `);
                     InMemoryCache_SourceScanner.delete(fileName);
                     cachedObject = undefined;
                 }
