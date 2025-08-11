@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 1e0c387 tweak to handle multiple copybooks with repalcing
+
+## 25.8.6 
 * 31e2e51 Ensure rename only works on visible fields/sections/paras
 
 ## 25.8.5 
