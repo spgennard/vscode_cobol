@@ -870,17 +870,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
 
-    copybookDepths: ICOBOLSourceScanner[] = [];
-
     private ScanUncachedInlineCopybook(
         sourceHandler: ISourceHandler,
         parentSource: ICOBOLSourceScanner,
         isFromScanCommentsForReferences: boolean
     ): boolean {
-        if (this.copybookDepths.length > 32) {
-            return false;
-        }
-        this.copybookDepths.push(parentSource);
         const configHandler = parentSource.configHandler;
         const sharedSource = parentSource.sourceReferences;
 
@@ -928,8 +922,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             state.procedureDivision = prevProcedureDivision;
             state.prevEndsWithDot = prevPrevEndsWithDot;
         }
-
-        this.copybookDepths.pop();
 
         return true;
     }
@@ -2278,9 +2270,18 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (state.inCopy) {
                             state.copybook_state.endLineNumber = lineNumber;
                             state.copybook_state.endCol = token.currentCol + token.currentToken.length;
-                            if (!this.processCopyBook(state.copybook_state)) {
-                                state.current01Group = state.copybook_state.saved01Group;
+                            if (this.processCopyBook(state.copybook_state) === false) {
+                                let extra = "";
+                                if (COBOLSourceScanner.copybookDepths.length >= 32)
+                                {
+                                    extra = "due to copybook processing depth limit";
+                                }
+                                const trimmedCopyBook = state.copybook_state.trimmedCopyBook;
+                                const diagMessage = `Unable process copybook ${extra}: ${trimmedCopyBook}`;
+                                this.generalWarnings.push(new COBOLFileSymbol(this.filename, state.copybook_state.startLineNumber, diagMessage));
+                                this.externalFeatures.logMessage(diagMessage);
                             }
+                            state.current01Group = state.copybook_state.saved01Group;
                         }
                         state.inCopy = false;
                     }
@@ -3090,7 +3091,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     }
 
+    static copybookDepths: copybookState[] = [];
+
     private processCopyBook(cbInfo: copybookState): boolean {
+        if (COBOLSourceScanner.copybookDepths.length > 32) {
+            return false;
+        }
+        COBOLSourceScanner.copybookDepths.push(cbInfo);
+
         const state: ParseState = this.sourceReferences.state;
 
         let copyToken: COBOLToken | undefined = undefined;
@@ -3129,6 +3137,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
         if (fileName.length === 0) {
+            COBOLSourceScanner.copybookDepths.pop();
             return false;
         }
 
@@ -3170,6 +3179,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
 
+        COBOLSourceScanner.copybookDepths.pop();
         return true;
     }
 
@@ -3210,14 +3220,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             if (this.ScanUncachedInlineCopybook(qfile, this, this.configHandler.scan_comments_for_references) == false) {
                                 const diagMessage = `${startOfTokenFor}: Unable to process inline copybook ${filenameTrimmed} specified in embedded comment`;
-                                this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber, filenameTrimmed));
+                                this.generalWarnings.push(new COBOLFileSymbol(sourceFilename, sourceLineNumber, diagMessage));
                             }
                             this.sourceReferences.topLevel = currentTopLevel;
                         }
                     } else {
                         if (this.configHandler.linter_ignore_missing_copybook === false) {
                             const diagMessage = `${startOfTokenFor}: Unable to locate copybook ${filenameTrimmed} specified in embedded comment`;
-                            this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(sourceFilename, sourceLineNumber, filenameTrimmed));
+                            this.generalWarnings.push(new COBOLFileSymbol(sourceFilename, sourceLineNumber, diagMessage));
                         }
                     }
                 }
