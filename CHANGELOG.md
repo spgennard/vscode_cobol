@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* e846f85 tweak recursive handling limit on copybooks
+
+## 25.8.11 
 * 1e0c387 tweak to handle multiple copybooks with repalcing
 
 ## 25.8.6 
