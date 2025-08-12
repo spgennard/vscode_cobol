@@ -174,6 +174,8 @@ export interface ICOBOLSettings {
     file_search_directory: string[];
 
     enable_program_information: boolean;
+
+    copybook_scan_depth: number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -311,6 +313,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_program_information: boolean;
     
+    copybook_scan_depth: number;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -424,5 +428,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.file_search_directory = [];
 
         this.enable_program_information = false;
+        this.copybook_scan_depth = 32;
     }
 }

@@ -2272,9 +2272,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.endCol = token.currentCol + token.currentToken.length;
                             if (this.processCopyBook(state.copybook_state) === false) {
                                 let extra = "";
-                                if (COBOLSourceScanner.copybookDepths.length >= 32)
+                                if (COBOLSourceScanner.copybookDepths.length >= this.configHandler.copybook_scan_depth)
                                 {
-                                    extra = "due to copybook processing depth limit";
+                                    extra = `due to copybook processing depth limit (${this.configHandler.copybook_scan_depth})`;
                                 }
                                 const trimmedCopyBook = state.copybook_state.trimmedCopyBook;
                                 const diagMessage = `Unable process copybook ${extra}: ${trimmedCopyBook}`;
@@ -3094,7 +3094,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     static copybookDepths: copybookState[] = [];
 
     private processCopyBook(cbInfo: copybookState): boolean {
-        if (COBOLSourceScanner.copybookDepths.length > 32) {
+        if (COBOLSourceScanner.copybookDepths.length > this.configHandler.copybook_scan_depth) {
             return false;
         }
         COBOLSourceScanner.copybookDepths.push(cbInfo);

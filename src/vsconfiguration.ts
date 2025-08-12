@@ -216,6 +216,8 @@ export class VSCOBOLConfiguration {
         settings.scan_comment_end_ls_ignore = editorHelper.getString("scan_comment_end_ls_ignore", settings.scan_comment_end_ls_ignore);
 
         settings.enable_program_information = editorHelper.getBoolean("enable_program_information", settings.enable_program_information);
+
+        settings.copybook_scan_depth = editorConfig.get<number>("copybook_scan_depth", settings.copybook_scan_depth);
         return settings;
     }
 

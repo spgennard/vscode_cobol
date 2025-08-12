@@ -1271,6 +1271,11 @@
           "description": "When enabled, turn on call hierarchy provider (WIP)",
           "default": false,
           "scope": "resource"
+        },
+        "coboleditor.copybook_scan_depth" : {
+          "type": "number",
+          "description": "Copybook scanning depth limit",
+          "default": 32
         }
       }
     },
