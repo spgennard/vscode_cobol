@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* d9b3759 move static depth info to copybook state
+* 8695ffa add config for copybook depth limit
+
+## 25.8.12 
 * e846f85 tweak recursive handling limit on copybooks
 
 ## 25.8.11 
