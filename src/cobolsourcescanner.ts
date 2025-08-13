@@ -3101,6 +3101,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         if (cbInfo.copybookDepths.length > this.configHandler.copybook_scan_depth) {
             return false;
         }
+
         cbInfo.copybookDepths.push(cbInfo);
 
         const state: ParseState = this.sourceReferences.state;
@@ -3154,6 +3155,23 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 copybooks.push(copybookToken)
             }
         }
+
+        let count=0;
+        for(const cbi of cbInfo.copybookDepths)
+        {
+            if (cbi.fileName === cbInfo.fileName)
+            {
+                count++;
+            }
+        }
+
+        if (count >= 2)
+        {
+            this.externalFeatures.logMessage(`Possible recursive COPYBOOK ${cbInfo.fileName}`);
+            cbInfo.copybookDepths.pop();
+            return false;
+        }
+        
         if (this.sourceReferences !== undefined) {
             if (this.parse_copybooks_for_references && fileName.length > 0) {
                 cbInfo.fileName = fileName;
@@ -3181,6 +3199,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
             }
         }
+
 
         cbInfo.copybookDepths.pop();
         return true;
