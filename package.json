@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "25.8.12",
+  "version": "25.8.13",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1272,7 +1272,7 @@
           "default": false,
           "scope": "resource"
         },
-        "coboleditor.copybook_scan_depth" : {
+        "coboleditor.copybook_scan_depth": {
           "type": "number",
           "description": "Copybook scanning depth limit",
           "default": 32
