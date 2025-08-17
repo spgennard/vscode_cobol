@@ -1396,6 +1396,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const state: ParseState = this.sourceReferences.state;
         let startColumn = currentCol;
         if (tokenType !== COBOLTokenStyle.CopyBook && tokenType !== COBOLTokenStyle.CopyBookInOrOf) {
+            // if (currentCol === 0) {
             startColumn = _line.indexOf(token, currentCol);
             if (startColumn === -1) {
                 startColumn = _line.indexOf(token);
@@ -2870,10 +2871,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
                                 if (prevToken !== "88") {
                                     state.currentLevel = ctoken;
-                                }
-
-
-                                if (prevToken === "01" || prevToken === "1") {
                                     // adjust group to include level number
                                     if (ctoken.rangeStartColumn > prevCurrentCol) {
                                         ctoken.rangeStartColumn = prevCurrentCol;
