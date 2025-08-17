@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* ac41465 tweak dump symbols
+* e6d7a21 add some copybook recursion checking, so we are not relying on the depth limit checks
+
+## 25.8.13 
 * d9b3759 move static depth info to copybook state
 * 8695ffa add config for copybook depth limit
 
