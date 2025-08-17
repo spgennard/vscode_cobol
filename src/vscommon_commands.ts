@@ -904,11 +904,12 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
     }));
 
 
+    const _settings = VSCOBOLConfiguration.get_workspace_settings();
+
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.dumpAllSymbols", async function () {
-        await VSDiagCommands.DumpAllSymbols();
+        await VSDiagCommands.DumpAllSymbols(_settings);
     }));
 
-    const _settings = VSCOBOLConfiguration.get_workspace_settings();
     const langIds = _settings.valid_cobol_language_ids;
     const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
     if (mfExt) {
