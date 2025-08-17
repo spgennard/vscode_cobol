@@ -1394,14 +1394,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         extraInformation1: string, isImplicitToken: boolean): COBOLToken {
 
         const state: ParseState = this.sourceReferences.state;
-        let startColumn = _line.indexOf(token, currentCol);
-        if (startColumn === -1) {
-            startColumn = _line.indexOf(token);
+        let startColumn = currentCol;
+        if (tokenType !== COBOLTokenStyle.CopyBook && tokenType !== COBOLTokenStyle.CopyBookInOrOf) {
+            startColumn = _line.indexOf(token, currentCol);
             if (startColumn === -1) {
-                if (currentCol <= _line.length) {
-                    startColumn = currentCol;
-                } else {
-                    startColumn = 0;
+                startColumn = _line.indexOf(token);
+                if (startColumn === -1) {
+                    if (currentCol <= _line.length) {
+                        startColumn = currentCol;
+                    } else {
+                        startColumn = 0;
+                    }
                 }
             }
         }
@@ -2272,8 +2275,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.endCol = token.currentCol + token.currentToken.length;
                             if (this.processCopyBook(state.copybook_state) === false) {
                                 let extra = "";
-                                if (state.copybook_state.copybookDepths.length >= this.configHandler.copybook_scan_depth)
-                                {
+                                if (state.copybook_state.copybookDepths.length >= this.configHandler.copybook_scan_depth) {
                                     extra = `due to copybook processing depth limit (${this.configHandler.copybook_scan_depth})`;
                                 }
                                 const trimmedCopyBook = state.copybook_state.trimmedCopyBook;
@@ -3156,22 +3158,19 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
 
-        let count=0;
-        for(const cbi of cbInfo.copybookDepths)
-        {
-            if (cbi.fileName === cbInfo.fileName)
-            {
+        let count = 0;
+        for (const cbi of cbInfo.copybookDepths) {
+            if (cbi.fileName === cbInfo.fileName) {
                 count++;
             }
         }
 
-        if (count >= 2)
-        {
+        if (count >= 2) {
             this.externalFeatures.logMessage(`Possible recursive COPYBOOK ${cbInfo.fileName}`);
             cbInfo.copybookDepths.pop();
             return false;
         }
-        
+
         if (this.sourceReferences !== undefined) {
             if (this.parse_copybooks_for_references && fileName.length > 0) {
                 cbInfo.fileName = fileName;
