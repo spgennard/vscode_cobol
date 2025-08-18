@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 7c982ec expand range for variables in the outline view
+* 9602d91 re-locate code for missing copybook
+
+## 25.8.18 
 * 490bc15 Send overall copybook message to logger
 * afb0141 make selection area better for non 01 group items
 * 86c3e5f use startCol for COPYBOOK symbols
