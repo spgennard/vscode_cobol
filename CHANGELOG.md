@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* 490bc15 Send overall copybook message to logger
+* afb0141 make selection area better for non 01 group items
+* 86c3e5f use startCol for COPYBOOK symbols
+
+## 25.8.17 
 * ac41465 tweak dump symbols
 * e6d7a21 add some copybook recursion checking, so we are not relying on the depth limit checks
 
