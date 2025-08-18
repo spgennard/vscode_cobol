@@ -221,7 +221,6 @@ export class CobolLinterProvider {
             if (this.sourceRefs !== undefined && !this.current.sourceIsCopybook) {
                 const qp: ICOBOLSourceScanner = this.current;
 
-
                 // handle sections & paragraphs
                 this.processScannedDocumentForUnusedSymbols(settings, qp, diagRefs, qp.configHandler.linter_unused_paragraphs, qp.configHandler.linter_unused_sections, linterSev);
 

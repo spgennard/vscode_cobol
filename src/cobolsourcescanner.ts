@@ -1922,6 +1922,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             state.current01Group.rangeEndColumn = line.length;
         }
 
+        // update current variable to always include the end of current line
+        if (state.currentLevel?.tokenType === COBOLTokenStyle.Variable) {
+            state.currentLevel.rangeEndLine = lineNumber;
+            state.currentLevel.rangeEndColumn = line.length;
+        }
+
         return stream;
     }
 
@@ -2529,6 +2535,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         state.currentParagraph = newTokenParagraph;
                         state.currentSection = undefined;
                         state.current01Group = undefined;
+                        state.currentLevel = undefined;
                         if (state.endsWithDot === false) {
                             state.pickUpUsing = true;
                         }
