@@ -3145,6 +3145,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
         if (fileName.length === 0) {
             cbInfo.copybookDepths.pop();
+            if (this.configHandler.linter_ignore_missing_copybook === false) {
+                const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
+                this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
+            }
             return false;
         }
 
@@ -3193,13 +3197,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 this.sourceReferences.topLevel = currentTopLevel;
                 copybookToken.scanComplete = true;
             }
-        } else {
-            if (this.parse_copybooks_for_references && this.configHandler.linter_ignore_missing_copybook === false) {
-                const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
-                this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
-            }
         }
-
 
         cbInfo.copybookDepths.pop();
         return true;
