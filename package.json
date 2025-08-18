@@ -741,7 +741,7 @@
         },
         "coboleditor.linter_ignore_missing_copybook": {
           "type": "boolean",
-          "description": "When enabled, do not generate missing copybook warnings",
+          "description": "When enabled, do not generate copybook warnings ",
           "default": false
         },
         "coboleditor.linter_ignore_malformed_using": {
