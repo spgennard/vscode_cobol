@@ -245,7 +245,7 @@
       }
     },
     {
-      "match": "(\\$region|\\$end-region)(.*$)",
+      "match": "(\\$(?i:region)|\\$(?i:end-region))(.*$)",
       "captures": {
         "1": {
           "name": "keyword.control.directive.cobol"
