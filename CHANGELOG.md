@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 1ba2504 minor tidy up on hover provider for variable with one line
+* 53a9234 keep in-sync with 'Rocket's extensions
+* e3322be Update
 * 7c982ec expand range for variables in the outline view
 * 9602d91 re-locate code for missing copybook
 
