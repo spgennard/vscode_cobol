@@ -316,7 +316,7 @@
     },
     {
       "match": "(>>.*)$",
-      "name": "strong comment.line.set.acucobol"
+      "name": "strong comment.line.set.cobol"
     },
     {
       "match": "([nNuU][xX]|[hHxX])'\\h*'",

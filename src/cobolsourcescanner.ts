@@ -2432,7 +2432,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (currentLower === "region") {
                         const trimmedCurrent = COBOLSourceScanner.trimLiteral(current, false);
                         const restOfLine = line.substring(token.currentCol);
-                        const ctoken = this.newCOBOLToken(COBOLTokenStyle.Region, lineNumber, line, currentCol, trimmedCurrent, restOfLine, state.currentDivision, "", false);
+                        const ctoken = this.newCOBOLToken(COBOLTokenStyle.Region, lineNumber, line, prevCurrentCol, prevToken+trimmedCurrent, restOfLine, state.currentDivision, "", false);
 
                         this.activeRegions.push(ctoken);
                         token.endToken();
