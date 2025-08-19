@@ -1325,7 +1325,7 @@
         "*.COB": "MFU*$(basename).cpy,Test$(basename).cpy"
       },
       "explorer.fileNesting.enabled": true,
-      "microFocusCOBOL.suppressFileAssociationsPrompt": true,
+      "rocketCOBOL.suppressFileAssociationsPrompt": true,
       "github.copilot.inlineSuggest.enable": true,
       "github.copilot.editor.enableAutoCompletions": true,
       "github.copilot.enable": {

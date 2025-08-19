@@ -621,7 +621,7 @@ If this behavior is not desired, then the setting ```coboleditor.enable_rocket_c
 ### Settings defaults for Rocket COBOL extension
 
 ```jsonc
-      "microFocusCOBOL.suppressFileAssociationsPrompt": true,
+      "rocketCOBOL.suppressFileAssociationsPrompt": true,
 ```
 
 ### Settings defaults for GitHub Copilot Extension

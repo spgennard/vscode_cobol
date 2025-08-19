@@ -290,8 +290,7 @@
     "coboleditor.metadata_symbols": [
         "a,a.cbl"
     ],
-    "microFocusCOBOL.languageServerAutostart": false,
-    "microFocusPLI.languageServer.autostart": false,
+    "rocketPLI.languageServer.autostart": false,
 
     "[COBOL]": {
         "editor.semanticHighlighting.enabled": true,
@@ -338,5 +337,6 @@
         "*.COPY": "COBOL",
         "*.cobcopy": "COBOL",
         "*.COBCOPY": "COBOL"
-    }
+    },
+    "rocketCOBOL.languageServerAutostart": false
 }

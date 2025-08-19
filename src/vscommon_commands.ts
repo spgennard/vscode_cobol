@@ -113,10 +113,10 @@ function newFile(title: string, template: string, doclang: string, config: ICOBO
 export function isMicroFocusCOBOL_LSPActive(document: vscode.TextDocument): boolean {
     const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
     if (VSWorkspaceFolders.get(settings)) {
-        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+        const mfeditorConfig = vscode.workspace.getConfiguration("rocketCOBOL");
         return mfeditorConfig.get<boolean>("languageServerAutostart", true);
     }
-    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL", document);
+    const mfeditorConfig = vscode.workspace.getConfiguration("rocketCOBOL", document);
     return mfeditorConfig.get<boolean>("languageServerAutostart", true);
 
 }
@@ -125,10 +125,10 @@ export function isMicroFocusPLI_LSPActive(document: vscode.TextDocument): boolea
     const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
 
     if (VSWorkspaceFolders.get(settings)) {
-        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI");
+        const mfeditorConfig = vscode.workspace.getConfiguration("rocketPLI");
         return mfeditorConfig.get<boolean>("languageServer.autostart", true);
     }
-    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusPLI", document);
+    const mfeditorConfig = vscode.workspace.getConfiguration("rocketPLI", document);
     return mfeditorConfig.get<boolean>("languageServer.autostart", true);
 
 }
@@ -139,7 +139,7 @@ export async function setMicroFocusSuppressFileAssociationsPrompt(settings: ICOB
         return;
     }
 
-    const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+    const mfeditorConfig = vscode.workspace.getConfiguration("rocketCOBOL");
     if (VSWorkspaceFolders.get(settings) === undefined) {
         await mfeditorConfig.update("suppressFileAssociationsPrompt", onOrOff, vscode.ConfigurationTarget.Global);
     } else {
@@ -156,7 +156,7 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vs
 
     // is it already set?
     if (isMicroFocusCOBOL_LSPActive(document) !== onOrOff) {
-        const mfeditorConfig = vscode.workspace.getConfiguration("microFocusCOBOL");
+        const mfeditorConfig = vscode.workspace.getConfiguration("rocketCOBOL");
         if (VSWorkspaceFolders.get(settings) === undefined) {
             await mfeditorConfig.update("languageServerAutostart", onOrOff, vscode.ConfigurationTarget.Global);
         } else {
@@ -165,7 +165,7 @@ export async function toggleMicroFocusLSP(settings: ICOBOLSettings, document: vs
     }
 
     if (isMicroFocusPLI_LSPActive(document) != onOrOff) {
-        const microFocusPLIConfig = vscode.workspace.getConfiguration("microFocusPLI");
+        const microFocusPLIConfig = vscode.workspace.getConfiguration("rocketPLI");
         if (VSWorkspaceFolders.get(settings) === undefined) {
             microFocusPLIConfig.update("languageServer.autostart", onOrOff, vscode.ConfigurationTarget.Global);
         } else {
