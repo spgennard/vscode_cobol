@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* f0cfd8d Update
 * 9e81632 Update
 * 1ba2504 minor tidy up on hover provider for variable with one line
 * 53a9234 keep in-sync with 'Rocket's extensions
