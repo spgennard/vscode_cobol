@@ -107,6 +107,9 @@ ${cleanCode}
                         }
 
                         let newHoverMessage = line.trimEnd();
+                        if (variables.length === 1) {
+                            newHoverMessage = newHoverMessage.trimStart();
+                        }
                         let commentLine = token.sourceHandler.getCommentAtLine(token.startLine);
                         if (hoverMessage.length !== 0) {
                             hoverMessage += "\n\n----\n\n";
