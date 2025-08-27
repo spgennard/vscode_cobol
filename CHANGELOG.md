@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 28a53ee ensure $region/$end-region works with upper-case
+* d1683f1 fix typo and ensure $ is include in $region for range
+
+## 25.8.20 
 
 ## 25.8.19 
 * f0cfd8d Update
