@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "25.8.27",
+  "version": "25.8.31",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -2262,7 +2262,7 @@
       {
         "command": "cobolplugin.makeDependencyFile",
         "category": "COBOL",
-        "title":  "Experimental: Make Dependency File"
+        "title": "Experimental: Make Dependency File"
       },
       {
         "command": "cobolplugin.dot_callgraph",
