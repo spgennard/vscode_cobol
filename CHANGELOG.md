@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* c3699ef add an experimential .d creator
+
+## 25.8.27 
 * 28a53ee ensure $region/$end-region works with upper-case
 * d1683f1 fix typo and ensure $ is include in $region for range
 
