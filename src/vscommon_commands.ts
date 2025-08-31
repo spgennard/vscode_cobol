@@ -18,6 +18,7 @@ import { CopyBookDragDropProvider } from "./vscopybookdragdroprovider";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { COBOLHierarchyProvider } from "./vscallhierarchyprovider";
 import { newFile_dot_callgraph, view_dot_callgraph } from "./vsdotmarkdown";
+import { VSMakeDep } from "./vsmakedep";
 
 async function emptyFile(title: string, doclang: string, config: ICOBOLSettings) {
     let fpath = "";
@@ -908,6 +909,10 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.dumpAllSymbols", async function () {
         await VSDiagCommands.DumpAllSymbols(_settings);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.makeDependencyFile", async function () {
+        await VSMakeDep.MakeDependency(_settings);
     }));
 
     const langIds = _settings.valid_cobol_language_ids;

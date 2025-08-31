@@ -2260,6 +2260,11 @@
         "title": "Diagnostic: Dump All Symbol"
       },
       {
+        "command": "cobolplugin.makeDependencyFile",
+        "category": "COBOL",
+        "title":  "Experimental: Make Dependency File"
+      },
+      {
         "command": "cobolplugin.dot_callgraph",
         "category": "COBOL",
         "title": "Diagnostic: Dump call graph"
