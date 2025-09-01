@@ -789,6 +789,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     public readonly classes: Map<string, COBOLToken>;
     public readonly methods: Map<string, COBOLToken>;
     public readonly copyBooksUsed: Map<string, COBOLCopybookToken[]>;
+    public readonly copyBooksUnresolved: Map<string, COBOLToken[]>;
 
     public readonly diagMissingFileWarnings: Map<string, COBOLFileSymbol>;
     public readonly portWarnings: portResult[];
@@ -950,6 +951,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.copybookNestedInSection = configHandler.copybooks_nested;
         this.scan_comment_for_ls_control = configHandler.scan_comment_for_ls_control;
         this.copyBooksUsed = new Map<string, COBOLCopybookToken[]>();
+        this.copyBooksUnresolved = new Map<string, COBOLToken[]>();
         this.sections = new Map<string, COBOLToken>();
         this.paragraphs = new Map<string, COBOLToken>();
         this.constantsOrVariables = new Map<string, COBOLVariable[]>();
@@ -2375,6 +2377,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.copybookDepths = prevState.copybookDepths;
                             const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
                             if (fileName.length === 0) {
+                                this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
                                 continue;
                             }
                             state.copybook_state.fileName = fileName;
@@ -2432,7 +2435,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     if (currentLower === "region") {
                         const trimmedCurrent = COBOLSourceScanner.trimLiteral(current, false);
                         const restOfLine = line.substring(token.currentCol);
-                        const ctoken = this.newCOBOLToken(COBOLTokenStyle.Region, lineNumber, line, prevCurrentCol, prevToken+trimmedCurrent, restOfLine, state.currentDivision, "", false);
+                        const ctoken = this.newCOBOLToken(COBOLTokenStyle.Region, lineNumber, line, prevCurrentCol, prevToken + trimmedCurrent, restOfLine, state.currentDivision, "", false);
 
                         this.activeRegions.push(ctoken);
                         token.endToken();
@@ -3105,7 +3108,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     }
 
-
+    private processUnUsedCopyBook(trimmedCopyBook: string, token: COBOLToken): void {
+        if (this.copyBooksUnresolved.has(trimmedCopyBook)) {
+            this.copyBooksUnresolved.get(trimmedCopyBook)?.push(token);
+        } else {
+            this.copyBooksUnresolved.set(trimmedCopyBook, [token]);
+        }
+    }
 
     private processCopyBook(cbInfo: copybookState): boolean {
         if (cbInfo.copybookDepths.length > this.configHandler.copybook_scan_depth) {
@@ -3151,6 +3160,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation1, this.sourceHandler, this.configHandler);
         if (fileName.length === 0) {
+            this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
             cbInfo.copybookDepths.pop();
             if (this.configHandler.linter_ignore_missing_copybook === false) {
                 const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;

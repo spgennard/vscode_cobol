@@ -58,7 +58,6 @@ export class VSCobScanner {
             return;
         }
 
-
         const timer = setTimeout(function () {
             try {
                 child.kill();
