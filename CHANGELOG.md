@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* f578aa0 remember unresolved copybooks
+
+## 25.8.31 
 * c3699ef add an experimential .d creator
 
 ## 25.8.27 
