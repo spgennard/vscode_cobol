@@ -20,8 +20,12 @@
       }
     }, 
     {
-      "match": "(?<![-_])(?i:format-of|acquire|alias|background-colour|beep|commitment|control-area|crt-under|cursor|db-format-name|dbcs-edited|default|described|downdrop|ebcdic|empty-check|externally-described-key|file-stream|foreground-colour|format|fromfull|indic|indicator|indicators|kanji|left-justify|length-check|library|locale|modified|nono-echo|none|null-key-map|null-map|parse|prior|right-justify|rolling|screen|secure|space-fill|starting|subfile|substitute|title|trailing-sign|transaction|vlr|zero-fill)(?![0-9A-Za-z_-])",
+      "match": "(?<![-_])(?i:format-of|acquire|alias|background-colour|beep|commitment|control-area|crt-under|cursor|db-format-name|dbcs-edited|default|described|drop|downdrop|ebcdic|empty-check|externally-described-key|file-stream|foreground-colour|format|fromfull|indic|indicator|indicators|kanji|left-justify|length-check|library|locale|modified|nono-echo|none|null-key-map|null-map|parse|prior|right-justify|rolling|screen|secure|space-fill|starting|subfile|substitute|title|trailing-sign|transaction|vlr|zero-fill|readc)(?![0-9A-Za-z_-])",
       "name": "variable.language"
+    },
+        {
+      "match": "(?<![-_])(?i:hival|loval)(?=\\s+|\\.|,|\\))",
+      "name": "constant.language.figurative.ilecobol"
     },
     {
       "include": "source.cobol"

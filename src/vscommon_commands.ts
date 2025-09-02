@@ -934,6 +934,7 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
             case "COBOL":
                 {
                     context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", _settings, langid + "_3", langid));
+                    context.subscriptions.push(getLangStatusItem("Switch to ILECOBOL", "cobolplugin.change_lang_to_ilecobol", "Change", _settings, langid + "_4", langid));
 
                     if (mfExt !== undefined) {
                         context.subscriptions.push(getLangStatusItem("Switch to 'Rocket COBOL'", "cobolplugin.change_lang_to_mfcobol", "Change", _settings, langid + "_6", langid));
@@ -945,7 +946,6 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
                 context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_5", langid));
                 break;
             case "ILECOBOL":
-                context.subscriptions.push(getLangStatusItem("Switch to ILECOBOL", "cobolplugin.change_lang_to_ilecobol", "Change", _settings, langid + "_2", langid));
                 context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_5", langid));
                 break;
             case ExtensionDefaults.microFocusCOBOLLanguageId:
