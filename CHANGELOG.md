@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 16ad9e3 Add LOVAL,HIVAL,READC to ILECOBOL Add 'Switch to ILECOBOL'
+* b0fd75f add .envrc, so ncu can be found via direnv
+
+## 25.9.1 
 * f578aa0 remember unresolved copybooks
 
 ## 25.8.31 
