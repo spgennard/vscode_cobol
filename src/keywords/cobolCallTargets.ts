@@ -1,5 +1,5 @@
 // import { VSExternalFeatures } from "../vsexternalfeatures";
-import { ILE_APIs } from "./ile_datetime";
+import { ILE_DATE_TIME_APIs, ILE_GROUP_FLOW_APIs,ILE_COND_MAN_APIs,ILE_MATH_APIs,ILE_MESSAGE_APIs,ILE_PROGRAM_OR_PROCEDURE_CALL_APIs,ILE_STORAGE_APIs } from "./ile_apis";
 import { CBL_APIs } from "./mf_cbl_apis";
 import { MFUNIT_APIs } from "./mf_mfunit";
 import { ACU_COMMON_APIs } from "./acu_common_apis";
@@ -59,11 +59,18 @@ function addApis(calltarget:Map<string, CallTarget>, a: IKnownApis) {
 
 addApis(callTargets_cobol, new CBL_APIs());
 addApis(callTargets_cobol, new MFUNIT_APIs());
-addApis(callTargets_cobol, new ILE_APIs());
+
+//addApis(callTargets_cobol, new ILE_APIs());
 
 addApis(callTargets_cobol, new ACU_COMMON_APIs());
 
-addApis(callTargets_ilecobol, new ILE_APIs());
+addApis(callTargets_ilecobol, new ILE_DATE_TIME_APIs());
+addApis(callTargets_ilecobol, new ILE_GROUP_FLOW_APIs());
+addApis(callTargets_ilecobol, new ILE_COND_MAN_APIs());
+addApis(callTargets_ilecobol, new ILE_MATH_APIs());
+addApis(callTargets_ilecobol, new ILE_MESSAGE_APIs());
+addApis(callTargets_ilecobol, new ILE_PROGRAM_OR_PROCEDURE_CALL_APIs());
+addApis(callTargets_ilecobol, new ILE_STORAGE_APIs());
 
 export class KnownAPIs {
 	// /* inline decl */
