@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 59fb77b add more ile api's descriptions
+
+## 25.9.2 
 * 16ad9e3 Add LOVAL,HIVAL,READC to ILECOBOL Add 'Switch to ILECOBOL'
 * b0fd75f add .envrc, so ncu can be found via direnv
 
