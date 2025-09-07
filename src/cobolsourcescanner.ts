@@ -19,7 +19,6 @@ import { ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./icobolsourcesc
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
     CopyBookInOrOf = "CopybookInOrOf",
-    File = "File",
     ProgramId = "Program-Id",
     ImplicitProgramId = "ImplicitProgramId-Id",
     FunctionId = "Function-Id",
@@ -1397,7 +1396,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const state: ParseState = this.sourceReferences.state;
         let startColumn = currentCol;
-        if (tokenType !== COBOLTokenStyle.CopyBook && tokenType !== COBOLTokenStyle.CopyBookInOrOf) {
+        if (tokenType !== COBOLTokenStyle.CopyBook &&
+            tokenType !== COBOLTokenStyle.CopyBookInOrOf) {
             // if (currentCol === 0) {
             startColumn = _line.indexOf(token, currentCol);
             if (startColumn === -1) {
@@ -2001,7 +2001,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
                     }
                 }
-
 
                 // HACK for "set x to entry"
                 if (token.prevTokenLower === "to" && token.currentTokenLower === "entry") {
@@ -3134,6 +3133,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const trimmedCopyBook = cbInfo.trimmedCopyBook;
         const copyVerb = cbInfo.copyVerb;
         const copyBook = cbInfo.copyBook;
+        let library_name_or_lit = "";
+        let library_name_or_lit_desc = "";
 
         let insertInSection = this.copybookNestedInSection ? state.currentSection : state.currentDivision;
         if (insertInSection === undefined) {
@@ -3142,10 +3143,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         if (isIn || isOf) {
             const middleDesc = isIn ? " in " : " of ";
-            const library_name_or_lit = COBOLSourceScanner.trimLiteral(cbInfo.library_name, true) + COBOLSourceScanner.trimLiteral(cbInfo.literal2, true);
-            const desc: string = copyVerb + " " + copyBook + middleDesc + library_name_or_lit;
+            library_name_or_lit = COBOLSourceScanner.trimLiteral(cbInfo.library_name, true) + COBOLSourceScanner.trimLiteral(cbInfo.literal2, true);
+            library_name_or_lit_desc = copyVerb + " " + copyBook + middleDesc + library_name_or_lit;
             // trim...
-            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, desc, insertInSection, library_name_or_lit, false);
+            copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, library_name_or_lit_desc, insertInSection, library_name_or_lit, false);
         }
         else {
             copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, tcurrentCurrentCol, trimmedCopyBook, copyVerb + " " + copyBook, insertInSection, "", false);
@@ -3168,7 +3169,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
             return false;
         }
-
         cbInfo.fileName = fileName;
         cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName);
         if (this.copyBooksUsed.has(fileName) === false) {

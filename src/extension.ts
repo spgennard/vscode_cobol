@@ -279,7 +279,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.processAllFilesInWorkspaceOnStartup", async () => {
-        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, false, false, -1);
+        await VSCobScanner.processAllFilesInWorkspaceOutOfProcess(VSExternalFeatures, settings, false, false, -1);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.runCommand", function (si: SourceOrFolderTreeItem) {
@@ -480,7 +480,7 @@ export async function activate(context: ExtensionContext) {
             settings = VSCOBOLConfiguration.get_workspace_settings();
         }
         if (InMemoryGlobalSymbolCache.defaultCallableSymbols.size < 500) {
-            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, true, false, -1);
+            VSCobScanner.processAllFilesInWorkspaceOutOfProcess(VSExternalFeatures, settings, true, false, -1);
             return;
         }
 
@@ -507,12 +507,12 @@ export async function activate(context: ExtensionContext) {
                     }
 
                     const threadCount: number = Number.parseInt(value, 10);
-                    VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, true, true, threadCount);
+                    VSCobScanner.processAllFilesInWorkspaceOutOfProcess(VSExternalFeatures,settings, true, true, threadCount);
 
                 });
 
             } else {
-                VSCobScanner.processAllFilesInWorkspaceOutOfProcess(settings, true, false, -1);
+                VSCobScanner.processAllFilesInWorkspaceOutOfProcess(VSExternalFeatures,settings, true, false, -1);
             }
         });
     }));

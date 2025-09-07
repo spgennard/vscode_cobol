@@ -15,7 +15,9 @@ import { InMemoryGlobalCacheHelper, InMemoryGlobalSymbolCache } from "./globalca
 import { COBOLWorkspaceFile } from "./cobolglobalcache";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 import { ExtensionDefaults } from "./extensionDefaults";
-
+import { MakeDep } from "./makedeps";
+import { IExternalFeatures } from "./externalfeatures";
+import { COBOLCopyBookProvider } from "./opencopybook";
 
 class FileScanStats {
     directoriesScanned = 0;
@@ -38,7 +40,7 @@ export class VSCobScanner {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private static async forkScanner(settings: ICOBOLSettings, sf: ScanData, reason: string, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
+    private static async forkScanner(externalFeatures: IExternalFeatures, settings: ICOBOLSettings, sf: ScanData, reason: string, updateNow: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
         const jcobscannerJS = path.join(VSCobScanner.scannerBinDir, "cobscanner.js");
 
         const options: ForkOptions = {
@@ -72,6 +74,9 @@ export class VSCobScanner {
         child.on("exit", code => {
             clearTimeout(timer);
 
+            if (programId.length !== 0) {
+                MakeDep.CreateDependencyFile(programId, copyBooksNames, processUnUsedCopyBooks, "");
+            }
             if (code !== 0) {
                 if (sf.cache_metadata_verbose_messages) {
                     VSLogger.logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
@@ -86,6 +91,8 @@ export class VSCobScanner {
 
         let percent = 0;
         let programId = "";
+        let copyBooksNames: Array<string> = [];
+        let processUnUsedCopyBooks: Array<string> = [];
         child.on("message", (msg) => {
             timer.refresh();        // restart timer
             const message = msg as string;
@@ -147,11 +154,23 @@ export class VSCobScanner {
                     } else {
                         VSLogger.logMessage(`Unable to getShortWorkspaceFilename for ${fullFilename}`);
                     }
-                } else if (message.startsWith(COBSCANNER_KNOWNCOPYBOOK)) {
+                }
+                else if (message.startsWith(COBSCANNER_KNOWNCOPYBOOK)) {
                     const args = message.split(",");
                     const enKey = args[1];
                     const inFilename = args[2];
                     COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename);
+                    if (processUnUsedCopyBooks.includes(enKey) === false) {
+                        processUnUsedCopyBooks.push(enKey);
+                    }
+                    const fileName = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(enKey, "", settings, inFilename, externalFeatures);
+                    VSLogger.logMessage(`Referenced copybook ${enKey} in ${inFilename} resolved to ${fileName}`);
+                    if (fileName.length !== 0) {
+                        if (copyBooksNames.includes(fileName) === false) {
+                            copyBooksNames.push(fileName);
+                        }
+                    }
+
                 }
             } else {
                 VSLogger.logMessage(msg as string);
@@ -212,7 +231,7 @@ export class VSCobScanner {
         return sf;
     }
 
-    public static async processAllFilesInWorkspaceOutOfProcess(settings:ICOBOLSettings, viaCommand: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
+    public static async processAllFilesInWorkspaceOutOfProcess(externalFeatures: IExternalFeatures, settings: ICOBOLSettings, viaCommand: boolean, useThreaded: boolean, threadCount: number): Promise<void> {
 
         const msgViaCommand = "(" + (viaCommand ? "on demand" : "startup") + ")";
 
@@ -241,7 +260,7 @@ export class VSCobScanner {
         VSCOBOLUtils.saveGlobalCacheToWorkspace(settings, false);
 
         const sf = this.getScanData(settings, ws, stats, files);
-        await VSCobScanner.forkScanner(settings, sf, msgViaCommand, true, useThreaded, threadCount);
+        await VSCobScanner.forkScanner(externalFeatures, settings, sf, msgViaCommand, true, useThreaded, threadCount);
         VSCOBOLUtils.saveGlobalCacheToWorkspace(settings, true);
     }
 }

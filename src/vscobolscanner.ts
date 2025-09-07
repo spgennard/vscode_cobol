@@ -57,9 +57,6 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
             case COBOLTokenStyle.CopyBookInOrOf:
                 COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName);
                 break;
-            case COBOLTokenStyle.File:
-                COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
-                break;
             case COBOLTokenStyle.ImplicitProgramId:
                 COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
                 break;
