@@ -52,7 +52,6 @@ export class VSCobScanner {
         const scannerStyle = useThreaded ? "useenv_threaded" : "useenv";
         const child = fork(jcobscannerJS, [scannerStyle], options);
 
-
         // const child = ;
         if (child === undefined) {
             return;
@@ -86,6 +85,7 @@ export class VSCobScanner {
         });
 
         let percent = 0;
+        let programId = "";
         child.on("message", (msg) => {
             timer.refresh();        // restart timer
             const message = msg as string;
@@ -109,6 +109,7 @@ export class VSCobScanner {
                     const tokenName = args[1];
                     const tokenLine = Number.parseInt(args[2], 10);
                     const tokenFilename = args[3];
+                    programId = tokenName;
                     COBOLWorkspaceSymbolCacheHelper.removeAllProgramEntryPoints(tokenFilename);
                     COBOLWorkspaceSymbolCacheHelper.removeAllTypes(tokenFilename);
                     COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(tokenFilename, tokenName, tokenLine);
