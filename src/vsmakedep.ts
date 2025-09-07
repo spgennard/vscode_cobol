@@ -26,7 +26,11 @@ export class VSMakeDep extends MakeDep {
                 processUnUsedCopyBooks.push(key);
             }
 
-            const sb = VSMakeDep.CreateDependencyFile(sn, copyBookNames, processUnUsedCopyBooks, vscode.window.activeTextEditor.document.fileName);
+            const sb = VSMakeDep.CreateDependencyFile(config, sn, copyBookNames, processUnUsedCopyBooks, vscode.window.activeTextEditor.document.fileName);
+            if (sb.length === 0) {
+                return;
+            }
+            
             let fpath = "";
             const ws = VSWorkspaceFolders.get(config);
             if (ws) {

@@ -176,6 +176,8 @@ export interface ICOBOLSettings {
     enable_program_information: boolean;
 
     copybook_scan_depth: number;
+
+    makefile_dependency_file: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -315,6 +317,8 @@ export class COBOLSettings implements ICOBOLSettings {
     
     copybook_scan_depth: number;
 
+    makefile_dependency_file: boolean = false;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -429,5 +433,6 @@ export class COBOLSettings implements ICOBOLSettings {
 
         this.enable_program_information = false;
         this.copybook_scan_depth = 32;
+        this.makefile_dependency_file = false;
     }
 }

@@ -1,8 +1,12 @@
 import path from "path";
+import { ICOBOLSettings } from "./iconfiguration";
 
 export class MakeDep {
-    public static CreateDependencyFile(sn: string, copyBooksNames: Array<string>, processUnUsedCopyBooks: Array<string>, activeDocumentFilename: string): Array<string> {
+    public static CreateDependencyFile(settings: ICOBOLSettings, sn: string, copyBooksNames: Array<string>, processUnUsedCopyBooks: Array<string>, activeDocumentFilename: string): Array<string> {
         const sb: Array<string> = [];
+        if (settings.makefile_dependency_file === false) {
+            return sb;
+        }
         const sn_with_no_ext = path.basename(sn, path.extname(sn));
         if (activeDocumentFilename !== undefined && activeDocumentFilename.length !== 0) {
             sb.push(`# Make dependency file for ${path.basename(activeDocumentFilename)}`);

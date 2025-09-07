@@ -218,6 +218,9 @@ export class VSCOBOLConfiguration {
         settings.enable_program_information = editorHelper.getBoolean("enable_program_information", settings.enable_program_information);
 
         settings.copybook_scan_depth = editorConfig.get<number>("copybook_scan_depth", settings.copybook_scan_depth);
+
+        settings.makefile_dependency_file = editorHelper.getBoolean("makefile_dependency_file", settings.makefile_dependency_file);
+        
         return settings;
     }
 

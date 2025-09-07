@@ -177,14 +177,15 @@ export class VSCobScanner {
                     const args = message.split(",");
                     currentFile = args[1];
                     if (programId.length !== 0) {
-                        const makeDepLines = MakeDep.CreateDependencyFile(programId, copyBooksNames, processUnUsedCopyBooks, currentFile);
-                        VSLogger.logMessage(makeDepLines.join("\n"));
-                        const lastDot = currentFile.lastIndexOf(".");
-                        if (lastDot !== -1) {
-                            currentFile = currentFile.substring(0, lastDot);
+                        const makeDepLines = MakeDep.CreateDependencyFile(settings, programId, copyBooksNames, processUnUsedCopyBooks, currentFile);
+                        if (makeDepLines.length !== 0) {
+                            const lastDot = currentFile.lastIndexOf(".");
+                            if (lastDot !== -1) {
+                                currentFile = currentFile.substring(0, lastDot);
+                            }
+                            const newFilename = `${currentFile}.d`;
+                            await workspace.fs.writeFile(Uri.file(newFilename), Buffer.from(makeDepLines.join("\n"), "utf8"));
                         }
-                        const newFilename = `${currentFile}.d`;
-                        await workspace.fs.writeFile(Uri.file(newFilename), Buffer.from(makeDepLines.join("\n"), "utf8"));
                     }
 
                     VSLogger.logMessage(`Ending scan of ${currentFile}`);
