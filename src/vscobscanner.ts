@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import path from "path";
 
-import { extensions, Uri, WorkspaceFolder } from "vscode";
+import { extensions, Uri, workspace, WorkspaceFolder } from "vscode";
 import { VSWorkspaceFolders } from "./vscobolfolders";
-import { COBSCANNER_ADDFILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
+import { COBSCANNER_ADDFILE, COBSCANNER_END_OF_FILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_START_OF_FILE, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
 import { progressStatusBarItem } from "./extension";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSettings } from "./iconfiguration";
@@ -74,9 +74,6 @@ export class VSCobScanner {
         child.on("exit", code => {
             clearTimeout(timer);
 
-            if (programId.length !== 0) {
-                MakeDep.CreateDependencyFile(programId, copyBooksNames, processUnUsedCopyBooks, "");
-            }
             if (code !== 0) {
                 if (sf.cache_metadata_verbose_messages) {
                     VSLogger.logMessage(`External scan completed (${child.pid}) [Exit Code=${code}}]`);
@@ -90,10 +87,11 @@ export class VSCobScanner {
         });
 
         let percent = 0;
+        let currentFile = "";
         let programId = "";
         let copyBooksNames: Array<string> = [];
         let processUnUsedCopyBooks: Array<string> = [];
-        child.on("message", (msg) => {
+        child.on("message", async (msg) => {
             timer.refresh();        // restart timer
             const message = msg as string;
             if (message.startsWith("@@")) {
@@ -159,18 +157,40 @@ export class VSCobScanner {
                     const args = message.split(",");
                     const enKey = args[1];
                     const inFilename = args[2];
-                    COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename);
+                    const inOf = args[3];
+                    COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename, inOf);
                     if (processUnUsedCopyBooks.includes(enKey) === false) {
                         processUnUsedCopyBooks.push(enKey);
                     }
-                    const fileName = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(enKey, "", settings, inFilename, externalFeatures);
+                    const fileName = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(enKey, inOf, settings, inFilename, externalFeatures);
                     VSLogger.logMessage(`Referenced copybook ${enKey} in ${inFilename} resolved to ${fileName}`);
                     if (fileName.length !== 0) {
                         if (copyBooksNames.includes(fileName) === false) {
                             copyBooksNames.push(fileName);
                         }
                     }
+                } else if (message.startsWith(COBSCANNER_START_OF_FILE)) {
+                    const args = message.split(",");
+                    currentFile = args[1];
+                    VSLogger.logMessage(`Starting scan of ${currentFile}`);
+                } else if (message.startsWith(COBSCANNER_END_OF_FILE)) {
+                    const args = message.split(",");
+                    currentFile = args[1];
+                    if (programId.length !== 0) {
+                        const makeDepLines = MakeDep.CreateDependencyFile(programId, copyBooksNames, processUnUsedCopyBooks, currentFile);
+                        VSLogger.logMessage(makeDepLines.join("\n"));
+                        const lastDot = currentFile.lastIndexOf(".");
+                        if (lastDot !== -1) {
+                            currentFile = currentFile.substring(0, lastDot);
+                        }
+                        const newFilename = `${currentFile}.d`;
+                        await workspace.fs.writeFile(Uri.file(newFilename), Buffer.from(makeDepLines.join("\n"), "utf8"));
+                    }
 
+                    VSLogger.logMessage(`Ending scan of ${currentFile}`);
+                    programId = "";
+                    copyBooksNames = [];
+                    processUnUsedCopyBooks = [];
                 }
             } else {
                 VSLogger.logMessage(msg as string);

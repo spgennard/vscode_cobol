@@ -1,5 +1,5 @@
 import { InMemoryGlobalCacheHelper } from "./globalcachehelper";
-import { COBOLToken, COBOLTokenStyle} from "./cobolsourcescanner";
+import { COBOLToken, COBOLTokenStyle } from "./cobolsourcescanner";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLSymbol, COBOLSymbolTable } from "./cobolglobalcache";
 import { COBOLWorkspaceSymbolCacheHelper } from "./cobolworkspacecache";
@@ -72,12 +72,12 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         switch (token.tokenType) {
             case COBOLTokenStyle.CopyBook:
                 if (this.sender) {
-                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName}`);
+                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName},${token.extraInformation1}`);
                 }
                 break;
             case COBOLTokenStyle.CopyBookInOrOf:
                 if (this.sender) {
-                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName}`);
+                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName},${token.extraInformation1}`);
                 }
                 break;
             case COBOLTokenStyle.ImplicitProgramId:
@@ -114,6 +114,12 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
             case COBOLTokenStyle.MethodId:
                 // GlobalCachesHelper.addMethodSymbol(this.st.fileName, token.tokenName, token.startLine);
                 break;
+        }
+    }
+
+    processRawMessage(messageId: string, message: string): void {
+        if (this.sender) {
+            this.sender.sendMessage(`${messageId},${message}`);
         }
     }
 

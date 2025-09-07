@@ -44,6 +44,8 @@ export const COBSCANNER_SENDENUM = "@@SEND.ENUMID";
 export const COBSCANNER_SENDCLASS = "@@SEND.CLASSID";
 export const COBSCANNER_ADDFILE = "@@SEND.FILES";
 export const COBSCANNER_KNOWNCOPYBOOK = "@@SEND.KNOWNCOPYBOOK";
+export const COBSCANNER_START_OF_FILE = "@@SEND.START_OF_FILE";
+export const COBSCANNER_END_OF_FILE = "@@SEND.END_OF_FILE";
 
 function replacer(this: any, key: any, value: any): any {
 

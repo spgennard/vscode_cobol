@@ -15,6 +15,7 @@ import { ExtensionDefaults } from "./extensionDefaults";
 import { SplitTokenizer } from "./splittoken";
 import { SourcePorter, portResult } from "./vsdirectivesconv";
 import { ICOBOLSourceScanner, ICOBOLSourceScannerEvents } from "./icobolsourcescanner";
+import { COBSCANNER_END_OF_FILE, COBSCANNER_START_OF_FILE } from "./cobscannerdata";
 
 export enum COBOLTokenStyle {
     CopyBook = "Copybook",
@@ -764,6 +765,10 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
         return;
     }
 
+    processRawMessage(messageId:string, message: string): void {
+        return;
+    }
+
     finish(): void {
         return;
     }
@@ -1165,6 +1170,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         prevToken = StreamTokens.Blank;
         sourceHandler.resetCommentCount();
+        
+        sourceEventHandler.processRawMessage(COBSCANNER_START_OF_FILE, filename);
 
         let sourceTimeout = externalFeatures.getSourceTimeout(this.configHandler);
         if (externalFeatures)
@@ -1304,6 +1311,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
             }
             this.sourceReferences.unknownReferences.clear();
+            sourceEventHandler.processRawMessage(COBSCANNER_END_OF_FILE, filename);
             this.eventHandler.finish();
         }
     }

@@ -206,7 +206,7 @@ export class VSCOBOLFileUtils {
         return "";
     }
 
-    public static extractSelectionToCopybook(activeTextEditor: TextEditor, features: IExternalFeatures): void {
+    public static async extractSelectionToCopybook(activeTextEditor: TextEditor, features: IExternalFeatures): Promise<void> {
         const sel = activeTextEditor.selection;
 
         const ran = new Range(sel.start, sel.end);
@@ -224,14 +224,14 @@ export class VSCOBOLFileUtils {
                     return undefined;
                 }
             }
-        }).then(copybook_filename => {
+        }).then(async copybook_filename => {
             // leave if we have no filename
             if (copybook_filename === undefined) {
                 return;
             }
             const filename = path.join(dir, copybook_filename + ".cpy");
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            fs.writeFileSync(filename, text);
+            await fs.writeFileSync(filename, text);
             activeTextEditor.edit(edit => {
                 edit.replace(ran, "           copy \"" + copybook_filename + ".cpy\".");
             });

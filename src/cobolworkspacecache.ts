@@ -146,7 +146,7 @@ export class COBOLWorkspaceSymbolCacheHelper {
         COBOLWorkspaceSymbolCacheHelper.addSymbolToCache(filename, symbolUnchanged, lineNumber, InMemoryGlobalSymbolCache.entryPoints);
     }
 
-    public static addReferencedCopybook(copybook: string, fullInFilename: string) {
+    public static addReferencedCopybook(copybook: string, fullInFilename: string, inOf: string) {
         const inFilename = COBOLFileUtils.cleanupFilename(InMemoryGlobalCacheHelper.getFilenameWithoutPath(fullInFilename));
         const encodedKey = `${copybook},${inFilename}`;
         if (!InMemoryGlobalSymbolCache.knownCopybooks.has(encodedKey)) {

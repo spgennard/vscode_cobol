@@ -13,6 +13,7 @@ export interface ICOBOLSourceScannerEventer {
 export interface ICOBOLSourceScannerEvents {
     start(qp: ICOBOLSourceScanner): void;
     processToken(token: COBOLToken): void;
+    processRawMessage(messageId:string, message: string): void;
     finish(): void;
 }
 

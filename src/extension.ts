@@ -200,12 +200,12 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
         });
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.extractSelectionToCopybook", () => {
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.extractSelectionToCopybook", async ()  => {
         if (vscode.window.activeTextEditor) {
             const langid = vscode.window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                VSCOBOLFileUtils.extractSelectionToCopybook(vscode.window.activeTextEditor, VSExternalFeatures);
+                await VSCOBOLFileUtils.extractSelectionToCopybook(vscode.window.activeTextEditor, VSExternalFeatures);
             }
         }
     }));
