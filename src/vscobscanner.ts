@@ -159,20 +159,22 @@ export class VSCobScanner {
                     const inFilename = args[2];
                     const inOf = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename, inOf);
-                    if (processUnUsedCopyBooks.includes(enKey) === false) {
-                        processUnUsedCopyBooks.push(enKey);
-                    }
+
                     const fileName = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(enKey, inOf, settings, inFilename, externalFeatures);
-                    VSLogger.logMessage(`Referenced copybook ${enKey} in ${inFilename} resolved to ${fileName}`);
+                    // VSLogger.logMessage(`Referenced copybook ${enKey} in ${inFilename} resolved to ${fileName}`);
                     if (fileName.length !== 0) {
                         if (copyBooksNames.includes(fileName) === false) {
                             copyBooksNames.push(fileName);
+                        }
+                    } else {
+                        if (processUnUsedCopyBooks.includes(enKey) === false) {
+                            processUnUsedCopyBooks.push(enKey);
                         }
                     }
                 } else if (message.startsWith(COBSCANNER_START_OF_FILE)) {
                     const args = message.split(",");
                     currentFile = args[1];
-                    VSLogger.logMessage(`Starting scan of ${currentFile}`);
+                    // VSLogger.logMessage(`Starting scan of ${currentFile}`);
                 } else if (message.startsWith(COBSCANNER_END_OF_FILE)) {
                     const args = message.split(",");
                     currentFile = args[1];
@@ -188,7 +190,7 @@ export class VSCobScanner {
                         }
                     }
 
-                    VSLogger.logMessage(`Ending scan of ${currentFile}`);
+                    // VSLogger.logMessage(`Ending scan of ${currentFile}`);
                     programId = "";
                     copyBooksNames = [];
                     processUnUsedCopyBooks = [];

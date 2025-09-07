@@ -1277,7 +1277,7 @@
           "description": "Copybook scanning depth limit",
           "default": 32
         },
-        "coboleditor.makefile_dependency_files": {
+        "coboleditor.makefile_dependency_file": {
           "type": "boolean",
           "description": "When enabled, generate makefile dependency files (.d)",
           "default": false,
