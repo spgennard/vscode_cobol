@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* 84736a9 add config settings
+* e54918e add more makedeps features  - start to include it in the scanner processing
+* 0864ffe Drop unused file Build up copybook map in vscobscanner
+* 3d31fab split vs part from generic part
+
+## 25.9.3 
 * 59fb77b add more ile api's descriptions
 
 ## 25.9.2 
