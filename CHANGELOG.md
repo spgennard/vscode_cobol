@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 176771e fix typo in comment
+* 70b40a3 ensure unresolved cobscanner unresolved copybook list is accurate
+
+## 25.9.7 
 * 84736a9 add config settings
 * e54918e add more makedeps features  - start to include it in the scanner processing
 * 0864ffe Drop unused file Build up copybook map in vscobscanner
