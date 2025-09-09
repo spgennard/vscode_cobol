@@ -187,7 +187,7 @@ const blessed_extensions: string[] = [
     "ms-python.",                                   //
     "ms-vscode-remote.",
     "redhat.",                                      // redhat
-    "rocketsoftware."                               // rockset software
+    "rocketsoftware."                               // rocket software
 ];
 
 const known_problem_extensions: [string, string, boolean][] = [
