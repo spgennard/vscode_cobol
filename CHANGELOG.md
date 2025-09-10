@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 128f034 add config.makefile_dependency_prefix
+
+## 25.9.9 
 * 176771e fix typo in comment
 * 70b40a3 ensure unresolved cobscanner unresolved copybook list is accurate
 
