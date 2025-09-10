@@ -34,9 +34,9 @@ export class VSMakeDep extends MakeDep {
             let fpath = "";
             const ws = VSWorkspaceFolders.get(config);
             if (ws) {
-                fpath = path.join(ws[0].uri.fsPath, sn_with_no_ext + ".d");
+                fpath = path.join(ws[0].uri.fsPath, config.makefile_dependency_prefix +sn_with_no_ext + ".d");
             } else {
-                fpath = path.join(process.cwd(), sn_with_no_ext + ".d");
+                fpath = path.join(process.cwd(), config.makefile_dependency_prefix + sn_with_no_ext + ".d");
             }
             const furl = vscode.Uri.file(fpath).with({ scheme: "untitled" });
             await vscode.workspace.openTextDocument(furl).then(async document => {

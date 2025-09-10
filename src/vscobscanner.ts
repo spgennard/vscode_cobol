@@ -185,7 +185,7 @@ export class VSCobScanner {
                             if (lastDot !== -1) {
                                 currentFile = currentFile.substring(0, lastDot);
                             }
-                            const newFilename = `${currentFile}.d`;
+                            const newFilename = `${settings.makefile_dependency_prefix}${currentFile}.d`;
                             await workspace.fs.writeFile(Uri.file(newFilename), Buffer.from(makeDepLines.join("\n"), "utf8"));
                         }
                     }
