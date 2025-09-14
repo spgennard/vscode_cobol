@@ -62,7 +62,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, filesHandler: ISourceHandler,  config: ICOBOLSettings): string {
-        return "";
+        return COBOLFileUtils.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, filesHandler.getFilename(), this);
     }
 
     public setWorkspaceFolders(folders: string[]) {

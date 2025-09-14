@@ -185,7 +185,9 @@ export class VSCobScanner {
                             if (lastDot !== -1) {
                                 currentFile = currentFile.substring(0, lastDot);
                             }
-                            const newFilename = `${settings.makefile_dependency_prefix}${currentFile}.d`;
+                            const dirName = path.dirname(currentFile);
+                            const dirFilename = path.basename(currentFile);
+                            const newFilename = path.join(dirName, `${settings.makefile_dependency_prefix}${dirFilename}.d`);
                             await workspace.fs.writeFile(Uri.file(newFilename), Buffer.from(makeDepLines.join("\n"), "utf8"));
                         }
                     }
@@ -242,6 +244,9 @@ export class VSCobScanner {
         sf.md_entrypoints = settings.metadata_entrypoints;
         sf.md_metadata_files = settings.metadata_files;
         sf.md_metadata_knowncopybooks = settings.metadata_knowncopybooks;
+        sf.md_copybookdirs = settings.copybookdirs;
+        sf.md_copybookexts = settings.copybookexts;
+        sf.md_file_search_directory = settings.file_search_directory;
 
         if (ws !== undefined) {
             for (const f of ws) {

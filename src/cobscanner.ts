@@ -86,6 +86,9 @@ export class Scanner {
         // may need more..
         settings.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
         settings.cache_metadata_verbose_messages = scanData.cache_metadata_verbose_messages;
+        settings.file_search_directory = scanData.md_file_search_directory;
+        settings.copybookdirs = scanData.md_copybookdirs;
+        settings.copybookexts = scanData.md_copybookexts;
 
         // TODO: add in other metadata items
         COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, scanData.md_symbols, true);
@@ -149,6 +152,10 @@ export class Scanner {
                     const filesHandler = new FileSourceHandler(settings, undefined, file, features);
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
+                    config.cache_metadata_verbose_messages = scanData.cache_metadata_verbose_messages;
+                    config.file_search_directory = scanData.md_file_search_directory;
+                    config.copybookdirs = scanData.md_copybookdirs;
+                    config.copybookexts = scanData.md_copybookexts;
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);
                     const startTime = features.performance_now();
                     const qcp = new COBOLSourceScanner(
@@ -234,9 +241,8 @@ for (const arg of args) {
                     if (SCANDATA_ENV !== undefined) {
                         const scanData: ScanData = ScanDataHelper.parseScanData(SCANDATA_ENV);
                         ScanDataHelper.setupPercent(scanData, scanData.Files.length,progressPercentage);
-
-                        const scanStats = new ScanStats();
                         Scanner.transferScanDataToGlobals(scanData, features);
+                        const scanStats = new ScanStats();
                         Scanner.processFiles(scanData, features, processSender.Default, scanStats);
                         features.logMessage(`${COBSCANNER_STATUS} 100`);
                     } else {

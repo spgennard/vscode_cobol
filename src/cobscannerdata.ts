@@ -19,6 +19,9 @@ export class ScanData {
     public md_metadata_files: string[] = [];
     public md_metadata_knowncopybooks: string[] = [];
     public workspaceFolders: string[] = [];
+    public md_file_search_directory: string[] = [];
+    public md_copybookdirs: string[] = [];
+    public md_copybookexts: string[] = []
 }
 
 export class ScanStats {

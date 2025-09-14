@@ -1,5 +1,7 @@
 import * as fs from "fs";
 import { ICOBOLSettings } from "./iconfiguration";
+import path from "path";
+import { IExternalFeatures } from "./externalfeatures";
 
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";
@@ -123,5 +125,113 @@ export class COBOLFileUtils {
         }
         
         return trimmedFilename;
+    }
+
+    public static findCopyBook(filename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+        if (!filename) {
+            return "";
+        }
+
+        const hasDot = filename.indexOf(".");
+
+        for (const copybookdir of config.file_search_directory) {
+            /* check for the file as is.. */
+            const firstPossibleFile = path.join(copybookdir, filename);
+            if (features.isFile(firstPossibleFile)) {
+                return firstPossibleFile;
+            }
+
+            /* no extension? */
+            if (hasDot === -1) {
+                // search through the possible extensions
+                for (const ext of config.copybookexts) {
+                    const possibleFile = path.join(copybookdir, filename + "." + ext);
+
+                    if (features.isFile(possibleFile)) {
+                        return possibleFile;
+                    }
+                }
+            }
+        }
+
+        return "";
+    }
+
+    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+        if (!filename) {
+            return "";
+        }
+
+        const hasDot = filename.indexOf(".");
+
+        for (const baseCopybookdir of config.file_search_directory) {
+            const copybookdir = path.join(baseCopybookdir, inDirectory);
+
+            /* check for the file as is.. */
+            const firstPossibleFile = path.join(copybookdir, filename);
+            if (features.isFile(firstPossibleFile)) {
+                return firstPossibleFile;
+            }
+
+            /* no extension? */
+            if (hasDot === -1) {
+                // search through the possible extensions
+                for (const ext of config.copybookexts) {
+                    const possibleFile = path.join(copybookdir, filename + "." + ext);
+
+                    if (features.isFile(possibleFile)) {
+                        return possibleFile;
+                    }
+                }
+            }
+
+        }
+
+        return "";
+    }
+    
+    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
+
+        if (config.perfile_copybookdirs.length !== 0) {
+            // fileDirname
+            var fileDirname = path.dirname(sourceFilename);
+            for (var _perCopydir of config.perfile_copybookdirs) {
+                var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
+                /* check for the file as is.. */
+                const firstPossibleFile = path.join(perFileDir, filename);
+                if (features.isFile(firstPossibleFile)) {
+                    return firstPossibleFile;
+                }
+
+                const hasDot = filename.indexOf(".");
+                /* no extension? */
+                if (hasDot === -1) {
+                    // search through the possible extensions
+                    for (const ext of config.copybookexts) {
+                        const possibleFile = path.join(perFileDir, filename + "." + ext);
+
+                        if (features.isFile(possibleFile)) {
+                            return possibleFile;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (inDirectory === null || inDirectory.length === 0) {
+            const fullPath = COBOLFileUtils.findCopyBook(filename, config, features);
+            if (fullPath.length !== 0) {
+                return path.normalize(fullPath);
+            }
+
+            return fullPath;
+        }
+
+        const fullPath = COBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
+        if (fullPath.length !== 0) {
+            return path.normalize(fullPath);
+        }
+
+        return fullPath;
     }
 }
