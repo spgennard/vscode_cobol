@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 1434226 add simple copybook searcher in cobscanner
+
+## 25.9.10 
 * 128f034 add config.makefile_dependency_prefix
 
 ## 25.9.9 
