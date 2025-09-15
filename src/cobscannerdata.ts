@@ -22,6 +22,7 @@ export class ScanData {
     public md_file_search_directory: string[] = [];
     public md_copybookdirs: string[] = [];
     public md_copybookexts: string[] = []
+    public md_makefile_dependancy_fullpath = false;
 }
 
 export class ScanStats {

@@ -89,6 +89,7 @@ export class Scanner {
         settings.file_search_directory = scanData.md_file_search_directory;
         settings.copybookdirs = scanData.md_copybookdirs;
         settings.copybookexts = scanData.md_copybookexts;
+        settings.makefile_dependancy_fullpath = scanData.md_makefile_dependancy_fullpath;
 
         // TODO: add in other metadata items
         COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, scanData.md_symbols, true);
@@ -156,6 +157,8 @@ export class Scanner {
                     config.file_search_directory = scanData.md_file_search_directory;
                     config.copybookdirs = scanData.md_copybookdirs;
                     config.copybookexts = scanData.md_copybookexts;
+                    config.makefile_dependancy_fullpath = scanData.md_makefile_dependancy_fullpath;
+                    
                     const symbolCatcher = new COBOLSymbolTableEventHelper(config, sender);
                     const startTime = features.performance_now();
                     const qcp = new COBOLSourceScanner(

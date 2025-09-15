@@ -180,6 +180,8 @@ export interface ICOBOLSettings {
     makefile_dependency_file: boolean;
 
     makefile_dependency_prefix: string;
+
+    makefile_dependancy_fullpath: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -323,6 +325,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     makefile_dependency_prefix: string;
 
+    makefile_dependancy_fullpath: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -439,5 +443,6 @@ export class COBOLSettings implements ICOBOLSettings {
         this.copybook_scan_depth = 32;
         this.makefile_dependency_file = false;
         this.makefile_dependency_prefix = ".";
+        this.makefile_dependancy_fullpath = false;
     }
 }

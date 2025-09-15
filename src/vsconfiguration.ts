@@ -223,6 +223,7 @@ export class VSCOBOLConfiguration {
         
         settings.makefile_dependency_prefix = editorConfig.get<string>("makefile_dependency_prefix", settings.makefile_dependency_prefix);
         
+        settings.makefile_dependancy_fullpath = editorHelper.getBoolean("makefile_dependancy_fullpath", settings.makefile_dependancy_fullpath);
         return settings;
     }
 

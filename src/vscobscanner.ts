@@ -179,7 +179,7 @@ export class VSCobScanner {
                     const args = message.split(",");
                     currentFile = args[1];
                     if (programId.length !== 0) {
-                        const makeDepLines = MakeDep.CreateDependencyFile(settings, programId, copyBooksNames, processUnUsedCopyBooks, currentFile);
+                        const makeDepLines = MakeDep.CreateDependencyFile(settings, currentFile, copyBooksNames, processUnUsedCopyBooks, currentFile);
                         if (makeDepLines.length !== 0) {
                             const lastDot = currentFile.lastIndexOf(".");
                             if (lastDot !== -1) {
@@ -247,6 +247,7 @@ export class VSCobScanner {
         sf.md_copybookdirs = settings.copybookdirs;
         sf.md_copybookexts = settings.copybookexts;
         sf.md_file_search_directory = settings.file_search_directory;
+        sf.md_makefile_dependancy_fullpath = settings.makefile_dependancy_fullpath;
 
         if (ws !== undefined) {
             for (const f of ws) {

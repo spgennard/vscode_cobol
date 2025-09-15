@@ -1282,6 +1282,12 @@
           "description": "When enabled, generate makefile dependency files (.d)",
           "default": false,
           "scope": "resource"
+        },
+        "coboleditor.makefile_dependency_file_path": {
+          "type": "boolean",
+          "description": "Write full path to makefile dependency files (.d)",
+          "default": false,
+          "scope": "resource"
         }
       }
     },
