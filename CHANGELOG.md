@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 541655f add vpath support for .d files
+
+## 25.9.14 
 * 1434226 add simple copybook searcher in cobscanner
 
 ## 25.9.10 
