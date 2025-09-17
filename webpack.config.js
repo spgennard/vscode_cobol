@@ -75,6 +75,9 @@ const webConfig = /** @type WebpackConfig */ {
     new webpack.ProvidePlugin({
       process: "process/browser", // provide a shim for the global `process` variable
     }),
+    new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
+    resource.request = resource.request.replace(/^node:/, "");
+  })
   ],
   externals: {
     vscode: "commonjs vscode", // ignored because it doesn't exist

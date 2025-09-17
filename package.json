@@ -742,7 +742,7 @@
         "coboleditor.linter_ignore_missing_copybook": {
           "type": "boolean",
           "description": "When enabled, do not generate copybook warnings ",
-          "default": false
+          "default": true
         },
         "coboleditor.linter_ignore_malformed_using": {
           "type": "boolean",
@@ -3015,7 +3015,7 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^24.5.1",
+    "@types/node": "^24.4.0",
     "@types/vscode": "^1.104.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
