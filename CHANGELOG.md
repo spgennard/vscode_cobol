@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* d6c50a1 tweak formatting of the README
+
+## 25.9.17 
 * 12145e5 turn off copybook missing messages fix webpack
 
 ## 25.9.15 
