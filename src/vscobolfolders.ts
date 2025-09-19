@@ -40,7 +40,7 @@ export class VSWorkspaceFolders {
         return f;
     }
 
-    public static get_filtered(requiredSchema:string, settings: ICOBOLSettings): ReadonlyArray<WorkspaceFolder> | undefined {
+    public static getFiltered(requiredSchema:string, settings: ICOBOLSettings): ReadonlyArray<WorkspaceFolder> | undefined {
         const ws = workspace.workspaceFolders;
         if (ws === undefined) {
             return ws;

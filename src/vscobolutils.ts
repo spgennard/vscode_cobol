@@ -1195,7 +1195,7 @@ export class VSCOBOLUtils {
         let extsdir = settings.copybookdirs;
         invalidSearchDirectory = settings.invalid_copybookdirs;
 
-        const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
+        const wsURLs = VSWorkspaceFolders.getFiltered("", settings);
         if (wsURLs === undefined || wsURLs.length === 0) {
             return;
         }

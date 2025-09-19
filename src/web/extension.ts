@@ -55,7 +55,7 @@ async function setupLogChannelAndPaths(hide: boolean, settings: ICOBOLSettings) 
 
     const perfile_copybookdirs = settings.perfile_copybookdirs;
     const ws = VSWorkspaceFolders.get(settings);
-    const wsURLs = VSWorkspaceFolders.get_filtered("", settings);
+    const wsURLs = VSWorkspaceFolders.getFiltered("", settings);
 
     const fileSearchDirectory = settings.file_search_directory;
     if (wsURLs !== undefined) {
