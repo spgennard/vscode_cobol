@@ -12,7 +12,10 @@ Some of the features this extension provides are:
   - [Visual COBOL](https://www.microfocus.com/en-us/products/visual-cobol/)
   - [ACUCOBOL-GT](https://www.microfocus.com/en-us/products/acucobol-gt/overview)
   - [COBOL-IT](https://www.cobol-it.com/)
-- Basic ILECOBOL support to help fellow IBMi COBOL developers
+
+- Colourisation for:
+    - [RMCOBOL](https://www.rocketsoftware.com/en-us/products/cobol/rm-cobol)
+    - ILECOBOL support to help fellow IBMi COBOL developers
 - COBOL tab key support (configurable)
 - COBOL source navigation support
   - Shortcuts/Commands for navigation to divisions
@@ -86,7 +89,7 @@ While also being able to use it with the official `Rocket COBOL extension` (for 
 | ctrl+alt+.        |            Go forward to next next section/division             |
 | f12 or ctrl+click |                       Go to copybook/file                       |
 | ctrl+hover        |              Peek head of copybook or symbol/field              |
-| right mouse/peek  |             Peek copybook without opening the file)             |
+| right mouse/peek  |             Peek copybook without opening the file              |
 | ctrl+alt+a        |                 Adjust line to cursor position                  |
 | ctrl+alt+l        |                 Left adjust line to left margin                 |
 | alt+right         |                   Insert spaces to column 72                    |
@@ -601,7 +604,7 @@ Using two extensions that both provide the same features can be problematic but 
 
 This extension provides commands that allow the developer to flip between the two extensions.  It does this by changing the *file.associations* settings and changing settings for the *Rocket COBOL* extension to allow the two to co-exist.
 
-| From 'Rocket COBOL extension'     | From this Extensions              |
+| From 'Rocket COBOL extension'          | From this Extensions              |
 | -------------------------------------- | --------------------------------- |
 |                                        |                                   |
 | ![alt text](images/switch2bitlang.png) | ![alt text](images/switch2mf.png) |
