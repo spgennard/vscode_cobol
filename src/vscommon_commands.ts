@@ -196,9 +196,9 @@ const known_problem_extensions: [string, string, boolean][] = [
     ["COBOL debugger for different dialect of COBOL", "COBOLworx.cbl-gdb", true],
     ["Inline completion provider causes problems with this extension", "bloop.bloop-write", false],
     ["Language provider of COBOL/PLI that is not supported with extension", "heirloomcomputinginc", true],
-    ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "jsaila.coboler", false],
-    ["GnuCOBOL based utility extension, does support RocketCOBOL, ACU", "zokugun.cobol-folding", false],
-    ["COBOL Formatter that does not support RocketCOBOL","kopo-formatter", false]
+    ["GnuCOBOL based utility extension, does not support 'Rocket COBOL', 'ACU COBOL'", "jsaila.coboler", false],
+    ["GnuCOBOL based utility extension, does not support 'Rocket COBOL', 'ACU COBOL'", "zokugun.cobol-folding", false],
+    ["COBOL Formatter that does not support 'Rocket COBOL'","kopo-formatter", false]
 ];
 
 
