@@ -35,7 +35,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.104.0"
+    "vscode": "^1.105.0"
   },
   "extensionKind": [
     "workspace"
@@ -3015,8 +3015,8 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^24.7.0",
-    "@types/vscode": "^1.104.0",
+    "@types/node": "^24.7.2",
+    "@types/vscode": "^1.105.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/test-web": "^0.0.74",
@@ -3034,7 +3034,7 @@
     "shx": "^0.4.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
-    "webpack": "^5.102.0",
+    "webpack": "^5.102.1",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
