@@ -1,6 +1,8 @@
 # CHANGELOG
 
 
+## 25.10.6 
+
 ## 25.10.1 
 * c65fbd4 tweak
 
