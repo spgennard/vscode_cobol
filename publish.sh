@@ -2,7 +2,6 @@
 VER=$(date +'%y.%-m.%-d')
 for i in $@
 do
-	echo i is $i
 	if [ "x$i" == "xyesterday" ]; then
 		VER=$(date -d "yesterday" +'%2y.%-m.%-d')
 	elif [ "x$i" == "xnobump" ]; then
