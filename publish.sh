@@ -3,7 +3,11 @@ VER=$(date +'%y.%-m.%-d')
 for i in $@
 do
 	if [ "x$i" == "xyesterday" ]; then
-		VER=$(date -d "yesterday" +'%2y.%-m.%-d')
+		VER=$(date -d "yesterday" +'%2y.%-m.%-d' 2>/dev/null)
+		if [ "x$VER" == "x" ]; then
+			VER=$(date -v-1d +'%y.%-m.%-d')			
+		fi
+		
 	elif [ "x$i" == "xnobump" ]; then
 		VER=""
 	else
