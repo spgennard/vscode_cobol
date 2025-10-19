@@ -7,6 +7,9 @@ do
 		VER=$(date -d "yesterday" +'%2y.%-m.%-d')
 	elif [ "x$i" == "xnobump" ]; then
 		VER=""
+	else
+		echo Unknown argument $i
+		exit 99
 	fi
 done
 
