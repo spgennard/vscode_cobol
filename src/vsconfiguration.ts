@@ -28,7 +28,7 @@ export class VSCOBOLEditorConfiguration {
 
 
     public static getResourceEditorConfig(resource: Uri): WorkspaceConfiguration {
-           if (resource.scheme === 'file') {
+        if (resource.scheme === 'file') {
             return workspace.getConfiguration(ExtensionDefaults.defaultEditorConfig, resource);
         }
         else {
@@ -51,12 +51,70 @@ export class VSCOBOLSettings extends COBOLSettings implements IVSCOBOLSettings {
     id: number;
     create_from_document: boolean;
 
-    public constructor(id: number, create_from_document:boolean) {
+    public constructor(id: number, create_from_document: boolean) {
         super();
 
         this.id = id;
         this.create_from_document = create_from_document;
- 
+    }
+
+    private getConfigValue(langid: string, section: string): [boolean, any]  {
+        const config = workspace.getConfiguration('coboleditor', { languageId: langid });
+        const inspection = config.inspect(section);
+        let isDefaultBeingUsed = false;
+        let langValue: any|undefined = undefined;
+        if (inspection) {
+            const globalValue = inspection.globalValue;
+            const workspaceValue = inspection.workspaceValue;
+            const workspaceFolderValue = inspection.workspaceFolderValue;
+
+            const globalLanguageValue = inspection.globalLanguageValue;
+            const workspaceLanguageValue = inspection.workspaceLanguageValue;
+            const workspaceFolderLanguageValue = inspection.workspaceFolderLanguageValue;
+            // const defaultLanguageValue = inspection.defaultLanguageValue;
+            // const defaultValue = inspection.defaultValue;
+
+            // If any of these are undefined, that level hasn't been set by the user
+            if (globalValue === undefined &&
+                workspaceValue === undefined &&
+                workspaceFolderValue === undefined) {
+                isDefaultBeingUsed = true;
+            }
+
+            if (globalLanguageValue !== undefined) {
+                langValue = globalLanguageValue;
+            } 
+
+            if (workspaceLanguageValue !== undefined) {
+                langValue = workspaceLanguageValue;
+            }
+            
+            if (workspaceFolderLanguageValue !== undefined) {
+                langValue = workspaceFolderLanguageValue;
+            }
+        }
+
+        return [isDefaultBeingUsed, langValue];
+    }
+
+    public get_tabstops(langid: string): number[] {
+        const [isDefaultBeingUsed, languageTabstops] = this.getConfigValue(langid, 'tabstops');
+  
+        if (isDefaultBeingUsed && languageTabstops !== undefined) {
+            return languageTabstops as number[];
+        }
+
+        return this._tabstops 
+    }
+
+    public get_out_of_range_tabstop_size(langid: string): number {
+        const [isDefaultBeingUsed, languageTabstops] = this.getConfigValue(langid, 'out_of_range_tabstop_size');
+  
+        if (isDefaultBeingUsed && languageTabstops !== undefined) {
+            return languageTabstops as number;
+        }
+
+        return this._out_of_range_tabstop_size;
     }
 }
 
@@ -74,7 +132,7 @@ export class VSCOBOLConfiguration {
         settings.pre_scan_line_limit = editorHelper.getPreScanLineLimit();
         settings.copybookexts = editorHelper.getCopybookExts();
         settings.program_extensions = editorHelper.getProgram_extensions();
-        settings.tabstops = editorHelper.getTabStops();
+        settings._tabstops = editorHelper.getTabStops();
         settings.linter = editorHelper.getBoolean("linter", false);
         settings.line_comment = editorHelper.getBoolean("line_comment", false);
         settings.fileformat_strategy = editorConfig.get<fileformatStrategy>("fileformat_strategy", fileformatStrategy.Normal);
@@ -195,7 +253,7 @@ export class VSCOBOLConfiguration {
 
         settings.hover_show_variable_definition = editorHelper.getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
-        settings.out_of_range_tabstop_size = editorHelper.getNumber("out_of_range_tabstop_size", settings.out_of_range_tabstop_size);
+        settings._out_of_range_tabstop_size = editorHelper.getNumber("out_of_range_tabstop_size", settings._out_of_range_tabstop_size);
 
         settings.anchor_tabstops = editorHelper.getIAnchorTabInfo();
 
@@ -220,9 +278,9 @@ export class VSCOBOLConfiguration {
         settings.copybook_scan_depth = editorConfig.get<number>("copybook_scan_depth", settings.copybook_scan_depth);
 
         settings.makefile_dependency_file = editorHelper.getBoolean("makefile_dependency_file", settings.makefile_dependency_file);
-        
+
         settings.makefile_dependency_prefix = editorConfig.get<string>("makefile_dependency_prefix", settings.makefile_dependency_prefix);
-        
+
         settings.makefile_dependancy_fullpath = editorHelper.getBoolean("makefile_dependancy_fullpath", settings.makefile_dependancy_fullpath);
         return settings;
     }

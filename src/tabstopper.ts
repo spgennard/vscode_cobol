@@ -36,7 +36,7 @@ export class TabUtils {
         }
     }
 
-    private getTabsForLine(line: string, settings: ICOBOLSettings): IAnchorTabInfo {
+    private getTabsForLine(langId:string, line: string, settings: ICOBOLSettings): IAnchorTabInfo {
 
         if (settings.enable_tabstops_anchors) {
             const lineU = line.toLowerCase();
@@ -46,7 +46,7 @@ export class TabUtils {
                 }
             }
         }
-        return { anchor: "", tabstops: settings.tabstops, out_of_range_tabstop_size: settings.out_of_range_tabstop_size };
+        return { anchor: "", tabstops: settings.get_tabstops(langId), out_of_range_tabstop_size: settings.get_out_of_range_tabstop_size(langId) };
     }
 
     public async executeTab(editor: TextEditor, doc: TextDocument, sel: readonly Selection[], inserting: boolean): Promise<void> {
@@ -61,11 +61,12 @@ export class TabUtils {
         }
         
         editor.edit(edit => {
+            const langId = editor.document.languageId;
             for (let x = 0; x < sel.length; x++) {
                 if (sel[x].isSingleLine) {
                     const position = sel[x].start;
                     const thisLine = editor.document.lineAt(position.line).text;
-                    const tabs = this.getTabsForLine(thisLine, settings);
+                    const tabs = this.getTabsForLine(langId, thisLine, settings);
                     if (inserting) {
                         this.singleSelectionTab(settings, edit, doc, position, tabs);
                     } else {
@@ -117,10 +118,11 @@ export class TabUtils {
     }
 
     private multipleSelectionTab(settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, sel: Selection): void {
+        const langId = d.languageId;
         for (let line = sel.start.line; line <= sel.end.line; line++) {
             const pos = new Position(line, sel.start.character);
             const thisLine = d.lineAt(line).text;
-            const tabs = this.getTabsForLine(thisLine, settings);
+            const tabs = this.getTabsForLine(langId, thisLine, settings);
             this.singleSelectionTab(settings, edit, d, pos, tabs);
         }
     }
@@ -128,11 +130,12 @@ export class TabUtils {
     private readonly multipleSelectionUnTabPttrn = /^\s*/;
 
     private multipleSelectionUnTab(settings: ICOBOLSettings, edit: TextEditorEdit, d: TextDocument, sel: Selection): void {
+        const langId = d.languageId;
         for (let line = sel.start.line; line <= sel.end.line; line++) {
             const charpos = sel.start.character;
             const pos = new Position(line, charpos);
             const lineText = d.lineAt(line).text;
-            const tabs = this.getTabsForLine(lineText, settings);
+            const tabs = this.getTabsForLine(langId, lineText, settings);
             this.singleSelectionUnTab(false, settings, edit, d, pos, tabs);
         }
     }

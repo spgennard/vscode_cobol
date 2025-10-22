@@ -184,7 +184,7 @@
             79
           ],
           "description": "COBOL tabstops",
-          "scope": "resource"
+          "scope": "language-overridable"
         },
         "coboleditor.enable_tabstops_anchors": {
           "type": "boolean",
@@ -470,7 +470,8 @@
         "coboleditor.out_of_range_tabstop_size": {
           "type": "number",
           "description": "Tabstop size when outside of defined tabstop range",
-          "default": 4
+          "default": 4,
+          "scope": "language-overridable"
         },
         "coboleditor.comment_line": {
           "type": "boolean",

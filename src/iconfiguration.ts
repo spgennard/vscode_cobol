@@ -51,7 +51,7 @@ export interface ICOBOLSettings {
     perfile_copybookdirs: string[];
     copybookexts: string[];
     program_extensions: string[];
-    tabstops: number[];
+    _tabstops: number[];
     linter: boolean;
     line_comment: boolean;
     fileformat_strategy: fileformatStrategy;
@@ -151,7 +151,7 @@ export interface ICOBOLSettings {
 
     hover_show_variable_definition:boolean;
 
-    out_of_range_tabstop_size: number;
+    _out_of_range_tabstop_size: number;
 
     anchor_tabstops:IAnchorTabInfo[];
 
@@ -182,6 +182,10 @@ export interface ICOBOLSettings {
     makefile_dependency_prefix: string;
 
     makefile_dependancy_fullpath: boolean;
+
+    get_tabstops(langid:string): number[];
+
+    get_out_of_range_tabstop_size(langid: string): number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -195,7 +199,7 @@ export class COBOLSettings implements ICOBOLSettings {
     perfile_copybookdirs: string[];
     copybookexts: string[];
     program_extensions: string[];
-    tabstops: number[];
+    _tabstops: number[];
     linter: boolean;
     line_comment: boolean;
     fileformat_strategy: fileformatStrategy;
@@ -295,7 +299,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     hover_show_variable_definition:boolean;
 
-    out_of_range_tabstop_size: number;
+    _out_of_range_tabstop_size: number;
 
     anchor_tabstops:IAnchorTabInfo[];
 
@@ -339,7 +343,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.copybookexts = [];
         this.program_extensions = [];
         this.invalid_copybookdirs = [];
-        this.tabstops = [];
+        this._tabstops = [];
         this.linter = false;
         this.line_comment = false;
         this.enable_data_provider = true;
@@ -424,7 +428,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_codelens_section_paragraph_references = false;
         this.enable_codelens_copy_replacing = true;
         this.hover_show_variable_definition = true;
-        this.out_of_range_tabstop_size = 4;
+        this._out_of_range_tabstop_size = 4;
         this.anchor_tabstops = [];
         this.enable_tabstops_anchors = true;
         this.enable_rocket_cobol_lsp_when_active = true;
@@ -444,5 +448,13 @@ export class COBOLSettings implements ICOBOLSettings {
         this.makefile_dependency_file = false;
         this.makefile_dependency_prefix = ".";
         this.makefile_dependancy_fullpath = false;
+    }
+
+    public get_tabstops(langid:string): number[] {
+        return this._tabstops;
+    }
+
+    public get_out_of_range_tabstop_size(langid: string): number {
+        return this._out_of_range_tabstop_size;
     }
 }

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import path from "path";
-
 import { extensions, Uri, workspace, WorkspaceFolder } from "vscode";
 import { VSWorkspaceFolders } from "./vscobolfolders";
 import { COBSCANNER_ADDFILE, COBSCANNER_END_OF_FILE, COBSCANNER_KNOWNCOPYBOOK, COBSCANNER_SENDCLASS, COBSCANNER_SENDENUM, COBSCANNER_SENDEP, COBSCANNER_SENDINTERFACE, COBSCANNER_SENDPRGID, COBSCANNER_START_OF_FILE, COBSCANNER_STATUS, ScanData, ScanDataHelper } from "./cobscannerdata";
