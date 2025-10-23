@@ -47,7 +47,7 @@ export class VSHelpAndFeedViewHandler {
                     break;
 
                 case FeedBackItem.introToOO:
-                    VSHelpAndFeedViewHandler.openUrl("https://docs-be.rocketsoftware.com/bundle/enterprisedeveloper_dg5_100_pdf/raw/resource/enus/enterprise_developer_intro_to_oo_programming_for_cobol_developers_vvc70.pdf");
+                    VSHelpAndFeedViewHandler.openUrl("https://docs.rocketsoftware.com/bundle/intro_to_oo_programming_for_cobol_developers_vvced100/resource/intro_to_oo_programming_for_cobol_developers_vvced100.pdf")
                     break;
 
                     
@@ -107,7 +107,7 @@ export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem
                 break;
 
             case FeedBackItem.joinCommunity:
-                iconPath = new vscode.ThemeIcon("organization");
+                iconPath = new vscode.ThemeIcon("rocket");
                 break;
 
             case FeedBackItem.review:
@@ -115,11 +115,11 @@ export class HelpAndFeedbackTree implements vscode.TreeDataProvider<FeedBackItem
                 break;
 
             case FeedBackItem.courses:
-                iconPath = new vscode.ThemeIcon("play-circle");
+                iconPath = new vscode.ThemeIcon("rocket");
                 break;
 
             case FeedBackItem.introToOO:
-                iconPath = new vscode.ThemeIcon("file-pdf");
+                iconPath = new vscode.ThemeIcon("rocket");
                 break;
         }
 

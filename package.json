@@ -1308,11 +1308,13 @@
         {
           "id": "flat-source-view",
           "name": "Source View",
+          "icon": "$(explorer-view-icon)",
           "when": "config.coboleditor.sourceview"
         },
         {
           "id": "help-and-feedback-view",
           "name": "Help on COBOL and Feedback",
+          "icon": "$(question)",
           "when": "config.coboleditor.feedbackview"
         }
       ]
