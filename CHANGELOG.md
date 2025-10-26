@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* f861b3d tweak icons, use rocket item for 'Rocket Software' related links
+* a751129 Add support for language based setting #365
+
+## 25.10.18 
 
 ## 25.10.11 tweak
 * 7423c36 Update
