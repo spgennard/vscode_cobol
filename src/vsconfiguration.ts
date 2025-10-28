@@ -71,7 +71,7 @@ export class VSCOBOLSettings extends COBOLSettings implements IVSCOBOLSettings {
             const globalLanguageValue = inspection.globalLanguageValue;
             const workspaceLanguageValue = inspection.workspaceLanguageValue;
             const workspaceFolderLanguageValue = inspection.workspaceFolderLanguageValue;
-            // const defaultLanguageValue = inspection.defaultLanguageValue;
+            const defaultLanguageValue = inspection.defaultLanguageValue;
             // const defaultValue = inspection.defaultValue;
 
             // If any of these are undefined, that level hasn't been set by the user
@@ -79,6 +79,10 @@ export class VSCOBOLSettings extends COBOLSettings implements IVSCOBOLSettings {
                 workspaceValue === undefined &&
                 workspaceFolderValue === undefined) {
                 isDefaultBeingUsed = true;
+            }
+
+            if (defaultLanguageValue !== undefined) {
+                langValue = defaultLanguageValue;
             }
 
             if (globalLanguageValue !== undefined) {
