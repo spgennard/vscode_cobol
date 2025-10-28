@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* f2c8f3f Pickup default language setting #365
+
+## 25.10.25 
 * f861b3d tweak icons, use rocket item for 'Rocket Software' related links
 * a751129 Add support for language based setting #365
 
