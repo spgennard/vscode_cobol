@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 25.10.27 
 * f2c8f3f Pickup default language setting #365
 
 ## 25.10.25 
