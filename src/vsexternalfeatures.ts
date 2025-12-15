@@ -88,15 +88,16 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
 
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    public getFileModTimeStamp(filename: string): BigInt {
+    public getFileModTimeStamp(filename: string): BigInt|undefined {
         try {
-            const f = fs.statSync(filename, { bigint: true });
+            const f = fs.statSync(filename, { bigint: true, throwIfNoEntry: false });
+            if (f === undefined) {
+                return undefined;
+            }
             return (BigInt)(f.mtimeMs);
         } catch (e) {
-            //
+            return undefined;
         }
-
-        return (BigInt)(0);
     }
 
     public getSourceTimeout(config: ICOBOLSettings): number {

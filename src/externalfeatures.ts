@@ -18,7 +18,7 @@ export interface IExternalFeatures {
     getWorkspaceFolders(settings: ICOBOLSettings): string[];
     isFile(possibleFilename:string): boolean;
     isDirectory(possibleDirectory: string) : boolean;
-    getFileModTimeStamp(filename:string):BigInt;
+    getFileModTimeStamp(filename:string):BigInt|undefined;
     getSourceTimeout(config: ICOBOLSettings): number;
     getURLCopyBookSearchPath(): string[];
     setURLCopyBookSearchPath(fileSearchDirectory: string[]):void;

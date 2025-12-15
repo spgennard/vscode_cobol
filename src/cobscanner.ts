@@ -43,7 +43,11 @@ class Utils {
         const cachedMtimeWS = InMemoryGlobalSymbolCache.sourceFilenameModified.get(filename);
         const cachedMtime = cachedMtimeWS?.lastModifiedTime;
         if (cachedMtime !== undefined) {
-            const stat4srcMs =features.getFileModTimeStamp(filename);
+            const stat4srcMs = features.getFileModTimeStamp(filename);
+            // file does not exist anymore
+            if (stat4srcMs === undefined) {
+                return false;
+            }
             if (cachedMtime < stat4srcMs) {
                 features.logMessage(`cacheUpdateRequired : ${nfilename}, cachedMtime=${cachedMtime} < ${stat4srcMs}`);
                 return true;

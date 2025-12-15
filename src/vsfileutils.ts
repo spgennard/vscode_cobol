@@ -31,16 +31,18 @@ export class VSCOBOLFileUtils {
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }
+        
         for (const folder of ws) {
             if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;
 
                 const possibleFile = path.join(folderPath, sdir);
-                if (features.isFile(possibleFile)) {
-                    const stat4srcMs = features.getFileModTimeStamp(possibleFile);
-                    if (sdirMs === stat4srcMs) {
-                        return possibleFile;
-                    }
+                const stat4srcMsPossible = features.getFileModTimeStamp(possibleFile);
+                if (stat4srcMsPossible === undefined) {
+                    continue;
+                }
+                if (sdirMs === stat4srcMsPossible as BigInt) {
+                    return possibleFile;
                 }
             }
         }
@@ -153,7 +155,7 @@ export class VSCOBOLFileUtils {
         for (const copybookdir of features.getURLCopyBookSearchPath()) {
 
             /* check for the file as is.. */
-            const firstPossibleFile = Uri.parse(copybookdir+"/"+filename);
+            const firstPossibleFile = Uri.parse(copybookdir + "/" + filename);
             if (await features.isFileASync(firstPossibleFile.toString())) {
                 return firstPossibleFile.toString();
             }
@@ -162,7 +164,7 @@ export class VSCOBOLFileUtils {
             if (hasDot === -1) {
                 // search through the possible extensions
                 for (const ext of config.copybookexts) {
-                    const possibleFile = Uri.parse(copybookdir+"/"+filename + "." + ext);
+                    const possibleFile = Uri.parse(copybookdir + "/" + filename + "." + ext);
 
                     if (await features.isFileASync(possibleFile.toString())) {
                         return possibleFile.toString();
@@ -182,10 +184,10 @@ export class VSCOBOLFileUtils {
         const hasDot = filename.indexOf(".");
 
         for (const baseCopybookdir of features.getURLCopyBookSearchPath()) {
-            const copybookdir = baseCopybookdir+"/"+inDirectory;
+            const copybookdir = baseCopybookdir + "/" + inDirectory;
 
             /* check for the file as is.. */
-            const firstPossibleFile =  Uri.parse(copybookdir+"/"+filename);
+            const firstPossibleFile = Uri.parse(copybookdir + "/" + filename);
             if (await features.isFileASync(firstPossibleFile.toString())) {
                 return firstPossibleFile.toString();
             }
@@ -194,7 +196,7 @@ export class VSCOBOLFileUtils {
             if (hasDot === -1) {
                 // search through the possible extensions
                 for (const ext of config.copybookexts) {
-                    const possibleFile =  Uri.parse(copybookdir+"."+filename + "." + ext);
+                    const possibleFile = Uri.parse(copybookdir + "." + filename + "." + ext);
 
                     if (await features.isFileASync(possibleFile.toString())) {
                         return possibleFile.toString();

@@ -113,14 +113,16 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
         return COBOLFileUtils.isDirectory(possibleDirectory);
     }
 
-    public getFileModTimeStamp(filename: string): BigInt {
+    public getFileModTimeStamp(filename: string): BigInt|undefined {
         try {
-            return (BigInt)(fs.statSync(filename, { bigint: true }).mtimeMs);
+            const possibleFileMod = fs.statSync(filename, { bigint: true, throwIfNoEntry: false });
+            if (possibleFileMod === undefined) {
+                return undefined;
+            }
+            return (BigInt)(possibleFileMod.mtimeMs);
         } catch {
-            //
+            return undefined;
         }
-
-        return (BigInt)(0);
     }
 
     private fileSearchDirectory: string[] = [];

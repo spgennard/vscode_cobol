@@ -119,8 +119,11 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         return false;
     }
 
-    public getFileModTimeStamp(filename:string):BigInt {
-        const f = fs.statSync(filename, {bigint:true});
+    public getFileModTimeStamp(filename:string):BigInt|undefined {
+        const f = fs.statSync(filename, {bigint:true, throwIfNoEntry: false});
+        if (f === undefined) {
+            return undefined;
+        }
         return (BigInt)(f.mtimeMs);
     }
 

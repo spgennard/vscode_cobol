@@ -463,11 +463,14 @@ export class COBOLCopybookToken {
     public hasCopybookChanged(features: IExternalFeatures, configHandler: ICOBOLSettings) {
         if (this.statementInformation !== undefined) {
             var cpyFile = this.statementInformation.fileName;
-            // if file case gone..
-            if (features.isFile(cpyFile) === false) {
-                return true;
+
+            const possibleFileMod = features.getFileModTimeStamp(cpyFile);
+            if (possibleFileMod === undefined) { 
+                return false;
             }
-            if (features.getFileModTimeStamp(cpyFile) !== this.statementInformation.fileNameMod) {
+
+            const fileFileMod = possibleFileMod as BigInt
+            if (fileFileMod !== this.statementInformation.fileNameMod) {
                 return true;
             }
 
@@ -1008,7 +1011,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         /* mark this has been processed (to help copy of self) */
         state.copyBooksUsed.set(this.filename, [COBOLCopybookToken.Null]);
         if (this.sourceReferences.topLevel) {
-            this.lastModifiedTime = externalFeatures.getFileModTimeStamp(this.filename);
+            const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(this.filename);
+            this.lastModifiedTime = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);
         }
 
         this.workspaceFile = new COBOLWorkspaceFile(this.lastModifiedTime, sourceHandler.getShortWorkspaceFilename());
@@ -3178,7 +3182,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
         cbInfo.fileName = fileName;
-        cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName);
+        const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(fileName);
+        cbInfo.fileNameMod = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);
         if (this.copyBooksUsed.has(fileName) === false) {
             this.copyBooksUsed.set(fileName, [copybookToken]);
         } else {
