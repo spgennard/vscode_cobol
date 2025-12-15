@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 52a0509 Avoid relying on a catching an exception, return undefine on timestamp check if file not found and drop a file check  #366
+
+## 25.12.5 
 
 ## 25.11.20 
 
