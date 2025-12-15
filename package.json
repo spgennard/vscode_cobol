@@ -35,7 +35,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.106.0"
+    "vscode": "^1.107.0"
   },
   "extensionKind": [
     "workspace"
@@ -3018,8 +3018,8 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^24.10.1",
-    "@types/vscode": "^1.106.1",
+    "@types/node": "^25.0.2",
+    "@types/vscode": "^1.107.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/test-web": "^0.0.77",
@@ -3048,14 +3048,14 @@
     "glob-to-regexp": "^0.4.1",
     "js-base64": "^3.7.8",
     "memfs": "^4.51.1",
-    "npm-check-updates": "^19.1.2",
+    "npm-check-updates": "^19.2.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "performance-now": "2.1.0",
     "promisify-child-process": "^4.1.2",
     "properties-reader": "^2.3.0",
     "stream-browserify": "^3.0.0",
-    "trie-search": "^2.2.0",
+    "trie-search": "^2.2.1",
     "ts-prune": "^0.10.3",
     "url": "^0.11.4"
   },

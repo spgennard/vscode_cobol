@@ -315,7 +315,7 @@ for (const arg of args) {
                             });
 
                             worker.on("error", error => {
-                                features.logException("usethreads", error);
+                                features.logException("usethreads", error as Error);
                             });
 
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
