@@ -460,7 +460,9 @@ export class COBOLCopybookToken {
         this.statementInformation = statementInformation;
     }
 
-    public hasCopybookChanged(features: IExternalFeatures, configHandler: ICOBOLSettings) {
+    public hasCopybookChanged(features: IExternalFeatures, configHandler: ICOBOLSettings): boolean {
+        const refreshFromDisk = configHandler.copybook_refresh_search;
+        
         if (this.statementInformation !== undefined) {
             var cpyFile = this.statementInformation.fileName;
 
@@ -474,7 +476,7 @@ export class COBOLCopybookToken {
                 return true;
             }
 
-            if (this.token !== undefined) {
+            if (refreshFromDisk && this.token !== undefined) {
                 const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.token.tokenName, this.token.extraInformation1, this.token.sourceHandler, configHandler);
                 if (newFileName !== this.statementInformation.fileName) {
                     return true;

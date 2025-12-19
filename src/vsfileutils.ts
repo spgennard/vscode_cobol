@@ -31,7 +31,7 @@ export class VSCOBOLFileUtils {
         if (workspace === undefined || ws === undefined) {
             return undefined;
         }
-        
+
         for (const folder of ws) {
             if (folder.uri.scheme === "file") {
                 const folderPath = folder.uri.path;

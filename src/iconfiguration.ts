@@ -186,6 +186,8 @@ export interface ICOBOLSettings {
     get_tabstops(langid:string): number[];
 
     get_out_of_range_tabstop_size(langid: string): number;
+
+    copybook_refresh_search: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -331,6 +333,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     makefile_dependancy_fullpath: boolean;
 
+    copybook_refresh_search: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -448,6 +452,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.makefile_dependency_file = false;
         this.makefile_dependency_prefix = ".";
         this.makefile_dependancy_fullpath = false;
+
+        this.copybook_refresh_search = false;
     }
 
     public get_tabstops(langid:string): number[] {

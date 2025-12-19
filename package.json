@@ -1289,6 +1289,11 @@
           "description": "Write full path to makefile dependency files (.d)",
           "default": false,
           "scope": "resource"
+        },
+        "coboleditor.copybook_refresh_search  ": {
+          "type": "boolean",
+          "description": "When enabled, active search for copybook if not found or changed",
+          "default": true
         }
       }
     },
