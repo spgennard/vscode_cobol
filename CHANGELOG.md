@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* ddd86bc Add copybook_refresh_search #366
 
-## 25.12.16, origin/main, origin/HEAD 
+## 25.12.16 
+* 3330d9e Update
 * 965edd0 tweak eror due to nodejs change
 
 ## 25.12.14 
