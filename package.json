@@ -61,6 +61,7 @@
     "onFileSystem:zip",
     "onLanguage:plaintext",
     "onLanguage:cobol",
+    "onLanguage:rexx",
     "view:flat-source-view",
     "workspaceContains:bld.bat",
     "workspaceContains:bld.sh",
@@ -80,6 +81,8 @@
     "workspaceContains:**/*.cntl",
     "workspaceContains:**/*.prc",
     "workspaceContains:**/*.proc",
+    "workspaceContains:**/*.rexx",
+    "workspaceContains:**/*.rex",
     "onSearch:file",
     "onEditSession:file",
     "onEditSession:untitled"
@@ -1777,6 +1780,20 @@
       {
         "id": "OpenESQL",
         "configuration": "./openesql.configuration.json"
+      },
+      {
+        "id": "rexx",
+        "aliases": [
+          "REXX",
+          "rexx"
+        ],
+        "extensions": [
+          ".rexx",
+          ".rex",
+          ".REXX",
+          ".REX"
+        ],
+        "configuration": "./rexx.configuration.json"
       }
     ],
     "grammars": [
@@ -1989,6 +2006,11 @@
         "language": "OpenESQL",
         "scopeName": "source.openesql",
         "path": "./syntaxes/openesql.tmLanguage.json"
+      },
+      {
+        "language": "rexx",
+        "scopeName": "source.rexx",
+        "path": "./syntaxes/rexx.tmLanguage.json"
       }
     ],
     "markdown.markdownItPlugins": false,

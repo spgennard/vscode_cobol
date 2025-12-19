@@ -147,6 +147,10 @@
     "variables": {
       "patterns": [
         {
+          "name": "variable.other.stem.rexx",
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+\\b"
+        },
+        {
           "name": "variable.other.rexx",
           "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
         },
