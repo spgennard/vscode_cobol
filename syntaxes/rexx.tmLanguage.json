@@ -1,0 +1,168 @@
+{
+  "_copyright": "The MIT License (MIT)\nCopyright (c) 2025 spgennard\nSource: https://github.com/spgennard/vscode_cobol/blob/main/syntaxes/rexx.tmLanguage.json",
+  "$schema": "https://raw.githubusercontent.com/spgennard/vscode_cobol/main/schemas/tmlanguage.json",
+  "name": "rexx",
+  "scopeName": "source.rexx",
+  "fileTypes": [
+    "rexx",
+    "rex",
+    "cmd"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#variables"
+    },
+    {
+      "include": "#labels"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.rexx",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.begin.rexx"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.end.rexx"
+            }
+          }
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.rexx",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.rexx",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.rexx",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.rexx",
+              "match": "''"
+            }
+          ]
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.rexx",
+          "match": "\\b(?i:DO|END|IF|THEN|ELSE|SELECT|WHEN|OTHERWISE|LEAVE|ITERATE|RETURN|EXIT|CALL|SIGNAL|WHILE|UNTIL|FOR|TO|BY|FOREVER)\\b"
+        },
+        {
+          "name": "keyword.operator.rexx",
+          "match": "\\b(?i:AND|OR|NOT|XOR)\\b"
+        },
+        {
+          "name": "keyword.other.rexx",
+          "match": "\\b(?i:ADDRESS|ARG|DROP|INTERPRET|NOP|NUMERIC|OPTIONS|PARSE|PROCEDURE|PULL|PUSH|QUEUE|SAY|TRACE|UPPER)\\b"
+        },
+        {
+          "name": "storage.type.rexx",
+          "match": "\\b(?i:EXPOSE|HIDE|VAR|VALUE|VERSION|WITH)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.rexx",
+          "match": "\\b(?i:ABS|ABBREV|ADDRESS|ARG|B2X|BITAND|BITOR|BITXOR|C2D|C2X|CENTER|CENTRE|CHARIN|CHAROUT|CHARS|COMPARE|CONDITION|COPIES|COUNTSTR|D2C|D2X|DATATYPE|DATE|DELSTR|DELWORD|DIGITS|ERRORTEXT|FIND|FORM|FORMAT|FUZZ|INDEX|INSERT|LASTPOS|LEFT|LENGTH|LINEOUT|LINES|LINEIN|MAX|MIN|OVERLAY|POS|QUEUED|RANDOM|REVERSE|RIGHT|SIGN|SOURCELINE|SPACE|STRIP|SUBSTR|SUBWORD|SYMBOL|TIME|TRACE|TRANSLATE|TRUNC|VALUE|VERIFY|WORD|WORDINDEX|WORDLENGTH|WORDPOS|WORDS|X2B|X2C|X2D|XRANGE)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.decimal.rexx",
+          "match": "\\b[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?\\b"
+        },
+        {
+          "name": "constant.numeric.hexadecimal.rexx",
+          "match": "'[0-9A-Fa-f]+'[xX]"
+        },
+        {
+          "name": "constant.numeric.binary.rexx",
+          "match": "'[01]+'[bB]"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arithmetic.rexx",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.comparison.rexx",
+          "match": "(=|\\\\=|<>|><|<|>|<=|>=|\\\\<|\\\\>)"
+        },
+        {
+          "name": "keyword.operator.string.rexx",
+          "match": "(\\|\\||&)"
+        },
+        {
+          "name": "keyword.operator.assignment.rexx",
+          "match": "="
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.other.rexx",
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+        },
+        {
+          "name": "variable.parameter.rexx",
+          "match": "\\&[A-Za-z_][A-Za-z0-9_]*"
+        }
+      ]
+    },
+    "labels": {
+      "patterns": [
+        {
+          "name": "entity.name.function.rexx",
+          "match": "^[A-Za-z_][A-Za-z0-9_]*:"
+        }
+      ]
+    }
+  }
+}
