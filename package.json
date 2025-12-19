@@ -61,7 +61,6 @@
     "onFileSystem:zip",
     "onLanguage:plaintext",
     "onLanguage:cobol",
-    "onLanguage:rexx",
     "view:flat-source-view",
     "workspaceContains:bld.bat",
     "workspaceContains:bld.sh",
