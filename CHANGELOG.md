@@ -1,5 +1,13 @@
 # CHANGELOG
 
+* 0051f4d add network_directory_prefixes
+* 316a096 add network directory prefixes and add slow url check to be inline with local/network search
+* 351cb16 add copybook_directory_speed_limit configuration
+* 1bd783f add basic rexx support
+* b9212a6 tweak rexx
+* 2a7072c add v0 of rexx support
+
+## 25.12.18 
 * ddd86bc Add copybook_refresh_search #366
 
 ## 25.12.16 
