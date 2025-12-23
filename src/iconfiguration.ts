@@ -190,6 +190,8 @@ export interface ICOBOLSettings {
     copybook_refresh_search: boolean;
 
     copybook_directory_speed_limit: number;
+
+    network_directory_prefixes: string[];
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -339,6 +341,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     copybook_directory_speed_limit: number;
 
+    network_directory_prefixes: string[];
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -459,6 +463,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
         this.copybook_refresh_search = false;
         this.copybook_directory_speed_limit = 2000;
+        this.network_directory_prefixes = ["\\\\","//"];
     }
 
     public get_tabstops(langid:string): number[] {

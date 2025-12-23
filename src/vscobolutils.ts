@@ -1069,19 +1069,19 @@ export class VSCOBOLUtils {
             try {
                 if (workspace.isTrusted === false) {
                     // copybooks that have a direct path or a network are only available in full trust
-                    if (COBOLFileUtils.isDirectPath(ddir) || COBOLFileUtils.isNetworkPath(ddir)) {
+                    if (COBOLFileUtils.isDirectPath(ddir) || COBOLFileUtils.isNetworkPath(ddir, settings)) {
                         invalidSearchDirectory.push(ddir);
                         continue;
                     }
                 } else {
-                    if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir)) {
+                    if (settings.disable_unc_copybooks_directories && COBOLFileUtils.isNetworkPath(ddir, settings)) {
                         VSLogger.logMessage(" Copybook directory " + ddir + " has been marked as invalid, as it is a unc filename");
                         invalidSearchDirectory.push(ddir);
                     }
                     else if (COBOLFileUtils.isDirectPath(ddir)) {
                         if (workspace !== undefined && ws !== undefined) {
                             if (VSCOBOLFileUtils.isPathInWorkspace(ddir, settings) === false) {
-                                if (COBOLFileUtils.isNetworkPath(ddir)) {
+                                if (COBOLFileUtils.isNetworkPath(ddir, settings)) {
                                     VSLogger.logMessage(" The directory " + ddir + " for performance should be part of the workspace");
                                 }
                             }
@@ -1121,7 +1121,7 @@ export class VSCOBOLUtils {
                             const sdir = path.join(folder.uri.fsPath, extdir);
 
                             if (COBOLFileUtils.isDirectory(sdir)) {
-                                if (COBOLFileUtils.isNetworkPath(sdir) && VSCOBOLFileUtils.isPathInWorkspace(sdir, settings) === false) {
+                                if (COBOLFileUtils.isNetworkPath(sdir, settings) && VSCOBOLFileUtils.isPathInWorkspace(sdir, settings) === false) {
                                     VSLogger.logMessage(" The directory " + sdir + " for performance should be part of the workspace");
                                 }
 
@@ -1212,7 +1212,16 @@ export class VSCOBOLUtils {
                         if (COBOLFileUtils.isDirectPath(extdir) === false) {
                             const sdir = `${folder.uri.toString()}/${extdir}`;
 
+                            const start_now = VSExternalFeatures.performance_now();
                             const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
+                            const totalTimeInMS = VSExternalFeatures.performance_now() - start_now;
+                            const timeTaken = totalTimeInMS.toFixed(2);
+                            if (totalTimeInMS > settings.copybook_directory_speed_limit) {
+                                VSLogger.logMessage(" Slow copybook directory dropped " + sdir + " as it took " + timeTaken + "ms");
+                                invalidSearchDirectory.push(sdir);
+                                continue;
+                            }
+                            
                             if (sdirStat.type & vscode.FileType.Directory) {
                                 URLSearchDirectory.push(sdir);
                             } else {

@@ -1301,6 +1301,25 @@
           "type": "number",
           "description": "Directory speed limit in ms when searching for copybooks, anything over this limit will be skipped",
           "default": 2000
+        },
+        "coboleditor.network_directory_prefixes": {
+          "type": "array",
+          "description": "List of network directory prefixes to use when searching for copybooks on network drives",
+          "items": {
+            "type": "string",
+            "title": "network directory prefix",
+            "properties": {
+              "copybook": {
+                "type": "string",
+                "description": "network directory prefix"
+              }
+            }
+          },
+          "default": [
+            "\\\\",
+            "//"
+          ],
+          "uniqueItems": true
         }
       }
     },
