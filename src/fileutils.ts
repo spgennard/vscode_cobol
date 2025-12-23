@@ -86,7 +86,7 @@ export class COBOLFileUtils {
     }
 
     // only handle unc filenames
-    public static isNetworkPath(dir: string): boolean {
+    public static isNetworkPath(dir: string, settings: ICOBOLSettings): boolean {
         if (dir === undefined && dir === null) {
             return false;
         }
@@ -96,6 +96,12 @@ export class COBOLFileUtils {
                 return true;
             }
         }
+
+        for (const prefix of settings.network_directory_prefixes) {
+            if (dir.startsWith(prefix)) {
+                return true;
+            }
+        }   
 
         return false;
     }

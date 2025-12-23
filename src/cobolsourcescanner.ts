@@ -451,6 +451,7 @@ export class COBOLCopybookToken {
     public readonly token: COBOLToken | undefined;
     public scanComplete: boolean;
     public statementInformation: copybookState | undefined;
+    public refreshFromDisk: boolean| undefined = false;
 
     public static readonly Null = new COBOLCopybookToken(undefined, false, undefined);
 
@@ -458,10 +459,11 @@ export class COBOLCopybookToken {
         this.token = token;
         this.scanComplete = parsed;
         this.statementInformation = statementInformation;
+        this.refreshFromDisk = undefined;
     }
 
     public hasCopybookChanged(features: IExternalFeatures, configHandler: ICOBOLSettings): boolean {
-        const refreshFromDisk = configHandler.copybook_refresh_search;
+        const refreshFromDisk = this.refreshFromDisk === undefined ? configHandler.copybook_refresh_search : this.refreshFromDisk;
         
         if (this.statementInformation !== undefined) {
             var cpyFile = this.statementInformation.fileName;
@@ -477,7 +479,14 @@ export class COBOLCopybookToken {
             }
 
             if (refreshFromDisk && this.token !== undefined) {
+                const timeTakenStart = features.performance_now();
                 const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.token.tokenName, this.token.extraInformation1, this.token.sourceHandler, configHandler);
+                const totalTimeInMS = features.performance_now() - timeTakenStart;
+                if (totalTimeInMS > configHandler.copybook_speed_limit) {
+                    this.refreshFromDisk = false;
+                    features.logMessage("Slow copybook change check dropped for " + cpyFile + " as it took " + totalTimeInMS.toFixed(2) + "ms");
+                    return false;
+                }
                 if (newFileName !== this.statementInformation.fileName) {
                     return true;
                 }

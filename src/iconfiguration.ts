@@ -189,7 +189,7 @@ export interface ICOBOLSettings {
 
     copybook_refresh_search: boolean;
 
-    copybook_directory_speed_limit: number;
+    copybook_speed_limit: number;
 
     network_directory_prefixes: string[];
 }
@@ -339,7 +339,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     copybook_refresh_search: boolean;
 
-    copybook_directory_speed_limit: number;
+    copybook_speed_limit: number;
 
     network_directory_prefixes: string[];
 
@@ -462,7 +462,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.makefile_dependancy_fullpath = false;
 
         this.copybook_refresh_search = false;
-        this.copybook_directory_speed_limit = 2000;
+        this.copybook_speed_limit = 2000;
         this.network_directory_prefixes = ["\\\\","//"];
     }
 

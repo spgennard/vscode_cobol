@@ -1091,7 +1091,7 @@ export class VSCOBOLUtils {
                         if (COBOLFileUtils.isDirectory(ddir)) {
                             const totalTimeInMS = VSExternalFeatures.performance_now() - startTime;
                             const timeTaken = totalTimeInMS.toFixed(2);
-                            if (totalTimeInMS <= settings.copybook_directory_speed_limit) {
+                            if (totalTimeInMS <= settings.copybook_speed_limit) {
                                 fileSearchDirectory.push(ddir);
                             } else {
                                 VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");
@@ -1216,12 +1216,12 @@ export class VSCOBOLUtils {
                             const sdirStat = await vscode.workspace.fs.stat(vscode.Uri.parse(sdir));
                             const totalTimeInMS = VSExternalFeatures.performance_now() - start_now;
                             const timeTaken = totalTimeInMS.toFixed(2);
-                            if (totalTimeInMS > settings.copybook_directory_speed_limit) {
+                            if (totalTimeInMS > settings.copybook_speed_limit) {
                                 VSLogger.logMessage(" Slow copybook directory dropped " + sdir + " as it took " + timeTaken + "ms");
                                 invalidSearchDirectory.push(sdir);
                                 continue;
                             }
-                            
+
                             if (sdirStat.type & vscode.FileType.Directory) {
                                 URLSearchDirectory.push(sdir);
                             } else {
