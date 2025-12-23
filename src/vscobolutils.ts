@@ -1091,7 +1091,7 @@ export class VSCOBOLUtils {
                         if (COBOLFileUtils.isDirectory(ddir)) {
                             const totalTimeInMS = VSExternalFeatures.performance_now() - startTime;
                             const timeTaken = totalTimeInMS.toFixed(2);
-                            if (totalTimeInMS <= 2000) {
+                            if (totalTimeInMS <= settings.copybook_directory_speed_limit) {
                                 fileSearchDirectory.push(ddir);
                             } else {
                                 VSLogger.logMessage(" Slow copybook directory dropped " + ddir + " as it took " + timeTaken + "ms");

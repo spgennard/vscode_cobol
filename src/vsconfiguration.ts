@@ -289,6 +289,8 @@ export class VSCOBOLConfiguration {
 
         settings.copybook_refresh_search = editorHelper.getBoolean("copybook_refresh_search", settings.copybook_refresh_search);
         
+        settings.copybook_directory_speed_limit = editorConfig.get<number>("copybook_directory_speed_limit", settings.copybook_directory_speed_limit);
+        
         return settings;
     }
 

@@ -188,6 +188,8 @@ export interface ICOBOLSettings {
     get_out_of_range_tabstop_size(langid: string): number;
 
     copybook_refresh_search: boolean;
+
+    copybook_directory_speed_limit: number;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -335,6 +337,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     copybook_refresh_search: boolean;
 
+    copybook_directory_speed_limit: number;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -454,6 +458,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.makefile_dependancy_fullpath = false;
 
         this.copybook_refresh_search = false;
+        this.copybook_directory_speed_limit = 2000;
     }
 
     public get_tabstops(langid:string): number[] {

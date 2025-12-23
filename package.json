@@ -1296,6 +1296,11 @@
           "type": "boolean",
           "description": "When enabled, active search for copybook if not found or changed",
           "default": true
+        },
+        "coboleditor.copybook_directory_speed_limit": {
+          "type": "number",
+          "description": "Directory speed limit in ms when searching for copybooks, anything over this limit will be skipped",
+          "default": 2000
         }
       }
     },
