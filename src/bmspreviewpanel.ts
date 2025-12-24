@@ -27,19 +27,19 @@ export class BmsPreviewPanel {
             column,
             {
                 enableScripts: true,
-                localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'resources')],
-                retainContextWhenHidden: true
+                retainContextWhenHidden: true,
+                localResourceRoots: [extensionUri]
             }
         );
 
-        BmsPreviewPanel.currentPanel = new BmsPreviewPanel(panel, extensionUri, document);
+        BmsPreviewPanel.currentPanel = new BmsPreviewPanel(panel, document);
     }
 
     public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-        BmsPreviewPanel.currentPanel = new BmsPreviewPanel(panel, extensionUri);
+        BmsPreviewPanel.currentPanel = new BmsPreviewPanel(panel);
     }
 
-    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, document?: vscode.TextDocument) {
+    private constructor(panel: vscode.WebviewPanel, document?: vscode.TextDocument) {
         this._panel = panel;
         this._currentDocument = document;
 
@@ -120,13 +120,35 @@ export class BmsPreviewPanel {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>BMS Preview</title>
             <style>
+                /* Use system monospace fonts that provide good 3270-like appearance */
+                :root {
+                    --terminal-font-family: 
+                        /* System fonts with good 3270 characteristics */
+                        'SF Mono', 'Monaco', 'Consolas', 'Roboto Mono', 'Source Code Pro', 
+                        'Inconsolata', 'Liberation Mono', 'DejaVu Sans Mono', 
+                        /* Classic monospace fallbacks */
+                        'Courier New', 'Lucida Console', 
+                        /* Generic fallback */
+                        monospace;
+                    --vscode-editor-font-size: 14px;
+                    --vscode-editor-background: #1e1e1e;
+                    --vscode-editor-foreground: #d4d4d4;
+                    --vscode-panel-border: #454545;
+                    --vscode-textCodeBlock-background: #2d2d2d;
+                    --vscode-descriptionForeground: #cccccc;
+                    --vscode-textPreformat-foreground: #569cd6;
+                    --vscode-list-hoverBackground: #2a2d2e;
+                    --vscode-list-activeSelectionBackground: #094771;
+                    --vscode-string-foreground: #ce9178;
+                }
+
                 * {
                     box-sizing: border-box;
                 }
                 
                 body {
-                    font-family: var(--vscode-editor-font-family, 'Courier New', monospace);
-                    font-size: var(--vscode-editor-font-size, 14px);
+                    font-family: var(--terminal-font-family);
+                    font-size: var(--vscode-editor-font-size);
                     background-color: var(--vscode-editor-background);
                     color: var(--vscode-editor-foreground);
                     margin: 0;
@@ -176,23 +198,32 @@ export class BmsPreviewPanel {
                     position: relative;
                     background-color: #000040;
                     margin: 0 auto;
-                    font-family: 'Courier New', monospace;
+                    font-family: var(--terminal-font-family);
                     font-size: 14px;
-                    line-height: 1;
+                    line-height: 1.2;
                     overflow: hidden;
                     border: 2px solid #00ff00;
                     transition: all 0.3s ease;
+                    font-variant-ligatures: none;
+                    letter-spacing: 0;
+                    font-feature-settings: "kern" 0;
+                    /* Add subtle text shadow for better visibility */
+                    text-shadow: 0 0 2px rgba(0, 255, 0, 0.3);
                 }
                 
                 .bms-field {
                     position: absolute;
                     border: 1px dotted transparent;
-                    min-height: 1em;
+                    min-height: 1.2em;
                     overflow: hidden;
                     box-sizing: border-box;
                     white-space: pre;
                     cursor: default;
                     transition: all 0.2s ease;
+                    font-family: var(--terminal-font-family) !important;
+                    font-size: var(--vscode-editor-font-size) !important;
+                    font-variant-ligatures: none;
+                    font-feature-settings: "kern" 0;
                 }
                 
                 .bms-field:hover {
@@ -263,7 +294,8 @@ export class BmsPreviewPanel {
                 
                 .info-value {
                     color: var(--vscode-editor-foreground);
-                    font-family: monospace;
+                    font-family: var(--terminal-font-family) !important;
+                    font-size: var(--vscode-editor-font-size);
                 }
                 
                 .field-list {
@@ -543,7 +575,7 @@ export class BmsPreviewPanel {
                 }
 
                 function createFieldHtml(field) {
-                    const top = (field.row - 1) * 1;
+                    const top = (field.row - 1) * 1.2;
                     const left = (field.col - 1) * 0.6;
                     
                     let fieldClass = 'bms-field';
@@ -566,7 +598,7 @@ export class BmsPreviewPanel {
                     }
 
                     return '<div class="' + fieldClass + '"' + 
-                        ' style="top: ' + top + 'em; left: ' + left + 'em; width: ' + (field.length * 0.6) + 'em; height: 1em; line-height: 1em;"' +
+                        ' style="top: ' + top + 'em; left: ' + left + 'em; width: ' + (field.length * 0.6) + 'em; height: 1.2em; line-height: 1.2em;"' +
                         ' title="' + field.name + ': ' + field.rawLine + '">' +
                         '<div class="field-label">' + field.name + '</div>' +
                         displayValue +
