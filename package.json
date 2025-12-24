@@ -2087,6 +2087,22 @@
         "enablement": "editorFocus && config.coboleditor.line_comment"
       },
       {
+        "command": "bms.showPreview",
+        "category": "BMS",
+        "title": "Open Preview",
+        "enablement": "resourceLangId == bms",
+        "icon": {
+          "light": "images/light/bms-preview.svg",
+          "dark": "images/dark/bms-preview.svg"
+        }
+      },
+      {
+        "command": "bms.showPreviewToSide",
+        "category": "BMS",
+        "title": "Open Preview to the Side",
+        "enablement": "resourceLangId == bms"
+      },
+      {
         "command": "cobolplugin.change_lang_to_acu",
         "category": "COBOL",
         "title": "Select ACUCOBOL-GT language"
@@ -2401,12 +2417,27 @@
         {
           "submenu": "cobolplugin.convertmenu",
           "group": "navigation_cobol"
+        },
+        {
+          "command": "bms.showPreview",
+          "group": "navigation_bms",
+          "when": "editorTextFocus && resourceLangId == bms"
+        },
+        {
+          "command": "bms.showPreviewToSide",
+          "group": "navigation_bms",
+          "when": "editorTextFocus && resourceLangId == bms"
         }
       ],
       "editor/title": [
         {
           "command": "cobolplugin.view_dot_callgraph",
           "when": "config.coboleditor.enable_program_information && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection",
+          "group": "navigation"
+        },
+        {
+          "command": "bms.showPreview",
+          "when": "resourceLangId == bms",
           "group": "navigation"
         }
       ],

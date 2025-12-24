@@ -49,6 +49,7 @@ import { VSHoverProvider } from "./vshoverprovider";
 import { COBOLTypeFormatter } from "./vsformatter";
 import { TabUtils } from "./tabstopper";
 import { VSTerminal } from "./vsterminals";
+import { BmsPreviewPanel } from "./bmspreviewpanel";
 
 // import type MarkdownIt from 'markdown-it';
 // import hijs from 'highlight.js/lib/core';
@@ -579,6 +580,25 @@ export async function activate(context: ExtensionContext) {
     await VSSourceTreeViewHandler.setupSourceViewTree(settings, false);
     VSHelpAndFeedViewHandler.setupSourceViewTree(settings, false);
     context.subscriptions.push(COBOLTypeFormatter.register(settings));
+
+    // Register BMS preview commands
+    context.subscriptions.push(vscode.commands.registerCommand('bms.showPreview', () => {
+        const activeEditor = vscode.window.activeTextEditor;
+        if (activeEditor && activeEditor.document.languageId === 'bms') {
+            BmsPreviewPanel.createOrShow(context.extensionUri, activeEditor.document);
+        } else {
+            vscode.window.showWarningMessage('Please open a BMS file to preview.');
+        }
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('bms.showPreviewToSide', () => {
+        const activeEditor = vscode.window.activeTextEditor;
+        if (activeEditor && activeEditor.document.languageId === 'bms') {
+            BmsPreviewPanel.createOrShow(context.extensionUri, activeEditor.document);
+        } else {
+            vscode.window.showWarningMessage('Please open a BMS file to preview.');
+        }
+    }));
 
     context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
