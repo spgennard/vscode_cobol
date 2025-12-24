@@ -19,43 +19,6 @@ timeline
     2023 : COBOL-2023 : ISO/IEC 1989:2023 : Latest revision : Modern language features
 ```
 
-## Vendor-Specific COBOL Implementations Timeline
-
-```mermaid
-timeline
-    title Vendor COBOL Implementations
-    
-    1960s : IBM System/360 : COBOL F : Early mainframe implementation
-    
-    1970s : IBM COBOL : VS COBOL : COBOL for MVS systems
-          : Honeywell : GCOS COBOL : General Comprehensive OS
-    
-    1980s : IBM COBOL II : Enhanced compiler : MVS/ESA support
-          : Micro Focus : Personal COBOL : PC development environment
-          : Ryan McFarland : RM/COBOL : Portable COBOL compiler
-          : Bull : BS2000 COBOL : European mainframe variant
-    
-    1990s : IBM COBOL/370 : Object-oriented features : Enterprise COBOL foundation
-          : Micro Focus : Object COBOL : OOP extensions
-          : ACUCOBOL-85 : ACUCOBOL-GT : Cross-platform runtime
-          : Fujitsu : NetCOBOL : Windows/UNIX COBOL
-    
-    2000s : IBM Enterprise COBOL : z/OS platform : Full OO support
-          : Micro Focus : Visual COBOL : .NET integration
-          : GNU : GnuCOBOL : Open source implementation
-          : COBOL-IT : Enterprise COBOL : JVM-based compiler
-    
-    2010s : IBM z/OS COBOL : V6.x series : JSON support : XML enhancements
-          : Fujitsu : NetCOBOL V12 : .NET Core support
-    
-    2020s : Rocket Software -> Acquired Micro Focus Rocket COBOL (2024)
-          : Rocket Visual COBOL 9.0 : COBOL Notebooks : JVM debugging : Java interop
-          : Rocket Visual COBOL 10.0 : .NET 8 support : GenAI Analysis Assistant : Enterprise COBOL 6.4
-          : Rocket Visual COBOL 11.0 : GenAI Insights : ARM platform support : Security enhancements
-          : IBM z/OS COBOL : V6.4+ : AI/ML integration : Container support
-          : GnuCOBOL : V3.x series : Enhanced standards compliance
-```
-
 ## Platform-Specific COBOL Variants
 
 ```mermaid
