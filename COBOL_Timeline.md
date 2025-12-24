@@ -45,11 +45,11 @@ timeline
           : GNU : GnuCOBOL : Open source implementation
           : COBOL-IT : Enterprise COBOL : JVM-based compiler
     
-    2010s : Rocket Software : Rocket COBOL : Acquired Micro Focus mainframe
-          : IBM z/OS COBOL : V6.x series : JSON support : XML enhancements
+    2010s : IBM z/OS COBOL : V6.x series : JSON support : XML enhancements
           : Fujitsu : NetCOBOL V12 : .NET Core support
     
-    2020s : Rocket Visual COBOL 9.0 : COBOL Notebooks : JVM debugging : Java interop
+    2020s : Rocket Software -> Acquired Micro Focus Rocket COBOL (2024)
+          : Rocket Visual COBOL 9.0 : COBOL Notebooks : JVM debugging : Java interop
           : Rocket Visual COBOL 10.0 : .NET 8 support : GenAI Analysis Assistant : Enterprise COBOL 6.4
           : Rocket Visual COBOL 11.0 : GenAI Insights : ARM platform support : Security enhancements
           : IBM z/OS COBOL : V6.4+ : AI/ML integration : Container support
