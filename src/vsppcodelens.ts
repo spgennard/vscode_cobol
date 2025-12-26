@@ -57,53 +57,55 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         const lens: vscode.CodeLens[] = [];
 
         const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings);
+        // if codelens for variables enabled?
+        if (settings.enable_codelens_variable_references === false) {
+            return lens;
+        }
+        
+        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings, settings.codelens_copybook_refresh);
         if (current === undefined) {
             return lens;
         }
 
         const sourceFileId = current.sourceFileId;
 
-        // if codelens for variables enabled?
-        if (settings.enable_codelens_variable_references) {
-            if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
-                for (const [avar, vars] of current.constantsOrVariables) {
-                    for (const currentVar of vars) {
-                        const currentToken = currentVar.token;
-                        if (currentToken.isFromScanCommentsForReferences || currentToken.ignoreInOutlineView) {
-                            continue;
-                        }
-
-                        const tupRefs = current.sourceReferences.getReferenceInformation4variables(avar, sourceFileId, currentToken.startLine, currentToken.startColumn);
-
-                        // no references found
-                        if (tupRefs[0] === 0 || tupRefs[1] === 0) {
-                            continue;
-                        }
-
-                        const refCount = tupRefs[1];
-                        let refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
-                        if (vars.length !== 1) {
-                            //refCountMsg = `View references [${currentToken.tokenName}]`;
-                            refCountMsg = `View references`;
-                        }
-
-                        const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),
-                            new vscode.Position(currentToken.rangeEndLine, currentToken.rangeEndColumn));
-
-                        const cl = new vscode.CodeLens(r);
-                        cl.command = {
-                            title: `${refCountMsg}`,
-                            command: "editor.action.findReferences",
-                            arguments: [
-                                document.uri, new vscode.Position(currentToken.startLine, currentToken.startColumn)
-                            ]
-                        };
-
-                        lens.push(cl);
+        if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
+            for (const [avar, vars] of current.constantsOrVariables) {
+                for (const currentVar of vars) {
+                    const currentToken = currentVar.token;
+                    if (currentToken.isFromScanCommentsForReferences || currentToken.ignoreInOutlineView) {
+                        continue;
                     }
 
+                    const tupRefs = current.sourceReferences.getReferenceInformation4variables(avar, sourceFileId, currentToken.startLine, currentToken.startColumn);
+
+                    // no references found
+                    if (tupRefs[0] === 0 || tupRefs[1] === 0) {
+                        continue;
+                    }
+
+                    const refCount = tupRefs[1];
+                    let refCountMsg = refCount === 1 ? `${refCount} reference` : `${refCount} references`;
+                    if (vars.length !== 1) {
+                        //refCountMsg = `View references [${currentToken.tokenName}]`;
+                        refCountMsg = `View references`;
+                    }
+
+                    const r = new vscode.Range(new vscode.Position(currentToken.rangeStartLine, currentToken.rangeStartColumn),
+                        new vscode.Position(currentToken.rangeEndLine, currentToken.rangeEndColumn));
+
+                    const cl = new vscode.CodeLens(r);
+                    cl.command = {
+                        title: `${refCountMsg}`,
+                        command: "editor.action.findReferences",
+                        arguments: [
+                            document.uri, new vscode.Position(currentToken.startLine, currentToken.startColumn)
+                        ]
+                    };
+
+                    lens.push(cl);
                 }
+
             }
         }
 

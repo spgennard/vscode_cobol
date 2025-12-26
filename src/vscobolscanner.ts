@@ -102,7 +102,7 @@ export class VSCOBOLSourceScanner {
         }
     }
 
-    public static getCachedObject(document: TextDocument, config: ICOBOLSettings): ICOBOLSourceScanner | undefined {
+    public static getCachedObject(document: TextDocument, config: ICOBOLSettings, avoidCopyBookCheck: boolean = false): ICOBOLSourceScanner | undefined {
         if (config.enable_source_scanner === false) {
             return undefined;
         }
@@ -122,7 +122,7 @@ export class VSCOBOLSourceScanner {
                             continue;
                         }
 
-                        if (cbInfo.statementInformation !== undefined) {
+                        if (cbInfo.statementInformation !== undefined && avoidCopyBookCheck === false) {
                             useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures, config) == false;
                         }
                     }

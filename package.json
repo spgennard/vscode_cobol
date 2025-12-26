@@ -1330,11 +1330,16 @@
           },
           "default": {},
           "scope": "resource"
+        },
+        "coboleditor.codelens_copybook_refresh": {
+          "type": "boolean",
+          "description": "When enabled during codelens, active search for copybook if not found or changed",
+          "default": true
         }
       }
     },
     "breakpoints": [
-      {
+    {
         "language": "COBOL"
       },
       {
