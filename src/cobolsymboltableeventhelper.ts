@@ -72,12 +72,12 @@ export class COBOLSymbolTableEventHelper implements ICOBOLSourceScannerEvents {
         switch (token.tokenType) {
             case COBOLTokenStyle.CopyBook:
                 if (this.sender) {
-                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName},${token.extraInformation1}`);
+                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName},${token.extraInformation}`);
                 }
                 break;
             case COBOLTokenStyle.CopyBookInOrOf:
                 if (this.sender) {
-                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName},${token.extraInformation1}`);
+                    this.sender.sendMessage(`${COBSCANNER_KNOWNCOPYBOOK},${token.tokenName},${this.st.fileName},${token.extraInformation}`);
                 }
                 break;
             case COBOLTokenStyle.ImplicitProgramId:

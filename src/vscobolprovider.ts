@@ -92,7 +92,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                             if (token.tokenNameLower === "filler") {
                                 continue;
                             }
-                            if (filterOnGroups && token.extraInformation1.indexOf("GROUP") === -1) {
+                            if (filterOnGroups && token.extraInformation.indexOf("GROUP") === -1) {
                                 continue
                             }
                             words.add(token);
@@ -473,7 +473,7 @@ export class CobolSourceCompletionItemProvider implements CompletionItemProvider
                         if (token.tokenNameLower === "filler") {
                             continue;
                         }
-                        if (filterOnGroups && token.extraInformation1.indexOf("GROUP") === -1) {
+                        if (filterOnGroups && token.extraInformation.indexOf("GROUP") === -1) {
                             continue
                         }
                         

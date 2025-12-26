@@ -52,10 +52,10 @@ export class COBOLSymbolTableGlobalEventHelper implements ICOBOLSourceScannerEve
 
         switch (token.tokenType) {
             case COBOLTokenStyle.CopyBook:
-                COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName,token.extraInformation1);
+                COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName,token.extraInformation);
                 break;
             case COBOLTokenStyle.CopyBookInOrOf:
-                COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName,token.extraInformation1);
+                COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(token.tokenName, this.st.fileName,token.extraInformation);
                 break;
             case COBOLTokenStyle.ImplicitProgramId:
                 COBOLWorkspaceSymbolCacheHelper.addCalableSymbol(this.st.fileName, token.tokenNameLower, token.startLine);
