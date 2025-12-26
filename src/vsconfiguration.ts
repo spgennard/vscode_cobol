@@ -291,6 +291,10 @@ export class VSCOBOLConfiguration {
         
         settings.copybook_speed_limit = editorConfig.get<number>("copybook_speed_limit", settings.copybook_speed_limit);
 
+        settings.network_directory_prefixes = editorConfig.get<string[]>("network_directory_prefixes", settings.network_directory_prefixes);
+        
+        settings.copybook_directory_aliases = editorConfig.get<{ [key: string]: string }>("copybook_directory_aliases", settings.copybook_directory_aliases);
+        
         return settings;
     }
 

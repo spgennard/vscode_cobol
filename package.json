@@ -1320,6 +1320,16 @@
             "//"
           ],
           "uniqueItems": true
+        },
+        "coboleditor.copybook_directory_aliases": {
+          "type": "object",
+          "description": "Map of directory aliases to use when searching for copybooks (alias -> path)",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Directory path"
+          },
+          "default": {},
+          "scope": "resource"
         }
       }
     },

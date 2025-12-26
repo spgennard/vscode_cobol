@@ -113,6 +113,22 @@ export class VSCOBOLFileUtils {
     }
 
     public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+        // check for directory aliases
+        if (config.copybook_directory_aliases !== undefined && config.copybook_directory_aliases !== null && inDirectory.length > 0) {
+            const aliasTarget = config.copybook_directory_aliases[inDirectory];
+            if (aliasTarget !== undefined) {
+                const newInDirectory = aliasTarget;
+                const possibleResult = this._findCopyBookInDirectory(filename, newInDirectory, config, features);
+                if (possibleResult.length !== 0) {
+                    return possibleResult;
+                }
+            }
+        }
+
+        return this._findCopyBookInDirectory(filename, inDirectory, config, features);
+    }
+
+    private static _findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
         if (!filename) {
             return "";
         }
@@ -177,6 +193,22 @@ export class VSCOBOLFileUtils {
     }
 
     public static async findCopyBookInDirectoryViaURL(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): Promise<string> {
+            // check for directory aliases
+        if (config.copybook_directory_aliases !== undefined && config.copybook_directory_aliases !== null && inDirectory.length > 0) {
+            const aliasTarget = config.copybook_directory_aliases[inDirectory];
+            if (aliasTarget !== undefined) {
+                const newInDirectory = aliasTarget;
+                const possibleResult = await VSCOBOLFileUtils._findCopyBookInDirectoryViaURL(filename, newInDirectory, config, features);
+                if (possibleResult.length !== 0) {
+                    return possibleResult;
+                }
+            }
+        }
+
+        return await VSCOBOLFileUtils._findCopyBookInDirectoryViaURL(filename, inDirectory, config, features);
+    }
+
+    private static async _findCopyBookInDirectoryViaURL(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): Promise<string> {
         if (!filename) {
             return "";
         }
