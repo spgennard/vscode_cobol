@@ -1,5 +1,16 @@
 # CHANGELOG
 
+* a889780 add codelens_copybook_refresh
+* 84e4726 add coboleditor.copybook_directory_aliases to allow library names to be changed
+* 15b0b2f rename extraInformation1 to extraInformation
+* cbbd1f2 tweak font in preview panel
+* e8b0ff0 add simple bms preview
+* 93ab705 not happy with timeline, so remove it
+* 9803e58 not happy with it
+* 184d95a tweak
+* ff7039a Add timeline.. need to verify it is 100% okay
+
+## 25.12.22 
 * 0051f4d add network_directory_prefixes
 * 316a096 add network directory prefixes and add slow url check to be inline with local/network search
 * 351cb16 add copybook_directory_speed_limit configuration
