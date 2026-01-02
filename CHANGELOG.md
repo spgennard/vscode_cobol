@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 25.12.25 
 * a889780 add codelens_copybook_refresh
 * 84e4726 add coboleditor.copybook_directory_aliases to allow library names to be changed
 * 15b0b2f rename extraInformation1 to extraInformation
