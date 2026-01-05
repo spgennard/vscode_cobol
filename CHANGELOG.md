@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 04d2730 limit #366
+
+## 26.1.2 
 
 ## 25.12.25 
 * a889780 add codelens_copybook_refresh
