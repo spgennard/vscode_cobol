@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* cab4c1b Fix typo #366
+
+## 26.1.4 
 * 04d2730 limit #366
 
 ## 26.1.2 
