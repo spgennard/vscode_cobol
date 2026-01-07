@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 22383d7 drop coboleditor.codelens_copybook_refresh in favour of copybook_refresh_search #366
+
+## 26.1.6 
 * cab4c1b Fix typo #366
 
 ## 26.1.4 
