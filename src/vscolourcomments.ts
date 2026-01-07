@@ -140,7 +140,7 @@ class CommentColourHandlerImpl extends ColourTagHandler implements ICommentCallb
             return;
         }
 
-        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler, !configHandler.codelens_copybook_refresh);
+        const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler);
         if (gcp !== undefined) {
             const ranges = gcp.sourceHandler.getNotedComments();
             const mapOfDecorations = new Map<string, DecorationOptions[]>();

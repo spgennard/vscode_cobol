@@ -454,7 +454,7 @@ export class CobolLinterProvider {
 
         // cache current document, interactive search to be faster
         if (this.current === undefined || this.currentVersion !== document.version) {
-            this.current = VSCOBOLSourceScanner.getCachedObject(document, settings, !settings.codelens_copybook_refresh);
+            this.current = VSCOBOLSourceScanner.getCachedObject(document, settings);
             if (this.current !== undefined) {
                 this.sourceRefs = this.current.sourceReferences;
             }

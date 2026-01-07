@@ -102,11 +102,12 @@ export class VSCOBOLSourceScanner {
         }
     }
 
-    public static getCachedObject(document: TextDocument, config: ICOBOLSettings, avoidCopyBookCheck: boolean = false): ICOBOLSourceScanner | undefined {
+    public static getCachedObject(document: TextDocument, config: ICOBOLSettings): ICOBOLSourceScanner | undefined {
         if (config.enable_source_scanner === false) {
             return undefined;
         }
 
+        const avoidCopyBookCheck = !config.copybook_refresh_search;
         const fileName: string = document.fileName;
         let cachedObject = InMemoryCache_SourceScanner.get(fileName);
         if (cachedObject !== undefined) {

@@ -295,8 +295,6 @@ export class VSCOBOLConfiguration {
         
         settings.copybook_directory_aliases = editorConfig.get<{ [key: string]: string }>("copybook_directory_aliases", settings.copybook_directory_aliases);
         
-        settings.codelens_copybook_refresh = editorConfig.get<boolean>("codelens_copybook_refresh", settings.codelens_copybook_refresh);
-        
         return settings;
     }
 

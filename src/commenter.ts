@@ -146,7 +146,7 @@ export class commentUtils {
             const sels = editor.selections;
             let sourceformatStyle: ESourceFormat = ESourceFormat.variable;
 
-            const gcp = VSCOBOLSourceScanner.getCachedObject(doc, settings, !settings.codelens_copybook_refresh);
+            const gcp = VSCOBOLSourceScanner.getCachedObject(doc, settings);
             if (gcp !== undefined) {
                 sourceformatStyle = gcp.sourceFormat;
             }
