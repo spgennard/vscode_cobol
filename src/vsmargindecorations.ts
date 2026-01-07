@@ -116,7 +116,7 @@ export class VSmargindecorations extends ColourTagHandler {
                 break;
             default:
                 {
-                    const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler, configHandler.codelens_copybook_refresh);
+                    const gcp = VSCOBOLSourceScanner.getCachedObject(doc, configHandler, !configHandler.codelens_copybook_refresh);
                     if (gcp === undefined) {
                         const vsfile = new VSCodeSourceHandlerLite(doc);
                         sf = SourceFormat.get(vsfile, configHandler);

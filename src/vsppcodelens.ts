@@ -62,7 +62,7 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
             return lens;
         }
         
-        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings, settings.codelens_copybook_refresh);
+        const current: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, settings,!settings.codelens_copybook_refresh);
         if (current === undefined) {
             return lens;
         }
