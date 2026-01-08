@@ -295,6 +295,8 @@ export class VSCOBOLConfiguration {
         
         settings.copybook_directory_aliases = editorConfig.get<{ [key: string]: string }>("copybook_directory_aliases", settings.copybook_directory_aliases);
         
+        settings.remove_reserved_words = editorConfig.get<string[]>("remove_reserved_words", settings.remove_reserved_words);
+        
         return settings;
     }
 

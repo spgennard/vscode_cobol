@@ -1,3 +1,4 @@
+import { ICOBOLSettings } from "../iconfiguration";
 
 const cobolKeywords: string[] = [
 	"accept",
@@ -1361,7 +1362,7 @@ const cobolKeywordDictionaryMap = new Map<string, string>();
 const acucobolKeywordDictionaryMap = new Map<string, string>();
 const cobolitKeywordDictionaryMap = new Map<string, string>();
 const rmcobolKeywordDictionaryMap = new Map<string, string>();
-const ilecobolKeywordDictionaryMap = new Map<string,string>();
+const ilecobolKeywordDictionaryMap = new Map<string, string>();
 
 export const cobolProcedureKeywordDictionary = new Map<string, string>();
 export const cobolStorageKeywordDictionary = new Map<string, string>();
@@ -1377,8 +1378,8 @@ for (const key of cobolKeywords) {
 	cobolKeywordDictionaryMap.set(key, key);
 	acucobolKeywordDictionaryMap.set(key, key);
 	rmcobolKeywordDictionaryMap.set(key, key);
-	ilecobolKeywordDictionaryMap.set(key,key);
-	
+	ilecobolKeywordDictionaryMap.set(key, key);
+
 	cobolList.push(key);
 	acucobolList.push(key);
 	rmcobolList.push(key);
@@ -1453,26 +1454,42 @@ for (const key of cobolRegisters) {
 
 for (const key of COBOLITKeywords) {
 	if (!cobolitKeywordDictionaryMap.has(key)) {
-		cobolitKeywordDictionaryMap.set(key,key);
+		cobolitKeywordDictionaryMap.set(key, key);
 	}
 }
 
-export function getCOBOLKeywordDictionary(dialect: string): Map<string, string> {
-	switch(dialect) {
-		case "ACUCOBOL" : return acucobolKeywordDictionaryMap;
-		case "COBOLIT"  : return cobolitKeywordDictionaryMap;
-		case "RMCOBOL" : return rmcobolKeywordDictionaryMap;
-		case "ILECOBOL" : return ilecobolKeywordDictionaryMap;
-		default : return cobolKeywordDictionaryMap;
+export function getCOBOLKeywordDictionary(config: ICOBOLSettings, dialect: string): Map<string, string> {
+	let dialectMap: Map<string, string>;
+
+	switch (dialect) {
+		case "ACUCOBOL": dialectMap = acucobolKeywordDictionaryMap;
+			break;
+		case "COBOLIT": dialectMap = cobolitKeywordDictionaryMap;
+			break;
+		case "RMCOBOL": dialectMap = rmcobolKeywordDictionaryMap;
+			break
+		case "ILECOBOL": dialectMap = ilecobolKeywordDictionaryMap;
+			break
+		default: dialectMap = cobolKeywordDictionaryMap;
 	}
+
+	if (config.remove_reserved_words.length > 0) {
+		const clonedMap = new Map<string, string>(dialectMap);
+		for (const word of config.remove_reserved_words) {
+			clonedMap.delete(word.toLowerCase());
+		}
+		return clonedMap;
+	}
+
+	return dialectMap;
 }
 
 export function getCOBOLKeywordList(dialect: string): string[] {
-	switch(dialect) {
-		case "ACUCOBOL" : return acucobolList;
-		case "RMCOBOL" : return rmcobolList;
-		case "COBOLIT" : return COBOLITKeywords;
-		case "ILECOBOL" : return ilecobolList;
-		default : return cobolList;
+	switch (dialect) {
+		case "ACUCOBOL": return acucobolList;
+		case "RMCOBOL": return rmcobolList;
+		case "COBOLIT": return COBOLITKeywords;
+		case "ILECOBOL": return ilecobolList;
+		default: return cobolList;
 	}
 }

@@ -168,7 +168,7 @@ export class COBOLSourceDefinition implements vscode.DefinitionProvider {
         }
 
         const tokenLower: string = word.toLowerCase();
-        if (getCOBOLKeywordDictionary(document.languageId).has(tokenLower)) {
+        if (getCOBOLKeywordDictionary(settings, document.languageId).has(tokenLower)) {
             return false;
         }
 

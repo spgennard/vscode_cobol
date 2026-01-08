@@ -986,7 +986,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.cache4ConstantsOrVars = undefined;
         this.scanAborted = false;
         this.languageId = this.sourceHandler.getLanguageId();
-        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(this.languageId);
+        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(configHandler,this.languageId);
         switch (this.languageId.toLocaleLowerCase()) {
             case "cobol":
             case "bitlang-cobol":

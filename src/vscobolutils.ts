@@ -543,9 +543,9 @@ export class VSCOBOLUtils {
         vscode.workspace.applyEdit(edits);
     }
 
-    private static isValidKeywordOrStorageKeyword(languageId: string, keyword: string): boolean {
+    private static isValidKeywordOrStorageKeyword(config: ICOBOLSettings,languageId: string, keyword: string): boolean {
         const keywordLower = keyword.toLowerCase();
-        const isKeyword = getCOBOLKeywordDictionary(languageId).has(keywordLower);
+        const isKeyword = getCOBOLKeywordDictionary(config, languageId).has(keywordLower);
         if (isKeyword) {
             return true;
         }
@@ -612,7 +612,7 @@ export class VSCOBOLUtils {
                     break;
 
                 case FoldAction.Keywords:
-                    actionIt = VSCOBOLUtils.isValidKeywordOrStorageKeyword(languageid, argLower);
+                    actionIt = VSCOBOLUtils.isValidKeywordOrStorageKeyword(settings,languageid, argLower);
                     if (actionIt) {
                         foldstyle = VSCustomIntelliseRules.Default.findCustomIStyle(settings, argLower, foldstyle);
                     }

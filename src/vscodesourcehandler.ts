@@ -329,7 +329,7 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     isValidKeyword(keyword: string): boolean {
-        return getCOBOLKeywordDictionary(this.languageId).has(keyword);
+        return getCOBOLKeywordDictionary(this.config, this.languageId).has(keyword);
     }
 
     getFilename(): string {

@@ -1330,6 +1330,15 @@
           },
           "default": {},
           "scope": "resource"
+        },
+        "coboleditor.remove_reserved_words": {
+          "type": "array",
+          "description": "A list reserved words to remove from source scanning and intellisense",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "uniqueItems": true
         }
       }
     },

@@ -72,7 +72,7 @@ export class SourceFormat {
             }
         }
 
-        var COBOLKeywordDictionary = getCOBOLKeywordDictionary(doc.getLanguageId());
+        var COBOLKeywordDictionary = getCOBOLKeywordDictionary(config, doc.getLanguageId());
 
         // check source for source format
         let linesWithJustNumbers = 0;
