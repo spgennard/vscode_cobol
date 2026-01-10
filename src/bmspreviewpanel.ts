@@ -444,8 +444,8 @@ export class BmsPreviewPanel {
                             continue;
                         }
                         
-                        // Check if this line ends with X or * (continuation)
-                        if (trimmedLine.endsWith('X') || trimmedLine.endsWith('*')) {
+                        // Check if this line ends with X, - or * (continuation)
+                        if (trimmedLine.endsWith('X') || trimmedLine.endsWith('*') || trimmedLine.endsWith('-')) {
                             // Remove the continuation character and add to current line
                             currentLine += ' ' + trimmedLine.slice(0, -1).trim();
                         } else {
