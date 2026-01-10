@@ -35,7 +35,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.107.0"
+    "vscode": "^1.108.0"
   },
   "extensionKind": [
     "workspace"
@@ -3118,11 +3118,11 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.0.3",
-    "@types/vscode": "^1.107.0",
+    "@types/node": "^25.0.5",
+    "@types/vscode": "^1.108.1",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/test-web": "^0.0.77",
+    "@vscode/test-web": "^0.0.78",
     "ansi-regex": ">=6.2.2",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
