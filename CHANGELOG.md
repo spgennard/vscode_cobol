@@ -1,5 +1,8 @@
 # CHANGELOG
 
+
+## 26.1.9, origin/main, origin/HEAD use global vsce
+* a69e18f Update
 * fb3e171 allow - in bms file as line cont char
 * 688e066 start to add support for a custom remove reserved word list
 
