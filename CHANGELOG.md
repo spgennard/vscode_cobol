@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* fb3e171 allow - in bms file as line cont char
+* 688e066 start to add support for a custom remove reserved word list
+
+## 26.1.7 
 * 22383d7 drop coboleditor.codelens_copybook_refresh in favour of copybook_refresh_search #366
 
 ## 26.1.6 
