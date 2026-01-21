@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* a4c82d1 Add enhanced minimap feature
+
+## 26.1.11 
 
 ## 26.1.9 
 * 245dada use global vsce
