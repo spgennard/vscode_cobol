@@ -196,6 +196,8 @@ export interface ICOBOLSettings {
     copybook_directory_aliases: { [key: string]: string };
 
     remove_reserved_words: string[];
+
+    enable_minimap_section_boundaries: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -351,6 +353,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     remove_reserved_words: string[];
 
+    enable_minimap_section_boundaries: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -475,6 +479,8 @@ export class COBOLSettings implements ICOBOLSettings {
         this.copybook_directory_aliases = {};
 
         this.remove_reserved_words = [];
+
+        this.enable_minimap_section_boundaries = true;
     }
 
     public get_tabstops(langid:string): number[] {

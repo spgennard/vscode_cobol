@@ -257,6 +257,8 @@ export class VSCOBOLConfiguration {
 
         settings.hover_show_variable_definition = editorHelper.getBoolean("hover_show_variable_definition", settings.hover_show_variable_definition);
 
+        settings.enable_minimap_section_boundaries = editorHelper.getBoolean("enable_minimap_section_boundaries", settings.enable_minimap_section_boundaries);
+
         settings._out_of_range_tabstop_size = editorHelper.getNumber("out_of_range_tabstop_size", settings._out_of_range_tabstop_size);
 
         settings.anchor_tabstops = editorHelper.getIAnchorTabInfo();

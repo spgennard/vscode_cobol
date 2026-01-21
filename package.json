@@ -1269,6 +1269,91 @@
           "description": "When enabled, turn on codelens for simple copy replacing",
           "default": false
         },
+        "coboleditor.enable_minimap_section_boundaries": {
+          "type": "boolean",
+          "description": "When enabled, show section and paragraph boundaries in minimap and overview ruler",
+          "default": true
+        },
+        "coboleditor.minimap_section_colors": {
+          "type": "object",
+          "description": "Colors for COBOL structure elements in minimap and overview ruler",
+          "properties": {
+            "division": {
+              "type": "object",
+              "description": "Colors for COBOL divisions",
+              "properties": {
+                "light": {
+                  "type": "string",
+                  "format": "color",
+                  "default": "#FF6F00"
+                },
+                "dark": {
+                  "type": "string",
+                  "format": "color",
+                  "default": "#FFB74D"
+                }
+              },
+              "default": {
+                "light": "#FF6F00",
+                "dark": "#FFB74D"
+              }
+            },
+            "section": {
+              "type": "object",
+              "description": "Colors for COBOL sections",
+              "properties": {
+                "light": {
+                  "type": "string",
+                  "format": "color",
+                  "default": "#0066CC"
+                },
+                "dark": {
+                  "type": "string",
+                  "format": "color",
+                  "default": "#4FC3F7"
+                }
+              },
+              "default": {
+                "light": "#0066CC",
+                "dark": "#4FC3F7"
+              }
+            },
+            "paragraph": {
+              "type": "object",
+              "description": "Colors for COBOL paragraphs",
+              "properties": {
+                "light": {
+                  "type": "string",
+                  "format": "color",
+                  "default": "#8E24AA"
+                },
+                "dark": {
+                  "type": "string",
+                  "format": "color",
+                  "default": "#CE93D8"
+                }
+              },
+              "default": {
+                "light": "#8E24AA",
+                "dark": "#CE93D8"
+              }
+            }
+          },
+          "default": {
+            "division": {
+              "light": "#FF6F00",
+              "dark": "#FFB74D"
+            },
+            "section": {
+              "light": "#0066CC",
+              "dark": "#4FC3F7"
+            },
+            "paragraph": {
+              "light": "#8E24AA",
+              "dark": "#CE93D8"
+            }
+          }
+        },
         "coboleditor.enable_program_information": {
           "type": "boolean",
           "description": "When enabled, turn on call hierarchy provider (WIP)",

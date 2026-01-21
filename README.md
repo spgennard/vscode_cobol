@@ -66,6 +66,31 @@ While also being able to use it with the official `Rocket COBOL extension` (for 
 
 ![outline](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/outline.png)
 
+### Enhanced Minimap with Structure Boundaries
+
+The extension enhances VS Code's minimap and overview ruler to display COBOL program structure boundaries, making navigation of large COBOL programs much easier.
+
+**Features:**
+- **Division markers** (orange) - Shows major divisions on the left side of overview ruler
+- **Section markers** (blue) - Shows COBOL sections on the right side of overview ruler  
+- **Paragraph markers** (purple) - Shows COBOL paragraphs on the right side of overview ruler
+- **Click navigation** - Click any marker to jump directly to that location
+- **Fully customizable colors** - Configure colors through VS Code settings
+
+**Configuration:**
+```json
+{
+  "coboleditor.enable_minimap_section_boundaries": true,
+  "coboleditor.minimap_section_colors": {
+    "division": { "light": "#FF6F00", "dark": "#FFB74D" },
+    "section": { "light": "#0066CC", "dark": "#4FC3F7" },
+    "paragraph": { "light": "#8E24AA", "dark": "#CE93D8" }
+  }
+}
+```
+
+This feature is especially valuable when working with large legacy COBOL programs containing many sections and paragraphs.
+
 ### Go to definition
 
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/gotodef.gif)

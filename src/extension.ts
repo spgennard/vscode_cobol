@@ -37,6 +37,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { COBOLOutputChannel, VSLogger } from "./vslogger";
 import { VSExtensionUtils } from "./vsextutis";
 import { vsMarginHandler } from "./vsmargindecorations";
+import { vsMinimapHandler } from "./vsminimap";
 import { commentUtils } from "./commenter";
 import { colourCommentHandler } from "./vscolourcomments";
 import { SnippetCompletionItemProvider } from "./vssnippetprovider";
@@ -659,6 +660,7 @@ export async function activate(context: ExtensionContext) {
 
     const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
         await vsMarginHandler.updateDecorations(editor);
+        await vsMinimapHandler.updateDecorations(editor);
         if (editor && editor.document) {
             await linter.updateLinter(editor.document);
         }
