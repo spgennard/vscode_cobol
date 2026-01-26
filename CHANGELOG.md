@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 26.1.21 
 * a4c82d1 Add enhanced minimap feature
 
 ## 26.1.11 
