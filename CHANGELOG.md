@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* e85ef00 default, enable minimap boundaries for divs/sections but not paras
+* 0dac9c9 add finer grain control for the minimap
+* 4b121ea ensure minimap can be enabled/disabled on the fly
+
+## 26.1.31 
 
 ## 26.1.25 
 
