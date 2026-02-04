@@ -1354,6 +1354,21 @@
             }
           }
         },
+        "coboleditor.enable_minimap_section_boundaries_for_sections": {
+          "type": "boolean",
+          "description": "When enabled, show section boundaries in minimap and overview ruler",
+          "default": true
+        },
+        "coboleditor.enable_minimap_section_boundaries_for_paragraphs": {
+          "type": "boolean",
+          "description": "When enabled, show paragraph boundaries in minimap and overview ruler",
+          "default": true
+        },
+        "coboleditor.enable_minimap_section_boundaries_for_divisions": {
+          "type": "boolean",
+          "description": "When enabled, show division boundaries in minimap and overview ruler",
+          "default": true
+        },
         "coboleditor.enable_program_information": {
           "type": "boolean",
           "description": "When enabled, turn on call hierarchy provider (WIP)",

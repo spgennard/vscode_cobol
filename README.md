@@ -81,6 +81,9 @@ The extension enhances VS Code's minimap and overview ruler to display COBOL pro
 ```json
 {
   "coboleditor.enable_minimap_section_boundaries": true,
+  "coboleditor.enable_minimap_section_boundaries_for_sections": true,
+  "coboleditor.enable_minimap_section_boundaries_for_paragraphs": true,
+  "coboleditor.enable_minimap_section_boundaries_for_divisions": true,
   "coboleditor.minimap_section_colors": {
     "division": { "light": "#FF6F00", "dark": "#FFB74D" },
     "section": { "light": "#0066CC", "dark": "#4FC3F7" },
@@ -88,6 +91,13 @@ The extension enhances VS Code's minimap and overview ruler to display COBOL pro
   }
 }
 ```
+
+**Settings:**
+- `coboleditor.enable_minimap_section_boundaries` - Master toggle to enable/disable all minimap boundary markers
+- `coboleditor.enable_minimap_section_boundaries_for_sections` - Show section boundary markers (default: true)
+- `coboleditor.enable_minimap_section_boundaries_for_paragraphs` - Show paragraph boundary markers (default: true)  
+- `coboleditor.enable_minimap_section_boundaries_for_divisions` - Show division boundary markers (default: true)
+- `coboleditor.minimap_section_colors` - Customize the colors used for each boundary type
 
 This feature is especially valuable when working with large legacy COBOL programs containing many sections and paragraphs.
 

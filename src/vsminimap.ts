@@ -166,13 +166,28 @@ export class VSMinimapHandler {
             this.ensureDecorationTypes();
             
             // Process sections
-            this.processSections(sourceScanner, sectionDecorations);
+            if (configHandler.enable_minimap_section_boundaries_for_sections) {
+                this.processSections(sourceScanner, sectionDecorations);
+            } else {
+                // Clear section decorations if disabled
+                activeTextEditor.setDecorations(this.decorationTypes!.sectionDecorationType, []);
+            }
             
             // Process paragraphs  
-            this.processParagraphs(sourceScanner, paragraphDecorations);
-            
+            if (configHandler.enable_minimap_section_boundaries_for_paragraphs) {
+                this.processParagraphs(sourceScanner, paragraphDecorations);
+            } else {
+                // Clear paragraph decorations if disabled
+                activeTextEditor.setDecorations(this.decorationTypes!.paragraphDecorationType, []);
+            }
+           
             // Process divisions
-            this.processDivisions(sourceScanner, divisionDecorations);
+            if (configHandler.enable_minimap_section_boundaries_for_divisions) {
+                this.processDivisions(sourceScanner, divisionDecorations);
+            } else {
+                // Clear division decorations if disabled
+                activeTextEditor.setDecorations(this.decorationTypes!.divisionDecorationType, []);
+            }
 
             // Apply the decorations
             if (this.decorationTypes) {

@@ -319,7 +319,9 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
     const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`, scope);
     const enable_program_information_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_program_information`, scope);
     const enable_minimap_section_boundaries_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries`, scope);
-
+    const enable_enable_minimap_section_boundaries_for_sections_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_sections`, scope); 
+    const enable_minimap_section_boundaries_for_paragraphs_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_paragraphs`, scope);
+    const enable_minimap_section_boundaries_for_divisions_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_divisions`, scope);
 
     if (updated) {
         VSCOBOLConfiguration.reinitWorkspaceSettingsScoped(VSExternalFeatures);
@@ -407,7 +409,10 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             install_call_hierarchy(settings, sharedContext)
         }
 
-        if (enable_minimap_section_boundaries_changed) {
+        if (enable_minimap_section_boundaries_changed || 
+            enable_enable_minimap_section_boundaries_for_sections_changed || 
+            enable_minimap_section_boundaries_for_paragraphs_changed || 
+            enable_minimap_section_boundaries_for_divisions_changed) {
             // Update minimap decorations when configuration changes
             const activeEditor = window.activeTextEditor;
             if (activeEditor) {

@@ -198,6 +198,12 @@ export interface ICOBOLSettings {
     remove_reserved_words: string[];
 
     enable_minimap_section_boundaries: boolean;
+
+    enable_minimap_section_boundaries_for_sections: boolean;
+
+    enable_minimap_section_boundaries_for_paragraphs: boolean;
+
+    enable_minimap_section_boundaries_for_divisions: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -355,6 +361,12 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_minimap_section_boundaries: boolean;
 
+    enable_minimap_section_boundaries_for_sections: boolean;
+
+    enable_minimap_section_boundaries_for_paragraphs: boolean;
+
+    enable_minimap_section_boundaries_for_divisions: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -481,6 +493,9 @@ export class COBOLSettings implements ICOBOLSettings {
         this.remove_reserved_words = [];
 
         this.enable_minimap_section_boundaries = true;
+        this.enable_minimap_section_boundaries_for_sections = true;
+        this.enable_minimap_section_boundaries_for_paragraphs = true;
+        this.enable_minimap_section_boundaries_for_divisions = true;
     }
 
     public get_tabstops(langid:string): number[] {
