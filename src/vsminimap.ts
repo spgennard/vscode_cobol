@@ -295,6 +295,11 @@ export class VSMinimapHandler {
      * Clear all decorations from the text editor
      */
     private clearDecorations(activeTextEditor: TextEditor): void {
+        // Ensure we have decoration types to clear with
+        if (!this.decorationTypes) {
+            this.ensureDecorationTypes();
+        }
+        
         if (this.decorationTypes) {
             activeTextEditor.setDecorations(this.decorationTypes.sectionDecorationType, []);
             activeTextEditor.setDecorations(this.decorationTypes.paragraphDecorationType, []);

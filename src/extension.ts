@@ -318,6 +318,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
     const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`, scope);
     const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`, scope);
     const enable_program_information_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_program_information`, scope);
+    const enable_minimap_section_boundaries_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries`, scope);
 
 
     if (updated) {
@@ -405,6 +406,15 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
         if (enable_program_information_changed && settings.enable_program_information) {
             install_call_hierarchy(settings, sharedContext)
         }
+
+        if (enable_minimap_section_boundaries_changed) {
+            // Update minimap decorations when configuration changes
+            const activeEditor = window.activeTextEditor;
+            if (activeEditor) {
+                await vsMinimapHandler.updateDecorations(activeEditor);
+            }
+        }
+        
         checkForExtensionConflicts(settings, sharedContext);
     }
 }
