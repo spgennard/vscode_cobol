@@ -1362,7 +1362,7 @@
         "coboleditor.enable_minimap_section_boundaries_for_paragraphs": {
           "type": "boolean",
           "description": "When enabled, show paragraph boundaries in minimap and overview ruler",
-          "default": true
+          "default": false
         },
         "coboleditor.enable_minimap_section_boundaries_for_divisions": {
           "type": "boolean",
