@@ -85,9 +85,9 @@ The extension enhances VS Code's minimap and overview ruler to display COBOL pro
   "coboleditor.enable_minimap_section_boundaries_for_paragraphs": true,
   "coboleditor.enable_minimap_section_boundaries_for_divisions": true,
   "coboleditor.minimap_section_colors": {
-    "division": { "light": "#FF6F00", "dark": "#FFB74D" },
-    "section": { "light": "#0066CC", "dark": "#4FC3F7" },
-    "paragraph": { "light": "#8E24AA", "dark": "#CE93D8" }
+    "division": { "light": "#FF6F00", "dark": "#FFB74D", "alpha": 0.08 },
+    "section": { "light": "#0066CC", "dark": "#4FC3F7", "alpha": 0.05 },
+    "paragraph": { "light": "#8E24AA", "dark": "#CE93D8", "alpha": 0.03 }
   }
 }
 ```
@@ -98,6 +98,10 @@ The extension enhances VS Code's minimap and overview ruler to display COBOL pro
 - `coboleditor.enable_minimap_section_boundaries_for_sections` - Show section boundary markers (default: true)
 - `coboleditor.enable_minimap_section_boundaries_for_paragraphs` - Show paragraph boundary markers (default: false)
 - `coboleditor.minimap_section_colors` - Customize the colors used for each boundary type
+  - Each color configuration supports:
+    - `light` - Color for light themes (hex format, e.g. "#FF6F00")
+    - `dark` - Color for dark themes (hex format, e.g. "#FFB74D")
+    - `alpha` - Transparency level for background highlighting (0.0 to 1.0, where 0.0 is fully transparent and 1.0 is fully opaque)
 
 This feature is especially valuable when working with large legacy COBOL programs containing many sections and paragraphs.
 
