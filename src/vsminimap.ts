@@ -22,16 +22,16 @@ import { ExtensionDefaults } from "./extensionDefaults";
 
 // Interface for color configuration
 interface MinimapColors {
-    division: { light: string; dark: string };
-    section: { light: string; dark: string };
-    paragraph: { light: string; dark: string };
+    division: { light: string; dark: string, alpha: number };
+    section: { light: string; dark: string, alpha: number };
+    paragraph: { light: string; dark: string, alpha: number };
 }
 
 // Default colors
 const defaultColors: MinimapColors = {
-    division: { light: "#FF6F00", dark: "#FFB74D" },
-    section: { light: "#0066CC", dark: "#4FC3F7" },
-    paragraph: { light: "#8E24AA", dark: "#CE93D8" }
+    division: { light: "#FF6F00", dark: "#FFB74D", alpha: 0.08 },
+    section: { light: "#0066CC", dark: "#4FC3F7", alpha: 0.05 },
+    paragraph: { light: "#8E24AA", dark: "#CE93D8", alpha: 0.03 }
 };
 
 // Function to get user-configured colors
@@ -61,11 +61,11 @@ function createDecorationTypes() {
         isWholeLine: true,
         light: {
             overviewRulerColor: colors.section.light,
-            backgroundColor: hexToRgba(colors.section.light, 0.05)
+            backgroundColor: hexToRgba(colors.section.light, colors.section.alpha)
         },
         dark: {
             overviewRulerColor: colors.section.dark,
-            backgroundColor: hexToRgba(colors.section.dark, 0.05)
+            backgroundColor: hexToRgba(colors.section.dark, colors.section.alpha)
         }
     });
     
@@ -76,11 +76,11 @@ function createDecorationTypes() {
         isWholeLine: true,
         light: {
             overviewRulerColor: colors.paragraph.light,
-            backgroundColor: hexToRgba(colors.paragraph.light, 0.03)
+            backgroundColor: hexToRgba(colors.paragraph.light, colors.paragraph.alpha)
         },
         dark: {
             overviewRulerColor: colors.paragraph.dark,
-            backgroundColor: hexToRgba(colors.paragraph.dark, 0.03)
+            backgroundColor: hexToRgba(colors.paragraph.dark, colors.paragraph.alpha)
         }
     });
     
@@ -91,11 +91,11 @@ function createDecorationTypes() {
         isWholeLine: true,
         light: {
             overviewRulerColor: colors.division.light,
-            backgroundColor: hexToRgba(colors.division.light, 0.08)
+            backgroundColor: hexToRgba(colors.division.light, colors.division.alpha)
         },
         dark: {
             overviewRulerColor: colors.division.dark,
-            backgroundColor: hexToRgba(colors.division.dark, 0.08)
+            backgroundColor: hexToRgba(colors.division.dark, colors.division.alpha)
         }
     });
     

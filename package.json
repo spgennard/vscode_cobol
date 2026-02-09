@@ -1311,11 +1311,19 @@
                   "type": "string",
                   "format": "color",
                   "default": "#4FC3F7"
+                },
+                "alpha": {
+                  "type": "number",
+                  "description": "Opacity for section boundaries in minimap and overview ruler (0-1)",
+                  "default": 0.05,
+                  "minimum": 0,
+                  "maximum": 1
                 }
               },
               "default": {
                 "light": "#0066CC",
-                "dark": "#4FC3F7"
+                "dark": "#4FC3F7",
+                "alpha": 0.05
               }
             },
             "paragraph": {
@@ -1331,26 +1339,37 @@
                   "type": "string",
                   "format": "color",
                   "default": "#CE93D8"
+                },
+                "alpha": {
+                  "type": "number",
+                  "description": "Opacity for paragraph boundaries in minimap and overview ruler (0-1)",
+                  "default": 0.03,
+                  "minimum": 0,
+                  "maximum": 1
                 }
               },
               "default": {
                 "light": "#8E24AA",
-                "dark": "#CE93D8"
+                "dark": "#CE93D8",
+                "alpha": 0.03
               }
             }
           },
           "default": {
             "division": {
               "light": "#FF6F00",
-              "dark": "#FFB74D"
+              "dark": "#FFB74D",
+              "alpha": 0.08
             },
             "section": {
               "light": "#0066CC",
-              "dark": "#4FC3F7"
+              "dark": "#4FC3F7",
+              "alpha": 0.05 
             },
             "paragraph": {
               "light": "#8E24AA",
-              "dark": "#CE93D8"
+              "dark": "#CE93D8",
+              "alpha": 0.03
             }
           }
         },
