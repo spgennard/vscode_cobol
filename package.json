@@ -3237,7 +3237,7 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.2.2",
+    "@types/node": "^25.2.3",
     "@types/vscode": "^1.108.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
@@ -3245,7 +3245,7 @@
     "ansi-regex": ">=6.2.2",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
-    "glob": "^13.0.1",
+    "glob": "^13.0.2",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
     "mermaid": "^11.12.2",
@@ -3255,7 +3255,7 @@
     "shx": "^0.4.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
-    "webpack": "^5.105.0",
+    "webpack": "^5.105.1",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
