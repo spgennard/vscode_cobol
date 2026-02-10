@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* f0d76db update README.md
+* 0228f30 add support for user configurable alpha for minimaps
+
+## 26.2.8 
 
 ## 26.2.3 
 * e85ef00 default, enable minimap boundaries for divs/sections but not paras
