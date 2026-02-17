@@ -9,7 +9,7 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
 import { VSWorkspaceFolders } from "./vscobolfolders";
-import { FileType, Uri, workspace } from "vscode";
+import { FileType, Uri, debug, workspace } from "vscode";
 import { IVSCOBOLSettings } from "./vsconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 
@@ -130,9 +130,9 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public isDebuggerActive(): boolean {
-        // if (debug.activeDebugSession === undefined) {
-        //     return false;
-        // }
+        if (debug.activeDebugSession === undefined) {
+            return false;
+        }
 
         return true;
     }

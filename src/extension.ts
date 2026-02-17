@@ -73,6 +73,7 @@ let unitTestTerminal: vscode.Terminal | undefined = undefined;
 const terminalName = "UnitTest";
 let updateDecorationsOnTextEditorEnabled = false;
 let sharedContext: ExtensionContext;
+let timeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
 function openChangeLog(currentContext: ExtensionContext): void {
     const thisExtension = extensions.getExtension(ExtensionDefaults.thisExtensionName);
@@ -330,10 +331,8 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             VSCOBOLSourceScanner.clearCOBOLCache();
             setupLogChannel(true, settings, true);
             VSCOBOLUtils.setupFilePaths(settings);
-            async () => {
-                await VSCOBOLUtils.setupUrlPaths(settings);
-                await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
-            }
+            await VSCOBOLUtils.setupUrlPaths(settings);
+            await VSSourceTreeViewHandler.setupSourceViewTree(settings, true);
         }
 
         if (md_syms) {
@@ -453,6 +452,28 @@ export async function activate(context: ExtensionContext) {
     const linter = new CobolLinterProvider(collection);
     const cobolfixer = new CobolLinterActionFixer();
 
+    // Declare decoration helpers here (before onDidOpenTextDocument) to avoid
+    // a TDZ ReferenceError if the event fires during an await inside activate().
+    const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
+        await vsMarginHandler.updateDecorations(editor);
+        await vsMinimapHandler.updateDecorations(editor);
+        if (editor && editor.document) {
+            await linter.updateLinter(editor.document);
+        }
+        await colourCommentHandler.updateDecorations(editor);
+    };
+
+    const activeEditorupdateDecorations = async () => {
+        await updateDecorationsOnTextEditor(activeEditor);
+    };
+
+    const triggerUpdateDecorations = async () => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(activeEditorupdateDecorations, 200);
+    };
+
     COBOLWorkspaceSymbolCacheHelper.loadGlobalCacheFromArray(settings, settings.metadata_symbols, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalEntryCacheFromArray(settings, settings.metadata_entrypoints, false);
     COBOLWorkspaceSymbolCacheHelper.loadGlobalTypesCacheFromArray(settings, settings.metadata_types, false);
@@ -557,9 +578,17 @@ export async function activate(context: ExtensionContext) {
             }
         }
 
+        // Guard against the startup file-restoration flood: skip the expensive
+        // executeDocumentSymbolProvider call until activation is fully complete.
+        // Also restrict to supported COBOL documents only – calling the symbol
+        // provider for every non-COBOL file that opens is wasteful.
+        if (!updateDecorationsOnTextEditorEnabled) {
+            return;
+        }
+
         //no metadata, then seed it with basic implicit program-id symbols based on the files in workspace
         const ws = VSWorkspaceFolders.get(settings);
-        if (ws !== undefined) {
+        if (ws !== undefined && VSExtensionUtils.isSupportedLanguage(doc)) {
             await vscode.commands.executeCommand<vscode.SymbolInformation[]>("vscode.executeDocumentSymbolProvider", doc.uri);
             await VSCOBOLUtils.populateDefaultCallableSymbols(settings, false);
         }
@@ -673,28 +702,6 @@ export async function activate(context: ExtensionContext) {
     }));
     context.subscriptions.push(languages.registerRenameProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new VSCobolRenameProvider()));
 
-    const updateDecorationsOnTextEditor = async (editor: vscode.TextEditor) => {
-        await vsMarginHandler.updateDecorations(editor);
-        await vsMinimapHandler.updateDecorations(editor);
-        if (editor && editor.document) {
-            await linter.updateLinter(editor.document);
-        }
-        await colourCommentHandler.updateDecorations(editor);
-    };
-
-    const activeEditorupdateDecorations = async () => {
-        await updateDecorationsOnTextEditor(activeEditor);
-    };
-
-    let timeout: NodeJS.Timeout | undefined = undefined;
-
-    const triggerUpdateDecorations = async () => {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(activeEditorupdateDecorations, 200);
-    }
-
     window.onDidChangeActiveTextEditor(async (editor) => {
         if (!editor) {
             return;
@@ -765,7 +772,7 @@ export async function activate(context: ExtensionContext) {
         }
 
         vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", false);
-    })
+    }, null, context.subscriptions)
 
     // vscode.languages.registerSignatureHelpProvider(VSExtensionUtils.getAllCobolSelectors(settings), new class implements vscode.SignatureHelpProvider {
     //     provideSignatureHelp(
@@ -798,8 +805,8 @@ export async function activate(context: ExtensionContext) {
 
     let toggleDone = false;
     for (const vte of vscode.window.visibleTextEditors) {
-        // update document decorations
-        await updateDecorationsOnTextEditor(vte);
+        // update document decorations (fire-and-forget to avoid blocking activation)
+        updateDecorationsOnTextEditor(vte);
 
         // if we have a document assigned to the 'Micro Focus' language id, then turn the lsp setting on
         if (!toggleDone && vte.document.languageId === ExtensionDefaults.microFocusCOBOLLanguageId) {
@@ -845,6 +852,12 @@ export async function deactivateAsync(): Promise<void> {
 
 
 export async function deactivate(): Promise<void> {
+    // Clear any pending timeout to prevent memory leaks
+    if (timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+    }
+    
     if (bldscriptTaskProvider) {
         bldscriptTaskProvider.dispose();
     }

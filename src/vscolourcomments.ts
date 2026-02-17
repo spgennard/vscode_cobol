@@ -18,6 +18,10 @@ export class ColourTagHandler {
             return;
         }
 
+        // Dispose existing decorations before clearing to prevent memory leaks
+        for (const [, decoration] of tags) {
+            decoration.dispose();
+        }
         tags.clear();
 
         for (const item of items) {

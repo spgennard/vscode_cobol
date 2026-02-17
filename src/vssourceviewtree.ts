@@ -21,7 +21,13 @@ export class VSSourceTreeViewHandler {
 
         if (config.sourceview && sourceTreeView === undefined) {
             sourceTreeView = new SourceViewTree(config);
-            await sourceTreeView.init(config);
+            // Do NOT await init() here — it walks the entire workspace recursively
+            // (up to 5 directories deep via readDirectory) and would block activate(),
+            // causing all background COBOL tabs to hang waiting for language providers
+            // to be registered.  The tree provider already calls refreshItems() /
+            // onDidChangeTreeData as it discovers files, so the view populates
+            // progressively without blocking the rest of activation.
+            sourceTreeView.init(config).catch((e) => VSLogger.logException("setupSourceViewTree init", e as Error));
             sourceTreeWatcher = workspace.createFileSystemWatcher("**/*");
 
             sourceTreeWatcher.onDidCreate((uri) => {
@@ -208,7 +214,7 @@ export class SourceViewTree implements vscode.TreeDataProvider<SourceOrFolderTre
                 case vscode.FileType.Directory: {
                     if (!VSCOBOLSourceScannerTools.ignoreDirectory(entry[0])) {
                         const subDir = vscode.Uri.parse(topLevelUri.toString() + "/" + entry[0]);
-                        this.addFolder(subDir);
+                        await this.addFolder(subDir);
                     }
                     break;
                 }
