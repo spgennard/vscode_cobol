@@ -747,10 +747,10 @@ export async function activate(context: ExtensionContext) {
     }
 
     const provider = VSSemanticProvider.provider();
-    vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), provider, VSSemanticProvider.getLegend());
+    context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), provider, VSSemanticProvider.getLegend()));
 
     const codelensProvider = new VSPPCodeLens();
-    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), codelensProvider);
+    context.subscriptions.push(languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), codelensProvider));
 
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
 
@@ -822,8 +822,6 @@ export async function activate(context: ExtensionContext) {
     if (process.platform === 'linux') {
         vscode.window.registerTerminalProfileProvider('bitlang.terminals', new VSTerminal(context));
     }
-
-    context.subscriptions.push(languages.registerReferenceProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), new CobolReferenceProvider()));
 
     if (settings.process_metadata_cache_on_start) {
         try {
