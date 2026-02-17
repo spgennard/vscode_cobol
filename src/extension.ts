@@ -106,7 +106,7 @@ function openChangeLog(currentContext: ExtensionContext): void {
     }
 }
 
-async function setupLogChannel(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
+function setupLogChannel(hide: boolean, settings: ICOBOLSettings, quiet: boolean) {
     if (!quiet) {
         if (hide) {
             COBOLOutputChannel.hide();
@@ -301,7 +301,7 @@ function activateDesktop(context: ExtensionContext, settings: ICOBOLSettings): v
 
 async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode.ConfigurationScope) {
     const updated = event.affectsConfiguration(ExtensionDefaults.defaultEditorConfig, scope);
-    const outline_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig, scope}.outline`, scope);
+    const outline_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.outline`, scope);
     const md_syms = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_symbols`, scope);
     const md_eps = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_entrypoints`, scope);
     const md_types = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.metadata_types`, scope);
@@ -426,7 +426,7 @@ export async function activate(context: ExtensionContext) {
     sharedContext = context;
     const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
-    await setupLogChannel(true, settings, true);
+    setupLogChannel(true, settings, true);
     VSCOBOLUtils.setupFilePaths(settings);
     await VSCOBOLUtils.setupUrlPaths(settings);
 
@@ -559,7 +559,7 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(workspace.onDidChangeWorkspaceFolders(async () => {
         const settings: ICOBOLSettings = VSCOBOLConfiguration.reinitWorkspaceSettings(VSExternalFeatures);
 
-        await setupLogChannel(false, settings, true);
+        setupLogChannel(false, settings, true);
         VSCOBOLUtils.setupFilePaths(settings);
         await VSCOBOLUtils.setupUrlPaths(settings);
     }));
