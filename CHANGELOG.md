@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* c10cfc8 try to ensure activate() works as expected
+
+## 26.2.9 
 * f0d76db update README.md
 * 0228f30 add support for user configurable alpha for minimaps
 
