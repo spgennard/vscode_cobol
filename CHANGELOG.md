@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* d250860 remove unneeded async/await
+* ba47494 fix a little memory leak and a accidential double register
+
+## 26.2.16 
 * c10cfc8 try to ensure activate() works as expected
 
 ## 26.2.9 
