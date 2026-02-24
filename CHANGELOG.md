@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 26.2.19, origin/main, origin/HEAD drop 1
+## 26.2.19 
+* ef77eb0 drop 1
 * d4af92c Update
 * d250860 remove unneeded async/await
 * ba47494 fix a little memory leak and a accidential double register
