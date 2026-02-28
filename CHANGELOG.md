@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* d8a35c5 add some more support for ILECOBOL
+* f689479 add basic folding provider
+
+## 26.2.23 
 
 ## 26.2.19 
 * ef77eb0 drop 1
