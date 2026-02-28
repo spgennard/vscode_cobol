@@ -25,6 +25,7 @@ import { VSSourceTreeViewHandler } from "../vssourceviewtree";
 import { VSHelpAndFeedViewHandler } from "../feedbacktree";
 import { VSHoverProvider } from "../vshoverprovider";
 import { CobolReferenceProvider } from "../vsreferenceprovider";
+import { COBOLFoldingRangeProvider } from "../vsfoldingprovider";
 
 const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -260,6 +261,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const codelensProvider = new VSPPCodeLens();
     languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(_settings, true), codelensProvider);
+
+    const foldingProvider = new COBOLFoldingRangeProvider();
+    languages.registerFoldingRangeProvider(VSExtensionUtils.getAllCobolSelectors(_settings, true), foldingProvider);
 
     vscode.window.onDidChangeTextEditorSelection((e: vscode.TextEditorSelectionChangeEvent) => {
         if (!VSExtensionUtils.isSupportedLanguage(e.textEditor.document)) {

@@ -12,4 +12,6 @@ src/extension.ts.bak
 src/textprovider.ts.bak
 *nls.*.json
 package-lock.json
+resources/mermaid/*
+resources/panzoom/*
 *.d.ts

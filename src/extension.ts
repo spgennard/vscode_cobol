@@ -51,6 +51,7 @@ import { COBOLTypeFormatter } from "./vsformatter";
 import { TabUtils } from "./tabstopper";
 import { VSTerminal } from "./vsterminals";
 import { BmsPreviewPanel } from "./bmspreviewpanel";
+import { COBOLFoldingRangeProvider } from "./vsfoldingprovider";
 
 // import type MarkdownIt from 'markdown-it';
 // import hijs from 'highlight.js/lib/core';
@@ -751,6 +752,9 @@ export async function activate(context: ExtensionContext) {
 
     const codelensProvider = new VSPPCodeLens();
     context.subscriptions.push(languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), codelensProvider));
+
+    const foldingProvider = new COBOLFoldingRangeProvider();
+    context.subscriptions.push(languages.registerFoldingRangeProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), foldingProvider));
 
     vscode.commands.executeCommand("setContext", "cobolplugin.enableStorageAlign", true);
 
