@@ -1701,7 +1701,12 @@
           "ILECOBOL",
           "ilecobol"
         ],
-        "extensions": [],
+        "extensions": [
+          ".cblle",
+          ".CBLLE",
+          ".sqlcblle",
+          ".SQLCBLLE"
+        ],
         "configuration": "./ilecobol.configuration.json"
       },
       {
@@ -1716,7 +1721,6 @@
         "extensions": [
           ".cbl",
           ".cobol",
-          ".cblle",
           ".cblsrce",
           ".cblcpy",
           ".pdv",
@@ -1728,7 +1732,6 @@
           ".scb",
           ".spb",
           ".scbl",
-          ".sqlcblle",
           ".cob",
           ".dds",
           ".def",
@@ -1740,7 +1743,6 @@
           ".eco",
           ".COBOL",
           ".CBL",
-          ".CBLLE",
           ".CBLSRCE",
           ".CBLCPY",
           ".PDV",
@@ -1752,7 +1754,6 @@
           ".SCB",
           ".SPB",
           ".SCBL",
-          ".SQLCBLLE",
           ".COB",
           ".DDS",
           ".DEF",
