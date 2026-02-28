@@ -2875,6 +2875,10 @@
         "path": "./snippets/cobolit.json"
       },
       {
+        "language": "ILECOBOL",
+        "path": "./snippets/ilecobol.json"
+      },
+      {
         "language": "dir",
         "path": "./snippets/dir.json"
       },

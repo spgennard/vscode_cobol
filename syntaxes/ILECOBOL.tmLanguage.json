@@ -5,6 +5,52 @@
   "name": "ILECOBOL",
   "patterns": [
     {
+      "comment": "ILE COBOL **FREE fully free-format indicator (must be on first line)",
+      "match": "^(\\*\\*FREE)\\s*$",
+      "name": "keyword.control.directive.free.ilecobol"
+    },
+    {
+      "comment": "ILE COBOL PROCESS compiler directive",
+      "match": "(?i)^\\s*(PROCESS)\\b(.*)$",
+      "captures": {
+        "1": {
+          "name": "keyword.control.directive.process.ilecobol"
+        },
+        "2": {
+          "name": "string.unquoted.process-options.ilecobol"
+        }
+      }
+    },
+    {
+      "comment": "ILE COBOL /COPY compiler directive",
+      "match": "(?i)^\\s*(/COPY)\\b(.*)$",
+      "captures": {
+        "1": {
+          "name": "keyword.control.directive.copy.ilecobol"
+        },
+        "2": {
+          "name": "string.unquoted.copybook-name.ilecobol"
+        }
+      }
+    },
+    {
+      "comment": "ILE COBOL /INCLUDE compiler directive",
+      "match": "(?i)^\\s*(/INCLUDE)\\b(.*)$",
+      "captures": {
+        "1": {
+          "name": "keyword.control.directive.include.ilecobol"
+        },
+        "2": {
+          "name": "string.unquoted.copybook-name.ilecobol"
+        }
+      }
+    },
+    {
+      "comment": "Older ILE free-format delimiters",
+      "match": "(?i)^\\s*(/FREE|/END-FREE)\\s*$",
+      "name": "keyword.control.directive.free-block.ilecobol"
+    },
+    {
       "begin": "(?<![-_a-zA-Z0-9()-])(?i:remarks\\.)",
       "beginCaptures": {
         "0": {

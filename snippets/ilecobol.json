@@ -1,0 +1,258 @@
+{
+	"**FREE header": {
+		"prefix": "**free",
+		"body": [
+			"**FREE"
+		],
+		"description": "ILE COBOL fully free-format indicator",
+		"scope": "ilecobol"
+	},
+	"ILE Free-format program": {
+		"prefix": "program-id",
+		"isFileTemplate": true,
+		"body": [
+			"**FREE",
+			"PROCESS NOMAIN.",
+			"",
+			"IDENTIFICATION DIVISION.",
+			"PROGRAM-ID. ${1:${TM_FILENAME_BASE}}.",
+			"",
+			"DATA DIVISION.",
+			"WORKING-STORAGE SECTION.",
+			"$0",
+			"",
+			"PROCEDURE DIVISION.",
+			"    DISPLAY 'Hello from ${1}'.",
+			"    STOP RUN.",
+			""
+		],
+		"description": "ILE COBOL free-format program template",
+		"scope": "ilecobol"
+	},
+	"ILE NOMAIN module": {
+		"prefix": "nomain",
+		"isFileTemplate": true,
+		"body": [
+			"**FREE",
+			"PROCESS NOMAIN.",
+			"",
+			"IDENTIFICATION DIVISION.",
+			"PROGRAM-ID. ${1:${TM_FILENAME_BASE}}.",
+			"",
+			"DATA DIVISION.",
+			"WORKING-STORAGE SECTION.",
+			"$0",
+			"",
+			"PROCEDURE DIVISION.",
+			""
+		],
+		"description": "ILE COBOL NOMAIN service program module",
+		"scope": "ilecobol"
+	},
+	"PROCESS statement": {
+		"prefix": "process",
+		"body": [
+			"PROCESS ${1|NOMAIN,THREAD(*SERIALIZE),ACTGRP(*CALLER),ACTGRP(*NEW),OPTION(*EVENTF),DBGVIEW(*SOURCE)|}."
+		],
+		"description": "ILE COBOL PROCESS compiler directive",
+		"scope": "ilecobol"
+	},
+	"/COPY directive": {
+		"prefix": "/copy",
+		"body": [
+			"/COPY ${1:QSYS}/${2:QCBLLESRC},${3:MEMBERNAME}"
+		],
+		"description": "ILE COBOL /COPY compiler directive",
+		"scope": "ilecobol"
+	},
+	"/COPY simple": {
+		"prefix": "/copy",
+		"body": [
+			"/COPY ${1:MEMBERNAME}"
+		],
+		"description": "ILE COBOL /COPY directive (simple form)",
+		"scope": "ilecobol"
+	},
+	"/INCLUDE directive": {
+		"prefix": "/include",
+		"body": [
+			"/INCLUDE ${1:QSYS}/${2:QCBLLESRC},${3:MEMBERNAME}"
+		],
+		"description": "ILE COBOL /INCLUDE compiler directive",
+		"scope": "ilecobol"
+	},
+	"/INCLUDE simple": {
+		"prefix": "/include",
+		"body": [
+			"/INCLUDE ${1:MEMBERNAME}"
+		],
+		"description": "ILE COBOL /INCLUDE directive (simple form)",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL block": {
+		"prefix": "exec sql",
+		"body": [
+			"EXEC SQL",
+			"    ${1:SELECT * FROM ${2:TABLE}}",
+			"END-EXEC."
+		],
+		"description": "EXEC SQL ... END-EXEC block",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL INCLUDE": {
+		"prefix": "exec sql include",
+		"body": [
+			"EXEC SQL INCLUDE ${1:SQLCA} END-EXEC."
+		],
+		"description": "EXEC SQL INCLUDE statement",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL DECLARE CURSOR": {
+		"prefix": "exec sql declare",
+		"body": [
+			"EXEC SQL",
+			"    DECLARE ${1:CURSOR_NAME} CURSOR FOR",
+			"    SELECT ${2:*}",
+			"    FROM ${3:TABLE_NAME}",
+			"    ${4:WHERE ${5:condition}}",
+			"END-EXEC."
+		],
+		"description": "EXEC SQL DECLARE CURSOR statement",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL OPEN/FETCH/CLOSE": {
+		"prefix": "exec sql fetch",
+		"body": [
+			"EXEC SQL OPEN ${1:CURSOR_NAME} END-EXEC.",
+			"",
+			"PERFORM UNTIL SQLCODE NOT = 0",
+			"    EXEC SQL",
+			"        FETCH ${1} INTO ${2::HOST-VAR}",
+			"    END-EXEC",
+			"    IF SQLCODE = 0",
+			"        ${0:*> Process row}",
+			"    END-IF",
+			"END-PERFORM.",
+			"",
+			"EXEC SQL CLOSE ${1} END-EXEC."
+		],
+		"description": "EXEC SQL cursor OPEN/FETCH/CLOSE pattern",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL INSERT": {
+		"prefix": "exec sql insert",
+		"body": [
+			"EXEC SQL",
+			"    INSERT INTO ${1:TABLE_NAME}",
+			"    (${2:COLUMN1, COLUMN2})",
+			"    VALUES (${3::HOST-VAR1, :HOST-VAR2})",
+			"END-EXEC."
+		],
+		"description": "EXEC SQL INSERT statement",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL UPDATE": {
+		"prefix": "exec sql update",
+		"body": [
+			"EXEC SQL",
+			"    UPDATE ${1:TABLE_NAME}",
+			"    SET ${2:COLUMN1} = ${3::HOST-VAR1}",
+			"    WHERE ${4:KEY-COLUMN} = ${5::KEY-VAR}",
+			"END-EXEC."
+		],
+		"description": "EXEC SQL UPDATE statement",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL DELETE": {
+		"prefix": "exec sql delete",
+		"body": [
+			"EXEC SQL",
+			"    DELETE FROM ${1:TABLE_NAME}",
+			"    WHERE ${2:KEY-COLUMN} = ${3::KEY-VAR}",
+			"END-EXEC."
+		],
+		"description": "EXEC SQL DELETE statement",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL BEGIN/END DECLARE": {
+		"prefix": "exec sql begin",
+		"body": [
+			"EXEC SQL BEGIN DECLARE SECTION END-EXEC.",
+			"${0}",
+			"EXEC SQL END DECLARE SECTION END-EXEC."
+		],
+		"description": "EXEC SQL host variable declare section",
+		"scope": "ilecobol"
+	},
+	"EXEC SQL WHENEVER": {
+		"prefix": "exec sql whenever",
+		"body": [
+			"EXEC SQL WHENEVER ${1|SQLERROR,SQLWARNING,NOT FOUND|} ${2|CONTINUE,GO TO ${3:ERROR-ROUTINE}|} END-EXEC."
+		],
+		"description": "EXEC SQL WHENEVER error handling",
+		"scope": "ilecobol"
+	},
+	"CALL ILE API": {
+		"prefix": "call ile",
+		"body": [
+			"CALL \"${1|CEEDAYs,CEEDATE,CEESECS,CEEDATM,CEEUTC,CEELOCT,CEEGMT,CEEMOUT,CEEMGET,CEEMSG,CEEGTST,CEEFRST,CEECZST|}\"",
+			"    USING ${2:parm1}",
+			"    ${3:RETURNING ${4:result}}."
+		],
+		"description": "Call an ILE CEE API",
+		"scope": "ilecobol"
+	},
+	"SQLCBLLE program": {
+		"prefix": "sqlcblle",
+		"isFileTemplate": true,
+		"body": [
+			"**FREE",
+			"PROCESS NOMAIN.",
+			"",
+			"IDENTIFICATION DIVISION.",
+			"PROGRAM-ID. ${1:${TM_FILENAME_BASE}}.",
+			"",
+			"DATA DIVISION.",
+			"WORKING-STORAGE SECTION.",
+			"EXEC SQL INCLUDE SQLCA END-EXEC.",
+			"",
+			"01 WS-SQLCODE PIC S9(9) COMP-5.",
+			"$0",
+			"",
+			"PROCEDURE DIVISION.",
+			"    EXEC SQL",
+			"        ${2:SELECT * FROM ${3:TABLE_NAME}}",
+			"    END-EXEC.",
+			"",
+			"    MOVE SQLCODE TO WS-SQLCODE.",
+			"    IF WS-SQLCODE NOT = 0",
+			"        DISPLAY 'SQL Error: ' WS-SQLCODE",
+			"    END-IF.",
+			"",
+			"    STOP RUN.",
+			""
+		],
+		"description": "ILE COBOL SQLCBLLE program with embedded SQL",
+		"scope": "ilecobol"
+	},
+	"COPY DDS externally-described": {
+		"prefix": "copy dds",
+		"body": [
+			"COPY DDS-ALL-FORMATS OF ${1:LIBRARY}/${2:FILENAME}."
+		],
+		"description": "COPY DDS for externally-described file",
+		"scope": "ilecobol"
+	},
+	"SQLSTATE check": {
+		"prefix": "sqlstate",
+		"body": [
+			"IF SQLSTATE NOT = '00000'",
+			"    DISPLAY 'SQL Error, SQLSTATE: ' SQLSTATE",
+			"    DISPLAY 'SQLCODE: ' SQLCODE",
+			"    ${0:*> Error handling}",
+			"END-IF."
+		],
+		"description": "SQLSTATE error check pattern",
+		"scope": "ilecobol"
+	}
+}

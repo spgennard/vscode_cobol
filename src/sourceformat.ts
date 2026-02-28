@@ -74,6 +74,17 @@ export class SourceFormat {
 
         var COBOLKeywordDictionary = getCOBOLKeywordDictionary(config, doc.getLanguageId());
 
+        // ILE COBOL: check for **FREE on line 1 (fully free-format indicator)
+        if (doc.getLineCount() > 0) {
+            const firstLine = doc.getLineTabExpanded(0);
+            if (firstLine !== undefined) {
+                const trimmedFirst = firstLine.trimStart();
+                if (trimmedFirst.toUpperCase().startsWith("**FREE")) {
+                    return ESourceFormat.free;
+                }
+            }
+        }
+
         // check source for source format
         let linesWithJustNumbers = 0;
         let linesWithIdenticalAreaB = 0;

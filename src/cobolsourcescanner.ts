@@ -1747,6 +1747,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         state.numberTokensInHeader++;
                         continue;
                     }
+
+                    // ILE COBOL: skip PROCESS statement (compiler options before IDENTIFICATION DIVISION)
+                    if (currentLower === "process") {
+                        state.divisionsInToken++;    // signals "this looks like COBOL"
+                        break;                       // skip remaining tokens on this line
+                    }
                 }
                 switch (currentLower) {
                     case "section":
@@ -2495,6 +2501,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     continue;
                 }
 
+                // ILE COBOL: skip PROCESS statement (compiler options before identification division)
+                // PROCESS statements are line-terminated and contain compiler option keywords
+                if (currentLower === "process" && state.currentDivision === undefined) {
+                    token.endToken();
+                    continue;
+                }
+
                 // handle sections
                 if (state.currentClass === undefined && prevToken.length !== 0 && currentLower === "section" && (prevTokenLower !== "exit")) {
                     if (prevTokenLower === "declare") {
@@ -2776,7 +2789,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 }
 
                 //remember copy
-                if (currentLower === "copy") {
+                if (currentLower === "copy" || currentLower === "/copy" || currentLower === "/include") {
+                    const isILEDirective = currentLower === "/copy" || currentLower === "/include";
                     const prevState = state.copybook_state;
                     state.copybook_state = new copybookState(state.current01Group);
                     state.current01Group = undefined;
@@ -2785,6 +2799,36 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     state.skipToDot = true;
                     state.copybook_state.copyVerb = current;
                     state.copybook_state.copybookDepths = prevState.copybookDepths;
+
+                    // ILE COBOL: /COPY and /INCLUDE are line-terminated (no period required)
+                    // Consume remaining tokens on this line as the copybook name
+                    if (isILEDirective) {
+                        const nextToken = token.nextSTokenOrBlank();
+                        if (nextToken.currentToken.length > 0) {
+                            const rawCopyBook = nextToken.currentToken;
+                            const trimmedCopyBook = COBOLSourceScanner.trimLiteral(rawCopyBook, true);
+                            state.copybook_state.copyBook = rawCopyBook;
+                            state.copybook_state.trimmedCopyBook = trimmedCopyBook;
+                            state.copybook_state.startLineNumber = lineNumber;
+                            state.copybook_state.line = line;
+                        }
+                        // force end-of-copy processing at end of this line
+                        state.skipToDot = false;
+                        state.copybook_state.endLineNumber = lineNumber;
+                        state.copybook_state.endCol = line.length;
+                        if (this.processCopyBook(state.copybook_state) === false) {
+                            let extra = "";
+                            if (state.copybook_state.copybookDepths.length >= this.configHandler.copybook_scan_depth) {
+                                extra = `due to copybook processing depth limit (${this.configHandler.copybook_scan_depth})`;
+                            }
+                            const trimmedCopyBook = state.copybook_state.trimmedCopyBook;
+                            const diagMessage = `Unable to process copybook ${extra}: ${trimmedCopyBook}`;
+                            this.externalFeatures.logMessage(diagMessage);
+                        }
+                        state.current01Group = state.copybook_state.saved01Group;
+                        state.inCopy = false;
+                        token.endToken();
+                    }
                     continue;
                 }
 
