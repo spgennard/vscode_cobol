@@ -1,5 +1,5 @@
 // import { VSExternalFeatures } from "../vsexternalfeatures";
-import { ILE_DATE_TIME_APIs, ILE_GROUP_FLOW_APIs, ILE_COND_MAN_APIs, ILE_MATH_APIs, ILE_MESSAGE_APIs, ILE_PROGRAM_OR_PROCEDURE_CALL_APIs, ILE_STORAGE_APIs } from "./ile_apis";
+import { ILE_DATE_TIME_APIs, ILE_GROUP_FLOW_APIs, ILE_COND_MAN_APIs, ILE_MATH_APIs, ILE_MESSAGE_APIs, ILE_PROGRAM_OR_PROCEDURE_CALL_APIs, ILE_STORAGE_APIs, ILE_STRING_APIs, ILE_NLS_APIs, ILE_PROGRAM_MGMT_APIs, ILE_DATA_AREA_APIs, ILE_SYSTEM_APIs, ILE_SQL_CLI_APIs } from "./ile_apis";
 import { CBL_APIs } from "./mf_cbl_apis";
 import { MFUNIT_APIs } from "./mf_mfunit";
 import { ACU_COMMON_APIs } from "./acu_common_apis";
@@ -71,6 +71,12 @@ addApis(callTargets_ilecobol, new ILE_MATH_APIs());
 addApis(callTargets_ilecobol, new ILE_MESSAGE_APIs());
 addApis(callTargets_ilecobol, new ILE_PROGRAM_OR_PROCEDURE_CALL_APIs());
 addApis(callTargets_ilecobol, new ILE_STORAGE_APIs());
+addApis(callTargets_ilecobol, new ILE_STRING_APIs());
+addApis(callTargets_ilecobol, new ILE_NLS_APIs());
+addApis(callTargets_ilecobol, new ILE_PROGRAM_MGMT_APIs());
+addApis(callTargets_ilecobol, new ILE_DATA_AREA_APIs());
+addApis(callTargets_ilecobol, new ILE_SYSTEM_APIs());
+addApis(callTargets_ilecobol, new ILE_SQL_CLI_APIs());
 
 export class KnownAPIs {
 	// /* inline decl */

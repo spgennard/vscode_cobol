@@ -155,4 +155,138 @@ export class ILE_STORAGE_APIs implements IKnownApis {
     public snippets = new Map<string, string[]>();
 }
 
+export class ILE_STRING_APIs implements IKnownApis {
+    public url = "https://www.ibm.com/docs/en/i/7.6.0?topic=ssw_ibm_i_76/apis/ile9a1TOC.html";
+    public name = "String Handling APIs";
+    public apis = new Map<string, string[]>([
+        ["CEESCLN", ["Scan String for Characters in a Set scans a string for one or more characters contained in a set of characters."]],
+        ["CEESCPY", ["Copy String copies a source string to a result string."]],
+        ["CEESCUP", ["Uppercase a String converts a string from its current case to uppercase."]],
+        ["CEESLNG", ["Get String Length returns the length of a string."]],
+        ["CEESSUB", ["Get Substring extracts a substring from a source string."]],
+        ["CEESCAT", ["Concatenate Two Strings concatenates two strings and places the result into a destination string."]],
+        ["CEESCMP", ["Compare Strings compares two strings and provides a result indicating their relative ordering."]],
+        ["CEESINS", ["Insert Substring inserts a substring into a target string at a specified position."]],
+        ["CEESRCH", ["Search String searches a source string for a specified pattern string."]],
+        ["CEESPOS", ["Get String Position returns the position of the first occurrence of any character in a specified set within a string."]],
+        ["CEESSET", ["Set Characters sets characters in a string to a specified character."]],
+        ["CEESXLR", ["Translate String translates characters in a string from one set of characters to another."]]
+    ]);
+    public examples = new Map<string, string[]>();
+    public snippets = new Map<string, string[]>();
+}
+
+export class ILE_NLS_APIs implements IKnownApis {
+    public url = "https://www.ibm.com/docs/en/i/7.6.0?topic=ssw_ibm_i_76/apis/ile10a1TOC.html";
+    public name = "National Language Support APIs";
+    public apis = new Map<string, string[]>([
+        ["CEENGTA", ["Get National Language Default Country or Region returns the default country/region setting for the national language currently in effect."]],
+        ["CEENGTL", ["Get National Language Default Language returns the default language setting for the national language currently in effect."]],
+        ["CEENGTT", ["Get National Language Default Date and Time returns the date and time picture strings for the national language currently in effect."]],
+        ["CEENGFC", ["Get National Language Default Currency Symbol returns the default currency symbol for the national language currently in effect."]],
+        ["CEENGFS", ["Get National Language Default Numeric Separators returns the default decimal separator and thousands separator for the national language currently in effect."]]
+    ]);
+    public examples = new Map<string, string[]>();
+    public snippets = new Map<string, string[]>();
+}
+
+export class ILE_PROGRAM_MGMT_APIs implements IKnownApis {
+    public url = "https://www.ibm.com/docs/en/i/7.6.0?topic=ssw_ibm_i_76/apis/pgmmgmtTOC.html";
+    public name = "Program Management APIs";
+    public apis = new Map<string, string[]>([
+        ["QleActBndPgm", ["Activate Bound Program activates a service program and returns a handle that can be used by QleGetExp."]],
+        ["QleGetExp", ["Get Export Pointer retrieves an export from an activated service program."]],
+        ["QBNLPGMI", ["List ILE Program Information lists the module and service program information for a specified ILE program."]],
+        ["QBNLSPGM", ["List Service Program Information lists the modules, service programs, and other information for a specified service program."]],
+        ["QCLRPGMI", ["Clear Program Information is used to remove the module-level state information from a program."]],
+        ["QBNRMVPM", ["Remove Program Module removes a module from an ILE program."]],
+        ["QLICVTTP", ["Convert Type of Program converts a program from an original program model (OPM) program object to an ILE program."]],
+        ["QleGetExpLong", ["Get Export Pointer (Long) retrieves an export from an activated service program, supporting long export names."]]
+    ]);
+    public examples = new Map<string, string[]>();
+    public snippets = new Map<string, string[]>();
+}
+
+export class ILE_DATA_AREA_APIs implements IKnownApis {
+    public url = "https://www.ibm.com/docs/en/i/7.6.0?topic=ssw_ibm_i_76/apis/QXXRTVDA.html";
+    public name = "Data Area APIs";
+    public apis = new Map<string, string[]>([
+        ["QXXRTVDA", ["Retrieve Data Area retrieves the entire contents or a portion of a data area."]],
+        ["QXXCHGDA", ["Change Data Area changes the entire contents or a portion of a data area."]],
+        ["QWCRDTAA", ["Retrieve Data Area (QWCRDTAA) retrieves a data area and its description."]],
+        ["QDBRTVFD", ["Retrieve File Description retrieves the file field description, including data areas associated with a file."]]
+    ]);
+    public examples = new Map<string, string[]>();
+    public snippets = new Map<string, string[]>();
+}
+
+export class ILE_SYSTEM_APIs implements IKnownApis {
+    public url = "https://www.ibm.com/docs/en/i/7.6.0?topic=ssw_ibm_i_76/apis/apisTOC.html";
+    public name = "System APIs Commonly Called from COBOL";
+    public apis = new Map<string, string[]>([
+        ["QCMDEXC", ["Execute Command runs a single CL command from within a HLL program. The command string is passed as a parameter along with its length."]],
+        ["QCAPCMD", ["Process Command processes a CL command string with options for syntax checking, command prompting, or execution."]],
+        ["QCMDCHK", ["Check Command Syntax checks the syntax of a CL command string without running it."]],
+        ["QUSRJOBI", ["Retrieve Job Information retrieves specific information about a job, such as job status, run priority, and other attributes."]],
+        ["QUSROBJD", ["Retrieve Object Description retrieves various descriptions of a specific object on the system."]],
+        ["QUSRMBRD", ["Retrieve Member Description retrieves descriptive information about a specific member of a database file."]],
+        ["QUSLFLD", ["List Fields lists the fields in a record format of a file."]],
+        ["QUSLJOB", ["List Job retrieves a list of jobs on the system based on specified selection criteria."]],
+        ["QUILNGTX", ["Display Long Text displays a text string that may be up to 5000 characters in a pop-up window on the terminal."]],
+        ["QMHSNDPM", ["Send Program Message sends a message to a call message queue or the external message queue."]],
+        ["QMHRCVPM", ["Receive Program Message receives a message from a call message queue."]],
+        ["QMHRMVPM", ["Remove Program Message removes a message from a call message queue."]],
+        ["QUSCRTUS", ["Create User Space creates a user space in a specified library."]],
+        ["QUSPTRUS", ["Retrieve Pointer to User Space retrieves a pointer to the beginning of a user space."]],
+        ["QUSDLTUS", ["Delete User Space deletes a previously created user space."]],
+        ["QUSRTVUS", ["Retrieve User Space retrieves the contents of a user space."]],
+        ["QUSCHGUS", ["Change User Space changes the contents of a user space."]],
+        ["QWCRTVCA", ["Retrieve Current Attributes retrieves current job attributes such as CCSID, date format, and time separator."]],
+        ["QWCRSVAL", ["Retrieve System Value retrieves one or more system values."]],
+        ["QLYSETS", ["Set Current Library sets the current library for the current thread."]],
+        ["QDCXLATE", ["Convert Character Data converts a character string from one CCSID to another CCSID."]],
+        ["QtqConvertTextString", ["Convert Text String converts a text string from one CCSID to another."]],
+        ["Qp0zLprintf", ["Print to Job Log writes a formatted message to the job log."]],
+        ["Qp0zUprintf", ["Print to Standard Output writes a formatted character string to stdout."]],
+        ["QMHSNDM", ["Send Message to Message Queue sends an immediate or informational message to a specified message queue."]],
+        ["QsyGetGroupFromGID", ["Get Group Name from GID retrieves the group profile name associated with a group identifier (GID)."]],
+        ["QsyGetUserFromUID", ["Get User Name from UID retrieves the user profile name associated with a user identifier (UID)."]],
+        ["QSZRTVPR", ["Retrieve Product Information retrieves the product information for a specified product."]],
+        ["QWCRNETA", ["Retrieve Network Attributes retrieves the network attributes for the local system."]]
+    ]);
+    public examples = new Map<string, string[]>();
+    public snippets = new Map<string, string[]>();
+}
+
+export class ILE_SQL_CLI_APIs implements IKnownApis {
+    public url = "https://www.ibm.com/docs/en/i/7.6.0?topic=ssw_ibm_i_76/apis/cliTOC.html";
+    public name = "SQL CLI (Call Level Interface) APIs";
+    public apis = new Map<string, string[]>([
+        ["SQLAllocConnect", ["Allocate Connection Handle allocates a connection handle for use with SQLConnect."]],
+        ["SQLAllocEnv", ["Allocate Environment Handle allocates an environment handle for SQL CLI processing."]],
+        ["SQLAllocHandle", ["Allocate Handle allocates an environment, connection, statement, or descriptor handle."]],
+        ["SQLAllocStmt", ["Allocate Statement Handle allocates a statement handle for use with SQLPrepare and SQLExecDirect."]],
+        ["SQLBindCol", ["Bind a Column binds a column to an application variable for data retrieval with SQLFetch."]],
+        ["SQLBindParam", ["Bind a Parameter binds an application variable to a parameter marker in an SQL statement."]],
+        ["SQLCancel", ["Cancel Statement cancels a statement that is running asynchronously or cancels a need-data situation."]],
+        ["SQLCloseCursor", ["Close Cursor closes a cursor that was opened by SQLExecute or SQLExecDirect and discards pending results."]],
+        ["SQLConnect", ["Connect to a Data Source connects to the specified data source using a connection handle."]],
+        ["SQLDescribeCol", ["Describe Column returns the column name, type, size, decimal digits, and nullability for a result set column."]],
+        ["SQLDisconnect", ["Disconnect from a Data Source disconnects from the specified data source."]],
+        ["SQLExecDirect", ["Execute a Statement Directly prepares and executes an SQL statement in a single step."]],
+        ["SQLExecute", ["Execute a Statement executes a previously prepared SQL statement."]],
+        ["SQLFetch", ["Fetch Next Row fetches the next row of the result set and returns data for all bound columns."]],
+        ["SQLFreeConnect", ["Free Connection Handle frees a connection handle and all associated resources."]],
+        ["SQLFreeEnv", ["Free Environment Handle frees an environment handle and all associated resources."]],
+        ["SQLFreeHandle", ["Free Handle frees an environment, connection, statement, or descriptor handle."]],
+        ["SQLFreeStmt", ["Free Statement Handle frees a statement handle and all associated resources."]],
+        ["SQLGetData", ["Get Data from a Column retrieves data for a single column in the result set."]],
+        ["SQLNumResultCols", ["Number of Result Columns returns the number of columns in the result set."]],
+        ["SQLPrepare", ["Prepare a Statement prepares an SQL string for execution."]],
+        ["SQLRowCount", ["Row Count returns the number of rows affected by an UPDATE, INSERT, or DELETE statement."]]
+    ]);
+    public examples = new Map<string, string[]>();
+    public snippets = new Map<string, string[]>();
+}
+
 
