@@ -26,8 +26,14 @@ export class COBOLFoldingRangeProvider implements vscode.FoldingRangeProvider {
         _context: vscode.FoldingContext,
         token: vscode.CancellationToken
     ): Promise<vscode.FoldingRange[]> {
-        const ranges: vscode.FoldingRange[] = [];
         const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+        
+        // Check if folding ranges are enabled
+        if (!config.enable_folding_ranges) {
+            return [];
+        }
+
+        const ranges: vscode.FoldingRange[] = [];
 
         const sf = VSCOBOLSourceScanner.getCachedObject(document, config);
 

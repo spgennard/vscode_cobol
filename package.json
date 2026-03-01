@@ -1388,6 +1388,11 @@
           "description": "When enabled, show division boundaries in minimap and overview ruler",
           "default": true
         },
+        "coboleditor.enable_folding_ranges": {
+          "type": "boolean",
+          "description": "When enabled, provide folding ranges for COBOL source code",
+          "default": true
+        },
         "coboleditor.enable_program_information": {
           "type": "boolean",
           "description": "When enabled, turn on call hierarchy provider (WIP)",

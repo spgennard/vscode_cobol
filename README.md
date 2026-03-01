@@ -105,6 +105,30 @@ The extension enhances VS Code's minimap and overview ruler to display COBOL pro
 
 This feature is especially valuable when working with large legacy COBOL programs containing many sections and paragraphs.
 
+### Code Folding
+
+The extension provides comprehensive code folding capabilities for COBOL source code, allowing you to collapse and expand sections of code for better readability and navigation.
+
+**Features:**
+- **Structural folding** - Based on parsed COBOL structures including:
+  - Divisions (IDENTIFICATION, ENVIRONMENT, DATA, PROCEDURE)
+  - Sections and Paragraphs 
+  - Program/Class/Method definitions
+  - EXEC blocks
+  - Copybook statements
+- **Comment block folding** - Consecutive comment lines are grouped into foldable blocks
+- **Block statement folding** - IF...END-IF, EVALUATE...END-EVALUATE, PERFORM...END-PERFORM, and other structured COBOL constructs
+
+**Configuration:**
+```json
+{
+  "coboleditor.enable_folding_ranges": true
+}
+```
+
+**Settings:**
+- `coboleditor.enable_folding_ranges` - Enable/disable code folding support (default: true)
+
 ### Go to definition
 
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/gotodef.gif)

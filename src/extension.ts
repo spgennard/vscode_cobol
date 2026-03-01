@@ -324,6 +324,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
     const enable_enable_minimap_section_boundaries_for_sections_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_sections`, scope); 
     const enable_minimap_section_boundaries_for_paragraphs_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_paragraphs`, scope);
     const enable_minimap_section_boundaries_for_divisions_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_divisions`, scope);
+    const enable_folding_ranges_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_folding_ranges`, scope);
 
     if (updated) {
         VSCOBOLConfiguration.reinitWorkspaceSettingsScoped(VSExternalFeatures);
@@ -417,6 +418,19 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             const activeEditor = window.activeTextEditor;
             if (activeEditor) {
                 await vsMinimapHandler.updateDecorations(activeEditor);
+            }
+        }
+
+        if (enable_folding_ranges_changed) {
+            // Refresh folding ranges when configuration changes
+            const activeEditor = window.activeTextEditor;
+            if (activeEditor && VSExtensionUtils.isKnownCOBOLLanguageId(settings, activeEditor.document.languageId)) {
+                // Force refresh of folding ranges by briefly folding and unfolding
+                // This is the recommended way to refresh folding ranges in VS Code
+                await vscode.commands.executeCommand('editor.foldAll');
+                // Small delay to ensure folding is processed
+                await new Promise(resolve => setTimeout(resolve, 100));
+                await vscode.commands.executeCommand('editor.unfoldAll');
             }
         }
         

@@ -204,6 +204,8 @@ export interface ICOBOLSettings {
     enable_minimap_section_boundaries_for_paragraphs: boolean;
 
     enable_minimap_section_boundaries_for_divisions: boolean;
+
+    enable_folding_ranges: boolean;
 }
 
 export class COBOLSettings implements ICOBOLSettings {
@@ -367,6 +369,8 @@ export class COBOLSettings implements ICOBOLSettings {
 
     enable_minimap_section_boundaries_for_divisions: boolean;
 
+    enable_folding_ranges: boolean;
+
     constructor() {
         this.enable_tabstop = true;
         this.pre_scan_line_limit = 25;
@@ -496,6 +500,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_minimap_section_boundaries_for_sections = true;
         this.enable_minimap_section_boundaries_for_paragraphs = true;
         this.enable_minimap_section_boundaries_for_divisions = true;
+        this.enable_folding_ranges = true;
     }
 
     public get_tabstops(langid:string): number[] {
