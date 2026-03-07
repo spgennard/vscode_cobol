@@ -3247,7 +3247,7 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.3.3",
+    "@types/node": "^25.3.5",
     "@types/vscode": "^1.109.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^2.5.2",
@@ -3265,7 +3265,7 @@
     "shx": "^0.4.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
-    "webpack": "^5.105.3",
+    "webpack": "^5.105.4",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
@@ -3275,7 +3275,7 @@
     "crypto-browserify": "^3.12.1",
     "glob-to-regexp": "^0.4.1",
     "js-base64": "^3.7.8",
-    "memfs": "^4.56.10",
+    "memfs": "^4.56.11",
     "npm-check-updates": "^19.6.3",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
