@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* a4b066b add extra ACUCOBOL-GT APIs
+
+## 26.3.1 
 
 ## 26.2.28 
 * 1811e0d add more ILE APIs
