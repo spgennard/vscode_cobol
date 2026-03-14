@@ -76,10 +76,10 @@ function isSourceFormatDirectiveLine(line: string): boolean {
 }
 
 /**
- * Parse a single line from Fixed format COBOL source.
+ * Create a COBOLParsedLine with default values.
  */
-function parseFixedLine(line: string): COBOLParsedLine {
-    const result: COBOLParsedLine = {
+function createDefaultParsedLine(line: string): COBOLParsedLine {
+    return {
         original: line,
         sequenceArea: "",
         indicator: " ",
@@ -92,6 +92,13 @@ function parseFixedLine(line: string): COBOLParsedLine {
         identificationArea: "",
         isPageEject: false,
     };
+}
+
+/**
+ * Parse a single line from Fixed format COBOL source.
+ */
+function parseFixedLine(line: string): COBOLParsedLine {
+    const result = createDefaultParsedLine(line);
 
     if (line.trimEnd().length === 0) {
         result.isBlank = true;
@@ -102,9 +109,9 @@ function parseFixedLine(line: string): COBOLParsedLine {
     if (line.length >= 6) {
         result.sequenceArea = line.substring(0, 6);
     } else {
-        // Short line — treat the whole thing as sequence area + blank
-        result.sequenceArea = line.padEnd(6);
-        result.isBlank = true;
+        // Short line — malformed fixed format. Preserve entire line as content
+        // to avoid silent data loss. The line has no valid sequence area or indicator.
+        result.content = line;
         return result;
     }
 
@@ -153,19 +160,7 @@ function parseFixedLine(line: string): COBOLParsedLine {
  * beyond column 72 with no identification area.
  */
 function parseVariableLine(line: string): COBOLParsedLine {
-    const result: COBOLParsedLine = {
-        original: line,
-        sequenceArea: "",
-        indicator: " ",
-        isComment: false,
-        isContinuation: false,
-        isDebug: false,
-        isBlank: false,
-        isSourceFormatDirective: false,
-        content: "",
-        identificationArea: "",
-        isPageEject: false,
-    };
+    const result = createDefaultParsedLine(line);
 
     if (line.trimEnd().length === 0) {
         result.isBlank = true;
@@ -175,8 +170,9 @@ function parseVariableLine(line: string): COBOLParsedLine {
     if (line.length >= 6) {
         result.sequenceArea = line.substring(0, 6);
     } else {
-        result.sequenceArea = line.padEnd(6);
-        result.isBlank = true;
+        // Short line — malformed variable format. Preserve entire line as content
+        // to avoid silent data loss.
+        result.content = line;
         return result;
     }
 
@@ -215,19 +211,7 @@ function parseVariableLine(line: string): COBOLParsedLine {
  * Parse a single line from Free format COBOL source.
  */
 function parseFreeLine(line: string): COBOLParsedLine {
-    const result: COBOLParsedLine = {
-        original: line,
-        sequenceArea: "",
-        indicator: " ",
-        isComment: false,
-        isContinuation: false,
-        isDebug: false,
-        isBlank: false,
-        isSourceFormatDirective: false,
-        content: "",
-        identificationArea: "",
-        isPageEject: false,
-    };
+    const result = createDefaultParsedLine(line);
 
     if (line.trimEnd().length === 0) {
         result.isBlank = true;
@@ -350,7 +334,7 @@ function mergeContinuationLines(parsedLines: COBOLParsedLine[]): MergedLine[] {
 
             // Determine if we're currently inside an open string literal
             // by checking for unmatched quotes in the accumulated content
-            if (isInsideStringLiteral(contentStr)) {
+            if (analyzeStringLiteralState(contentStr).isOpen) {
                 // COBOL continuation rule for string literals:
                 // - The previous line's content is kept as-is (trailing spaces are significant)
                 // - The continuation line's first non-blank character is a quote delimiter
@@ -395,48 +379,21 @@ function getLeadingWhitespace(text: string): string {
 }
 
 /**
- * Determine if the given text ends inside an unclosed string literal.
- * Tracks double and single quotes independently, accounting for COBOL
- * doubled-quote escaping (e.g., "" inside a double-quoted string).
+ * Result of analyzing text for unclosed string literals.
  */
-function isInsideStringLiteral(text: string): boolean {
-    let inDouble = false;
-    let inSingle = false;
-    for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        if (inDouble) {
-            if (ch === '"') {
-                // Check for doubled quote (escape)
-                if (i + 1 < text.length && text[i + 1] === '"') {
-                    i++; // skip the escape
-                } else {
-                    inDouble = false;
-                }
-            }
-        } else if (inSingle) {
-            if (ch === "'") {
-                if (i + 1 < text.length && text[i + 1] === "'") {
-                    i++;
-                } else {
-                    inSingle = false;
-                }
-            }
-        } else {
-            if (ch === '"') {
-                inDouble = true;
-            } else if (ch === "'") {
-                inSingle = true;
-            }
-        }
-    }
-    return inDouble || inSingle;
+interface StringLiteralState {
+    /** Whether the text ends inside an unclosed string literal */
+    isOpen: boolean;
+    /** The quote character that opened the unclosed literal ('"' or "'"); only meaningful when isOpen is true */
+    openQuote: string;
 }
 
 /**
- * If the text ends inside an unclosed string literal, return the quote
- * character that opened it ('"' or "'"). Returns '"' as a fallback.
+ * Analyze the given text for unclosed string literals, tracking double and
+ * single quotes independently and accounting for COBOL doubled-quote
+ * escaping (e.g., "" inside a double-quoted string).
  */
-function getOpenQuoteChar(text: string): string {
+function analyzeStringLiteralState(text: string): StringLiteralState {
     let inDouble = false;
     let inSingle = false;
     for (let i = 0; i < text.length; i++) {
@@ -444,7 +401,7 @@ function getOpenQuoteChar(text: string): string {
         if (inDouble) {
             if (ch === '"') {
                 if (i + 1 < text.length && text[i + 1] === '"') {
-                    i++;
+                    i++; // skip doubled-quote escape
                 } else {
                     inDouble = false;
                 }
@@ -465,8 +422,10 @@ function getOpenQuoteChar(text: string): string {
             }
         }
     }
-    if (inSingle) return "'";
-    return '"';
+    return {
+        isOpen: inDouble || inSingle,
+        openQuote: inSingle ? "'" : '"',
+    };
 }
 
 /**
@@ -502,84 +461,85 @@ function fixedCommentToFree(parsed: COBOLParsedLine): string {
 }
 
 /**
+ * Extract the comment body from a free-format comment line.
+ * Removes the *> prefix and exactly one separator space, preserving any
+ * additional leading whitespace (which represents indentation in the original source).
+ */
+function extractFreeCommentBody(trimmedLine: string): string {
+    if (trimmedLine.startsWith("*>")) {
+        let body = trimmedLine.substring(2);
+        // Remove exactly one separator space after *> (added during fixed→free conversion)
+        if (body.startsWith(" ")) {
+            body = body.substring(1);
+        }
+        return body.trimEnd();
+    }
+    return trimmedLine;
+}
+
+/**
  * Convert a comment from free format to fixed format.
  * Returns an array of lines because long comments must be split to fit
  * within the 72-column fixed format limit.
  */
 function freeCommentToFixed(line: string): string[] {
     const trimmed = line.trimStart();
-    let commentBody = "";
 
-    if (trimmed.startsWith("*>")) {
-        commentBody = trimmed.substring(2).trim();
-    } else {
-        commentBody = trimmed;
-    }
-
-    // Detect page eject marker (uses "!" sentinel to distinguish from
+    // Detect page eject marker first (uses "!" sentinel to distinguish from
     // regular comments that happen to contain "PAGE EJECT" text)
     if (trimmed.startsWith("*>!")) {
-        commentBody = trimmed.substring(3).trim();
+        const commentBody = trimmed.substring(3).trim();
         if (/^PAGE\s+EJECT$/i.test(commentBody)) {
-            return ["      /"];
+            return [buildFixedLine("/", "")];
         }
         if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
             const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
-            // Ensure the page eject line fits within col 72
-            const maxEjectWidth = 64; // cols 8-72 minus "/ "
-            if (ejectText.length <= maxEjectWidth) {
-                return ["      / " + ejectText];
-            }
-            // First line uses /, overflow lines use *
-            const ejectLines: string[] = [];
-            ejectLines.push("      / " + ejectText.substring(0, maxEjectWidth));
-            let rem = ejectText.substring(maxEjectWidth).trimStart();
-            while (rem.length > 0) {
-                if (rem.length <= maxEjectWidth) {
-                    ejectLines.push("      * " + rem);
-                    break;
-                }
-                ejectLines.push("      * " + rem.substring(0, maxEjectWidth));
-                rem = rem.substring(maxEjectWidth).trimStart();
-            }
-            return ejectLines;
+            return splitTextForFixedLines("/", " " + ejectText);
         }
     }
 
-    // Maximum comment text width: cols 8-72 = 65 chars, minus 1 for the space after * = 64
-    const maxCommentWidth = 64;
+    const commentBody = extractFreeCommentBody(trimmed);
 
     if (commentBody.length === 0) {
-        return ["      *"];
+        return [buildFixedLine("*", "")];
     }
 
-    if (commentBody.length <= maxCommentWidth) {
-        return ["      * " + commentBody];
-    }
+    return splitTextForFixedLines("*", " " + commentBody);
+}
 
-    // Split long comment across multiple fixed-format comment lines
-    const commentLines: string[] = [];
-    let remaining = commentBody;
+/**
+ * Split long text across multiple fixed-format lines with word-boundary-aware
+ * splitting. Uses the given indicator for the first line and '*' for overflow lines.
+ * The text parameter should include any leading space for readability (e.g. " commentBody").
+ */
+function splitTextForFixedLines(indicator: string, text: string, maxWidth: number = 65): string[] {
+    if (text.length === 0) {
+        return [buildFixedLine(indicator, "")];
+    }
+    if (text.length <= maxWidth) {
+        return [buildFixedLine(indicator, text)];
+    }
+    const lines: string[] = [];
+    let remaining = text;
+    let isFirst = true;
     while (remaining.length > 0) {
-        if (remaining.length <= maxCommentWidth) {
-            commentLines.push("      * " + remaining);
+        const ind = isFirst ? indicator : "*";
+        if (remaining.length <= maxWidth) {
+            lines.push(buildFixedLine(ind, remaining));
             break;
         }
-
-        // Find a word boundary to split at
-        let splitPos = maxCommentWidth;
-        for (let s = maxCommentWidth; s >= Math.max(0, maxCommentWidth - 20); s--) {
+        let splitPos = maxWidth;
+        for (let s = maxWidth; s >= Math.max(0, maxWidth - 20); s--) {
             if (remaining[s] === " ") {
                 splitPos = s;
                 break;
             }
         }
-
-        commentLines.push("      * " + remaining.substring(0, splitPos));
+        lines.push(buildFixedLine(ind, remaining.substring(0, splitPos)));
         remaining = remaining.substring(splitPos).trimStart();
+        isFirst = false;
     }
-
-    return commentLines;
+    return lines;
 }
 
 /**
@@ -588,31 +548,26 @@ function freeCommentToFixed(line: string): string[] {
  */
 function freeCommentToVariable(line: string): string {
     const trimmed = line.trimStart();
-    let commentBody = "";
 
-    if (trimmed.startsWith("*>")) {
-        commentBody = trimmed.substring(2).trim();
-    } else {
-        commentBody = trimmed;
-    }
-
-    // Detect page eject marker (uses "!" sentinel)
+    // Detect page eject marker first (uses "!" sentinel)
     if (trimmed.startsWith("*>!")) {
-        commentBody = trimmed.substring(3).trim();
-        if (/^PAGE\s+EJECT$/i.test(commentBody)) {
-            return "      /";
+        const ejectBody = trimmed.substring(3).trim();
+        if (/^PAGE\s+EJECT$/i.test(ejectBody)) {
+            return buildVariableLine("/", "");
         }
-        if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
-            const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
-            return "      / " + ejectText;
+        if (/^PAGE\s+EJECT\s+/i.test(ejectBody)) {
+            const ejectText = ejectBody.replace(/^PAGE\s+EJECT\s+/i, "");
+            return buildVariableLine("/", " " + ejectText);
         }
     }
+
+    const commentBody = extractFreeCommentBody(trimmed);
 
     if (commentBody.length === 0) {
-        return "      *";
+        return buildVariableLine("*", "");
     }
 
-    return "      * " + commentBody;
+    return buildVariableLine("*", " " + commentBody);
 }
 
 /**
@@ -684,15 +639,14 @@ function splitForFixedFormat(indicator: string, content: string): string[] {
         }
 
         // Check if we're in the middle of a string literal
-        if (isInsideStringLiteral(remaining.substring(0, splitPos))) {
+        const stringState = analyzeStringLiteralState(remaining.substring(0, splitPos));
+        if (stringState.isOpen) {
             // We're inside a string literal — we must split the string properly.
             // In COBOL fixed format continuation of string literals:
             // - The current line ends at the split point (truncated at col 72)
             // - The continuation line has '-' in col 7, and the literal resumes
             //   with the same quote delimiter in Area B (col 12)
-            //
-            // Determine which quote character is open
-            const openQuote = getOpenQuoteChar(remaining.substring(0, splitPos));
+            const openQuote = stringState.openQuote;
             const chunk = remaining.substring(0, splitPos);
             lines.push(buildFixedLine(ind, chunk));
             // Continuation line: 4 spaces indent (to col 12) + opening quote + rest of literal
@@ -740,6 +694,35 @@ function updateSourceFormatDirective(line: string, targetFormat: ESourceFormat):
     return line;
 }
 
+/**
+ * Merge free-format continuation lines (joined with &) starting from the given index.
+ * Returns the merged content and the last consumed index (inclusive).
+ */
+function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: number): { content: string; lastIndex: number } {
+    let content = parsedLines[startIndex].content;
+    // Strip trailing & continuation marker from the first line
+    content = content.trimEnd();
+    if (content.endsWith("&")) {
+        content = content.substring(0, content.length - 1);
+    }
+    let j = startIndex + 1;
+    while (j < parsedLines.length) {
+        const nextPl = parsedLines[j];
+        if (nextPl.isBlank || nextPl.isComment) break;
+        const nextContent = nextPl.content;
+        const nextTrimmed = nextContent.trimEnd();
+        if (nextTrimmed.endsWith("&")) {
+            content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
+            j++;
+        } else {
+            content += nextContent.trimStart();
+            j++;
+            break;
+        }
+    }
+    return { content, lastIndex: j - 1 };
+}
+
 // ============================================================================
 // Main conversion functions
 // ============================================================================
@@ -759,10 +742,9 @@ function convertFixedToFree(lines: string[]): string[] {
         }
 
         if (ml.isSourceFormatDirective) {
-            // Update the directive to say FREE
-            const origLine = lines[ml.sourceLines[0]];
-            const content = origLine.length > 7 ? origLine.substring(7) : origLine;
-            result.push(updateSourceFormatDirective(content.trimStart(), ESourceFormat.free));
+            // Use the merged content (not the original line) in case the directive
+            // spans continuation lines — using the raw original would lose data.
+            result.push(updateSourceFormatDirective(ml.content.trimStart(), ESourceFormat.free));
             continue;
         }
 
@@ -846,9 +828,8 @@ function convertVariableToFree(lines: string[]): string[] {
         }
 
         if (ml.isSourceFormatDirective) {
-            const origLine = lines[ml.sourceLines[0]];
-            const content = origLine.length > 7 ? origLine.substring(7) : origLine;
-            result.push(updateSourceFormatDirective(content.trimStart(), ESourceFormat.free));
+            // Use the merged content (not the original line) to handle continuations correctly.
+            result.push(updateSourceFormatDirective(ml.content.trimStart(), ESourceFormat.free));
             continue;
         }
 
@@ -900,38 +881,12 @@ function convertVariableToFixed(lines: string[]): string[] {
         }
 
         if (parsed.isComment) {
-            // Comment in variable format uses same indicator as fixed
+            // Comment in variable format uses same indicator as fixed.
             // Split long comments across multiple lines instead of truncating.
             // Only the first line preserves the original indicator (e.g. / for
             // page eject); continuation lines always use *.
             const commentText = parsed.content.trimEnd();
-            const maxCommentWidth = 65; // columns 8-72
-
-            if (commentText.length <= maxCommentWidth) {
-                result.push("      " + parsed.indicator + commentText);
-            } else {
-                let remaining = commentText;
-                let isFirst = true;
-                while (remaining.length > 0) {
-                    const ind = isFirst ? parsed.indicator : "*";
-                    if (remaining.length <= maxCommentWidth) {
-                        result.push("      " + ind + remaining);
-                        break;
-                    }
-
-                    let splitPos = maxCommentWidth;
-                    for (let s = maxCommentWidth; s >= Math.max(0, maxCommentWidth - 20); s--) {
-                        if (remaining[s] === " ") {
-                            splitPos = s;
-                            break;
-                        }
-                    }
-
-                    result.push("      " + ind + remaining.substring(0, splitPos));
-                    remaining = remaining.substring(splitPos).trimStart();
-                    isFirst = false;
-                }
-            }
+            result.push(...splitTextForFixedLines(parsed.indicator, commentText));
             continue;
         }
 
@@ -991,28 +946,9 @@ function convertFreeToFixed(lines: string[]): string[] {
         // with subsequent lines before emitting
         let content = pl.content;
         if (pl.isContinuation || content.trimEnd().endsWith("&")) {
-            // Strip trailing & from this line and merge following continuation lines
-            content = content.trimEnd();
-            if (content.endsWith("&")) {
-                content = content.substring(0, content.length - 1);
-            }
-            // Consume subsequent continuation lines
-            let j = i + 1;
-            while (j < parsedLines.length) {
-                const nextPl = parsedLines[j];
-                if (nextPl.isBlank || nextPl.isComment) break;
-                const nextContent = nextPl.content;
-                const nextTrimmed = nextContent.trimEnd();
-                if (nextTrimmed.endsWith("&")) {
-                    content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
-                    j++;
-                } else {
-                    content += nextContent.trimStart();
-                    j++;
-                    break;
-                }
-            }
-            i = j - 1; // outer loop will i++
+            const merged = mergeFreeContinuations(parsedLines, i);
+            content = merged.content;
+            i = merged.lastIndex; // outer loop will i++
         }
 
         const trimmedContent = content.trimEnd();
@@ -1077,26 +1013,9 @@ function convertFreeToVariable(lines: string[]): string[] {
         // with subsequent lines before emitting
         let content = pl.content;
         if (pl.isContinuation || content.trimEnd().endsWith("&")) {
-            content = content.trimEnd();
-            if (content.endsWith("&")) {
-                content = content.substring(0, content.length - 1);
-            }
-            let j = i + 1;
-            while (j < parsedLines.length) {
-                const nextPl = parsedLines[j];
-                if (nextPl.isBlank || nextPl.isComment) break;
-                const nextContent = nextPl.content;
-                const nextTrimmed = nextContent.trimEnd();
-                if (nextTrimmed.endsWith("&")) {
-                    content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
-                    j++;
-                } else {
-                    content += nextContent.trimStart();
-                    j++;
-                    break;
-                }
-            }
-            i = j - 1; // outer loop will i++
+            const merged = mergeFreeContinuations(parsedLines, i);
+            content = merged.content;
+            i = merged.lastIndex; // outer loop will i++
         }
 
         const trimmedContent = content.trimEnd();
