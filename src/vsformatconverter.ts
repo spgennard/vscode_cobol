@@ -74,6 +74,31 @@ const CONTENT_START_INDEX = 7;
 const BLANK_SEQUENCE_AREA = " ".repeat(SEQUENCE_AREA_WIDTH);
 
 /**
+ * Expand tab characters to spaces using COBOL-standard tab stops.
+ * COBOL editors traditionally treat tabs as advancing to the next
+ * multiple-of-4 column (1-based: 1, 5, 9, …). Some environments use
+ * 8-column tab stops instead, which is the terminal/editor default.
+ * We use 4-column stops because they align with Area A (cols 8-11)
+ * and Area B (col 12+) boundaries when a tab appears after the
+ * sequence area, which is the most common layout.
+ */
+function expandTabs(line: string, tabWidth: number = 4): string {
+    if (!line.includes("\t")) {
+        return line;
+    }
+    let result = "";
+    for (const ch of line) {
+        if (ch === "\t") {
+            const spacesToNext = tabWidth - (result.length % tabWidth);
+            result += " ".repeat(spacesToNext);
+        } else {
+            result += ch;
+        }
+    }
+    return result;
+}
+
+/**
  * Detect whether a line contains an embedded source format directive.
  */
 function isSourceFormatDirectiveLine(line: string): boolean {
@@ -174,7 +199,7 @@ function parseColumnarLine(
  * Parse a single line from Fixed format COBOL source.
  */
 function parseFixedLine(line: string): COBOLParsedLine {
-    return parseColumnarLine(line, (l) => {
+    return parseColumnarLine(expandTabs(line), (l) => {
         const endCol = Math.min(l.length, FIXED_RIGHT_MARGIN);
         return {
             content: l.substring(CONTENT_START_INDEX, endCol),
@@ -190,7 +215,7 @@ function parseFixedLine(line: string): COBOLParsedLine {
  * beyond column 72 with no identification area.
  */
 function parseVariableLine(line: string): COBOLParsedLine {
-    return parseColumnarLine(line, (l) => ({
+    return parseColumnarLine(expandTabs(line), (l) => ({
         content: l.substring(CONTENT_START_INDEX),
         identificationArea: "",
     }));
@@ -495,7 +520,13 @@ function freeCommentToFixed(line: string): string[] {
         return [buildFixedLine("*", "")];
     }
 
-    return splitTextForFixedLines("*", " " + commentBody);
+    // Preserve the original leading whitespace from col 8 when round-tripping
+    // through free format: extractFreeCommentBody already stripped exactly the
+    // one separator space that fixedCommentToFree injected, so commentBody
+    // already carries the correct col-8 content.  Only add a separator when
+    // the body has no leading space (e.g. a fresh free-format comment).
+    const paddedBody = commentBody.startsWith(" ") ? commentBody : " " + commentBody;
+    return splitTextForFixedLines("*", paddedBody);
 }
 
 /**
@@ -558,7 +589,9 @@ function freeCommentToVariable(line: string): string {
         return buildVariableLine("*", "");
     }
 
-    return buildVariableLine("*", " " + commentBody);
+    // Same round-trip preservation logic as freeCommentToFixed.
+    const paddedBody = commentBody.startsWith(" ") ? commentBody : " " + commentBody;
+    return buildVariableLine("*", paddedBody);
 }
 
 /**
@@ -622,7 +655,9 @@ function splitForFixedFormat(indicator: string, content: string): string[] {
             }
         }
 
-        if (bestSplit > 0) {
+        // bestSplit == 0 is a valid split point (space at the very start of the
+        // remaining slice), so use >= 0, not > 0.
+        if (bestSplit >= 0) {
             splitPos = bestSplit;
         }
 
@@ -718,11 +753,33 @@ function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: numb
 
         if (nextTrimmed.endsWith("&")) {
             // Another continuation — strip the & from the join part
-            content += joinPart.endsWith("&") ? joinPart.substring(0, joinPart.length - 1) : joinPart;
+            const stripped = joinPart.endsWith("&") ? joinPart.substring(0, joinPart.length - 1) : joinPart;
+            // Per the COBOL standard, free-format & continuation directly
+            // concatenates (no space insertion).  However, when we are NOT
+            // inside a string literal, we defensively insert a word separator
+            // at bare join boundaries to guard against mangled tokens (e.g.
+            // `MOVE WS-A&` / `TO WS-B` → `MOVE WS-ATO WS-B`).  Inside an
+            // open string literal, direct concatenation is required to avoid
+            // corrupting the literal content.
+            const insideString = analyzeStringLiteralState(content).isOpen;
+            if (insideString) {
+                content += stripped;
+            } else if (stripped.length > 0 && content.length > 0 && !content.endsWith(" ") && !stripped.startsWith(" ")) {
+                content += " " + stripped;
+            } else {
+                content += stripped;
+            }
             j++;
         } else {
             // Last line in the chain — append and stop
-            content += joinPart;
+            const insideString = analyzeStringLiteralState(content).isOpen;
+            if (insideString) {
+                content += joinPart;
+            } else if (joinPart.length > 0 && content.length > 0 && !content.endsWith(" ") && !joinPart.startsWith(" ")) {
+                content += " " + joinPart;
+            } else {
+                content += joinPart;
+            }
             j++;
             break;
         }
@@ -740,7 +797,7 @@ function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: numb
 function convertFixedToFree(lines: string[]): string[] {
     const parsedLines = lines.map(l => parseFixedLine(l));
     const mergedLines = mergeContinuationLines(parsedLines);
-    const result: string[] = [];
+    const result: string[] = ["**FREE"];
 
     for (const ml of mergedLines) {
         if (ml.isBlank) {
@@ -755,9 +812,13 @@ function convertFixedToFree(lines: string[]): string[] {
         }
 
         if (ml.isSourceFormatDirective) {
-            // Use the merged content (not the original line) in case the directive
-            // spans continuation lines — using the raw original would lose data.
-            result.push(updateSourceFormatDirective(ml.content.trimStart(), ESourceFormat.free));
+            // In columnar formats, the indicator character (e.g. '>' from
+            // '>>SOURCE FORMAT') is separated from the content during parsing.
+            // Reconstruct the full directive text before updating the format
+            // specifier so that the regex can match '>>SOURCE FORMAT ...' etc.
+            const firstParsed = parsedLines[ml.sourceLines[0]];
+            const fullDirective = firstParsed.indicator + ml.content;
+            result.push(updateSourceFormatDirective(fullDirective.trimStart(), ESourceFormat.free));
             continue;
         }
 
@@ -807,8 +868,18 @@ function convertFixedToVariable(lines: string[]): string[] {
         }
 
         if (parsed.isSourceFormatDirective && !parsed.isComment) {
-            const content = line.length > 7 ? line.substring(7) : line;
-            result.push(buildVariableLine(" ", updateSourceFormatDirective(content.trimStart(), ESourceFormat.variable)));
+            // Reconstruct the full directive text by prepending the indicator
+            // character (e.g. '>' from '>>SOURCE FORMAT') that was separated
+            // during columnar parsing.
+            const fullDirective = parsed.indicator + parsed.content;
+            const updatedDirective = updateSourceFormatDirective(fullDirective.trimStart(), ESourceFormat.variable);
+            // Place back into variable format: first char is indicator, rest is content
+            const firstChar = updatedDirective.charAt(0);
+            if (firstChar === ">" || firstChar === "$") {
+                result.push(buildVariableLine(firstChar, updatedDirective.substring(1)));
+            } else {
+                result.push(buildVariableLine(" ", updatedDirective));
+            }
             continue;
         }
 
@@ -829,7 +900,7 @@ function convertFixedToVariable(lines: string[]): string[] {
 function convertVariableToFree(lines: string[]): string[] {
     const parsedLines = lines.map(l => parseVariableLine(l));
     const mergedLines = mergeContinuationLines(parsedLines);
-    const result: string[] = [];
+    const result: string[] = ["**FREE"];
 
     for (const ml of mergedLines) {
         if (ml.isBlank) {
@@ -845,8 +916,10 @@ function convertVariableToFree(lines: string[]): string[] {
         }
 
         if (ml.isSourceFormatDirective) {
-            // Use the merged content (not the original line) to handle continuations correctly.
-            result.push(updateSourceFormatDirective(ml.content.trimStart(), ESourceFormat.free));
+            // Reconstruct full directive text with indicator (see convertFixedToFree).
+            const firstParsed = parsedLines[ml.sourceLines[0]];
+            const fullDirective = firstParsed.indicator + ml.content;
+            result.push(updateSourceFormatDirective(fullDirective.trimStart(), ESourceFormat.free));
             continue;
         }
 
@@ -894,9 +967,19 @@ function convertVariableToFixed(lines: string[]): string[] {
         }
 
         if (parsed.isSourceFormatDirective) {
-            const content = line.length > 7 ? line.substring(7) : line;
-            const updatedDirective = updateSourceFormatDirective(content.trimStart(), ESourceFormat.fixed);
-            const directiveLines = splitForFixedFormat(" ", updatedDirective);
+            // Reconstruct the full directive text by prepending the indicator
+            // character (see convertFixedToVariable for notes).
+            const fullDirective = parsed.indicator + parsed.content;
+            const updatedDirective = updateSourceFormatDirective(fullDirective.trimStart(), ESourceFormat.fixed);
+            // Place back into fixed format: first char (e.g. '>' or '$') goes
+            // in col 7 as the indicator, remainder is the content.
+            const firstChar = updatedDirective.charAt(0);
+            let directiveLines: string[];
+            if (firstChar === ">" || firstChar === "$") {
+                directiveLines = splitForFixedFormat(firstChar, updatedDirective.substring(1).trimEnd());
+            } else {
+                directiveLines = splitForFixedFormat(" ", updatedDirective.trimEnd());
+            }
             result.push(...directiveLines);
             continue;
         }
@@ -958,29 +1041,24 @@ function convertFreeToFixed(lines: string[]): string[] {
 
         if (pl.isSourceFormatDirective) {
             const updatedDirective = updateSourceFormatDirective(pl.content.trimStart(), ESourceFormat.fixed);
-            const directiveLines = splitForFixedFormat(" ", updatedDirective);
+            // Place directive prefix character (e.g. '>' from '>>SOURCE FORMAT',
+            // '$' from '$SET') in col 7 (indicator area) for maximum compiler
+            // compatibility. Other directives use a space indicator.
+            const firstChar = updatedDirective.charAt(0);
+            let directiveLines: string[];
+            if (firstChar === ">" || firstChar === "$") {
+                directiveLines = splitForFixedFormat(firstChar, updatedDirective.substring(1));
+            } else {
+                directiveLines = splitForFixedFormat(" ", updatedDirective);
+            }
             result.push(...directiveLines);
             continue;
         }
 
-        if (pl.isDebug) {
-            // >>D prefix -> D indicator in fixed format.
-            // Strip only the >>D marker and one separator space, preserving
-            // any remaining indentation so Area A/B placement round-trips.
-            let debugContent = pl.content.trimStart();
-            if (debugContent.toUpperCase().startsWith(">>D")) {
-                debugContent = debugContent.substring(3);
-                // Strip exactly one conventional separator space after >>D
-                if (debugContent.startsWith(" ")) {
-                    debugContent = debugContent.substring(1);
-                }
-            }
-            const debugLines = splitForFixedFormat("D", debugContent);
-            result.push(...debugLines);
-            continue;
-        }
-
-        // Regular code line — merge any & continuations before emitting
+        // Merge any & continuations BEFORE classifying as debug/regular,
+        // because a debug line can itself end with & and the continuation
+        // content must be included. The & marker must also be stripped —
+        // fixed format uses '-' in col 7, not &.
         let content = pl.content;
         if (pl.isContinuation) {
             const merged = mergeFreeContinuations(parsedLines, i);
@@ -988,6 +1066,24 @@ function convertFreeToFixed(lines: string[]): string[] {
             i = merged.lastIndex; // outer loop will i++
         }
 
+        if (pl.isDebug) {
+            // >>D prefix -> D indicator in fixed format.
+            // Strip only the >>D marker and one separator space, preserving
+            // any remaining indentation so Area A/B placement round-trips.
+            let debugContent = content.trimStart();
+            if (debugContent.toUpperCase().startsWith(">>D")) {
+                debugContent = debugContent.substring(3);
+                // Strip exactly one conventional separator space after >>D
+                if (debugContent.startsWith(" ")) {
+                    debugContent = debugContent.substring(1);
+                }
+            }
+            const debugLines = splitForFixedFormat("D", debugContent.trimEnd());
+            result.push(...debugLines);
+            continue;
+        }
+
+        // Regular code line
         const trimmedContent = content.trimEnd();
 
         if (trimmedContent.length === 0) {
@@ -1037,25 +1133,19 @@ function convertFreeToVariable(lines: string[]): string[] {
 
         if (pl.isSourceFormatDirective) {
             const updatedDirective = updateSourceFormatDirective(pl.content.trimStart(), ESourceFormat.variable);
-            result.push(buildVariableLine(" ", updatedDirective));
-            continue;
-        }
-
-        if (pl.isDebug) {
-            // Strip only the >>D marker and one separator space, preserving
-            // any remaining indentation for Area A/B round-trip fidelity.
-            let debugContent = pl.content.trimStart();
-            if (debugContent.toUpperCase().startsWith(">>D")) {
-                debugContent = debugContent.substring(3);
-                if (debugContent.startsWith(" ")) {
-                    debugContent = debugContent.substring(1);
-                }
+            // Place directive prefix (e.g. '>' or '$') in col 7 indicator area.
+            const firstChar = updatedDirective.charAt(0);
+            if (firstChar === ">" || firstChar === "$") {
+                result.push(buildVariableLine(firstChar, updatedDirective.substring(1)));
+            } else {
+                result.push(buildVariableLine(" ", updatedDirective));
             }
-            result.push(buildVariableLine("D", debugContent));
             continue;
         }
 
-        // Regular code line — merge any & continuations before emitting
+        // Merge any & continuations BEFORE classifying as debug/regular,
+        // because a debug line can itself end with & and the continuation
+        // content must be included.
         let content = pl.content;
         if (pl.isContinuation) {
             const merged = mergeFreeContinuations(parsedLines, i);
@@ -1063,6 +1153,21 @@ function convertFreeToVariable(lines: string[]): string[] {
             i = merged.lastIndex; // outer loop will i++
         }
 
+        if (pl.isDebug) {
+            // Strip only the >>D marker and one separator space, preserving
+            // any remaining indentation for Area A/B round-trip fidelity.
+            let debugContent = content.trimStart();
+            if (debugContent.toUpperCase().startsWith(">>D")) {
+                debugContent = debugContent.substring(3);
+                if (debugContent.startsWith(" ")) {
+                    debugContent = debugContent.substring(1);
+                }
+            }
+            result.push(buildVariableLine("D", debugContent.trimEnd()));
+            continue;
+        }
+
+        // Regular code line
         const trimmedContent = content.trimEnd();
         if (trimmedContent.length === 0) {
             result.push("");
@@ -1086,8 +1191,9 @@ function convertFreeToVariable(lines: string[]): string[] {
  */
 function hasIdentificationAreaContent(lines: string[]): boolean {
     for (const line of lines) {
-        if (line.length > FIXED_RIGHT_MARGIN) {
-            const idArea = line.substring(FIXED_RIGHT_MARGIN).trim();
+        const expanded = expandTabs(line);
+        if (expanded.length > FIXED_RIGHT_MARGIN) {
+            const idArea = expanded.substring(FIXED_RIGHT_MARGIN).trim();
             if (idArea.length > 0) {
                 return true;
             }
