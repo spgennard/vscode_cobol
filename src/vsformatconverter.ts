@@ -479,8 +479,9 @@ function fixedCommentToFree(parsed: COBOLParsedLine): string {
     let commentText = parsed.content;
 
     if (parsed.isPageEject) {
-        // Page eject (/) — preserve as a free format comment
-        return "*> PAGE EJECT" + (commentText.trim().length > 0 ? " " + commentText.trim() : "");
+        // Page eject (/) — preserve as a free format comment with a
+        // unique marker that won't collide with regular comments
+        return "*>! PAGE EJECT" + (commentText.trim().length > 0 ? " " + commentText.trim() : "");
     }
 
     // If the comment text already starts with *>, it's a new-style inline comment
@@ -515,13 +516,34 @@ function freeCommentToFixed(line: string): string[] {
         commentBody = trimmed;
     }
 
-    // Detect page eject marker and restore the / indicator
-    if (/^PAGE\s+EJECT$/i.test(commentBody)) {
-        return ["      /"];
-    }
-    if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
-        const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
-        return ["      / " + ejectText];
+    // Detect page eject marker (uses "!" sentinel to distinguish from
+    // regular comments that happen to contain "PAGE EJECT" text)
+    if (trimmed.startsWith("*>!")) {
+        commentBody = trimmed.substring(3).trim();
+        if (/^PAGE\s+EJECT$/i.test(commentBody)) {
+            return ["      /"];
+        }
+        if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
+            const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
+            // Ensure the page eject line fits within col 72
+            const maxEjectWidth = 64; // cols 8-72 minus "/ "
+            if (ejectText.length <= maxEjectWidth) {
+                return ["      / " + ejectText];
+            }
+            // First line uses /, overflow lines use *
+            const ejectLines: string[] = [];
+            ejectLines.push("      / " + ejectText.substring(0, maxEjectWidth));
+            let rem = ejectText.substring(maxEjectWidth).trimStart();
+            while (rem.length > 0) {
+                if (rem.length <= maxEjectWidth) {
+                    ejectLines.push("      * " + rem);
+                    break;
+                }
+                ejectLines.push("      * " + rem.substring(0, maxEjectWidth));
+                rem = rem.substring(maxEjectWidth).trimStart();
+            }
+            return ejectLines;
+        }
     }
 
     // Maximum comment text width: cols 8-72 = 65 chars, minus 1 for the space after * = 64
@@ -574,13 +596,16 @@ function freeCommentToVariable(line: string): string {
         commentBody = trimmed;
     }
 
-    // Detect page eject marker and restore the / indicator
-    if (/^PAGE\s+EJECT$/i.test(commentBody)) {
-        return "      /";
-    }
-    if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
-        const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
-        return "      / " + ejectText;
+    // Detect page eject marker (uses "!" sentinel)
+    if (trimmed.startsWith("*>!")) {
+        commentBody = trimmed.substring(3).trim();
+        if (/^PAGE\s+EJECT$/i.test(commentBody)) {
+            return "      /";
+        }
+        if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
+            const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
+            return "      / " + ejectText;
+        }
     }
 
     if (commentBody.length === 0) {
@@ -876,7 +901,9 @@ function convertVariableToFixed(lines: string[]): string[] {
 
         if (parsed.isComment) {
             // Comment in variable format uses same indicator as fixed
-            // Split long comments across multiple lines instead of truncating
+            // Split long comments across multiple lines instead of truncating.
+            // Only the first line preserves the original indicator (e.g. / for
+            // page eject); continuation lines always use *.
             const commentText = parsed.content.trimEnd();
             const maxCommentWidth = 65; // columns 8-72
 
@@ -884,9 +911,11 @@ function convertVariableToFixed(lines: string[]): string[] {
                 result.push("      " + parsed.indicator + commentText);
             } else {
                 let remaining = commentText;
+                let isFirst = true;
                 while (remaining.length > 0) {
+                    const ind = isFirst ? parsed.indicator : "*";
                     if (remaining.length <= maxCommentWidth) {
-                        result.push("      " + parsed.indicator + remaining);
+                        result.push("      " + ind + remaining);
                         break;
                     }
 
@@ -898,8 +927,9 @@ function convertVariableToFixed(lines: string[]): string[] {
                         }
                     }
 
-                    result.push("      " + parsed.indicator + remaining.substring(0, splitPos));
+                    result.push("      " + ind + remaining.substring(0, splitPos));
                     remaining = remaining.substring(splitPos).trimStart();
+                    isFirst = false;
                 }
             }
             continue;
@@ -957,8 +987,34 @@ function convertFreeToFixed(lines: string[]): string[] {
             continue;
         }
 
-        // Regular code line
-        const content = pl.content;
+        // Regular code line — handle free-format & continuation by merging
+        // with subsequent lines before emitting
+        let content = pl.content;
+        if (pl.isContinuation || content.trimEnd().endsWith("&")) {
+            // Strip trailing & from this line and merge following continuation lines
+            content = content.trimEnd();
+            if (content.endsWith("&")) {
+                content = content.substring(0, content.length - 1);
+            }
+            // Consume subsequent continuation lines
+            let j = i + 1;
+            while (j < parsedLines.length) {
+                const nextPl = parsedLines[j];
+                if (nextPl.isBlank || nextPl.isComment) break;
+                const nextContent = nextPl.content;
+                const nextTrimmed = nextContent.trimEnd();
+                if (nextTrimmed.endsWith("&")) {
+                    content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
+                    j++;
+                } else {
+                    content += nextContent.trimStart();
+                    j++;
+                    break;
+                }
+            }
+            i = j - 1; // outer loop will i++
+        }
+
         const trimmedContent = content.trimEnd();
 
         if (trimmedContent.length === 0) {
@@ -1017,7 +1073,33 @@ function convertFreeToVariable(lines: string[]): string[] {
             continue;
         }
 
-        const trimmedContent = pl.content.trimEnd();
+        // Regular code line — handle free-format & continuation by merging
+        // with subsequent lines before emitting
+        let content = pl.content;
+        if (pl.isContinuation || content.trimEnd().endsWith("&")) {
+            content = content.trimEnd();
+            if (content.endsWith("&")) {
+                content = content.substring(0, content.length - 1);
+            }
+            let j = i + 1;
+            while (j < parsedLines.length) {
+                const nextPl = parsedLines[j];
+                if (nextPl.isBlank || nextPl.isComment) break;
+                const nextContent = nextPl.content;
+                const nextTrimmed = nextContent.trimEnd();
+                if (nextTrimmed.endsWith("&")) {
+                    content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
+                    j++;
+                } else {
+                    content += nextContent.trimStart();
+                    j++;
+                    break;
+                }
+            }
+            i = j - 1; // outer loop will i++
+        }
+
+        const trimmedContent = content.trimEnd();
         if (trimmedContent.length === 0) {
             result.push("");
             continue;
