@@ -346,15 +346,28 @@ function mergeContinuationLines(parsedLines: COBOLParsedLine[]): MergedLine[] {
         while (j < parsedLines.length && parsedLines[j].isContinuation) {
             sourceLines.push(j);
             const contLine = parsedLines[j];
-            // In fixed/variable format continuation, the content after the '-' indicator
-            // typically starts with the continuation character (often a quote) or from
-            // the first non-blank character.
-            // We need to remove trailing spaces from previous content and append
             const contContent = contLine.content;
-            // Trim the right side of the current accumulated content
-            contentStr = contentStr.trimEnd();
-            // The continuation content starts from its meaningful characters
-            contentStr += contContent.trimStart();
+
+            // Determine if we're currently inside an open string literal
+            // by checking for unmatched quotes in the accumulated content
+            if (isInsideStringLiteral(contentStr)) {
+                // COBOL continuation rule for string literals:
+                // - The previous line's content is kept as-is (trailing spaces are significant)
+                // - The continuation line's first non-blank character is a quote delimiter
+                //   that must be consumed (it's a continuation marker, not part of the value)
+                const trimmedCont = contContent.trimStart();
+                if (trimmedCont.length > 0 && (trimmedCont[0] === '"' || trimmedCont[0] === "'")) {
+                    // Skip the continuation quote delimiter
+                    contentStr += trimmedCont.substring(1);
+                } else {
+                    // No quote found — unusual, append as-is to avoid data loss
+                    contentStr += contContent;
+                }
+            } else {
+                // Non-literal continuation: trim whitespace at the join boundary
+                contentStr = contentStr.trimEnd();
+                contentStr += contContent.trimStart();
+            }
             j++;
         }
 
@@ -379,6 +392,44 @@ function mergeContinuationLines(parsedLines: COBOLParsedLine[]): MergedLine[] {
 function getLeadingWhitespace(text: string): string {
     const match = text.match(/^(\s*)/);
     return match ? match[1] : "";
+}
+
+/**
+ * Determine if the given text ends inside an unclosed string literal.
+ * Tracks double and single quotes independently, accounting for COBOL
+ * doubled-quote escaping (e.g., "" inside a double-quoted string).
+ */
+function isInsideStringLiteral(text: string): boolean {
+    let inDouble = false;
+    let inSingle = false;
+    for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inDouble) {
+            if (ch === '"') {
+                // Check for doubled quote (escape)
+                if (i + 1 < text.length && text[i + 1] === '"') {
+                    i++; // skip the escape
+                } else {
+                    inDouble = false;
+                }
+            }
+        } else if (inSingle) {
+            if (ch === "'") {
+                if (i + 1 < text.length && text[i + 1] === "'") {
+                    i++;
+                } else {
+                    inSingle = false;
+                }
+            }
+        } else {
+            if (ch === '"') {
+                inDouble = true;
+            } else if (ch === "'") {
+                inSingle = true;
+            }
+        }
+    }
+    return inDouble || inSingle;
 }
 
 /**
@@ -414,8 +465,10 @@ function fixedCommentToFree(parsed: COBOLParsedLine): string {
 
 /**
  * Convert a comment from free format to fixed format.
+ * Returns an array of lines because long comments must be split to fit
+ * within the 72-column fixed format limit.
  */
-function freeCommentToFixed(line: string): string {
+function freeCommentToFixed(line: string): string[] {
     const trimmed = line.trimStart();
     let commentBody = "";
 
@@ -425,34 +478,71 @@ function freeCommentToFixed(line: string): string {
         commentBody = trimmed;
     }
 
-    // Build fixed format comment line: 6 spaces + * + comment body
-    const fixedLine = "      *" + " " + commentBody;
-    return fixedLine;
+    // Maximum comment text width: cols 8-72 = 65 chars, minus 1 for the space after * = 64
+    const maxCommentWidth = 64;
+
+    if (commentBody.length === 0) {
+        return ["      *"];
+    }
+
+    if (commentBody.length <= maxCommentWidth) {
+        return ["      * " + commentBody];
+    }
+
+    // Split long comment across multiple fixed-format comment lines
+    const commentLines: string[] = [];
+    let remaining = commentBody;
+    while (remaining.length > 0) {
+        if (remaining.length <= maxCommentWidth) {
+            commentLines.push("      * " + remaining);
+            break;
+        }
+
+        // Find a word boundary to split at
+        let splitPos = maxCommentWidth;
+        for (let s = maxCommentWidth; s >= Math.max(0, maxCommentWidth - 20); s--) {
+            if (remaining[s] === " ") {
+                splitPos = s;
+                break;
+            }
+        }
+
+        commentLines.push("      * " + remaining.substring(0, splitPos));
+        remaining = remaining.substring(splitPos).trimStart();
+    }
+
+    return commentLines;
 }
 
 /**
  * Convert a comment from free format to variable format.
- * Variable format comments use the same indicator area as fixed format.
+ * Variable format has no 72-column limit so no splitting is needed.
  */
 function freeCommentToVariable(line: string): string {
-    // Same as fixed format comments for layout, but no 72-col limit
-    return freeCommentToFixed(line);
+    const trimmed = line.trimStart();
+    let commentBody = "";
+
+    if (trimmed.startsWith("*>")) {
+        commentBody = trimmed.substring(2).trim();
+    } else {
+        commentBody = trimmed;
+    }
+
+    if (commentBody.length === 0) {
+        return "      *";
+    }
+
+    return "      * " + commentBody;
 }
 
 /**
  * Build a fixed-format line from components.
- * Pads/truncates to 72 columns (or 80 with identification area).
+ * Callers must ensure content fits within 65 characters (cols 8-72).
+ * Use splitForFixedFormat() for content that may exceed this limit.
  */
 function buildFixedLine(indicator: string, content: string): string {
     // Cols 1-6 are blank (no sequence numbers), col 7 is indicator, cols 8+ are content
-    let line = "      " + indicator + content;
-
-    // Truncate or pad to exactly 72 columns
-    if (line.length > 72) {
-        line = line.substring(0, 72);
-    }
-
-    return line;
+    return "      " + indicator + content;
 }
 
 /**
@@ -740,12 +830,32 @@ function convertVariableToFixed(lines: string[]): string[] {
 
         if (parsed.isComment) {
             // Comment in variable format uses same indicator as fixed
+            // Split long comments across multiple lines instead of truncating
             const commentText = parsed.content.trimEnd();
-            let fixedComment = "      " + parsed.indicator + commentText;
-            if (fixedComment.length > 72) {
-                fixedComment = fixedComment.substring(0, 72);
+            const maxCommentWidth = 65; // columns 8-72
+
+            if (commentText.length <= maxCommentWidth) {
+                result.push("      " + parsed.indicator + commentText);
+            } else {
+                let remaining = commentText;
+                while (remaining.length > 0) {
+                    if (remaining.length <= maxCommentWidth) {
+                        result.push("      " + parsed.indicator + remaining);
+                        break;
+                    }
+
+                    let splitPos = maxCommentWidth;
+                    for (let s = maxCommentWidth; s >= Math.max(0, maxCommentWidth - 20); s--) {
+                        if (remaining[s] === " ") {
+                            splitPos = s;
+                            break;
+                        }
+                    }
+
+                    result.push("      " + parsed.indicator + remaining.substring(0, splitPos));
+                    remaining = remaining.substring(splitPos).trimStart();
+                }
             }
-            result.push(fixedComment);
             continue;
         }
 
@@ -786,7 +896,7 @@ function convertFreeToFixed(lines: string[]): string[] {
         }
 
         if (pl.isComment) {
-            result.push(freeCommentToFixed(pl.content));
+            result.push(...freeCommentToFixed(pl.content));
             continue;
         }
 
