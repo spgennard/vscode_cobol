@@ -337,9 +337,11 @@ function mergeContinuationLines(parsedLines: COBOLParsedLine[]): MergedLine[] {
                     contentStr += contContent;
                 }
             } else {
-                // Non-literal continuation: trim whitespace at the join boundary
-                contentStr = contentStr.trimEnd();
-                contentStr += contContent.trimStart();
+                // Non-literal continuation: trim whitespace at the join boundary,
+                // but add a single space to preserve word separation. In COBOL,
+                // multiple spaces between tokens are equivalent to one, so this
+                // is safe and ensures proper round-tripping.
+                contentStr = contentStr.trimEnd() + " " + contContent.trimStart();
             }
             j++;
         }
@@ -640,7 +642,8 @@ function splitForFixedFormat(indicator: string, content: string): string[] {
         } else {
             const chunk = remaining.substring(0, splitPos);
             lines.push(buildFixedLine(ind, chunk));
-            // Skip past any spaces at the split point
+            // Skip past any spaces at the split point; word separation is preserved
+            // by the read side which adds a space when joining non-literal continuations.
             remaining = "    " + remaining.substring(splitPos).trimStart();
         }
 
@@ -705,25 +708,13 @@ function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: numb
 
         const nextContent = nextPl.content;
         const nextTrimmed = nextContent.trimEnd();
-        const insideString = analyzeStringLiteralState(content).isOpen;
 
-        let joinPart: string;
-        if (insideString) {
-            // COBOL continuation rule for string literals (same as fixed/variable format):
-            // - Trim leading whitespace (it's just indentation)
-            // - The first non-blank character should be a quote delimiter that must be
-            //   consumed (it's a continuation marker, not part of the value)
-            const trimmedCont = nextTrimmed.trimStart();
-            if (trimmedCont.length > 0 && (trimmedCont[0] === '"' || trimmedCont[0] === "'")) {
-                joinPart = trimmedCont.substring(1);
-            } else {
-                // No quote found — unusual, append as-is to avoid data loss
-                joinPart = trimmedCont;
-            }
-        } else {
-            // Non-literal continuation: trim leading whitespace
-            joinPart = nextTrimmed.trimStart();
-        }
+        // In free format, leading whitespace on continuation lines is always
+        // indentation (not part of string literal content), so we always trim it.
+        // This is different from fixed format where the '-' indicator in col 7
+        // signals literal continuation with a quote-skipping rule.
+        // Free format uses only the '&' marker with no quote-skipping convention.
+        const joinPart = nextTrimmed.trimStart();
 
         if (nextTrimmed.endsWith("&")) {
             // Another continuation — strip the & from the join part
