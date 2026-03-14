@@ -19,6 +19,7 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { COBOLHierarchyProvider } from "./vscallhierarchyprovider";
 import { newFile_dot_callgraph, view_dot_callgraph } from "./vsdotmarkdown";
 import { VSMakeDep } from "./vsmakedep";
+import { convertSourceFormat } from "./vsformatconverter";
 
 async function emptyFile(title: string, doclang: string, config: ICOBOLSettings) {
     let fpath = "";
@@ -828,6 +829,10 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.padTo72", () => {
         VSCOBOLUtils.padTo72();
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.convertSourceFormat", async () => {
+        await convertSourceFormat();
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {

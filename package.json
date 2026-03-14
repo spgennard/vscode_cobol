@@ -2430,6 +2430,11 @@
         "title": "Pad line to column 72"
       },
       {
+        "command": "cobolplugin.convertSourceFormat",
+        "category": "COBOL",
+        "title": "Convert Source Format"
+      },
+      {
         "command": "cobolplugin.enforceFileExtensions",
         "category": "COBOL",
         "title": "Enforce extension via file.assocations"
