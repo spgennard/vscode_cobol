@@ -433,6 +433,43 @@ function isInsideStringLiteral(text: string): boolean {
 }
 
 /**
+ * If the text ends inside an unclosed string literal, return the quote
+ * character that opened it ('"' or "'"). Returns '"' as a fallback.
+ */
+function getOpenQuoteChar(text: string): string {
+    let inDouble = false;
+    let inSingle = false;
+    for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inDouble) {
+            if (ch === '"') {
+                if (i + 1 < text.length && text[i + 1] === '"') {
+                    i++;
+                } else {
+                    inDouble = false;
+                }
+            }
+        } else if (inSingle) {
+            if (ch === "'") {
+                if (i + 1 < text.length && text[i + 1] === "'") {
+                    i++;
+                } else {
+                    inSingle = false;
+                }
+            }
+        } else {
+            if (ch === '"') {
+                inDouble = true;
+            } else if (ch === "'") {
+                inSingle = true;
+            }
+        }
+    }
+    if (inSingle) return "'";
+    return '"';
+}
+
+/**
  * Convert a comment from fixed/variable format to free format.
  * In fixed format comments, column 7 is * or / and the comment text is in cols 8-72.
  * In free format, comments use *> prefix.
@@ -604,18 +641,19 @@ function splitForFixedFormat(indicator: string, content: string): string[] {
         }
 
         // Check if we're in the middle of a string literal
-        const quoteCount = countUnescapedQuotes(remaining.substring(0, splitPos));
-        if (quoteCount % 2 !== 0) {
+        if (isInsideStringLiteral(remaining.substring(0, splitPos))) {
             // We're inside a string literal — we must split the string properly.
-            // In fixed format continuation of string literals:
-            // - The current line is truncated at col 72
-            // - The continuation line has '-' in col 7 and the string continues
-            //   starting with a quote character in Area B
+            // In COBOL fixed format continuation of string literals:
+            // - The current line ends at the split point (truncated at col 72)
+            // - The continuation line has '-' in col 7, and the literal resumes
+            //   with the same quote delimiter in Area B (col 12)
+            //
+            // Determine which quote character is open
+            const openQuote = getOpenQuoteChar(remaining.substring(0, splitPos));
             const chunk = remaining.substring(0, splitPos);
             lines.push(buildFixedLine(ind, chunk));
-            // For string continuation, the next line starts with the remaining string
-            // The continuation indicator is '-' and the literal continues from col 12
-            remaining = "    " + remaining.substring(splitPos);
+            // Continuation line: 4 spaces indent (to col 12) + opening quote + rest of literal
+            remaining = "    " + openQuote + remaining.substring(splitPos);
         } else {
             const chunk = remaining.substring(0, splitPos);
             lines.push(buildFixedLine(ind, chunk));
@@ -627,16 +665,6 @@ function splitForFixedFormat(indicator: string, content: string): string[] {
     }
 
     return lines;
-}
-
-function countUnescapedQuotes(text: string): number {
-    let count = 0;
-    for (let i = 0; i < text.length; i++) {
-        if (text[i] === '"' || text[i] === "'") {
-            count++;
-        }
-    }
-    return count;
 }
 
 /**
