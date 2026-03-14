@@ -1115,7 +1115,10 @@ export async function convertSourceFormat(): Promise<void> {
         new vscode.Position(document.lineCount - 1, document.lineAt(document.lineCount - 1).text.length)
     );
 
-    const newContent = convertedLines.join("\n");
+    // Detect the document's line ending style
+    const eol = document.eol === vscode.EndOfLine.CRLF ? "\r\n" : "\n";
+
+    const newContent = convertedLines.join(eol);
 
     const edit = new vscode.WorkspaceEdit();
     edit.replace(document.uri, fullRange, newContent);
