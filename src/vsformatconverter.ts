@@ -230,8 +230,9 @@ function parseFreeLine(line: string): COBOLParsedLine {
 
     // Free format has no continuation character — continuation is implicit
     // via incomplete statements (no period at end). We track literal continuations
-    // by checking for the & character at the end of a line.
-    if (trimmed.endsWith("&")) {
+    // by checking for the & character at the end of a line, but only if the &
+    // is not inside an unclosed string literal.
+    if (trimmed.endsWith("&") && !analyzeStringLiteralState(trimmed.substring(0, trimmed.length - 1)).isOpen) {
         result.isContinuation = true;
     }
 
@@ -700,9 +701,9 @@ function updateSourceFormatDirective(line: string, targetFormat: ESourceFormat):
  */
 function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: number): { content: string; lastIndex: number } {
     let content = parsedLines[startIndex].content;
-    // Strip trailing & continuation marker from the first line
+    // Strip trailing & continuation marker from the first line (only if not inside string)
     content = content.trimEnd();
-    if (content.endsWith("&")) {
+    if (content.endsWith("&") && !analyzeStringLiteralState(content.substring(0, content.length - 1)).isOpen) {
         content = content.substring(0, content.length - 1);
     }
     let j = startIndex + 1;
@@ -711,7 +712,8 @@ function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: numb
         if (nextPl.isBlank || nextPl.isComment) break;
         const nextContent = nextPl.content;
         const nextTrimmed = nextContent.trimEnd();
-        if (nextTrimmed.endsWith("&")) {
+        // Only treat trailing & as continuation if it's not inside a string literal
+        if (nextTrimmed.endsWith("&") && !analyzeStringLiteralState(content + nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart()).isOpen) {
             content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
             j++;
         } else {
@@ -899,16 +901,37 @@ function convertVariableToFixed(lines: string[]): string[] {
 }
 
 /**
+ * Find the index of the **FREE directive, skipping any leading blank lines.
+ * Returns the index of the **FREE line, or -1 if not found.
+ */
+function findFreeDirectiveIndex(lines: string[]): number {
+    for (let i = 0; i < lines.length; i++) {
+        const trimmed = lines[i].trimStart();
+        if (trimmed.length === 0) continue;  // skip blank lines
+        if (trimmed.toUpperCase().startsWith("**FREE")) {
+            return i;
+        }
+        break;  // first non-blank line is not **FREE
+    }
+    return -1;
+}
+
+/**
  * Convert from free format to fixed format.
  */
 function convertFreeToFixed(lines: string[]): string[] {
     const parsedLines = lines.map(l => parseFreeLine(l));
     const result: string[] = [];
 
-    // Skip **FREE directive if present on first line
+    // Skip **FREE directive if present (may be preceded by blank lines)
+    const freeDirectiveIdx = findFreeDirectiveIndex(lines);
     let startIndex = 0;
-    if (lines.length > 0 && lines[0].trimStart().toUpperCase().startsWith("**FREE")) {
-        startIndex = 1;
+    if (freeDirectiveIdx >= 0) {
+        // Emit blank lines before the directive
+        for (let b = 0; b < freeDirectiveIdx; b++) {
+            result.push("");
+        }
+        startIndex = freeDirectiveIdx + 1;
     }
 
     for (let i = startIndex; i < parsedLines.length; i++) {
@@ -975,10 +998,14 @@ function convertFreeToVariable(lines: string[]): string[] {
     const parsedLines = lines.map(l => parseFreeLine(l));
     const result: string[] = [];
 
-    // Skip **FREE directive if present on first line
+    // Skip **FREE directive if present (may be preceded by blank lines)
+    const freeDirectiveIdx = findFreeDirectiveIndex(lines);
     let startIndex = 0;
-    if (lines.length > 0 && lines[0].trimStart().toUpperCase().startsWith("**FREE")) {
-        startIndex = 1;
+    if (freeDirectiveIdx >= 0) {
+        for (let b = 0; b < freeDirectiveIdx; b++) {
+            result.push("");
+        }
+        startIndex = freeDirectiveIdx + 1;
     }
 
     for (let i = startIndex; i < parsedLines.length; i++) {
@@ -1034,6 +1061,22 @@ function convertFreeToVariable(lines: string[]): string[] {
 // ============================================================================
 // Core conversion dispatch
 // ============================================================================
+
+/**
+ * Check whether any lines in fixed format have non-trivial identification area
+ * content (columns 73-80) that will be lost during conversion.
+ */
+function hasIdentificationAreaContent(lines: string[]): boolean {
+    for (const line of lines) {
+        if (line.length > 72) {
+            const idArea = line.substring(72).trim();
+            if (idArea.length > 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 /**
  * Perform the format conversion from one source format to another.
@@ -1147,6 +1190,20 @@ export async function convertSourceFormat(): Promise<void> {
     const lines: string[] = [];
     for (let i = 0; i < document.lineCount; i++) {
         lines.push(document.lineAt(i).text);
+    }
+
+    // Warn if converting from fixed format and identification area content will be lost
+    if (currentFormat === ESourceFormat.fixed && targetFormat !== ESourceFormat.fixed) {
+        if (hasIdentificationAreaContent(lines)) {
+            const proceed = await vscode.window.showWarningMessage(
+                "This file has content in the identification area (columns 73-80) which will be discarded during conversion. Continue?",
+                { modal: true },
+                "Continue"
+            );
+            if (proceed !== "Continue") {
+                return;
+            }
+        }
     }
 
     // Perform the conversion
