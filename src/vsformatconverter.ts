@@ -62,6 +62,17 @@ const sourceFormatDirectivePatterns = [
     /SOURCEFORMAT\s*\(\s*(FREE|FIXED|VARIABLE)\s*\)/i,
 ];
 
+/** Fixed-format right margin (last column of Area B). */
+const FIXED_RIGHT_MARGIN = 72;
+/** Fixed-format content width: cols 8-72 = 65 characters. */
+const FIXED_CONTENT_WIDTH = 65;
+/** Sequence number area width: cols 1-6 = 6 characters. */
+const SEQUENCE_AREA_WIDTH = 6;
+/** The first content column (col 8) index into the raw line (0-based). */
+const CONTENT_START_INDEX = 7;
+/** Blank sequence number area (6 spaces). */
+const BLANK_SEQUENCE_AREA = " ".repeat(SEQUENCE_AREA_WIDTH);
+
 /**
  * Detect whether a line contains an embedded source format directive.
  */
@@ -95,31 +106,9 @@ function createDefaultParsedLine(line: string): COBOLParsedLine {
 }
 
 /**
- * Parse a single line from Fixed format COBOL source.
+ * Apply indicator-area flags to a parsed line based on the indicator character.
  */
-function parseFixedLine(line: string): COBOLParsedLine {
-    const result = createDefaultParsedLine(line);
-
-    if (line.trimEnd().length === 0) {
-        result.isBlank = true;
-        return result;
-    }
-
-    // Sequence number area: columns 1-6 (index 0-5)
-    if (line.length >= 6) {
-        result.sequenceArea = line.substring(0, 6);
-    } else {
-        // Short line — malformed fixed format. Preserve entire line as content
-        // to avoid silent data loss. The line has no valid sequence area or indicator.
-        result.content = line;
-        return result;
-    }
-
-    // Indicator area: column 7 (index 6)
-    if (line.length >= 7) {
-        result.indicator = line[6];
-    }
-
+function applyIndicatorFlags(result: COBOLParsedLine): void {
     switch (result.indicator) {
         case "*":
             result.isComment = true;
@@ -136,21 +125,62 @@ function parseFixedLine(line: string): COBOLParsedLine {
             result.isDebug = true;
             break;
     }
+}
 
-    // Content area: columns 8-72 (index 7-71)
-    if (line.length > 7) {
-        const endCol = Math.min(line.length, 72);
-        result.content = line.substring(7, endCol);
+/**
+ * Shared parsing logic for fixed and variable format lines.
+ * Both formats share cols 1-6 (sequence area) and col 7 (indicator).
+ * The `extractContent` callback controls how the content area is extracted
+ * (fixed format truncates at col 72; variable format reads to end of line).
+ */
+function parseColumnarLine(
+    line: string,
+    extractContent: (line: string) => { content: string; identificationArea: string },
+): COBOLParsedLine {
+    const result = createDefaultParsedLine(line);
+
+    if (line.trimEnd().length === 0) {
+        result.isBlank = true;
+        return result;
     }
 
-    // Identification area: columns 73+ (index 72+)
-    if (line.length > 72) {
-        result.identificationArea = line.substring(72);
+    if (line.length >= SEQUENCE_AREA_WIDTH) {
+        result.sequenceArea = line.substring(0, SEQUENCE_AREA_WIDTH);
+    } else {
+        // Short line — malformed source. Preserve entire line as content
+        // to avoid silent data loss.
+        result.content = line;
+        return result;
+    }
+
+    if (line.length >= CONTENT_START_INDEX) {
+        result.indicator = line[SEQUENCE_AREA_WIDTH];
+    }
+
+    applyIndicatorFlags(result);
+
+    if (line.length > CONTENT_START_INDEX) {
+        const extracted = extractContent(line);
+        result.content = extracted.content;
+        result.identificationArea = extracted.identificationArea;
     }
 
     result.isSourceFormatDirective = isSourceFormatDirectiveLine(line);
 
     return result;
+}
+
+/**
+ * Parse a single line from Fixed format COBOL source.
+ */
+function parseFixedLine(line: string): COBOLParsedLine {
+    return parseColumnarLine(line, (l) => {
+        const endCol = Math.min(l.length, FIXED_RIGHT_MARGIN);
+        return {
+            content: l.substring(CONTENT_START_INDEX, endCol),
+            identificationArea: l.length > FIXED_RIGHT_MARGIN ? l.substring(FIXED_RIGHT_MARGIN) : "",
+        };
+    });
 }
 
 /**
@@ -160,51 +190,10 @@ function parseFixedLine(line: string): COBOLParsedLine {
  * beyond column 72 with no identification area.
  */
 function parseVariableLine(line: string): COBOLParsedLine {
-    const result = createDefaultParsedLine(line);
-
-    if (line.trimEnd().length === 0) {
-        result.isBlank = true;
-        return result;
-    }
-
-    if (line.length >= 6) {
-        result.sequenceArea = line.substring(0, 6);
-    } else {
-        // Short line — malformed variable format. Preserve entire line as content
-        // to avoid silent data loss.
-        result.content = line;
-        return result;
-    }
-
-    if (line.length >= 7) {
-        result.indicator = line[6];
-    }
-
-    switch (result.indicator) {
-        case "*":
-            result.isComment = true;
-            break;
-        case "/":
-            result.isComment = true;
-            result.isPageEject = true;
-            break;
-        case "-":
-            result.isContinuation = true;
-            break;
-        case "D":
-        case "d":
-            result.isDebug = true;
-            break;
-    }
-
-    // Variable format: content extends to end of line (no identification area)
-    if (line.length > 7) {
-        result.content = line.substring(7);
-    }
-
-    result.isSourceFormatDirective = isSourceFormatDirectiveLine(line);
-
-    return result;
+    return parseColumnarLine(line, (l) => ({
+        content: l.substring(CONTENT_START_INDEX),
+        identificationArea: "",
+    }));
 }
 
 /**
@@ -228,11 +217,10 @@ function parseFreeLine(line: string): COBOLParsedLine {
         return result;
     }
 
-    // Free format has no continuation character — continuation is implicit
-    // via incomplete statements (no period at end). We track literal continuations
-    // by checking for the & character at the end of a line, but only if the &
-    // is not inside an unclosed string literal.
-    if (trimmed.endsWith("&") && !analyzeStringLiteralState(trimmed.substring(0, trimmed.length - 1)).isOpen) {
+    // In free format, & at the end of a line is ALWAYS a continuation marker,
+    // regardless of whether the code is currently inside a string literal.
+    // (The & itself is never part of the source content — it is always stripped.)
+    if (trimmed.endsWith("&")) {
         result.isContinuation = true;
     }
 
@@ -513,7 +501,7 @@ function freeCommentToFixed(line: string): string[] {
  * splitting. Uses the given indicator for the first line and '*' for overflow lines.
  * The text parameter should include any leading space for readability (e.g. " commentBody").
  */
-function splitTextForFixedLines(indicator: string, text: string, maxWidth: number = 65): string[] {
+function splitTextForFixedLines(indicator: string, text: string, maxWidth: number = FIXED_CONTENT_WIDTH): string[] {
     if (text.length === 0) {
         return [buildFixedLine(indicator, "")];
     }
@@ -573,20 +561,19 @@ function freeCommentToVariable(line: string): string {
 
 /**
  * Build a fixed-format line from components.
- * Callers must ensure content fits within 65 characters (cols 8-72).
+ * Callers must ensure content fits within FIXED_CONTENT_WIDTH characters (cols 8-72).
  * Use splitForFixedFormat() for content that may exceed this limit.
  */
 function buildFixedLine(indicator: string, content: string): string {
-    // Cols 1-6 are blank (no sequence numbers), col 7 is indicator, cols 8+ are content
-    return "      " + indicator + content;
+    return BLANK_SEQUENCE_AREA + indicator + content;
 }
 
 /**
  * Build a variable-format line from components.
+ * Same structure as fixed but with no right-margin restriction.
  */
 function buildVariableLine(indicator: string, content: string): string {
-    // Cols 1-6 are blank, col 7 is indicator, rest is content (no right margin limit)
-    return "      " + indicator + content;
+    return BLANK_SEQUENCE_AREA + indicator + content;
 }
 
 /**
@@ -598,12 +585,11 @@ function buildVariableLine(indicator: string, content: string): string {
  * For string literals, we split the literal with proper continuation characters.
  */
 function splitForFixedFormat(indicator: string, content: string): string[] {
-    const maxContentWidth = 65; // columns 8-72 = 65 characters
     const lines: string[] = [];
 
     // If the content fits, just return it
-    const fullLine = "      " + indicator + content;
-    if (fullLine.length <= 72) {
+    const fullLine = BLANK_SEQUENCE_AREA + indicator + content;
+    if (fullLine.length <= FIXED_RIGHT_MARGIN) {
         lines.push(fullLine);
         return lines;
     }
@@ -615,20 +601,19 @@ function splitForFixedFormat(indicator: string, content: string): string[] {
 
     while (remaining.length > 0) {
         const ind = isFirstLine ? indicator : "-";
-        const availWidth = isFirstLine ? maxContentWidth : maxContentWidth;
         
-        if (remaining.length <= availWidth) {
+        if (remaining.length <= FIXED_CONTENT_WIDTH) {
             lines.push(buildFixedLine(ind, remaining));
             break;
         }
 
         // Find a good split point — look for a space near the end of the available width
-        let splitPos = availWidth;
-        const searchStart = Math.max(0, availWidth - 20);
+        let splitPos = FIXED_CONTENT_WIDTH;
+        const searchStart = Math.max(0, FIXED_CONTENT_WIDTH - 20);
 
         // Look for a space to split at
         let bestSplit = -1;
-        for (let s = availWidth; s >= searchStart; s--) {
+        for (let s = FIXED_CONTENT_WIDTH; s >= searchStart; s--) {
             if (remaining[s] === " ") {
                 bestSplit = s;
                 break;
@@ -697,27 +682,43 @@ function updateSourceFormatDirective(line: string, targetFormat: ESourceFormat):
 
 /**
  * Merge free-format continuation lines (joined with &) starting from the given index.
+ * In free-format COBOL, `&` at the end of a line is ALWAYS a continuation marker
+ * and must ALWAYS be stripped — regardless of whether it appears inside or outside
+ * a string literal.  The string literal state only affects how the join is formed
+ * (leading whitespace on the next line is preserved for open literals but trimmed
+ * for non-literal context).
+ *
  * Returns the merged content and the last consumed index (inclusive).
  */
 function mergeFreeContinuations(parsedLines: COBOLParsedLine[], startIndex: number): { content: string; lastIndex: number } {
-    let content = parsedLines[startIndex].content;
-    // Strip trailing & continuation marker from the first line (only if not inside string)
-    content = content.trimEnd();
-    if (content.endsWith("&") && !analyzeStringLiteralState(content.substring(0, content.length - 1)).isOpen) {
+    let content = parsedLines[startIndex].content.trimEnd();
+
+    // Always strip the trailing & — it is the continuation marker, never content
+    if (content.endsWith("&")) {
         content = content.substring(0, content.length - 1);
     }
+
     let j = startIndex + 1;
     while (j < parsedLines.length) {
         const nextPl = parsedLines[j];
         if (nextPl.isBlank || nextPl.isComment) break;
+
         const nextContent = nextPl.content;
         const nextTrimmed = nextContent.trimEnd();
-        // Only treat trailing & as continuation if it's not inside a string literal
-        if (nextTrimmed.endsWith("&") && !analyzeStringLiteralState(content + nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart()).isOpen) {
-            content += nextTrimmed.substring(0, nextTrimmed.length - 1).trimStart();
+        const insideString = analyzeStringLiteralState(content).isOpen;
+
+        // Join: preserve leading whitespace when inside a string literal
+        // (those spaces are part of the literal value), otherwise trim it
+        // (it is just indentation).
+        const joinPart = insideString ? nextTrimmed : nextTrimmed.trimStart();
+
+        if (nextTrimmed.endsWith("&")) {
+            // Another continuation — strip the & and keep looping
+            content += joinPart.substring(0, joinPart.length - 1);
             j++;
         } else {
-            content += nextContent.trimStart();
+            // Last line in the chain — append and stop
+            content += insideString ? nextContent : nextContent.trimStart();
             j++;
             break;
         }
@@ -965,10 +966,9 @@ function convertFreeToFixed(lines: string[]): string[] {
             continue;
         }
 
-        // Regular code line — handle free-format & continuation by merging
-        // with subsequent lines before emitting
+        // Regular code line — merge any & continuations before emitting
         let content = pl.content;
-        if (pl.isContinuation || content.trimEnd().endsWith("&")) {
+        if (pl.isContinuation) {
             const merged = mergeFreeContinuations(parsedLines, i);
             content = merged.content;
             i = merged.lastIndex; // outer loop will i++
@@ -1036,10 +1036,9 @@ function convertFreeToVariable(lines: string[]): string[] {
             continue;
         }
 
-        // Regular code line — handle free-format & continuation by merging
-        // with subsequent lines before emitting
+        // Regular code line — merge any & continuations before emitting
         let content = pl.content;
-        if (pl.isContinuation || content.trimEnd().endsWith("&")) {
+        if (pl.isContinuation) {
             const merged = mergeFreeContinuations(parsedLines, i);
             content = merged.content;
             i = merged.lastIndex; // outer loop will i++
@@ -1068,8 +1067,8 @@ function convertFreeToVariable(lines: string[]): string[] {
  */
 function hasIdentificationAreaContent(lines: string[]): boolean {
     for (const line of lines) {
-        if (line.length > 72) {
-            const idArea = line.substring(72).trim();
+        if (line.length > FIXED_RIGHT_MARGIN) {
+            const idArea = line.substring(FIXED_RIGHT_MARGIN).trim();
             if (idArea.length > 0) {
                 return true;
             }
