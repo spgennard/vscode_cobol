@@ -515,6 +515,15 @@ function freeCommentToFixed(line: string): string[] {
         commentBody = trimmed;
     }
 
+    // Detect page eject marker and restore the / indicator
+    if (/^PAGE\s+EJECT$/i.test(commentBody)) {
+        return ["      /"];
+    }
+    if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
+        const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
+        return ["      / " + ejectText];
+    }
+
     // Maximum comment text width: cols 8-72 = 65 chars, minus 1 for the space after * = 64
     const maxCommentWidth = 64;
 
@@ -563,6 +572,15 @@ function freeCommentToVariable(line: string): string {
         commentBody = trimmed.substring(2).trim();
     } else {
         commentBody = trimmed;
+    }
+
+    // Detect page eject marker and restore the / indicator
+    if (/^PAGE\s+EJECT$/i.test(commentBody)) {
+        return "      /";
+    }
+    if (/^PAGE\s+EJECT\s+/i.test(commentBody)) {
+        const ejectText = commentBody.replace(/^PAGE\s+EJECT\s+/i, "");
+        return "      / " + ejectText;
     }
 
     if (commentBody.length === 0) {
