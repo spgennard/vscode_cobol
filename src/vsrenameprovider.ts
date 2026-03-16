@@ -117,6 +117,36 @@ export class VSCobolRenameProvider implements vscode.RenameProvider {
                             }
                         }
                     }
+                    for (const [sectionName, sectionToken] of sourceRefs.sharedSections) {
+                        if (sectionName.toLowerCase() !== workLower) {
+                            continue;
+                        }
+                        const uri: vscode.Uri = vscode.Uri.parse(sectionToken.filenameAsURI);
+                        const startPos = new vscode.Position(sectionToken.startLine, sectionToken.startColumn);
+                        const endPos = new vscode.Position(sectionToken.endLine, sectionToken.endColumn);
+                        const range = new vscode.Range(startPos, endPos);
+                        const constMapKey = `${sectionToken.startLine}_${sectionToken.startColumn}`;
+                        if (consMaps.has(constMapKey) === false) {
+                            consMaps.set(constMapKey, range);
+                            edits.delete(uri, range);
+                            edits.insert(uri, startPos, newName);
+                        }
+                    }
+                    for (const [paraName, paraToken] of sourceRefs.sharedParagraphs) {
+                        if (paraName.toLowerCase() !== workLower) {
+                            continue;
+                        }
+                        const uri: vscode.Uri = vscode.Uri.parse(paraToken.filenameAsURI);
+                        const startPos = new vscode.Position(paraToken.startLine, paraToken.startColumn);
+                        const endPos = new vscode.Position(paraToken.endLine, paraToken.endColumn);
+                        const range = new vscode.Range(startPos, endPos);
+                        const constMapKey = `${paraToken.startLine}_${paraToken.startColumn}`;
+                        if (consMaps.has(constMapKey) === false) {
+                            consMaps.set(constMapKey, range);
+                            edits.delete(uri, range);
+                            edits.insert(uri, startPos, newName);
+                        }
+                    }                    
                 }
                 if (!safeToRename) {
                     vscode.window.showWarningMessage(`Sorry, Unable to rename ${word}, maybe part of a copoybook/replacing`);
