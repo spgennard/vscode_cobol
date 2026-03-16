@@ -1,5 +1,20 @@
 # CHANGELOG
 
+* e6dbcd7 Fix #370 - Rename issue
+* c71adbf in the good old tradition fixed / change ton of stuff
+* dc07dc7 free format error and boundary
+* 3584d34 fix odd bug
+* 5b63bbb code cleanup
+* bd04e89 ifix(formatter): fix edge cases in COBOL source format converter
+* 41d840c refactor and cleanup
+* 3595889 fix: source format converter — 4 bugs causing code loss/corruption
+* 8fe9943 fix page eject when formatting
+* 469581a No opening quote on string continuation
+* 8f6277d Line endings not preserved (CRLF→LF)
+* fb2f0e7 fix: prevent data loss in COBOL source format converter
+* 19d43ee initial version of basic source format convertor
+
+## 26.3.6 
 * a4b066b add extra ACUCOBOL-GT APIs
 
 ## 26.3.1 
