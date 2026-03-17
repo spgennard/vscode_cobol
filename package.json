@@ -1416,7 +1416,7 @@
           "default": false,
           "scope": "resource"
         },
-        "coboleditor.copybook_refresh_search  ": {
+        "coboleditor.copybook_refresh_search": {
           "type": "boolean",
           "description": "When enabled, active search for copybook if not found or changed",
           "default": true
@@ -2727,7 +2727,7 @@
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible && !inlineSuggestionVisible"
       },
       {
         "key": "tab",
@@ -2742,7 +2742,7 @@
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible && !inlineSuggestionVisible"
       },
       {
         "key": "shift+tab",
