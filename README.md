@@ -761,3 +761,4 @@ Or use an file extension, which will ensure you have the right document language
 I would like to thank the follow contributors for providing patches, fixes, kind words of wisdom and enhancements.
 
 - Ted John of Berkshire, UK
+- vlaemine of https://github.com/vlaemine
