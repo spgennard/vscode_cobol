@@ -1,7 +1,9 @@
 # CHANGELOG
 
 
-## 26.3.22, origin/main, origin/HEAD 
+## 26.3.22, origin/main, origin/HEAD update typescript
+* fb4f26f Update
+* 1b4b670 Update
 
 ## 26.3.16 
 * 95050ed update readme
