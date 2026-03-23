@@ -25,7 +25,8 @@
         "noImplicitReturns": true,
         /* "exactOptionalPropertyTypes": true, */
         "noImplicitThis": true,
-        "skipLibCheck":true
+        "skipLibCheck":true,
+	"types" : [ "node" ]
     },
     "exclude": [
         "out",
