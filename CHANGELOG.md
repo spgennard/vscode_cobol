@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 26.3.16 
 * 95050ed update readme
 * 41d2ed7 Merge pull request #371 from vlaemine/fix-package
 * 004f212 fix typo + stop tab/revtab from triggering while suggestions are visible
