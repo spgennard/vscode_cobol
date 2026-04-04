@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 26.3.22, origin/main, origin/HEAD update typescript
+## 26.3.22 
+* 4524abb update typescript
 * fb4f26f Update
 * 1b4b670 Update
 
