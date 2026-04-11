@@ -1,6 +1,6 @@
 # COBOL Source editing for Visual Studio Code
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://img.shields.io/visual-studio-marketplace/i/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://img.shields.io/visual-studio-marketplace/r/bitlang.cobol)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
+[![Version](https://vsmarketplacebadges.dev/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://vsmarketplacebadges.dev/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadges.dev/rating-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
 
 This unofficial extension provides syntax highlighting for `Rocket ® COBOL` based COBOL languages (previously `Micro Focus COBOL`), with some support for other COBOL dialects such as ACUCOBOL, RMCOBOL, COBOL-IT and ILECOBOL.
 
