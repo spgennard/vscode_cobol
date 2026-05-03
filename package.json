@@ -3287,9 +3287,11 @@
     "performance-now": "2.1.0",
     "promisify-child-process": "^5.0.1",
     "properties-reader": "^3.0.1",
+    "queue-microtask": "^1.2.3",
     "stream-browserify": "^3.0.0",
     "trie-search": "^2.2.1",
     "ts-prune": "^0.10.3",
+    "typed-array-buffer": "^1.0.3",
     "url": "^0.11.4"
   },
   "extensionDependencies": []
