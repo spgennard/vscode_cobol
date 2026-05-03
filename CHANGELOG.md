@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## 26.5.2, origin/main, origin/HEAD update package.json
+* ed730d0 Update
+
 ## 26.4.22 
 * 86a55e4 tweak
 
