@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 26.5.2, origin/main, origin/HEAD update package.json
+## 26.5.2, origin/main, origin/HEAD 
+* 259879c update package.json
 * ed730d0 Update
 
 ## 26.4.22 
