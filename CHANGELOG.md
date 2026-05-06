@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 17f9be9 add transient dep
 
-## 26.5.2, origin/main, origin/HEAD 
+## 26.5.2 
+* 0eab7c3 Update
 * 259879c update package.json
 * ed730d0 Update
 
