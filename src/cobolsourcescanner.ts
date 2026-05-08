@@ -451,7 +451,7 @@ export class COBOLCopybookToken {
     public readonly token: COBOLToken | undefined;
     public scanComplete: boolean;
     public statementInformation: copybookState | undefined;
-    public refreshFromDisk: boolean| undefined = false;
+    public refreshFromDisk: boolean | undefined = false;
 
     public static readonly Null = new COBOLCopybookToken(undefined, false, undefined);
 
@@ -464,18 +464,15 @@ export class COBOLCopybookToken {
 
     public hasCopybookChanged(features: IExternalFeatures, configHandler: ICOBOLSettings): boolean {
         const refreshFromDisk = this.refreshFromDisk === undefined ? configHandler.copybook_refresh_search : this.refreshFromDisk;
-        
+
         if (this.statementInformation !== undefined) {
-            var cpyFile = this.statementInformation.fileName;
-
+            const cpyFile = this.statementInformation.fileName;
             const possibleFileMod = features.getFileModTimeStamp(cpyFile);
-            if (possibleFileMod === undefined) { 
-                return false;
-            }
 
-            const fileFileMod = possibleFileMod as BigInt
-            if (fileFileMod !== this.statementInformation.fileNameMod) {
-                return true;
+            // file found
+            if (possibleFileMod !== undefined) {
+                // check to see if it has changed
+                return (possibleFileMod as BigInt !== this.statementInformation.fileNameMod);
             }
 
             if (refreshFromDisk && this.token !== undefined) {
@@ -779,7 +776,7 @@ export class EmptyCOBOLSourceScannerEventHandler implements ICOBOLSourceScannerE
         return;
     }
 
-    processRawMessage(messageId:string, message: string): void {
+    processRawMessage(messageId: string, message: string): void {
         return;
     }
 
@@ -986,7 +983,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.cache4ConstantsOrVars = undefined;
         this.scanAborted = false;
         this.languageId = this.sourceHandler.getLanguageId();
-        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(configHandler,this.languageId);
+        this.COBOLKeywordDictionary = getCOBOLKeywordDictionary(configHandler, this.languageId);
         switch (this.languageId.toLocaleLowerCase()) {
             case "cobol":
             case "bitlang-cobol":
@@ -1185,7 +1182,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         prevToken = StreamTokens.Blank;
         sourceHandler.resetCommentCount();
-        
+
         sourceEventHandler.processRawMessage(COBSCANNER_START_OF_FILE, filename);
 
         let sourceTimeout = externalFeatures.getSourceTimeout(this.configHandler);
