@@ -35,7 +35,7 @@
     "email": "stephen@gennard.net"
   },
   "engines": {
-    "vscode": "^1.150.0"
+    "vscode": "^1.105.0"
   },
   "extensionKind": [
     "workspace"

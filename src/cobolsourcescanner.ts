@@ -470,26 +470,25 @@ export class COBOLCopybookToken {
 
             const possibleFileMod = features.getFileModTimeStamp(cpyFile);
             if (possibleFileMod === undefined) { 
+                if (refreshFromDisk && this.token !== undefined) {
+                    const timeTakenStart = features.performance_now();
+                    const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.token.tokenName, this.token.extraInformation, this.token.sourceHandler, configHandler);
+                    const totalTimeInMS = features.performance_now() - timeTakenStart;
+                    if (totalTimeInMS > configHandler.copybook_speed_limit) {
+                        this.refreshFromDisk = false;
+                        features.logMessage("Slow copybook change check dropped for " + cpyFile + " as it took " + totalTimeInMS.toFixed(2) + "ms");
+                        return false;
+                    }
+                    if (newFileName !== this.statementInformation.fileName) {
+                        return true;
+                    }
+                }
                 return false;
             }
 
             const fileFileMod = possibleFileMod as BigInt
             if (fileFileMod !== this.statementInformation.fileNameMod) {
                 return true;
-            }
-
-            if (refreshFromDisk && this.token !== undefined) {
-                const timeTakenStart = features.performance_now();
-                const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.token.tokenName, this.token.extraInformation, this.token.sourceHandler, configHandler);
-                const totalTimeInMS = features.performance_now() - timeTakenStart;
-                if (totalTimeInMS > configHandler.copybook_speed_limit) {
-                    this.refreshFromDisk = false;
-                    features.logMessage("Slow copybook change check dropped for " + cpyFile + " as it took " + totalTimeInMS.toFixed(2) + "ms");
-                    return false;
-                }
-                if (newFileName !== this.statementInformation.fileName) {
-                    return true;
-                }
             }
         }
 
