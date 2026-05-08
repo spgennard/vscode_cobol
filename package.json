@@ -3225,6 +3225,9 @@
       ]
     }
   },
+  "engines": {
+    "vscode": "^1.118.0"
+  },
   "scripts": {
     "vscode:prepublish": "npm run cp-resources && npm run compile && webpack --mode production",
     "webpack": "npm run compile && npm run cp-resources && webpack --mode development",
