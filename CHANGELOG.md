@@ -1,7 +1,9 @@
 # CHANGELOG
 
 
-## 26.5.8, origin/main, origin/HEAD don't specifiy engine
+## 26.5.8, origin/main, origin/HEAD engines has to match types
+* c83a5e4 Update
+* 1e2dab0 don't specifiy engine
 * 89a0195 Update
 * 1bba49e cleanup the logic bug on the copybook file check
 
