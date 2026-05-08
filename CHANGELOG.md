@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 1bba49e cleanup the logic bug on the copybook file check
+
+## 26.5.5 
 * 17f9be9 add transient dep
 
 ## 26.5.2 
