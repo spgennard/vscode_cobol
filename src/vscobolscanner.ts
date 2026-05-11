@@ -126,6 +126,12 @@ export class VSCOBOLSourceScanner {
                         if (cbInfo.statementInformation !== undefined && avoidCopyBookCheck === false) {
                             useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures, config) == false;
                         }
+                        if (!useCache) {
+                            break;
+                        }
+                    }
+                    if (!useCache) {
+                        break;
                     }
                 }
 
