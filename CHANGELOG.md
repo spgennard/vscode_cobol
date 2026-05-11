@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 20f5ef6 drop out early, if we can
 
-## 26.5.8, origin/main, origin/HEAD engines has to match types
+## 26.5.8 
+* 371bd6f engines has to match types
 * c83a5e4 Update
 * 1e2dab0 don't specifiy engine
 * 89a0195 Update
