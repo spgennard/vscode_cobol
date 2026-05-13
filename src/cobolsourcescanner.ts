@@ -508,6 +508,7 @@ export class SharedSourceReferences {
     public readonly sharedParagraphs: Map<string, COBOLToken>;
     public readonly copyBooksUsed: Map<string, COBOLCopybookToken[]>;
     public readonly execSQLDeclare: Map<string, SQLDeclare>;
+    public readonly copybookFilenameCache: Map<string, string>;
     public state: ParseState;
     public tokensInOrder: COBOLToken[];
 
@@ -529,6 +530,7 @@ export class SharedSourceReferences {
         this.sharedParagraphs = new Map<string, COBOLToken>();
         this.copyBooksUsed = new Map<string, COBOLCopybookToken[]>();
         this.execSQLDeclare = new Map<string, SQLDeclare>();
+        this.copybookFilenameCache = new Map<string, string>();
         this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
         this.topLevel = topLevel;
@@ -546,9 +548,22 @@ export class SharedSourceReferences {
         this.sharedSections.clear();
         this.sharedParagraphs.clear();
         this.copyBooksUsed.clear();
+        this.copybookFilenameCache.clear();
         this.state = new ParseState(configHandler);
         this.tokensInOrder = [];
         this.ignoreUnusedSymbol.clear();
+    }
+
+    private static buildCopybookFilenameCacheKey(trimmedCopyBook: string, extraInformation: string): string {
+        return `${trimmedCopyBook}##${extraInformation}`;
+    }
+
+    public getCachedCopybookFilename(trimmedCopyBook: string, extraInformation: string): string | undefined {
+        return this.copybookFilenameCache.get(SharedSourceReferences.buildCopybookFilenameCacheKey(trimmedCopyBook, extraInformation));
+    }
+
+    public setCachedCopybookFilename(trimmedCopyBook: string, extraInformation: string, fileName: string): void {
+        this.copybookFilenameCache.set(SharedSourceReferences.buildCopybookFilenameCacheKey(trimmedCopyBook, extraInformation), fileName);
     }
 
     public getSourceFieldId(handFilename: string): number {
@@ -3223,7 +3238,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
 
-        const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
+        let fileName = this.sourceReferences.getCachedCopybookFilename(trimmedCopyBook, copyToken.extraInformation);
+        if (fileName === undefined) {
+            fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
+            this.sourceReferences.setCachedCopybookFilename(trimmedCopyBook, copyToken.extraInformation, fileName);
+        }
         if (fileName.length === 0) {
             this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
             cbInfo.copybookDepths.pop();
@@ -3234,15 +3253,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
         cbInfo.fileName = fileName;
-        const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(fileName);
-        cbInfo.fileNameMod = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);
-        if (this.copyBooksUsed.has(fileName) === false) {
-            this.copyBooksUsed.set(fileName, [copybookToken]);
+        const existingCopybooks = this.copyBooksUsed.get(fileName);
+        if (existingCopybooks !== undefined && existingCopybooks.length > 0) {
+            // reuse the timestamp of the previous copybook reference to use the file system less often
+            cbInfo.fileNameMod = existingCopybooks[0].statementInformation?.fileNameMod ?? BigInt(0);
         } else {
-            const copybooks = this.copyBooksUsed.get(fileName);
-            if (copybooks != null) {
-                copybooks.push(copybookToken)
-            }
+            cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName) ?? BigInt(0);
+        }
+        if (existingCopybooks !== undefined) {
+            existingCopybooks.push(copybookToken);
+        } else {
+            this.copyBooksUsed.set(fileName, [copybookToken]);
         }
 
         let count = 0;
@@ -3310,7 +3331,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
                         continue;
                     }
-                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
+                    let fileName = this.sourceReferences.getCachedCopybookFilename(filenameTrimmed, "");
+                    if (fileName === undefined) {
+                        fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
+                        this.sourceReferences.setCachedCopybookFilename(filenameTrimmed, "", fileName);
+                    }
                     if (fileName.length > 0) {
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, [COBOLCopybookToken.Null]);
