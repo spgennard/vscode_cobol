@@ -3,8 +3,6 @@
 import { VSLogger } from "./vslogger";
 import { IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
-import { COBOLCopyBookProvider } from "./opencopybook";
-import { VSCOBOLFileUtils } from "./vsfileutils";
 
 import fs from "fs";
 import { COBOLFileUtils } from "./fileutils";
@@ -12,6 +10,7 @@ import { VSWorkspaceFolders } from "./vscobolfolders";
 import { FileType, Uri, debug, workspace } from "vscode";
 import { IVSCOBOLSettings } from "./vsconfiguration";
 import { ISourceHandler } from "./isourcehandler";
+import { VSCOBOLFileUtils } from "./vsfileutils";
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
 
@@ -33,7 +32,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
     public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
-        return COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, source.getFilename(), this);
+        return VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, source.getFilename(), this);
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types

@@ -193,7 +193,7 @@ export class VSCOBOLFileUtils {
     }
 
     public static async findCopyBookInDirectoryViaURL(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): Promise<string> {
-            // check for directory aliases
+        // check for directory aliases
         if (config.copybook_directory_aliases !== undefined && config.copybook_directory_aliases !== null && inDirectory.length > 0) {
             const aliasTarget = config.copybook_directory_aliases[inDirectory];
             if (aliasTarget !== undefined) {
@@ -287,5 +287,52 @@ export class VSCOBOLFileUtils {
         }
         return bestWorkspace;
     }
+
+
+    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
+
+        if (config.perfile_copybookdirs.length !== 0) {
+            // fileDirname
+            var fileDirname = path.dirname(sourceFilename);
+            for (var _perCopydir of config.perfile_copybookdirs) {
+                var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
+                /* check for the file as is.. */
+                const firstPossibleFile = path.join(perFileDir, filename);
+                if (features.isFile(firstPossibleFile)) {
+                    return firstPossibleFile;
+                }
+
+                const hasDot = filename.indexOf(".");
+                /* no extension? */
+                if (hasDot === -1) {
+                    // search through the possible extensions
+                    for (const ext of config.copybookexts) {
+                        const possibleFile = path.join(perFileDir, filename + "." + ext);
+
+                        if (features.isFile(possibleFile)) {
+                            return possibleFile;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (inDirectory === null || inDirectory.length === 0) {
+            const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);
+            if (fullPath.length !== 0) {
+                return path.normalize(fullPath);
+            }
+
+            return fullPath;
+        }
+
+        const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
+        if (fullPath.length !== 0) {
+            return path.normalize(fullPath);
+        }
+
+        return fullPath;
+    }
+
 }
 

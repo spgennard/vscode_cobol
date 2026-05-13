@@ -1,7 +1,5 @@
 "use strict";
 
-import * as path from "path";
-
 import * as vscode from "vscode";
 import { Range, TextDocument, Definition, Position, CancellationToken, Uri } from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
@@ -158,7 +156,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
         var sourceFilename = doc.fileName;
         if (filename !== null && filename.length !== 0) {
-            const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(filename.trim(), inDirectory, config, sourceFilename, this.features);
+            const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(filename.trim(), inDirectory, config, sourceFilename, this.features);
             if (fullPath.length !== 0) {
                 return new vscode.Location(
                     Uri.file(fullPath),
@@ -174,7 +172,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             const wordText = wordRange ? doc.getText(wordRange) : "";
             if (wordText !== undefined && wordText.length !== 0) {
                 for (const possibleFilename of wordText.split(" ")) {
-                    const fullPath = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, sourceFilename, this.features);
+                    const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, sourceFilename, this.features);
                     if (fullPath.length !== 0) {
                         if (this.features.isFile(fullPath) && !this.features.isDirectory(fullPath)) {
                             return new vscode.Location(
@@ -189,51 +187,6 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
         return [];
 
-    }
-
-    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
-
-        if (config.perfile_copybookdirs.length !== 0) {
-            // fileDirname
-            var fileDirname = path.dirname(sourceFilename);
-            for (var _perCopydir of config.perfile_copybookdirs) {
-                var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
-                /* check for the file as is.. */
-                const firstPossibleFile = path.join(perFileDir, filename);
-                if (features.isFile(firstPossibleFile)) {
-                    return firstPossibleFile;
-                }
-
-                const hasDot = filename.indexOf(".");
-                /* no extension? */
-                if (hasDot === -1) {
-                    // search through the possible extensions
-                    for (const ext of config.copybookexts) {
-                        const possibleFile = path.join(perFileDir, filename + "." + ext);
-
-                        if (features.isFile(possibleFile)) {
-                            return possibleFile;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (inDirectory === null || inDirectory.length === 0) {
-            const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);
-            if (fullPath.length !== 0) {
-                return path.normalize(fullPath);
-            }
-
-            return fullPath;
-        }
-
-        const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
-        if (fullPath.length !== 0) {
-            return path.normalize(fullPath);
-        }
-
-        return fullPath;
     }
 
     private extractCopyBookFilename(config: ICOBOLSettings, str: string): string | undefined {

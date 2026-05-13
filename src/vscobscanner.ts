@@ -16,7 +16,6 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { MakeDep } from "./makedeps";
 import { IExternalFeatures } from "./externalfeatures";
-import { COBOLCopyBookProvider } from "./opencopybook";
 
 class FileScanStats {
     directoriesScanned = 0;
@@ -159,7 +158,7 @@ export class VSCobScanner {
                     const inOf = args[3];
                     COBOLWorkspaceSymbolCacheHelper.addReferencedCopybook(enKey, inFilename, inOf);
 
-                    const fileName = COBOLCopyBookProvider.expandLogicalCopyBookOrEmpty(enKey, inOf, settings, inFilename, externalFeatures);
+                    const fileName = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(enKey, inOf, settings, inFilename, externalFeatures);
                     // VSLogger.logMessage(`Referenced copybook ${enKey} in ${inFilename} resolved to ${fileName}`);
                     if (fileName.length !== 0) {
                         if (copyBooksNames.includes(fileName) === false) {
