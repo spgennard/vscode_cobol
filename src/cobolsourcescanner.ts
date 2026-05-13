@@ -863,6 +863,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private readonly regions: COBOLToken[] = [];
 
+    private readonly copybookFilenameCache: Map<string, string> = new Map<string, string>();
+
     private implicitCount = 0;
 
     public static ScanUncached(sourceHandler: ISourceHandler,
@@ -1332,6 +1334,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private clearScanData() {
         this.tokensInOrder = [];
         this.copyBooksUsed.clear();
+        this.copybookFilenameCache.clear();
         this.sections.clear();
         this.paragraphs.clear();
         this.constantsOrVariables.clear();
@@ -3223,7 +3226,12 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
 
-        const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
+        const cacheKey = trimmedCopyBook + "##" + copyToken.extraInformation;
+        let fileName = this.copybookFilenameCache.get(cacheKey);
+        if (fileName === undefined) {
+            fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
+            this.copybookFilenameCache.set(cacheKey, fileName);
+        }
         if (fileName.length === 0) {
             this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
             cbInfo.copybookDepths.pop();
