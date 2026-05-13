@@ -3329,7 +3329,11 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
                         continue;
                     }
-                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
+                    let fileName = this.sourceReferences.getCachedCopybookFilename(filenameTrimmed, "");
+                    if (fileName === undefined) {
+                        fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
+                        this.sourceReferences.setCachedCopybookFilename(filenameTrimmed, "", fileName);
+                    }
                     if (fileName.length > 0) {
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, [COBOLCopybookToken.Null]);
