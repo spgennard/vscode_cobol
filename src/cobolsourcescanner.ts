@@ -3253,15 +3253,17 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
         cbInfo.fileName = fileName;
-        const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(fileName);
-        cbInfo.fileNameMod = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);
-        if (this.copyBooksUsed.has(fileName) === false) {
-            this.copyBooksUsed.set(fileName, [copybookToken]);
+        const existingCopybooks = this.copyBooksUsed.get(fileName);
+        if (existingCopybooks !== undefined && existingCopybooks.length > 0) {
+            // reuse the timestamp of the previous copybook reference to use the file system less often
+            cbInfo.fileNameMod = existingCopybooks[0].statementInformation?.fileNameMod ?? BigInt(0);
         } else {
-            const copybooks = this.copyBooksUsed.get(fileName);
-            if (copybooks != null) {
-                copybooks.push(copybookToken)
-            }
+            cbInfo.fileNameMod = this.externalFeatures.getFileModTimeStamp(fileName) ?? BigInt(0);
+        }
+        if (existingCopybooks !== undefined) {
+            existingCopybooks.push(copybookToken);
+        } else {
+            this.copyBooksUsed.set(fileName, [copybookToken]);
         }
 
         let count = 0;
