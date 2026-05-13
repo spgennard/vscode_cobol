@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import os from "os";
 
 import { commands, workspace, StatusBarItem, StatusBarAlignment, ExtensionContext, languages, TextDocument, Position, CancellationToken, ProviderResult, Definition, window, extensions, ViewColumn, ConfigurationChangeEvent } from "vscode";
-import * as opencopybook from "./opencopybook";
 
 import { KeywordAutocompleteCompletionItemProvider } from "./vskeywordprovider";
 import { CobolSymbolInformationProvider, JCLDocumentSymbolProvider, MFDirectivesSymbolProvider } from "./vssymbolprovider";
@@ -52,6 +51,7 @@ import { TabUtils } from "./tabstopper";
 import { VSTerminal } from "./vsterminals";
 import { BmsPreviewPanel } from "./bmspreviewpanel";
 import { COBOLFoldingRangeProvider } from "./vsfoldingprovider";
+import { COBOLCopyBookProvider } from "./opencopybook";
 
 // import type MarkdownIt from 'markdown-it';
 // import hijs from 'highlight.js/lib/core';
@@ -662,7 +662,7 @@ export async function activate(context: ExtensionContext) {
 
     context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            const ccbp = new opencopybook.COBOLCopyBookProvider(VSExternalFeatures);
+            const ccbp = new COBOLCopyBookProvider(VSExternalFeatures);
             return ccbp.provideDefinition(doc, pos, ct);
         }
     }));
