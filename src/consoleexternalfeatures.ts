@@ -5,7 +5,7 @@ import fs from "fs";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./fileutils";
 import { ISourceHandler } from "./isourcehandler";
@@ -61,8 +61,8 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, filesHandler: ISourceHandler,  config: ICOBOLSettings): string {
-        return COBOLFileUtils.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, filesHandler.getFilename(), this);
+    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string, sourceHandler: ISourceHandler,  config: ICOBOLSettings): string {
+        return COBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, filename, inDirectory, config, sourceHandler, this);
     }
 
     public setWorkspaceFolders(folders: string[]) {

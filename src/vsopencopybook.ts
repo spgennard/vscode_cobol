@@ -6,12 +6,11 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLFileUtils } from "./vsfileutils";
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { VSLogger } from "./vslogger";
-import { VSExternalFeatures } from "./vsexternalfeatures";
 import { ICOBOLSourceScanner } from "./icobolsourcescanner";
 
-export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
+export class VSCOBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     private features: IExternalFeatures;
 
@@ -50,7 +49,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
     private async resolveDefinitions(document: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
         const locations: vscode.Location[] = [];
 
-        const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(document, this.features);
         const qcp: ICOBOLSourceScanner | undefined = VSCOBOLSourceScanner.getCachedObject(document, config);
         if (qcp === undefined) {
             return this.resolveDefinitionsFallback(document, pos, ct);
@@ -102,7 +101,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private async resolveDefinitionsFallback(doc: TextDocument, pos: Position, ct: CancellationToken): Promise<Definition> {
-        const config = VSCOBOLConfiguration.get_resource_settings(doc, VSExternalFeatures);
+        const config = VSCOBOLConfiguration.get_resource_settings(doc, this.features);
         const line = doc.lineAt(pos);
         const text = line.text;
         const textLower = text.toLowerCase().replace("\t", " ");
@@ -154,9 +153,10 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             inDirectory = inDirItems;
         }
 
+        const copyBookCache = new CopyBookCache();
         var sourceFilename = doc.fileName;
         if (filename !== null && filename.length !== 0) {
-            const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(filename.trim(), inDirectory, config, sourceFilename, this.features);
+            const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache,filename.trim(), inDirectory, sourceFilename, config, this.features);
             if (fullPath.length !== 0) {
                 return new vscode.Location(
                     Uri.file(fullPath),
@@ -172,7 +172,7 @@ export class COBOLCopyBookProvider implements vscode.DefinitionProvider {
             const wordText = wordRange ? doc.getText(wordRange) : "";
             if (wordText !== undefined && wordText.length !== 0) {
                 for (const possibleFilename of wordText.split(" ")) {
-                    const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(possibleFilename.trim(), inDirectory, config, sourceFilename, this.features);
+                    const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache,possibleFilename.trim(), inDirectory, sourceFilename, config, this.features);
                     if (fullPath.length !== 0) {
                         if (this.features.isFile(fullPath) && !this.features.isDirectory(fullPath)) {
                             return new vscode.Location(

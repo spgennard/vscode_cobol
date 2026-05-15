@@ -6,13 +6,17 @@
 import { ICOBOLSettings } from "./iconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 
+export class CopyBookCache {
+
+}
+
 export interface IExternalFeatures {
     logMessage(message: string): void;
     logException(message: string, ex: Error): void;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean;
     performance_now(): number;
-    expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, source: ISourceHandler, config: ICOBOLSettings): string;
+    expandLogicalCopyBookToFilenameOrEmpty(cache: CopyBookCache, filename: string, inDirectory: string, source: ISourceHandler, config: ICOBOLSettings): string;
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt, config: ICOBOLSettings): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(settings: ICOBOLSettings): string[];

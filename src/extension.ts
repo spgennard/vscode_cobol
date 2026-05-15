@@ -51,7 +51,7 @@ import { TabUtils } from "./tabstopper";
 import { VSTerminal } from "./vsterminals";
 import { BmsPreviewPanel } from "./bmspreviewpanel";
 import { COBOLFoldingRangeProvider } from "./vsfoldingprovider";
-import { COBOLCopyBookProvider } from "./opencopybook";
+import { VSCOBOLCopyBookProvider } from "./vsopencopybook";
 
 // import type MarkdownIt from 'markdown-it';
 // import hijs from 'highlight.js/lib/core';
@@ -662,7 +662,7 @@ export async function activate(context: ExtensionContext) {
 
     context.subscriptions.push(languages.registerDefinitionProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), {
         provideDefinition(doc: TextDocument, pos: Position, ct: CancellationToken): ProviderResult<Definition> {
-            const ccbp = new COBOLCopyBookProvider(VSExternalFeatures);
+            const ccbp = new VSCOBOLCopyBookProvider(VSExternalFeatures);
             return ccbp.provideDefinition(doc, pos, ct);
         }
     }));

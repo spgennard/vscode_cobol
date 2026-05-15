@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import { ICOBOLSettings } from "./iconfiguration";
 import path from "path";
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { ISourceHandler } from "./isourcehandler";
 
 export class COBOLFileUtils {
     static readonly isWin32 = process.platform === "win32";
@@ -213,11 +214,11 @@ export class COBOLFileUtils {
         return "";
     }
     
-    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string, config: ICOBOLSettings, sourceHandler: ISourceHandler, features: IExternalFeatures): string {
 
         if (config.perfile_copybookdirs.length !== 0) {
             // fileDirname
-            var fileDirname = path.dirname(sourceFilename);
+            var fileDirname = path.dirname(sourceHandler.getFilename());
             for (var _perCopydir of config.perfile_copybookdirs) {
                 var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
                 /* check for the file as is.. */

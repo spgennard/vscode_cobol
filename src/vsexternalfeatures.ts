@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { VSLogger } from "./vslogger";
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 
 import fs from "fs";
@@ -31,8 +31,8 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         return Date.now();
     }
 
-    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
-        return VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, source.getFilename(), this);
+    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
+        return VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, filename, inDirectory, source.getFilename(), config, this);
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types

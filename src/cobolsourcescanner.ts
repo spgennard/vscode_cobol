@@ -7,7 +7,7 @@ import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileAndColumnSymbol, COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { CobolLinterProviderSymbols, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { CobolLinterProviderSymbols, CopyBookCache, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 
 import * as path from "path";
 import { SourceFormat } from "./sourceformat";
@@ -452,10 +452,11 @@ export class COBOLCopybookToken {
     public scanComplete: boolean;
     public statementInformation: copybookState | undefined;
     public refreshFromDisk: boolean | undefined = false;
+    public readonly copyBookCache:CopyBookCache | undefined;
+    public static readonly Null = new COBOLCopybookToken(undefined, undefined, false, undefined);
 
-    public static readonly Null = new COBOLCopybookToken(undefined, false, undefined);
-
-    constructor(token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
+    constructor(copyBookCache: CopyBookCache|undefined, token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
+        this.copyBookCache = copyBookCache;
         this.token = token;
         this.scanComplete = parsed;
         this.statementInformation = statementInformation;
@@ -475,9 +476,9 @@ export class COBOLCopybookToken {
                 return (possibleFileMod as BigInt !== this.statementInformation.fileNameMod);
             }
 
-            if (refreshFromDisk && this.token !== undefined) {
+            if (refreshFromDisk && this.token !== undefined && this.copyBookCache !== undefined) {
                 const timeTakenStart = features.performance_now();
-                const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.token.tokenName, this.token.extraInformation, this.token.sourceHandler, configHandler);
+                const newFileName = features.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, this.token.tokenName, this.token.extraInformation, this.token.sourceHandler, configHandler);
                 const totalTimeInMS = features.performance_now() - timeTakenStart;
                 if (totalTimeInMS > configHandler.copybook_speed_limit) {
                     this.refreshFromDisk = false;
@@ -864,6 +865,8 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private readonly regions: COBOLToken[] = [];
 
     private implicitCount = 0;
+
+    private readonly copyBookCache = new  CopyBookCache();
 
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
@@ -2400,13 +2403,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.startCol = currentCol;
                             state.copybook_state.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
                             state.copybook_state.copybookDepths = prevState.copybookDepths;
-                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
+                            const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
                             if (fileName.length === 0) {
                                 this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
                                 continue;
                             }
                             state.copybook_state.fileName = fileName;
-                            const copybookToken = new COBOLCopybookToken(copyToken, false, state.copybook_state);
+                            const copybookToken = new COBOLCopybookToken(this.copyBookCache, copyToken, false, state.copybook_state);
                             this.copyBooksUsed.set(trimmedCopyBook, [copybookToken]);
                             const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
                             const prevIgnoreInOutlineView = state.ignoreInOutlineView;
@@ -3221,9 +3224,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         state.inCopy = false;
 
-        const copybookToken = new COBOLCopybookToken(copyToken, false, cbInfo);
+        const copybookToken = new COBOLCopybookToken(this.copyBookCache,copyToken, false, cbInfo);
 
-        const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
+        const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
         if (fileName.length === 0) {
             this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
             cbInfo.copybookDepths.pop();
@@ -3310,7 +3313,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         }
                         continue;
                     }
-                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(filenameTrimmed, "", this.sourceHandler, this.configHandler);
+                    const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, filenameTrimmed, "", this.sourceHandler, this.configHandler);
                     if (fileName.length > 0) {
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, [COBOLCopybookToken.Null]);

@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { COBOLGlobalSymbolTable } from "./cobolglobalcache";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
@@ -30,6 +30,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
         const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
 
         const theline = document.lineAt(position).text;
+        const copyBookCache = new CopyBookCache();
 
         if (theline.match(/.*(call|cancel|chain).*$/i)) {
             const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);
@@ -51,7 +52,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.linenum !== undefined) {
-                                const fullFilename = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(symbol.filename, "", config, document.fileName, this.features);
+                                const fullFilename = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache,symbol.filename, "", document.fileName, config, this.features);
                                 if (fullFilename.length !== 0) {
                                     this.getLocationGivenFile(fullFilename, symbol.linenum, locations);
                                 }
@@ -66,7 +67,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
                         for (let i = 0; i < symbols.length; i++) {
                             const symbol = symbols[i];
                             if (symbol !== undefined && symbol.filename !== undefined && symbol.linenum !== undefined) {
-                                const fullFilename = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(symbol.filename, "", config, document.fileName, this.features);
+                                const fullFilename = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, symbol.filename, "", document.fileName, config, this.features);
                                 if (fullFilename.length !== 0) {
                                     this.getLocationGivenFile(fullFilename, symbol.linenum, locations);
                                 }

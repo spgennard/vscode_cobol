@@ -2,7 +2,7 @@
 import { parentPort, workerData } from "worker_threads";
 import { Scanner, workerThreadData } from "./cobscanner";
 import { ScanStats } from "./cobscannerdata";
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
 
 import * as fs from "fs";
 import * as path from "path";
@@ -59,8 +59,8 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public expandLogicalCopyBookToFilenameOrEmpty(filename: string, inDirectory: string, source: ISourceHandler, config: ICOBOLSettings): string {
-        return COBOLFileUtils.expandLogicalCopyBookOrEmpty(filename, inDirectory, config, source.getFilename(), this);
+    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string, sourceHandler: ISourceHandler, config: ICOBOLSettings): string {
+        return COBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, filename, inDirectory, config, sourceHandler, this);
     }
 
     public setWorkspaceFolders(folders: string[]): void {

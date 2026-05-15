@@ -5,7 +5,8 @@ import { VSWorkspaceFolders } from "./vscobolfolders";
 import { Range, TextEditor, Uri, window, workspace, WorkspaceFolder } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { IExternalFeatures } from "./externalfeatures";
+import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+
 
 export class VSCOBOLFileUtils {
 
@@ -289,8 +290,7 @@ export class VSCOBOLFileUtils {
     }
 
 
-    public static expandLogicalCopyBookOrEmpty(filename: string, inDirectory: string, config: ICOBOLSettings, sourceFilename: string, features: IExternalFeatures): string {
-
+    public static expandLogicalCopyBookOrEmpty(cache: CopyBookCache, filename: string, inDirectory: string, sourceFilename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
         if (config.perfile_copybookdirs.length !== 0) {
             // fileDirname
             var fileDirname = path.dirname(sourceFilename);
@@ -333,6 +333,5 @@ export class VSCOBOLFileUtils {
 
         return fullPath;
     }
-
 }
 
