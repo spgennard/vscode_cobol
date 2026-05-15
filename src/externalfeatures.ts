@@ -7,7 +7,11 @@ import { ICOBOLSettings } from "./iconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 
 export class CopyBookCache {
+    public readonly fileNames = new Map<string, string>();
 
+    public clear() {
+        this.fileNames.clear();
+    }
 }
 
 export interface IExternalFeatures {

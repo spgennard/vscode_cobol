@@ -1347,6 +1347,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         this.cache4ConstantsOrVars = undefined;
         this.scanAborted = true;
         this.sourceReferences.reset(this.configHandler);
+        this.copyBookCache.clear();
     }
 
     private isVisibleSection(sectionName: string): boolean {
