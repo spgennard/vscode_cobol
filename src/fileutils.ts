@@ -214,16 +214,21 @@ export class COBOLFileUtils {
         return "";
     }
     
-    public static expandLogicalCopyBookOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string, config: ICOBOLSettings, sourceHandler: ISourceHandler, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(cache: CopyBookCache, filename: string, inDirectory: string, config: ICOBOLSettings, sourceHandler: ISourceHandler, features: IExternalFeatures): string {
 
         if (config.perfile_copybookdirs.length !== 0) {
             // fileDirname
             var fileDirname = path.dirname(sourceHandler.getFilename());
             for (var _perCopydir of config.perfile_copybookdirs) {
                 var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
+                const perCacheKey = `${perFileDir}+${filename}`;
+                if (cache.fileNames.has(perCacheKey)) {
+                    return cache.fileNames.get(perCacheKey) as string;
+                }
                 /* check for the file as is.. */
                 const firstPossibleFile = path.join(perFileDir, filename);
                 if (features.isFile(firstPossibleFile)) {
+                    cache.fileNames.set(perCacheKey, firstPossibleFile);
                     return firstPossibleFile;
                 }
 
@@ -232,9 +237,14 @@ export class COBOLFileUtils {
                 if (hasDot === -1) {
                     // search through the possible extensions
                     for (const ext of config.copybookexts) {
-                        const possibleFile = path.join(perFileDir, filename + "." + ext);
-
+                        const filenameWithExt = `${filename}.${ext}`;
+                        const possibleFile = path.join(perFileDir, filenameWithExt);
+                        const perCacheKey = `${perFileDir}+${filenameWithExt}`;
+                        if (cache.fileNames.has(perCacheKey)) {
+                            return cache.fileNames.get(perCacheKey) as string;
+                        }
                         if (features.isFile(possibleFile)) {
+                            cache.fileNames.set(perCacheKey, possibleFile);
                             return possibleFile;
                         }
                     }
@@ -242,9 +252,20 @@ export class COBOLFileUtils {
             }
         }
 
-        if (inDirectory === null || inDirectory.length === 0) {
+        // pre-null check
+        inDirectory = inDirectory === null ? "" : inDirectory;
+
+        // check cache first
+        const cacheKey = `${inDirectory}|${filename}`;
+        const cachedValue = cache.fileNames.get(cacheKey);
+        if (cachedValue !== undefined) {
+            return cachedValue;
+        }
+
+        if (inDirectory.length === 0) {
             const fullPath = COBOLFileUtils.findCopyBook(filename, config, features);
             if (fullPath.length !== 0) {
+                cache.fileNames.set(cacheKey, fullPath);
                 return path.normalize(fullPath);
             }
 
@@ -253,6 +274,7 @@ export class COBOLFileUtils {
 
         const fullPath = COBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
         if (fullPath.length !== 0) {
+            cache.fileNames.set(cacheKey, fullPath);
             return path.normalize(fullPath);
         }
 
