@@ -1939,6 +1939,9 @@
         "filenames": [
           "directives.mf"
         ],
+        "filenamePatterns": [
+          "directives.*.mf"
+        ],
         "configuration": "./directivesmf.configuration.json"
       },
       {
