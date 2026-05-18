@@ -6,11 +6,36 @@
 import { ICOBOLSettings } from "./iconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 
+export enum CopyBookCacheKeyType {
+    directory = "directory",
+    perFileDirectory = "perFileDirectory"
+}
+
+export class CopyBookCacheKey {
+    private constructor(
+        public readonly type: CopyBookCacheKeyType,
+        public readonly directory: string,
+        public readonly filename: string
+    ) {
+    }
+
+    public static forDirectory(directory: string, filename: string): CopyBookCacheKey {
+        return new CopyBookCacheKey(CopyBookCacheKeyType.directory, directory, filename);
+    }
+
+    public static forPerFileDirectory(perFileDirectory: string, filename: string): CopyBookCacheKey {
+        return new CopyBookCacheKey(CopyBookCacheKeyType.perFileDirectory, perFileDirectory, filename);
+    }
+
+    public toCacheKey(): string {
+        return JSON.stringify([this.type, this.directory, this.filename]);
+    }
+}
 
 export interface ICopyBookCache {
-    get(cacheKey: string): string | undefined;
-    set(cacheKey: string, filename: string): void;
-    has(cacheKey: string): boolean;
+    get(cacheKey: CopyBookCacheKey): string | undefined;
+    set(cacheKey: CopyBookCacheKey, filename: string): void;
+    has(cacheKey: CopyBookCacheKey): boolean;
     clear(): void;
 }
 

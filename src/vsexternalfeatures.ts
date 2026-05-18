@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { VSLogger } from "./vslogger";
-import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { CopyBookCacheKey, ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 
 import fs from "fs";
@@ -14,22 +14,22 @@ import { VSCOBOLFileUtils } from "./vsfileutils";
 
 
 export class VSCopyBookCache implements ICopyBookCache {
-    public readonly fileNames = new Map<string, string>();
+    public readonly resolvedCopyBooksByKey = new Map<string, string>();
 
     public clear() {
-        this.fileNames.clear();
+        this.resolvedCopyBooksByKey.clear();
     }
 
-    public get(cacheKey: string): string | undefined {
-        return this.fileNames.get(cacheKey);
+    public get(cacheKey: CopyBookCacheKey): string | undefined {
+        return this.resolvedCopyBooksByKey.get(cacheKey.toCacheKey());
     }
     
-    public set(cacheKey: string, filename: string) {
-        this.fileNames.set(cacheKey, filename);
+    public set(cacheKey: CopyBookCacheKey, filename: string) {
+        this.resolvedCopyBooksByKey.set(cacheKey.toCacheKey(), filename);
     }
 
-    public has(cacheKey: string): boolean {
-        return this.fileNames.has(cacheKey);
+    public has(cacheKey: CopyBookCacheKey): boolean {
+        return this.resolvedCopyBooksByKey.has(cacheKey.toCacheKey());
     }
 }
 

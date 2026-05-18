@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { ICOBOLSettings } from "./iconfiguration";
 import path from "path";
-import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { CopyBookCacheKey, ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ISourceHandler } from "./isourcehandler";
 
 export class COBOLFileUtils {
@@ -221,7 +221,7 @@ export class COBOLFileUtils {
             var fileDirname = path.dirname(sourceHandler.getFilename());
             for (var _perCopydir of config.perfile_copybookdirs) {
                 var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
-                const perCacheKey = `${perFileDir}+${filename}`;
+                const perCacheKey = CopyBookCacheKey.forPerFileDirectory(perFileDir, filename);
                 if (cache.get(perCacheKey) !== undefined) {
                     return cache.get(perCacheKey) as string;
                 }
@@ -239,7 +239,7 @@ export class COBOLFileUtils {
                     for (const ext of config.copybookexts) {
                         const filenameWithExt = `${filename}.${ext}`;
                         const possibleFile = path.join(perFileDir, filenameWithExt);
-                        const perCacheKey = `${perFileDir}+${filenameWithExt}`;
+                        const perCacheKey = CopyBookCacheKey.forPerFileDirectory(perFileDir, filenameWithExt);
                         if (cache.has(perCacheKey)) {
                             return cache.get(perCacheKey) as string;
                         }
@@ -256,7 +256,7 @@ export class COBOLFileUtils {
         inDirectory = inDirectory === null ? "" : inDirectory;
 
         // check cache first
-        const cacheKey = `${inDirectory}|${filename}`;
+        const cacheKey = CopyBookCacheKey.forDirectory(inDirectory, filename);
         const cachedValue = cache.get(cacheKey);
         if (cachedValue !== undefined) {
             return cachedValue;

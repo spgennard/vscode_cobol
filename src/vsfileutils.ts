@@ -5,7 +5,7 @@ import { VSWorkspaceFolders } from "./vscobolfolders";
 import { Range, TextEditor, Uri, window, workspace, WorkspaceFolder } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { CopyBookCacheKey, ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 
 
 export class VSCOBOLFileUtils {
@@ -291,13 +291,12 @@ export class VSCOBOLFileUtils {
 
 
     public static expandLogicalCopyBookOrEmpty(cache: ICopyBookCache, filename: string, inDirectory: string, sourceFilename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
-
         if (config.perfile_copybookdirs.length !== 0) {
             // fileDirname
             var fileDirname = path.dirname(sourceFilename);
             for (var _perCopydir of config.perfile_copybookdirs) {
                 var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
-                const perCacheKey = `${perFileDir}+${filename}`;
+                const perCacheKey = CopyBookCacheKey.forPerFileDirectory(perFileDir, filename);
                 if (cache.has(perCacheKey)) {
                     return cache.get(perCacheKey) as string;
                 }
@@ -314,7 +313,7 @@ export class VSCOBOLFileUtils {
                     // search through the possible extensions
                     for (const ext of config.copybookexts) {
                         const filenameWithExt = `${filename}.${ext}`;
-                        const perCacheKey = `${perFileDir}+${filenameWithExt}`;
+                        const perCacheKey = CopyBookCacheKey.forPerFileDirectory(perFileDir, filenameWithExt);
                         if (cache.has(perCacheKey)) {
                             return cache.get(perCacheKey) as string;
                         }
@@ -332,7 +331,7 @@ export class VSCOBOLFileUtils {
         inDirectory = inDirectory === null ? "" : inDirectory;
 
         // check cache first
-        const cacheKey = `${inDirectory}|${filename}`;
+        const cacheKey = CopyBookCacheKey.forDirectory(inDirectory, filename);
         const cachedValue = cache.get(cacheKey);
         if (cachedValue !== undefined) {
             return cachedValue;
