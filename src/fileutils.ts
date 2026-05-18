@@ -265,8 +265,9 @@ export class COBOLFileUtils {
         if (inDirectory.length === 0) {
             const fullPath = COBOLFileUtils.findCopyBook(filename, config, features);
             if (fullPath.length !== 0) {
-                cache.fileNames.set(cacheKey, fullPath);
-                return path.normalize(fullPath);
+                const normFullPath = path.normalize(fullPath);
+                cache.fileNames.set(cacheKey, normFullPath);
+                return normFullPath;
             }
 
             return fullPath;
@@ -274,8 +275,9 @@ export class COBOLFileUtils {
 
         const fullPath = COBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
         if (fullPath.length !== 0) {
-            cache.fileNames.set(cacheKey, fullPath);
-            return path.normalize(fullPath);
+            const normFullPath = path.normalize(fullPath);
+            cache.fileNames.set(cacheKey, normFullPath);
+            return normFullPath;
         }
 
         return fullPath;
