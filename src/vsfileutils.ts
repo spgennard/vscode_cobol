@@ -82,7 +82,7 @@ export class VSCOBOLFileUtils {
         return bestShortName.length === 0 ? undefined : bestShortName;
     }
 
-    public static findCopyBook(filename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    private static findCopyBook(filename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
         if (!filename) {
             return "";
         }
@@ -113,7 +113,7 @@ export class VSCOBOLFileUtils {
         return "";
     }
 
-    public static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    private static findCopyBookInDirectory(filename: string, inDirectory: string, config: ICOBOLSettings, features: IExternalFeatures): string {
         // check for directory aliases
         if (config.copybook_directory_aliases !== undefined && config.copybook_directory_aliases !== null && inDirectory.length > 0) {
             const aliasTarget = config.copybook_directory_aliases[inDirectory];
@@ -341,8 +341,9 @@ export class VSCOBOLFileUtils {
         if (inDirectory.length === 0) {
             const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);
             if (fullPath.length !== 0) {
-                cache.fileNames.set(cacheKey, path.normalize(fullPath));
-                return path.normalize(fullPath);
+                const normFullPath = path.normalize(fullPath);
+                cache.fileNames.set(cacheKey, normFullPath);
+                return normFullPath;
             }
 
             return fullPath;
@@ -350,8 +351,9 @@ export class VSCOBOLFileUtils {
 
         const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
         if (fullPath.length !== 0) {
-            cache.fileNames.set(cacheKey, path.normalize(fullPath));
-            return path.normalize(fullPath);
+            const normFullPath = path.normalize(fullPath);
+            cache.fileNames.set(cacheKey, normFullPath);
+            return normFullPath;
         }
 
         return fullPath;
