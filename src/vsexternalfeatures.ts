@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { VSLogger } from "./vslogger";
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 
 import fs from "fs";
@@ -12,7 +12,34 @@ import { IVSCOBOLSettings } from "./vsconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
+
+export class VSCopyBookCache implements ICopyBookCache {
+    public readonly fileNames = new Map<string, string>();
+
+    public clear() {
+        this.fileNames.clear();
+    }
+
+    public get(cacheKey: string): string | undefined {
+        return this.fileNames.get(cacheKey);
+    }
+    
+    public set(cacheKey: string, filename: string) {
+        this.fileNames.set(cacheKey, filename);
+    }
+
+    public has(cacheKey: string): boolean {
+        return this.fileNames.has(cacheKey);
+    }
+}
+
 class VSExternalFeaturesImpl implements IExternalFeatures {
+
+    private readonly copyBookCache: ICopyBookCache = new VSCopyBookCache();
+
+    public getCopyBookCache(): ICopyBookCache {
+        return this.copyBookCache;
+    }
 
     public logMessage(message: string): void {
         VSLogger.logMessage(message);
@@ -31,7 +58,7 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
         return Date.now();
     }
 
-    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
+    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: ICopyBookCache, filename: string, inDirectory: string,source: ISourceHandler, config: IVSCOBOLSettings): string {
         return VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, filename, inDirectory, source.getFilename(), config, this);
     }
 

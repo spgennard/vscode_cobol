@@ -6,9 +6,10 @@ import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
 import { VSCOBOLFileUtils } from "./vsfileutils";
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { IExternalFeatures } from "./externalfeatures";
 import { VSLogger } from "./vslogger";
 import { ICOBOLSourceScanner } from "./icobolsourcescanner";
+import { VSCopyBookCache } from "./vsexternalfeatures";
 
 export class VSCOBOLCopyBookProvider implements vscode.DefinitionProvider {
 
@@ -153,7 +154,7 @@ export class VSCOBOLCopyBookProvider implements vscode.DefinitionProvider {
             inDirectory = inDirItems;
         }
 
-        const copyBookCache = new CopyBookCache();
+        const copyBookCache = new VSCopyBookCache();
         var sourceFilename = doc.fileName;
         if (filename !== null && filename.length !== 0) {
             const fullPath = VSCOBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache,filename.trim(), inDirectory, sourceFilename, config, this.features);

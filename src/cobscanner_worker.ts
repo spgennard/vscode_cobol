@@ -2,7 +2,7 @@
 import { parentPort, workerData } from "worker_threads";
 import { Scanner, workerThreadData } from "./cobscanner";
 import { ScanStats } from "./cobscannerdata";
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 
 import * as fs from "fs";
 import * as path from "path";
@@ -12,10 +12,37 @@ import { COBOLFileUtils } from "./fileutils";
 import { ICOBOLSourceScannerEventer } from "./icobolsourcescanner";
 import { ISourceHandler } from "./isourcehandler";
 
+
+export class ThreadCopyBookCache implements ICopyBookCache {
+    public readonly fileNames = new Map<string, string>();
+
+    public clear() {
+        this.fileNames.clear();
+    }
+
+    public get(cacheKey: string): string | undefined {
+        return this.fileNames.get(cacheKey);
+    }
+    
+    public set(cacheKey: string, filename: string) {
+        this.fileNames.set(cacheKey, filename);
+    }
+
+    public has(cacheKey: string): boolean {
+        return this.fileNames.has(cacheKey);
+    }
+}
+
 export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ThreadConsoleExternalFeatures();
 
     public workspaceFolders: string[] = [];
+
+    private readonly copyBookCache: ICopyBookCache = new ThreadCopyBookCache();
+
+    public getCopyBookCache(): ICopyBookCache {
+        return this.copyBookCache;
+    }
 
     public logMessage(message: string): void {
         if (parentPort !== null) {
@@ -59,7 +86,7 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string, sourceHandler: ISourceHandler, config: ICOBOLSettings): string {
+    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: ICopyBookCache, filename: string, inDirectory: string, sourceHandler: ISourceHandler, config: ICOBOLSettings): string {
         return COBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, filename, inDirectory, config, sourceHandler, this);
     }
 

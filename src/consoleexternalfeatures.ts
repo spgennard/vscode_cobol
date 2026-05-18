@@ -5,16 +5,40 @@ import fs from "fs";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ICOBOLSettings } from "./iconfiguration";
 import { COBOLFileUtils } from "./fileutils";
 import { ISourceHandler } from "./isourcehandler";
 
+export class ConsoleCopyBookCache implements ICopyBookCache {
+    public readonly fileNames = new Map<string, string>();
+
+    public clear() {
+        this.fileNames.clear();
+    }
+
+    public get(cacheKey: string): string | undefined {
+        return this.fileNames.get(cacheKey);
+    }
+    
+    public set(cacheKey: string, filename: string) {
+        this.fileNames.set(cacheKey, filename);
+    }
+
+    public has(cacheKey: string): boolean {
+        return this.fileNames.has(cacheKey);
+    }
+}
 export class ConsoleExternalFeatures implements IExternalFeatures {
     public static readonly Default = new ConsoleExternalFeatures();
 
     public workspaceFolders: string[] = [];
 
+    private readonly copyBookCache: ICopyBookCache = new ConsoleCopyBookCache();
+
+    public getCopyBookCache(): ICopyBookCache {
+        return this.copyBookCache;
+    }
 
     public logMessage(message: string): void {
         if (process.send) {
@@ -61,7 +85,7 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: CopyBookCache, filename: string, inDirectory: string, sourceHandler: ISourceHandler,  config: ICOBOLSettings): string {
+    public expandLogicalCopyBookToFilenameOrEmpty(copyBookCache: ICopyBookCache, filename: string, inDirectory: string, sourceHandler: ISourceHandler,  config: ICOBOLSettings): string {
         return COBOLFileUtils.expandLogicalCopyBookOrEmpty(copyBookCache, filename, inDirectory, config, sourceHandler, this);
     }
 

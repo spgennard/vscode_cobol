@@ -3,8 +3,8 @@ import * as vscode from "vscode";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { COBOLGlobalSymbolTable } from "./cobolglobalcache";
 import { InMemoryGlobalSymbolCache } from "./globalcachehelper";
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
-import { VSExternalFeatures } from "./vsexternalfeatures";
+import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { VSCopyBookCache, VSExternalFeatures } from "./vsexternalfeatures";
 import { VSCOBOLFileUtils } from "./vsfileutils";
 
 export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
@@ -30,7 +30,7 @@ export class COBOLCallTargetProvider implements vscode.DefinitionProvider {
         const config = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
 
         const theline = document.lineAt(position).text;
-        const copyBookCache = new CopyBookCache();
+        const copyBookCache: ICopyBookCache = new VSCopyBookCache();
 
         if (theline.match(/.*(call|cancel|chain).*$/i)) {
             const wordRange = document.getWordRangeAtPosition(position, this.callRegEx);

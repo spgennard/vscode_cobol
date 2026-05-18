@@ -6,12 +6,12 @@
 import { ICOBOLSettings } from "./iconfiguration";
 import { ISourceHandler } from "./isourcehandler";
 
-export class CopyBookCache {
-    public readonly fileNames = new Map<string, string>();
 
-    public clear() {
-        this.fileNames.clear();
-    }
+export interface ICopyBookCache {
+    get(cacheKey: string): string | undefined;
+    set(cacheKey: string, filename: string): void;
+    has(cacheKey: string): boolean;
+    clear(): void;
 }
 
 export interface IExternalFeatures {
@@ -20,7 +20,7 @@ export interface IExternalFeatures {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     logTimedMessage(timeTaken: number, message: string, ...parameters: any[]): boolean;
     performance_now(): number;
-    expandLogicalCopyBookToFilenameOrEmpty(cache: CopyBookCache, filename: string, inDirectory: string, source: ISourceHandler, config: ICOBOLSettings): string;
+    expandLogicalCopyBookToFilenameOrEmpty(cache: ICopyBookCache, filename: string, inDirectory: string, source: ISourceHandler, config: ICOBOLSettings): string;
     getFullWorkspaceFilename(sdir: string, sdirMs: BigInt, config: ICOBOLSettings): string | undefined;
     setWorkspaceFolders(folders: string[]):void;
     getWorkspaceFolders(settings: ICOBOLSettings): string[];
@@ -32,6 +32,7 @@ export interface IExternalFeatures {
     setURLCopyBookSearchPath(fileSearchDirectory: string[]):void;
     isFileASync(possibleFilename:string): Promise<boolean>;
     isDebuggerActive(): boolean;
+    getCopyBookCache(): ICopyBookCache;
 }
 
 export enum ESourceFormat {

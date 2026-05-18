@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { ICOBOLSettings } from "./iconfiguration";
 import path from "path";
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 import { ISourceHandler } from "./isourcehandler";
 
 export class COBOLFileUtils {
@@ -214,7 +214,7 @@ export class COBOLFileUtils {
         return "";
     }
     
-    public static expandLogicalCopyBookOrEmpty(cache: CopyBookCache, filename: string, inDirectory: string, config: ICOBOLSettings, sourceHandler: ISourceHandler, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(cache: ICopyBookCache, filename: string, inDirectory: string, config: ICOBOLSettings, sourceHandler: ISourceHandler, features: IExternalFeatures): string {
 
         if (config.perfile_copybookdirs.length !== 0) {
             // fileDirname
@@ -222,13 +222,13 @@ export class COBOLFileUtils {
             for (var _perCopydir of config.perfile_copybookdirs) {
                 var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
                 const perCacheKey = `${perFileDir}+${filename}`;
-                if (cache.fileNames.has(perCacheKey)) {
-                    return cache.fileNames.get(perCacheKey) as string;
+                if (cache.get(perCacheKey) !== undefined) {
+                    return cache.get(perCacheKey) as string;
                 }
                 /* check for the file as is.. */
                 const firstPossibleFile = path.join(perFileDir, filename);
                 if (features.isFile(firstPossibleFile)) {
-                    cache.fileNames.set(perCacheKey, firstPossibleFile);
+                    cache.set(perCacheKey, firstPossibleFile);
                     return firstPossibleFile;
                 }
 
@@ -240,11 +240,11 @@ export class COBOLFileUtils {
                         const filenameWithExt = `${filename}.${ext}`;
                         const possibleFile = path.join(perFileDir, filenameWithExt);
                         const perCacheKey = `${perFileDir}+${filenameWithExt}`;
-                        if (cache.fileNames.has(perCacheKey)) {
-                            return cache.fileNames.get(perCacheKey) as string;
+                        if (cache.has(perCacheKey)) {
+                            return cache.get(perCacheKey) as string;
                         }
                         if (features.isFile(possibleFile)) {
-                            cache.fileNames.set(perCacheKey, possibleFile);
+                            cache.set(perCacheKey, possibleFile);
                             return possibleFile;
                         }
                     }
@@ -257,7 +257,7 @@ export class COBOLFileUtils {
 
         // check cache first
         const cacheKey = `${inDirectory}|${filename}`;
-        const cachedValue = cache.fileNames.get(cacheKey);
+        const cachedValue = cache.get(cacheKey);
         if (cachedValue !== undefined) {
             return cachedValue;
         }
@@ -266,7 +266,7 @@ export class COBOLFileUtils {
             const fullPath = COBOLFileUtils.findCopyBook(filename, config, features);
             if (fullPath.length !== 0) {
                 const normFullPath = path.normalize(fullPath);
-                cache.fileNames.set(cacheKey, normFullPath);
+                cache.set(cacheKey, normFullPath);
                 return normFullPath;
             }
 
@@ -276,7 +276,7 @@ export class COBOLFileUtils {
         const fullPath = COBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
         if (fullPath.length !== 0) {
             const normFullPath = path.normalize(fullPath);
-            cache.fileNames.set(cacheKey, normFullPath);
+            cache.set(cacheKey, normFullPath);
             return normFullPath;
         }
 

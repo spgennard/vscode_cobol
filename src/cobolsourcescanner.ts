@@ -7,7 +7,7 @@ import { FileSourceHandler } from "./filesourcehandler";
 import { COBOLFileAndColumnSymbol, COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { CobolLinterProviderSymbols, CopyBookCache, ESourceFormat, IExternalFeatures } from "./externalfeatures";
+import { CobolLinterProviderSymbols, ICopyBookCache, ESourceFormat, IExternalFeatures } from "./externalfeatures";
 
 import * as path from "path";
 import { SourceFormat } from "./sourceformat";
@@ -452,10 +452,10 @@ export class COBOLCopybookToken {
     public scanComplete: boolean;
     public statementInformation: copybookState | undefined;
     public refreshFromDisk: boolean | undefined = false;
-    public readonly copyBookCache:CopyBookCache | undefined;
+    public readonly copyBookCache: ICopyBookCache | undefined;
     public static readonly Null = new COBOLCopybookToken(undefined, undefined, false, undefined);
 
-    constructor(copyBookCache: CopyBookCache|undefined, token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
+    constructor(copyBookCache: ICopyBookCache|undefined, token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
         this.copyBookCache = copyBookCache;
         this.token = token;
         this.scanComplete = parsed;
@@ -866,7 +866,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private implicitCount = 0;
 
-    private readonly copyBookCache = new  CopyBookCache();
+    private readonly copyBookCache: ICopyBookCache;
 
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
@@ -996,6 +996,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 this.usePortationSourceScanner = false;
                 break;
         }
+        this.copyBookCache = externalFeatures.getCopyBookCache();
 
         let sourceLooksLikeCOBOL = false;
         let prevToken: StreamTokens = StreamTokens.Blank;

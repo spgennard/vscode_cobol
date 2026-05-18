@@ -5,7 +5,7 @@ import { VSWorkspaceFolders } from "./vscobolfolders";
 import { Range, TextEditor, Uri, window, workspace, WorkspaceFolder } from "vscode";
 
 import { ICOBOLSettings } from "./iconfiguration";
-import { CopyBookCache, IExternalFeatures } from "./externalfeatures";
+import { ICopyBookCache, IExternalFeatures } from "./externalfeatures";
 
 
 export class VSCOBOLFileUtils {
@@ -290,7 +290,7 @@ export class VSCOBOLFileUtils {
     }
 
 
-    public static expandLogicalCopyBookOrEmpty(cache: CopyBookCache, filename: string, inDirectory: string, sourceFilename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
+    public static expandLogicalCopyBookOrEmpty(cache: ICopyBookCache, filename: string, inDirectory: string, sourceFilename: string, config: ICOBOLSettings, features: IExternalFeatures): string {
 
         if (config.perfile_copybookdirs.length !== 0) {
             // fileDirname
@@ -298,13 +298,13 @@ export class VSCOBOLFileUtils {
             for (var _perCopydir of config.perfile_copybookdirs) {
                 var perFileDir = _perCopydir.replace("${fileDirname}", fileDirname);
                 const perCacheKey = `${perFileDir}+${filename}`;
-                if (cache.fileNames.has(perCacheKey)) {
-                    return cache.fileNames.get(perCacheKey) as string;
+                if (cache.has(perCacheKey)) {
+                    return cache.get(perCacheKey) as string;
                 }
                 /* check for the file as is.. */
                 const firstPossibleFile = path.join(perFileDir, filename);
                 if (features.isFile(firstPossibleFile)) {
-                    cache.fileNames.set(perCacheKey, firstPossibleFile);
+                    cache.set(perCacheKey, firstPossibleFile);
                     return firstPossibleFile;
                 }
 
@@ -315,12 +315,12 @@ export class VSCOBOLFileUtils {
                     for (const ext of config.copybookexts) {
                         const filenameWithExt = `${filename}.${ext}`;
                         const perCacheKey = `${perFileDir}+${filenameWithExt}`;
-                        if (cache.fileNames.has(perCacheKey)) {
-                            return cache.fileNames.get(perCacheKey) as string;
+                        if (cache.has(perCacheKey)) {
+                            return cache.get(perCacheKey) as string;
                         }
                         const possibleFile = path.join(perFileDir, filenameWithExt);
                         if (features.isFile(possibleFile)) {
-                            cache.fileNames.set(perCacheKey, possibleFile);
+                            cache.set(perCacheKey, possibleFile);
                             return possibleFile;
                         }
                     }
@@ -333,7 +333,7 @@ export class VSCOBOLFileUtils {
 
         // check cache first
         const cacheKey = `${inDirectory}|${filename}`;
-        const cachedValue = cache.fileNames.get(cacheKey);
+        const cachedValue = cache.get(cacheKey);
         if (cachedValue !== undefined) {
             return cachedValue;
         }
@@ -342,7 +342,7 @@ export class VSCOBOLFileUtils {
             const fullPath = VSCOBOLFileUtils.findCopyBook(filename, config, features);
             if (fullPath.length !== 0) {
                 const normFullPath = path.normalize(fullPath);
-                cache.fileNames.set(cacheKey, normFullPath);
+                cache.set(cacheKey, normFullPath);
                 return normFullPath;
             }
 
@@ -352,7 +352,7 @@ export class VSCOBOLFileUtils {
         const fullPath = VSCOBOLFileUtils.findCopyBookInDirectory(filename, inDirectory, config, features);
         if (fullPath.length !== 0) {
             const normFullPath = path.normalize(fullPath);
-            cache.fileNames.set(cacheKey, normFullPath);
+            cache.set(cacheKey, normFullPath);
             return normFullPath;
         }
 
