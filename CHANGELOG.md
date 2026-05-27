@@ -1,5 +1,18 @@
 # CHANGELOG
 
+* a1f21d0 remove shared copybook cache, until I can introduce some scoping
+* d70df12 add key abstraction
+* 49bddd9 WIP - continue to refactor the cache
+* a993439 cache the norm filename and ensure method that should be privde be private
+* 3d60e3e cache the norm filename
+* 49b42a4 allow directives.abc.mf work
+* 8e9f4b0 add cache to native external interface
+* 84c959e add basic caching
+* b73ab96 refactor parts of copybook expander interface, tweak params introduce a empty cache object, in prep for the next set of changes
+* 8f59925 tidy location of expandLogicalCopyBookOrEmpty
+* e794c3b fix odd constructor usage
+
+## 26.5.10 
 * 20f5ef6 drop out early, if we can
 
 ## 26.5.8 
