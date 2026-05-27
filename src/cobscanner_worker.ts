@@ -38,12 +38,6 @@ export class ThreadConsoleExternalFeatures implements IExternalFeatures {
 
     public workspaceFolders: string[] = [];
 
-    private readonly copyBookCache: ICopyBookCache = new ThreadCopyBookCache();
-
-    public getCopyBookCache(): ICopyBookCache {
-        return this.copyBookCache;
-    }
-
     public logMessage(message: string): void {
         if (parentPort !== null) {
             parentPort.postMessage(message);

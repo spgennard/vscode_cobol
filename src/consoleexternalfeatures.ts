@@ -34,10 +34,8 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
 
     public workspaceFolders: string[] = [];
 
-    private readonly copyBookCache: ICopyBookCache = new ConsoleCopyBookCache();
-
     public getCopyBookCache(): ICopyBookCache {
-        return this.copyBookCache;
+        return new ConsoleCopyBookCache();
     }
 
     public logMessage(message: string): void {

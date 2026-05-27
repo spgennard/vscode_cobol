@@ -34,11 +34,8 @@ export class VSCopyBookCache implements ICopyBookCache {
 }
 
 class VSExternalFeaturesImpl implements IExternalFeatures {
-
-    private readonly copyBookCache: ICopyBookCache = new VSCopyBookCache();
-
     public getCopyBookCache(): ICopyBookCache {
-        return this.copyBookCache;
+        return new VSCopyBookCache();
     }
 
     public logMessage(message: string): void {
