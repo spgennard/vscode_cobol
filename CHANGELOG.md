@@ -1,5 +1,8 @@
 # CHANGELOG
 
+
+## 26.5.27, origin/main, origin/HEAD not saved file
+* e5330cd Update
 * a1f21d0 remove shared copybook cache, until I can introduce some scoping
 * d70df12 add key abstraction
 * 49bddd9 WIP - continue to refactor the cache
