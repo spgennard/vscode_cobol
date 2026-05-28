@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* 1835928 add support for caching some not found copybooks
 
-## 26.5.27, origin/main, origin/HEAD not saved file
+## 26.5.27 
+* 6886e01 not saved file
 * e5330cd Update
 * a1f21d0 remove shared copybook cache, until I can introduce some scoping
 * d70df12 add key abstraction
