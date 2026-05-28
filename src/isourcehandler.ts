@@ -51,3 +51,15 @@ export interface ISourceHandler {
     getCommentAtLine(lineNumber: number):string;
     getText(startLine: number, startColumn:number, endLine: number, endColumn:number): string;
 }
+
+export interface ISourceCache {
+    get(document: string): ISourceCacheEntry | undefined;
+    set(document: string, entry: ISourceCacheEntry): void;
+    has(document: string): boolean;
+    delete(document: string): void;
+}
+
+export interface ISourceCacheEntry {
+    lines: string[];
+    documentVersionId: BigInt;
+}

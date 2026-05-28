@@ -62,6 +62,7 @@ export interface ICOBOLSettings {
     // cache_metadata: CacheDirectoryStrategy;
     cache_metadata_inactivity_timeout: number;
     parse_copybooks_for_references: boolean;
+    parse_copybooks_procedure_division: boolean;
     workspacefolders_order: string[];
     linter_mark_as_information: boolean;
     linter_unused_sections: boolean;
@@ -118,6 +119,8 @@ export interface ICOBOLSettings {
     scan_time_limit: number;
 
     in_memory_cache_size: number;
+
+    in_memory_copybook_cache_size: number;
 
     suggest_variables_when_context_is_unknown: boolean;
 
@@ -230,6 +233,7 @@ export class COBOLSettings implements ICOBOLSettings {
     // cache_metadata: CacheDirectoryStrategy;
     cache_metadata_inactivity_timeout: number;
     parse_copybooks_for_references: boolean;
+    parse_copybooks_procedure_division: boolean;
     workspacefolders_order: string[];
     linter_mark_as_information: boolean;
     linter_unused_paragraphs: boolean;
@@ -286,6 +290,8 @@ export class COBOLSettings implements ICOBOLSettings {
     scan_time_limit: number;
 
     in_memory_cache_size: number;
+
+    in_memory_copybook_cache_size: number;
 
     suggest_variables_when_context_is_unknown: boolean;
 
@@ -393,6 +399,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.cache_metadata_inactivity_timeout = 5000;
         this.cache_metadata_verbose_messages = false;
         this.parse_copybooks_for_references = false;
+        this.parse_copybooks_procedure_division = true;
         this.workspacefolders_order = [];
         this.linter_mark_as_information = false;
         this.linter_unused_sections = true;
@@ -451,6 +458,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.scan_line_limit = 15000;
         this.scan_time_limit = 4000;
         this.in_memory_cache_size = 6;
+        this.in_memory_copybook_cache_size = 10;
         this.suggest_variables_when_context_is_unknown = true;
         this.hover_show_known_api = hoverApi.Short;
         this.enable_comment_tags = false;

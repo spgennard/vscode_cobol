@@ -3,7 +3,8 @@
 import { ISourceHandler, ICommentCallback, ISourceHandlerLite } from "./isourcehandler";
 import { cobolProcedureKeywordDictionary, cobolStorageKeywordDictionary, getCOBOLKeywordDictionary } from "./keywords/cobolKeywords";
 
-import { FileSourceHandler } from "./filesourcehandler";
+import { FileSourceHandler, SourceCacheLRU } from "./filesourcehandler";
+import { ISourceCache } from "./isourcehandler";
 import { COBOLFileAndColumnSymbol, COBOLFileSymbol, COBOLWorkspaceFile } from "./cobolglobalcache";
 
 import { ICOBOLSettings } from "./iconfiguration";
@@ -867,6 +868,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     private implicitCount = 0;
 
     private readonly copyBookCache: ICopyBookCache;
+    private readonly sourceCache: ISourceCache;
 
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
@@ -997,6 +999,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 break;
         }
         this.copyBookCache = externalFeatures.getCopyBookCache();
+        this.sourceCache = new SourceCacheLRU(configHandler.in_memory_copybook_cache_size);
 
         let sourceLooksLikeCOBOL = false;
         let prevToken: StreamTokens = StreamTokens.Blank;
@@ -2413,7 +2416,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.fileName = fileName;
                             const copybookToken = new COBOLCopybookToken(this.copyBookCache, copyToken, false, state.copybook_state);
                             this.copyBooksUsed.set(trimmedCopyBook, [copybookToken]);
-                            const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
+                            const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures, this.sourceCache);
                             const prevIgnoreInOutlineView = state.ignoreInOutlineView;
                             state.ignoreInOutlineView = true;
                             const currentTopLevel = this.sourceReferences.topLevel;
@@ -3239,8 +3242,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
         cbInfo.fileName = fileName;
-        const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(fileName);
-        cbInfo.fileNameMod = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);
+        cbInfo.fileNameMod = BigInt(0);
         if (this.copyBooksUsed.has(fileName) === false) {
             this.copyBooksUsed.set(fileName, [copybookToken]);
         } else {
@@ -3264,9 +3266,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
 
         if (this.sourceReferences !== undefined) {
-            if (this.parse_copybooks_for_references && fileName.length > 0) {
+            if (this.parse_copybooks_for_references && fileName.length > 0 && (this.configHandler.parse_copybooks_procedure_division || state.inProcedureDivision === false)) {
                 cbInfo.fileName = fileName;
-                const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
+                const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures, this.sourceCache);
+                cbInfo.fileNameMod = qfile.documentVersionId !== undefined ? qfile.documentVersionId : BigInt(0);
                 const currentTopLevel = this.sourceReferences.topLevel;
                 this.sourceReferences.topLevel = false;
 
@@ -3320,7 +3323,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         if (this.copyBooksUsed.has(fileName) === false) {
                             this.copyBooksUsed.set(fileName, [COBOLCopybookToken.Null]);
 
-                            const qfile = new FileSourceHandler(this.configHandler, possRegExe, fileName, this.externalFeatures);
+                            const qfile = new FileSourceHandler(this.configHandler, possRegExe, fileName, this.externalFeatures, this.sourceCache);
                             const currentTopLevel = this.sourceReferences.topLevel;
                             this.sourceReferences.topLevel = false;
 

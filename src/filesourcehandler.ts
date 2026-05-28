@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import { ISourceHandler, ICommentCallback, ISourceHandlerLite, commentRange } from "./isourcehandler";
+import { ISourceCache, ISourceCacheEntry } from "./isourcehandler";
 import { ESourceFormat, IExternalFeatures } from "./externalfeatures";
 import { pathToFileURL } from "url";
 import path from "path";
@@ -30,7 +31,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     private readonly lineRegExFilter: RegExp | undefined;
     settings: ICOBOLSettings;
 
-    public constructor(settings: ICOBOLSettings, regEx: RegExp | undefined, document: string, features: IExternalFeatures) {
+    public constructor(settings: ICOBOLSettings, regEx: RegExp | undefined, document: string, features: IExternalFeatures, cache: ISourceCache | undefined) {
         this.lineRegExFilter = regEx;
         this.document = document;
         this.dumpNumbersInAreaA = false;
@@ -47,14 +48,14 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.commentsIndexInline = new Map<number, boolean>();
         this.settings = settings;
         this.shortFilename = this.findShortWorkspaceFilename(document, features, settings);
-        const docstat: fs.BigIntStats = fs.statSync(document, { bigint: true });
-
-        this.documentVersionId = docstat.mtimeMs;
+        const cachedFile = cache?.get(document);
+        this.documentVersionId = cachedFile === undefined ? fs.statSync(document, { bigint: true }).mtimeMs : cachedFile.documentVersionId;
+        
         const startTime = features.performance_now();
         try {
             let line: string;
 
-            const linesRead = fs.readFileSync(document).toString().split(/\r?\n/);
+            const linesRead = cachedFile === undefined ? fs.readFileSync(document).toString().split(/\r?\n/) : cachedFile.lines;
             if (this.lineRegExFilter !== undefined) {
                 for(line of linesRead) {
                     const l = line.toString();
@@ -67,6 +68,9 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 }
             } else {
                 this.lines = linesRead;
+            }
+            if (cache !== undefined) {
+                cache.set(document, { lines: linesRead, documentVersionId: this.documentVersionId });
             }
             features.logTimedMessage(features.performance_now() - startTime, " - Loading File " + document);
         }
@@ -372,6 +376,49 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         }
 
         return fl;
+    }
+}
+
+export class SourceCacheLRU implements ISourceCache {
+    private readonly maxEntries: number;
+    private readonly map: Map<string, ISourceCacheEntry>;
+
+    constructor(maxEntries: number) {
+        this.maxEntries = Math.max(1, Math.floor(maxEntries));
+        this.map = new Map<string, ISourceCacheEntry>();
+    }
+
+    get(document: string): ISourceCacheEntry | undefined {
+        const entry = this.map.get(document);
+        if (entry === undefined) return undefined;
+
+        // refresh usage (move to newest)
+        this.map.delete(document);
+        this.map.set(document, entry);
+        return entry;
+    }
+
+    set(document: string, entry: ISourceCacheEntry): void {
+        if (this.map.has(document)) {
+            this.map.delete(document);
+        }
+
+        this.map.set(document, entry);
+
+        // evict oldest when over capacity
+        while (this.map.size > this.maxEntries) {
+            const oldestKey = this.map.keys().next().value as string;
+            if (oldestKey === undefined) break;
+            this.map.delete(oldestKey);
+        }
+    }
+
+    has(document: string): boolean {
+        return this.map.has(document);
+    }
+
+    delete(document: string): void {
+        this.map.delete(document);
     }
 }
 

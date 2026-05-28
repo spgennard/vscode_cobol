@@ -154,7 +154,7 @@ export class Scanner {
             let fSendCount = 0;
             for (const file of scanData.Files) {
                 if (Utils.cacheUpdateRequired(file, features)) {
-                    const filesHandler = new FileSourceHandler(settings, undefined, file, features);
+                    const filesHandler = new FileSourceHandler(settings, undefined, file, features, undefined);
                     const config = new COBOLSettings();
                     config.parse_copybooks_for_references = scanData.parse_copybooks_for_references;
                     config.cache_metadata_verbose_messages = scanData.cache_metadata_verbose_messages;

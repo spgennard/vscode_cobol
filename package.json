@@ -688,6 +688,12 @@
           "default": false,
           "scope": "resource"
         },
+        "coboleditor.parse_copybooks_procedure_division": {
+          "type": "boolean",
+          "description": "Also scan procedure division when parse_copybooks_for_references is enabled",
+          "default": true,
+          "scope": "resource"
+        },
         "coboleditor.workspacefolders_order": {
           "type": "array",
           "description": "List of ordered workspace folders",
@@ -936,6 +942,15 @@
           "default": 6,
           "minimum": 2,
           "maximum": 24,
+          "scope": "window"
+        },
+        "coboleditor.in_memory_copybook_cache_size": {
+          "type": "number",
+          "title": "Size of internal copybook memory cache",
+          "description": "Size of internal memory cache for scanned copybooks",
+          "default": 10,
+          "minimum": 2,
+          "maximum": 30,
           "scope": "window"
         },
         "coboleditor.suggest_variables_when_context_is_unknown": {

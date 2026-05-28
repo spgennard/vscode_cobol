@@ -17,7 +17,7 @@ suite("Core Extension Test Suite", () => {
 	const settings = new COBOLSettings();
 
 	test("Read file [basic] (test.cbl)", () => {
-		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features);
+		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features, undefined);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}
@@ -26,7 +26,7 @@ suite("Core Extension Test Suite", () => {
 	});
 
 	test("Parse file for constants/paragraphs/sections (test.cbl)", () => {
-		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features);
+		const f = new FileSourceHandler(settings, undefined, path.join(baseForSource,"test.cbl"), features, undefined);
 		if (f.lines.length < 10) {
 			assert.fail("test.cbl should have > 10 lines");
 		}

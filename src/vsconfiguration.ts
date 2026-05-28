@@ -148,6 +148,7 @@ export class VSCOBOLConfiguration {
         settings.cache_metadata_inactivity_timeout = editorHelper.getNumber("cache_metadata_inactivity_timeout", 5000);
         settings.cache_metadata_verbose_messages = editorHelper.getBoolean("cache_metadata_verbose_messages", false);
         settings.parse_copybooks_for_references = editorHelper.getBoolean("parse_copybooks_for_references", false);
+        settings.parse_copybooks_procedure_division = editorHelper.getBoolean("parse_copybooks_procedure_division", true);
         settings.workspacefolders_order = editorHelper.getWorkspacefolders_order();
         settings.linter_unused_sections = editorHelper.getBoolean("linter_unused_sections", true);
         settings.linter_unused_paragraphs = editorHelper.getBoolean("linter_unused_paragraphs", true);
@@ -211,6 +212,8 @@ export class VSCOBOLConfiguration {
         settings.scan_time_limit = editorConfig.get<number>("scan_time_limit", settings.scan_time_limit);
 
         settings.in_memory_cache_size = editorConfig.get<number>("in_memory_cache_size", settings.in_memory_cache_size);
+
+        settings.in_memory_copybook_cache_size = editorConfig.get<number>("in_memory_copybook_cache_size", settings.in_memory_copybook_cache_size);
 
         settings.suggest_variables_when_context_is_unknown = editorConfig.get<boolean>("suggest_variables_when_context_is_unknown", settings.suggest_variables_when_context_is_unknown);
 
