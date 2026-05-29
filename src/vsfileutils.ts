@@ -325,6 +325,7 @@ export class VSCOBOLFileUtils {
                     }
                 }
             }
+            return "";
         }
 
         // pre-null check
@@ -345,6 +346,8 @@ export class VSCOBOLFileUtils {
                 return normFullPath;
             }
 
+            // cache the empty result to avoid future lookups
+            cache.set(cacheKey, "");
             return fullPath;
         }
 
@@ -355,6 +358,8 @@ export class VSCOBOLFileUtils {
             return normFullPath;
         }
 
+        // cache the empty result to avoid future lookups
+        cache.set(cacheKey, "");
         return fullPath;
     }
 }
