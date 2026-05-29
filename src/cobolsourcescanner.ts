@@ -3242,7 +3242,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
         cbInfo.fileName = fileName;
-        cbInfo.fileNameMod = BigInt(0);
+        const cachedSource = this.sourceCache.get(fileName);
+        if (cachedSource?.fileModTimeStamp !== undefined) {
+            cbInfo.fileNameMod = cachedSource.fileModTimeStamp;
+        } else {
+            const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(fileName);
+            cbInfo.fileNameMod = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);
+            this.sourceCache.set(fileName, { lines: cachedSource?.lines, fileModTimeStamp: cbInfo.fileNameMod });
+        }
         if (this.copyBooksUsed.has(fileName) === false) {
             this.copyBooksUsed.set(fileName, [copybookToken]);
         } else {
@@ -3269,7 +3276,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             if (this.parse_copybooks_for_references && fileName.length > 0 && (this.configHandler.parse_copybooks_procedure_division || state.inProcedureDivision === false)) {
                 cbInfo.fileName = fileName;
                 const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures, this.sourceCache);
-                cbInfo.fileNameMod = qfile.documentVersionId !== undefined ? qfile.documentVersionId : BigInt(0);
                 const currentTopLevel = this.sourceReferences.topLevel;
                 this.sourceReferences.topLevel = false;
 

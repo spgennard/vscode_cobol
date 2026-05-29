@@ -60,6 +60,6 @@ export interface ISourceCache {
 }
 
 export interface ISourceCacheEntry {
-    lines: string[];
-    documentVersionId: BigInt;
+    lines: string[] | undefined;
+    fileModTimeStamp: BigInt | undefined;
 }

@@ -49,13 +49,13 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         this.settings = settings;
         this.shortFilename = this.findShortWorkspaceFilename(document, features, settings);
         const cachedFile = cache?.get(document);
-        this.documentVersionId = cachedFile === undefined ? fs.statSync(document, { bigint: true }).mtimeMs : cachedFile.documentVersionId;
+        this.documentVersionId = cachedFile?.fileModTimeStamp === undefined ? fs.statSync(document, { bigint: true }).mtimeMs : cachedFile.fileModTimeStamp;
         
         const startTime = features.performance_now();
         try {
             let line: string;
 
-            const linesRead = cachedFile === undefined ? fs.readFileSync(document).toString().split(/\r?\n/) : cachedFile.lines;
+            const linesRead = cachedFile?.lines === undefined ? fs.readFileSync(document).toString().split(/\r?\n/) : cachedFile.lines;
             if (this.lineRegExFilter !== undefined) {
                 for(line of linesRead) {
                     const l = line.toString();
@@ -70,7 +70,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
                 this.lines = linesRead;
             }
             if (cache !== undefined) {
-                cache.set(document, { lines: linesRead, documentVersionId: this.documentVersionId });
+                cache.set(document, { lines: linesRead, fileModTimeStamp: this.documentVersionId });
             }
             features.logTimedMessage(features.performance_now() - startTime, " - Loading File " + document);
         }
