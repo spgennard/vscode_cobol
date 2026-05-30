@@ -868,6 +868,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private readonly copyBookCache: ICopyBookCache;
 
+    // O(1) duplicate detection for addTargetReference: per references-map -> per lowercased target -> set of "line|col|len" keys
+    private readonly targetRefDedup: WeakMap<Map<string, SourceReference_Via_Length[]>, Map<string, Set<string>>> = new WeakMap();
+
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean,
@@ -1867,7 +1870,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, _targetReference, reason);
         const state = this.sourceReferences.state;
         let inSectionOrParaToken = state.currentParagraph !== undefined ? state.currentParagraph : state.currentSection;
 
@@ -1879,24 +1881,36 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
 
         if (inSectionOrParaToken !== undefined && inSectionOrParaToken.inProcedureDivision) {
-            let duplicateFound = false;
-            for (const lowerCaseVariableRef of lowerCaseTargetRefs) {
-                if (lowerCaseVariableRef.line === line && lowerCaseVariableRef.column === column && lowerCaseVariableRef.length === l) {
-                    duplicateFound = true;
-                }
+            // O(1) dedup via parallel Set keyed by line|col|len
+            let perMapDedup = this.targetRefDedup.get(referencesMap);
+            if (perMapDedup === undefined) {
+                perMapDedup = new Map<string, Set<string>>();
+                this.targetRefDedup.set(referencesMap, perMapDedup);
             }
-            if (duplicateFound === false) {
-                lowerCaseTargetRefs.push(srl);
-                let csr = state.currentSectionOutRefs.get(inSectionOrParaToken.tokenNameLower);
-                if (csr === undefined) {
-                    csr = [];
-                    state.currentSectionOutRefs.set(inSectionOrParaToken.tokenName.toLowerCase(), csr);
-                }
-                csr.push(srl);
+            let seen = perMapDedup.get(targetReference);
+            if (seen === undefined) {
+                seen = new Set<string>();
+                perMapDedup.set(targetReference, seen);
             }
+            const dedupKey = `${line}|${column}|${l}`;
+            if (seen.has(dedupKey)) {
+                return true;
+            }
+            seen.add(dedupKey);
+
+            const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, _targetReference, reason);
+            lowerCaseTargetRefs.push(srl);
+            const sectionKey = inSectionOrParaToken.tokenNameLower;
+            let csr = state.currentSectionOutRefs.get(sectionKey);
+            if (csr === undefined) {
+                csr = [];
+                state.currentSectionOutRefs.set(sectionKey, csr);
+            }
+            csr.push(srl);
             return true;
         }
 
+        const srl = new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, _targetReference, reason);
         lowerCaseTargetRefs.push(srl);
         return true;
     }
