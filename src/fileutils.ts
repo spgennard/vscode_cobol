@@ -269,6 +269,8 @@ export class COBOLFileUtils {
                 return normFullPath;
             }
 
+            // cache negative result to avoid repeated dir walks
+            cache.set(cacheKey, "");
             return fullPath;
         }
 
@@ -279,6 +281,8 @@ export class COBOLFileUtils {
             return normFullPath;
         }
 
+        // cache negative result to avoid repeated dir walks
+        cache.set(cacheKey, "");
         return fullPath;
     }
 }
