@@ -880,6 +880,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     // Duplicate detection for addTargetReference: per references-map -> per lowercased target -> set of "line|col|len" keys
     private readonly targetRefDedup: WeakMap<Map<string, SourceReference_Via_Length[]>, Map<string, Set<string>>> = new WeakMap();
 
+    // Duplicate detection for addVariableReference: per references-map -> per lowercased var -> set of "line|col|len" keys.
+    private readonly varRefDedup: WeakMap<Map<string, SourceReference_Via_Length[]>, Map<string, Set<string>>> = new WeakMap();
+
     public static ScanUncached(sourceHandler: ISourceHandler,
         configHandler: ICOBOLSettings,
         parse_copybooks_for_references: boolean,
@@ -1845,17 +1848,27 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
+        // Dedup via parallel Set keyed by "line|col|len" (same style as addTargetReference)
+        // to avoid O(n) bucket scans when a variable is referenced many times.
+        let perMapDedup = this.varRefDedup.get(referencesMap);
+        if (perMapDedup === undefined) {
+            perMapDedup = new Map<string, Set<string>>();
+            this.varRefDedup.set(referencesMap, perMapDedup);
+        }
+        let seen = perMapDedup.get(lowerCaseVariable);
+        if (seen === undefined) {
+            seen = new Set<string>();
+            perMapDedup.set(lowerCaseVariable, seen);
+        }
+        const dedupKey = `${line}|${column}|${l}`;
+        if (seen.has(dedupKey)) {
+            return true;
+        }
+        seen.add(dedupKey);
+
         const lowerCaseVariableRefs = referencesMap.get(lowerCaseVariable);
         if (lowerCaseVariableRefs !== undefined) {
-            let duplicateFound = false;
-            for (const lowerCaseVariableRef of lowerCaseVariableRefs) {
-                if (lowerCaseVariableRef.line === line && lowerCaseVariableRef.column === column && lowerCaseVariableRef.length === l) {
-                    duplicateFound = true;
-                }
-            }
-            if (duplicateFound === false) {
-                lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, lowerCaseVariable, ""));
-            }
+            lowerCaseVariableRefs.push(new SourceReference_Via_Length(this.sourceFileId, line, column, l, tokenStyle, this.isFromScanCommentsForReferences, lowerCaseVariable, ""));
             return true;
         }
 
