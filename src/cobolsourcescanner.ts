@@ -2047,22 +2047,27 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     continue;
                 }
 
+                state.prevEndsWithDot = state.endsWithDot;
+                let _trimmedTrailing = false;
                 if (_tcurrent.endsWith(",")) {
                     _tcurrent = _tcurrent.substring(0, _tcurrent.length - 1);
-                    state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = false;
+                    _trimmedTrailing = true;
                 } else if (token.endsWithDot) {
                     _tcurrent = _tcurrent.substring(0, _tcurrent.length - 1);
-                    state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = true;
+                    _trimmedTrailing = true;
                 } else {
-                    state.prevEndsWithDot = state.endsWithDot;
                     state.endsWithDot = false;
                 }
 
                 const currentCol = token.currentCol;
                 const current: string = _tcurrent;
-                const currentLower: string = _tcurrent.toLowerCase();
+                // Reuse the pre-lowercased token from StreamTokens; just slice the trailing char if we stripped one.
+                const _tcurrentLowerFull = token.currentTokenLower;
+                const currentLower: string = _trimmedTrailing
+                    ? _tcurrentLowerFull.substring(0, _tcurrentLowerFull.length - 1)
+                    : _tcurrentLowerFull;
 
                 // if pickUpUsing
                 if (state.pickUpUsing) {
