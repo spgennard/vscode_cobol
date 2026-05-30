@@ -1027,8 +1027,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
         const state: ParseState = this.sourceReferences.state;
 
-        /* mark this has been processed (to help copy of self) */
-        state.copyBooksUsed.set(this.filename, [COBOLCopybookToken.Null]);
+        // only insert, if not present
+        if (!state.copyBooksUsed.has(this.filename)) {
+            state.copyBooksUsed.set(this.filename, [COBOLCopybookToken.Null]);
+        }
         if (this.sourceReferences.topLevel) {
             const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(this.filename);
             this.lastModifiedTime = _possibleLastModifiedTime !== undefined ? _possibleLastModifiedTime : BigInt(0);

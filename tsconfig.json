@@ -30,6 +30,8 @@
     },
     "exclude": [
         "out",
+        "out-bench",
+        "bench",
         "types",
         "node_modules",
         ".vscode-test",
