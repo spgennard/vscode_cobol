@@ -18,6 +18,7 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     languageId: string;
     notedCommentRanges: commentRange[];
     tabSize: number;
+    private cachedFilename: string | undefined;
 
     public constructor(document: vscode.TextDocument) {
         this.document = document;
@@ -39,7 +40,10 @@ export class VSCodeSourceHandlerLite implements ISourceHandlerLite {
     }
 
     getFilename(): string {
-        return this.document !== undefined ? this.document.fileName : "";
+        if (this.cachedFilename === undefined) {
+            this.cachedFilename = this.document !== undefined ? this.document.fileName : "";
+        }
+        return this.cachedFilename;
     }
 
     getRawLine(lineNumber: number): string | undefined {
@@ -107,6 +111,8 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
+    private cachedUriAsString: string | undefined;
+    private cachedFilename: string | undefined;
 
     tabSize: number;
 
@@ -183,7 +189,10 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     getUriAsString(): string {
-        return this.document === undefined ? "" : this.document.uri.toString();
+        if (this.cachedUriAsString === undefined) {
+            this.cachedUriAsString = this.document === undefined ? "" : this.document.uri.toString();
+        }
+        return this.cachedUriAsString;
     }
 
     getLineCount(): number {
@@ -333,7 +342,10 @@ export class VSCodeSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     getFilename(): string {
-        return this.document !== undefined ? this.document.fileName : "";
+        if (this.cachedFilename === undefined) {
+            this.cachedFilename = this.document !== undefined ? this.document.fileName : "";
+        }
+        return this.cachedFilename;
     }
 
     addCommentCallback(commentCallback: ICommentCallback): void {

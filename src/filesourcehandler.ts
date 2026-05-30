@@ -28,6 +28,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     commentsIndex: Map<number, string>;
     commentsIndexInline: Map<number, boolean>;
     private readonly lineRegExFilter: RegExp | undefined;
+    private cachedUriAsString: string | undefined;
     settings: ICOBOLSettings;
 
     public constructor(settings: ICOBOLSettings, regEx: RegExp | undefined, document: string, features: IExternalFeatures) {
@@ -114,7 +115,10 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     getUriAsString(): string {
-        return pathToFileURL(this.getFilename()).href;
+        if (this.cachedUriAsString === undefined) {
+            this.cachedUriAsString = pathToFileURL(this.getFilename()).href;
+        }
+        return this.cachedUriAsString;
     }
 
     getLineCount(): number {
