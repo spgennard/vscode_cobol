@@ -110,17 +110,47 @@ class VSExternalFeaturesImpl implements IExternalFeatures {
     }
 
 
+    // Short-lived cache of mtime lookups to absorb LSP bursts where many
+    // providers (hover, completion, diagnostics, ...) hit getCachedObject
+    // in the same tick and re-stat the same copybook set.
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    private mtimeCache: Map<string, { ts: number; mtime: BigInt | undefined }> = new Map();
+    private static readonly MTIME_TTL_MS = 250;
+
+    // Diagnostic counter: total real fs.statSync calls issued by getFileModTimeStamp.
+    // Useful for telemetry / perf investigations; cheap (single integer).
+    public statSyncCount = 0;
+
+    public invalidateMtime(filename?: string): void {
+        if (filename === undefined) {
+            this.mtimeCache.clear();
+        } else {
+            this.mtimeCache.delete(filename);
+        }
+    }
+
     // eslint-disable-next-line @typescript-eslint/ban-types
     public getFileModTimeStamp(filename: string): BigInt|undefined {
-        try {
-            const f = fs.statSync(filename, { bigint: true, throwIfNoEntry: false });
-            if (f === undefined) {
-                return undefined;
-            }
-            return (BigInt)(f.mtimeMs);
-        } catch (e) {
-            return undefined;
+        const now = Date.now();
+        const hit = this.mtimeCache.get(filename);
+        if (hit !== undefined && (now - hit.ts) < VSExternalFeaturesImpl.MTIME_TTL_MS) {
+            return hit.mtime;
         }
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        let mtime: BigInt | undefined;
+        try {
+            // Note: virtual workspaces (vscode-vfs://, github1s, etc.) can't be
+            // stat'd via node fs; callers that operate on URIs should use
+            // isFileASync / workspace.fs.stat instead. Here we only cover the
+            // on-disk path used by the synchronous scanner.
+            this.statSyncCount++;
+            const f = fs.statSync(filename, { bigint: true, throwIfNoEntry: false });
+            mtime = f === undefined ? undefined : (BigInt)(f.mtimeMs);
+        } catch (e) {
+            mtime = undefined;
+        }
+        this.mtimeCache.set(filename, { ts: now, mtime });
+        return mtime;
     }
 
     public getSourceTimeout(config: ICOBOLSettings): number {

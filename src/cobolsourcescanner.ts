@@ -3290,7 +3290,21 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 const prevRepMap = state.replaceMap;
 
                 if (this.configHandler.enable_text_replacement) {
-                    state.replaceMap = new Map<string, replaceToken>([...cbInfo.copyReplaceMap, ...prevRepMap]);
+                    // Manual merge to avoid the two transient arrays created by
+                    // `new Map([...a, ...b])`. Preserve original precedence:
+                    // entries in prevRepMap (outer scope) override cbInfo.copyReplaceMap.
+                    // Note: aliasing is unsafe because state.replaceMap is mutated
+                    // in-place elsewhere (REPLACE statement handling .clear()/.set()).
+                    const localRepMap = cbInfo.copyReplaceMap;
+                    if (localRepMap.size === 0 && prevRepMap.size === 0) {
+                        state.replaceMap = new Map<string, replaceToken>();
+                    } else {
+                        const merged = new Map<string, replaceToken>(localRepMap);
+                        for (const [k, v] of prevRepMap) {
+                            merged.set(k, v);
+                        }
+                        state.replaceMap = merged;
+                    }
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 if (this.ScanUncachedInlineCopybook(qfile, this, false) == false) {

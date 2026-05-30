@@ -117,18 +117,26 @@ export class VSCOBOLSourceScanner {
             }
             if (cachedObject !== undefined) {
                 let useCache = true;
-                for (const [, cbInfos] of cachedObject.copyBooksUsed) {
-                    for (const cbInfo of cbInfos) {
-                        if (!cbInfo.scanComplete) {
+                if (!avoidCopyBookCheck) {
+                    // One stat per resolved copybook fileName is enough; every
+                    // COBOLCopybookToken under the same key resolves to the
+                    // same file + mtime, so we probe the first usable entry.
+                    for (const [, cbInfos] of cachedObject.copyBooksUsed) {
+                        let probe = undefined;
+                        for (const cbInfo of cbInfos) {
+                            if (cbInfo.scanComplete && cbInfo.statementInformation !== undefined) {
+                                probe = cbInfo;
+                                break;
+                            }
+                        }
+                        if (probe === undefined) {
                             continue;
                         }
-
-                        if (cbInfo.statementInformation !== undefined && avoidCopyBookCheck === false) {
-                            useCache = cbInfo.hasCopybookChanged(cachedObject.externalFeatures, config) == false;
-                            if (!useCache) break; // exit inner loop early
+                        if (probe.hasCopybookChanged(cachedObject.externalFeatures, config)) {
+                            useCache = false;
+                            break;
                         }
                     }
-                    if (!useCache) break; // exit outer loop early
                 }
 
                 if (!useCache) {

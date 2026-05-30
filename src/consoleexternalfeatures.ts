@@ -141,12 +141,40 @@ export class ConsoleExternalFeatures implements IExternalFeatures {
         return false;
     }
 
+    // Short-lived cache of mtime lookups to absorb bursts of cache-validation
+    // calls (e.g. LSP providers calling hasCopybookChanged in the same tick).
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    private mtimeCache: Map<string, { ts: number; mtime: BigInt | undefined }> = new Map();
+    private static readonly MTIME_TTL_MS = 250;
+
+    // Diagnostic counter: total real fs.statSync calls issued by getFileModTimeStamp.
+    public statSyncCount = 0;
+
+    public invalidateMtime(filename?: string): void {
+        if (filename === undefined) {
+            this.mtimeCache.clear();
+        } else {
+            this.mtimeCache.delete(filename);
+        }
+    }
+
     public getFileModTimeStamp(filename:string):BigInt|undefined {
+        const now = Date.now();
+        const hit = this.mtimeCache.get(filename);
+        if (hit !== undefined && (now - hit.ts) < ConsoleExternalFeatures.MTIME_TTL_MS) {
+            return hit.mtime;
+        }
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        let mtime: BigInt | undefined;
+        this.statSyncCount++;
         const f = fs.statSync(filename, {bigint:true, throwIfNoEntry: false});
         if (f === undefined) {
-            return undefined;
+            mtime = undefined;
+        } else {
+            mtime = (BigInt)(f.mtimeMs);
         }
-        return (BigInt)(f.mtimeMs);
+        this.mtimeCache.set(filename, { ts: now, mtime });
+        return mtime;
     }
 
     private fileSearchDirectory: string[] = [];
