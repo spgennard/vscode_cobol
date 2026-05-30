@@ -29,6 +29,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     commentsIndexInline: Map<number, boolean>;
     private readonly lineRegExFilter: RegExp | undefined;
     private cachedUriAsString: string | undefined;
+    private cachedKeywordDictionary: Map<string, string> | undefined;
     settings: ICOBOLSettings;
 
     public constructor(settings: ICOBOLSettings, regEx: RegExp | undefined, document: string, features: IExternalFeatures) {
@@ -237,7 +238,13 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
     }
 
     isValidKeyword(keyword: string): boolean {
-        return getCOBOLKeywordDictionary(this.settings, this.languageId).has(keyword);
+        // Lazy-cache the resolved dictionary. getCOBOLKeywordDictionary clones the
+        // dialect map on every call when remove_reserved_words is non-empty, which
+        // is hot when getLine() is in dumpNumbersInAreaA mode.
+        if (this.cachedKeywordDictionary === undefined) {
+            this.cachedKeywordDictionary = getCOBOLKeywordDictionary(this.settings, this.languageId);
+        }
+        return this.cachedKeywordDictionary.has(keyword);
     }
 
     getFilename(): string {
