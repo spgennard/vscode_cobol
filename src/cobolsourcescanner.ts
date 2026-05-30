@@ -2069,6 +2069,10 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     ? _tcurrentLowerFull.substring(0, _tcurrentLowerFull.length - 1)
                     : _tcurrentLowerFull;
 
+                // Per-token memoization of isValidKeyword(currentLower) — many code paths below
+                // re-check the same token; compute at most once per iteration.
+                let _isKwCurrent: boolean | null = null;
+
                 // if pickUpUsing
                 if (state.pickUpUsing) {
                     if (state.endsWithDot) {
@@ -2115,7 +2119,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             if (this.sourceReferences !== undefined) {
                                 if (currentLower === "any") {
                                     state.parameters.push(new COBOLParameter(state.using, current));
-                                } else if (currentLower.length > 0 && this.isValidKeyword(currentLower) === false && this.isNumber(currentLower) === false) {
+                                } else if (currentLower.length > 0 && (_isKwCurrent ??= this.isValidKeyword(currentLower)) === false && this.isNumber(currentLower) === false) {
                                     // no forward validation can be done, as this is a one pass scanner
                                     if (this.addVariableReference(this.sourceReferences.unknownReferences, currentLower, lineNumber, token.currentCol, COBOLTokenStyle.Variable)) {
                                         state.parameters.push(new COBOLParameter(state.using, current));
@@ -2128,7 +2132,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             }
 
                             // if entry or procedure division does not have "." then parsing must end now
-                            if (currentLower !== "any" && this.isValidKeyword(currentLower)) {
+                            if (currentLower !== "any" && (_isKwCurrent ??= this.isValidKeyword(currentLower))) {
                                 state.currentProgramTarget.CallParameters = state.parameters;
                                 state.using = UsingState.UNKNOWN;
                                 state.pickUpUsing = false
@@ -2850,7 +2854,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 // we are in the procedure division
                 if (state.captureDivisions && state.currentDivision !== undefined &&
                     state.currentDivision === state.procedureDivision && state.endsWithDot && state.prevEndsWithDot) {
-                    if (!this.isValidKeyword(currentLower)) {
+                    if (!(_isKwCurrent ??= this.isValidKeyword(currentLower))) {
                         if (current.length !== 0) {
                             if (this.isParagraph(current)) {
                                 if (state.currentSection !== undefined) {
@@ -2899,7 +2903,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                                 pickUpThisField = true;
                             } else {
                                 // okay, current item looks like it could be a field
-                                if (!this.isValidKeyword(currentLower)) {
+                                if (!(_isKwCurrent ??= this.isValidKeyword(currentLower))) {
                                     pickUpThisField = true;
                                 }
                             }
@@ -3003,7 +3007,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                         || prevTokenLower === "cd"
                         || prevTokenLower === "rd"
                         || prevTokenLower === "select")
-                        && !this.isValidKeyword(currentLower)) {
+                        && !(_isKwCurrent ??= this.isValidKeyword(currentLower))) {
                         const trimToken = COBOLSourceScanner.trimLiteral(current, false);
 
                         if (COBOLSourceScanner.isValidLiteral(currentLower)) {
@@ -3021,7 +3025,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     }
 
                     // add tokens from comms section
-                    if (state !== undefined && state.currentSection !== undefined && state.currentSection.tokenNameLower === "communication" && !this.isValidKeyword(currentLower)) {
+                    if (state !== undefined && state.currentSection !== undefined && state.currentSection.tokenNameLower === "communication" && !(_isKwCurrent ??= this.isValidKeyword(currentLower))) {
                         if (prevTokenLower === "is") {
                             const trimToken = COBOLSourceScanner.trimLiteral(current, false);
                             const variableToken = this.newCOBOLToken(COBOLTokenStyle.Variable, lineNumber, line, currentCol, trimToken, trimToken, state.currentDivision, prevTokenLower, false);
@@ -3038,7 +3042,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             continue;
                         }
 
-                        if (this.isNumber(currentLower) === true || this.isValidKeyword(currentLower) === true) {
+                        if (this.isNumber(currentLower) === true || (_isKwCurrent ??= this.isValidKeyword(currentLower)) === true) {
                             continue;
                         }
 
