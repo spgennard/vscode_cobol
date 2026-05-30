@@ -442,6 +442,10 @@ export class copybookState implements IReplaceState {
     public isPseudoTextDelimiter = false;
     public saved01Group: COBOLToken | undefined;
     public copybookDepths: copybookState[] = [];
+    // Parallel live-count of fileName -> occurrences on copybookDepths.
+    // Shared by reference alongside copybookDepths so the recursion-guard
+    // check in processCopyBook is O(1) instead of O(copybookDepths.length).
+    public copybookDepthCounts: Map<string, number> = new Map();
     constructor(current01Group: COBOLToken | undefined) {
         this.saved01Group = current01Group;
     }
@@ -2422,6 +2426,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                             state.copybook_state.startCol = currentCol;
                             state.copybook_state.endCol = line.indexOf(sqlCopyBook) + sqlCopyBook.length;
                             state.copybook_state.copybookDepths = prevState.copybookDepths;
+                            state.copybook_state.copybookDepthCounts = prevState.copybookDepthCounts;
                             const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
                             if (fileName.length === 0) {
                                 this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
@@ -2818,6 +2823,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     state.skipToDot = true;
                     state.copybook_state.copyVerb = current;
                     state.copybook_state.copybookDepths = prevState.copybookDepths;
+                    state.copybook_state.copybookDepthCounts = prevState.copybookDepthCounts;
 
                     // ILE COBOL: /COPY and /INCLUDE are line-terminated (no period required)
                     // Consume remaining tokens on this line as the copybook name
@@ -3201,12 +3207,32 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
     }
 
+    private popCopybookDepth(cbInfo: copybookState): void {
+        cbInfo.copybookDepths.pop();
+        const counts = cbInfo.copybookDepthCounts;
+        const n = counts.get(cbInfo.fileName) ?? 0;
+        if (n <= 1) {
+            counts.delete(cbInfo.fileName);
+        } else {
+            counts.set(cbInfo.fileName, n - 1);
+        }
+    }
+
     private processCopyBook(cbInfo: copybookState): boolean {
         if (cbInfo.copybookDepths.length > this.configHandler.copybook_scan_depth) {
             return false;
         }
 
         cbInfo.copybookDepths.push(cbInfo);
+        // Bump the parallel counter using whatever fileName cbInfo carries at
+        // push time (may be "" before resolution). The pop helper uses the
+        // fileName as it stands at pop time -- the two sites below that pop
+        // *before* fileName is assigned use the same "" key, so push/pop
+        // remain symmetric.
+        {
+            const counts = cbInfo.copybookDepthCounts;
+            counts.set(cbInfo.fileName, (counts.get(cbInfo.fileName) ?? 0) + 1);
+        }
 
         const state: ParseState = this.sourceReferences.state;
 
@@ -3248,12 +3274,26 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
         if (fileName.length === 0) {
             this.processUnUsedCopyBook(trimmedCopyBook, copyToken);
-            cbInfo.copybookDepths.pop();
+            // fileName still "" here, matches the push above
+            this.popCopybookDepth(cbInfo);
             if (this.configHandler.linter_ignore_missing_copybook === false) {
                 const diagMessage = `Unable to locate copybook ${trimmedCopyBook}`;
                 this.diagMissingFileWarnings.set(diagMessage, new COBOLFileSymbol(this.filename, copyToken.startLine, trimmedCopyBook));
             }
             return false;
+        }
+        // fileName resolved -- promote the placeholder "" entry to the real key
+        // so the recursion check below sees the resolved name.
+        if (cbInfo.fileName !== fileName) {
+            const counts = cbInfo.copybookDepthCounts;
+            const placeholderKey = cbInfo.fileName;
+            const n = counts.get(placeholderKey) ?? 0;
+            if (n <= 1) {
+                counts.delete(placeholderKey);
+            } else {
+                counts.set(placeholderKey, n - 1);
+            }
+            counts.set(fileName, (counts.get(fileName) ?? 0) + 1);
         }
         cbInfo.fileName = fileName;
         const _possibleLastModifiedTime = this.externalFeatures.getFileModTimeStamp(fileName);
@@ -3267,16 +3307,13 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
 
-        let count = 0;
-        for (const cbi of cbInfo.copybookDepths) {
-            if (cbi.fileName === cbInfo.fileName) {
-                count++;
-            }
-        }
-
-        if (count >= 2) {
+        // O(1) recursion guard: copybookDepthCounts tracks live occurrences of
+        // fileName across copybookDepths (shared by reference across nested
+        // scans). >=2 means we just pushed a second active frame for the
+        // same file -> recursion.
+        if ((cbInfo.copybookDepthCounts.get(cbInfo.fileName) ?? 0) >= 2) {
             this.externalFeatures.logMessage(`Possible recursive COPYBOOK ${cbInfo.fileName}`);
-            cbInfo.copybookDepths.pop();
+            this.popCopybookDepth(cbInfo);
             return false;
         }
 
@@ -3317,7 +3354,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
 
-        cbInfo.copybookDepths.pop();
+        this.popCopybookDepth(cbInfo);
         return true;
     }
 
