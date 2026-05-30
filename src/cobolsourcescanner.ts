@@ -394,8 +394,13 @@ class StreamTokens {
 export class replaceToken {
     private readonly replaceToken: string;
     public readonly rex4wordreplace: RegExp;
+    // Raw (unescaped) FROM literal, used for cheap per-line presence checks
+    // before the regex pass runs. Case-sensitive on purpose: rex4wordreplace
+    // is compiled without the "i" flag, so plain indexOf matches its semantics.
+    public readonly literal: string;
 
     constructor(replaceTokenRaw: string, tokenState: IReplaceState) {
+        this.literal = replaceTokenRaw;
         this.replaceToken = this.escapeRegExp(replaceTokenRaw);
         if (tokenState.isPseudoTextDelimiter) {
             this.rex4wordreplace = new RegExp(`${this.replaceToken}`, "g");
@@ -872,7 +877,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
     private readonly copyBookCache: ICopyBookCache;
 
-    // O(1) duplicate detection for addTargetReference: per references-map -> per lowercased target -> set of "line|col|len" keys
+    // Duplicate detection for addTargetReference: per references-map -> per lowercased target -> set of "line|col|len" keys
     private readonly targetRefDedup: WeakMap<Map<string, SourceReference_Via_Length[]>, Map<string, Set<string>>> = new WeakMap();
 
     public static ScanUncached(sourceHandler: ISourceHandler,
@@ -1887,7 +1892,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         }
 
         if (inSectionOrParaToken !== undefined && inSectionOrParaToken.inProcedureDivision) {
-            // O(1) dedup via parallel Set keyed by line|col|len
+            // Dedu via parallel Set keyed by line|col|len
             let perMapDedup = this.targetRefDedup.get(referencesMap);
             if (perMapDedup === undefined) {
                 perMapDedup = new Map<string, Set<string>>();
@@ -1961,7 +1966,24 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         const token = new StreamTokens(line, lineNumber, prevToken);
 
         const state = this.sourceReferences.state;
-        let stream = this.processToken(lineNumber, token, line, state.replaceMap.size !== 0);
+
+        // Cheap per-line gate. The per-token loop in processToken calls
+        // String.replace(rex,…) once per replaceMap entry on every token --
+        // expensive on wide lines under deep nesting. indexOf over the raw
+        // FROM literal is a strict superset of what the (case-sensitive,
+        // no-`i` flag) word-boundary regex can match, so skipping here can
+        // never hide a replacement the regex would have produced.
+        let replaceOn = false;
+        if (state.replaceMap.size !== 0) {
+            for (const [, r] of state.replaceMap) {
+                if (line.indexOf(r.literal) !== -1) {
+                    replaceOn = true;
+                    break;
+                }
+            }
+        }
+
+        let stream = this.processToken(lineNumber, token, line, replaceOn);
 
         // update current group to always include the end of current line
         if (state.current01Group !== undefined && line.length !== 0 && state.inCopy === false) {
@@ -3309,7 +3331,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             }
         }
 
-        // O(1) recursion guard: copybookDepthCounts tracks live occurrences of
+        // Recursion guard: copybookDepthCounts tracks live occurrences of
         // fileName across copybookDepths (shared by reference across nested
         // scans). >=2 means we just pushed a second active frame for the
         // same file -> recursion.
