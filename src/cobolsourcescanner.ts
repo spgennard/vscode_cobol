@@ -1548,7 +1548,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
 
 
     // private static readonly literalRegexOld = /^[#a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
-    private static readonly literalRegex = /^([a-zA-Z-0-9_]*[a-zA-Z0-9]|([#]?[0-9a-zA-Z]+[a-zA-Z-0-9_]*[a-zA-Z0-9]))$/g;
+    // Note: no /g flag -- the regex is anchored and only used for boolean .test() checks.
+    // Sharing a /g RegExp across .test()/.exec() callers would cause lastIndex bugs.
+    private static readonly literalRegex = /^([a-zA-Z-0-9_]*[a-zA-Z0-9]|([#]?[0-9a-zA-Z]+[a-zA-Z-0-9_]*[a-zA-Z0-9]))$/;
 
     public static isValidLiteral(id: string): boolean {
 
@@ -1556,14 +1558,14 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        if (id.match(COBOLSourceScanner.literalRegex)) {
+        if (COBOLSourceScanner.literalRegex.test(id)) {
             return true;
         }
 
         return false;
     }
 
-    private static readonly paragraphRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_]*$/g;
+    private static readonly paragraphRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_]*$/;
 
     private isParagraph(id: string): boolean {
 
@@ -1571,7 +1573,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        if (id.match(COBOLSourceScanner.paragraphRegex) === null) {
+        if (COBOLSourceScanner.paragraphRegex.test(id) === false) {
             return false;
         }
 
@@ -1590,7 +1592,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             return false;
         }
 
-        if (id.match(COBOLSourceScanner.paragraphRegex) === null) {
+        if (COBOLSourceScanner.paragraphRegex.test(id) === false) {
             return false;
         }
 

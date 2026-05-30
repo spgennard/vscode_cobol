@@ -130,7 +130,8 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
         return this.commentCount;
     }
 
-    private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/g;
+    // No /g flag: anchored boolean check used with .test(); /g would introduce lastIndex state.
+    private static readonly paraPrefixRegex1 = /^[0-9 ][0-9 ][0-9 ][0-9 ][0-9 ][0-9 ]/;
 
     getLine(lineNumber: number, raw: boolean): string | undefined {
         let line: string | undefined = undefined;
@@ -178,7 +179,7 @@ export class FileSourceHandler implements ISourceHandler, ISourceHandlerLite {
 
             // todo - this is a bit messy and should be revised
             if (this.dumpNumbersInAreaA) {
-                if (line.match(FileSourceHandler.paraPrefixRegex1)) {
+                if (FileSourceHandler.paraPrefixRegex1.test(line)) {
                     line = "      " + line.substring(6);
                 } else {
                     if (line.length > 7 && line[6] === " ") {
