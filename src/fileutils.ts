@@ -153,7 +153,6 @@ export class COBOLFileUtils {
                 // search through the possible extensions
                 for (const ext of config.copybookexts) {
                     const possibleFile = path.join(copybookdir, filename + "." + ext);
-
                     if (features.isFile(possibleFile)) {
                         return possibleFile;
                     }

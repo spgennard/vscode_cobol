@@ -1217,7 +1217,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                     // if we are not debugging..
                     if (externalFeatures.isDebuggerActive() === false) {
                         // check for timeout every 1000 lines
-                        if (l % 1000 !== 0) {
+                        if (l % 1000 === 0) {
                             const elapsedTime = externalFeatures.performance_now() - this.sourceReferences.startTime;
                             if (elapsedTime > sourceTimeout) {
                                 this.externalFeatures.logMessage(`Aborted scanning ${this.filename} after ${elapsedTime}`);
@@ -1593,22 +1593,16 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     private isNumber(value: string): boolean {
-        try {
-            if (value.toString().length === 0) {
-                return false;
-            }
-            return !isNaN(Number(value.toString()));
-        }
-        catch (e) {
-            this.externalFeatures.logException("isNumber(" + value + ")", e as Error);
+        if (value.length === 0) {
             return false;
         }
+        return !isNaN(Number(value));
     }
 
     private containsIndex(literal: string): boolean {
         for (let pos = 0; pos < literal.length; pos++) {
-            if (literal[pos] === "(" || literal[pos] === ")" &&
-                literal[pos] === "[" || literal[pos] === "]") {
+            const ch = literal[pos];
+            if (ch === "(" || ch === ")" || ch === "[" || ch === "]") {
                 return true;
             }
         }
