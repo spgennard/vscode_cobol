@@ -3229,7 +3229,7 @@
     }
   },
   "engines": {
-    "vscode": "^1.118.0"
+    "vscode": "^1.125.0"
   },
   "scripts": {
     "vscode:prepublish": "npm run cp-resources && npm run compile && webpack --mode production",
@@ -3255,10 +3255,10 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.9.1",
-    "@types/vscode": "^1.118.0",
+    "@types/node": "^26.0.0",
+    "@types/vscode": "^1.125.0",
     "@types/webpack-env": "^1.18.8",
-    "@vscode/test-electron": "^2.5.2",
+    "@vscode/test-electron": "^3.0.0",
     "@vscode/test-web": "^0.0.80",
     "ansi-regex": ">=6.2.2",
     "assert": "^2.1.0",
@@ -3271,7 +3271,7 @@
     "nth-check": ">=3.0.1",
     "process": "^0.11.10",
     "shx": "^0.4.0",
-    "ts-loader": "^9.5.7",
+    "ts-loader": "^9.6.1",
     "typescript": "^6.0.3",
     "webpack": "^5.107.2",
     "webpack-cli": "^7.0.3"
@@ -3286,8 +3286,8 @@
     "has-property-descriptors": "^1.0.2",
     "is-callable": "^1.2.7",
     "js-base64": "^3.7.8",
-    "memfs": "^4.57.2",
-    "npm-check-updates": "^22.2.1",
+    "memfs": "^4.57.7",
+    "npm-check-updates": "^22.2.3",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "performance-now": "2.1.0",
