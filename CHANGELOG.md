@@ -1,5 +1,22 @@
 # CHANGELOG
 
+* f4019e2 perfilecopybook dirs behavour was changed, ensure it is preserved
+* c7e9f8f regex changes, drop /g and use .test
+* 815ab8c ensure isValidKeyword (outside of vscode) is cached
+* 72e3db4 tweak addVariableReference to use a set
+* deb284c Per-line literal pre-filter before REPLACE regex pass, to only do regex when required
+* 4063f39 bench tweaks only insert empty used token if not present
+* 1d12690 ignore out-bench/ build dir; exclude bench/ from .vsix packaging
+* d858d81 H5: O(1) recursion guard in processCopyBook
+* b1bab15 add ttl mtime cache, tweak happy path for copy replace map
+* ff16bfc bring fileutils.ts inline with vsfileutils.ts
+* 18a843e small tweak but avoid multiple lookups
+* cc1bb78 performance tweaks for the tokeniser
+* ce3eb85 addTargetReference use a set for the dedup and move the srl allocation to where it is needed to avoid gc on false route
+* 10a9ac2 A performance enhancement, can make 10-15% diff on large file, so it's worth doing
+* df26136 minor perf tweak
+
+## 26.5.28 
 * 1835928 add support for caching some not found copybooks
 
 ## 26.5.27 
