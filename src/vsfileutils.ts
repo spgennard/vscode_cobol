@@ -325,7 +325,6 @@ export class VSCOBOLFileUtils {
                     }
                 }
             }
-            return "";
         }
 
         // pre-null check

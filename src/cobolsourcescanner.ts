@@ -1670,25 +1670,6 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
     }
 
     public static trimLiteral(literal: string, trimQuotes: boolean): string {
-        // Fast path: most tokens already arrive trimmed and contain none of the
-        // characters the slow path strips. Inspect only the boundary chars; if
-        // neither is "interesting", return the input as-is (no allocations).
-        // Slow path only mutates when leading/trailing whitespace, leading '(',
-        // trailing ')', trailing '.', or (when trimQuotes) wrapping quotes.
-        const _n = literal.length;
-        if (_n === 0) {
-            return literal;
-        }
-        const _first = literal.charCodeAt(0);
-        const _last = literal.charCodeAt(_n - 1);
-        // 9=TAB 10=LF 13=CR 32=SPACE 34=" 39=' 40=( 41=) 46=.
-        // Conservative: any boundary char with code <= 32 is whitespace-ish.
-        const _firstInteresting = _first <= 32 || _first === 40 || (trimQuotes && (_first === 34 || _first === 39));
-        const _lastInteresting = _last <= 32 || _last === 41 || _last === 46 || (trimQuotes && (_last === 34 || _last === 39));
-        if (!_firstInteresting && !_lastInteresting) {
-            return literal;
-        }
-
         let literalTrimmed = literal.trim();
 
         if (literalTrimmed.length === 0) {
