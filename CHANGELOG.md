@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 30af390 update README.md for open vsx badges
+
+## 26.6.22 
 * f4019e2 perfilecopybook dirs behavour was changed, ensure it is preserved
 * c7e9f8f regex changes, drop /g and use .test
 * 815ab8c ensure isValidKeyword (outside of vscode) is cached
