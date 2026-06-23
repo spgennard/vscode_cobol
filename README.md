@@ -1,6 +1,19 @@
 # COBOL Source editing for Visual Studio Code
 
-[![Version](https://vsmarketplacebadges.dev/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)[![Downloads](https://vsmarketplacebadges.dev/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) [![Rating](https://vsmarketplacebadges.dev/rating-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol)
+Release Information:
+
+| Version                                                                                                                                    | Installs                                                                                                                                            | Rating                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Version](https://vsmarketplacebadges.dev/version/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) | [![Downloads](https://vsmarketplacebadges.dev/installs-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) | [![Rating](https://vsmarketplacebadges.dev/rating-short/bitlang.cobol.svg)](https://marketplace.visualstudio.com/items?itemName=bitlang.cobol) |
+| [![Version](https://img.shields.io/open-vsx/v/bitlang/cobol)](https://open-vsx.org/extension/bitlang/cobol) | [![Downloads](https://img.shields.io/open-vsx/dt/bitlang/cobol)](https://open-vsx.org/extension/bitlang/cobol) | [![Rating](https://img.shields.io/open-vsx/stars/bitlang/cobol)](https://open-vsx.org/extension/bitlang/cobol) |
+
+
+
+
+
+
+
+
 
 This unofficial extension provides syntax highlighting for `Rocket ® COBOL` based COBOL languages (previously `Micro Focus COBOL`), with some support for other COBOL dialects such as ACUCOBOL, RMCOBOL, COBOL-IT and ILECOBOL.
 
