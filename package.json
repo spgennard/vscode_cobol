@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "26.6.23",
+  "version": "26.7.4",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -3255,7 +3255,7 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.1.0",
     "@types/vscode": "^1.125.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^3.0.0",
@@ -3273,8 +3273,8 @@
     "shx": "^0.4.0",
     "ts-loader": "^9.6.2",
     "typescript": "^6.0.3",
-    "webpack": "^5.108.1",
-    "webpack-cli": "^7.1.0"
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1"
   },
   "dependencies": {
     "@vscode-elements/elements-lite": "^0.4.0",
@@ -3287,7 +3287,7 @@
     "is-callable": "^1.2.7",
     "js-base64": "^3.8.0",
     "memfs": "^4.57.8",
-    "npm-check-updates": "^22.2.7",
+    "npm-check-updates": "^22.2.9",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "performance-now": "2.1.0",
