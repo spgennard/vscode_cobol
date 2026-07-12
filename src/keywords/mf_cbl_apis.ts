@@ -1,8 +1,8 @@
 import { IKnownApis } from "./cobolCallTargets";
 
 export class CBL_APIs implements IKnownApis {
-    public url = "https://www.microfocus.com/documentation/visual-cobol/vc100/VS2022/HRCLRHCALL17.html";
-    public name = "Micro Focus CBL Library Routines";
+    public url = "https://docs.rocketsoftware.com/bundle/enterprisedevelopereclux_ug_110/page/library_routines_dlu1742952203837.html";
+    public name = "Library Routines";
     public apis = new Map<string, string[]>([
         ["CBL_ABORT_RUN_UNIT", ["Aborts the current run unit irrespective of thee of existing threads"]],
         ["CBL_ALLOC_DYN_MEM", ["Dynamically allocates memory, and can associate it with the calling program."]],

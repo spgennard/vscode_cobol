@@ -2,7 +2,7 @@
 import { IKnownApis } from "./cobolCallTargets";
 
 export class ACU_COMMON_APIs implements IKnownApis {
-    public url = "https://www.microfocus.com/documentation/visual-cobol/vc50all/VS2019/GUID-E30C24B6-3C74-48A4-AE39-C7A8F811C7A3.html";
+    public url = "https://docs.rocketsoftware.com/bundle/acucobolgt_dg_1050_html/page/BKPPPPLIBRS001.html";
     public name = "Common ACU APIs";
     public apis = new Map<string, string[]>([
         ["C$CALLEDBY", ["Returns the name of the caller of the currently running COBOL program or spaces if no caller exists or if the caller is unknown. "]],
