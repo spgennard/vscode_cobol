@@ -40,7 +40,7 @@ const webConfig = /** @type WebpackConfig */ {
       os: require.resolve("os-browserify/browser"),
       path: require.resolve("path-browserify"),
       //punycode: require.resolve('punycode'),
-      process: require.resolve("process/browser"),
+      process: require.resolve("process/browser.js"),
       //querystring: require.resolve('querystring-es3'),
       stream: require.resolve("stream-browserify"),
       //string_decoder: require.resolve('string_decoder'),
@@ -60,7 +60,11 @@ const webConfig = /** @type WebpackConfig */ {
         exclude: /node_modules/,
         use: [
           {
-            loader: "ts-loader",
+            loader: "esbuild-loader",
+            options: {
+              loader: "ts",
+              target: "es2020",
+            },
           },
         ],
       },
@@ -73,7 +77,7 @@ const webConfig = /** @type WebpackConfig */ {
     //   Buffer: ["buffer", "Buffer"],
     // }),
     new webpack.ProvidePlugin({
-      process: "process/browser", // provide a shim for the global `process` variable
+      process: "process/browser.js", // provide a shim for the global `process` variable
     }),
     new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
     resource.request = resource.request.replace(/^node:/, "");
@@ -118,7 +122,11 @@ const config = {
         exclude: /node_modules/,
         use: [
           {
-            loader: "ts-loader"
+            loader: "esbuild-loader",
+            options: {
+              loader: "ts",
+              target: "node16",
+            },
           }
         ]
       }
@@ -156,7 +164,11 @@ const scannerConfig = {
         exclude: /node_modules/,
         use: [
           {
-            loader: "ts-loader"
+            loader: "esbuild-loader",
+            options: {
+              loader: "ts",
+              target: "node16",
+            },
           }
         ]
       }
