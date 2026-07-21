@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* 5ed2b06 tweak urls
+* 48a1ba9 move to typescript 7
+
+## 26.7.4 
 
 ## 26.6.23 
 * 30af390 update README.md for open vsx badges
