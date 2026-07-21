@@ -3287,7 +3287,7 @@
     "glob-to-regexp": "^0.4.1",
     "has-property-descriptors": "^1.0.2",
     "is-callable": "^1.2.7",
-    "js-base64": "^3.8.1",
+    "js-base64": "^3.9.1",
     "memfs": "^4.64.0",
     "npm-check-updates": "^22.2.9",
     "os-browserify": "^0.3.0",
