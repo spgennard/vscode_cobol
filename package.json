@@ -3229,7 +3229,7 @@
     }
   },
   "engines": {
-    "vscode": "^1.125.0"
+    "vscode": "^1.132.0"
   },
   "scripts": {
     "vscode:prepublish": "npm run cp-resources && npm run compile && webpack --mode production",
@@ -3256,11 +3256,11 @@
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^26.2.0",
-    "@types/vscode": "^1.125.0",
+    "@types/vscode": "^1.132.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/test-web": "^0.0.81",
-    "ansi-regex": ">=6.2.2",
+    "ansi-regex": ">=6.3.0",
     "assert": "^2.1.0",
     "depcheck": "^1.4.7",
     "esbuild": "^0.28.2",
@@ -3268,7 +3268,7 @@
     "glob": "^13.0.6",
     "glob-to-regexp": "^0.4.1",
     "merge": "2.1.1",
-    "mermaid": "^11.16.1",
+    "mermaid": "^11.17.0",
     "mocha": "^11.8.0",
     "nth-check": ">=3.0.1",
     "process": "^0.11.10",
@@ -3280,14 +3280,14 @@
   },
   "dependencies": {
     "@vscode-elements/elements-lite": "^0.4.0",
-    "ansi-regex": ">=6.2.2",
+    "ansi-regex": ">=6.3.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "define-data-property": "^1.1.4",
     "glob-to-regexp": "^0.4.1",
     "has-property-descriptors": "^1.0.2",
     "is-callable": "^1.2.7",
-    "js-base64": "^3.9.2",
+    "js-base64": "^3.9.3",
     "memfs": "^4.68.1",
     "npm-check-updates": "^23.0.2",
     "os-browserify": "^0.3.0",
