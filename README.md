@@ -142,6 +142,27 @@ The extension provides comprehensive code folding capabilities for COBOL source 
 **Settings:**
 - `coboleditor.enable_folding_ranges` - Enable/disable code folding support (default: true)
 
+### Expanded Copybook View
+
+When `coboleditor.enable_codelens_copy_replacing` is enabled, COPY statements
+that use REPLACING provide CodeLens actions to:
+
+- Open the original copybook
+- Open a read-only expanded COBOL document
+- Compare the original copybook with its expanded content
+
+The expanded view applies the replacement text already calculated by the source
+scanner and expands nested copybooks in statement order. Use **COBOL: Refresh
+Expanded Copybook** after an external file change. Saving a source document or
+changing a COBOL setting refreshes open expanded views automatically.
+
+F12 or Ctrl/Cmd+click on an expanded line opens the corresponding source
+copybook line. Source navigation is line-based; columns changed by a replacement
+are not mapped individually.
+
+Copybook expansion requires `coboleditor.parse_copybooks_for_references` and
+`coboleditor.enable_text_replacement` to be enabled.
+
 ### Go to definition
 
 ![gotodef](https://raw.githubusercontent.com/spgennard/vscode_cobol/main/images/gotodef.gif)

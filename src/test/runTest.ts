@@ -13,7 +13,7 @@ async function main() {
 		// Passed to --extensionTestsPath
 		const extensionTestsPath = path.resolve(__dirname, "../../out/test/suite/index");
 
-		const launchArgs = [path.join(__dirname, "./workspace/")];
+		const launchArgs = [path.resolve(__dirname, "../../src/test/suite")];
 		// Download VS Code, unzip it and run the integration test
 		await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs });
 	} catch (err) {

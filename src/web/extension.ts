@@ -26,6 +26,7 @@ import { VSHelpAndFeedViewHandler } from "../feedbacktree";
 import { VSHoverProvider } from "../vshoverprovider";
 import { CobolReferenceProvider } from "../vsreferenceprovider";
 import { COBOLFoldingRangeProvider } from "../vsfoldingprovider";
+import { VSCopybookContentProvider } from "../vscopybookcontentprovider";
 
 const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -154,6 +155,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     activateCommonCommands(context);
+    VSCopybookContentProvider.register(context);
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {
@@ -260,7 +262,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(_settings, true), provider, VSSemanticProvider.getLegend());
 
     const codelensProvider = new VSPPCodeLens();
-    languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(_settings, true), codelensProvider);
+    context.subscriptions.push(codelensProvider, languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(_settings, true), codelensProvider));
 
     const foldingProvider = new COBOLFoldingRangeProvider();
     languages.registerFoldingRangeProvider(VSExtensionUtils.getAllCobolSelectors(_settings, true), foldingProvider);

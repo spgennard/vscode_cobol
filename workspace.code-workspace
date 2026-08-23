@@ -30,14 +30,21 @@
 			"sample,issue189_coboldoc.cbl,5",
 			"fred,rainbow_code.cbl,1",
 			"untitled-1,fred.cbl",
-			"hello-world,comments.cbl,1"
+			"hello-world,comments.cbl,1",
+			"expand-test,program.cbl,1"
 		],
 		"coboleditor.metadata_entrypoints": [],
 		"coboleditor.metadata_types": [],
 		"coboleditor.metadata_files": [
-			"1769026915774,test-minimap.cbl"
+			"1688418820898,src/test/suite/test.cbl",
+			"1787471195219,src/test/suite/fixtures/copybook-expansion/program.cbl",
+			"1787471195225,src/test/suite/fixtures/copybook-expansion/ROOT.cpy",
+			"1787471195225,src/test/suite/fixtures/copybook-expansion/CHILD.cpy"
 		],
-		"coboleditor.metadata_knowncopybooks": [],
+		"coboleditor.metadata_knowncopybooks": [
+			"ROOT,program.cbl",
+			"CHILD,ROOT.cpy"
+		],
 		"coboleditor.enable_tab_inline": true
 	}
 }

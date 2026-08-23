@@ -446,6 +446,7 @@ export class copybookState implements IReplaceState {
     public fileNameMod: BigInt = BigInt(0);
     public isPseudoTextDelimiter = false;
     public saved01Group: COBOLToken | undefined;
+    public copybookToken: COBOLCopybookToken | undefined;
     public copybookDepths: copybookState[] = [];
     // Parallel live-count of fileName -> occurrences on copybookDepths.
     // Shared by reference alongside copybookDepths so the recursion-guard
@@ -462,6 +463,7 @@ export class COBOLCopybookToken {
     public statementInformation: copybookState | undefined;
     public refreshFromDisk: boolean | undefined = false;
     public readonly copyBookCache: ICopyBookCache | undefined;
+    public readonly children: COBOLCopybookToken[] = [];
     public static readonly Null = new COBOLCopybookToken(undefined, undefined, false, undefined);
 
     constructor(copyBookCache: ICopyBookCache|undefined, token: COBOLToken | undefined, parsed: boolean, statementInformation: copybookState | undefined) {
@@ -3309,6 +3311,9 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
         state.inCopy = false;
 
         const copybookToken = new COBOLCopybookToken(this.copyBookCache,copyToken, false, cbInfo);
+        cbInfo.copybookToken = copybookToken;
+        const parentState = cbInfo.copybookDepths.length > 1 ? cbInfo.copybookDepths[cbInfo.copybookDepths.length - 2] : undefined;
+        parentState?.copybookToken?.children.push(copybookToken);
 
         const fileName = this.externalFeatures.expandLogicalCopyBookToFilenameOrEmpty(this.copyBookCache, trimmedCopyBook, copyToken.extraInformation, this.sourceHandler, this.configHandler);
         if (fileName.length === 0) {
@@ -3360,6 +3365,7 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
             if (this.parse_copybooks_for_references && fileName.length > 0) {
                 cbInfo.fileName = fileName;
                 const qfile = new FileSourceHandler(this.configHandler, undefined, fileName, this.externalFeatures);
+                cbInfo.sourceHandler = qfile;
                 const currentTopLevel = this.sourceReferences.topLevel;
                 this.sourceReferences.topLevel = false;
 

@@ -7,7 +7,6 @@ import { TabUtils } from "./tabstopper";
 import { VSLogger } from "./vslogger";
 import { AlignStyle, VSCOBOLUtils, FoldAction } from "./vscobolutils";
 import { commands, ExtensionContext, languages } from "vscode";
-import { VSPPCodeLens } from "./vsppcodelens";
 import { ExtensionDefaults } from "./extensionDefaults";
 import { COBOLSourceScanner } from "./cobolsourcescanner";
 import path from "path";
@@ -791,11 +790,6 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
                 });
             }
         }
-    }));
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    context.subscriptions.push(commands.registerCommand("cobolplugin.ppcodelenaction", (args: string) => {
-        VSPPCodeLens.actionCodeLens(args);
     }));
 
     context.subscriptions.push(commands.registerCommand("cobolplugin.indentToCursor", () => {

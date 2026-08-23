@@ -4,20 +4,26 @@ import { COBOLToken } from "./cobolsourcescanner";
 import { VSCOBOLConfiguration } from "./vsconfiguration";
 import { ICOBOLSettings } from "./iconfiguration";
 import { VSCOBOLSourceScanner } from "./vscobolscanner";
-import { ExtensionDefaults } from "./extensionDefaults";
 import { VSExternalFeatures } from "./vsexternalfeatures";
 import { ICOBOLSourceScanner } from "./icobolsourcescanner";
+import { CopybookExpansionBuilder } from "./copybookexpansion";
 
-export class VSPPCodeLens implements vscode.CodeLensProvider {
+export class VSPPCodeLens implements vscode.CodeLensProvider, vscode.Disposable {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
+    private readonly configurationListener: vscode.Disposable;
 
     constructor() {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        vscode.workspace.onDidChangeConfiguration((_) => {
+        this.configurationListener = vscode.workspace.onDidChangeConfiguration((_) => {
             this._onDidChangeCodeLenses.fire();
         });
+    }
+
+    public dispose(): void {
+        this.configurationListener.dispose();
+        this._onDidChangeCodeLenses.dispose();
     }
 
     private scanTargetUse(settings: ICOBOLSettings, document: vscode.TextDocument, lens: vscode.CodeLens[], current: ICOBOLSourceScanner, target: string, targetToken: COBOLToken) {
@@ -57,8 +63,9 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         const lens: vscode.CodeLens[] = [];
 
         const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-        // if codelens for variables enabled?
-        if (settings.enable_codelens_variable_references === false) {
+        if (!settings.enable_codelens_variable_references &&
+            !settings.enable_codelens_section_paragraph_references &&
+            !settings.enable_codelens_copy_replacing) {
             return lens;
         }
         
@@ -69,7 +76,9 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
 
         const sourceFileId = current.sourceFileId;
 
-        if (current.sourceReferences !== undefined && current.sourceReferences.constantsOrVariablesReferences !== undefined) {
+        if (settings.enable_codelens_variable_references &&
+            current.sourceReferences !== undefined &&
+            current.sourceReferences.constantsOrVariablesReferences !== undefined) {
             for (const [avar, vars] of current.constantsOrVariables) {
                 for (const currentVar of vars) {
                     const currentToken = currentVar.token;
@@ -130,22 +139,23 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                         continue;
                     }
                     if (cbInfo.statementInformation !== undefined && cbInfo.statementInformation.copyReplaceMap.size !== 0) {
+                        const occurrence = CopybookExpansionBuilder.occurrence(cbInfo);
+                        if (occurrence === undefined || cbInfo.statementInformation.sourceHandler === undefined) {
+                            continue;
+                        }
+                        if (occurrence.sourceUri !== document.uri.toString()) {
+                            continue;
+                        }
                         const l = document.lineAt(cbInfo.statementInformation.startLineNumber);
                         const r = new vscode.Range(new vscode.Position(cbInfo.statementInformation.startLineNumber, 0),
                             new vscode.Position(cbInfo.statementInformation.startLineNumber, l.text.length));
-                        const cl = new vscode.CodeLens(r);
-                        let src = "";
                         let prevSrc = "";
                         let prevMaxLines = 10;
-                        if (cbInfo.statementInformation.sourceHandler !== undefined) {
-                            for (let c = 0; c < cbInfo.statementInformation.sourceHandler?.getLineCount(); c++) {
-                                src += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                                src += "\n";
-                                if (prevMaxLines > 0) {
-                                    prevSrc += cbInfo.statementInformation.sourceHandler?.getUpdatedLine(c);
-                                    prevSrc += "\n";
-                                    --prevMaxLines;
-                                }
+                        for (let c = 0; c < cbInfo.statementInformation.sourceHandler.getLineCount(); c++) {
+                            if (prevMaxLines > 0) {
+                                prevSrc += cbInfo.statementInformation.sourceHandler.getUpdatedLine(c);
+                                prevSrc += "\n";
+                                --prevMaxLines;
                             }
                         }
 
@@ -153,23 +163,25 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
                             prevSrc += "\n......";
                         }
 
-                        if (src.length !== 0) {
-                            const arg = `*> Caution: This is an approximation\n*> Original file: ${cbInfo.statementInformation.fileName}\n${src}`;
-
-                            cl.command = {
-                                title: "View copybook repacement",
-                                tooltip: prevSrc,
-                                command: "cobolplugin.ppcodelenaction",
-                                arguments: [arg]
-                            };
-                            this.resolveCodeLens(cl, token);
-
-                            lens.push(cl);
-                        }
+                        lens.push(this.commandLens(r, "Open copybook", "cobolplugin.openCopybook", occurrence));
+                        lens.push(this.commandLens(r, "View expanded copybook", "cobolplugin.openExpandedCopybook", occurrence, prevSrc));
+                        lens.push(this.commandLens(r, "Compare original with expanded", "cobolplugin.compareExpandedCopybook", occurrence));
                     }
                 }
             }
         }
+        return lens;
+    }
+
+    private commandLens(
+        range: vscode.Range,
+        title: string,
+        command: string,
+        occurrence: ReturnType<typeof CopybookExpansionBuilder.occurrence>,
+        tooltip?: string
+    ): vscode.CodeLens {
+        const lens = new vscode.CodeLens(range);
+        lens.command = { title, command, arguments: [occurrence], tooltip };
         return lens;
     }
 
@@ -178,17 +190,4 @@ export class VSPPCodeLens implements vscode.CodeLensProvider {
         return codeLens;
     }
 
-    public static actionCodeLens(arg: string): void {
-        vscode.workspace.openTextDocument({
-            content: `${arg}`,
-            language: "text"
-        }).then((document: vscode.TextDocument) => {
-            vscode.window.showTextDocument(document).then(editor => {
-                if (arg.startsWith("*>")) {
-                    vscode.languages.setTextDocumentLanguage(editor.document, ExtensionDefaults.defaultCOBOLLanguage);
-                    return;
-                }
-            });
-        });
-    }
 }

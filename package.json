@@ -2231,6 +2231,30 @@
         "enablement": "editorFocus && config.coboleditor.line_comment"
       },
       {
+        "command": "cobolplugin.openCopybook",
+        "category": "COBOL",
+        "title": "Open Copybook",
+        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+      },
+      {
+        "command": "cobolplugin.openExpandedCopybook",
+        "category": "COBOL",
+        "title": "View Expanded Copybook",
+        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+      },
+      {
+        "command": "cobolplugin.compareExpandedCopybook",
+        "category": "COBOL",
+        "title": "Compare Original with Expanded Copybook",
+        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+      },
+      {
+        "command": "cobolplugin.refreshExpandedCopybook",
+        "category": "COBOL",
+        "title": "Refresh Expanded Copybook",
+        "enablement": "resourceScheme == cobol-expanded"
+      },
+      {
         "command": "bms.showPreview",
         "category": "BMS",
         "title": "Open Preview",
@@ -2531,6 +2555,11 @@
       ],
       "editor/context": [
         {
+          "command": "cobolplugin.refreshExpandedCopybook",
+          "group": "navigation_cobol",
+          "when": "resourceScheme == cobol-expanded"
+        },
+        {
           "command": "cobolplugin.move2dd",
           "group": "navigation_cobol",
           "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
@@ -2579,6 +2608,11 @@
         }
       ],
       "editor/title": [
+        {
+          "command": "cobolplugin.refreshExpandedCopybook",
+          "when": "resourceScheme == cobol-expanded",
+          "group": "navigation"
+        },
         {
           "command": "cobolplugin.view_dot_callgraph",
           "when": "config.coboleditor.enable_program_information && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection",
@@ -3245,7 +3279,7 @@
     "compile-web": "webpack",
     "test-compile": "tsc -p ./",
     "watch": "tsc -b -w",
-    "pretest": "npm run compile && npm run",
+    "pretest": "npm run webpack",
     "test": "node ./out/test/runTest.js",
     "find-deadcode": "./node_modules/.bin/ts-prune | grep -v \"used in module\"",
     "open-in-browser": "vscode-test-web -version=stable --browserType=chromium --extensionDevelopmentPath=. ."

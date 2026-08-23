@@ -52,6 +52,7 @@ import { VSTerminal } from "./vsterminals";
 import { BmsPreviewPanel } from "./bmspreviewpanel";
 import { COBOLFoldingRangeProvider } from "./vsfoldingprovider";
 import { VSCOBOLCopyBookProvider } from "./vsopencopybook";
+import { VSCopybookContentProvider } from "./vscopybookcontentprovider";
 
 // import type MarkdownIt from 'markdown-it';
 // import hijs from 'highlight.js/lib/core';
@@ -451,6 +452,7 @@ export async function activate(context: ExtensionContext) {
 
     activateDesktop(context, settings);
     activateCommonCommands(context);
+    VSCopybookContentProvider.register(context);
 
     // re-init if something gets installed or removed
     context.subscriptions.push(vscode.extensions.onDidChange(() => {
@@ -765,7 +767,7 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), provider, VSSemanticProvider.getLegend()));
 
     const codelensProvider = new VSPPCodeLens();
-    context.subscriptions.push(languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), codelensProvider));
+    context.subscriptions.push(codelensProvider, languages.registerCodeLensProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), codelensProvider));
 
     const foldingProvider = new COBOLFoldingRangeProvider();
     context.subscriptions.push(languages.registerFoldingRangeProvider(VSExtensionUtils.getAllCobolSelectors(settings, true), foldingProvider));

@@ -7,6 +7,7 @@ import { COBOLSourceScanner, EmptyCOBOLSourceScannerEventHandler } from "../../c
 import { COBOLSettings } from "../../iconfiguration";
 import path from "path";
 import { VSExternalFeatures } from "../../vsexternalfeatures";
+import { CopybookExpansionBuilder } from "../../copybookexpansion";
 
 suite("Core Extension Test Suite", () => {
 	vscode.window.showInformationMessage("Start all tests.");
@@ -38,5 +39,36 @@ suite("Core Extension Test Suite", () => {
 		assert.ok(s.paragraphs.size > 0, "should contain at least one paragraph");
 		assert.ok(s.sections.size > 0, "should contain at least one section");
 
+	});
+
+	test("Expand nested copybooks with inherited replacements", async () => {
+		const fixtureDirectory = path.join(baseForSource, "fixtures/copybook-expansion");
+		const expansionSettings = new COBOLSettings();
+		expansionSettings.file_search_directory = [fixtureDirectory];
+		expansionSettings.copybookexts = ["cpy"];
+		expansionSettings.parse_copybooks_for_references = true;
+		expansionSettings.enable_text_replacement = true;
+		expansionSettings.copybook_scan_depth = 10;
+		const sourceHandler = new FileSourceHandler(expansionSettings, undefined, path.join(fixtureDirectory, "program.cbl"), features);
+		const scanner = COBOLSourceScanner.ScanUncached(sourceHandler, expansionSettings, true, eventHandler, features);
+		const root = [...scanner.copyBooksUsed.values()]
+			.flat()
+			.find(entry => entry.token?.filename === sourceHandler.getFilename() && entry.token.tokenNameLower === "root");
+
+		assert.ok(root, "root COPY occurrence should be resolved");
+		assert.strictEqual(root.children.length, 1);
+		const result = CopybookExpansionBuilder.build(root);
+		assert.ok(result.content.includes("01 NEW-GROUP."));
+		assert.ok(result.content.includes("05 NEW-FIELD PIC X."));
+		assert.ok(!result.content.includes("COPY CHILD"));
+
+		const occurrence = CopybookExpansionBuilder.occurrence(root);
+		assert.ok(occurrence);
+		const expandedUri = vscode.Uri.from({
+			scheme: "cobol-expanded",
+			path: "/ROOT.cpy.5.expanded.cbl",
+			query: encodeURIComponent(JSON.stringify({ occurrence, view: "expanded" }))
+		});
+		await vscode.commands.executeCommand("cobolplugin.refreshExpandedCopybook", expandedUri);
 	});
 });

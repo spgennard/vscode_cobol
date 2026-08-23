@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 26.8.21
+
+* Add a read-only expanded copybook view with nested COPY REPLACING support, original-versus-expanded comparison, refresh, and line-level source navigation.
+* Keep variable, section/paragraph, and copybook CodeLens settings independent.
 
 ## 26.8.10 
 
