@@ -138,7 +138,7 @@ export class VSCOBOLConfiguration {
         settings.program_extensions = editorHelper.getProgram_extensions();
         settings._tabstops = editorHelper.getTabStops();
         settings.linter = editorHelper.getBoolean("linter", false);
-        settings.line_comment = editorHelper.getBoolean("line_comment", false);
+        settings.comment_line = editorHelper.getBoolean("comment_line", false);
         settings.fileformat_strategy = editorConfig.get<fileformatStrategy>("fileformat_strategy", fileformatStrategy.Normal);
         settings.enable_data_provider = editorHelper.getBoolean("enable_data_provider", true);
         settings.disable_unc_copybooks_directories = editorHelper.getBoolean("disable_unc_copybooks_directories", false);

@@ -53,7 +53,7 @@ export interface ICOBOLSettings {
     program_extensions: string[];
     _tabstops: number[];
     linter: boolean;
-    line_comment: boolean;
+    comment_line: boolean;
     fileformat_strategy: fileformatStrategy;
     enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
@@ -221,7 +221,7 @@ export class COBOLSettings implements ICOBOLSettings {
     program_extensions: string[];
     _tabstops: number[];
     linter: boolean;
-    line_comment: boolean;
+    comment_line: boolean;
     fileformat_strategy: fileformatStrategy;
     enable_data_provider: boolean;
     disable_unc_copybooks_directories: boolean;
@@ -385,7 +385,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.invalid_copybookdirs = [];
         this._tabstops = [];
         this.linter = false;
-        this.line_comment = false;
+        this.comment_line = false;
         this.enable_data_provider = true;
         this.disable_unc_copybooks_directories = false;
         this.intellisense_item_limit = 30;
