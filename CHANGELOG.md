@@ -1,5 +1,10 @@
 # CHANGELOG
 
+* 15168ee fix comment_line/line_comment group settings
+* 855a0bd this might be rubish... but
+* bb8c46f initial version
+
+## 26.8.22 
 * c8e6450 add codelens for copybook expansion
 
 ## 26.8.21 
