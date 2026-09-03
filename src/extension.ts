@@ -515,7 +515,7 @@ export async function activate(context: ExtensionContext) {
             const langid = window.activeTextEditor.document.languageId;
 
             if (VSExtensionUtils.isKnownCOBOLLanguageId(settings, langid)) {
-                if (settings.line_comment) {
+                if (settings.comment_line) {
                     commentUtils.processCommentLine(settings);
                 } else {
                     commands.executeCommand("editor.action.commentLine");
