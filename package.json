@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "26.8.22",
+  "version": "26.9.2",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1432,7 +1432,6 @@
         "type": "object",
         "title": "Code Scanner",
         "properties": {
-
           "coboleditor.scan_comments_for_references": {
             "type": "boolean",
             "markdownDescription": "When 'enabled' and 'scan_comments_for_hints' is also enabled, include any references in search",
@@ -1453,7 +1452,6 @@
             "markdownDescription": "'begin-ls-ignore' token",
             "default": "END-LS-IGNORE"
           },
-
           "coboleditor.pre_scan_line_limit": {
             "type": "number",
             "title": "Set pre-scan line limit",
@@ -1462,7 +1460,6 @@
             "minimum": 5,
             "maximum": 255
           },
-
           "coboleditor.scan_comments_for_hints": {
             "type": "boolean",
             "description": "When enabled, process scanner hints embedded in comments",
@@ -1473,7 +1470,6 @@
             "description": "Comment token used for processing source code dependencies, for example extra copybooks",
             "default": "source-dependency"
           },
-
           "coboleditor.enable_source_scanner": {
             "order": 0,
             "type": "boolean",
@@ -1481,7 +1477,6 @@
             "default": true,
             "scope": "resource"
           },
-
           "coboleditor.enable_text_replacement": {
             "type": "boolean",
             "description": "Process 'replace' and 'replacing' verb (default false)",
