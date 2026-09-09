@@ -1,7 +1,8 @@
 # CHANGELOG
 
 
-## 26.9.2, origin/main, origin/HEAD 
+## 26.9.2 
+* b38b654 Update
 * 9d142e4 Update
 * 83a1c0a Update
 * 15168ee fix comment_line/line_comment group settings
