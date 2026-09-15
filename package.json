@@ -298,7 +298,7 @@
           },
           "coboleditor.feedbackview": {
             "type": "boolean",
-            "description": "Enable experimental feedback panel view",
+            "description": "Enable feedback panel view",
             "default": true
           },
           "coboleditor.line_comment": {
@@ -2586,7 +2586,7 @@
       {
         "command": "cobolplugin.makeDependencyFile",
         "category": "COBOL",
-        "title": "Experimental: Make Dependency File"
+        "title": "Make Dependency File"
       },
       {
         "command": "cobolplugin.dot_callgraph",
