@@ -7,7 +7,11 @@ do
 		if [ "x$VER" == "x" ]; then
 			VER=$(date -v-1d +'%y.%-m.%-d')			
 		fi
-		
+	elif [ "x$i" == "xtomorrow" ]; then
+		VER=$(date -d "tomorrow" +'%2y.%-m.%-d' 2>/dev/null)
+		if [ "x$VER" == "x" ]; then
+			VER=$(date -v+1d +'%y.%-m.%-d')			
+		fi
 	elif [ "x$i" == "xnobump" ]; then
 		VER=""
 	else
