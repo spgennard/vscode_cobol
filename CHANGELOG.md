@@ -1,7 +1,12 @@
 # CHANGELOG
 
+* c46c191 wip
+* 16051aa update to latest mermaid and fix bug some para names breaking the rendering
+* bb191d9 drop experimential desc on items that have been around for awhile now
+* a37116a fix warning/comp issue with web version
 
-## 26.9.15, origin/main, origin/HEAD 
+## 26.9.15 
+* 5c0e539 Update
 * a5ec272 enable call hierarchy provider
 
 ## 26.9.9 
