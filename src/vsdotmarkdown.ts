@@ -28,18 +28,30 @@ class programWindowState {
     }
 }
 
+function mermaidNodeId(name: string): string {
+    return `node_${Array.from(name).map(character => character.codePointAt(0)?.toString(16)).join("_")}`;
+}
+
+function mermaidText(value: string): string {
+    return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/\r?\n/g, " ");
+}
+
 function generate_partial_graph(linesArray: string[], clickLines: string[], state: ParseState, para_or_section: Map<string, COBOLToken>) {
     for (const [paragraph, targetToken] of para_or_section) {
         const wordLower = paragraph.toLowerCase();
         const targetRefs: SourceReference_Via_Length[] | undefined = state.currentSectionOutRefs.get(wordLower);
+        const targetId = mermaidNodeId(targetToken.tokenNameLower);
+        const targetLabel = targetToken.description.length === 0 ? targetToken.tokenName : targetToken.description;
 
-        clickLines.push(`click ${targetToken.tokenNameLower} call callback("${targetToken.tokenName}","${targetToken.filenameAsURI}", ${targetToken.startLine},${targetToken.startColumn}) "${targetToken.description}"`)
+        clickLines.push(`click ${targetId} call callback("${mermaidText(targetToken.tokenName)}","${mermaidText(targetToken.filenameAsURI)}", ${targetToken.startLine},${targetToken.startColumn}) "${mermaidText(targetToken.description)}"`)
+        linesArray.push(`${targetId}["${mermaidText(targetLabel)}"]`);
 
         if (targetRefs !== undefined) {
-            if (targetToken.isImplicitToken) {
-                linesArray.push(`${targetToken.tokenNameLower}[${targetToken.description}]`);
-            }
-
             let tempLines:string[] = [];
             for (const sr of targetRefs) {
                 // skip definition
@@ -49,9 +61,9 @@ function generate_partial_graph(linesArray: string[], clickLines: string[], stat
 
                 if (sr.tokenStyle === COBOLTokenStyle.Paragraph || sr.tokenStyle === COBOLTokenStyle.Section) {
                     if (sr.reason === 'perform') {
-                        tempLines.push(`${targetToken.tokenNameLower} --> ${sr.nameLower}`);
+                        tempLines.push(`${targetId} --> ${mermaidNodeId(sr.nameLower)}`);
                     } else {
-                        tempLines.push(`${targetToken.tokenNameLower} -->|${sr.reason}|${sr.nameLower}`);
+                        tempLines.push(`${targetId} -->|${mermaidText(sr.reason)}|${mermaidNodeId(sr.nameLower)}`);
                     }
                 }
             }
