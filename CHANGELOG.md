@@ -1,7 +1,9 @@
 # CHANGELOG
 
+* a5ec272 enable call hierarchy provider
 
-## 26.9.9, origin/main, origin/HEAD 
+## 26.9.9 
+* 1a7ecb4 Update
 
 ## 26.9.8 
 * 5caeebb Update
