@@ -22,6 +22,7 @@ const webConfig = /** @type WebpackConfig */ {
     extensions: [".ts", ".js"], // support ts-files and js-files
     alias: {
       // provides alternate implementation for node module and source files
+      "url$": path.resolve(__dirname, "src/web/url.ts"),
     },
     fallback: {
       // Webpack 5 no longer polyfills Node.js core modules automatically.
@@ -47,7 +48,6 @@ const webConfig = /** @type WebpackConfig */ {
       //sys: require.resolve('util'),
       //timers: require.resolve('timers-browserify'),
       //tty: require.resolve('tty-browserify'),
-      url: require.resolve("url"),
       //util: require.resolve('util'),
       //vm: require.resolve('vm-browserify'),
       //zlib: require.resolve('browserify-zlib'),
@@ -94,6 +94,7 @@ const webConfig = /** @type WebpackConfig */ {
 
 /**@type {import('webpack').Configuration}*/
 const config = {
+  mode: "none",
   target: "node", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
 
   entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
