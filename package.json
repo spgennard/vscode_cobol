@@ -646,10 +646,10 @@
             "description": "When enabled, provide folding ranges for COBOL source code",
             "default": true
           },
-          "coboleditor.enable_program_information": {
+          "coboleditor.enable_call_hierarchy_provider": {
             "type": "boolean",
-            "description": "When enabled, turn on call hierarchy provider (WIP)",
-            "default": false,
+            "description": "When enabled, turn on call hierarchy provider",
+            "default": true,
             "scope": "resource"
           },
           "coboleditor.network_directory_prefixes": {
@@ -2597,7 +2597,7 @@
         "command": "cobolplugin.view_dot_callgraph",
         "category": "COBOL",
         "title": "Program Information",
-        "enablement": "config.coboleditor.enable_program_information",
+        "enablement": "config.coboleditor.enable_call_hierarchy_provider",
         "icon": {
           "light": "images/preview-right-light.svg",
           "dark": "images/preview-right-dark.svg"
@@ -2685,7 +2685,7 @@
         },
         {
           "command": "cobolplugin.view_dot_callgraph",
-          "when": "config.coboleditor.enable_program_information && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection",
+          "when": "config.coboleditor.enable_call_hierarchy_provider && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection",
           "group": "navigation"
         },
         {

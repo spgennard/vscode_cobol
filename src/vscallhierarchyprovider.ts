@@ -14,7 +14,7 @@ export class COBOLHierarchyProvider implements vscode.CallHierarchyProvider {
             let word = document.getText(range);
             // let wordLower = word.toLowerCase();wordLower
             const settings = VSCOBOLConfiguration.get_resource_settings(document, VSExternalFeatures);
-            if (settings.enable_program_information === false) {
+            if (settings.enable_call_hierarchy_provider === false) {
                 return undefined;
             }
             

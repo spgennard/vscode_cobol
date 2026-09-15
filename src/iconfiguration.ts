@@ -173,7 +173,7 @@ export interface ICOBOLSettings {
 
     file_search_directory: string[];
 
-    enable_program_information: boolean;
+    enable_call_hierarchy_provider: boolean;
 
     copybook_scan_depth: number;
 
@@ -341,7 +341,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
     file_search_directory: string[];
 
-    enable_program_information: boolean;
+    enable_call_hierarchy_provider: boolean;
     
     copybook_scan_depth: number;
 
@@ -483,7 +483,7 @@ export class COBOLSettings implements ICOBOLSettings {
  
         this.file_search_directory = [];
 
-        this.enable_program_information = false;
+        this.enable_call_hierarchy_provider = false;
         this.copybook_scan_depth = 32;
         this.makefile_dependency_file = false;
         this.makefile_dependency_prefix = ".";

@@ -320,7 +320,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
     const intellisense_add_space_keywords_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.intellisense_add_space_keywords`, scope);
     const custom_intellisense_rules_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.custom_intellisense_rules`, scope);
     const tabstops_anchors_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.tabstops_anchors`, scope);
-    const enable_program_information_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_program_information`, scope);
+    const enable_call_hierarchy_provider_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_call_hierarchy_provider`, scope);
     const enable_minimap_section_boundaries_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries`, scope);
     const enable_enable_minimap_section_boundaries_for_sections_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_sections`, scope); 
     const enable_minimap_section_boundaries_for_paragraphs_changed = event.affectsConfiguration(`${ExtensionDefaults.defaultEditorConfig}.enable_minimap_section_boundaries_for_paragraphs`, scope);
@@ -407,7 +407,7 @@ async function handleScopedChange(event:ConfigurationChangeEvent, scope?: vscode
             TabUtils.clearTabstopCache();
         }
 
-        if (enable_program_information_changed && settings.enable_program_information) {
+        if (enable_call_hierarchy_provider_changed && settings.enable_call_hierarchy_provider) {
             install_call_hierarchy(settings, sharedContext)
         }
 
