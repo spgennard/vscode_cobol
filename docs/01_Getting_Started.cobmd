@@ -1,0 +1,251 @@
+# Getting Started with COBOL
+
+COBOL stands for **COmmon Business Oriented Language**. It was designed for readable business programs and remains important in banking, insurance, government, payroll, and reservation systems.
+
+This notebook is for developers who already understand basic programming ideas but have not used COBOL. By the end, you will be able to:
+
+- recognize the four divisions of a COBOL program
+- declare text and numeric data with `PIC` clauses
+- move, calculate, compare, and display values
+- read straightforward procedural COBOL
+- build the examples into ordinary `.cbl` source files
+
+The examples use portable COBOL 85-style syntax. Modern compilers may also offer free-format source, object orientation, .NET or JVM integration, and vendor extensions.
+
+## Why COBOL feels different
+
+COBOL is organized around named data records and explicit operations on them. Its vocabulary often reads like English:
+
+- `MOVE` assigns a value
+- `COMPUTE` evaluates an arithmetic expression
+- `IF` and `EVALUATE` choose a path
+- `PERFORM` invokes a paragraph or repeats statements
+- `DISPLAY` writes output
+
+COBOL source is traditionally case-insensitive. Uppercase is conventional, but not required. Periods matter: a period ends a sentence and can terminate several open statements, so modern code often uses explicit scope terminators such as `END-IF` and `END-PERFORM`.
+
+## 1. Your first program
+
+A traditional COBOL program has four divisions:
+
+1. `IDENTIFICATION DIVISION` names the program.
+2. `ENVIRONMENT DIVISION` describes external computing and file details. It can be minimal for a simple program.
+3. `DATA DIVISION` declares data.
+4. `PROCEDURE DIVISION` contains executable statements.
+
+The leading spaces preserve the traditional fixed-format layout accepted by established COBOL compilers.
+
+```cobol file=hello.cbl
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. HELLO.
+
+       ENVIRONMENT DIVISION.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-NAME                 PIC X(20)
+                                      VALUE "new developer".
+
+       PROCEDURE DIVISION.
+           DISPLAY "Hello, " WS-NAME
+           DISPLAY "Welcome to COBOL."
+           STOP RUN.
+```
+
+Read this from the declarations down:
+
+- `PROGRAM-ID` gives the program its external name.
+- `WORKING-STORAGE` holds data for the lifetime of this program run.
+- Level number `01` starts a top-level data item.
+- `PIC X(20)` reserves 20 alphanumeric characters.
+- `DISPLAY` writes one or more values.
+- `STOP RUN` ends the program.
+
+### Try it
+
+Change `WS-NAME`'s initial value, build the notebook target, and run it. Keep the value at 20 characters or fewer for now.
+
+## 2. Data descriptions and decimal arithmetic
+
+COBOL data declarations describe storage precisely. This is particularly useful for business records and money.
+
+| Picture | Meaning | Example value |
+| --- | --- | --- |
+| `X(20)` | 20 alphanumeric characters | `CUSTOMER A` |
+| `9(5)` | 5 numeric digits | `00125` |
+| `9(3)V99` | 3 integer and 2 implied decimal digits | `125.50` |
+| `S9(5)V99` | signed fixed-point number | `-12.75` |
+| `ZZZ9.99` | edited number for display | `  12.75` |
+
+`V` is an implied decimal point: it controls arithmetic precision but is not stored as a character. A separate edited field is commonly used to format a number for people.
+
+```cobol file=invoice.cbl
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. INVOICE.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-QUANTITY             PIC 9(3) VALUE 3.
+       01  WS-UNIT-PRICE           PIC 9(3)V99 VALUE 12.50.
+       01  WS-TOTAL                PIC 9(4)V99 VALUE ZERO.
+       01  WS-DISPLAY-TOTAL        PIC ZZZ9.99.
+
+       PROCEDURE DIVISION.
+           COMPUTE WS-TOTAL = WS-QUANTITY * WS-UNIT-PRICE
+           MOVE WS-TOTAL TO WS-DISPLAY-TOTAL
+
+           DISPLAY "Invoice total: " WS-DISPLAY-TOTAL
+
+           IF WS-TOTAL > 30.00
+               DISPLAY "Manager approval required"
+           ELSE
+               DISPLAY "Ready to process"
+           END-IF
+
+           STOP RUN.
+```
+
+Notice the separation between calculation and presentation. `WS-TOTAL` retains a machine-friendly numeric representation; `WS-DISPLAY-TOTAL` adds a visible decimal point and suppresses leading zeroes.
+
+### Try it
+
+1. Change the quantity and unit price so the other `IF` branch runs.
+2. Add `WS-TAX-RATE PIC V999 VALUE .200` and `WS-TAX PIC 9(4)V99`.
+3. Calculate the tax and display the total including tax.
+
+For production financial calculations, learn your compiler's rounding options and use `ROUNDED` deliberately.
+
+## 3. Repetition and named paragraphs
+
+`PERFORM` fills two roles familiar from other languages: it can call a named paragraph, and it can express a loop.
+
+```cobol file=control-flow.cbl
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CONTROL-FLOW.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-COUNTER              PIC 9 VALUE ZERO.
+       01  WS-ORDER-STATUS         PIC X VALUE "P".
+           88  ORDER-PENDING       VALUE "P".
+           88  ORDER-SHIPPED       VALUE "S".
+           88  ORDER-CANCELLED     VALUE "C".
+
+       PROCEDURE DIVISION.
+           PERFORM VARYING WS-COUNTER FROM 1 BY 1
+               UNTIL WS-COUNTER > 3
+               DISPLAY "Processing item " WS-COUNTER
+           END-PERFORM
+
+           PERFORM SHOW-ORDER-STATUS
+           STOP RUN.
+
+       SHOW-ORDER-STATUS.
+           EVALUATE TRUE
+               WHEN ORDER-PENDING
+                   DISPLAY "Order is pending"
+               WHEN ORDER-SHIPPED
+                   DISPLAY "Order has shipped"
+               WHEN ORDER-CANCELLED
+                   DISPLAY "Order was cancelled"
+               WHEN OTHER
+                   DISPLAY "Order status is unknown"
+           END-EVALUATE.
+```
+
+The `88` entries are condition names. They give business meaning to values without allocating additional storage. `ORDER-PENDING` is true when `WS-ORDER-STATUS` contains `"P"`.
+
+`EVALUATE` is COBOL's multi-way branch, similar to `switch` or pattern selection in other languages. `EVALUATE TRUE` selects the first true condition.
+
+### Try it
+
+Change `WS-ORDER-STATUS` to `"S"`, `"C"`, and an unexpected value. Then increase the loop limit from 3 to 5.
+
+## 4. Records mirror business data
+
+Level numbers create record hierarchies. A group item contains its subordinate fields and does not need its own `PIC` clause.
+
+```cobol file=customer-record.cbl
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CUSTOMER-RECORD.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  CUSTOMER-RECORD.
+           05  CUSTOMER-ID         PIC 9(6) VALUE 100042.
+           05  CUSTOMER-NAME       PIC X(30)
+                                      VALUE "Ada Example".
+           05  CUSTOMER-BALANCE    PIC S9(7)V99 VALUE 245.75.
+           05  CUSTOMER-STATUS     PIC X VALUE "A".
+               88  CUSTOMER-ACTIVE VALUE "A".
+               88  CUSTOMER-CLOSED VALUE "C".
+       01  WS-DISPLAY-BALANCE      PIC -ZZZZZZ9.99.
+
+       PROCEDURE DIVISION.
+           MOVE CUSTOMER-BALANCE TO WS-DISPLAY-BALANCE
+
+           DISPLAY "Customer: " CUSTOMER-NAME
+           DISPLAY "Identifier: " CUSTOMER-ID
+           DISPLAY "Balance: " WS-DISPLAY-BALANCE
+
+           IF CUSTOMER-ACTIVE
+               DISPLAY "Account is active"
+           ELSE
+               DISPLAY "Account is not active"
+           END-IF
+
+           STOP RUN.
+```
+
+This record-oriented style scales naturally to file layouts, database rows, messages, and copybooks. A **copybook** is reusable COBOL source, often containing shared record definitions and included with `COPY`.
+
+## 5. A small challenge
+
+Modify this program to classify the transaction as `CREDIT`, `SMALL DEBIT`, or `LARGE DEBIT`. A negative amount is a debit; use `100.00` as the boundary between small and large.
+
+```cobol file=transaction-challenge.cbl
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TRANSACTION-CHALLENGE.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-AMOUNT               PIC S9(5)V99 VALUE -125.00.
+       01  WS-TRANSACTION-TYPE     PIC X(20) VALUE SPACES.
+
+       PROCEDURE DIVISION.
+           IF WS-AMOUNT >= ZERO
+               MOVE "CREDIT" TO WS-TRANSACTION-TYPE
+           ELSE
+               MOVE "DEBIT" TO WS-TRANSACTION-TYPE
+           END-IF
+
+           DISPLAY "Classification: " WS-TRANSACTION-TYPE
+           STOP RUN.
+```
+
+One solution is a nested `IF`; another is `EVALUATE TRUE`. Test at least `25.00`, `-25.00`, and `-125.00`.
+
+## Reading unfamiliar COBOL
+
+Use this order when opening an existing program:
+
+1. Find `PROGRAM-ID` and any entry points.
+2. Scan the `DATA DIVISION` for top-level `01` records.
+3. Note `PIC` clauses, `88` conditions, and `REDEFINES` aliases.
+4. Start at the top of the `PROCEDURE DIVISION`.
+5. Follow `PERFORM` statements into named sections and paragraphs.
+6. Look for external boundaries: `COPY`, file operations, `CALL`, SQL, CICS, or vendor APIs.
+
+Common verbs worth recognizing next include `ACCEPT`, `ADD`, `CALL`, `CLOSE`, `DIVIDE`, `INITIALIZE`, `INSPECT`, `OPEN`, `READ`, `SEARCH`, `SORT`, `STRING`, `SUBTRACT`, `UNSTRING`, and `WRITE`.
+
+## Where to go next
+
+COBOL began in 1959 and evolved through major standards including COBOL 68, 74, 85, 2002, 2014, and 2023. COBOL 85 remains a useful portability baseline, while current IBM and Rocket compilers add modern platform integration.
+
+Continue with:
+
+- `02_SetupEnvironment.md` to configure a compiler and runtime
+- `03_COBOL85_Verbs_Overview.md` for the verb reference
+- `08_Rocket_Syntax_Overview.md` for Rocket-specific extensions
+
+In the notebook toolbar, **Build All Targets** writes these examples beneath `.cobol-notebook/01_Getting_Started/`. **Run All Targets** uses the workspace task named `cobol notebook run`; configure that task for your installed compiler before running the examples.

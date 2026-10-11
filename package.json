@@ -1518,6 +1518,24 @@
       },
       {
         "type": "object",
+        "title": "COBOL Markdown Notebook",
+        "properties": {
+          "coboleditor.notebook.taskLabel": {
+            "type": "string",
+            "description": "Task label used to run a generated COBOL notebook target",
+            "default": "cobol notebook run",
+            "scope": "resource"
+          },
+          "coboleditor.notebook.generatedRoot": {
+            "type": "string",
+            "description": "Workspace-relative directory for generated COBOL notebook source files",
+            "default": ".cobol-notebook",
+            "scope": "resource"
+          }
+        }
+      },
+      {
+        "type": "object",
         "title": "Rocket LSP Related",
         "properties": {
           "coboleditor.enable_rocket_cobol_lsp_when_active": {
@@ -1733,6 +1751,17 @@
       }
     },
     "languages": [
+      {
+        "id": "cobmd",
+        "aliases": [
+          "COBOL Markdown",
+          "cobmd"
+        ],
+        "extensions": [
+          ".cobmd"
+        ],
+        "configuration": "./cobmd.configuration.json"
+      },
       {
         "id": "ACUCOBOL",
         "aliases": [
@@ -2035,6 +2064,11 @@
     ],
     "grammars": [
       {
+        "language": "cobmd",
+        "scopeName": "text.html.cobmd",
+        "path": "./syntaxes/cobmd.tmLanguage.json"
+      },
+      {
         "language": "COBOL",
         "scopeName": "source.cobol",
         "path": "./syntaxes/COBOL.tmLanguage.json",
@@ -2049,7 +2083,8 @@
         "scopeName": "markdown.cobol.codeblock",
         "path": "./syntaxes/markdown/cobol.json",
         "injectTo": [
-          "text.html.markdown"
+          "text.html.markdown",
+          "text.html.cobmd"
         ],
         "embeddedLanguages": {
           "meta.embedded.block.cobol": "COBOL"
@@ -2251,6 +2286,17 @@
       }
     ],
     "markdown.markdownItPlugins": false,
+    "notebooks": [
+      {
+        "type": "cobol-markdown-notebook",
+        "displayName": "COBOL Markdown Notebook",
+        "selector": [
+          {
+            "filenamePattern": "*.cobmd"
+          }
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "cobolplugin.move2pd",
@@ -2602,6 +2648,43 @@
           "light": "images/preview-right-light.svg",
           "dark": "images/preview-right-dark.svg"
         }
+      },
+      {
+        "command": "cobolplugin.notebookBuildAll",
+        "category": "COBOL Notebook",
+        "title": "Build All Targets"
+      },
+      {
+        "command": "cobolplugin.notebookRunAll",
+        "category": "COBOL Notebook",
+        "title": "Run All Targets",
+        "enablement": "!isWeb && isWorkspaceTrusted"
+      },
+      {
+        "command": "cobolplugin.notebookBuildTarget",
+        "category": "COBOL Notebook",
+        "title": "Build Target"
+      },
+      {
+        "command": "cobolplugin.notebookRunTarget",
+        "category": "COBOL Notebook",
+        "title": "Run Target",
+        "enablement": "!isWeb && isWorkspaceTrusted"
+      },
+      {
+        "command": "cobolplugin.notebookProgramFile",
+        "category": "COBOL Notebook",
+        "title": "Current Generated Program File"
+      },
+      {
+        "command": "cobolplugin.notebookSetTarget",
+        "category": "COBOL Notebook",
+        "title": "Set Target Filename"
+      },
+      {
+        "command": "cobolplugin.notebookOpenAsText",
+        "category": "COBOL Notebook",
+        "title": "Open as Markdown Text"
       }
     ],
     "menus": {
@@ -2692,6 +2775,40 @@
           "command": "bms.showPreview",
           "when": "resourceLangId == bms",
           "group": "navigation"
+        },
+        {
+          "command": "cobolplugin.notebookBuildAll",
+          "when": "resourceLangId == cobmd",
+          "group": "navigation"
+        },
+        {
+          "command": "cobolplugin.notebookRunAll",
+          "when": "resourceLangId == cobmd && !isWeb && isWorkspaceTrusted",
+          "group": "navigation"
+        }
+      ],
+      "notebook/toolbar": [
+        {
+          "command": "cobolplugin.notebookOpenAsText",
+          "when": "notebookType == cobol-markdown-notebook",
+          "group": "navigation"
+        },
+        {
+          "command": "cobolplugin.notebookBuildAll",
+          "when": "notebookType == cobol-markdown-notebook",
+          "group": "navigation"
+        },
+        {
+          "command": "cobolplugin.notebookRunAll",
+          "when": "notebookType == cobol-markdown-notebook && !isWeb && isWorkspaceTrusted",
+          "group": "navigation"
+        }
+      ],
+      "notebook/cell/title": [
+        {
+          "command": "cobolplugin.notebookSetTarget",
+          "when": "notebookType == cobol-markdown-notebook && notebookCellType == 'code'",
+          "group": "inline"
         }
       ],
       "cobolplugin.selectionmenu": [

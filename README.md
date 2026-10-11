@@ -60,6 +60,52 @@ Some of the features this extension provides are:
 
 While also being able to use it with the official `Rocket COBOL extension` (for debugging for example).
 
+## COBOL Markdown notebooks
+
+Files ending in `.cobmd` combine Markdown documentation with COBOL source fragments. They can be edited as Markdown text or reopened with the **COBOL Markdown Notebook** editor.
+
+Each executable COBOL fence declares a relative target filename. Blocks with the same filename are concatenated in document order:
+
+````markdown
+# Sample program
+
+```cobol file=myprogram.cbl
+             working-storage section.
+             01 message-text pic x(10) value "Hi".
+```
+
+```cobol file=myprogram.cbl
+             procedure division.
+                     display message-text
+                     goback.
+```
+````
+
+**Build All Targets** writes generated source beneath `.cobol-notebook/<notebook-name>/`. Absolute paths and parent-directory traversal are rejected. Generated files should not be committed to source control.
+
+**Run All Targets** executes a workspace task named `cobol notebook run` by default. The task receives each generated filename through `${command:cobolplugin.notebookProgramFile}`. For example, a GnuCOBOL task can be configured in `.vscode/tasks.json` as:
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cobol notebook run",
+            "type": "shell",
+            "command": "cobc",
+            "args": [
+                "-x",
+                "-j",
+                "${command:cobolplugin.notebookProgramFile}"
+            ],
+            "problemMatcher": "$cobolit-cobc"
+        }
+    ]
+}
+```
+
+For another compiler or build system, keep the task label and command variable but replace the command, arguments, and problem matcher. Multiple targets run sequentially. Task execution requires a trusted desktop workspace; editing, validation, and source generation remain available in web workspaces.
+
 
 ## Examples of features provided
 

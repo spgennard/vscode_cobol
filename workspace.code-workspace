@@ -45,6 +45,9 @@
 			"ROOT,program.cbl",
 			"CHILD,ROOT.cpy"
 		],
-		"coboleditor.enable_tab_inline": true
+		"coboleditor.enable_tab_inline": true,
+		"chat.tools.terminal.autoApprove": {
+			"npx mocha": true
+		}
 	}
 }

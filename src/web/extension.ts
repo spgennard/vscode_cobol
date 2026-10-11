@@ -27,6 +27,9 @@ import { VSHoverProvider } from "../vshoverprovider";
 import { CobolReferenceProvider } from "../vsreferenceprovider";
 import { COBOLFoldingRangeProvider } from "../vsfoldingprovider";
 import { VSCopybookContentProvider } from "../vscopybookcontentprovider";
+import { registerCobmdNotebook } from "../vscobmdnotebook";
+import { CobmdCommands } from "../vscobmdcommands";
+import { CobmdCodeLensProvider } from "../vscobmdcodelens";
 
 const URLSearchDirectory: string[] = [];
 let invalidSearchDirectory: string[] = [];
@@ -156,6 +159,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     activateCommonCommands(context);
     VSCopybookContentProvider.register(context);
+    registerCobmdNotebook(context);
+    CobmdCommands.register(context, false);
+    CobmdCodeLensProvider.register(context, false);
 
     // re-init if something gets installed or removed
     const onExtChange = vscode.extensions.onDidChange(() => {

@@ -1,9 +1,11 @@
 out
 out-bench
+tsconfig.tsbuildinfo
 node_modules
 dist/
 .okhttpcache/
 .vscode_cobol/
+.cobol-notebook/
 .vscode-test/
 *.vsix
 examples/

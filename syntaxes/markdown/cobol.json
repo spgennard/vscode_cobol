@@ -1,6 +1,6 @@
 {
 	"fileTypes": [],
-	"injectionSelector": "L:text.html.markdown",
+	"injectionSelector": "L:text.html.markdown, L:text.html.cobmd",
 	"patterns": [
 		{
 			"include": "#cobol-code-block"
@@ -8,7 +8,7 @@
 	],
 	"repository": {
 		"cobol-code-block": {
-			"begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(COBOL|BITLANG-COBOL)(\\s+[^`~]*)?$)",
+			"begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(COBOL|BITLANG-COBOL|ACUCOBOL|RMCOBOL|ILECOBOL|COBOLIT)(\\s+[^`~]*)?$)",
 			"name": "markup.fenced_code.block.markdown",
 			"end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
 			"beginCaptures": {
