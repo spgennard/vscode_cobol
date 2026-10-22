@@ -53,7 +53,7 @@ import { BmsPreviewPanel } from "./bmspreviewpanel";
 import { COBOLFoldingRangeProvider } from "./vsfoldingprovider";
 import { VSCOBOLCopyBookProvider } from "./vsopencopybook";
 import { VSCopybookContentProvider } from "./vscopybookcontentprovider";
-import { registerCobmdNotebook } from "./vscobmdnotebook";
+//import { registerCobmdNotebook } from "./vscobmdnotebook";
 import { CobmdCommands } from "./vscobmdcommands";
 import { CobmdCodeLensProvider } from "./vscobmdcodelens";
 
@@ -456,7 +456,7 @@ export async function activate(context: ExtensionContext) {
     activateDesktop(context, settings);
     activateCommonCommands(context);
     VSCopybookContentProvider.register(context);
-    registerCobmdNotebook(context);
+    //registerCobmdNotebook(context);
     CobmdCommands.register(context, true);
     CobmdCodeLensProvider.register(context, true);
 
