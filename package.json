@@ -3496,7 +3496,7 @@
     "shx": "^0.4.0",
     "ts-loader": "^9.6.2",
     "typescript": "^7.0.2",
-    "webpack": "^5.112.0",
+    "webpack": "^5.112.2",
     "webpack-cli": "^7.2.3"
   },
   "dependencies": {
@@ -3508,7 +3508,7 @@
     "glob-to-regexp": "^0.4.1",
     "has-property-descriptors": "^1.0.2",
     "is-callable": "^1.2.7",
-    "js-base64": "^3.9.4",
+    "js-base64": "^3.9.5",
     "memfs": "^4.80.0",
     "npm-check-updates": "^23.1.1",
     "os-browserify": "^0.3.0",
