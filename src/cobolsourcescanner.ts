@@ -2448,14 +2448,29 @@ export class COBOLSourceScanner implements ICommentCallback, ICOBOLSourceScanner
                 /* skip everything in between exec .. end-exec */
                 if (state.currentToken !== undefined && this.currentExec.length !== 0) {
                     if (currentLower === "include" && this.currentExec.toLowerCase() === "sql") {
-                        const sqlCopyBook = token.nextSTokenOrBlank().currentToken;
-                        const trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook, true);
+                        let trimmedCopyBook = "";
+                        let sqlCopyBook = "";
+                        let trimmedSqlCopyBookDir = "";
+                        if (token.nextSTokenIndex(2).currentToken === '(' && token.nextSTokenIndex(4).currentToken === ')') {
+                            trimmedSqlCopyBookDir = COBOLSourceScanner.trimLiteral(token.nextSTokenIndex(1).currentToken,true);
+                            sqlCopyBook = token.nextSTokenIndex(3).currentToken;
+                            trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook,true);
+                        } else {
+                            sqlCopyBook = token.nextSTokenOrBlank().currentToken;
+                            trimmedCopyBook = COBOLSourceScanner.trimLiteral(sqlCopyBook, true);
+                        }
+
                         let insertInSection = this.copybookNestedInSection ? state.currentSection : state.currentDivision;
                         if (insertInSection === undefined) {
                             insertInSection = state.currentDivision;
                         }
                         this.tokensInOrder.pop();
-                        const copyToken = this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, currentCol, trimmedCopyBook, "EXEC SQL INCLUDE " + sqlCopyBook, insertInSection, "", false);
+                        const copyToken = trimmedSqlCopyBookDir.length === 0 ?
+                            this.newCOBOLToken(COBOLTokenStyle.CopyBook, lineNumber, line, currentCol, trimmedCopyBook, "EXEC SQL INCLUDE " + trimmedCopyBook, insertInSection, "", false)
+                            :
+                            this.newCOBOLToken(COBOLTokenStyle.CopyBookInOrOf, lineNumber, line, currentCol, trimmedCopyBook, "EXEC SQL INCLUDE " + trimmedCopyBook + " IN "+trimmedSqlCopyBookDir, insertInSection, trimmedSqlCopyBookDir, false)
+                        ;
+                        
                         if (this.copyBooksUsed.has(trimmedCopyBook) === false) {
                             const prevState = state.copybook_state;
                             state.copybook_state = new copybookState(state.current01Group);
