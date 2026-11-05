@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* e9219090 Fix #378 - Add basic IBMi/DB2 EXEC SQL INCLUDE style support
+
+## 26.10.26 
 
 ## 26.10.22 
 * bfb9a33a update wip: disable notebook support until I've done the next phase
