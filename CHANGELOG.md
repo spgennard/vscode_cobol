@@ -1,5 +1,7 @@
 # CHANGELOG
 
+
+## 26.11.5 
 * e9219090 Fix #378 - Add basic IBMi/DB2 EXEC SQL INCLUDE style support
 
 ## 26.10.26 
