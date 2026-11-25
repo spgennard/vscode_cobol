@@ -6,5 +6,6 @@ export class ExtensionDefaults {
 
     public static readonly rocketCOBOLExtension = "RocketSoftware.rocket-cobol";
     public static readonly rocketEnterpriseExtenstion = "RocketSoftware.rocket-enterprise";
+    public static readonly rocketAcucobolgtExtension = "RocketSoftware.rocket-acucobolgt";
     public static readonly microFocusCOBOLLanguageId = "cobol";
 }

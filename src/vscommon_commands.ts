@@ -534,6 +534,17 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
         VSCOBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "ACUCOBOL");
     }));
 
+    context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_bitlang_acu", function () {
+        const act = vscode.window.activeTextEditor;
+        if (act === null || act === undefined) {
+            return;
+        }
+
+        const settings = VSCOBOLConfiguration.get_resource_settings(act.document, VSExternalFeatures);
+        vscode.languages.setTextDocumentLanguage(act.document, "BITLANG-ACUCOBOL");
+        VSCOBOLUtils.enforceFileExtensions(settings, act, VSExternalFeatures, true, "BITLANG-ACUCOBOL");
+    }));
+
     context.subscriptions.push(commands.registerCommand("cobolplugin.change_lang_to_rmcobol", function () {
         const act = vscode.window.activeTextEditor;
         if (act === null || act === undefined) {
@@ -831,14 +842,13 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand("cobolplugin.enforceFileExtensions", () => {
         if (vscode.window.activeTextEditor) {
-            const dialects = ["COBOL", "ACUCOBOL", "RMCOBOL", "ILECOBOL", "COBOLIT"];
+            const dialects = ["COBOL", "ACUCOBOL", "BITLANG-ACUCOBOL", "RMCOBOL", "ILECOBOL", "COBOLIT"];
             const mfExt = vscode.extensions.getExtension(ExtensionDefaults.rocketCOBOLExtension);
             const settings = VSCOBOLConfiguration.get_resource_settings(vscode.window.activeTextEditor.document, VSExternalFeatures);
 
             if (mfExt !== undefined) {
                 dialects.push(ExtensionDefaults.microFocusCOBOLLanguageId);
             }
-
 
             vscode.window.showQuickPick(dialects, { placeHolder: "Which Dialect do you prefer?" }).then(function (dialect) {
                 if (vscode.window.activeTextEditor && dialect) {
@@ -927,11 +937,17 @@ export function activateCommonCommands(context: vscode.ExtensionContext) {
 
         switch (langid) {
             case "ACUCOBOL":
+                context.subscriptions.push(getLangStatusItem("Switch to BITLANG-ACUCOBOL", "cobolplugin.change_lang_to_bitlang_acu", "Change", _settings, langid + "_7", langid));
+                context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_2", langid));
+                break;            
+            case "BITLANG-ACUCOBOL":
+                context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", _settings, langid + "_3", langid));
                 context.subscriptions.push(getLangStatusItem("Switch to COBOL", "cobolplugin.change_lang_to_cobol", "Change", _settings, langid + "_2", langid));
                 break;
             case "BITLANG-COBOL":
             case "COBOL":
                 {
+                    context.subscriptions.push(getLangStatusItem("Switch to BITLANG-ACUCOBOL", "cobolplugin.change_lang_to_bitlang_acu", "Change", _settings, langid + "_7", langid));
                     context.subscriptions.push(getLangStatusItem("Switch to ACUCOBOL", "cobolplugin.change_lang_to_acu", "Change", _settings, langid + "_3", langid));
                     context.subscriptions.push(getLangStatusItem("Switch to ILECOBOL", "cobolplugin.change_lang_to_ilecobol", "Change", _settings, langid + "_4", langid));
 

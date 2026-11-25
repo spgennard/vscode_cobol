@@ -1462,6 +1462,7 @@ export function getCOBOLKeywordDictionary(config: ICOBOLSettings, dialect: strin
 	let dialectMap: Map<string, string>;
 
 	switch (dialect) {
+		case "BITLANG-COBOL":
 		case "ACUCOBOL": dialectMap = acucobolKeywordDictionaryMap;
 			break;
 		case "COBOLIT": dialectMap = cobolitKeywordDictionaryMap;
@@ -1486,6 +1487,8 @@ export function getCOBOLKeywordDictionary(config: ICOBOLSettings, dialect: strin
 
 export function getCOBOLKeywordList(dialect: string): string[] {
 	switch (dialect) {
+		case "BITLANG-COBOL": return acuKeywords;
+		case "BITLANG-ACUCOBOL": return acucobolList;
 		case "ACUCOBOL": return acucobolList;
 		case "RMCOBOL": return rmcobolList;
 		case "COBOLIT": return COBOLITKeywords;

@@ -1,3 +1,4 @@
+import { ExtensionDefaults } from "./extensionDefaults";
 import { ICOBOLSettings } from "./iconfiguration";
 import * as vscode from "vscode";
 
@@ -15,6 +16,7 @@ export class VSExtensionUtils {
             case "cobolit":
             case "bitlang-cobol":
             case "cobol":
+            case "bitlang-acucobol":
             case "acucobol":
             case "rmcobol":
             case "ilecobol":
@@ -129,7 +131,9 @@ export class VSExtensionUtils {
                 const secondLine = doc.lineAt(1).text;
 
                 if ((firstLine.indexOf("*{Bench}") !== -1) || ((secondLine.indexOf("*{Bench}") !== -1))) {
-                    vscode.languages.setTextDocumentLanguage(doc, "ACUCOBOL");
+                    const mfExtension = vscode.extensions.getExtension(ExtensionDefaults.rocketAcucobolgtExtension)
+                    const languageId = mfExtension === undefined ? "ACUCOBOL" : "BITLANG-ACUCOBOL";
+                    vscode.languages.setTextDocumentLanguage(doc, languageId);
                     return;
                 }
             }

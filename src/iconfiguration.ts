@@ -429,6 +429,7 @@ export class COBOLSettings implements ICOBOLSettings {
         this.enable_source_scanner = true;
         this.valid_cobol_language_ids = [
             "BITLANG-COBOL",
+            "BITLANG-ACUCOBOL",
             "COBOL",
             "COBOLIT",
             "ACUCOBOL",
@@ -439,6 +440,7 @@ export class COBOLSettings implements ICOBOLSettings {
 
         this.valid_cobol_language_ids_for_intellisense = [
             "BITLANG-COBOL",
+            "BITLAMG-ACUCOBOL",
             "COBOL",
             "COBOLIT",
             "ACUCOBOL",

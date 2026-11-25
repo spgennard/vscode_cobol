@@ -55,6 +55,7 @@ interface OpenFence {
 const cobolLanguages = new Set([
     "cobol",
     "bitlang-cobol",
+    "bitlang-acucobol",
     "acucobol",
     "rmcobol",
     "ilecobol",

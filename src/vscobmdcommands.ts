@@ -47,7 +47,7 @@ export class CobmdCommands implements vscode.Disposable {
                 cobmdNotebookType,
                 "COBOL Notebook Task Runner"
             );
-            controller.supportedLanguages = ["COBOL", "BITLANG-COBOL", "ACUCOBOL", "RMCOBOL", "ILECOBOL", "COBOLIT"];
+            controller.supportedLanguages = ["COBOL", "BITLANG-COBOL", "BITLANG-ACUCOBOL", "ACUCOBOL", "RMCOBOL", "ILECOBOL", "COBOLIT"];
             controller.executeHandler = (cells, notebook) => this.executeCells(controller, cells, notebook);
             this.disposables.push(controller);
         }

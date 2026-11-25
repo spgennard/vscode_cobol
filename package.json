@@ -444,12 +444,13 @@
             "items": {
               "type": "string",
               "title": "Valid Visual Studio COBOL Language Id",
-              "pattern": "(^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL$|^COBOL_MF_LISTFILE$|^BITLANG-COBOL$|^ILECOBOL$)",
+              "pattern": "(^COBOL$|^COBOLIT$|^ACUCOBOL$|^RMCOBOL$|^COBOL_MF_LISTFILE$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ILECOBOL$)",
               "patternErrorMessage": "Invalid language id, can be COBOL, COBOLIT, ACUCOBOL, RMCOBOL or COBOL_MF_LISTFILE or ILECOBOL"
             },
             "default": [
               "COBOL",
               "BITLANG-COBOL",
+              "BITLANG-ACUCOBOL",
               "COBOLIT",
               "ACUCOBOL",
               "RMCOBOL",
@@ -1607,6 +1608,7 @@
         "COBOLIT": true,
         "ACUCOBOL": true,
         "BITLANG-COBOL": true,
+        "BITLANG-ACUCOBOL": true,
         "RMCOBOL": true,
         "ILECOBOL": true,
         "COBOL_MF_LISTFILE": false,
@@ -1763,6 +1765,29 @@
         "configuration": "./cobmd.configuration.json"
       },
       {
+        "id": "BITLANG-ACUCOBOL",
+        "aliases": [
+        ],
+        "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.[Bb]ench.).*$",
+        "extensions": [
+          ".evt",
+          ".lks",
+          ".prd",
+          ".wrk",
+          ".mnu",
+          ".def",
+          ".sl",
+          ".EVT",
+          ".LKS",
+          ".PRD",
+          ".WRK",
+          ".MNU",
+          ".DEF",
+          ".SL"
+        ],
+        "configuration": "./acucobol.configuration.json"
+      },
+      {
         "id": "ACUCOBOL",
         "aliases": [
           "ACUCOBOL",
@@ -1872,6 +1897,15 @@
       },
       {
         "id": "BITLANG-COBOL",
+        "filenames": [
+          "SQLCA"
+        ],
+        "firstLine": ".*(\\$[sS][eE][tT]|[pP][rR][oO][gG][rR][aA][mM]\\-[iI][dD]|[iI][dD][eE][nN][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]|\\*.[mM][iI][cC][rR][oO]).*",
+        "extensions": [],
+        "configuration": "./cobol.configuration.json"
+      },
+      {
+        "id": "BITLANG-ACUCOBOL",
         "filenames": [
           "SQLCA"
         ],
@@ -2145,6 +2179,14 @@
         }
       },
       {
+        "language": "BITLANG-ACUCOBOL",
+        "scopeName": "source.acucobol",
+        "path": "./syntaxes/ACUCOBOL.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.openesql": "openesql"
+        }
+      },
+      {
         "language": "RMCOBOL",
         "scopeName": "source.rmcobol",
         "path": "./syntaxes/RMCOBOL.tmLanguage.json"
@@ -2350,19 +2392,19 @@
         "command": "cobolplugin.openCopybook",
         "category": "COBOL",
         "title": "Open Copybook",
-        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "command": "cobolplugin.openExpandedCopybook",
         "category": "COBOL",
         "title": "View Expanded Copybook",
-        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "command": "cobolplugin.compareExpandedCopybook",
         "category": "COBOL",
         "title": "Compare Original with Expanded Copybook",
-        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "enablement": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "command": "cobolplugin.refreshExpandedCopybook",
@@ -2715,27 +2757,27 @@
         {
           "command": "cobolplugin.move2dd",
           "group": "navigation_cobol",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2ws",
           "group": "navigation_cobol",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2pd",
           "group": "navigation_cobol",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2anyforward",
           "group": "navigation_cobol",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "command": "cobolplugin.move2anybackwards",
           "group": "navigation_cobol",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection"
         },
         {
           "submenu": "cobolplugin.aligndataitemsmenu",
@@ -2768,7 +2810,7 @@
         },
         {
           "command": "cobolplugin.view_dot_callgraph",
-          "when": "config.coboleditor.enable_call_hierarchy_provider && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection",
+          "when": "config.coboleditor.enable_call_hierarchy_provider && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorHasSelection",
           "group": "navigation"
         },
         {
@@ -2815,66 +2857,66 @@
         {
           "command": "cobolplugin.extractSelectionToParagraph",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.extractSelectionToSection",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.extractSelectionToCopybook",
           "group": "cobolplugin",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],
       "cobolplugin.aligndataitemsmenu": [
         {
           "command": "cobolplugin.alignStorageFirst",
           "group": "aligncobol@1",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.alignStorageLeft",
           "group": "aligncobol@2",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.alignStorageCenter",
           "group": "aligncobol@3",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.alignStorageRight",
           "group": "aligncobol@4",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],
       "cobolplugin.convertmenu": [
         {
           "command": "cobolplugin.selectionToCOBOLHEX",
           "group": "convertcobol@1",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.selectionToHEX",
           "group": "convertcobol@1",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.selectionHEXToASCII",
           "group": "convertcobol@2",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.selectionToCOBOLNXHEX",
           "group": "convertcobol@3",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         },
         {
           "command": "cobolplugin.selectionToNXHEX",
           "group": "convertcobol@3",
-          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
+          "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && editorHasSelection"
         }
       ],
       "view/item/context": [
@@ -2918,67 +2960,67 @@
       {
         "key": "ctrl+k ctrl+j",
         "command": "cobolplugin.move2pd",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "key": "ctrl+alt+p",
         "command": "cobolplugin.move2pd",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "key": "ctrl+alt+w",
         "command": "cobolplugin.move2ws",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "key": "ctrl+alt+d",
         "command": "cobolplugin.move2dd",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "key": "ctrl+alt+.",
         "command": "cobolplugin.move2anyforward",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "key": "ctrl+alt+,",
         "command": "cobolplugin.move2anybackwards",
-        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
+        "when": "editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/"
       },
       {
         "key": "tab",
         "command": "cobolplugin.tab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible && !inlineSuggestionVisible"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible && !inlineSuggestionVisible"
       },
       {
         "key": "tab",
         "command": "selectNextSuggestion",
-        "when": "config.coboleditor.enable_tab_next_or_previous && suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
+        "when": "config.coboleditor.enable_tab_next_or_previous && suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "tab",
         "command": "editor.action.inlineSuggest.commit",
-        "when": "config.coboleditor.enable_tab_inline && inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorTabMovesFocus"
+        "when": "config.coboleditor.enable_tab_inline && inlineSuggestionVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorTabMovesFocus"
       },
       {
         "key": "shift+tab",
         "command": "cobolplugin.revtab",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible && !inlineSuggestionVisible"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode && !suggestWidgetVisible && !inlineSuggestionVisible"
       },
       {
         "key": "shift+tab",
         "command": "selectPrevSuggestion",
-        "when": "config.coboleditor.enable_tab_next_or_previous && suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
+        "when": "config.coboleditor.enable_tab_next_or_previous && suggestWidgetVisible && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && suggestWidgetMultipleSuggestions"
       },
       {
         "key": "ctrl+/",
         "command": "cobolplugin.commentline",
-        "when": "config.coboleditor.comment_line && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorReadonly"
+        "when": "config.coboleditor.comment_line && editorTextFocus && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !editorReadonly"
       },
       {
         "key": "alt+shift+a",
         "command": "cobolplugin.change_lang_to_acu",
-        "when": "editorLangId =~ /^cobol$|^COBOL$|^BITLANG-COBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^cobol$|^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+shift+c",
@@ -2988,97 +3030,97 @@
       {
         "key": "alt+shift+c",
         "command": "cobolplugin.change_lang_to_mfcobol",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+right",
         "command": "cobolplugin.padTo72",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+a",
         "command": "cobolplugin.indentToCursor",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+alt+l",
         "command": "cobolplugin.leftAdjustLine",
-        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+a",
         "command": "editor.action.selectAll",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+a",
         "command": "cursorLineStart",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+b",
         "command": "cursorLeft",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+c",
         "command": "editor.action.clipboardPasteAction",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+d",
         "command": "deleteRight",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+e",
         "command": "cursorLineEnd",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+f",
         "command": "cursorRight",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+h",
         "command": "deleteLeft",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+j",
         "command": "editor.action.insertLineAfter",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+k",
         "command": "deleteAllRight",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+m",
         "command": "editor.action.insertLineBefore",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+t",
         "command": "cobolplugin.transposeSelection",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "ctrl+z",
         "command": "scrollLineUp",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       },
       {
         "key": "alt+z",
         "command": "scrollLineDown",
-        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
+        "when": "config.coboleditor.xedit_keymap && editorLangId =~ /^COBOL$|^BITLANG-COBOL$|^BITLANG-ACUCOBOL$|^ACUCOBOL$|^RMCOBOL$|^ILECOBOL$|^COBOLIT$/ && !inSnippetMode"
       }
     ],
     "snippets": [
@@ -3096,6 +3138,10 @@
       },
       {
         "language": "ACUCOBOL",
+        "path": "./snippets/acucobol.json"
+      },
+      {
+        "language": "BITLANG-ACUCOBOL",
         "path": "./snippets/acucobol.json"
       },
       {
