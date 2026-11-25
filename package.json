@@ -3521,7 +3521,7 @@
     "@types/glob": "^9.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.6.6",
+    "@types/node": "^26.6.10",
     "@types/vscode": "^1.145.0",
     "@types/webpack-env": "^1.18.8",
     "@vscode/test-electron": "^3.1.0",
