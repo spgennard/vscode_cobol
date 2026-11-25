@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* 57a4be53 Add support for BITLANG-ACUCOBOL language
+
+## 26.11.22 
 
 ## 26.11.5 
 * e9219090 Fix #378 - Add basic IBMi/DB2 EXEC SQL INCLUDE style support
