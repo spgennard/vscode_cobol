@@ -2,7 +2,7 @@
   "name": "cobol",
   "displayName": "COBOL",
   "description": "IntelliSense, highlighting, snippets, and code browsing for COBOL and more",
-  "version": "26.11.22",
+  "version": "26.11.25",
   "publisher": "bitlang",
   "keywords": [
     "acucobol-gt",
@@ -1766,8 +1766,7 @@
       },
       {
         "id": "BITLANG-ACUCOBOL",
-        "aliases": [
-        ],
+        "aliases": [],
         "firstLine": "^      \\*(.*\\.[sS][cC][rR]|.[Bb]ench.).*$",
         "extensions": [
           ".evt",
